@@ -1,0 +1,13 @@
+{
+  "name": "imagesloaded",
+  "_cacheHeaders": {
+    "ETag": "\"d66f658937d8f5b6d96f969aa3ac5c421c397338\"",
+    "Content-Length": "6949",
+    "Content-Type": "text/plain; charset=utf-8"
+  },
+  "_release": "e-tag:d66f65893",
+  "main": "index.js",
+  "_source": "https://raw.githubusercontent.com/desandro/imagesloaded/v3.1.8/imagesloaded.pkgd.min.js",
+  "_target": "*",
+  "_originalSource": "https://raw.githubusercontent.com/desandro/imagesloaded/v3.1.8/imagesloaded.pkgd.min.js"
+}

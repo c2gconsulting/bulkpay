@@ -1,0 +1,64 @@
+<template name="ExtLayout">
+<nav class="navbar navbar-custom navbar-custom-2 navbar-custom-3" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-main-collapse">
+                <i class="glyphicon glyphicon-menu-hamburger"></i>
+            </button>
+            <a class="navbar-brand" href="/"><!--
+                <img src="/img/test-client/logo.png" alt="Client" /><span class="logo-delimetr"></span>-->
+                <img src="/admin/img/logo_health_depot_grey_r_01.png" alt="HealthDepot" style="padding-top: 17px;" />
+            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+            <ul class="nav navbar-nav">
+                <li>
+                    <div class="btn-group" style="margin: 8px 0;">
+                        <!--<a href="#" class="btn btn-link" data-toggle="modal" data-target="#signin">Sign in</a>-->
+                        <a href="mailto:{{adminEmail}}?subject=Request%20for%20access%20to%20{{tenantUrl}}&body=Please%20create%20a%20tradedepot%20user%20account%20for%20me.%20Thank%20you" class="btn btn-info">Request Access</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{{> yield}}
+
+
+<footer>
+    <div class="container">
+        <hr/>
+        <div class="footer-content">
+            <div class="col-sm-4">
+                <div class="row">
+                    <p class="pull-left copyrights">&copy; {{thisYear}} TradeDepot. All rights reserved.</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="row text-center">
+                    Powered by &nbsp;&nbsp;<img src="/img/tradedepot-logo.png" alt="" style="max-width: 100px;" />
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="lang-block pull-right">
+                        <div class="dropup">
+                            <button style="width: 200px;text-align: left!important;text-transform: none!important;" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="glyphicon glyphicon-map-marker"></span> English
+                                <span class="caret pull-right" style="margin: 8px 0;"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                <li><a href="#">Russian</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+</template>

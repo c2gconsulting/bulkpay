@@ -1,0 +1,192 @@
+<template name="RebatesHistory">
+  <div class="rebates-history">
+      <div class="container-fluid">
+          <section class="row content-header z_index_99">
+              <div class="container-fluid ">
+                  <div class="col-sm-8">
+                      <h1 class="pull-left">
+                          Rebates History Report
+                      </h1>
+                  </div>
+                  <div class="col-md-4 hidden-xs hidden-sm">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                          <li><a href="{{pathFor 'reports.home'}}">Reports</a></li>
+                          <li class="active">Rebates History</li>
+                      </ol>
+                  </div>
+              </div>
+          </section>
+          <div class="col-sm-12 returns">
+              <section class="content not_margin_head">
+                  <div class="container-fluid bg_white">
+                      <form class="">
+                          <div class="row">
+                              <div class="col-lg-12 bg_white ptop30 mb">
+                                  <div class="row">
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">From</label>
+                                              <div class="date">
+                                                  <div class="inner-addon left-addon">
+                                                      <i class="glyphicon icon-calendar"></i>
+                                                      {{#datepicker startDate }}
+                                                          <input type="text" class="form-control datepicker" size="8" name="from" id="startDate" />
+                                                      {{/datepicker}}
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">To</label>
+                                              <div class="date">
+                                                  <div class="inner-addon left-addon">
+                                                      <i class="glyphicon icon-calendar"></i>
+                                                      {{#datepicker endDate }}
+                                                          <input type="text" class="form-control datepicker" size="8" name="to" id="endDate"/>
+                                                      {{/datepicker}}
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">Order Number</label>
+                                              <div class="date">
+                                                  <div class="">
+                                                     <input type="number" class="form-control orderNumber">
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">Status</label>
+                                              {{#selectpicker}}
+                                                  <select class="form-control selectpicker" id="status" data-live-search="true" name="status" multiple>
+                                                      <option value="pending">Pending</option>
+                                                      <option value="applied">Applied</option>
+                                                  </select>
+                                              {{/selectpicker}}
+                                          </div>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                  </div>
+                                  <div class="row">
+
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">Customer Name</label>
+                                              <div class="customer-search custom customer">
+                                                  <div class="inner-addon left-addon">
+                                                      <i class="glyphicon glyphicon-search"></i>
+                                                      <input type="text" class="form-control customerSearch" size="8" autocomplete="off" name="filterValue" value="{{filterConditions.customerName}}" />
+                                                      <div id="customerName" class="customer-search-result"></div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">Promotion</label>
+                                              <div class="customer-search custom promotion">
+                                                  <div class="inner-addon left-addon">
+                                                      <i class="glyphicon glyphicon-search"></i>
+                                                      <input type="text" class="form-control promotionSearch" size="8" autocomplete="off"  name="filterValue" value="{{filterConditions.promotionName}}" />
+                                                      <div id="divPromotionSearch" class="customer-search-result"></div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+
+                                      <div class="col-md-3">
+                                          <div class="form-group">
+                                              <label class="text-muted">Reward Types</label>
+                                              <div class="date">
+                                                  <div class="">
+                                                      {{#selectpicker}}
+                                                          <select class="form-control selectpicker rewardType" data-live-search="true">
+                                                              <option value>Nothing Selected</option>
+                                                              {{#each rewardSubTypes}}
+                                                                  <option value="{{code}}">{{name}}</option>
+                                                              {{/each}}
+                                                          </select>
+                                                      {{/selectpicker}}
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                  </div>
+                              </div>
+                              <div class="clearfix"></div>
+                              <p></p>
+                          </div>
+                      </form>
+                  </div>
+
+                  <div class="col-sm-12">
+                      <section class="extra-margin-top-20">
+                          <div class="extra-margin-bottom-10">
+                              <a href="#" class="btn btn-default pull-right excel ladda-button"><span class="ladda-label"><i class="glyphicon glyphicon-download"></i> Export to CSV</span></a>
+                              <a href="#" class="btn btn-default pull-right" name="reports-home"><i class="glyphicon glyphicon-signal"></i> Back to Home</a>
+                              <br>
+                          </div>
+                          <div class="width_700 no_mobile">
+                              <table class="table table-striped table-bordered table-responsive trans_history f table-hover tr_pointer">
+                                  <thead>
+                                  <tr>
+                                      <td><a href="#sort" class="text-muted" data-key="rebateNumber">Rebate Number # <small><i class="{{sortedBy 'rebateNumber'}}"></i></small></a></td>
+                                      <td><a href="#sort" class="text-muted" data-key="orderNumber">Order Number # <small><i class="{{sortedBy 'orderNumber'}}"></i></small></a></td>
+                                      <td><a href="#sort" class="text-muted" data-key="promotionName">Promotion<small><i class="{{sortedBy 'promotionName'}}"></i></small></a></td>
+                                      <td><a href="#sort" class="text-muted" data-key="createdAt">Date Posted <small><i class="{{sortedBy 'createdAt'}}"></i></small></a></td>
+                                      <td><a href="#sort" class="text-muted" data-key="value">Value <small><i class="{{sortedBy 'value'}}"></i></small></a></td>
+                                      <td>Status</td>
+                                      <td>Type</td>
+                                      <td><a href="#sort" class="text-muted" data-key="customerName">Customer <small><i class="{{sortedBy 'customerName'}}"></i></small></a></td>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                  {{#each rebates}}
+                                      <tr class="order-entry">
+                                          <td><small>{{rebateNumber}}</small></td>
+                                          <td><small>
+                                              {{#linkTo route="orders.detail" _id=orderId}}<small>{{orderNumber}}</small>{{/linkTo}}
+                                          </small></td>
+                                          <td><small>
+                                              {{#linkTo route="promotions.detail" _id=promotionId}}<small>{{promotionName}}</small>{{/linkTo}}
+                                          </small></td>
+                                          <td><small>{{formatTime createdAt}}</small></td>
+                                          <td><small>{{formatMoney value currency}}</small></td>
+                                          <td><span class="{{rebateStatusStyle status}}"><small>{{capitalize status}}</small></span></td>
+                                          <td><small>{{capitalize rewardSubType}}</small></td>
+                                          <td>
+                                              {{#linkTo route="distributors.detail" _id=customerId}}<small>{{customerName}}</small>{{/linkTo}} <span class="small text-muted">{{customerNumber}}</span>
+                                          </td>
+                                      </tr>
+                                  {{/each}}
+                                  </tbody>
+                              </table>
+                          </div>
+                          <div class="row">
+                              {{#if Template.subscriptionsReady}}
+                                  {{#if hasMoreRebates}}
+                                      <div id="showMoreResults" href="#">&nbsp;</div>
+                                  {{/if}}
+                              {{else}}
+                                  <div class="col-xs-12">
+                                      <div class="loading">{{> spinner}}</div>
+                                  </div>
+                              {{/if}}
+                          </div>
+                      </section>
+
+                  </div>
+              </section>
+          </div>
+
+      </div>
+  </div>
+</template>

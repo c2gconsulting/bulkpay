@@ -1,0 +1,43 @@
+Core.Permissions = {
+	"ADMIN_ALL" : ["admin/all", "tenant/maintain"],
+	"CUSTOMERS_VIEW" : ["customers/view", "customers/maintain"],
+	"CUSTOMERS_MAINTAIN" : "customers/maintain",
+	"INVOICES_VIEW" : ["invoices/view", "invoices/manage"],
+	"INVOICES_MANAGE" : "invoices/manage",
+	"ORDERS_APPROVE" : "orders/approve",
+	"ORDERS_VIEW" : ["orders/view", "orders/manage"],
+	"ORDERS_MANAGE" : "orders/manage",
+	"ORDERTYPES_APPROVE" : "ordertypes/approve",
+	"PROMOTIONS_APPROVE" : "promotions/approve",
+	"PROMOTIONS_MANAGE" : "promotions/manage",
+	"PROMOTIONS_VIEW" : ["promotions/view", "promotions/manage"],
+	"REBATES_MANAGE" : "rebates/manage",
+	"REBATES_VIEW" : ["rebates/view", "rebates/manage"],
+	"RETURNORDERS_APPROVE" : "returnorders/approve",
+	"RETURNORDERS_VIEW" : ["returnorders/view", "returnorders/manage"],
+	"RETURNORDERS_MANAGE" : "returnorders/manage",
+	"TENANT_MAINTAIN" : "tenant/maintain",
+	"VIEW_ALL" : ["view/all", "admin/all", "tenant/maintain"]
+};
+
+Core.PermissionNames = {
+	"admin/all" : "Administrator",
+	"customers/view" : "View Customers",
+	"customers/maintain" : "Maintain Customers",
+	"invoices/view" : "View Invoices",
+	"invoices/manage" : "Manage Invoices",
+	"orders/approve" : "Approve Orders",
+	"orders/view" : "View Orders",
+	"orders/manage" : "Manage Orders",
+	"ordertypes/approve" : "Approve Order Types",
+	"promotions/approve" : "Approve Promotions",
+	"promotions/manage" : "Manage Promotions",
+	"promotions/view" : "View Promotions",
+	"rebates/manage" : "Manage Rebates",
+	"rebates/view" : "View Rebates",
+	"returnorders/approve" : "Approve Return Orders",
+	"returnorders/view" : "View Return Orders",
+	"returnorders/manage" : "Manage Return Orders",
+	"tenant/maintain" : "Maintain Tenant",
+	"view/all" : "View All"
+};

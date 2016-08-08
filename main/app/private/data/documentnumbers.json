@@ -1,0 +1,18 @@
+[{
+  "documentType": "order"
+},{
+  "documentType": "return_order"
+},{
+  "documentType": "invoice"
+}, {
+  "documentType": "customer"
+}, {
+  "documentType": "supplier"
+}, {
+  "documentType": "stock_adjustment"
+}, {
+  "documentType": "purchase_order"
+}, {
+  "documentType": "stock_transfer"
+}]
+   

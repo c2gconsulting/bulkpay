@@ -1,0 +1,92 @@
+[{
+  "name": "General Test Approval",
+  "status": "active",
+  "documentType": ["Order"],
+  "rules": [{
+    "name": "Min Required Items",
+    "approvalParameterId": "pwpa64Koo96tdqQPi",
+    "operator": "greater-than",
+    "value": 10
+  },
+    {
+      "name": "Greater than available quantity",
+      "approvalParameterId": "pwpa64Koo96tdqQPm",
+      "operator": "greater-than",
+      "value": "available"
+    },
+    {
+      "name": "Additional discounts applied",
+      "approvalParameterId": "pwpa64Koo96tdqQGn",
+      "operator": "greater-than",
+      "value": 0
+    },
+    {
+      "name": "Item Discounts Applied",
+      "approvalParameterId": "pwpa64Koo96tdqQNn",
+      "operator": "greater-than",
+      "value": 0
+    },
+    {
+      "name": "Pick up Delivery",
+      "approvalParameterId": "pwpa64Koo96tdqQPd",
+      "value": false,
+      "operator": "exactly"
+    },
+    {
+      "subParamValue": "svorZmrKjuj7abHu6",
+      "name": "Less than 10 items",
+      "approvalParameterId": "pwpa64Koo96tdqQPt",
+      "operator": "less-than",
+      "value": 10
+    },
+    {
+      "name": "Low total item quantity",
+      "approvalParameterId": "pwpa64Koo96tdqQPt",
+      "operator": "less-than",
+      "value": 10
+    },
+    {
+    "name": "All DDO Orders",
+    "approvalParameterId": "pwpa64Koo96tdqQPy",
+    "operator": "is",
+    "value": 20
+    }
+  ]
+},
+  {
+    "name": "General Return Approval",
+    "status": "active",
+    "documentType": ["ReturnOrder"],
+    "rules": [{
+      "name": "Min Required Items",
+      "approvalParameterId": "pwpa64Koo96tdqQPi",
+      "operator": "greater-than",
+      "value": 10
+    },
+      {
+        "name": "Additional discounts applied",
+        "approvalParameterId": "pwpa64Koo96tdqQGn",
+        "operator": "greater-than",
+        "value": 0
+      },
+      {
+        "name": "Item Discounts Applied",
+        "approvalParameterId": "pwpa64Koo96tdqQNn",
+        "operator": "greater-than",
+        "value": 0
+      },
+      {
+        "subParamValue": "svorZmrKjuj7abHu6",
+        "name": "Less than 10 items",
+        "approvalParameterId": "pwpa64Koo96tdqQPt",
+        "operator": "less-than",
+        "value": 10
+      },
+      {
+        "name": "Less than purchased quantity",
+        "approvalParameterId": "pwpa64Koo96tdqQKm",
+        "operator": "less-than"
+      }
+    ]
+  }
+]

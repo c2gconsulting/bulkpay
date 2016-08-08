@@ -1,0 +1,118 @@
+<template name="InvoicesList">
+    <div class="container-fluid">
+        <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-sm-6">
+                    <h1 class="pull-left">
+                        Delivery Invoices
+                    </h1>
+                    <form role="search" id="invoice-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="inner-addon right-addon">
+                                    <i class="glyphicon icon-search"></i>
+                                    <input type="text" id="invoice-search" class="form-control" placeholder="Search Invoices">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="/admin/"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                        <li class="active">Delivery Invoices</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+        <div class="col-sm-12">
+            <section class="content">
+                <div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="{{tabClass 'paid'}}"><a href="#paid" aria-controls="settings" role="tab" data-toggle="tab">Paid</a></li>
+                        <li role="presentation" class="{{tabClass 'unpaid'}}"><a href="#unpaid" aria-controls="home" role="tab" data-toggle="tab">Unpaid <span class="label label-info">{{unpaidInvoiceCountFiltered}}</span></a></li>
+                        <div class="clearfix hidden-md hidden-lg"></div>
+                        <li class="navbar-right">
+                            <br class="hidden-md hidden-lg hidden-sm" />
+                            <form class="form-inline no_wrap">
+                                <div class="form-group">
+                                    <label for="filter"><!--<strong>{{invoiceCount}}</strong>--> Invoices in the </label>&nbsp;
+                                    <select class="form-control" id="dfilter">
+                                        <option value="1">past month</option>
+                                        <option value="3">past 3 months</option>
+                                        <option value="6">past 6 months</option>
+                                        <option value="12">past 12 months</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                    <!-- Tab pane -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active no_mobile">
+                            <br/>
+                            <table class="table table-hover tr_pointer">
+                                <thead>
+                                    <tr>
+                                        <td><a href="#sort" class="text-muted" data-key="invoiceNumber">Invoice # <small><i class="{{sortedBy 'invoiceNumber'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="orderNumber">Order # <small><i class="{{sortedBy 'orderNumber'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="issuedAt">Date Posted <small><i class="{{sortedBy 'issuedAt'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="total">Total <small><i class="{{sortedBy 'total'}}"></i></small></a></td>
+                                        <td>Status</td>
+                                        <td><a href="#sort" class="text-muted" data-key="customerName">Customer <small><i class="{{sortedBy 'customerName'}}"></i></small></a></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                {{#if searchActive}}
+                                    {{#if searchQueryReturned}}
+                                        {{#each searchInvoices}}
+                                            {{> InvoicesEntry}}
+                                        {{else}}
+                                            <tr>
+                                                <td colspan="7">
+                                                    No invoices match your search term
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                            </td>
+                                        </tr>
+                                    {{/if}}
+                                {{else}}
+                                    {{#each invoices}}
+                                        {{> InvoicesEntry}}
+                                    {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                No invoices available
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                {{/if}}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {{#if Template.subscriptionsReady}}
+                        {{#if hasMoreInvoices}}
+                            <div id="showMoreResults" href="#">&nbsp;</div>
+                        {{/if}}
+                        {{#if hasMoreSearchResults}}
+                            <div id="showMoreResults" href="#">&nbsp;</div>
+                        {{/if}}
+                    {{else}}
+                        <div class="col-xs-12">
+                            <div class="loading">{{> spinner}}</div>
+                        </div>
+                    {{/if}}
+                </div>
+            </section>
+        </div>
+    </div>
+</template>

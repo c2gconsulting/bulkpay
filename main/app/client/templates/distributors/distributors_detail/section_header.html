@@ -1,0 +1,31 @@
+<template name="sectionHeader">
+<section class="row content-header">
+    <div class="container-fluid">
+        <div class="col-sm-6">
+            <h1 class="pull-left">
+                Customer
+                <small class="text-info">
+                        {{customerNumber}}
+                </small>
+            </h1>
+        </div>
+        <div class="col-sm-6 hidden-xs">
+            <ol class="breadcrumb">
+                <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-user"></i>Home</a></li>
+                <li><a href="{{pathFor 'distributors.list'}}">Customers</a></li>
+                <li class="active">{{name}}</li>
+            </ol>
+        </div>
+    </div>
+    <div class="sub-content-header">
+        <div class="container-fluid">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="#" class="btn btn-default">Print <i class="glyphicon icon-print"></i></a>
+                    <a href="{{pathFor 'distributors.edit'}}" class="btn btn-info">Edit <i class="icon-edit"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</template>

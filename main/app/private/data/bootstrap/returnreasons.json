@@ -1,0 +1,91 @@
+[{
+  "sort": 1,
+  "code": "001",
+  "reason": "Sealing Defect ",
+  "originReasonCode": "001"
+}, {
+  "sort": 2,
+  "code": "002",
+  "reason": "Expired",
+  "originReasonCode": "002"
+}, {
+  "sort": 3,
+  "code": "003",
+  "reason": "Handling ",
+  "originReasonCode": "003"
+}, {
+  "sort": 4,
+  "code": "004",
+  "reason": "Shortage ",
+  "originReasonCode": "004"
+}, {
+  "sort": 5,
+  "code": "005",
+  "reason": "Underfilled",
+  "originReasonCode": "005"
+}, {
+  "sort": 6,
+  "code": "006",
+  "reason": "Dented Tins",
+  "originReasonCode": "006"
+}, {
+  "sort": 7,
+  "code": "007",
+  "reason": "Forklift Damage",
+  "originReasonCode": "007"
+}, {
+  "sort": 8,
+  "code": "008",
+  "reason": "Rat Attack",
+  "originReasonCode": "008"
+}, {
+  "sort": 9,
+  "code": "009",
+  "reason": "Weevil Attack",
+  "originReasonCode": "009"
+}, {
+  "sort": 10,
+  "code": "010",
+  "reason": "Container Damage",
+  "originReasonCode": "010"
+}, {
+  "sort": 11,
+  "code": "011",
+  "reason": "Truck Accidented ",
+  "originReasonCode": "011"
+}, {
+  "sort": 12,
+  "code": "012",
+  "reason": "Packaging Material",
+  "originReasonCode": "012"
+}, {
+  "sort": 13,
+  "code": "013",
+  "reason": "Wet Stock",
+  "originReasonCode": "013"
+}, {
+  "sort": 14,
+  "code": "014",
+  "reason": "Caked/Coloured Product",
+  "originReasonCode": "014"
+}, {
+  "sort": 15,
+  "code": "015",
+  "reason": "Wrong Assignment",
+  "originReasonCode": "015"
+}, {
+  "sort": 16,
+  "code": "016",
+  "reason": "Reversal of wrong posting/posting error",
+  "originReasonCode": "016"
+}, {
+  "sort": 17,
+  "code": "017",
+  "reason": "Customer Change of Mind",
+  "originReasonCode": "017"
+}, {
+  "sort": 18,
+  "code": "018",
+  "reason": "Discount Commission",
+  "originReasonCode": "018"
+}]

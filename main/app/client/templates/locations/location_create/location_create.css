@@ -1,0 +1,22 @@
+/*****************************************************************************/
+/* LocationCreate: Style */
+/*****************************************************************************/
+.location-create {
+}
+
+.location-create .bg-gray{
+    background: #242F38;
+}
+
+.location-create .nav-tabs{
+    visibility: hidden;
+}
+
+.location-create .text-white{
+    color: #fff;
+    padding-top: 5px;
+}
+
+.location-create .panel-body p{
+    margin-bottom: 0;
+}

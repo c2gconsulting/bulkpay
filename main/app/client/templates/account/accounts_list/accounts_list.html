@@ -1,0 +1,110 @@
+<template name="AccountsList">
+  <div class="accounts-list">
+      <div class="container-fluid">
+          <section class="row content-header">
+              <div class="container-fluid">
+                  <div class="col-sm-6">
+                      <h1 class="pull-left">
+                          User Accounts
+                      </h1>
+                      <form role="search" id="user-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                          <div class="form-group">
+                              <div class="col-sm-12">
+                                  <div class="inner-addon right-addon">
+                                      <i class="glyphicon icon-search"></i>
+                                      <input type="text" id="user-search" class="form-control" placeholder="Search Users">
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  <div class="col-sm-6 hidden-xs">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor "home"}}"><i class="glyphicon icon-settings"></i>Home</a></li>
+                          <li class="active">Accounts</li>
+                      </ol>
+                  </div>
+              </div>
+              <div class="sub-content-header border">
+                  <div class="container-fluid">
+                      <div class="col-sm-12">
+                          <div class="pull-left">
+                          </div>
+                          <div class="pull-right">
+                              <a href="#" class="btn btn-default btn-sm" id="add-user">Add New User <i class="glyphicon icon-add"></i></a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+          <div class="col-sm-12">
+              <section class="content sub-content-sec">
+                  <div>
+                      <br/>
+                      <table class="table tr_pointer">
+                          <thead>
+                          <tr>
+                              <td><a href="#sort" class="text-muted" data-key="profile.fullName">Name <small><i class="{{sortedBy 'profile.fullName'}}"></i></small></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="emails">Email <small><i class="{{sortedBy 'emails'}}"></i></small></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="username">Username <small><i class="{{sortedBy 'username'}}"></i></small></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="createdAt">Created At <small><i class="{{sortedBy 'createdAt'}}"></i></small></a></td>
+                              <td>&nbsp;</td>
+                          </tr>
+                          </thead>
+                          <tbody class="bg-transparent">
+
+                          {{#if searchActive}}
+                            {{#if searchQueryReturned}}
+                                {{#each searchUsers}}
+                                    {{> AccountEntry}}
+                                {{else}}
+                                      <tr>
+                                          <td colspan="7">
+                                              No users match your search term
+                                          </td>
+                                      </tr>
+                                {{/each}}
+                            {{else}}
+                              <tr>
+                                  <td colspan="7">
+                                      <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                  </td>
+                              </tr>
+                            {{/if}}
+                          {{else}}
+                            {{#each users}}
+                                {{> AccountEntry}}
+                            {{else}}
+                              <tr>
+                                  <td colspan="7">
+                                      No user available
+                                  </td>
+                              </tr>
+                            {{/each}}
+                          {{/if}}
+
+                          </tbody>
+                      </table>
+                  </div>
+
+
+                  {{#if Template.subscriptionsReady}}
+                    {{#if hasMoreUsers}}
+                        <div id="showMoreResults" href="#">&nbsp;</div>
+                    {{/if}}
+                      {{#if hasMoreSearchResults}}
+                          <div id="showMoreResults" href="#">&nbsp;</div>
+                      {{/if}}
+                  {{else}}
+                    <div class="col-xs-12">
+                        <div class="loading">{{> spinner}}</div>
+                    </div>
+                  {{/if}}
+
+              </section>
+
+          </div>
+
+      </div>
+  </div>
+</template>

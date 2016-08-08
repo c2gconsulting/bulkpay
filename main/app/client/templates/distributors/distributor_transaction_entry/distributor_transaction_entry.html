@@ -1,0 +1,34 @@
+<template name="DistributorTransactionEntry">
+    <tr>
+        {{#if isHold}}
+        <td>{{holdNumber}}</td>
+        <td>{{formatTime postingDate}}</td>
+        <td><span class="label {{textStyle}} text-uppercase">{{holdType}}</span></td>
+        {{#if isCreditHold}}
+        <td>Blocked for order credit clearance</td>
+        {{else}}
+        <td>Blocked for order applied balance</td>
+        {{/if}}
+        <td class="text-center">
+            {{#linkTo route="orders.detail" _id=orderId}}{{orderNumber}}{{/linkTo}}
+        </td>
+        {{else}}
+        <td>{{originDocumentNo}}</td>
+        <td>{{formatTime postingDate}}</td>
+        <td><span class="label {{textStyle}} text-uppercase">{{truncate transactionType limit=11 omitter=" "}}</span></td>
+        <td>{{narration}}</td>
+        <td class="text-center">
+            {{#if isInvoiceAndHasId}}
+                {{#linkTo route="invoices.detail" _id=invoiceId}}{{reference}}{{/linkTo}}
+            {{else}}
+                {{#if isPaymentAndHasId}}
+                    {{#linkTo route="orders.detail" _id=orderId}}{{reference}}{{/linkTo}}
+                {{else}}
+                    {{referenceDoc}}
+                {{/if}}
+            {{/if}}
+        </td>
+        {{/if}}
+        <td class="{{postingKeyClass amount}} text-right text-nowrap">{{formatMoneyD amount currency}}</td>
+    </tr>
+</template>

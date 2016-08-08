@@ -1,0 +1,36 @@
+<template name="DistributorsListHeader">
+    <section class="row content-header">
+        <div class="container-fluid">
+            <div class="col-sm-6">
+                <h1 class="pull-left">
+                    Customers
+                </h1>
+                <form role="search" id="customer-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="inner-addon right-addon">
+                                <i class="glyphicon icon-search"></i>
+                                <input type="text" id="customer-search" class="form-control" placeholder="Search Customers">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6 hidden-xs">
+                <ol class="breadcrumb">
+                    <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-user"></i>Home</a></li>
+                    <li class="active">Customers</li>
+                </ol>
+            </div>
+        </div>
+        <div class="sub-content-header">
+            <div class="container-fluid">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="{{pathFor 'distributors.create'}}" class="btn btn-info">Add Customer <i class="glyphicon icon-add"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</template>

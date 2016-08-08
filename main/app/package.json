@@ -1,0 +1,28 @@
+{
+  "name": "main",
+  "version": "1.0.0",
+  "description": "TDC main service",
+  "main": "index.js",
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "amqplib": "^0.4.1",
+    "crypto": "0.0.3",
+    "desandro-classie": "^1.0.1",
+    "desandro-get-style-property": "^1.0.4",
+    "eventie": "^1.0.6",
+    "get-size": "^2.0.2",
+    "jquery": "^2.2.3",
+    "ladda": "^1.0.0",
+    "meteor-node-stubs": "^0.2.3",
+    "moment": "^2.13.0",
+    "moment-timezone": "^0.5.4",
+    "unidragger": "^2.1.0",
+    "unipointer": "^2.1.0",
+    "when": "^3.7.7",
+    "wolfy87-eventemitter": "^4.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

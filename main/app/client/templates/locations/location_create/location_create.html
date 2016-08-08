@@ -1,0 +1,76 @@
+<template name="LocationCreate">
+  <div class="location-create">
+
+      <div class="modal fade">
+          <div class="modal-dialog">
+              <div class="modal-content">
+
+                  <div class="modal-header">
+                      <h4 class="modal-title">{{modalTitle}}</h4>
+                  </div>
+                  <div class="modal-body">
+                      <form class="form-horizontal">
+                          <div class="form-group">
+                              <label for="locationName" class="col-sm-3 control-label text-muted">Name</label>
+                              <div class="col-sm-9">
+                                  <input type="text" autocomplete="off" class="form-control" id="locationName" placeholder="Name" name="locationName" value="{{location.name}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="address1" class="col-sm-3 control-label text-muted">Address 1</label>
+                              <div class="col-sm-9">
+                                  <input type="text" autocomplete="off" class="form-control" id="address1" placeholder="Address" name="address1" value="{{location.address1}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="address2" class="col-sm-3 control-label text-muted">Address 2</label>
+                              <div class="col-sm-9">
+                                  <input type="email" autocomplete="off" class="form-control" id="address2" placeholder="Additional Address" name="address2" value="{{location.address2}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="locationCity" class="col-sm-3 control-label text-muted">City</label>
+                              <div class="col-sm-9">
+                                  <input type="email" autocomplete="off" class="form-control" id="locationCity" placeholder="City" name="locationCity" value="{{location.city}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="locationPostal" class="col-sm-3 control-label text-muted">Postal</label>
+                              <div class="col-sm-9">
+                                  <input type="text" autocomplete="off" class="form-control" id="locationPostal" placeholder="Postal" name="locationPostal" value="{{location.postal}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="locationState" class="col-sm-3 control-label text-muted">State</label>
+                              <div class="col-sm-9">
+                                  <input type="text" autocomplete="off" class="form-control" id="locationState" placeholder="State" name="locationState" value="{{location.state}}">
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="locationCountry" class="col-sm-3 control-label text-muted">Country</label>
+                              <div class="col-sm-9">
+                                  <input type="text" autocomplete="off" class="form-control" id="locationCountry" placeholder="Country" name="locationCountry" value="{{location.country}}" disabled>
+                              </div>
+                          </div>
+                          <div class="form-group">
+                              <label for="myonoffswitch" class="col-sm-3 control-label text-muted">Holds Stock?</label>
+                              <div class="col-sm-9">
+                                  <div class="onoffswitch-edit">
+                                      <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked={{location.holdsStock}}  data-field="isPickup">
+                                      <label class="onoffswitch-label" for="myonoffswitch"></label>
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  <div class="modal-footer bg-gray">
+                      <button href="#" role="tab" data-toggle="tab" class="btn btn-success save-location ladda-button" id="saveLocation" {{enableSubmit}}><span class="ladda-label">Save</span></button>
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                  </div>
+
+              </div>
+          </div>
+      </div>
+
+  </div>
+</template>

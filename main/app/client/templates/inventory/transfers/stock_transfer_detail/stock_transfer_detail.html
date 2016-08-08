@@ -1,0 +1,221 @@
+<template name="StockTransferDetail">
+    <div class="container-fluid">
+        {{#if documentAvailable}}
+            <section class="row content-header">
+                <div class="container-fluid">
+                    <div class="col-sm-6">
+                        <h1 class="pull-left">
+                            Stock Transfer
+                            <small>
+                                {{stockTransferNumber}}
+                            </small>
+                        </h1>
+                    </div>
+                    <div class="col-sm-6 hidden-xs">
+                        <ol class="breadcrumb">
+                            <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                            <li><a href="{{pathFor 'transfers.list'}}">Stock Transfers</a></li>
+                            <li class="active">{{stockTransferNumber}}</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+            <div class="col-sm-12">
+                <section class="content sub-content-sec">
+                    <div class="">
+                        <div class="col-sm-12">
+                            <div class="well-custom bg-white col-lg-12 bg_white ptop20 pbottom20 mb">
+                                <form class="form-horizontal form-empty">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Source</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{printLocation sourceId}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Destination</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{printLocation destinationId}}</p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Received At</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{formatTime receivedAt}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+
+                        <div class="col-sm-12">
+                            <div class="module-block no_mobile width_700 no-border">
+                                <div class="fix_width">
+                                    <table class="table table-create">
+                                        <thead style="color: #999999;">
+                                        <tr>
+                                            <td>Item Code</td>
+                                            <td>Description</td>
+                                            <td>Unit</td>
+                                            <td class="text-center">quantity</td>
+                                            <td class="text-center">
+                                                Source
+                                            </td>
+
+                                            <td class="text-center">
+                                                Destination
+                                            </td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody style="background-color: #fff;">
+
+                                        {{#each items}}
+                                            {{#unless isSame status 'deleted'}}
+                                                <tr>
+                                                    <td>{{variantInfo variantId 'code'}}</td>
+                                                    <td data-toggle="tooltip" title="{{variantInfo variantId 'code'}}">{{variantInfo variantId 'name'}} </td>
+                                                    <td>{{variantInfo variantId 'uom'}}</td>
+                                                    <td class="text-center">{{quantity}}</td>
+                                                    <td class="text-center"><span class="text-default">{{variantStockInfo variantId ../sourceId}}</span></td>
+                                                    <td class="text-center"><span class="text-default">{{variantStockInfo variantId ../destinationId}}</span></td>
+                                                    <td class="td-gray">
+
+                                                    </td>
+                                                </tr>
+                                            {{/unless}}
+                                        {{/each}}
+                                        </tbody>
+                                    </table>
+
+                                    <div class="pull-right container-fluid total-block-wrapper">
+                                        <div class="clearfix hidden-lg"></div>
+                                        <br class="hidden-lg">
+
+                                        <div class="clearfix fix_width">
+                                            <dl class="dl-horizontal padd_l40px total-table">
+                                                <dt class="text-muted">Total Items</dt>
+                                                <dd class="f_helvetcia text-right"><b>{{quantity}}</b></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="clearfix"></div>
+
+                        <div class="clearfix"></div>
+
+
+                        {{#if isDifferent status 'cancelled'}}
+                            <div class="clearfix"></div>
+
+                            <div class="clearfix"></div>
+                            <div class="col-sm-12 col-xs-12">
+                                <div class="module-block messages-block">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="lead text-uppercase">Messages</p>
+                                        </div>
+                                        <div class="el">
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-12">
+                                                    <span class="glyphicon glyphicon-mail icon-mailarrow message_ico text-warning"></span>
+                                                    <a href="#" class="user-link">
+                                                        {{#if currentUserAvatar }}
+                                                            <img class="img-circle" src="{{currentUserAvatar.url store='avatarsSmall'}}" alt="">
+                                                        {{else}}
+                                                            <img class="img-circle" src="/img/guest.png" alt="">
+                                                        {{/if}}
+                                                        <span>{{userFullName Meteor.userId}}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 message">
+                                                <div class="col-sm-12 text_block">
+                                                    <form id="order-note">
+                                                        <div class="input-group">
+                                                            <input type="text" name='txtNote' class="form-control"
+                                                                   placeholder="Enter a message"/>
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn btn-default"
+                                                            style="margin-left: 12px;"><span
+                                                            class="glyphicon icon-smallright"></span>
+                                                </button>
+                                            </span>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        {{#each transferNotes}}
+                                            <div class="el">
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-12">
+                                                        <span class="glyphicon icon-mail message_ico"></span>
+                                                        <a href="#" class="user-link">
+                                                            {{#if avatar }}
+                                                                <img class="img-circle" src="{{avatar.url store='avatarsSmall'}}" alt="">
+                                                            {{else}}
+                                                                <img class="img-circle" src="/img/guest.png" alt="">
+                                                            {{/if}}
+                                                            <span>{{userFullName userId}}</span>
+                                                        </a>
+                                                        <span class="date">{{formatTime createdAt 'fromNow'}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 message">
+                                                    <div class="col-sm-12 text_block">
+                                                        {{body}}
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="clearfix"></div>
+                    </div>
+
+                </section>
+
+            </div>
+        {{else}}
+            <section class="row content-header">
+                <div class="container-fluid">
+                    <div class="col-sm-6">
+                        <h1 class="pull-left">
+                            Orders
+                        </h1>
+                    </div>
+                    <div class="col-sm-6 hidden-xs">
+                        <ol class="breadcrumb">
+                            <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                            <li><a href="{{pathFor 'orders.list'}}">Orders</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            {{>DocumentNotFound}}
+        {{/if}}
+
+    </div>
+</template>

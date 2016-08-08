@@ -1,0 +1,19 @@
+<template name="StringParameter">
+    <div class="col-md-12 parameterSetup">
+        <div class="row">
+            <div class="radio pull-left col-md-6">
+                <label>
+                    &nbsp;&nbsp;{{name}}
+                </label>
+            </div>
+            <div class="col-md-6">
+                {{#if isLookUp}}
+                <select title="Choose a {{name}}..." data-name="{{name}}" class="selectpicker form-control select-{{index}}" data-live-search="true" data-size="5" data-index="{{index}}" data-id="{{_id}}" data-selected-text-format="count">
+                </select>
+                <div class="loading-{{index}} text-center">{{>spinner}}</div>
+                {{else}}
+                <input data-name="{{name}}" data-index="{{index}}" data-id="{{_id}}" type="text" class="form-control nolookup" value="{{lookUpField}}" /> {{/if}}
+            </div>
+        </div>
+    </div>
+</template>

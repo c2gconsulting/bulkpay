@@ -1,0 +1,33 @@
+<template name="GlobalSearchPagination">
+    <div class="global-search-pagination">
+        {{#each currentDocumentSet}}
+            {{#if isCustomers}}
+                {{> GlobalSearchCustomerEntry}}
+            {{/if}}
+            {{#if isOrders}}
+                {{> GlobalSearchOrderEntry}}
+            {{/if}}
+            {{#if isReturns}}
+                {{> GlobalSearchReturnEntry}}
+            {{/if}}
+            {{#if isPromotions}}
+                {{> GlobalSearchPromotionEntry}}
+            {{/if}}
+            {{#if isProductVariants}}
+                {{> GlobalSearchProductEntry}}
+            {{/if}}
+            {{#if isInvoices}}
+                {{> GlobalSearchInvoiceEntry}}
+            {{/if}}
+        {{/each}}
+    </div>
+    <div class="global-search-pagination">
+        {{#if hasPrevious}}
+        <a href="#" class="view-prev-set">Prev</a>
+        {{/if}}
+        <span class="global-search-pages-label">Page {{currentPage}} of {{numberOfPages}}</span>
+        {{#if hasNext}}
+        <a href="#" class="view-next-set">Next</a>
+        {{/if}}
+    </div>
+</template>

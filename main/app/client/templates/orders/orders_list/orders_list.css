@@ -1,0 +1,17 @@
+a.text-muted:focus {
+    text-decoration: none!important;
+    color: #999!important;
+}
+
+a.text-muted:visited {
+    text-decoration: none!important;
+}
+
+a.text-muted:hover {
+    text-decoration: none!important;
+    color: #444!important;
+}
+
+a.text-muted:active {
+    text-decoration: none!important;
+}

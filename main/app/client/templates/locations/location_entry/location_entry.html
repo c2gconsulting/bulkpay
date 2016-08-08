@@ -1,0 +1,17 @@
+<template name="LocationEntry">
+    <tr class="location-entry">
+        <td>{{name}}</td>
+        <td>{{address1}}</td>
+        <td>{{address2}}</td>
+        <td>{{city}}</td>
+        <td>{{postal}}</td>
+        <td>{{state}}</td>
+        <td>{{country}}</td>
+        <td>
+            <div class="onoffswitch-edit">
+                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked={{holdsStock}}  data-field="isPickup" disabled>
+                <label class="onoffswitch-label" for="myonoffswitch"></label>
+            </div>
+        </td>
+    </tr>
+</template>

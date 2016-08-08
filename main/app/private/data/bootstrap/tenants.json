@@ -1,0 +1,68 @@
+{
+  "_id": "d3sryKk3qZ5ozwDQX",
+  "baseUOM": "KG",
+  "name": "Promasidor Nigeria Ltd.",
+  "domains": [
+    "promasidor-ng.sandbox.tradedepot.co",
+    "promasidor-ng.tradedepot.co",
+    "promasidor-ng.example.com"
+  ],
+  "locale": "en",
+  "timezone": "WAT",
+  "currencies": [
+    "NGN",
+    "USD"
+  ],
+  "country": "NG",
+  "adminEmail": "namosu@promasidor-ng.com",
+  "addressBook": [{
+    "company": "Promasidor Nigeria Ltd.",
+    "fullName": "Promasidor Nigeria",
+    "address1": " 3A/B, Cowbell Way , Isolo Industrial Estate, Isolo, Lagos",
+    "address2": "PMB 004, Isolo, 1160, P.O Box 471 Apapa, Lagos Nigeria ",
+    "city": "Isolo",
+    "postal": "101241",
+    "country": "NG",
+    "phone": "+234 (1) 295 9931-2",
+    "isCommercial": true,
+    "isShippingDefault": true,
+    "isBillingDefault": true,
+    "_id": "4HfrQeDZsfwFYtQvP"
+  }],
+  "defaultRoles": [
+    "orders/manage",
+    "customers/view"
+  ],
+  "layout": [{
+    "layout": "ApplicationLayout",
+    "workflow": "ApplicationLayout",
+    "theme": "default",
+    "enabled": true
+  }, {
+    "layout": "ShopLayout",
+    "workflow": "ShopLayout",
+    "collection": "Cart",
+    "theme": "default",
+    "enabled": true
+  }, {
+    "layout": "ExtLayout",
+    "workflow": "ExtLayout",
+    "collection": "Orders",
+    "theme": "default",
+    "enabled": true
+  }],
+  "settings": {
+    "rounding": {
+      "NGN": 5
+    },
+    "promotions": {
+      "excludedOrderTypes": [30]
+    }
+  },
+  "status": "active",
+  "baseCurrency": {
+    "iso": "NGN",
+    "symbol": "₦"
+  },
+  "emails": []
+}

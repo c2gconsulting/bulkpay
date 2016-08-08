@@ -1,0 +1,390 @@
+<template name="PurchaseOrderEdit">
+    {{#each arrayedPurchaseOrder}}
+        {{#if isInConfirmation}}
+            {{> EditPurchaseOrderConfirm}}
+        {{else}}
+            <div class="container-fluid">
+                <section class="row content-header z_index_99">
+                    <div class="container-fluid ">
+                        <div class="col-sm-8">
+                            <h1 class="pull-left">
+                                Edit Purchase Order
+                                <small>{{purchaseOrderNumber}}</small>
+                            </h1>
+                        </div>
+                        <div class="col-md-4 hidden-xs hidden-sm">
+                            <ol class="breadcrumb">
+                                <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                                <li><a href="{{pathFor 'purchaseOrders.list'}}">Purchase Orders</a></li>
+                                <li class="active">{{purchaseOrderNumber}}</li>
+                            </ol>
+                        </div>
+                    </div>
+                </section>
+                <section class="row content-header">
+                    <div class="sub-content-header border">
+                        <div class="container-fluid">
+                            <div class="col-sm-12">
+                                <div class="pull-left">
+
+                                    <span><b class="fs16 f_helvetcia">Applied Balance</b>&nbsp;&nbsp;&nbsp;<span class="">{{formatMoney appliedCredits currency}}</span></span>
+                                </div>
+                                <div class="pull-right">
+                                    <div class="hidden-xs hidden-sm">
+                                        <button class="btn btn-success {{disableSubmit}}" {{disableSubmit}} id="edit-order">Preview <span class="glyphicon glyphicon-eye-open"></span></button>
+                                        <button class="btn btn-default" id="cancel-order">&nbsp;&nbsp;Exit&nbsp;&nbsp;</button>
+                                    </div>
+                                    <div class="btn-group hidden-lg hidden-md">
+                                        <button class="btn btn-default btn-xs dropdown-toggle"  type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-downarrow" id="collapse_button"></i></button>
+                                        <ul class="dropdown-menu pull-right" style="margin-top:10px;">
+                                            <li><a href="#" id="edit-order">Preview</a></li>
+                                            <li><a href="#" id="cancel-order">Exit</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="col-sm-12">
+                    <section class="content sub-content-sec">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-lg-12 bg_white ptop30 mb">
+                                    <form class="form-horizontal">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <div class="input-group not_margin">
+                                                    {{#each arrayedSupplier}}
+                                                        <div class="customer-search custom inner-addon left-addon supplier-search">
+                                                            <span class="glyphicon icon-search"></span>
+                                                            <input type="text" id="txtSupplierSearch" class="supplier-search form-control" placeholder="Search for a Supplier" autocomplete="off" value="{{customerNumber}} - {{name}}">
+                                                            <div id="divSupplierSearch" class="customer-search-result"></div>
+                                                        </div>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info" type="button" disabled>New +</button>
+                                        </span>
+                                                    {{else}}
+                                                        <div class="customer-search supplier-search custom inner-addon left-addon">
+                                                            <span class="glyphicon icon-search"></span>
+                                                            <input type="text" id="txtSupplierSearch" class="supplier-search form-control" placeholder="Search for a Supplier" autocomplete="off" value="">
+                                                            <div id="divSupplierSearch" class="customer-search-result"></div>
+                                                        </div>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-info" type="button" disabled>New +</button>
+                                        </span>
+                                                    {{/each}}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                {{#if customer}}
+                                                    {{#each billingAddress}}
+                                                        {{#popover 'hover'}}
+                                                            <label class="col-sm-5 control-label text-muted">
+                                                                <a href="#" class="form-control-static" data-toggle="popover" data-html="true" title="{{company}}"
+                                                                   data-original-title="{{company}}" data-content="{{address1}}<br/>
+                                                                      {{#if address2}}
+                                                                    {{address2}}<br/>
+                                                                      {{/if}}
+                                                                    {{#if city}}
+                                                                        {{city}}
+                                                                    {{/if}}
+                                                                    {{#if state}}
+                                                                        {{#if city}}
+                                                                        ,
+                                                                        {{/if}}
+                                                                        {{state}}
+                                                                    {{/if}}
+                                                                    {{#if country}}
+                                                                        {{#if state}}
+                                                                        ,
+                                                                        {{/if}}
+                                                                        {{country}}
+                                                                    {{/if}}">
+                                                                    <i class="glyphicon glyphicon-info-sign"></i> Bill To</a>
+                                                            </label>
+                                                        {{/popover}}
+                                                    {{/each}}
+
+
+                                                {{else}}
+                                                    <label class="col-sm-5 control-label text-muted ">Bill To</label>
+                                                {{/if}}
+                                                <div class="col-sm-7">
+                                                    {{#if customer}}
+                                                        <select class="form-control" data-field="billingAddressId" disabled>
+                                                            {{#each customerAddressBook}}
+                                                                <option value="{{_id}}" {{selected ../billingAddressId _id}}>{{company}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                    {{else}}
+                                                        <input class="form-control" value="Choose a customer first..." disabled>
+                                                    {{/if}}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                    {{#if shippingAddressId}}
+                                                        {{#each shippingAddress}}
+                                                            {{#popover 'hover'}}
+                                                                    <label class="col-sm-5 control-label text-muted">
+                                                                        <a href="#" class="form-control-static" data-toggle="popover" data-html="true" title="{{name}}"
+                                                                           data-original-title="{{name}}" data-content="{{address1}}<br/>
+                                                          {{#if address2}}
+                                                                            {{address2}}<br/>
+                                                          {{/if}}
+                                                                            {{#if city}}
+                                                                                {{city}}
+                                                                            {{/if}}
+                                                                            {{#if state}}
+                                                                                {{#if city}}
+                                                            ,
+                                                            {{/if}}
+                                                                                {{state}}
+                                                                            {{/if}}
+                                                                            {{#if country}}
+                                                                                {{#if state}}
+                                                            ,
+                                                            {{/if}}
+                                                                                {{country}}
+                                                                            {{/if}}">
+                                                                            <i class="glyphicon glyphicon-info-sign"></i> Ship To</a>
+                                                                    </label>
+                                                            {{/popover}}
+                                                        {{/each}}
+
+                                                    {{else}}
+                                                            <label class="col-sm-5 control-label text-muted ">Ship To</label>
+                                                    {{/if}}
+                                                    <div class="col-sm-7">
+                                                        {{#if customer}}
+                                                            {{#selectpicker}}
+                                                                <select class="form-control selectpicker" data-live-search="true" name="shippingAddressId">
+                                                                    {{#each locations}}
+                                                                        {{#if isSame ../shippingAddressId _id}}
+                                                                            <option value="{{_id}}" selected>{{name}}</option>
+                                                                        {{else}}
+                                                                            <option value="{{_id}}">{{name}}</option>
+                                                                        {{/if}}
+                                                                    {{/each}}
+                                                                </select>
+                                                            {{/selectpicker}}
+
+                                                        {{else}}
+                                                            <input class="form-control" value="Choose a supplier first..." disabled>
+                                                        {{/if}}
+                                                    </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+
+                                            <div class="form-group">
+                                                <label class="col-sm-5 text-muted text-right" style="padding-top: 10px;">Stock Due</label>
+                                                <div class="date col-sm-7 date">
+                                                    <div class="inner-addon left-addon">
+                                                        <i class="glyphicon icon-calendar"></i>
+                                                        {{#datepicker issuedAt}}
+                                                            <input type="text" class="form-control datepicker" size="8" data-field="issuedAt" />
+                                                        {{/datepicker}}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="reference" class="col-sm-5 control-label text-muted ">Reference</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" id="reference" placeholder="" value="{{reference}}" data-field="reference">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email" class="col-sm-5 text-muted control-label">Contact Email</label>
+                                                <div class="col-sm-7">
+                                                    <input type="email" class="form-control" id="email" placeholder=""  data-field="contactEmail" value="{{contactEmail}}">
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="reference" class="col-sm-5 control-label text-muted ">Pickup?</label>
+                                                <div class="col-sm-7">
+                                                    <div class="onoffswitch-edit">
+                                                        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked={{isPickup}}  data-field="isPickup">
+                                                        <label class="onoffswitch-label" for="myonoffswitch"></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="currency" class="col-sm-5 text-muted control-label">Currency</label>
+                                                <div class="col-sm-7">
+                                                    <input type="text" class="form-control" id="currency" value="{{currency.iso}}"  disabled="disabled">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-5 text-muted control-label">Price List</label>
+                                                <div class="col-sm-7">
+                                                    <select class="form-control" name="selectPriceList" data-field="priceListCode">
+                                                        {{#each priceLists}}
+                                                            {{#if isSame ../priceListCode code}}
+                                                                <option value="{{code}}" selected>{{name}}</option>
+                                                            {{else}}
+                                                                <option value="{{code}}">{{name}}</option>
+                                                            {{/if}}
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                        <p></p>
+                                    </form>
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="col-sm-12 col-xs-12">
+                                    <div class="module-block no_mobile no_border">
+                                        <div>
+                                            <table class="table table-create">
+                                                <thead style="color: #999999;">
+                                                <tr>
+                                                    <td class="item-fixed">Item</td>
+                                                    <td class="text-right hidden-xs hidden-sm hidden-md">Unit</td>
+                                                    <td class="text-right hidden-xs hidden-sm text-nowrap"><span class="hidden-xs hidden-sm hidden-md hidden-lg">Unit</span> Price <span class="hidden-xs hidden-sm hidden-md">({{currency.symbol}})</span></td>
+                                                    <td class="text-center">Quantity</td>
+                                                    <td class="text-right hidden-xs hidden-sm">Available</td>
+                                                    <td class="text-right hidden-xs hidden-sm">After</td>
+                                                    <td class="text-right hidden-xs hidden-sm hidden-md text-nowrap">Tax Rate <span class="hidden-xs hidden-sm hidden-md">(%)</span></td>
+                                                    <td class="text-right text-nowrap">Total <span class="hidden-xs hidden-sm hidden-md">({{currency.symbol}})</span></td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                </thead>
+                                                <tbody style="background-color: #fff;">
+                                                {{#each items}}
+                                                    <tr>
+                                                        <td class="item-fixed">
+                                                            <div class="fast-search custom" id="divSearchWrapper_{{index}}">
+                                                                <input type="text" class="input-transparent fast-search" id="txtItem_{{index}}" placeholder="Start typing code or item..." value="{{bogusVariant.caption}}"/>
+                                                                <div class="fast-search-result" id="divSearch_{{index}}"></div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="text-right hidden-xs hidden-sm hidden-md">{{bogusVariant.uom}}</td>
+                                                        <td class="text-right hidden-xs hidden-sm text-nowrap">{{formatMoneyD price}}</td>
+                                                        <td class="text-center">
+                                                            {{#spinbox}}
+                                                                <div class="spinbox">
+                                                                    <button type="button" class="spinbox-down hidden-xs" id="spindown_{{index}}"></button>
+                                                                    <input type="text" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{formatNumberZ quantity}}">
+                                                                    <button type="button" class="spinbox-up hidden-xs" id="spinup_{{index}}"></button>
+                                                                </div>
+                                                            {{/spinbox}}
+                                                        </td>
+                                                        <td class="text-muted text-right hidden-xs hidden-sm">{{formatMoney bogusVariant.available}}</td>
+                                                        <td class="text-muted text-right hidden-xs hidden-sm">{{formatMoney after}}</td>
+                                                        <td class="text-right hidden-xs hidden-sm hidden-md">
+                                                            <input type="number" class="input-transparent text-right" data-type="item" style="width: 40px" min="0" max="100" data-index="{{index}}" data-ifield="taxRateOverride" placeholder="" value="{{taxRateOverride}}" disabled/>
+                                                        </td>
+                                                        <td class="td-gray text-right f_helvetcia text-nowrap"><b>{{formatMoneyD itemTotal}}</b></td>
+                                                        <td class="td-gray">
+                                                            <a href="#" data-index="{{index}}" class="text-danger remove-item"><span class="glyphicon glyphicon-remove"></span></a>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                            <div class="col-lg-5 col-md-6 col-sm-10 col-xs-12">
+                                                <button class="btn btn-info" name="btnAddItem">Add New Item <span class="glyphicon icon-add"></span></button>
+                                                {{#unless showShipping}}
+                                                    <button class="btn btn-default" name="btnAddShipping" disabled>Add Shipping Costs <span class="glyphicon glyphicon-shopping-cart"></span></button>
+                                                {{/unless}}
+                                            </div>
+                                            <div class="col-xs-12 col-md-6 col-sm-12 col-lg-7 pull-right">
+                                                <div class="clearfix hidden-lg"></div>
+                                                <br class="hidden-lg">
+
+                                                <div class="clearfix">
+                                                    <dl class="fluid-width-xs dl-horizontal total-table">
+                                                        {{#if showShipping}}
+                                                            <dt class="text-muted text-nowrap text-right">
+                                                                Shipping:
+                                                                <input type="text" class="form-control input-discounts" name="txtShipping" id="shipping" placeholder="" data-ref="shippingCosts">
+                                                            </dt>
+                                                            <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD shippingCosts currency}}</b></dd>
+                                                        {{/if}}
+                                                        <dt class="text-muted text-nowrap text-right">Sub Total:</dt>
+                                                        <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD cSubTotal currency}}</b></dd>
+                                                        <dt class="text-muted text-nowrap text-right">Tax (VAT):</dt>
+                                                        <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD cTaxes currency}}</b></dd>
+                                                        <dt class="text-nowrap text-right"><b>TOTAL:</b></dt>
+                                                        <dd class="f_helvetcia text-nowrap"><b>{{formatMoneyD cTotal currency}}</b></dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+
+
+                                <div class="col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="module-block">
+                                            <div class="col-lg-5 col-sm-12 col-xs-12 hidden-xs hidden-sm">
+                                                <textarea class="form-control" rows="9" placeholder="Additional comments"></textarea>
+                                            </div>
+                                            <div class="clearfix hidden-lg"></div>
+                                            <br class="hidden-lg"/>
+
+                                            {{#if customer}}
+                                                <div class="col-lg-3 col-xs-12 col-sm-6 col-md-4 pull-right">
+                                                    <div class="panel-cart panel panel-checkbox-color {{enabledCanApplyCredit}}">
+                                                        <div class="panel-heading">
+                                                            <div class="head checkbox text-uppercase">
+                                                                <label>
+                                                                    <input type="checkbox" name="checkCredits" value="" {{disabledCreditsAvailable}} {{checkedCanApplyCredit}}>
+                                                                    Apply Balance
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div class="summ h3">
+                                                                <span name="spanBalance">{{formatMoneyD remAvailableBalance currency}}</span><br/>
+                                                                <a href="#" data-toggle="tooltip" title="View details"><small>Available Balance</small></a>
+
+                                                            </div>
+                                                            <div class="form-group inner-addon left-addon">
+                                                                <a href="#" class="glyph-custom glyphicon glyphicon-refresh text-muted" data-toggle="tooltip" title="Apply all" name="refreshCredits"></a>
+                                                                <input class="text-right form-control" value="{{appliedCredit}}" name="txtCredits" {{disabledCanApplyCredit}}>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12">
+                                                    <div class="">
+                                                        <br/>
+                                                        <div class="clearfix fix_width">
+                                                            <dl class="fluid-width-xs dl-horizontal total-table pull-right">
+                                                                <br class="hidden-lg hidden-md"/>
+                                                                <dt class="text-nowrap"><b>TOTAL DUE:</b></dt>
+                                                                <dd class="f_helvetcia text-nowrap"><b><span name="spanTotalDue">{{formatMoneyD totalDue currency}}</span></b></dd>
+                                                            </dl>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </section>
+
+                </div>
+            </div>
+        {{/if}}
+    {{/each}}
+</template>

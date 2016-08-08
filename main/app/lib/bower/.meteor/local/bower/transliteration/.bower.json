@@ -1,0 +1,13 @@
+{
+  "name": "transliteration",
+  "_cacheHeaders": {
+    "ETag": "\"42bf950bb4f7f4d95d1374b7e78321a9a4c10db0\"",
+    "Content-Length": "304789",
+    "Content-Type": "text/plain; charset=utf-8"
+  },
+  "_release": "e-tag:42bf950bb",
+  "main": "index.js",
+  "_source": "https://raw.githubusercontent.com/andyhu/node-transliteration/master/transliteration.min.js",
+  "_target": "*",
+  "_originalSource": "https://raw.githubusercontent.com/andyhu/node-transliteration/master/transliteration.min.js"
+}

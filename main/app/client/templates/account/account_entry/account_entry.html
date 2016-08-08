@@ -1,0 +1,11 @@
+<template name="AccountEntry">
+  <tr class="user-entry account-entry">
+      <td class="text-gray">{{profile.fullName}}</td>
+      <td class="text-muted">{{email}}</td>
+      <td class="text-gray">{{#if username}}{{username}} {{else}} <span class="text-muted">None</span> {{/if}}</td>
+      <td class="text-gray">{{formatTime createdAt }}</td>
+      <td class="text-center">
+          <a href="{{pathFor 'account.detail' _id=_id}}">View</a>
+      </td>
+  </tr>
+</template>

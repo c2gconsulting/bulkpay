@@ -1,0 +1,90 @@
+[{
+  "_id": "pwpa65Koo96tdqQPb",
+  "name": "Sales Person",
+  "parameterNameInParentSchema": "assigneeId",
+  "dataType": "String",
+  "isLookUp": true,
+  "lookUpObject": "Meteor.users"
+}, {
+  "_id": "pwpa65Koo96tdqQPk",
+  "name": "Sales Location",
+  "parameterNameInParentSchema": "stockLocationId",
+  "dataType": "String",
+  "isLookUp": true,
+  "lookUpObject": "Locations",
+  "lookUpField": "_id",
+  "friendlyName": "name"
+}, {
+  "_id": "pwpa65Koo96tdqQPl",
+  "name": "Product Variant",
+  "parameterNameInParentSchema": "variantId",
+  "dataType": "String",
+  "isLookUp": true,
+  "lookUpObject": "ProductVariants",
+  "lookUpField": "_id",
+  "friendlyName": "name"
+}, {
+  "_id": "pwpa65Koo96tdqQPm",
+  "name": "Available Variant Quantity",
+  "parameterNameInParentSchema": "stockOnHand",
+  "dataType": "Number",
+  "isLookUp": true,
+  "lookUpObject": "ProductVariants"
+}, {
+  "_id": "pwpa65Koo96tdqQKm",
+  "name": "Purchased Variant Quantity",
+  "parameterNameInParentSchema": "stockOnHand",
+  "dataType": "Number",
+  "isLookUp": false,
+  "lookUpObject": "Orders"
+}, {
+  "_id": "pwpa65Koo96tdqQPt",
+  "name": "Product Variant (Qty)",
+  "parameterNameInParentSchema": "quantity",
+  "dataType": "Number",
+  "isLookUp": true,
+  "lookUpObject": "ProductVariants"
+}, {
+  "_id": "pwpa65Koo96tdqQPn",
+  "name": "Product Variant (Value)",
+  "parameterNameInParentSchema": "price",
+  "dataType": "Number",
+  "isLookUp": false
+}, {
+  "_id": "pwpa65Koo96tdqQGn",
+  "name": "Additional Discount Applied",
+  "parameterNameInParentSchema": "discount",
+  "dataType": "Number",
+  "isLookUp": false
+}, {
+  "_id": "pwpa65Koo96tdqQNn",
+  "name": "Product Variant Discount Applied",
+  "parameterNameInParentSchema": "discount",
+  "dataType": "Number",
+  "isLookUp": false,
+  "lookUpObject": "ProductVariants"
+}, {
+  "_id": "pwpa65Koo96tdqQPi",
+  "name": "Total Order Qty",
+  "parameterNameInParentSchema": "quantity",
+  "dataType": "Number",
+  "isLookUp": false
+}, {
+  "_id": "pwpa65Koo96tdqQPe",
+  "name": "Total Order Value",
+  "parameterNameInParentSchema": "total",
+  "dataType": "Number",
+  "isLookUp": false
+}, {
+  "_id": "pwpa65Koo96tdqQPy",
+  "name": "Order Type",
+  "parameterNameInParentSchema": "orderType",
+  "dataType": "Number",
+  "isLookUp": false
+}, {
+  "_id": "pwpa65Koo96tdqQPd",
+  "name": "Delivery Method",
+  "parameterNameInParentSchema": "isPickup",
+  "dataType": "Boolean",
+  "isLookUp": false
+}]

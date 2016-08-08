@@ -1,0 +1,57 @@
+<template name="Home">
+<div class="container-fluid">
+		<section class="row content-header">
+			<div class="container-fluid">
+				<div class="col-xs-6">
+					<h1>
+						Dashboard
+					</h1>
+				</div>
+				<div class="col-xs-6 hidden-xs">
+					<ol class="breadcrumb">
+						<li><a href="#"><i class="glyphicon icon-graph"></i>Home</a></li>
+						<li class="active">Dashboard</li>
+					</ol>
+				</div>
+			</div>
+
+		</section>
+		<div class="col-sm-12">
+			<section class="content">
+				<div class="row">
+					{{> DashOrderVolumes}}
+                    {{> DashDistributorReturns}}
+					{{> DashTotalOrderSales}}
+                    {{> DashTotalOrderAverageSales}}
+				</div>
+				<div class="row">
+					<div class="col-lg-7">
+						{{> DashOverviewChart}}
+
+						{{> DashOrderPieChart}}
+					</div>
+					<div class="col-lg-5">
+
+						<div class="box panel panel-default">
+							{{> DashTopDistributors}}
+						</div>
+
+						<div class="box panel panel-default">
+							{{> DashTopProducts}}
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="box panel panel-default">
+							{{> DashTopCustomerGroups}}
+						</div>
+					</div>
+					
+
+				</div>
+
+			</section>
+
+		</div>
+
+	</div>
+</template>

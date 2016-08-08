@@ -1,0 +1,38 @@
+<template name="Rebate">
+    <div class="col-md-12 parameterSetup">
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="col-md-2 control-label">Type</label>
+                        <div class="col-md-10 inner-addon left-addon">
+                            <select name="" class="selectpicker rebate-type form-control select-{{index}}" data-index="{{index}}" data-id="{{_id}}" data-type="{{type}}" data-size="5" title="Choose a reward type..." data-field="rebate-type" data-selected-text-format="count">
+                                {{#each subType}}
+                                <option data-friendly="{{name}}" value="{{code}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label class="col-md-2 control-label">By</label>
+                        <div class="col-md-10 inner-addon left-addon">
+                            <select name="" class="selectpicker form-control reward-type select-{{index}}" data-index="{{index}}" data-id="{{_id}}" data-size="5" title="Choose a reward type..." data-field="reward-type" data-selected-text-format="count">
+                                {{#each uom}}
+                                <option data-friendly="{{name}}" value="{{code}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label class="col-md-2 control-label">of</label>
+                        <div class="col-md-10 inner-addon left-addon">
+                            <input data-id="{{_id}}" name="reward-value" type="number" class="text-right number form-control reward-value" style="width: 100%" data-index="{{index}}" data-field="" placeholder="" value="" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>

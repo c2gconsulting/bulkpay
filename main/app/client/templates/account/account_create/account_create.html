@@ -1,0 +1,727 @@
+<template name="AccountCreate">
+  <div class="accounts-create">
+      <div class="modal fade">
+          <div class="modal-dialog">
+              <div class="modal-content">
+
+                  <div class="modal-header">
+                      <h4 class="modal-title">Create a new User</h4>
+                  </div>
+                   <div class="modal-body">
+                       <div class="tab-content">
+                           <div role="tabpanel" class="tab-pane fade in active" id="basic">
+                               <form class="form-horizontal">
+                                   <div class="form-group">
+                                       <label for="firstName" class="col-sm-3 control-label text-muted">First Name</label>
+                                       <div class="col-sm-9">
+                                           <input type="text" autocomplete="off" class="form-control" id="firstName" placeholder="First Name" name="firstName">
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label for="lastName" class="col-sm-3 control-label text-muted">Last Name</label>
+                                       <div class="col-sm-9">
+                                           <input type="text" autocomplete="off" class="form-control" id="lastName" placeholder="Last Name" name="lastName">
+                                       </div>
+                                   </div>
+                                   <div class="form-group">
+                                       <label for="email" class="col-sm-3 control-label text-muted">Email</label>
+                                       <div class="col-sm-9">
+                                           <input type="email" autocomplete="off" class="form-control" id="email" placeholder="Email" name="email">
+                                       </div>
+                                   </div>
+                               </form>
+                           </div>
+                           <div role="tabpanel" class="tab-pane fade" id="permissions">
+                               <div class="">
+                                   <p class="lead text-uppercase">Permissions</p>
+
+                                   <div class="panel panel-default">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Manage Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group manageOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker btn-default" id="manageOrders" data-live-search="true" name="manageOrders" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'manageOrders' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'manageOrders' _id}} {{disabledIfAllAccess 'manageOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view, create, edit and manage orders for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group manageOrdersR">
+                                           {{#each manageOrders}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  View Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group viewOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker btn-default" id="viewOrders" data-live-search="true" name="viewOrders" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'viewOrders' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'viewOrders' _id}} {{disabledIfAllAccess 'viewOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view orders for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group viewOrdersR">
+                                           {{#each viewOrders}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Approve Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group approveOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="approveOrders" data-live-search="true" name="approveOrders" multiple>
+                                                                       <option value="ALL_ACCESS" {{selected 'approveOrders' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                       {{#each locations}}
+                                                                           <option value="{{_id}}" {{selected 'approveOrders' _id}} {{disabledIfAllAccess 'approveOrders'}}>{{name}}</option>
+                                                                       {{/each}}
+                                                                       <optgroup label="Order Types">
+                                                                           {{#each orderTypes}}
+                                                                               <option value="{{code}}" {{selected 'approveOrders' code}} {{disabledIfAllAccess 'approveOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to approve orders for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group approveOrdersR">
+                                           {{#each approveOrders}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Approve Order Types
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group approveOrderTypes">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="approveOrderTypes" data-live-search="true" name="approveOrderTypes" multiple>
+                                                                       <option value="ALL_ACCESS" {{selected 'approveOrderTypes' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                       {{#each orderTypes}}
+                                                                           <option value="{{code}}" {{selected 'approveOrderTypes' code}} {{disabledIfAllAccess 'approveOrderTypes'}}>{{name}}</option>
+                                                                       {{/each}}
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to approve orders for the selected order types. Below are the list of selected order types assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group approveOrderTypesR">
+                                           {{#each approveOrderTypes}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Manage Return Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group manageReturnOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="manageReturnOrders" data-live-search="true" name="manageReturnOrders" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'manageReturnOrders' 'ALL_ACCESS'}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'manageReturnOrders' _id}} {{disabledIfAllAccess 'manageReturnOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to create and view return orders for the selected locations.
+                                               Below are the list of selected locations assigned.</p>
+                                           {{#unless manageReturns}}
+                                               <p class="text-muted">
+                                                   There are no permissions assigned at the moment.
+                                               </p>
+                                           {{/unless}}
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group manageReturnOrdersR">
+                                           {{#each manageReturns}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  View Return Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group viewReturnOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker btn-default" id="viewReturnOrders" data-live-search="true" name="viewReturnOrders" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'viewReturnOrders' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'viewReturnOrders' _id}} {{disabledIfAllAccess 'viewReturnOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view Return orders for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group viewReturnOrdersR">
+                                           {{#each viewReturns}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Approve Return Orders
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group approveReturnOrders">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="approveReturnOrders" data-live-search="true" name="approveReturnOrders" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'approveReturnOrders' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'approveReturnOrders' _id}} {{disabledIfAllAccess 'approveReturnOrders'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view  and approve return orders for the selected locations.
+                                               Below are the list of selected locations assigned.</p>
+                                           {{#unless approveReturns}}
+                                               <p class="text-muted">
+                                                   There are no permissions assigned at the moment.
+                                               </p>
+                                           {{/unless}}
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group approveReturnOrdersR">
+                                           {{#each approveReturns}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Manage Invoices
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group manageInvoices">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker btn-default" id="manageInvoices" data-live-search="true" name="manageInvoices" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'manageInvoices' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'manageInvoices' _id}} {{disabledIfAllAccess 'manageInvoices'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view and create invoices for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group manageInvoicesR">
+                                           {{#each manageInvoices}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  View Invoices
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group viewInvoices">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker btn-default" id="viewInvoices" data-live-search="true" name="viewInvoices" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'viewInvoices' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each locations}}
+                                                                               <option value="{{_id}}" {{selected 'viewInvoices' _id}} {{disabledIfAllAccess 'viewInvoices'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view Invoices for the selected locations. Below are the list of selected locations assigned</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group viewInvoicesR">
+                                           {{#each viewInvoices}}
+                                               <li class="list-group-item">
+                                                   {{label this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  Maintain Customers
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group manageCustomers">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="manageCustomers" data-live-search="true" name="manageCustomers" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'manageCustomers' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each customerGroups}}
+                                                                               <option value="{{code}}" {{selected 'manageCustomers' code}} {{disabledIfAllAccess 'manageCustomers'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view, edit and create only customers by selected customer group
+                                               Below are the list of selected groups assigned.</p>
+                                           {{#unless customerGroups}}
+                                               <p class="text-muted">
+                                                   There are no permissions assigned at the moment.
+                                               </p>
+                                           {{/unless}}
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group manageCustomersR">
+                                           {{#each manageCustomers}}
+                                               <li class="list-group-item">
+                                                   {{customerGroup}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked>  View Customers
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group viewCustomers">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="viewCustomers" data-live-search="true" name="viewCustomers" multiple>
+                                                                       <optgroup label="Locations">
+                                                                           <option value="ALL_ACCESS" {{selected 'viewCustomers' "ALL_ACCESS"}}> ALL ACCESS</option>
+                                                                           {{#each customerGroups}}
+                                                                               <option value="{{code}}" {{selected 'viewCustomers' code}} {{disabledIfAllAccess 'viewCustomers'}}>{{name}}</option>
+                                                                           {{/each}}
+                                                                       </optgroup>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">This permission enables the user to view, edit and create only customers by selected customer group
+                                               Below are the list of selected groups assigned.</p>
+                                           {{#unless viewCustomers}}
+                                               <p class="text-muted">
+                                                   There are no permissions assigned at the moment.
+                                               </p>
+                                           {{/unless}}
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group viewCustomersR">
+                                           {{#each viewCustomers}}
+                                               <li class="list-group-item">
+                                                   {{customerGroup}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked> Promotions
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group promotions">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="promotions" data-live-search="true" name="promotions" multiple>
+                                                                       <option value="{{promotionsManage}}" {{selected "globalRoles" promotionsManage}}>Manage Promotions</option>
+                                                                       <option value="{{promotionsApprove}}" {{selected "globalRoles" promotionsApprove}}>Approve Promotions</option>
+                                                                       <option value="{{promotionsView}}" {{selected "globalRoles" promotionsView}}>View Promotions</option>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">These permissions give the user access to promotions</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group promotionsR">
+                                           {{#each promotionsPermissions}}
+                                               <li class="list-group-item">
+                                                   {{permissionLabel this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked> Rebates
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group rebates">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="rebates" data-live-search="true" name="rebates" multiple>
+                                                                       <option value="{{rebatesManage}}" {{selected "globalRoles" rebatesManage}}>Manage Rebates</option>
+                                                                       <option value="{{rebatesView}}" {{selected "globalRoles" rebatesView}}>View Rebates</option>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">These permissions give the user access to rebates</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group rebatesR">
+                                           {{#each rebatesPermissions}}
+                                               <li class="list-group-item">
+                                                   {{permissionLabel this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+
+                                   <div class="panel panel-default margin-top10">
+                                       <div class="panel-heading">
+                                           <div class="row">
+                                               <div class="col-sm-6">
+                                                   <div class="checkbox">
+                                                       <label>
+                                                           <input type="checkbox" value="option1" checked> Global Permissions
+                                                       </label>
+                                                   </div>
+                                               </div>
+                                               <div class="col-sm-6">
+                                                   <div class="row">
+                                                       <div class="form-group global">
+                                                           <div class="col-sm-12">
+                                                               {{#selectpicker}}
+                                                                   <select class="form-control selectpicker" id="global" data-live-search="true" name="global" multiple>
+                                                                       <option value="{{adminAll}}" {{selected "globalRoles" adminAll}}>Full Read/Write</option>
+                                                                       <option value="{{viewAll}}" {{selected "globalRoles" viewAll}}>Read Only</option>
+                                                                   </select>
+                                                               {{/selectpicker}}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </div>
+                                       </div>
+
+                                       <div class="panel-body">
+                                           <p class="text-muted">These permissions give the user system-wide access</p>
+                                       </div>
+
+                                       <!-- List group -->
+                                       <ul class="list-group globalR">
+                                           {{#each globalPermissions}}
+                                               <li class="list-group-item">
+                                                   {{permissionLabel this}}
+                                                   <span class="closebtn"><i class="glyphicon glyphicon-remove"></i></span>
+                                               </li>
+                                           {{/each}}
+                                       </ul>
+                                   </div>
+
+
+                                   <div class="col-sm-12">
+                                   </div>
+
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                  <div class="modal-footer bg-gray">
+                      {{#if permissionsPage }}
+                       <span class="pull-left text-white">
+                           <label for="enrollment">Send enrollment email  <input type="checkbox" class="enrollment" checked id="enrollment"> </label>
+                       </span>
+                          <button href="#" role="tab" data-toggle="tab" class="btn btn-success save-user ladda-button" id="previous" {{enableSubmit}}><span class="ladda-label">Save</span></button>
+                      <button href="#basic" aria-controls="basic" role="tab" data-toggle="tab" class="btn btn-default previous" id="previous">
+                          <i class="glyphicon glyphicon-chevron-left"></i>Previous</button>
+                      {{else}}
+                          <button href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab" class="btn btn-success next" id="next" {{enableSubmit}}>
+                               Next <i class="glyphicon glyphicon-chevron-right"></i></button>
+                      {{/if}}
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                  </div>
+
+              </div>
+          </div>
+      </div>
+  </div>
+</template>

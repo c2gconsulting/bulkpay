@@ -1,0 +1,24 @@
+<template name="OrderDiscount">
+    <div class="col-md-12 parameterSetup">
+        <div class="row">
+            <form class="form-horizontal">
+                <div class="col-md-6">
+                    <label class="col-md-2 control-label">By</label>
+                    <div class="col-md-10 inner-addon left-addon">
+                        <select name="" class="selectpicker form-control reward-uom select-{{index}}" data-index="{{index}}" data-id="{{_id}}" data-type="{{type}}" data-size="5" data-value="" title="Choose a reward type..." data-selected-text-format="count">
+                            {{#each uom}}
+                            <option data-friendly="{{name}}" value="{{code}}">{{name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="col-md-2 control-label">of</label>
+                    <div class="col-md-10 inner-addon left-addon">
+                        <input id="{{_id}}" name="" data-index="{{index}}" data-id="{{_id}}" data-type="{{type}}" type="number" class="text-right number form-control reward-value" style="width: 100%" data-field="exactly" placeholder="" value="" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>

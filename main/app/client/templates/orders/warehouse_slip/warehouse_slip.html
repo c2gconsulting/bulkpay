@@ -1,0 +1,165 @@
+<template name="WarehouseSlip">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="logo-block">
+                                <img src="/img/PNGlogo.png">
+                            </div>
+                            <h5>{{tenantName}}</h5>
+                            <address>
+                                {{commercialAddress.address1}}<br/>
+                                {{#if commercialAddress.address2}}
+                                    {{commercialAddress.address2}}<br/>
+                                {{/if}}
+                                {{#if commercialAddress.city}}
+                                    {{commercialAddress.city}}
+                                {{/if}}
+                                {{#if commercialAddress.state}}
+                                    {{#if commercialAddress.city}}
+                                        ,
+                                    {{/if}}
+                                    {{commercialAddress.state}}
+                                {{/if}}
+                                {{#if commercialAddress.country}}
+                                    {{#if commercialAddress.state}}
+                                        ,
+                                    {{/if}}
+                                    {{commercialAddress.country}}
+                                {{/if}}
+                            </address>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <h3>Warehouse Slip</h3>
+                            for Order: {{orderNumber}}
+                            <br>
+                            Type: {{printOrderType orderType}}
+                            <br>
+                            Sales Person: {{userFullName assigneeId}}
+                            <br/>
+                            Customer Number: {{this.customerNumber}}
+                            <br/> <br/> Ship From: {{printLocation stockLocationId}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <address>
+                                <strong>Billed To:</strong><br>
+                                {{billingAddress.company}}<br>
+                                {{billingAddress.address1}}<br/>
+                                {{#if billingAddress.address2}}
+                                    {{billingAddress.address2}}<br/>
+                                {{/if}}
+                                {{#if billingAddress.city}}
+                                    {{billingAddress.city}}
+                                {{/if}}
+                                {{#if billingAddress.state}}
+                                    {{#if billingAddress.city}}
+                                        ,
+                                    {{/if}}
+                                    {{billingAddress.state}}
+                                {{/if}}
+                                {{#if billingAddress.country}}
+                                    {{#if billingAddress.state}}
+                                        ,
+                                    {{/if}}
+                                    {{billingAddress.country}}
+                                {{/if}}
+                            </address>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <address>
+                                <strong>Shipped To:</strong><br>
+                                {{shippingAddress.company}}<br>
+                                {{shippingAddress.address1}}<br/>
+                                {{#if shippingAddress.address2}}
+                                    {{shippingAddress.address2}}<br/>
+                                {{/if}}
+                                {{#if shippingAddress.city}}
+                                    {{shippingAddress.city}}
+                                {{/if}}
+                                {{#if shippingAddress.state}}
+                                    {{#if shippingAddress.city}}
+                                        ,
+                                    {{/if}}
+                                    {{shippingAddress.state}}
+                                {{/if}}
+                                {{#if shippingAddress.country}}
+                                    {{#if shippingAddress.state}}
+                                        ,
+                                    {{/if}}
+                                    {{shippingAddress.country}}
+                                {{/if}}
+                            </address>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 text-left">
+                            <address>
+                                <strong>Order Date:</strong><br>
+                                {{formatTime issuedAt 'pretty'}}<br><br>
+                            </address>
+
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <address>
+                                <strong>Approval Status:</strong> <br>
+                                <span class="text-capitalize {{approvalStatusStyle approvalStatus}}">{{approvalStatus}}</span> <br><br>
+                            </address>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><strong>Order summary</strong></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <td><strong>Code</strong></td>
+                                        <td><strong>Description</strong></td>
+                                        <td class="text-center"><strong>Quantity</strong></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {{#each standardItems}}
+                                        <tr>
+                                            <td>{{variantInfo variantId 'code'}}</td>
+                                            <td>{{variantInfo variantId 'name'}}</td>
+                                            <td class="text-center">{{quantity}}</td>
+                                        </tr>
+                                    {{/each}}
+                                    {{#each promoItems}}
+                                        <tr>
+                                            <td>{{variantInfo variantId 'code'}}</td>
+                                            <td>{{variantInfo variantId 'name'}}</td>
+                                            <td class="text-center">{{quantity}}</td>
+                                        </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                {{#if isPickup}}
+                    This ORDER is to be picked up at the Warehouse
+                {{else}}
+                    This ORDER will be shipped to {{shippingAddress.company}}
+                {{/if}}
+            </div>
+
+
+        </div>
+</template>

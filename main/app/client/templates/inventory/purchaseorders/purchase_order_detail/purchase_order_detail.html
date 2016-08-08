@@ -1,0 +1,416 @@
+<template name="PurchaseOrderDetail">
+    <div class="container-fluid">
+        {{#if documentAvailable}}
+            <section class="row content-header">
+                <div class="container-fluid">
+                    <div class="col-sm-6">
+                        <h1 class="pull-left">
+                            Purchase Orders
+                            <small>
+                                {{purchaseOrderNumber}}
+                                <span class="fs12 p15 {{purchaseOrderStatusStyle status}}">
+                            <i class="glyphicon icon-circle {{purchaseOrderStatusStyle status}}" style="font-size: 6px;margin-top: -6px;vertical-align: middle"></i> {{capitalize status}}
+                        </span>
+                            </small>
+                        </h1>
+                    </div>
+                    <div class="col-sm-6 hidden-xs">
+                        <ol class="breadcrumb">
+                            <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                            <li><a href="{{pathFor 'purchaseOrders.list'}}">Purchase Orders</a></li>
+                            <li class="active">{{purchaseOrderNumber}}</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="sub-content-header border">
+                    <div class="container-fluid">
+                        <div class="col-sm-12">
+                            <div class="pull-left">
+                                <span><i class="{{paymentStatusStyle paymentStatus}} glyphicon icon-order"></i> <b class="fs16 f_helvetcia">Applied Balance</b>&nbsp;&nbsp;&nbsp;{{formatMoney appliedCredits currency}}</span>
+                                <br/>
+                            </div>
+                            <div class="pull-right">
+                                <div class="hidden-xs hidden-sm">
+                                    <div class="dropdown">
+                                        <button class="btn btn-default btn-sm dropdown-toggle"  id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            Actions
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            {{#if isDifferent status 'cancelled'}}
+                                                <li>
+                                                    <a href="#" id="print-button">Print<i class="glyphicon icon-print pull-right"></i></a>
+                                                </li>
+                                            {{/if}}
+                                            <li>
+                                                <a href="#" id="clone-button">Clone <i class="glyphicon glyphicon-duplicate pull-right"></i></a>
+                                            </li>
+
+                                                {{#if isDifferent status 'cancelled'}}
+                                                        {{#if isSame status 'open'}}
+                                                            <li role="separator" class="divider"></li>
+                                                            <li><a href="{{pathFor 'purchaseOrders.edit'}}" disabled="">Edit <i class="icon-edit pull-right"></i></a></li>
+                                                            <li><a href="#" name="cancelOrder">Cancel Order <i class="glyphicon glyphicon-remove pull-right"></i></a></li>
+                                                        {{/if}}
+                                                {{/if}}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="col-sm-12">
+                <section class="content sub-content-sec">
+                    <div class="">
+                        <div class="col-sm-12 {{cancelledWatermark}}">
+                            <div class="well-custom bg-white col-lg-12 bg_white ptop20 pbottom20 mb">
+                                <form class="form-horizontal form-empty">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Supplier</label>
+                                            {{#popover 'focus'}}
+                                                <div class="col-sm-6">
+                                                    <p class="form-control-static"><a href="#" tabindex="0" data-toggle="popover" data-html="true" title="{{supplierName}}"
+                                                                                      data-content="<i class='glyphicon glyphicon-barcode'></i> <span class='small'>{{supplierNumber}}</span><br/>">
+                                                        {{supplierName}}</a></p>
+                                                </div>
+                                            {{/popover}}
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Bill To</label>
+                                            {{#popover 'focus'}}
+                                                <div class="col-sm-6">
+                                                    <a href="#" class="form-control-static" tabindex="0" data-toggle="popover" data-html="true" title="{{billingAddress.company}}"
+                                                       data-content="{{billingAddress.address1}}<br/>
+                                                          {{#if billingAddress.address2}}
+                                                           {{billingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                           {{#if billingAddress.city}}
+                                                               {{billingAddress.city}}
+                                                           {{/if}}
+                                                           {{#if billingAddress.state}}
+                                                               {{#if billingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                               {{billingAddress.state}}
+                                                           {{/if}}
+                                                           {{#if billingAddress.country}}
+                                                               {{#if billingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                               {{billingAddress.country}}
+                                                           {{/if}}">
+                                                        {{prune billingAddress.company 40}}</a>
+                                                </div>
+                                            {{/popover}}
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Ship To</label>
+                                            {{#popover 'focus'}}
+                                                <div class="col-sm-6">
+                                                    <a href="#" tabindex="0" class="form-control-static" data-toggle="popover" data-html="true" title="{{shippingAddress.name}}"
+                                                       data-content="{{shippingAddress.address1}}<br/>
+                                                          {{#if shippingAddress.address2}}
+                                                           {{shippingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                           {{#if shippingAddress.city}}
+                                                               {{shippingAddress.city}}
+                                                           {{/if}}
+                                                           {{#if shippingAddress.state}}
+                                                               {{#if shippingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                               {{shippingAddress.state}}
+                                                           {{/if}}
+                                                           {{#if shippingAddress.country}}
+                                                               {{#if shippingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                               {{shippingAddress.country}}
+                                                           {{/if}}">
+                                                        {{prune shippingAddress.name 40}}</a>
+                                                </div>
+                                            {{/popover}}
+                                        </div>
+                                        <!--
+                                <div class="form-group">
+                                    <label class="col-sm-6 control-label">Reference</label>
+                                    <div class="col-sm-6">
+                                        <p class="form-control-static">{{reference}}</p>
+                                    </div>
+                                </div>
+                                -->
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Stock Due</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{formatTime issuedAt}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Reference</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{reference}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label"> Email</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{contactEmail}}</p>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Currency</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{currency.iso}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">PriceList</label>
+                                            <div class="col-sm-6">
+                                                <p class="form-control-static">{{priceListName}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-6 control-label">Pickup?</label>
+                                            <div class="col-sm-6">
+                                                <div class="onoffswitch">
+                                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked="{{isPickup}}" disabled>
+                                                    <label class="onoffswitch-label" for="myonoffswitch"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+
+
+                        <div class="col-sm-12">
+                            <div class="module-block no_mobile width_700 no-border">
+                                <div class="fix_width">
+                                    <table class="table table-create">
+                                        <thead style="color: #999999;">
+                                        <tr>
+                                            <td></td>
+                                            <td>Item Code</td>
+                                            <td>Description</td>
+                                            <td>Unit</td>
+                                            <td class="text-right text-nowrap">Price ({{currency.symbol}})</td>
+                                            <td class="text-right">
+                                                    Qty / Avl
+                                            </td>
+
+                                            <td class="text-center">
+                                                Received
+                                            </td>
+                                            <td class="text-right text-nowrap">After</td>
+                                            <td class="text-right text-nowrap">Tax (%)</td>
+                                            <td class="text-right text-nowrap">Total ({{currency.symbol}})</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody style="background-color: #fff;">
+
+                                        {{#each items}}
+                                            {{#unless isSame status 'deleted'}}
+                                                <tr>
+                                                    {{#if isSame status 'received'}}
+                                                        <td data-toggle="tooltip" title="Items shipped"><span class="glyphicon glyphicon-ok text-muted" style="padding-left:3px;"></span></td>
+                                                    {{else}}
+                                                        <td data-toggle="tooltip" title="Open"><span class="glyphicon glyphicon-hourglass text-muted" style="padding-left:3px;"></span></td>
+                                                    {{/if}}
+                                                    <td>{{variantInfo variantId 'code'}}</td>
+                                                    <td data-toggle="tooltip" title="{{variantInfo variantId 'code'}}">{{variantInfo variantId 'name'}} </td>
+                                                    <td>{{variantInfo variantId 'uom'}}</td>
+                                                    <td class="text-right">{{formatMoneyD price}}</td>
+                                                    <td class="text-right">{{quantity}}
+                                                            / <span class="text-default">{{variantStockInfo variantId ../shippingAddressId}}</span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                       {{#if isSame status 'received'}}
+                                                            {{quantity}}
+                                                       {{else}}
+                                                           0
+                                                       {{/if}}
+                                                    </td>
+                                                    <td class="text-right">{{after}}</td>
+                                                    <td class="text-right">{{taxRateOverride}}</td>
+                                                    <td class="td-gray f_helvetcia text-right text-nowrap"><b>{{formatMoneyD itemTotal}}</b></td>
+                                                    <td class="td-gray">
+
+                                                    </td>
+                                                </tr>
+                                            {{/unless}}
+                                        {{/each}}
+                                        </tbody>
+                                    </table>
+                                    <div class="pull-left">
+                                        {{#unless allItemsReceived}}
+                                                <button class="btn btn-danger" id="receive-button">Receive Items <span
+                                                        class="glyphicon icon-return"></span></button>
+                                        {{/unless}}
+                                    </div>
+                                    <div class="pull-right container-fluid total-block-wrapper">
+                                        <div class="clearfix hidden-lg"></div>
+                                        <br class="hidden-lg">
+
+                                        <div class="clearfix fix_width">
+                                            <dl class="dl-horizontal padd_l40px total-table">
+                                                <dt class="text-muted">Sub Total:</dt>
+                                                <dd class="f_helvetcia text-right"><b>{{formatMoney subTotal currency}}</b></dd>
+                                                <dt class="text-muted">Taxes (VAT):</dt>
+                                                <dd class="f_helvetcia text-right"><b>{{formatMoney taxes currency}}</b></dd>
+                                                <dt><b>TOTAL:</b></dt>
+                                                <dd class="f_helvetcia"><b>{{formatMoney total currency}}</b></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="clearfix"></div>
+
+                        <div class="clearfix"></div>
+
+
+                        {{#if isDifferent status 'cancelled'}}
+                            <div class="clearfix"></div>
+
+                            <div class="clearfix"></div>
+                            <div class="col-sm-12 col-xs-12">
+                                <div class="module-block messages-block">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p class="lead text-uppercase">Messages</p>
+                                        </div>
+                                        <div class="el">
+                                            <div class="col-sm-12">
+                                                <div class="col-sm-12">
+                                                    <span class="glyphicon glyphicon-mail icon-mailarrow message_ico text-warning"></span>
+                                                    <a href="#" class="user-link">
+                                                        {{#if currentUserAvatar }}
+                                                            <img class="img-circle" src="{{currentUserAvatar.url store='avatarsSmall'}}" alt="">
+                                                        {{else}}
+                                                            <img class="img-circle" src="/img/guest.png" alt="">
+                                                        {{/if}}
+                                                        <span>{{userFullName Meteor.userId}}</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 message">
+                                                <div class="col-sm-12 text_block">
+                                                    <form id="order-note">
+                                                        <div class="input-group">
+                                                            <input type="text" name='txtNote' class="form-control"
+                                                                   placeholder="Enter a message"/>
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn btn-default"
+                                                            style="margin-left: 12px;"><span
+                                                            class="glyphicon icon-smallright"></span>
+                                                </button>
+                                            </span>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        {{#each orderNotes}}
+                                            <div class="el">
+                                                <div class="col-sm-12">
+                                                    <div class="col-sm-12">
+                                                        <span class="glyphicon icon-mail message_ico"></span>
+                                                        <a href="#" class="user-link">
+                                                            {{#if avatar }}
+                                                                <img class="img-circle" src="{{avatar.url store='avatarsSmall'}}" alt="">
+                                                            {{else}}
+                                                                <img class="img-circle" src="/img/guest.png" alt="">
+                                                            {{/if}}
+                                                            <span>{{userFullName userId}}</span>
+                                                        </a>
+                                                        <span class="date">{{formatTime createdAt 'fromNow'}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12 message">
+                                                    <div class="col-sm-12 text_block">
+                                                        {{body}}
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        {{/each}}
+                                    </div>
+                                </div>
+                            </div>
+                        {{/if}}
+                        <div class="clearfix"></div>
+                        <div class="col-sm-12">
+                            <div class="module-block">
+                                <p class="lead text-uppercase">RECENT ACTIVITIES</p>
+
+                                <table class="table">
+                                    <thead style="color: #999999;">
+                                    <tr>
+                                        <td>Date</td>
+                                        <td>Details</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="bg_white">
+                                    {{#each history}}
+                                        <tr>
+                                            <td class="">{{formatTime createdAt 'withTime'}}</td>
+                                            <td class="">{{textFormat event}}</td>
+                                        </tr>
+                                    {{ else }}
+                                        <tr>
+                                            <td colspan="6">
+                                                No activities available.
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+        {{else}}
+            <section class="row content-header">
+                <div class="container-fluid">
+                    <div class="col-sm-6">
+                        <h1 class="pull-left">
+                            Orders
+                        </h1>
+                    </div>
+                    <div class="col-sm-6 hidden-xs">
+                        <ol class="breadcrumb">
+                            <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                            <li><a href="{{pathFor 'orders.list'}}">Orders</a></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            {{>DocumentNotFound}}
+        {{/if}}
+
+    </div>
+</template>

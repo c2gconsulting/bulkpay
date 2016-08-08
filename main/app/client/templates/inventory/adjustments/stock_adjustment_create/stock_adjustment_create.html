@@ -1,0 +1,164 @@
+<template name="StockAdjustmentCreate">
+  <div class="stock-adjustment-create">
+
+      <div class="container-fluid">
+          <section class="row content-header z_index_99">
+              <div class="container-fluid ">
+                  <div class="col-sm-8">
+                      <h1 class="pull-left">
+                          New Stock Adjustment
+                          <small>&nbsp;</small>
+                      </h1>
+                  </div>
+                  <div class="col-md-4 hidden-xs hidden-sm">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-order" style="color: #fff"></i>Home</a></li>
+                          <li class="active">New Stock Adjustment</li>
+                      </ol>
+                  </div>
+              </div>
+
+          </section>
+
+          <div class="col-sm-12">
+              <section class="content">
+                  <div class="container-fluid">
+                      <div class="row">
+                          <div class="col-lg-12 bg_white ptop30 mb">
+                              <form class="">
+                                  <div class="row">
+                                      <div class="col-lg-12 bg_white mb">
+                                          <div class="col-lg-3 col-md-4">
+                                              <div class="form-group">
+                                                  <label class="text-muted">Location</label>
+                                                  {{#selectpicker}}
+                                                      <select class="form-control selectpicker" data-live-search="true" name="locationId">
+                                                          {{#each locations}}
+                                                              {{#if isSame stockTransfer.locationId _id}}
+                                                                  <option value="{{_id}}" selected>{{name}}</option>
+                                                              {{else}}
+                                                                  <option value="{{_id}}" {{selected}}>{{name}}</option>
+                                                              {{/if}}
+                                                          {{/each}}
+                                                      </select>
+                                                  {{/selectpicker}}
+                                              </div>
+                                          </div>
+                                          <div class="col-lg-3 col-md-4">
+                                              <div class="form-group">
+                                                  <label class="text-muted">Received At</label>
+                                                  <div class="date">
+                                                      <div class="inner-addon left-addon">
+                                                          <i class="glyphicon icon-calendar"></i>
+                                                          {{#datepicker stockTransfer.receivedAt }}
+                                                              <input type="text" class="form-control datepicker" size="8" name="receivedAt"/>
+                                                          {{/datepicker}}
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <!--<div class="clearfix"></div>-->
+                                          <!--<p></p>-->
+                                      </div>
+                                  </div>
+                                  <div class="clearfix"></div>
+                                  <p></p>
+                              </form>
+                          </div>
+                          <div class="clearfix"></div>
+
+                          <div class="col-sm-12 col-xs-12">
+                              <div class="module-block  no_border">
+                                  <div>
+                                      <table class="table table-create">
+                                          <thead style="color: #999999;">
+                                          <tr>
+                                              <td class="item-fixed">Item</td>
+                                              <td class="text-right hidden-xs hidden-sm hidden-md">Unit</td>
+                                              <td class="text-center">Quantity</td>
+                                              <td class="text-center">Location (Before)</td>
+                                              <td class="text-center">Location (After)</td>
+                                              <td>&nbsp;</td>
+                                          </tr>
+                                          </thead>
+                                          <tbody style="background-color: #fff;">
+                                          {{#each stockTransfer.items}}
+                                              <tr>
+                                                  <td class="item-fixed">
+                                                      <div class="fast-search custom" id="divSearchWrapper_{{index}}">
+                                                          <input type="text" class="input-transparent fast-search" id="txtItem_{{index}}" placeholder="Start typing code or item..." value="{{bogusVariant.caption}}"/>
+                                                          <div class="fast-search-result" id="divSearch_{{index}}"></div>
+                                                      </div>
+                                                  </td>
+                                                  <td class="text-right hidden-xs hidden-sm hidden-md">{{bogusVariant.uom}}</td>
+                                                  <td class="text-center">
+                                                      {{#spinbox max=bogusVariant.location}}
+                                                          <div class="spinbox">
+                                                              <button type="button" class="spinbox-down hidden-xs" id="spindown_{{index}}"></button>
+                                                              <input type="text" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{formatNumberZ quantity}}">
+                                                              <button type="button" class="spinbox-up hidden-xs" id="spinup_{{index}}"></button>
+                                                          </div>
+                                                      {{/spinbox}}
+                                                  </td>
+                                                  <td class="text-center">{{formatMoney bogusVariant.location}}</td>
+                                                  <td class="text-center">{{formatMoney locationAfter}}</td>
+                                                  <td class="td-gray">
+                                                      <a href="#" data-index="{{index}}" class="text-danger remove-item"><span class="glyphicon glyphicon-remove"></span></a>
+                                                  </td>
+                                              </tr>
+                                          {{/each}}
+                                          </tbody>
+                                      </table>
+                                      <div class="col-lg-5 col-md-6 col-sm-10 col-xs-12">
+                                          <button class="btn btn-info" name="btnAddItem">Add New Item <span class="glyphicon icon-add"></span></button>
+                                      </div>
+                                      <div class="col-xs-12 col-md-6 col-sm-12 col-lg-7 pull-right">
+                                          <div class="clearfix hidden-lg"></div>
+                                          <br class="hidden-lg">
+
+                                          <div class="clearfix">
+                                              <dl class="fluid-width-xs dl-horizontal total-table">
+                                                  <dt class="text-muted text-nowrap text-right">Total Items:</dt>
+                                                  <dd class="f_helvetcia text-right text-nowrap"><b>{{getTotalItems}}</b></dd>
+                                              </dl>
+                                          </div>
+                                      </div>
+                                      <div class="clearfix"></div>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="clearfix"></div>
+
+
+                          <div class="col-sm-12 col-xs-12">
+                              <div class="row">
+                                  <div class="module-block">
+                                      <div class="col-lg-5 col-sm-12 col-xs-12 hidden-xs hidden-sm">
+                                          <textarea class="form-control" name="stock-adjustment-comment" rows="9" placeholder="Additional comments">{{stockTransfer.comments}}</textarea>
+                                      </div>
+                                      <div class="clearfix hidden-lg"></div>
+                                      <br class="hidden-lg"/>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="col-md-6 col-md-offset-6 col-sm-8 col-sm-offset-4 col-xs-offset-0 col-xs-12">
+                              <div class="module-block">
+                                  <div class="pull-right">
+                                      <button class="btn btn-success {{disableSubmit}}" {{disableSubmit}} id="create-stockAdjustment">Adjust Stock <span class="glyphicon glyphicon-adjust"></span></button>
+                                      <button class="btn btn-default" id="cancel">&nbsp;&nbsp;Exit&nbsp;&nbsp;</button>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+                  </div>
+
+              </section>
+
+          </div>
+      </div>
+
+  </div>
+</template>

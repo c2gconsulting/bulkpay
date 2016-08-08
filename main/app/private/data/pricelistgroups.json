@@ -1,0 +1,105 @@
+[
+	{
+		"name": "COR",
+		"originCode": "COR",
+		"isDefault": true,
+		"currencyISO": "NGN",
+		"customerGroupCodes": ["COR"],
+		"priceLists" : [
+			{
+				"startDate" : "2016-01-31T00:00:00.000Z",
+				"endDate" : "2016-02-30T00:00:00.000Z",
+				"originCode" : "KADT",
+				"_id" : "WZFrmNJYqRhkb22dE"
+			},
+			{
+				"startDate" : "2016-03-31T00:00:00.000Z",
+				"endDate" : "2016-04-30T00:00:00.000Z",
+				"originCode" : "KKDT",
+				"_id" : "fWJwASauXpuxry43n"
+			},
+			{
+				"startDate" : "2016-06-31T00:00:00.000Z",
+				"endDate" : "2016-09-30T00:00:00.000Z",
+				"originCode" : "KKDTP",
+				"_id" : "SK72QAwk4yJZMgMaL"
+			}
+		]
+	}, {
+		"name": "DIS",
+		"originCode": "DIS",
+		"currencyISO": "NGN",
+		"customerGroupCodes": ["DIS"],
+	"priceLists" : [
+		{
+			"startDate" : "2016-01-31T00:00:00.000Z",
+			"endDate" : "2016-02-30T00:00:00.000Z",
+			"originCode" : "KADT",
+			"_id" : "WZFrmNJYqRhkb22dE"
+		},
+		{
+			"startDate" : "2016-03-31T00:00:00.000Z",
+			"endDate" : "2016-04-30T00:00:00.000Z",
+			"originCode" : "KKDT",
+			"_id" : "fWJwASauXpuxry43n"
+		},
+		{
+			"startDate" : "2016-06-31T00:00:00.000Z",
+			"endDate" : "2016-09-30T00:00:00.000Z",
+			"originCode" : "KKDTP",
+			"_id" : "SK72QAwk4yJZMgMaL"
+		}
+	]
+
+	}, {
+		"name": "NON",
+		"originCode": "NON",
+		"currencyISO": "NGN",
+		"customerGroupCodes": ["NON"],
+	"priceLists" : [
+		{
+			"startDate" : "2016-01-31T00:00:00.000Z",
+			"endDate" : "2016-02-30T00:00:00.000Z",
+			"originCode" : "KADT",
+			"_id" : "WZFrmNJYqRhkb22dE"
+		},
+		{
+			"startDate" : "2016-03-31T00:00:00.000Z",
+			"endDate" : "2016-04-30T00:00:00.000Z",
+			"originCode" : "KKDT",
+			"_id" : "fWJwASauXpuxry43n"
+		},
+		{
+			"startDate" : "2016-06-31T00:00:00.000Z",
+			"endDate" : "2016-09-30T00:00:00.000Z",
+			"originCode" : "KKDTP",
+			"_id" : "SK72QAwk4yJZMgMaL"
+		}
+	]
+	}, {
+		"name": "EXP",
+		"originCode": "EXP",
+		"currencyISO": "NGN",
+		"customerGroupCodes": ["EXP"],
+	"priceLists" : [
+		{
+			"startDate" : "2016-01-31T00:00:00.000Z",
+			"endDate" : "2016-02-30T00:00:00.000Z",
+			"originCode" : "KADT",
+			"_id" : "WZFrmNJYqRhkb22dE"
+		},
+		{
+			"startDate" : "2016-03-31T00:00:00.000Z",
+			"endDate" : "2016-04-30T00:00:00.000Z",
+			"originCode" : "KKDT",
+			"_id" : "fWJwASauXpuxry43n"
+		},
+		{
+			"startDate" : "2016-06-31T00:00:00.000Z",
+			"endDate" : "2016-09-30T00:00:00.000Z",
+			"originCode" : "KKDTP",
+			"_id" : "SK72QAwk4yJZMgMaL"
+		}
+	]
+	}
+]  

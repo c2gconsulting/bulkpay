@@ -1,0 +1,20 @@
+<template name="GlobalSearchOrderEntry">
+    <div class="global-search-order-entry">
+        <div class="thumbnail-wrapper d48 circular order-icon-colour text-white inline m-t-10">
+            <div>
+                <i class="glyphicon icon-order"></i>
+            </div>
+        </div>
+        <div class="p-l-10 inline p-t-5">
+            <h5 class="m-b-5">
+                <span class="semi-bold result-name">{{#linkTo route="orders.detail" class="view-search-document" _id=_id}}{{orderNumber}}{{/linkTo}}</span>
+                <span class="{{orderStatusStyle status}} small-text-global">  &bull; {{capitalize status}}</span>
+            </h5>
+            {{#if salesLocationName}}
+                <p class="hint-text small">{{salesLocationName}}</p>
+            {{else}}
+                <p class="hint-text small">Unspecified.</p>
+            {{/if}}
+        </div>
+    </div>
+</template>

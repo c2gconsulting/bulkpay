@@ -1,0 +1,288 @@
+[{
+  "_id": "B8WMh2wdGnXgeBytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "cizukanne@promasidor",
+  "emails": [{
+    "address": "cizukanne@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Kachi Izukanne"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2wdGnXgdAytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "mukpong",
+  "emails": [{
+    "address": "mukpong@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Micheal Ukpong"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2wnGnXgdAytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "dowoeye",
+  "emails": [{
+    "address": "dowoeye@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Damilola Owoeye"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2wnGnXgtAytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "ookafor",
+  "emails": [{
+    "address": "ookafor@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Onyema Okafor"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2gnGnXgtAytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "kochu",
+  "emails": [{
+    "address": "kochu@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Ochu Kingsley"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2gfGnXgtAytW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "bmustapha",
+  "emails": [{
+    "address": "bmustapha@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Tunde Mustapha"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}, {
+  "_id": "B8WMh2gfGnXgtAttW",
+  "createdAt": "2016-03-14T10:22:00.477Z",
+  "services": {
+    "password": {
+      "bcrypt": "$2a$10$J9uVQuTwXOUSgoUUUAKyvOMsOKAczQ8Qi6fPFGj5v7wp4kzfxol4O"
+    },
+    "email": {
+      "verificationTokens": []
+    },
+    "resume": {
+      "loginTokens": []
+    }
+  },
+  "username": "uokafor",
+  "emails": [{
+    "address": "uokafor@c2gconsulting.com",
+    "verified": false
+  }],
+  "profile": {
+    "fullName": "Uchenna Okafor"
+  },
+  "salesProfile": {
+    "salesAreas": [
+      "100",
+      "CENTRAL",
+      "EAST",
+      "INTERCOMP",
+      "WEST",
+      "NORTHCENT",
+      "NORTHEAST",
+      "NORTHWEST",
+      "SOUTHEAST"
+    ]
+  },
+  "roles": {
+    "__global_roles__": [
+      "admin/all",
+      "customers/maintain"
+    ]
+  }
+}]

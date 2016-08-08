@@ -1,0 +1,116 @@
+<template name="ReportsHome">
+    <div class="container-fluid intelligence">
+        <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-xs-6">
+                    <h1>
+                        Reports
+                    </h1>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="{{pathFor 'home'}}"><i class="glyphicon glyphicon-signal"></i>Home</a></li>
+                        <li class="active">Reports</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <div class="col-sm-12">
+            <section class="content">
+                <div class="col-sm-6">
+                    <ul class="mts">
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.sales'}}">
+                                <i class="glyphicon icon-graph large left"></i>
+                                <h3>Sales by Time Period</h3>
+                                <p class="mtm mbn">
+                                    View your sales, costs, and profits for the past three months.
+                                    Adjust the time period and group by days, weeks or months.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.salesorders'}}">
+                                <i class="glyphicon glyphicon-tasks large left"></i>
+                                <h3>Sales by Company / Variant / Location / Assignee</h3>
+                                <p class="mtm mbn">
+                                    View your total sales, filtered by company, product, locations, assignee or variant. You can adjust the time period.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.saleshistory'}}">
+                                <i class="glyphicon glyphicon-search large left"></i>
+                                <h3>Sales History Report</h3>
+                                <p class="mtm mbn">
+                                    Search all your sales orders by time period, company, product or variant.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.invoicehistory'}}">
+                                <i class="glyphicon glyphicon-folder-open large left"></i>
+                                <h3>Invoice History Report</h3>
+                                <p class="mtm mbn">
+                                    Search all your Invoices by time period, company, product or variant.
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                   <ul class="mts">
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.returns'}}">
+                                <i class="glyphicon glyphicon-hourglass large left"></i>
+                                <h3>Returns by Time Period</h3>
+                                <p class="mtm mbn">
+                                    View orders returned for the past three months.
+                                    Adjust the time period and group by days, weeks or months.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.returnorders'}}">
+                                <i class="glyphicon glyphicon-stats large left"></i>
+                                <h3>Returns by Company / Variant / Location / Assignee</h3>
+                                <p class="mtm mbn">
+                                    View total returns, filtered by Customer, product variants, locations, assignee or variant. You can adjust the time period.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.returnshistory'}}">
+                                <i class="glyphicon glyphicon-filter large left"></i>
+                                <h3>Returns History Report</h3>
+                                <p class="mtm mbn">
+                                    Filter all return orders by time period, company, product or variant.
+                                </p>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="box task left full-width mbl" href="{{pathFor 'reports.paymentshistory'}}">
+                                <i class="glyphicon glyphicon-piggy-bank large left"></i>
+                                <h3>Payments History Report</h3>
+                                <p class="mtm mbn">
+                                    Filter all payments by time period, company or product.
+                                </p>
+                            </a>
+                        </li>
+
+                       <li>
+                           <a class="box task left full-width mbl" href="{{pathFor 'reports.rabateshistory'}}">
+                               <i class="glyphicon glyphicon-gift large left"></i>
+                               <h3>Rebates History Report</h3>
+                               <p class="mtm mbn">
+                                   Filter all rewards by time period, company or order.
+                               </p>
+                           </a>
+                       </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
+</template>

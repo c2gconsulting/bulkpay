@@ -1,0 +1,61 @@
+<template name="DashTopDistributors">
+  <div class="dash-top-distributors">
+    <div class="panel-heading clearfix text-center">
+      <span class="panel-title pull-left">TOP 5 Customers</span>
+      <div class="pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{topCustomerFilter}} <i class="glyphicon icon-downarrow"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="#annually">Year</a></li>
+          <li><a href="#month">Month</a></li>
+          <li><a href="#week">Week</a></li>
+          <li><a href="#today">Today</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body no-padding">
+    {{#if enableLoading}}
+            <div class="sLoading">
+                {{> spinner}}
+            </div>
+    {{else}}
+      <ul class="nav nav-pills nav-stacked">
+        {{#each topCustomers}}
+          <li>
+            <a href="#" class="clearfix">
+              <div class="row">
+                <div class="col-xs-6 text-default">{{_id}}</div>
+                <div class="col-xs-3 text-right text-default hidden-text"><b>{{formatMoney totalAmount tenant.baseCurrency}}</b></div>
+                {{#if evaluatedPercentage}}
+                  {{#if percentageChange}}
+                  <div class="col-xs-3 text-right text-success">
+                    {{evaluatedPercentage}}%
+                    <i class="glyphicon glyphicon-arrow-up"></i>
+                  </div>
+                  {{else}}
+                  <div class="col-xs-3 text-right text-danger">
+                    {{evaluatedPercentage}}%
+                    <i class="glyphicon glyphicon-arrow-down"></i>
+                  </div>
+                  {{/if}}
+                {{else}}
+                  <div class="col-xs-3 text-right">
+                    <i class="glyphicon glyphicon-minus"></i>
+                  </div>
+                {{/if}}
+              </div>
+            </a>
+          </li>
+        {{else}}
+          <div class="text-center" style="padding-top: 105px; padding-bottom: 105px">No information for the selected period.</div>
+        {{/each}}
+      </ul>
+    {{/if}}
+    </div>
+  </div>
+</template>
+
+
+
+
+
+

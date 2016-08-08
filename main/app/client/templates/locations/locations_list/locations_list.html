@@ -1,0 +1,121 @@
+<template name="LocationsList">
+  <div class="locations-list">
+
+      <div class="container-fluid">
+          <section class="row content-header">
+              <div class="container-fluid">
+                  <div class="col-sm-6">
+                      <h1 class="pull-left">
+                          Locations
+                      </h1>
+                      <form role="search" id="customer-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                          <div class="form-group">
+                              <div class="col-sm-12">
+                                  <div class="inner-addon right-addon">
+                                      <i class="glyphicon icon-search"></i>
+                                      <input type="text" id="customer-search" class="form-control" placeholder="Search Locations">
+                                  </div>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+                  <div class="col-sm-6 hidden-xs">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-user"></i>Home</a></li>
+                          <li class="active">Locations</li>
+                      </ol>
+                  </div>
+                  <div class="sub-content-header border">
+                      <div class="container-fluid">
+                          <div class="col-sm-12">
+                              <div class="pull-left">
+                              </div>
+                              <div class="pull-right">
+                                  <a href="#" class="btn btn-default btn-sm" id="add-location">Add New Location</a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+          </section>
+          <div class="col-sm-12">
+
+
+              <section class="content sub-content-sec">
+                  <div>
+                      <br/>
+                      <table class="table table-hover tr_pointer" style="margin-bottom: 50px">
+                          <thead>
+                          <tr>
+                              <td><a href="#sort" class="text-muted" data-key="customerNumber">Name <!--<small><i class="{{sortedBy 'customerNumber'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="name">Address 1<!--<small><i class="{{sortedBy 'name'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="name">Address 2<!--<small><i class="{{sortedBy 'name'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="defaultSalesLocationId">City <!--<small><i class="{{sortedBy 'defaultSalesLocationId'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="defaultSalesLocationId">Postal <!--<small><i class="{{sortedBy 'defaultSalesLocationId'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="createdAt">State <!--<small><i class="{{sortedBy 'createdAt'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="groupCode">Country <!--<small><i class="{{sortedBy 'groupCode'}}"></i></small>--></a></td>
+                              <td><a href="#sort" class="text-muted" data-key="groupCode">Hold Stock <!--<small><i class="{{sortedBy 'groupCode'}}"></i></small>--></a></td>
+                          </tr>
+                          </thead>
+                          <tbody>
+
+
+                          {{#if searchActive}}
+                              {{#if searchQueryReturned}}
+                                  {{#each searchLocations}}
+                                      {{> LocationEntry}}
+                                  {{else}}
+                                      <tr>
+                                          <td colspan="7">
+                                              No <span class="text-lowercase">{{activeStatus}}</span> customers match your search terms
+                                          </td>
+                                      </tr>
+                                  {{/each}}
+                              {{else}}
+                                  <tr>
+                                      <td colspan="7">
+                                          <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                      </td>
+                                  </tr>
+                              {{/if}}
+                          {{else}}
+                              {{#each locations}}
+                                  {{> LocationEntry}}
+                              {{else}}
+                                  <tr>
+                                      <td colspan="7">
+                                          No locations available.
+                                      </td>
+                                  </tr>
+                              {{/each}}
+                          {{/if}}
+
+                          </tbody>
+                      </table>
+                  </div>
+
+
+                  {{#if Template.subscriptionsReady}}
+                      {{#if hasMoreLocations}}
+                          <div id="showMoreResults" href="#">&nbsp;</div>
+                      {{/if}}
+                      {{#if hasMoreSearchResults}}
+                          <div id="showMoreResults" href="#">&nbsp;</div>
+                      {{/if}}
+                  {{else}}
+                      <div class="col-xs-12">
+                          <div class="loading">{{> spinner}}</div>
+                      </div>
+                  {{/if}}
+
+              </section>
+
+
+          </div>
+
+
+      </div>
+
+  </div>
+</template>

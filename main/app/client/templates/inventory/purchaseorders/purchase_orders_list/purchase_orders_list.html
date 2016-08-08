@@ -1,0 +1,156 @@
+<template name="PurchaseOrdersList">
+<div class="container-fluid">
+    <section class="row content-header">
+        <div class="container-fluid">
+            <div class="col-sm-6">
+                <h1 class="pull-left">
+                    Purchase Orders
+                </h1>
+                <form role="search" id="promotion-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                    <div class="form-group">
+                        <div class="col-sm-12">
+                            <div class="inner-addon right-addon">
+                                <i class="glyphicon icon-search"></i>
+                                <input type="text" id="purchase-orders-search" class="form-control" placeholder="Search">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6 hidden-xs">
+                <ol class="breadcrumb">
+                    <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-gift"></i>Home</a></li>
+                    <li class="active">Purchase Orders</li>
+                </ol>
+            </div>
+        </div>
+        <div class="sub-content-header">
+            <div class="container-fluid">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="{{pathFor 'purchaseOrders.create'}}" class="btn btn-info btn-block">New Purchase Order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="col-sm-12">
+
+        <section class="content sub-content">
+
+            <div>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="{{tabClass 'open'}}"><a href="#open" role="tab" data-toggle="tab">Open <span class="label label-info">{{openPurchaseOrderCountFiltered}}</span></a></li>
+                    <li role="presentation" class="{{tabClass 'received'}}"><a href="#received" role="tab" data-toggle="tab">Received</a></li>
+                    <li role="presentation" class="{{tabClass 'cancelled'}}"><a href="#cancelled" role="tab" data-toggle="tab">Cancelled</a></li>
+                    <div class="clearfix hidden-md hidden-lg"></div>
+                    <li class="navbar-right">
+                        <br class="hidden-md hidden-lg hidden-sm" />
+                        <form class="form-inline no_wrap">
+                            <div class="form-group">
+                                <label for="filter"><!--<strong>{{orderCount}}</strong>--> Orders in the</label>&nbsp;
+                                <select class="form-control" id="dfilter">
+                                    <option value="1">past month</option>
+                                    <option value="3">past 3 months</option>
+                                    <option value="6">past 6 months</option>
+                                    <option value="12">past 12 months</option>
+                                </select>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+
+                <!-- Tab pane -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active no_mobile">
+                        <br/>
+                        <table class="table table-hover tr_pointer">
+                            <thead>
+                            <tr>
+                                <td><a href="#sort" class="text-muted" data-key="purchaseOrderNumber">Purchase Order # <small><i class="{{sortedBy 'purchaseOrderNumber'}}"></i></small></a></td>
+                                <td>Ship To </td>
+                                <td><a href="#sort" class="text-muted" data-key="issuedAt">Date Posted <small><i class="{{sortedBy 'issuedAt'}}"></i></small></a></td>
+                                <td><a href="#sort" class="text-muted" data-key="total">Total <small><i class="{{sortedBy 'total'}}"></i></small></a></td>
+                                <td><a href="#sort" class="text-muted" data-key="supplierName">Supplier <small><i class="{{sortedBy 'supplierName'}}"></i></small></a></td>
+                                <td>Status</td>
+                                <td><a href="#sort" class="text-muted" data-key="customerName">Customer <small><i class="{{sortedBy 'customerName'}}"></i></small></a></td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#if searchActive}}
+                                {{#if searchQueryReturned}}
+                                    {{#each searchOrders}}
+                                        <tr class="order-entry">
+                                            <td>{{purchaseOrderNumber}}</td>
+                                            <td>{{printLocation shippingAddressId}}</td>
+                                            <td>{{formatTime issuedAt}}</td>
+                                            <td>{{formatMoney total currency}}</td>
+                                            <td>{{supplierName}}</td>
+                                            <td><span class="{{orderStatusStyle status}}">&bull; {{capitalize status}}</span></td>
+                                            <td>
+                                                {{#linkTo route="distributors.detail" _id=customerId}}{{customerName}}{{/linkTo}} <span class="small text-muted">{{customerNumber}}</span>
+                                            </td>
+                                        </tr>
+                                    {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                No {{activeStatus}} orders in the {{currentDuration}} match your search term
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                {{else}}
+                                    <tr>
+                                        <td colspan="7">
+                                            <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                        </td>
+                                    </tr>
+                                {{/if}}
+                            {{else}}
+                                {{#each purchaseOrders}}
+                                    <tr class="order-entry">
+                                        <td>{{purchaseOrderNumber}}</td>
+                                        <td>{{printLocation shippingAddressId}}</td>
+                                        <td>{{formatTime issuedAt}}</td>
+                                        <td>{{formatMoney total currency}}</td>
+                                        <td>{{supplierName}}</td>
+                                        <td><span class="{{orderStatusStyle status}}">&bull; {{capitalize status}}</span></td>
+                                        <td>
+                                            {{#linkTo route="distributors.detail" _id=customerId}}{{customerName}}{{/linkTo}} <span class="small text-muted">{{customerNumber}}</span>
+                                        </td>
+                                    </tr>
+                                {{else}}
+                                    <tr>
+                                        <td colspan="7">
+                                            No orders were {{activeStatus}} in the {{currentDuration}}
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            {{/if}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                {{#if Template.subscriptionsReady}}
+                    {{#if hasMorePurchaseOrders}}
+                        <div id="showMoreResults" href="#">&nbsp;</div>
+                    {{/if}}
+                    {{#if hasMoreSearchResults}}
+                        <div id="showMoreResults" href="#">&nbsp;</div>
+                    {{/if}}
+                {{else}}
+                    <div class="col-xs-12">
+                        <div class="loading">{{> spinner}}</div>
+                    </div>
+                {{/if}}
+
+            </div>
+
+        </section>
+
+    </div>
+</div>
+</template>

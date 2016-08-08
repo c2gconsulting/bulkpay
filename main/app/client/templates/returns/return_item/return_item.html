@@ -1,0 +1,16 @@
+<template name="ReturnItem">
+    <tr lass="return-item">
+        <td><span class="glyphicon icon-return text-danger" data-toggle="tooltip" title="{{returnReason}}"></span></td>
+        <td>{{variantInfo variantId 'code'}}, {{variantInfo variantId 'name'}}</td>
+        <td>{{variantInfo variantId 'opt1'}}</td>
+        <td>{{returnReason}}</td>
+        <td class="text-right">{{formatMoneyD price currency}}</td>
+        <td class="text-right">{{quantity}}</td>
+        <td class="text-right">{{discount}}</td>
+        {{#unless isPromo}}
+        <td class="td-gray text-right f_helvetcia text-nowrap"><b>{{formatMoneyD itemTotal currency}}</b></td>
+        {{else}}
+        <td class="td-gray text-right" style="color: #949e00;"><span class="icon-gift"></span> Promo</td>
+        {{/unless}}
+    </tr>
+</template>

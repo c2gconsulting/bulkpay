@@ -1,0 +1,152 @@
+/*
+* 	Owl Carousel Owl Demo Theme 
+*	v1.3.3
+*/
+
+.owl-theme .owl-controls{
+	text-align: center;
+}
+
+/* Styling Next and Prev buttons */
+
+.owl-theme .owl-controls .owl-buttons div{
+	color: #FFF;
+	display: inline-block;
+	zoom: 1;
+	*display: inline;/*IE7 life-saver */
+	margin: 5px;
+	padding: 3px 10px;
+	font-size: 12px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+	background: #869791;
+	filter: Alpha(Opacity=50);/*IE7 fix*/
+	opacity: 0.5;
+}
+/* Clickable class fix problem with hover on touch devices */
+/* Use it for non-touch hover action */
+.owl-theme .owl-controls.clickable .owl-buttons div:hover{
+	filter: Alpha(Opacity=100);/*IE7 fix*/
+	opacity: 1;
+	text-decoration: none;
+}
+
+/* Styling Pagination*/
+
+.owl-theme .owl-controls .owl-page{
+	display: block;
+	zoom: 1;
+	width: 80px;
+	height: 80px;
+	overflow: hidden;
+}
+.owl-theme .owl-controls .owl-page span{
+	display: block;
+	width: 12px;
+	height: 12px;
+	margin: 5px 7px;
+	filter: Alpha(Opacity=50);/*IE7 fix*/
+	opacity: 0.5;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	background: #869791;
+}
+
+.owl-theme .owl-controls .owl-page.active span,
+.owl-theme .owl-controls.clickable .owl-page:hover span{
+	filter: Alpha(Opacity=100);/*IE7 fix*/
+	opacity: 1;
+}
+
+/* If PaginationNumbers is true */
+
+.owl-theme .owl-controls .owl-page span.owl-numbers{
+	height: auto;
+	width: auto;
+	color: #FFF;
+	padding: 2px 10px;
+	font-size: 12px;
+	-webkit-border-radius: 30px;
+	-moz-border-radius: 30px;
+	border-radius: 30px;
+}
+
+/* preloading images */
+.owl-item.loading{
+	min-height: 150px;
+	background: url(AjaxLoader.gif) no-repeat center center
+}
+
+
+.owl-carousel .owl-wrapper-outer {
+	overflow: hidden;
+	position: relative;
+	width: 400px;
+	height: 400px;
+	float: left;
+}
+
+#owl-demo .item img {
+	display: block;
+	width: 400px;
+	height: auto;
+}
+
+.owl-theme .owl-controls {
+	position: relative;
+	float: right;
+}
+
+.owl-theme .owl-controls .item-link {
+	position: relative;
+	display: block;
+	width: 75px;
+	height: 75px;
+	margin: 0 2px;
+	border: 2px solid #ccc;
+	outline: none;
+}
+
+.owl-theme .owl-controls .item-link:focus {
+	-webkit-box-shadow: 0 0 8px #cc4895;
+	-moz-box-shadow: 0 0 8px #cc4895;
+	box-shadow: 0 0 8px #cc4895;
+	outline: none;
+}
+
+.owl-theme .owl-controls .active .item-link {
+	border: 2px solid #999;
+}
+
+.owl-theme .owl-controls .owl-page span {
+	display: none;
+}
+
+.owl-theme .prev-owl,
+.owl-theme .next-owl {
+	position: absolute;
+	top: 5px;
+	display: none;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background-color: #c0c0c0;
+	outline: none;
+}
+
+.owl-theme .prev-owl:focus,
+.owl-theme .next-owl:focus {
+	-webkit-box-shadow: 0 0 8px #cc4895;
+	-moz-box-shadow: 0 0 8px #cc4895;
+	box-shadow: 0 0 8px #cc4895;
+}
+
+.owl-theme .prev-owl {
+	left: 24px;
+}
+
+.owl-theme .next-owl {
+	right: 24px;
+}

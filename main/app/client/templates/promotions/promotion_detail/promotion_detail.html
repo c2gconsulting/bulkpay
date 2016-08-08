@@ -1,0 +1,104 @@
+<template name="PromotionDetail">
+  <div class="promotion-detail">
+      <div class="col-md-10 col-md-offset-1">
+        <div class="row">
+          <div class="col-md-3">
+            <strong>Name&nbsp;</strong>
+          </div>
+          <div class="col-md-9">
+            <span class="text">{{promotion.name}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <strong>Start Date&nbsp;</strong>
+          </div>
+          <div class="col-md-9">
+            <span class="text">{{prettyDate promotion.startDate}}</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <strong>End Date&nbsp;</strong>
+          </div>
+          <div class="col-md-9">
+            <span class="text">{{prettyDate promotion.endDate}}</span>
+          </div>
+        </div>
+        <!--   <div class="row">
+        <div class="col-md-3">
+          <strong>Rules&nbsp;</strong>
+        </div>
+        <div class="col-md-9">
+          <span class="text">{{size promotion.rules}}</span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3">
+          <strong>Rewards&nbsp;</strong>
+        </div>
+        <div class="col-md-9">
+          <span class="text">{{size promotion.rewards}}</span>
+        </div>
+      </div> -->
+        <table class="table table-striped">
+          <caption>
+            <strong>Rules</strong>
+          </caption>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Preview</th>
+              <th>Parent Schema field</th>
+              <th>operator</th>
+              <th>value</th>
+              <th>to </th>
+              <th>from</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each promotion.rules}}
+            <tr>
+              <td>{{add @index 1}}</td>
+              <td>{{name}}</td>
+              <td>{{#if subParamPreview}} {{subParamPreview}} {{else}} N/A {{/if}} </td>
+              <td>{{parameterNameInParentSchema}}</td>
+              <td>{{operator}}</td>
+              <td>{{#if previewVal}} {{previewVal}} {{else}} {{value}} {{/if}}</td>
+              <td>{{#if to}} {{prettyDate to}} {{else}} N/A {{/if}} </td>
+              <td>{{#if from}} {{prettyDate from}} {{else}} N/A {{/if}} </td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <table class="table table-striped">
+          <caption>
+            <strong>Rewards</strong>
+          </caption>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>Sub Type</th>
+              <th>Sub Type Value</th>
+              <th>Unit of Measure</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each promotion.rewards}}
+            <tr>
+              <td>{{add @index 1}}</td>
+              <td>{{type}}</td>
+              <td>{{#if previewSubType}} {{previewSubType}} {{else}} {{subType}} {{/if}}</td>
+              <td>{{#if previewSubTypeValue}} {{previewSubTypeValue}} {{else}} {{#if subTypeValue}} {{subTypeValue}} {{else}} N/A {{/if}}{{/if}}</td>
+              <td>{{#if previewUom}} {{previewUom}} {{else}} {{uom}} {{/if}}</td>
+              <td>{{value}}</td>
+            </tr>
+            {{/each}}
+          </tbody>
+        </table>
+    </div>
+  </div>
+</template>

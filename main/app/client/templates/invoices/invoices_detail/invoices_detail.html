@@ -1,0 +1,389 @@
+<template name="InvoicesDetail">
+    <div class="container-fluid">
+        {{#if documentAvailable}}
+        <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-sm-6">
+                    <h1 class="pull-left">
+                        Invoices
+                        <small>
+                            {{invoiceNumber}}
+                            <span class="fs12 p15 {{invoiceStatusStyle status}}">
+                            <i class="glyphicon icon-circle {{invoiceStatusStyle status}}" style="font-size: 6px;margin-top: -6px;vertical-align: middle"></i> {{capitalize status}}
+                                {{#if isSame status 'accepted'}}
+                                    {{#if isSame shippingStatus 'processing'}}
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-hourglass {{invoiceStatusStyle status}}"></span> Processing for
+                                        {{#if isPickup}}
+                                            pickup
+                                        {{else}}
+                                            delivery
+                                        {{/if}}
+                                    {{/if}}
+                                {{/if}}
+                        </span>
+                        </small>
+                    </h1>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-lilist"></i>Home</a></li>
+                        <li><a href="{{pathFor 'orders.list'}}">Invoices</a></li>
+                        <li class="active">{{invoiceNumber}}</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="sub-content-header border">
+                <div class="container-fluid">
+                    <div class="col-sm-12">
+                        <div class="pull-left">
+                            <span><i class="{{paymentStatusStyle order.paymentStatus}} glyphicon icon-orderslist"></i> <b class="fs16 f_helvetcia">Order</b>&nbsp;&nbsp;&nbsp;<span class="{{paymentStatusStyle order.paymentStatus}}">{{#linkTo route="orders.detail" _id=orderId}}{{orderNumber}}{{/linkTo}}</span></span>
+                            <br/>
+                        <span class="sub-content-payments">
+                            <span>Order Value&nbsp;&nbsp;<b class="f_helvetcia">{{formatMoney order.total order.currency}}</b></span>&nbsp;&nbsp;
+                            <span>Applied Credits&nbsp;&nbsp;<b class="f_helvetcia">{{formatMoney order.appliedCredits order.currency}}</b></span>&nbsp;&nbsp;
+                            <span>Payments&nbsp;&nbsp;<b class="f_helvetcia">{{currency.symbol}} {{formatMoney order.payments}}</b></span>
+                        </span>
+                        </div>
+                        <div class="pull-right">
+                            <div class="hidden-xs hidden-sm">
+                                    <a href="#" id="print-button" class="btn btn-default btn-sm">Print <i class="glyphicon icon-print"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="col-sm-12">
+
+            <section class="content sub-content-sec">
+                <div class="">
+
+                    <div class="col-sm-12">
+                        <div class="well-custom bg-white col-lg-12 bg_white ptop20 pbottom20 mb">
+                            <form class="form-horizontal form-empty">
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Customer</label>
+                                        {{#popover 'focus'}}
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static"><a href="#" tabindex="0" data-toggle="popover" data-html="true" title="{{customerName}}"
+                                               data-content="<i class='glyphicon glyphicon-barcode'></i> <span class='small'>{{customerNumber}}</span><br/>
+                                                             <i class='glyphicon glyphicon-level-up'></i> {{customerGroup}}<br/>
+                                                             <a href={{pathFor 'distributors.detail' _id=customerId}} class='small'>View Details</a>">
+                                                             {{customerName}}</a></p>
+                                        </div>
+                                        {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Bill To</label>
+                                        {{#popover 'focus'}}
+                                            <div class="col-sm-6">
+                                                <a href="#" tabindex="0" class="form-control-static" data-toggle="popover" data-html="true" title="{{billingAddress.company}}"
+                                                   data-content="{{billingAddress.address1}}<br/>
+                                                          {{#if billingAddress.address2}}
+                                                       {{billingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                       {{#if billingAddress.city}}
+                                                           {{billingAddress.city}}
+                                                       {{/if}}
+                                                       {{#if billingAddress.state}}
+                                                           {{#if billingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{billingAddress.state}}
+                                                       {{/if}}
+                                                       {{#if billingAddress.country}}
+                                                           {{#if billingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{billingAddress.country}}
+                                                       {{/if}}">
+                                                    {{billingAddress.company}}</a>
+                                            </div>
+                                        {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Ship To</label>
+                                        {{#popover 'focus'}}
+                                            <div class="col-sm-6">
+                                                <a href="#"  tabindex="0" class="form-control-static" data-toggle="popover" data-html="true" title="{{shippingAddress.company}}"
+                                                   data-content="{{shippingAddress.address1}}<br/>
+                                                          {{#if shippingAddress.address2}}
+                                                       {{shippingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                       {{#if shippingAddress.city}}
+                                                           {{shippingAddress.city}}
+                                                       {{/if}}
+                                                       {{#if shippingAddress.state}}
+                                                           {{#if shippingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{shippingAddress.state}}
+                                                       {{/if}}
+                                                       {{#if shippingAddress.country}}
+                                                           {{#if shippingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{shippingAddress.country}}
+                                                       {{/if}}">
+                                                    {{shippingAddress.company}}</a>
+                                            </div>
+                                        {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Ship From</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{printLocation order.stockLocationId}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Posting Date</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{formatTime issuedAt}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Shipping Date</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{formatTime shipAt}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Email</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{order.contactEmail}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Phone</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{order.contactPhone}}</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Reference</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">
+                                                {{#if reference}}
+                                                  {{reference}}
+                                                {{else}}
+                                                    <span class="text-muted">None</span>
+                                                {{/if}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+
+
+                    <div class="col-sm-12">
+                        <div class="module-block no_mobile width_700 no-border">
+                            <div class="fix_width">
+                                <table class="table table-create">
+                                    <thead style="color: #999999;">
+                                    <tr>
+                                        <td>Item Name</td>
+                                        <td>Unit</td>
+                                        <td class="text-right">Price ({{currency.symbol}})</td>
+                                        <td class="text-right">Quantity</td>
+                                        <td class="text-right text-nowrap">Discounts (%)</td>
+                                        <td class="text-right text-nowrap">Tax (%)</td>
+                                        <td class="text-right">Total ({{currency.symbol}})</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="background-color: #fff;">
+
+                                    {{#each standardItems}}
+                                            <tr>
+                                                <td data-toggle="tooltip" title="{{variantInfo variantId 'code'}}">{{variantInfo variantId 'name'}} </td>
+                                                <td>{{variantInfo variantId 'uom'}}</td>
+                                                <td class="text-right">{{formatMoneyD price}}</td>
+                                                <td class="text-right">{{quantity}}</td>
+                                                <td class="text-right">{{discount}}</td>
+                                                <td class="text-right">{{taxRateOverride}}</td>
+                                                <td class="td-gray f_helvetcia text-right text-nowrap"><b>{{formatMoneyD itemTotal}}</b></td>
+                                                <td class="td-gray"></td>
+                                            </tr>
+                                    {{/each}}
+                                    {{#each promoItems}}
+                                            <tr>
+                                                <td data-toggle="tooltip" title="{{variantInfo variantId 'code'}}">{{variantInfo variantId 'name'}} </td>
+                                                <td>{{variantInfo variantId 'uom'}}</td>
+                                                <td class="text-right">{{formatMoneyD price}}</td>
+                                                <td class="text-right">{{quantity}}</td>
+                                                <td class="text-right">{{discount}}</td>
+                                                <td class="text-right">{{taxRateOverride}}</td>
+                                                <td class="td-gray text-right" style="color: #949e00;"><span class="icon-gift"></span> Promo</td>
+                                                <td class="td-gray"></td>
+                                            </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                                <div class="pull-right container-fluid total-block-wrapper">
+                                    <div class="clearfix hidden-lg"></div>
+                                    <br class="hidden-lg">
+
+                                    <div class="clearfix fix_width">
+                                        <dl class="dl-horizontal padd_l40px total-table">
+                                            <dt class="text-muted">Discounts:</dt>
+                                            <dd class="f_helvetcia text-right text-danger"><b>{{openP}}{{formatMoney discounts currency}}{{closeP}}</b></dd>
+                                            <dt class="text-muted">Sub Total:</dt>
+                                            <dd class="f_helvetcia text-right"><b>{{formatMoney subTotal currency}}</b></dd>
+                                            <dt class="text-muted">Tax (VAT):</dt>
+                                            <dd class="f_helvetcia text-right"><b>{{formatMoney taxes currency}}</b></dd>
+                                            <dt><b>TOTAL:</b></dt>
+                                            <dd class="f_helvetcia"><b>{{formatMoney total currency}}</b></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="clearfix"></div>
+
+                    <div class="clearfix"></div>
+
+
+
+                    <div class="clearfix"></div>
+
+                    <div class="col-sm-12 col-xs-12">
+                        <div class="module-block messages-block">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p class="lead text-uppercase">Messages</p>
+                                </div>
+                                <div class="el">
+                                    <div class="col-sm-12">
+                                        <div class="col-sm-12">
+                                            <span class="glyphicon glyphicon-mail icon-mailarrow message_ico text-warning"></span>
+                                            <a href="#" class="user-link">
+                                            {{#if currentUserAvatar }}
+                                               <img class="img-circle" src="{{currentUserAvatar.url store='avatarsSmall'}}" alt="">
+                                            {{else}}
+                                                <img class="img-circle" src="/img/guest.png" alt="">
+                                            {{/if}}
+                                                <span>{{userFullName Meteor.userId}}</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 message">
+                                        <div class="col-sm-12 text_block">
+                                            <form id="invoice-note">
+                                                <div class="input-group">
+                                                    <input type="text" name='txtNote' class="form-control"
+                                                           placeholder="Enter a message"/>
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn btn-default"
+                                                            style="margin-left: 12px;"><span
+                                                            class="glyphicon icon-smallright"></span>
+                                                    </button>
+                                            </span>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                {{#each invoiceNotes}}
+                                    <div class="el">
+                                        <div class="col-sm-12">
+                                            <div class="col-sm-12">
+                                                <span class="glyphicon icon-mail message_ico"></span>
+                                                <a href="#" class="user-link">
+                                                {{#if avatar }}
+                                                    <img class="img-circle" src="{{avatar.url store='avatarsSmall'}}" alt="">
+                                                 {{else}}
+                                                    <img class="img-circle" src="/img/guest.png" alt="">
+                                                {{/if}}
+                                                    <span>{{userFullName userId}}</span>
+                                                </a>
+                                                <span class="date">{{formatTime createdAt 'fromNow'}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12 message">
+                                            <div class="col-sm-12 text_block">
+                                                {{body}}
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="col-sm-12">
+                        <div class="module-block">
+                            <p class="lead text-uppercase">RECENT ACTIVITIES</p>
+
+                            <table class="table">
+                                <thead style="color: #999999;">
+                                <tr>
+                                    <td>Date</td>
+                                    <td>Details</td>
+                                </tr>
+                                </thead>
+                                <tbody class="bg_white">
+                                {{#each history}}
+                                <tr>
+                                    <td class="">{{formatTime createdAt 'withTime'}}</td>
+                                    <td class="">{{textFormat event}}</td>
+                                </tr>
+                                {{ else }}
+                                    <tr>
+                                        <td colspan="6">
+                                            No activities available.
+                                        </td>
+                                    </tr>
+                                {{/each}}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </section>
+
+        </div>
+        {{ else }}
+            <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-sm-6">
+                    <h1 class="pull-left">
+                        Invoices
+                    </h1>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-lilist"></i>Home</a></li>
+                        <li><a href="{{pathFor 'orders.list'}}">Invoices</a></li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+            {{>DocumentNotFound}}
+        {{/if}}
+
+    </div>
+</template>

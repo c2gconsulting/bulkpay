@@ -1,0 +1,80 @@
+[{
+  "baseUOM": "EF",
+  "name": "Elfimo Pharmacy Ventures",
+  "domains": [
+      "base.tradedepot.co",
+      "base.sandbox.tradedepot.co",
+      "localhost",
+      "dev.example.com"
+  ],
+  "taxes": [{
+    "taxesIncluded": null,
+    "taxShipping": null,
+    "countyTaxes": true
+  }],
+  "locale": "en",
+  "timezone": "WAT",
+  "unitsOfMeasure": {
+    "OZ": {
+      "name": "Ounces"
+    },
+    "LB": {
+      "name": "Pounds"
+    },
+    "GR": {
+      "name": "Grams"
+    },
+    "KG": {
+      "name": "Kilograms"
+    }
+  },
+  "currencies": [
+    "NGN",
+    "USD"
+  ],
+  "country": "NG",
+  "addressBook": [{
+    "company": "Acme Company Ltd",
+    "fullName": "Petyr Roman",
+    "address1": "259 Etim Inyang",
+    "address2": "Ste. 7",
+    "city": "Victoria Island",
+    "region": "LA",
+    "postal": "101241",
+    "country": "NG",
+    "phone": "8885551212",
+    "isCommercial": true,
+    "isShippingDefault": true,
+    "isBillingDefault": true
+  }],
+  "defaultRoles": [
+    "orders/manage",
+    "customers/view"
+  ],
+  "layout": [{
+    "layout": "ApplicationLayout",
+    "workflow": "ApplicationLayout",
+    "theme": "default",
+    "enabled": true
+  }, {
+    "layout": "ShopLayout",
+    "workflow": "ShopLayout",
+    "collection": "Cart",
+    "theme": "default",
+    "enabled": true
+  }, {
+    "layout": "ExtLayout",
+    "workflow": "ExtLayout",
+    "collection": "Orders",
+    "theme": "default",
+    "enabled": true
+  }],
+  "settings": {
+    "rounding": {
+      "NGN": 5
+    },
+    "promotions": {
+      "excludedOrderTypes": [30]
+    }
+  }
+}]

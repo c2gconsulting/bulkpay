@@ -1,0 +1,20 @@
+<template name="GlobalSearchReturnEntry">
+    <div class="global-search-return-entry">
+        <div class="thumbnail-wrapper d48 circular returns-shade text-white inline m-t-10">
+            <div>
+                <i class="glyphicon icon-return"></i>
+            </div>
+        </div>
+        <div class="p-l-10 inline p-t-5">
+            <h5 class="m-b-5">
+                <span class="semi-bold result-name">{{#linkTo route="returns.detail" class="view-search-document" _id=_id}}{{returnOrderNumber}}{{/linkTo}}</span>
+                <span class="{{approvalStatusStyle status}} small-text-global">  &bull; {{capitalize status}}</span>
+            </h5>
+            {{#if customerName}}
+                <p class="hint-text small">{{customerName}}</p>
+            {{else}}
+                <p class="hint-text small">Unspecified.</p>
+            {{/if}}
+        </div>
+    </div>
+</template>

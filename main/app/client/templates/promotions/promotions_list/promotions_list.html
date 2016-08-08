@@ -1,0 +1,159 @@
+<template name="PromotionsList">
+    <div class="container-fluid">
+        <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-sm-6">
+                    <h1 class="pull-left">
+            Promotions
+          </h1>
+                    <form role="search" id="promotion-search-form" class="hidden-sm hidden-md hidden-xs" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <div class="inner-addon right-addon">
+                                    <i class="glyphicon icon-search"></i>
+                                    <input type="text" id="promotion-search" class="form-control" placeholder="Search Promotions">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-gift"></i>Home</a></li>
+                        <li class="active">Promotions</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="sub-content-header">
+                <div class="container-fluid">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="{{pathFor 'promotions.create'}}" class="fs16 btn btn-default">Add New Promotion... <i class="glyphicon icon-add"></i></a>
+                            <a href="{{pathFor 'rebates.list'}}" class="fs16 btn btn-default">View Rebates  <i class="glyphicon glyphicon-eye-open"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="col-sm-12">
+            <section class="content sub-content">
+                <div>
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="{{tabClass 'active'}}"><a href="#active" role="tab" data-toggle="tab">Active</a></li>
+                        <li role="presentation" class="{{tabClass 'pending'}}"><a href="#pending" role="tab" data-toggle="tab">Pending <span class="label label-info">{{pendingPromotionCount}}</span></a></li>
+                        <li role="presentation" class="{{tabClass 'ended'}}"><a href="#ended" role="tab" data-toggle="tab">Deactivated</a></li>
+                        <div class="clearfix hidden-md hidden-lg"></div>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active no_mobile">
+                            <br/>
+                            <table class="table table-hover tr_pointer">
+                                <thead>
+                                    <tr>
+                                        <td><a href="#sort" class="text-muted" data-key="add @index 1"> # <small><i class="{{sortedBy '@index'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="name">Name <small><i class="{{sortedBy 'name'}}"></i></small></a>
+                                        </td>
+                                        <td><a href="#sort" class="text-muted" data-key="startDate">Start Date<small><i class="{{sortedBy 'startDate'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="endDate">End Date<small><i class="{{sortedBy 'endDate'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="createdAt">Date Added<small><i class="{{sortedBy 'createdAt'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="rules">Rules<small><i class="{{sortedBy 'rules'}}"></i></small></a></td>
+                                        <td><a href="#sort" class="text-muted" data-key="rewards">Rewards<small><i class="{{sortedBy 'rewards'}}"></i></small></a></td>
+                                        <td>Status</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                    {{#if searchActive}}
+                                        {{#if searchQueryReturned}}
+                                            {{#each searchPromotions}}
+                                                <tr>
+                                                    <td class="promotion-line">{{add @index 1}}</td>
+                                                    <td class="text-info promotion-line">{{name}}</td>
+                                                    <td class="promotion-line">{{prettyStartDate}}</td>
+                                                    <td class="promotion-line">{{prettyEndDate}}</td>
+                                                    <td class="promotion-line">{{prettyCreatedAt}}</td>
+                                                    <td class="promotion-line">{{size rules}}</td>
+                                                    <td class="promotion-line">{{size rewards}}</td>
+                                                    <td>
+                                                        <div class="col-sm-7">
+                                                            <div class="onoffswitch-edit">
+                                                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch-{{_id}}" checked={{isActive status}}  disabled={{isActive status}}>
+                                                                <label class="onoffswitch-label" for="myonoffswitch-{{_id}}"></label>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td> <a class="btn btn-info btn-sm" href="#" id="clone-button">Clone&nbsp;<i class="glyphicon glyphicon-duplicate pull-right"></i></a></td>
+                                                    {{#if notEnded status}}
+                                                    <td> <a class="btn btn-warning btn-sm " href="#" id="edit-button">Edit&nbsp;<i class="glyphicon glyphicon-edit"></i></a></td>
+                                                    <td><a class="btn btn-danger btn-sm" id="delete-promotion">Deactivate&nbsp;<i class="glyphicon glyphicon-off"></i></a></td>{{/if}}
+                                                </tr>
+                                            {{else}}
+                                                <tr>
+                                                    <td colspan="9">
+                                                        No <span class="text-lowercase">{{activeStatus}}</span> promotion match your search terms
+                                                    </td>
+                                                </tr>
+                                            {{/each}}
+                                        {{else}}
+                                            <tr>
+                                                <td colspan="9">
+                                                    <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                                </td>
+                                            </tr>
+                                        {{/if}}
+                                    {{else}}
+                                        {{#each promotions}}
+                                            <tr>
+                                                <td class="promotion-line">{{add @index 1}}</td>
+                                                <td class="text-info promotion-line">{{name}}</td>
+                                                <td class="promotion-line">{{prettyStartDate}}</td>
+                                                <td class="promotion-line">{{prettyEndDate}}</td>
+                                                <td class="promotion-line">{{prettyCreatedAt}}</td>
+                                                <td class="promotion-line">{{size rules}}</td>
+                                                <td class="promotion-line">{{size rewards}}</td>
+                                                <td>
+                                                    <div class="col-sm-7">
+                                                        <div class="onoffswitch-edit">
+                                                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch-{{_id}}" checked={{isActive status}}  disabled={{isActive status}}>
+                                                            <label class="onoffswitch-label" for="myonoffswitch-{{_id}}"></label>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td> <a class="btn btn-info btn-sm" href="#" id="clone-button">Clone&nbsp;<i class="glyphicon glyphicon-duplicate pull-right"></i></a></td>
+                                                {{#if notEnded status}}
+                                                <td> <a class="btn btn-warning btn-sm " href="#" id="edit-button">Edit&nbsp;<i class="glyphicon glyphicon-edit"></i></a></td>
+                                                <td><a class="btn btn-danger btn-sm" id="delete-promotion">Deactivate&nbsp;<i class="glyphicon glyphicon-off"></i></a></td>{{/if}}
+                                            </tr>
+                                        {{else}}
+                                            <tr>
+                                                <td colspan="9">
+                                                    No promotion is {{activeStatus}} at the moment.
+                                                </td>
+                                            </tr>
+                                        {{/each}}
+                                    {{/if}}
+
+                                    <!-- {{/if}} -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {{#if Template.subscriptionsReady}} {{#if hasMorePromotions}}
+                    <div id="showMoreResults" href="#">&nbsp;</div>
+                    {{/if}} {{#if hasMoreSearchResults}}
+                    <div id="showMoreResults" href="#">&nbsp;</div>
+                    {{/if}} {{else}}
+                    <div class="col-xs-12">
+                        <div class="loading">{{> spinner}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+            </section>
+        </div>
+    </div>
+</template>

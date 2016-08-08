@@ -1,0 +1,82 @@
+<template name="DistributorAddressesSection">
+    <div class="col-sm-12">
+        <div class="row">
+            {{#if hasAddressBook }}
+            <div class="col-sm-4">
+                <div class="module-block" id="billing" data-customerId="{{_id}}">
+                    <p class="lead text-uppercase">Billing</p>
+                    {{> DistributorSelectBillingAddress}}
+                    <div class="block-icon">
+                        <div class="block-icon-ico">
+                            <span class="glyphicon icon-map"></span>
+                        </div>
+                        <address class="block-icon-content">
+                            {{{formattedAddresses activeBillingAddress}}}
+                        </address>
+                    </div>
+                    {{#if activeBillingAddress.phone }}
+                    <div class="block-icon">
+                        <div class="block-icon-ico">
+                            <span class="glyphicon icon-phone"></span>
+                        </div>
+                        <address class="block-icon-content">
+                                {{activeBillingAddress.phone}}
+                        </address>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="module-block" id="shipping" data-customerId="{{_id}}">
+                    <p class="lead text-uppercase">SHIPPING</p>
+
+                    {{> DistributorSelectShippingAddress}}
+
+                    <div class="block-icon">
+                        <div class="block-icon-ico">
+                            <span class="glyphicon icon-map"></span>
+                        </div>
+                        <address class="block-icon-content">
+                            {{{ formattedAddresses activeShippingAddress }}}
+                        </address>
+                    </div>
+                    {{#if activeShippingAddress.phone }}
+                    <div class="block-icon">
+                        <div class="block-icon-ico">
+                            <span class="glyphicon icon-phone"></span>
+                        </div>
+                        <address class="block-icon-content">
+                            {{activeShippingAddress.phone}}
+                        </address>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{ else }}
+
+                <div class="col-sm-8">
+                    <div class="module-block" id="billing">
+                        <p class="alert alert-default">No shipping and billing address available at the moment</p>
+                    </div>
+                </div>
+            {{/if}}
+            <div class="col-sm-4">
+                <div class="module-block">
+                    <p class="lead text-uppercase">DELIVERY DEFAULTS</p>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios1" value="0" {{checkedIf isDefaultShipping}} disabled>
+                            I will pick it up
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="optionsRadios" id="optionsRadios2" value="1" {{checkedIf isNotDefaultShipping}} disabled>
+                            Deliver to me
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

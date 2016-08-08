@@ -1,0 +1,20 @@
+<template name="DistributorDepositChart">
+    <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
+        <div class="well">
+            <div class="media">
+                <div class="media-left">
+                    <div class="chart-responsive">
+                        <canvas id="dchart" style="height: 30px;width: 30px"></canvas>
+                    </div>
+                </div>
+                <div class="media-body">
+                    <h4 class="mt0">DEPOSITS<br/><small>{{numberToCurrency account.currentDeposits}}</small></h4>
+                </div>
+            </div>
+            <div class="chart-responsive">
+                <canvas id="depositsLine" style="height: 35px;width: 100%"></canvas>
+            </div>
+        </div>
+        <div id="chartjs-tooltip-deposits" class="chartjs-tooltip"></div>
+    </div>
+</template>

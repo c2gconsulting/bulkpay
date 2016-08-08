@@ -1,0 +1,73 @@
+    <template name="Login">
+<div class="container main-container">
+    <div class="row">
+        <div class="text-center col-sm-12">
+            <h2 style="font-size: 32px;">Sign in to {{tenantUrl}}<br/><small style="color:#484848;font-size:14px;">Enter your email address and password</small></h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="container-fluid">
+            <div class="modal modal-emulator modal-info" id="clientSignin" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm-8 col-sm-offset-2">
+                                        <form class="form-horizontal signin_client">
+                                            <div class="form-group signin_email">
+                                                <span class="help-block hidden-nerr"></span>
+                                                <div class="inner-addonx left-addonx" style="color: #b1b1b1">
+                                                    <i class="glyphicon icon-user"></i>
+                                                    <input type="email" class="form-control signin_email icon" placeholder="Email address" required>
+                                                    <i class="glyphicon icon-pass signin_paswword"></i>
+                                                    <input type="password" class="form-control signin_paswword icon" placeholder="Password" required>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" id="btn-login" class="btn btn-info btn-block ladda-button" data-style="expand-right" data-size="s"><span class="ladda-label">Sign in</span></button>
+                                            </div>
+                                            <br/>
+                                            <br/>
+                                        </form>
+                                    </div>
+                                    <div class="col-sm-12" style="">
+                                        <div class="row footer_modal">
+                                            <div class="pull-left">
+                                                <label>
+                                                    <input type="checkbox"> Remember me
+                                                </label>
+                                            </div>
+                                            <div class="pull-right">
+                                                <a id="reset-password-l" href="#">Forgot Your Password?</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <p class="text-center" style="margin-top: 10px">
+        To start using TradeDepot, you'll need to be invited by your organization's administrator
+        <br/>
+        <br/>
+        <a href="#" class="big_link">Sign in to a different team</a>
+    </p>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+</div>
+</template>

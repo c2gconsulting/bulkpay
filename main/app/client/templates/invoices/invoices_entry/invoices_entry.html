@@ -1,0 +1,14 @@
+<template name="InvoicesEntry">
+    <tr class="invoice-entry">
+        <td>{{invoiceNumber}}</td>
+        <td>
+            {{#linkTo route="orders.detail" _id=orderId}}{{orderNumber}}{{/linkTo}}
+        </td>
+        <td>{{formatTime issuedAt}}</td>
+        <td>{{formatMoney total currency}}</td>
+        <td><span class="{{textStyle}}">&bull; {{capitalize status}}</span></td>
+        <td>
+            {{#linkTo route="distributors.detail" _id=customerId}}{{customerName}}{{/linkTo}} <span class="small text-muted">{{customerNumber}}</span>
+        </td>
+    </tr>
+</template>

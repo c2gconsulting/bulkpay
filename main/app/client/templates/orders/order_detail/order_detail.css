@@ -1,0 +1,103 @@
+/*****************************************************************************/
+/* OrderDetail: Style */
+/*****************************************************************************/
+
+.onoffswitch {
+    position: relative; width: 36px; top: 3px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-edit {
+    position: relative; width: 36px; top: 10px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer; text-align: right;
+    height: 18px; padding: 0; line-height: 18px;
+    border: 2px solid #CCCCCC; border-radius: 18px;
+    background-color: #FFFFFF;
+    transition: background-color 0.3s ease-in;
+}
+.onoffswitch-label:before {
+    content: "";
+    display: block; width: 18px; margin: 0px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 16px;
+    border: 2px solid #CCCCCC; border-radius: 18px;
+    transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label {
+    background-color: #37A9D6;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label, .onoffswitch-checkbox:checked + .onoffswitch-label:before {
+   border-color: #37A9D6;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+    right: 0px; 
+}
+
+.overlay
+ {
+     background-image: url(img/cancelled.png); 
+     background-repeat: no-repeat; 
+     background-attachment: fixed;
+ }
+
+
+a.link-noline:focus {
+    text-decoration: none!important;
+}
+
+a.link-noline:visited {
+    text-decoration: none!important;
+}
+
+a.link-noline:hover {
+    text-decoration: none!important;
+}
+
+a.link-noline:active {
+    text-decoration: none!important;
+}
+
+.modal-header{
+    border-radius: 5px 5px 0 0;
+}
+
+.modal-title {
+    padding-left: 33px;
+    padding-right: 33px;
+    font-weight: 700;
+    font-size: 1.42857143em !important;
+    text-align: center;
+    line-height: 1em;
+    text-transform: uppercase;
+}
+
+.modal-header .close {
+    opacity: 1;
+    background: none;
+    color: #fff;
+    font-size: 28px;
+}
+
+.download-link{
+    color: #676464;
+}
+
+.download-link:hover{
+    text-decoration: none;
+    color: #878484 !important;
+}
+
+.pull-right .dropdown-menu:after {
+    left: auto;
+    right: 13px;
+}
+.pull-right .dropdown-menu {
+    left: auto;
+    right: 0;
+}

@@ -1,0 +1,413 @@
+<template name="OrderConfirm">
+{{#each arrayedOrder}}
+ <div class="container-fluid">
+    <section class="row content-header inverse z_index_99 bg-info">
+        <div class="container-fluid ">
+            <div class="col-sm-8">
+                <h1 class="pull-left">
+                    Create an Order
+                    <small>&nbsp;</small>
+                </h1>
+                <form role="search" class="hidden-xs hidden-sm" style="display: inline-block;padding-top: 20px;max-width:300px;">
+                    <div class="form-group select_type">
+                        <div class="col-sm-12">
+                            
+                            <select class="form-control" name="selectOrderType" disabled>
+                                {{#each orderTypes}}
+                                <option value="{{code}}" {{selected ../orderType code}}>&nbsp;&nbsp;&nbsp;{{name}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 hidden-xs hidden-sm">
+                <ol class="breadcrumb">
+                    <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-order" style="color: #fff"></i>Home</a></li>
+                    <li class="active">Create an order</li>
+                </ol>
+            </div>
+        </div>
+
+    </section>
+    <section class="row content-header">
+		<div class="sub-content-header border">
+		    <div class="container-fluid">
+            	<div class="col-sm-12">
+                    <div class="pull-left">
+                    	{{#if customerHasCredit}}
+                    	<span><i class="text-success glyphicon glyphicon-dashboard"></i> <b class="fs16 f_helvetcia">Credit Status</b>&nbsp;&nbsp;&nbsp;<span class="text-success">Active</span></span>
+                        &nbsp; | &nbsp; 
+                        {{/if}}
+                        <span><i class="{{promotionStatusStyle}} glyphicon icon-gift"></i> <b class="fs16 f_helvetcia">Promotions</b>&nbsp;&nbsp;&nbsp;<span class="{{promotionStatusStyle}}">{{capitalize promotionStatus}}</span></span>
+                        <br/>
+                        <span class="sub-content-payments">
+                            {{#if customerHasCredit}}
+                            <!--<span>Credit Limit&nbsp;&nbsp;<b class="f_helvetcia">{{formatMoney customer.creditLimit currency}}</b></span>&nbsp;&nbsp;-->
+                            <span>Available Credit &nbsp;&nbsp;<b class="f_helvetcia">{{formatMoney customer.availableCreditLimit currency}}</b></span>&nbsp;&nbsp;&nbsp;|
+                            {{/if}}
+                            {{#if hasPromotions}}
+	                        <span class="text-muted">
+	                            &nbsp;&nbsp;&nbsp;<span>Promotions have been applied to this order</span>&nbsp;&nbsp;
+	                        </span>
+	                        {{else}}
+	                        <span class="text-muted">
+	                            &nbsp;&nbsp;&nbsp;<span>This order does not qualify for any active promotions</span>&nbsp;&nbsp;
+	                        </span>
+	                        {{/if}}
+                            
+                        </span>
+                       
+                    </div> 
+                    <div class="pull-right">
+                        <div class="hidden-xs hidden-sm">
+                            <button class="btn btn-success {{disableSubmit}} ladda-button" {{disableSubmit}} id="confirm-order" data-style="expand-right" data-size="s"><span class="ladda-label">Create the Order <span class="glyphicon icon-order"></span></span></button>
+                            <button class="btn btn-default" id="cancel-confirm">&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>                                 
+                        </div>
+                        
+                    </div>  
+                </div>
+            </div>
+        </div>
+	</section>	
+    <div class="col-sm-12">
+        <section class="content sub-content-sec">
+            <div class="container-fluid">
+                <div class="row">
+	                <div class="col-sm-12 {{cancelledWatermark}}">
+	                    <div class="well-custom bg-white col-lg-12 bg_white ptop20 pbottom20 mb">
+	                        <form class="form-horizontal form-empty">
+	                            <div class="col-sm-12 col-md-4 col-lg-4">
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Customer</label>
+	                                    {{#popover 'focus'}}
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static"><a href="#" tabindex="0" data-toggle="popover" data-html="true" title="{{customer.name}}" 
+	                                           data-content="<i class='glyphicon glyphicon-barcode'></i> <span class='small'>{{customer.customerNumber}}</span><br/>
+	                                                         <i class='glyphicon glyphicon-level-up'></i> {{customer.customerGroup}}<br/>
+	                                                         <a href={{pathFor 'distributors.detail' _id=customer._id}} class='small'>View Details</a>">
+	                                                         {{customer.customerNumber}} - {{customer.name}}</a></p>
+	                                    </div>
+	                                    {{/popover}}
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Bill To</label>
+	                                    {{#each billingAddress}}
+	                                    	{{#popover 'focus'}}
+	                                    <div class="col-sm-6">
+	                                        <a href="#" class="form-control-static" tabindex="0" data-toggle="popover" data-html="true" title="{{company}}" 
+	                                            data-content="{{address1}}<br/> 
+	                                                          {{#if address2}}  
+	                                                            {{address2}}<br/> 
+	                                                          {{/if}}
+	                                                          {{#if city}}  
+	                                                            {{city}} 
+	                                                          {{/if}}
+	                                                          {{#if state}}  
+	                                                            {{#if city}}  
+	                                                            ,  
+	                                                            {{/if}}
+	                                                            {{state}} 
+	                                                          {{/if}}
+	                                                          {{#if country}}  
+	                                                            {{#if state}}  
+	                                                            ,   
+	                                                            {{/if}}
+	                                                            {{country}} 
+	                                                          {{/if}}">
+	                                            {{prune company 40}}</a>
+	                                    </div>
+	                                    	{{/popover}}
+	                                    {{/each}}
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Ship To</label>
+	                                    {{#each shippingAddress}}
+	                                    	{{#popover 'focus'}}
+	                                    <div class="col-sm-6">
+	                                        <a href="#" tabindex="0" class="form-control-static" data-toggle="popover" data-html="true" title="{{company}}" 
+	                                        data-content="{{address1}}<br/> 
+	                                                          {{#if address2}}  
+	                                                            {{address2}}<br/> 
+	                                                          {{/if}}
+	                                                          {{#if city}}  
+	                                                            {{city}} 
+	                                                          {{/if}}
+	                                                          {{#if state}}  
+	                                                            {{#if city}}  
+	                                                            ,  
+	                                                            {{/if}}
+	                                                            {{state}} 
+	                                                          {{/if}}
+	                                                          {{#if country}}  
+	                                                            {{#if state}}  
+	                                                            ,   
+	                                                            {{/if}}
+	                                                            {{country}} 
+	                                                          {{/if}}">
+	                                            {{prune company 40}}</a>
+	                                    </div>
+	                                    	{{/popover}}
+	                                    {{/each}}
+	                                </div>
+	                                <!--
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Order Type</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{printOrderType orderType}}</p>
+	                                    </div>
+	                                </div>
+	                                -->
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Reference</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{reference}}</p>
+	                                    </div>
+	                                </div>
+	                                
+	                            </div>
+	                            <div class="col-sm-12 col-md-4 col-lg-4">
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Posting Date</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{formatTime issuedAt}}</p>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Sales Location</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{printLocation salesLocationId}}</p>
+	                                    </div>    
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Ship From</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{printLocation stockLocationId}}</p>
+	                                    </div>    
+	                                </div>
+	                               
+	                                
+	                                
+	                            </div>
+	                            <div class="col-sm-12 col-md-4 col-lg-4">
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Currency</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{currency.iso}}</p>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">PriceList</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{printPriceList priceListCode}}</p>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Pickup?</label>
+	                                    <div class="col-sm-6">
+	                                        <div class="onoffswitch">
+	                                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked="{{isPickup}}" disabled>
+	                                            <label class="onoffswitch-label" for="myonoffswitch"></label>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                                    
+	                                <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Sold By</label>
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static">{{userFullName assigneeId}}</p>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                            <div class="clearfix"></div>
+	                        </form>
+	                    </div>
+	                    <div class="clearfix"></div>
+	                </div>
+                    
+                    <div class="clearfix"></div>
+
+                    <div class="col-sm-12 col-xs-12">
+                        <div class="module-block no_mobile no_border">
+                            <div>
+                                <table class="table table-create">
+                                    <thead style="color: #999999;">
+                                    <tr>
+                                        <td class="item-fixed">Item</td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">Unit</td>
+                                        <td class="text-right hidden-xs hidden-sm text-nowrap"><span class="hidden-xs hidden-sm hidden-md hidden-lg">Unit</span> Price <span class="hidden-xs hidden-sm hidden-md">({{currency.symbol}})</span></td>
+                                        <td class="text-center">Quantity</td>
+                                        <td class="text-right hidden-xs hidden-sm">Available</td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md text-nowrap">Discounts <span class="hidden-xs hidden-sm hidden-md">(%)</span></td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md text-nowrap">Tax Rate <span class="hidden-xs hidden-sm hidden-md">(%)</span></td>
+                                        <td class="text-right text-nowrap">Total <span class="hidden-xs hidden-sm hidden-md">({{currency.symbol}})</span></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="background-color: #fff;">
+                                    {{#each standardItems}}
+                                    <tr>
+                                        <td class="item-fixed text-nowrap">
+                                        	{{bogusVariant.caption}}
+                                        </td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">{{bogusVariant.uom}}</td>
+                                        <td class="text-right hidden-xs hidden-sm text-nowrap">{{formatMoneyD price}}</td>
+                                        <td class="text-center">
+                                        	{{formatNumberZ quantity}}
+                                        </td>
+                                        <td class="text-muted text-right hidden-xs hidden-sm">{{formatMoney bogusVariant.available}}</td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">
+                                            <input type="number" class="input-transparent text-right" style="width: 40px" min="0" data-type="item" max="100" data-index="{{index}}" data-ifield="discount" placeholder=""  value="{{discount}}"/>
+                                        </td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">
+                                        	{{taxRateOverride}}
+                                        </td>
+                                        <td class="td-gray text-right f_helvetcia text-nowrap"><b>{{formatMoneyD itemTotal}}</b></td>
+                                        <td class="td-gray">
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                    {{#each promoItems}}
+                                    <tr>
+                                        <td class="item-fixed text-nowrap">
+                                        	{{bogusVariant.caption}}
+                                        </td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">{{bogusVariant.uom}}</td>
+                                        <td class="text-right hidden-xs hidden-sm text-nowrap">{{formatMoneyD price}}</td>
+                                        <td class="text-center">
+                                        	{{formatNumberZ quantity}}
+                                        </td>
+                                        <td class="text-muted text-right hidden-xs hidden-sm">{{formatMoney bogusVariant.available}}</td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">
+                                            <input type="number" class="input-transparent text-right" style="width: 40px" min="0" data-type="item" max="100" data-index="{{index}}" data-ifield="discount" placeholder=""  value="{{discount}}"/>
+                                        </td>
+                                        <td class="text-right hidden-xs hidden-sm hidden-md">
+                                        	{{taxRateOverride}}
+                                        </td>
+                                        <td class="td-gray text-right" style="color: #949e00;"><span class="icon-gift"></span> Promo</td>
+                                        <td class="td-gray">
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                    </tbody>
+                                </table>
+                                <div class="col-lg-5 col-md-6 col-sm-10 col-xs-12">
+                                    &nbsp;
+                                    
+                                </div>
+                                <div class="col-xs-12 col-md-6 col-sm-12 col-lg-7 pull-right">
+                                    <div class="clearfix hidden-lg"></div>
+                                    <br class="hidden-lg">
+    
+                                    <div class="clearfix">
+                                        <dl class="fluid-width-xs dl-horizontal total-table">
+                                        {{#if showShipping}}
+                                            <dt class="text-muted text-nowrap text-right">
+                                                Shipping:
+                                            </dt>
+                                            <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD shippingCosts currency}}</b></dd>
+                                        {{/if}}
+                                            <dt class="text-muted text-nowrap text-right">
+                                                Discounts:
+                                            </dt>
+                                            <dd class="f_helvetcia text-right text-nowrap text-danger"><b>{{openP}}{{formatMoneyD discounts currency}}{{closeP}}</b></dd>
+                                            <dt class="text-muted text-nowrap text-right">Sub Total:</dt>
+                                            <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD cSubTotal currency}}</b></dd>
+                                            <dt class="text-muted text-nowrap text-right">Tax (VAT):</dt>
+                                            <dd class="f_helvetcia text-right text-nowrap"><b>{{formatMoneyD cTaxes currency}}</b></dd>
+                                            <dt class="text-nowrap text-right"><b>TOTAL:</b></dt>
+                                            <dd class="f_helvetcia text-nowrap"><b>{{formatMoneyD cTotal currency}}</b></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+
+                    <div class="col-sm-12 col-xs-12">
+                        <div class="row">
+                            <div class="module-block">
+                                <div class="col-lg-5 col-sm-12 col-xs-12 hidden-xs hidden-sm">
+                                </div>
+                                <div class="clearfix hidden-lg"></div>
+                                <br class="hidden-lg"/>
+                                
+                                {{#if customer}}
+                                <div class="col-lg-3 col-xs-12 col-sm-6 col-md-4 pull-right">    
+                                    <div class="panel-cart panel panel-checkbox-color-conf">
+                                        <div class="panel-heading">
+                                            <div class="head checkbox text-uppercase">
+                                                    Applied Balance
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="summ h3">
+                                                <span name="spanBalance">{{formatMoneyD appliedCredits currency}}</span><br/>
+                                                
+                           
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-xs-12 col-sm-6 col-md-4 pull-right">    
+                                    <br class="hidden-sm hidden-md hidden-lg"/>
+                                    <div class="panel-cart panel panel-checkbox-color-cp-conf">
+                                        <div class="panel-heading">
+                                            <div class="head checkbox text-uppercase">
+                                                    {{cashPaymentMethod.name}} Payment 
+                                                    
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="summ h3">
+                                                <span name="spanBalance">{{formatMoneyD cashPayment currency}}</span><br/>
+                                                
+                                                
+                           
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-xs-12 col-md-12 col-sm-12">
+                                    <div class="">
+                                        <br/>
+                                        <div class="clearfix fix_width">
+                                            <dl class="fluid-width-xs dl-horizontal total-table pull-right">
+                                                <br class="hidden-lg hidden-md"/>
+                                                <dt class="text-nowrap"><b>TOTAL DUE:</b></dt>
+                                                <dd class="f_helvetcia text-nowrap"><b><span name="spanTotalDue">{{formatMoneyD totalDue currency}}</span></b></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                               {{/if}} 
+                            </div>
+                        </div>
+                    </div>
+                
+
+                    <div class="col-md-6 col-md-offset-6 col-sm-8 col-sm-offset-4 col-xs-offset-0 col-xs-12">
+                        <div class="module-block">
+                            <div class="pull-right hidden-md hidden-lg">
+                                <button class="btn btn-success {{disableSubmit}}" {{disableSubmit}} id="confirm-order">Create the Order <span class="glyphicon icon-order"></span></button>
+                                <button class="btn btn-default" id="cancel-confirm">&nbsp;&nbsp;Cancel&nbsp;&nbsp;</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+ </div>
+ {{/each}}
+</template>
+

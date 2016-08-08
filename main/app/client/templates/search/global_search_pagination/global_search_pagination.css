@@ -1,0 +1,11 @@
+/*****************************************************************************/
+/* GlobalSearchPagination: Style */
+/*****************************************************************************/
+.global-search-pagination {
+  margin-top: 20px;
+}
+
+.global-search-pages-label {
+  margin-left: 10px;
+  margin-right: 10px;
+}

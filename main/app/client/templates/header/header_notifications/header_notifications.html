@@ -1,0 +1,17 @@
+<template name="HeaderNotifications">
+    <a class="dropdown-toggle" data-toggle="dropdown">
+        <i class="glyphicon icon-bell"></i>
+        <span class="label label-info">{{unreadCount}}</span>
+    </a>
+    {{#if notificationsExist}}
+    <ul class="dropdown-menu menu-notifications">   
+            {{#each notifications}}
+            <li><a href="#"><span class="glyphicon glyphicon-list"></span>{{message}}</a></li>
+            <li role="separator" class="divider"></li>
+            {{/each}}
+            <li>
+                <a href="{{pathFor 'notifications.list'}}" class="btn btn-link text-uppercase" style="padding-top: 10px;padding-bottom: 15px;">More notifications</a>
+            </li>
+    </ul>
+    {{/if}}
+</template>

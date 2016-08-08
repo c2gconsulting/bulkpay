@@ -1,0 +1,21 @@
+<template name="DistributorSelectBillingAddress">
+    <small class="text-muted">Select billing address by default</small>
+    <br/>
+    <br/>
+    <select class="form-control changeAddress" id="" disabled>
+        {{#each billingAddresses }}
+           <option value="{{_id}}" {{selectedIf isSelectedBilling}}>{{company}}</option>
+        {{/each}}
+    </select>
+</template>
+
+<template name="DistributorSelectShippingAddress">
+    <small class="text-muted">Select shipping address by default</small>
+    <br/>
+    <br/>
+    <select class="form-control changeAddress" id="">
+        {{#each shippingAddresses }}
+            <option value="{{_id}}" {{selectedIf isSelectedShipping}}>{{company}}</option>
+        {{/each}}
+    </select>
+</template>

@@ -1,0 +1,35 @@
+machine:
+    services:
+        - docker
+        - elasticsearch
+        - rabbitmq-server
+        - redis
+    hosts:
+        dev.example.com: 127.0.0.1
+
+dependencies:
+    cache_directories:
+       - "~/docker"
+    override:
+        - mkdir -p ~/docker
+        # - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
+        - docker info
+        - scripts/buildall.sh $CIRCLE_BRANCH: # build all services
+            timeout: 1200
+        - scripts/runmongo.sh # run mongo off docker
+
+test:
+    override:
+        - scripts/runclusterservw.sh log 5000 20
+        - scripts/runclusterserv.sh search 4000
+        - scripts/runserv.sh notification 6000
+        - scripts/runclusterserv.sh main 3000
+        - sleep 10
+        - curl --retry 10 --retry-delay 5 -v http://localhost:3000
+
+deployment:
+    dockerhub:
+        branch: [develop, master]
+        commands:
+            - docker login -e $DOCKER_EMAIL -u $DOCKER_USERNAME -p $DOCKER_PASS
+            - scripts/dockerbuild/tagandpush.sh

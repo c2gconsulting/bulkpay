@@ -1,0 +1,8 @@
+{
+  "nodePath": "",
+  "docsPath": "../../../docs",
+  "meteorPort": 3333,
+  "initMeteor": true,
+  "updateMeteor": true,
+  "preamble": true
+}

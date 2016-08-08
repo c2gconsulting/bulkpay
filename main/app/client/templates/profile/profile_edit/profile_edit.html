@@ -1,0 +1,315 @@
+<template name="ProfileEdit">
+  <div class="profile-edit">
+      <div class="container-fluid">
+          <section class="row content-header">
+              <div class="container-fluid">
+                  <div class="col-sm-6">
+                      <h1 class="pull-left">
+                         Update profile &nbsp; <small class="text-muted">&bull; {{user.profile.fullName}}</small>
+                      </h1>
+                  </div>
+                  <div class="col-sm-6 hidden-xs">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-settings"></i>Home</a></li>
+                          <li><a href="{{pathFor 'profile.detail' _id=_id}}">Profile</a></li>
+                          <li class="active">Edit</li>
+                      </ol>
+                  </div>
+              </div>
+              <div class="sub-content-header">
+                  <div class="container-fluid">
+                      <div class="col-sm-12">
+                          <div class="pull-right">
+                              <a href="#" class="btn btn-success ladda-button" id="save" {{enableSubmit}}><span class="ladda-label">Save</span></a>
+                              <a href="#" class="btn btn-default" id="cancel-edit">Cancel</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          <div class="col-sm-12">
+
+              <section class="content sub-content">
+
+                  <div class="box box-lg panel panel-default">
+                      <div class="panel-body">
+                          <form class="form-horizontal">
+                              <div class="col-sm-12 col-md-2">
+                                  <div class="avatar text-center">
+                                      {{#if avatar}}
+                                          <img src="{{avatar.url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
+                                       {{ else }}
+                                          <img src="/admin/img/avatar.png" class="img-circle" id="avatar-image" /><br/>
+                                       {{/if}}
+                                      <div class="manual-upload">
+                                            <span class="btn btn-info mr0 mt20 fileinput-button">
+                                                <span>Choose Avatar</span>
+                                                 <input type="file" name="files[]" id="manualInput">
+                                            </span>
+                                          <div class="mt15 text-muted">
+                                              <small>JPG, GIF or PNG<br/>Max Size of 1M</small>
+                                              {{#if avatar}}
+                                              {{#unless avatar.isUploaded}}
+                                                  {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=true}}
+                                              {{/unless}}
+                                              {{/if}}
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-sm-12 col-md-3 col-lg-3 col-md-offset-1 col-lg-offset-1">
+                                  <div class="form-group {{#if errorsFor 'fullName'}}has-error{{/if}}">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted {{#if errorsFor 'fullName'}} text-danger {{/if}}" for="fullName">
+                                              {{#if errorsFor 'fullName'}}
+                                                  {{errorsFor 'fullName'}}
+                                              {{ else  }}
+                                                  Full Name
+                                              {{/if}}
+                                          </label>
+                                          <input type="text" class="form-control text-gray" id="fullName" name="fullName" value="{{profile.fullName}}"/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group {{#if errorsFor 'email'}}has-error{{/if}}">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted {{#if errorsFor 'email'}} text-danger {{/if}}" for="email">
+                                              {{#if errorsFor 'email'}}
+                                                  {{errorsFor 'email'}}
+                                              {{ else  }}
+                                                  E-mail address
+                                              {{/if}}
+                                          </label>
+                                          <input type="email" class="form-control text-gray" id="email" name="email" value="{{email}}"/>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-sm-12">
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="assigneeCode">Assignee Code</label>
+                                          <input type="email" name="assigneeCode" class="form-control text-gray" id="assigneeCode" value="{{assigneeCode}}"/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="workPhone">Work Phone</label>
+                                          <input type="text" name="workPhone" class="form-control text-gray" id="workPhone" value="{{profile.workPhone}}"/>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-sm-12">
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="homePhone">Mobile Phone</label>
+                                          <input type="text" name="homePhone" class="form-control text-gray" id="homePhone" value="{{profile.homePhone}}"/>
+                                      </div>
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+
+                  <div class="col-sm-12">
+                      <div class="module-block">
+                          <p class="lead text-uppercase"><i class="glyphicon glyphicon-flag"></i> Notification Settings</p>
+                          <div class="row">
+                              <div class="col-md-6 col-sm-6">
+                                  <div class="">
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderApprovals" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderApprovals}} id="orderApprovals" data-field="orderApprovals">
+                                                  <label class="onoffswitch-label" for="orderApprovals"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Approvals Notifications</h4>
+                                              <p class="text-muted">Receive email alerts when an order has been approved</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderCreated" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderCreated}} id="orderCreated" data-field="orderCreated">
+                                                  <label class="onoffswitch-label" for="orderCreated"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Created Notifications</h4>
+                                              <p class="text-muted"> Receive email alerts when an order in you assigned location is created or requires approval</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderUpdated" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderUpdated}} id="orderUpdated" data-field="orderUpdated">
+                                                  <label class="onoffswitch-label" for="orderUpdated"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Updated Notifications</h4>
+                                              <p class="text-muted">Receive email alerts when an order in you assigned location is updated</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderStatusChanged" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderStatusChanged}} id="orderStatusChanged" data-field="orderStatusChanged">
+                                                  <label class="onoffswitch-label" for="orderStatusChanged"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Status Changed</h4>
+                                              <p class="text-muted"> Receive email alerts when an order status changes</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderCommentsCreated" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderCommentsCreated}} id="orderCommentsCreated" data-field="orderCommentsCreated" >
+                                                  <label class="onoffswitch-label" for="orderCommentsCreated"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Comments Notifications</h4>
+                                              <p class="text-muted">Receive email alerts when an order in you assigned location receives a new comment</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="orderShipped" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.orderShipped}} id="orderShipped" data-field="orderShipped">
+                                                  <label class="onoffswitch-label" for="orderShipped"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Order Shipment Notifications</h4>
+                                              <p class="text-muted">Receive email alerts when an order you created or assigned to you receives a shipment</p>
+                                          </div>
+                                      </div>
+
+                                      <div class="media">
+                                          <div class="media-left media-middle">
+                                              <div class="onoffswitch-edit">
+                                                  <input type="checkbox" name="returnOrderCreated" class="onoffswitch-checkbox"
+                                                         checked={{user.notifications.returnOrderCreated}} id="returnOrderCreated" data-field="returnOrderCreated">
+                                                  <label class="onoffswitch-label" for="returnOrderCreated"></label>
+                                              </div>
+                                          </div>
+                                          <div class="media-body">
+                                              <h4 class="media-heading">Return Order Created Notifications</h4>
+                                              <p class="text-muted">Receive email alerts when a return order is created</p>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-md-6">
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="returnOrderApprovals" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.returnOrderApprovals}} id="returnOrderApprovals" data-field="returnOrderApprovals">
+                                              <label class="onoffswitch-label" for="returnOrderApprovals"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Return Order Approvals Notifications</h4>
+                                          <p class="text-muted">Receive email alerts when a return order requires your approval.</p>
+                                      </div>
+                                  </div>
+
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="invoiceCreated" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.invoiceCreated}} id="invoiceCreated" data-field="invoiceCreated">
+                                              <label class="onoffswitch-label" for="invoiceCreated"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Invoice Notifications</h4>
+                                          <p class="text-muted"> Receive email alerts when a new invoice is created.</p>
+                                      </div>
+                                  </div>
+
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="promotionsCreated" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.promotionsCreated}} id="promotionsCreated" data-field="promotionsCreated">
+                                              <label class="onoffswitch-label" for="promotionsCreated"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Promotions Created Notifications</h4>
+                                          <p class="text-muted">Receive email alerts when a new promotion is created.</p>
+                                      </div>
+                                  </div>
+
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="rebatesCreated" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.rebatesCreated}} id="rebatesCreated" data-field="rebatesCreated">
+                                              <label class="onoffswitch-label" for="rebatesCreated"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Promotions Rebates Created Notifications</h4>
+                                          <p class="text-muted">Receive email alerts when a new rebate is created.</p>
+                                      </div>
+                                  </div>
+
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="promotionApproved" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.promotionApproved}} id="promotionApproved" data-field="promotionApproved">
+                                              <label class="onoffswitch-label" for="promotionApproved"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Promotions Approval Notifications</h4>
+                                          <p class="text-muted">Receive email alerts when a promotion has been approved.</p>
+                                      </div>
+                                  </div>
+
+
+                                  <div class="media">
+                                      <div class="media-left media-middle">
+                                          <div class="onoffswitch-edit">
+                                              <input type="checkbox" name="paymentCreated" class="onoffswitch-checkbox"
+                                                     checked={{user.notifications.paymentCreated}} id="paymentCreated" data-field="paymentCreated">
+                                              <label class="onoffswitch-label" for="paymentCreated"></label>
+                                          </div>
+                                      </div>
+                                      <div class="media-body">
+                                          <h4 class="media-heading">Payments Notifications</h4>
+                                          <p class="text-muted">Receive email alerts when a payment has been received or created.</p>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="clearfix"></div>
+              </section>
+
+          </div>
+
+      </div>
+
+  </div>
+</template>

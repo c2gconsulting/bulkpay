@@ -1,0 +1,34 @@
+<template name="AttachmentsList">
+    <div class="upload-block" id="dropzone">
+        <div class="info_block">
+            Drop files here
+        </div>
+    </div>
+    <div class="manual-upload">
+                        <span class="btn btn-success fileinput-button">
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <span>Add files...</span>
+                    <input type="file" name="files[]" multiple="" id="manualInput">
+                </span>
+    </div>
+    <div class="clearfix"></div>
+    <h5>Attachments</h5>
+    <ul class="attachments-list">
+        {{#each assets}}
+            <li class="">
+                <a download href="{{this.url}}" target="_parent">
+                    {{this.name}}
+                </a>
+                {{#if canManageAssets}}
+                <span class="label label-danger pull-right remove-file"> <i class="glyphicon glyphicon-remove"></i> </span>
+                {{/if}}
+            </li>
+            <div class="clearfix"></div>
+            {{#unless this.isUploaded}}
+                {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=true}}
+            {{/unless}}
+        {{else}}
+            <p class="help-block">No files uploaded</p>
+        {{/each}}
+    </ul>
+</template>

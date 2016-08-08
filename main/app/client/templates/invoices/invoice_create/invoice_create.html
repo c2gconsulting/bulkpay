@@ -1,0 +1,398 @@
+<template name="InvoiceCreate">
+    <div class="container-fluid">
+        <section class="row content-header">
+            <div class="container-fluid">
+                <div class="col-sm-6">
+                    <h1 class="pull-left">
+                       Create a Manual Invoice
+                        
+                    </h1>
+                </div>
+                <div class="col-sm-6 hidden-xs">
+                    <ol class="breadcrumb">
+                        <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-orderslist"></i>Home</a></li>
+                        <li class="active">Manual Invoice</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="sub-content-header border">
+                <div class="container-fluid">
+                    <div class="col-sm-12">
+                        <div class="pull-left">
+                        <span><i class="{{paymentStatusStyle paymentStatus}} glyphicon icon-orderslist"></i> <b class="fs16 f_helvetcia">Order</b>&nbsp;&nbsp;&nbsp;<span class="{{paymentStatusStyle paymentStatus}}">{{#linkTo route="orders.detail" _id=_id}}{{orderNumber}}{{/linkTo}}</span></span>
+                            <br/>
+                            <span class="sub-content-payments">
+                            <span>Applied Credits&nbsp;&nbsp;<b class="f_helvetcia">{{formatMoney appliedCredits currency}}</b></span>&nbsp;&nbsp;
+                            <span>Payments&nbsp;&nbsp;<b class="f_helvetcia">{{currency.symbol}} 0</b></span>
+                        </span>
+                        </div>
+                        <div class="pull-right">
+                            <div class="hidden-xs hidden-sm">
+                             <!--       <a href="#" id="print-button" class="btn btn-default btn-sm">Print <i class="glyphicon icon-print"></i></a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="col-sm-12">
+
+            <section class="content sub-content-sec">
+                <div class="">
+
+                    <div class="col-sm-12">
+                        <div class="bg-white col-lg-12 bg_white ptop20 pbottom20 mb">
+                            <form class="form-horizontal form-empty">
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Customer</label>
+                                        {{#popover 'focus'}}
+	                                    <div class="col-sm-6">
+	                                        <p class="form-control-static"><a href="#" data-toggle="popover" data-html="true" title="{{customerName}}" 
+	                                           data-content="<i class='glyphicon glyphicon-barcode'></i> <span class='small'>{{customerNumber}}</span><br/>
+	                                                         <i class='glyphicon glyphicon-level-up'></i> {{customerGroup}}<br/>
+	                                                         <a href={{pathFor 'distributors.detail' _id=customerId}} class='small'>View Details</a>">
+	                                                         {{customerName}}</a></p>
+	                                    </div>
+	                                    {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Billed To</label>
+                                        {{#popover 'focus'}}
+                                            <div class="col-sm-6">
+                                                <a href="#" class="form-control-static" data-toggle="popover" data-html="true" title="{{billingAddress.company}}"
+                                                   data-content="{{billingAddress.address1}}<br/>
+                                                          {{#if billingAddress.address2}}
+                                                       {{billingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                       {{#if billingAddress.city}}
+                                                           {{billingAddress.city}}
+                                                       {{/if}}
+                                                       {{#if billingAddress.state}}
+                                                           {{#if billingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{billingAddress.state}}
+                                                       {{/if}}
+                                                       {{#if billingAddress.country}}
+                                                           {{#if billingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{billingAddress.country}}
+                                                       {{/if}}">
+                                                    {{prune billingAddress.company 40}}</a>
+                                            </div>
+                                        {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Shipped To</label>
+                                        {{#popover 'focus'}}
+                                            <div class="col-sm-6">
+                                                <a href="#"  class="form-control-static" data-toggle="popover" data-html="true" title="{{shippingAddress.company}}"
+                                                   data-content="{{shippingAddress.address1}}<br/>
+                                                          {{#if shippingAddress.address2}}
+                                                       {{shippingAddress.address2}}<br/>
+                                                          {{/if}}
+                                                       {{#if shippingAddress.city}}
+                                                           {{shippingAddress.city}}
+                                                       {{/if}}
+                                                       {{#if shippingAddress.state}}
+                                                           {{#if shippingAddress.city}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{shippingAddress.state}}
+                                                       {{/if}}
+                                                       {{#if shippingAddress.country}}
+                                                           {{#if shippingAddress.state}}
+                                                            ,
+                                                            {{/if}}
+                                                           {{shippingAddress.country}}
+                                                       {{/if}}">
+                                                    {{prune shippingAddress.company 40}}</a>
+                                            </div>
+                                        {{/popover}}
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Shipped From</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{printLocation stockLocationId}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Posting Date</label>
+                                        <div class="date col-sm-6">
+		                                    <div class="inner-addon left-addon">
+		                                        <i class="glyphicon icon-calendar"></i>
+		                                        {{#datepicker invoice.issuedAt}}
+		                                            <input type="text" class="form-control datepicker" size="8" data-field="issuedAt" />
+		                                        {{/datepicker}}
+		                                    </div>
+		                                </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Shipping Date</label>
+                                        <div class="date col-sm-6">
+		                                    <div class="inner-addon left-addon">
+		                                        <i class="glyphicon icon-calendar"></i>
+		                                        {{#datepicker invoice.shipAt}}
+		                                            <input type="text" class="form-control datepicker" size="8" data-field="shipAt" />
+		                                        {{/datepicker}}
+		                                    </div>
+		                                </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Email</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{contactEmail}}</p>
+                                        </div>
+                                    </div>
+                                    <!--
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Phone</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{contactPhone}}</p>
+                                        </div>
+                                    </div> -->
+
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Currency</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{currency.iso}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Order Type</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{printOrderType orderType}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+	                                    <label class="col-sm-6 control-label">Pickup?</label>
+	                                    <div class="col-sm-6">
+	                                        <div class="onoffswitch">
+	                                            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked="{{isPickup}}" disabled>
+	                                            <label class="onoffswitch-label" for="myonoffswitch"></label>
+	                                        </div>
+	                                    </div>
+	                                </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-6 control-label">Created By</label>
+                                        <div class="col-sm-6">
+                                            <p class="form-control-static">{{userFullName invoice.userId}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <form id="invoice">
+                    <div class="col-sm-12">
+                        <div class="module-block width_700 no-border">
+                            <div class="fix_width">
+                                <table class="table table-create">
+                                    <thead style="color: #999999;">
+                                    <tr>
+                                        <td data-toggle="tooltip" title="Select All">
+	                                        <div class="checkbox">
+	                                            <label>
+	                                                <input type="checkbox" id="blankCheckbox"
+	                                                        value="option1" {{checkAllSelected}}>
+	                                            </label>
+	                                        </div>
+	                                    </td>
+                                        <td>Item Code</td>
+                                        <td>Item Name</td>
+                                        <td class="hidden-xs hidden-sm hidden-md">Unit</td>
+                                        <td class="text-right">Price ({{currency.symbol}})</td>
+                                        <td class="text-center">Quantity</td>
+                                        <td class="text-right text-nowrap">Discounts (%)</td>
+	                                    <td class="text-right text-nowrap">Tax (%)</td>
+	                                    <td class="text-right">Total ({{currency.symbol}})</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody style="background-color: #fff;">
+                                    {{#each orderStandardItems}} 
+									    {{#if itemSelected}}
+									    <tr class="invoice-item">
+									        <td>
+		                                        <div class="checkbox">
+		                                            <label>
+		                                                <input type="checkbox" value="{{_id}}" class="line-items" checked>
+		                                            </label>
+		                                        </div>
+		                                    </td>
+									        <td>{{variantInfo variantId 'code'}}</td>
+									        <td>{{variantInfo variantId 'name'}}</td>
+									        <td class="hidden-xs hidden-sm hidden-md">{{variantInfo variantId 'uom'}}</td>
+									        <td class="text-right">{{formatMoneyD price currency}}</td>
+									        <td class="text-center">
+									            {{#spinbox max=quantity min=1 }}
+									                <div class="spinbox">
+									                    <button type="button" class="spinbox-down hidden-xs hidden-sm" id="spindown_{{index}}"></button>
+									                    <input type="text" name="quantity" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{invoiceItem.quantity}}">
+									                    <button type="button" class="spinbox-up hidden-xs hidden-sm" id="spinup_{{index}}"></button>
+									                </div>
+									            {{/spinbox}}
+									        </td>
+									        <td class="text-right">{{discount}}</td>
+		                                    <td class="text-right">{{taxRateOverride}}</td>
+		                                    <td class="td-gray text-right f_helvetcia"><b class="text-nowrap itemTotal">{{formatMoneyD invoiceItemTotal currency}}</b></td>
+									        <td class="td-gray"></td>
+									    </tr> 
+										{{else}}
+										<tr class="invoice-item">
+									        <td class="td-gray">
+		                                        <div class="checkbox">
+		                                            <label>
+		                                                <input type="checkbox" value="{{_id}}" class="line-items">
+		                                            </label>
+		                                        </div>
+		                                    </td>
+									        <td class="td-gray text-muted">{{variantInfo variantId 'code'}}</td>
+									        <td class="td-gray text-muted">{{variantInfo variantId 'name'}}</td>
+									        <td class="hidden-xs hidden-sm hidden-md td-gray text-muted">{{variantInfo variantId 'uom'}}</td>
+									        <td class="text-right td-gray text-muted">{{formatMoney price currency}}</td>
+									        <td class="text-center td-gray text-muted">
+									        	{{quantity}}
+									            <!--<div class="spinbox">
+									                    <input type="text" name="quantity" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{quantity}}" disabled>
+									                </div>-->
+									        </td>
+									        <td class="text-right td-gray text-muted">{{discount}}</td>
+		                                    <td class="text-right td-gray text-muted">{{taxRateOverride}}</td>
+		                                    <td class="td-gray text-right f_helvetcia text-muted">
+		                                    	<del><b class="text-nowrap itemTotal">{{formatMoney itemTotal currency}}</b></del>
+		                                    </td>
+									        <td class="td-gray"></td>
+									    </tr> 
+									    {{/if}}
+                                    {{/each}}
+                                    {{#each orderPromoItems}} 
+									    {{#if itemSelected}}
+									    <tr class="invoice-item">
+									        <td>
+		                                        <div class="checkbox">
+		                                            <label>
+		                                                <input type="checkbox" value="{{_id}}" class="line-items" checked>
+		                                            </label>
+		                                        </div>
+		                                    </td>
+									        <td>{{variantInfo variantId 'code'}}</td>
+									        <td>{{variantInfo variantId 'name'}}</td>
+									        <td class="hidden-xs hidden-sm hidden-md">{{variantInfo variantId 'uom'}}</td>
+									        <td class="text-right">{{formatMoneyD price currency}}</td>
+									        <td class="text-center">
+									            {{#spinbox max=quantity min=1 }}
+									                <div class="spinbox">
+									                    <button type="button" class="spinbox-down hidden-xs hidden-sm" id="spindown_{{index}}"></button>
+									                    <input type="text" name="quantity" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{invoiceItem.quantity}}">
+									                    <button type="button" class="spinbox-up hidden-xs hidden-sm" id="spinup_{{index}}"></button>
+									                </div>
+									            {{/spinbox}}
+									        </td>
+									        <td class="text-right">{{discount}}</td>
+		                                    <td class="text-right">{{taxRateOverride}}</td>
+		                                    <td class="td-gray text-right" style="color: #949e00;"><span class="icon-gift"></span> Promo</td>
+									        <td class="td-gray"></td>
+									    </tr> 
+										{{else}}
+										<tr class="invoice-item">
+									        <td class="td-gray text-muted">
+		                                        <div class="checkbox">
+		                                            <label>
+		                                                <input type="checkbox" value="{{_id}}" class="line-items">
+		                                            </label>
+		                                        </div>
+		                                    </td>
+									        <td class="td-gray text-muted">{{variantInfo variantId 'code'}}</td>
+									        <td class="td-gray text-muted">{{variantInfo variantId 'name'}}</td>
+									        <td class="hidden-xs hidden-sm hidden-md td-gray text-muted">{{variantInfo variantId 'uom'}}</td>
+									        <td class="text-right td-gray text-muted">{{formatMoneyD price currency}}</td>
+									        <td class="text-center td-gray text-muted">
+									                {{quantity}}
+									                 <!--<div class="spinbox">
+									                	<input type="text" name="quantity" class="form-control input-mini spinbox-input" id="txtQty-{{index}}" data-type="item" data-index="{{index}}" data-ifield="quantity" value="{{quantity}}" {{disabledItem}}> 
+									                </div>-->
+									        </td>
+									        <td class="text-right td-gray text-muted">{{discount}}</td>
+		                                    <td class="text-right td-gray text-muted">{{taxRateOverride}}</td>
+		                                    <td class="td-gray text-right text-muted"><span class="icon-gift"></span> Promo</td>
+									        <td class="td-gray"></td>
+									    </tr> 
+									    {{/if}} 
+                                    {{/each}}
+
+                                    {{#if orderHasNoItems}}
+                                        <tr>
+                                            <td colspan="9">
+                                                The order has no items to be invoiced
+                                            </td>
+                                        </tr>
+                                    {{/if}}
+                                    </tbody>
+                                </table>
+                                <div class="pull-right container-fluid total-block-wrapper">
+                                    <div class="clearfix hidden-lg"></div>
+                                    <br class="hidden-lg">
+                                    <div class="clearfix fix_width">
+                                        <dl class="dl-horizontal padd_l40px total-table">
+                                            <dt class="text-muted">Discounts:</dt>
+                                            <dd class="f_helvetcia text-right text-danger"><b>{{openP}}{{formatMoney invoice.discounts currency}}{{closeP}}</b></dd>
+                                            <dt class="text-muted">Sub Total:</dt>
+                                            <dd class="f_helvetcia text-right"><b>{{formatMoney cSubTotal currency}}</b></dd>
+                                            <dt class="text-muted">Tax (VAT):</dt>
+                                            <dd class="f_helvetcia text-right"><b>{{formatMoney cTaxes currency}}</b></dd>
+                                            <dt><b>TOTAL:</b></dt> 
+                                            <dd class="f_helvetcia text-right"><b>{{formatMoney cTotal currency}}</b></dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <div class="col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="module-block">
+                                    <div class="col-lg-5 col-sm-12 col-xs-12 hidden-xs hidden-sm">
+                                        <textarea class="form-control" rows="9" placeholder="Additional comments" data-field="comment"></textarea>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-md-offset-6 col-sm-8 col-sm-offset-4 col-xs-offset-0 col-xs-12">
+                        <div class="module-block">
+                            <div class="pull-right">
+                                <button class="btn btn-success {{disableSubmit}} ladda-button" {{disableSubmit}} id="create-invoice" data-style="expand-right" data-size="s"><span class="ladda-label">Post Invoice <span class="glyphicon icon-lilist"></span></span></button>
+                                <button class="btn btn-default" id="cancel-invoice">&nbsp;&nbsp;Exit&nbsp;&nbsp;</button>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+
+                    <div class="clearfix"></div>
+
+                    <div class="clearfix"></div>
+
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+</template>

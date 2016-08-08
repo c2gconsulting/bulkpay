@@ -1,0 +1,10 @@
+[
+	{
+		"detailer": [ "orders/manage", "returns/manage", "invoices/manage", "customers/view", "returns/approve" ],
+		"depot-officer": [ "orders/manage", "returns/manage", "invoices/manage", "customers/view", "returns/approve" ],
+		"sales-manager": [ "orders/manage", "returns/manage", "invoices/manage", "customers/view", "customer/maintain", "returns/approve", "product/maintain" ],
+		"product-manager": [ "product/maintain" ],
+		"admin": ["admin/all"],
+		"owner": ["admin/all", "tenant/maintain"]
+	}
+]
