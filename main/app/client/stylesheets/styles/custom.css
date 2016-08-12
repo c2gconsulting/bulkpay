@@ -1,0 +1,139 @@
+
+.login-header {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.login-small-header {
+    font-size: medium;
+    font-weight: normal;
+}
+
+.error {
+    color: #FF0000;
+}
+
+.font-icons-delete {
+    color: #FF0000;
+    text-shadow: 1px 1px 1px #ccc;
+}
+
+.font-icons-edit {
+    color: #556B2F;
+    text-shadow: 1px 1px 1px #ccc;
+}
+
+.white {
+    color: #FFFFFF;
+}
+
+.compute-value {
+    font-weight: bold;
+}
+
+.item .placeholder {
+    padding: 2px;
+    width: 50px;
+    height: 20px;
+    /*border: 1px solid #333;*/
+    background: #EEE;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.big-font {
+    font-size: 15px;
+}
+
+.bigger-font {
+    font-size: 17px;
+}
+
+.sub-header {
+    font-size: 18px;
+}
+
+.delete-margin {
+    margin-left: 10px;
+}
+
+.employee-list {
+    margin-top: 15px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+
+.employee-filter {
+    margin-bottom: 15px;
+}
+
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.action-div {
+    margin-top: 25px;
+}
+
+.pay-info {
+    margin-top: 15px;
+}
+
+.pay-runs-header {
+    margin-bottom: 15px;
+}
+
+
+#chart-container {
+    position: relative;
+    display: inline-block;
+    top: 10px;
+    width: calc(100% - 20px);
+    border-radius: 5px;
+    overflow: auto;
+    text-align: center;
+}
+
+
+.time-modal-sub {
+    color: #000000;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+
+.time-item {
+    border-radius: 0px 0px 0px 0px;
+    -moz-border-radius: 0px 0px 0px 0px;
+    -webkit-border-radius: 0px 0px 0px 0px;
+    border: 1px solid #e0e0e0;
+}
+
+.action-buttons {
+    padding: 5px;
+}
+
+
+
+

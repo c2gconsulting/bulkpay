@@ -98,22 +98,6 @@ Template.ApplicationLayout.helpers({
             return true;
         }
         return false;
-    },
-    intercomAppId: function() {
-        return process.env.INTERCOM_APP_ID;
-    },
-    currentUserId: function(){
-        return Meteor.userId();
-    },
-    loggedIn: function() {
-        return !!Meteor.userId();
-    },
-
-    avatar: function () {
-        return UserImages.findOne({owner: Meteor.userId()})
-    },
-    canCreateOrders: function () {
-        return Core.hasOrderAccess(Meteor.userId())
     }
 });
 
