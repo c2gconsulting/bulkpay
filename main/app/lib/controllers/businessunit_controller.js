@@ -1,11 +1,12 @@
-AdjustmentsController = ApplicationController.extend({
+BusinessUnitController = ApplicationController.extend({
   
-  // A place to put your subscriptions
+  // a place to put your subscriptions
   // this.subscribe('items');
   // // add the subscription to the waitlist
   // this.subscribe('item', this.params._id).wait();
   
   subscriptions: function() {
+    //LocationSubs.subscribe('Locations');
   },
   
   // Subscriptions or other things we want to "wait" on. This also
@@ -14,7 +15,7 @@ AdjustmentsController = ApplicationController.extend({
   // return Meteor.subscribe('post', this.params._id);
   
   waitOn: function () {
-    return StockAdjustmentSub.subscribe('StockAdjustment', this.params._id);
+    //return InvoiceSubs.subscribe('Invoice', this.params._id);
   },
   
   // A data function that can be used to automatically set the data context for
@@ -24,7 +25,7 @@ AdjustmentsController = ApplicationController.extend({
   // return Posts.findOne({_id: this.params._id});
   
   data: function () {
-    return StockAdjustments.findOne({_id: this.params._id});
+    //return Invoices.findOne({_id: this.params._id});
   },
   
   // You can provide any of the hook options
@@ -46,13 +47,8 @@ AdjustmentsController = ApplicationController.extend({
   // regions automatically.
   // Example:
   //  action: 'myActionFunction'
-
-
-  create: function () {
-    this.render("StockAdjustmentCreate");
-  },
-  detail: function () {
-    this.render("StockAdjustmentDetail");
+  home: function(){
+     this.render('BusinessUnit');
   },
 
   onAfterAction: function () {

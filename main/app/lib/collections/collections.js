@@ -247,3 +247,16 @@ TimeTracks.attachSchema(Core.Schemas.TimeTrack);
  */
 Tenants = new Mongo.Collection("tenants");
 Tenants.attachSchema(Core.Schemas.Tenant);
+
+/**
+ * Core Collections Translations
+ */
+Translations = new Mongo.Collection("translations");
+Translations.attachSchema(Core.Schemas.Translation);
+
+/**
+ * Core Collections Document Numbers
+ */
+DocumentNumbers = new Mongo.Collection("documentnumbers");
+Partitioner.partitionCollection(DocumentNumbers);
+DocumentNumbers.attachSchema(Core.Schemas.DocumentNumber);

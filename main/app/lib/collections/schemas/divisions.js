@@ -7,6 +7,13 @@ Core.Schemas.Division = new SimpleSchema({
         type: String,
         optional: true
     },
+    divisionNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaDivisionNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
+    },
     name: {
         type: String
     },

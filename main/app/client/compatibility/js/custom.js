@@ -125,5 +125,4 @@ this.initAll = function() {
          $('.headerwrapper, .mainwrapper').removeClass('collapsed');
       }
    };
-
 };

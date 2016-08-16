@@ -7,6 +7,13 @@ Core.Schemas.Department = new SimpleSchema({
         type: String,
         optional: true
     },
+    departmentNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaDepartmentNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
+    },
     name: {
         type: String
     },

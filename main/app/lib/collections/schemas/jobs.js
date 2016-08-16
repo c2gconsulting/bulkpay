@@ -6,8 +6,13 @@ Core.Schemas.Job = new SimpleSchema({
   _id: {
     type: String,
     optional: true
-  },code: {
-        type: String,
+  },
+    jobNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaJobNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
     },
     title: {
         type: String

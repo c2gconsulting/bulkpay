@@ -60,6 +60,7 @@ Core.Schemas.Employee = new SimpleSchema({
     },
     currentProfilePicture: {
         type: String
+        //as placeholder
     },
     editablePayTypes: {
         type: Object
@@ -67,8 +68,12 @@ Core.Schemas.Employee = new SimpleSchema({
     email: {
         type: String
     },
-    employeeId: {
-        type: String
+    employeeNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaEmployeeNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
     },
     employmentDate: {
         type: Date

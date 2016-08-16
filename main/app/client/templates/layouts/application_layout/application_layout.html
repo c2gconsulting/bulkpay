@@ -1,23 +1,19 @@
 <template name="ApplicationLayout">
-<!--{{#unless loggedIn}}-->
-    <!--{{> spinner}}-->
-<!--{{else}}-->
-    <header>
-        <div class="headerwrapper">
-            {{> header}}
-        </div>
-    </header>
+        <header>
+            <div class="headerwrapper">
+                {{> header}}
+            </div>
+        </header>
 
-    <section>
-        <div class="mainwrapper">
-            <div class="leftpanel">
-                {{> navigator}}
-            </div>
-            <div class="mainpanel">
-                {{> yield}}
-            </div>
-        </div><!-- mainwrapper -->
-    </section>
-<!--{{/unless}}-->
+        <section>
+            <div class="mainwrapper">
+                <div class="leftpanel">
+                    {{> navigator}}
+                </div>
+                <div class="mainpanel">
+                    {{> yield}}
+                </div>
+            </div><!-- mainwrapper -->
+        </section>
 
 </template>

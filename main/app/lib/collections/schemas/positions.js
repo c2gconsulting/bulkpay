@@ -7,8 +7,12 @@ Core.Schemas.Position = new SimpleSchema({
     type: String,
     optional: true
   },
-    code: {
-        type: String
+    positionNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaPositionNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
     },
     name: {
         type: String

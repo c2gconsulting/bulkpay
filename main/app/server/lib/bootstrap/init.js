@@ -75,7 +75,7 @@ _.extend(Core, {
   },
   initAccount: function() {
     Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "BulkPay™";
-    Accounts.emailTemplates.from = process.env.MAIL_FROM || "TradeDepot™ Team <no-reply@tradedepot.co>";
+    Accounts.emailTemplates.from = process.env.MAIL_FROM || "BulkPay™ Team <no-reply@bulkpay.co>";
 
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
       let tenantDomain = Core.getCurrentDomain(user._id);

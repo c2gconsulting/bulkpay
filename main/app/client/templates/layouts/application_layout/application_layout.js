@@ -2,7 +2,8 @@
 /* MasterLayout: Event Handlers */
 /*****************************************************************************/
 Template.ApplicationLayout.events({
-	'click [data-logout]': function(e, tmpl) {
+	'click [name="logout"]': function(e, tmpl) {
+        console.log("you want to log out");
 	    Router.go('home');
     	Meteor.logout(function(err) {
             if (!err) {

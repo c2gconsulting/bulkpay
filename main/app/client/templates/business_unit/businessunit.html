@@ -1,0 +1,190 @@
+<template name="BusinessUnit">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-puzzle-piece"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>Business.Name</li>
+                    <li>Units</li>
+                </ul>
+                <h4>Business Units</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Business Units</h5>
+                <p class="mb20 pull-right"><button class="btn btn-primary" data-toggle="modal" data-target=".add-unit">New Unit</button></p>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-danger text-center">
+                    <p>No business units available</p>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Parent</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer">
+                            <td>1</td>
+                            <td>BusinessUnit.name</td>
+                            <td>businessUnit.location</td>
+                            <td>businessUnit.parentName</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+            </div>
+        </div><!-- row -->
+
+        <div class="row">
+
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-btns">
+                            <a href="" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
+                            <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
+                        </div><!-- panel-btns -->
+                        <h4 class="panel-title">Update - oldUnit.name Unit</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="update-unit-name" class="control-label">Name</label>
+                                    <input  type="text" id="update-unit-name" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Location</label>
+                                    <select2 options="options" ng-model="singleUnit.location" s2-options="state as state for state in states" style="width: 100%"></select2>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Parent</label>
+                                    <select2 options="options" ng-model="singleUnit.parentId" s2-options="businessUnit._id as businessUnit.name for businessUnit in filteredBusinessUnit" style="width: 100%"></select2>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                        </div><!-- row -->
+
+                        <div class="row" ng-show="histories.length > 0">
+                            <span class="pull-right">Last updated on getLastHistory().date | date:"MM/dd/yyyy 'at' h:mma", by getLastHistory().user.username</span>
+                        </div>
+
+                    </div><!-- panel-body -->
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5">Update</button>
+                        <button type="reset" class="btn btn-warning">Cancel</button>
+                        <button type="reset" class="btn btn-danger pull-right">Delete</button>
+                    </div><!-- panel-footer -->
+                </div><!-- panel -->
+
+            </div><!-- col-md-12 -->
+
+
+            <div class="col-md-4">
+                <h5 class="lg-title mb10">Edit History</h5>
+
+                <div class="panel-group" id="accordion2">
+                    <div ng-repeat="history in histories" class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion2" href=".history._id">
+                                    <span>history.date | date:"MM/dd/yyyy 'at' h:mma"</span>
+                                    <span class="pull-right">history.user.username</span>
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="panel-collapse collapse" ng-class="history._id">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12" ng-repeat="activity in history.activities">
+                                        <div class="well well-sm">activity | prettifyActivity</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- panel -->
+
+                </div><!-- panel-group -->
+
+            </div><!-- col-md-4 -->
+
+        </div>
+
+
+    </div><!-- contentpanel -->
+
+
+
+
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Business Unit</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-unit-name" class="control-label">Name</label>
+                                    <input type="text" id="new-unit-name" placeholder="Unit Name" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Location</label>
+                                    <select2 options="options" s2-options="state as state for state in states" style="width: 100%"></select2>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Parent</label>
+                                    <select2 options="options" style="width: 100%"></select2>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5">Save</button>
+                        <button type="reset" class="btn btn-danger" id="new-unit-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

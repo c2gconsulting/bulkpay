@@ -7,6 +7,13 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         type: String,
         optional: true
     },
+    businessUnitNumber: {
+        type: Number,
+        index: 1,
+        autoValue: Core.schemaBusinessUnitNextSeqNumber,
+        optional: true, // to enable pre-validation
+        denyUpdate: true
+    },
     name: {
         type: String
     },

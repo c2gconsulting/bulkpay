@@ -73,66 +73,45 @@ _.extend(Core, {
     return docNumber ? docNumber.nextSeqNumber : null;
   },
 
-  schemaSupplierNextSeqNumber: function () {
+  schemaJobNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
       let userId = this.field('userId').value || this.userId;
-      let nextSequence = Core.schemaNextSeqNumber('supplier', Core.getTenantId(userId));
-      return String(nextSequence);
+      return Core.schemaNextSeqNumber('job', Core.getTenantId(userId));
     }
   },
 
-  schemaCustomerNextSeqNumber: function () {
+  schemaBusinessUnitNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
-      let originCustomerId = this.field('originCustomerId').value;
-      if (originCustomerId) {
-        return originCustomerId;
-      } else {
-        let userId = this.field('userId').value || this.userId;
-        let nextSequence = Core.schemaNextSeqNumber('customer', Core.getTenantId(userId));
-        return String(nextSequence);
-      }
+      let userId = this.field('userId').value || this.userId;
+      return Core.schemaNextSeqNumber('businessunit', Core.getTenantId(userId));
     }
   },
 
-  schemaOrderNextSeqNumber: function () {
+  schemaDivisionNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
       let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('order', Core.getTenantId(userId));
+      return Core.schemaNextSeqNumber('division', Core.getTenantId(userId));
     }
   },
 
-  schemaPurchaseOrderNextSeqNumber: function () {
+  schemaDepartmentNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
       let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('purchase_order', Core.getTenantId(userId));
-    }
-  },
-
-  schemaStockTransferNextSeqNumber: function () {
-    if (this.isInsert && Meteor.isServer) {
-      let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('stock_transfer', Core.getTenantId(userId));
-    }
-  },
-
-  schemaStockAdjustmentNextSeqNumber: function () {
-    if (this.isInsert && Meteor.isServer) {
-      let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('stock_adjustment', Core.getTenantId(userId));
+      return Core.schemaNextSeqNumber('department', Core.getTenantId(userId));
     }
   },
   
-  schemaReturnOrderNextSeqNumber: function () {
+  schemaPositionNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
       let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('return_order', Core.getTenantId(userId));
+      return Core.schemaNextSeqNumber('position', Core.getTenantId(userId));
     }
   },
   
-  schemaInvoiceNextSeqNumber: function () {
+  schemaEmployeeNextSeqNumber: function () {
     if (this.isInsert && Meteor.isServer) {
       let userId = this.field('userId').value || this.userId;
-      return Core.schemaNextSeqNumber('invoice', Core.getTenantId(userId));
+      return Core.schemaNextSeqNumber('employee', Core.getTenantId(userId));
     }
   },
 

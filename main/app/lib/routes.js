@@ -3,19 +3,19 @@
  * uses iron:router package.
  */
 Router.configure({
-  notFoundTemplate: "NotFound",
-  loadingTemplate: "Loading",
+    notFoundTemplate: "NotFound",
+    loadingTemplate: "Loading",
 
-  onRun: function () {
-    $(window).scrollTop(0);
-    //Core.clearActionView();
-    this.next();
-  }
+    onRun: function () {
+        $(window).scrollTop(0);
+        //Core.clearActionView();
+        this.next();
+    }
 });
 
 /*
-* Main Useraccounts config
-*/
+ * Main Useraccounts config
+ */
 AccountsTemplates.configure({
     defaultLayout: 'ExtLayout',
     showResendVerificationEmailLink: true,
@@ -34,22 +34,29 @@ AccountsTemplates.configureRoute('changePwd');
 
 // default home routes
 Router.route('/', {
-  name: 'home',
-  controller: 'HomeController',
-  action: 'home',
-  where: 'client'
+    name: 'home',
+    controller: 'HomeController',
+    action: 'home',
+    where: 'client'
 });
 
 /*
-Router.route('/login', {
-  name: 'login',
-  layoutTemplate: 'ExtLayout',
-  template: 'Login'
-});*/
+ Router.route('/login', {
+ name: 'login',
+ layoutTemplate: 'ExtLayout',
+ template: 'Login'
+ });*/
 
 Router.route('/reset-my-password', {
-  name: 'reset.password',
-  layoutTemplate: 'ExtLayout',
-  template: 'ResetMyPassword'
+    name: 'reset.password',
+    layoutTemplate: 'ExtLayout',
+    template: 'ResetMyPassword'
+});
+
+Router.route('/business-unit', {
+    name: 'businessunit',
+    controller: 'BusinessUnitController',
+    action: 'home',
+    where: 'client'
 });
 
