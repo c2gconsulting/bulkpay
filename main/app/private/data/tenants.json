@@ -1,9 +1,9 @@
 [{
-  "baseUOM": "EF",
-  "name": "Elfimo Pharmacy Ventures",
+  "baseUOM": "DR",
+  "name": "Daar Group",
   "domains": [
-      "base.tradedepot.co",
-      "base.sandbox.tradedepot.co",
+      "base.bulkpay.co",
+      "base.sandbox.bulkpay.co",
       "localhost",
       "dev.example.com"
   ],
@@ -34,9 +34,9 @@
   ],
   "country": "NG",
   "addressBook": [{
-    "company": "Acme Company Ltd",
-    "fullName": "Petyr Roman",
-    "address1": "259 Etim Inyang",
+    "company": "Daar Communications",
+    "fullName": "Reymond Dopesi",
+    "address1": "Abuja Nigeria",
     "address2": "Ste. 7",
     "city": "Victoria Island",
     "region": "LA",
@@ -48,8 +48,8 @@
     "isBillingDefault": true
   }],
   "defaultRoles": [
-    "orders/manage",
-    "customers/view"
+    "employees/manage",
+    "paygrades/view"
   ],
   "layout": [{
     "layout": "ApplicationLayout",
@@ -72,9 +72,6 @@
   "settings": {
     "rounding": {
       "NGN": 5
-    },
-    "promotions": {
-      "excludedOrderTypes": [30]
     }
   }
 }]

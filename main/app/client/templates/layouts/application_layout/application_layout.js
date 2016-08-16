@@ -159,34 +159,34 @@ Template.ApplicationLayout.onCreated(function () {
 
     // setup intercom settings
     Tracker.autorun(function () {
-      // initialize Intercom info
-      IntercomSettings.userInfo = function(user, info) {
-        let tenant = Tenants.findOne();
-        
-        if (!user || !user.profile || !tenant || !tenant._id) 
-            return false;
-        
-
-        info.email = user.emails[0].address;
-        info.name = user.profile.fullName;
-        if (user.createdAt) info.created_at = Math.floor(new Date(user.createdAt).getTime() / 1000);
-        info.username = user.username;
-        info.company = {
-            id: tenant._id,
-            name: tenant.name,
-            domain: tenant && tenant.domains && tenant.domains.length > 0 ? tenant.domains[0] : ''
-        };
-
-        if (tenant.createdAt) info.company.created_at = Math.floor(new Date(tenant.createdAt).getTime() / 1000);
-
-        /* remove, costly
-        let totalOrders = Counts.findOne('TOTAL_ORDERS');
-        let totalCustomers = Counts.findOne('TOTAL_CUSTOMERS');
-
-        if (totalOrders) info.company.orders = totalOrders.count;
-        if (totalCustomers) info.company.customers = totalCustomers.count;
-        */
-      }
+      //// initialize Intercom info
+      //IntercomSettings.userInfo = function(user, info) {
+      //  let tenant = Tenants.findOne();
+      //
+      //  if (!user || !user.profile || !tenant || !tenant._id)
+      //      return false;
+      //
+      //
+      //  info.email = user.emails[0].address;
+      //  info.name = user.profile.fullName;
+      //  if (user.createdAt) info.created_at = Math.floor(new Date(user.createdAt).getTime() / 1000);
+      //  info.username = user.username;
+      //  info.company = {
+      //      id: tenant._id,
+      //      name: tenant.name,
+      //      domain: tenant && tenant.domains && tenant.domains.length > 0 ? tenant.domains[0] : ''
+      //  };
+      //
+      //  if (tenant.createdAt) info.company.created_at = Math.floor(new Date(tenant.createdAt).getTime() / 1000);
+      //
+      //  /* remove, costly
+      //  let totalOrders = Counts.findOne('TOTAL_ORDERS');
+      //  let totalCustomers = Counts.findOne('TOTAL_CUSTOMERS');
+      //
+      //  if (totalOrders) info.company.orders = totalOrders.count;
+      //  if (totalCustomers) info.company.customers = totalCustomers.count;
+      //  */
+      //}
     });
 });
 

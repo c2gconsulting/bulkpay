@@ -58,52 +58,6 @@ HomeController = ApplicationController.extend({
   home: function () {
     this.render('Home');
   },
-  createOrder: function () {
-    if (Core.hasOrderAccess(Meteor.userId())){
-      this.render('OrderCreate');
-    } else {
-      Router.go('home');
-    }
-  },
-  listOrders: function () {
-    this.render('OrdersList');
-  },
-  listReturns: function () {
-    this.render('ReturnsList');
-  },
-  listInvoices: function () {
-    this.render('InvoicesList');
-  },
-  listDistributors: function () {
-    this.render('DistributorsList');
-  },
-  listPromotions: function () {
-    this.render('PromotionsList');
-  },
-  listRebates: function () {
-    this.render('RebatesList');
-  },
-  listPurchaseOrders: function(){
-    this.render('PurchaseOrdersList');
-  },
-  createPurchaseOrder: function(){
-    this.render('PurchaseOrderCreate');
-  },
-  listLocations: function () {
-    this.render('LocationsList');
-  },
-  listSuppliers: function () {
-    this.render('SuppliersList');
-  },
-  listTransfers: function(){
-    this.render('StockTransfersList')
-  },
-  createTransfers: function(){
-     this.render('StockTransferCreate')
-  },
-  listAdjustments: function(){
-    this.render('StockAdjustmentsList');
-  },
 
   onAfterAction: function () {
   },

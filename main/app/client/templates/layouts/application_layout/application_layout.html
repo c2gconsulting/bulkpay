@@ -1,171 +1,23 @@
 <template name="ApplicationLayout">
-{{#unless loggedIn}}
-    {{> spinner}}
-{{else}}
-
-
-  {{> GlobalSearch}}
-
-    {{#if show}}
-        <div class="notifications">
-            <div>
-                <div class="notification" style="display: block; opacity: 1;">
-                    <span class="glyphicon glyphicon-refresh glyphicon-spin"></span>
-                    <div class="meta">
-                        <span class="title-notification">Connecting</span>
-
-                        <span class="description">Trying to connect to server {{timeToConnect}}s</span>
-                        <span class="retry"><a href="#">Retry now</a></span>
-                    </div>
-                </div>
-            </div>
+<!--{{#unless loggedIn}}-->
+    <!--{{> spinner}}-->
+<!--{{else}}-->
+    <header>
+        <div class="headerwrapper">
+            {{> header}}
         </div>
-    {{/if}}
-  <div class="container-fluid">
+    </header>
 
-    <div class="row">
-        <div class="menu-sidebar">
-            <nav class="navbar navbar-sidebar">
-                <div class="nav-header">
-                    <a class="nav-header-logo" href="{{pathFor 'home'}}">
-                        <img src="/admin/img/elfimo-logo.png " style="max-width: 125px;" />
-                    </a>
-                    <a class="nav-header-logo-mini" href="{{pathFor 'home'}}">
-                        <img src="/admin/img/elfimo-logo-sm.png" style="max-width: 50px;"/>
-                    </a>
-                </div>
-                <div class="container-fluid main-menu" id="main-menu">
-                    <div class="row">
-                        {{#if canCreateOrders}}
-                            <div class="sidebar-btn text-center">
-                                <a href="{{pathFor 'orders.create'}}" class="btn btn-info btn-block" style="color:#fff">
-                                    <span>Create an Order</span> <i class="glyphicon icon-order"></i>
-                                </a>
-                            </div>
-                        {{/if}}
-                        <ul class="nav sidebar-menu {{#unless canCreateOrders}}no-margin-top{{/unless}}">
-                            <li class="{{activeIfRouteIsIn 'home'}}"><a href="{{pathFor 'home'}}"><i class="glyphicon icon-graph"></i> <span>Dashboard</span></a></li>
-                            <li class="header text-uppercase">Orders management</li>
-                            <li class="{{activeIfRouteIsIn 'orders'}}"><a href="{{pathFor 'orders.list'}}"><i class="glyphicon icon-orderslist"></i> <span>Orders</span>  <span data-toggle="tooltip" title="Your total open orders" class="label label-info pull-right">{{openOrderCount}}</span></a></li>
-                            <li class="{{activeIfRouteIsIn 'returns'}}"><a href="{{pathFor 'returns.list'}}"><i class="glyphicon icon-return"></i> <span>Returns</span> <span data-toggle="tooltip" title="Your total pending returns" class="label label-info pull-right">{{pendingReturnCount}}</span></a></li>
-                            <li class="{{activeIfRouteIsIn 'invoices'}}"><a href="{{pathFor 'invoices.list'}}"><i class="glyphicon icon-lilist"></i> <span>Delivery Invoices</span><span data-toggle="tooltip" title="Your total unpaid invoices" class="label label-info pull-right">{{unpaidInvoiceCount}}</span></a></li>
-                            <li class="header text-uppercase">Inventory management</li>
-                            <li class="{{activeIfRouteIsIn 'purchaseOrder'}}"><a href="{{pathFor 'purchaseOrders.list'}}"><i class="glyphicon glyphicon-record"></i> <span>Purchase Orders</span></a></li>
-                            <li class="{{activeIfRouteIsIn 'stockAdjustments'}}"><a href="{{pathFor 'stockAdjustments.list'}}"><i class="glyphicon glyphicon-adjust"></i> <span>Stock Adjustments</span></a></li>
-                            <li class="{{activeIfRouteIsIn 'transfers'}}"><a href="{{pathFor 'transfers.list'}}"><i class="glyphicon glyphicon-transfer"></i> <span>Stock Transfers</span></a></li>
-                            <li class="header text-uppercase">Campaigns management</li>
-                            <li class="{{activeIfRouteIsIn 'promotions'}}"><a href="{{pathFor 'promotions.list'}}"><i class="glyphicon icon-gift"></i> <span>Promotions</span> <span data-toggle="tooltip" title="Your total pending request" class="label label-info pull-right">{{pendingDistributorsCount}}</span></a></li>
-                            <li class="header text-uppercase">Customer management</li>
-                            <li class="{{activeIfRouteIsIn 'distributors'}}"><a href="{{pathFor 'distributors.list'}}"><i class="glyphicon icon-user"></i> <span>Customers</span> <span data-toggle="tooltip" title="Your total pending request" class="label label-info pull-right">{{pendingDistributorsCount}}</span></a></li>
-                            <li class="header text-uppercase">Business Intelligence</li>
-                            <li class="{{activeIfRouteIsIn 'reports'}}"><a href="{{pathFor 'reports.home'}}"><i class="glyphicon glyphicon-signal"></i> <span>Reports</span></a></li>
-
-                        </ul>
-                    </div>
-                </div>
-            </nav>
-            {{#if hasAdminAccess}}
-            <div class="navbar-lastside">
-                <ul class="nav sidebar-menu">
-                    <li><a href="#" id="settings-menu"><i class="glyphicon icon-settings sidebar-menu-icons"></i> <span>Settings</span> <small class="glyphicon icon-smallright pull-right"></small></a></li>
-                </ul>
+    <section>
+        <div class="mainwrapper">
+            <div class="leftpanel">
+                {{> navigator}}
             </div>
-            {{/if}}
-        </div>
-        <div class="main-right-col">
-        {{#if hasAdminAccess}}
-            <div class="menu-sidebar-second">
-                <ul class="nav sidebar-menu">
-                    <li><a href="{{pathFor "accounts.list"}}" name="settings-sub-menu"><i class="glyphicon glyphicon-user"></i> <span>Users</span></a></li>
-                    <li><a href="{{pathFor 'locations.list'}}" name="settings-sub-menu"><i class="glyphicon glyphicon-home"></i> <span>Locations</span></a></li>
-                    <li><a href="#" name="settings-sub-menu"><i class="glyphicon glyphicon-pencil"></i> <span>Customizing</span></a></li>
-                    <li><a href="#" name="settings-sub-menu"><i class="glyphicon glyphicon-adjust"></i> <span>Themes/Styles</span></a></li>
-                    <li><a href="#" name="settings-sub-menu"><i class="glyphicon glyphicon-list"></i> <span>Audit Trail</span></a></li>
-                </ul>
+            <div class="mainpanel">
+                {{> yield}}
             </div>
-        {{/if}}
-
-            <div class="main">
-
-                <nav class="main-header navbar navbar-fixed-top top-menu" role="navigation">
-                    <div class="navbar-custom-menu">
-                        <ul class="nav navbar-nav navbar-left">
-                            <li class="">
-                                <a href="#" class="sidebar-toggle" id="sidebar-toggle" data-toggle="false">
-                                    <span class="glyphicon icon-list"></span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/" class="sidebar-main-site" role="button">
-                                    <span class=""><i class="glyphicon icon-globe"></i>&nbsp;&nbsp;<span class="hidden-sm hidden-xs hidden-md">{{tenantName}}</span></span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown notifications-menu">
-                                {{> HeaderNotifications}}
-                            </li>
-                            <li>
-                                <a id="view-profile" href="{{pathFor 'profile.detail' _id=currentUserId}}" class="user-link">
-                                    {{#if avatar}}
-                                            <img class="img-circle" src="{{avatar.url store='avatarsSmall'}}" alt="">
-                                    {{else}}
-                                            <img class="img-circle" src="/img/guest.png" alt="">
-                                    {{/if}}
-                                    <span class="hidden-sm hidden-xs">{{userFullName}}</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a data-logout class="hidden-sm hidden-xs" data-toggle="control-sidebar">
-                                    <i class="glyphicon icon-logout"></i><span style="padding-left: 8px;">Logout</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <form id="mainsearch" class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
-                            <div class="form-group">
-                                <div class="inner-addon right-addon">
-                                        <span class="glyphicon icon-search" id="navbar-search-ico"></span>
-                                        <input class="form-control" data-toggle="search" id="navbar-search-input" placeholder="Search" type="text">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </nav>
-
-                    {{> yield}}
-
-                <footer class="main-footer">
-                    <div class="pull-right hidden-xs" style="color: #c1c0c0">
-                        Powered by&nbsp;&nbsp;<img src="/img/tradedepot-logo-mini.png" style="max-height:18px;"/>
-                    </div>
-                    &copy; {{thisYear}} TradeDepot. All rights reserved.
-                </footer>
-
-            </div>
-
-        </div>
-    </div>
-
-</div>
-{{/unless}}
-<!--
-<script>
-  window.intercomSettings = {
-    app_id: "{{intercomAppId}}",
-    name: "{{userFullName}}", // Full name
-    email: "{{currentUserEmail}}", // Email address
-    created_at: "{{userCreatedAt}}", // Signup date as a Unix timestamp
-    company: {
-        id: "{{tenantId}}",
-        name: "{{tenantName}}",
-        created_at: "{{tenantCreatedAt}}",
-        orders: "{{totalOrderCount}}",
-        customers: "{{totalCustomerCounta}}",
-        domain: "{{tenantUrl}}"
-    }
-  };
-</script>
-<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/u8dell0v';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
--->
+        </div><!-- mainwrapper -->
+    </section>
+<!--{{/unless}}-->
 
 </template>

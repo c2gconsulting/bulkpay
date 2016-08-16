@@ -87,413 +87,163 @@ Core.Helpers.cartTransform = {
   }
 }; */
 
-/**
-* Core Collections Cart
-*/
-Carts = new Mongo.Collection("carts", {
-  transform: function (cart) {
-    let newInstance = Object.create(Core.Helpers.cartTransform);
-    return _.extend(newInstance, cart);
-  }
-});
-Partitioner.partitionCollection(Carts, {index: {userId: 1}});
-
-Carts.attachSchema(Core.Schemas.Cart);
 
 /**
-* Core Collections Orders
+* Core Collections Businesses
 */
-Orders = new Mongo.Collection("orders", {
-  transform: function (order) {
-    order.itemCount = function () {
-      let count = 0;
-      if (order !== null ? order.items : void 0) {
-        for (let items of order.items) {
-          count += items.quantity;
-        }
-      }
-      return count;
-    };
-    order.openItemCount = function () {
-      let count = 0;
-      if (order !== null ? order.items : void 0) {
-        for (let items of order.items) {
-          if (items.status === "open") count += items.quantity;
-        }
-      }
-      return count;
-    };
-    order.rawTotal = function () {
-      let total = 0;
-      if (order !== null ? order.items : void 0) {
-        _.each(order.items, function(item) {
-          let d = item.discount || 0;
-          if (!item.isPromo && item.status !== 'deleted') {
-            total += ((item.quantity * item.price * ((100 - d)/100)));
-          }
-        });
-      }
-      return total;
-    };
-    order.shippedItemCount = function () {
-      let count = 0;
-      if (order !== null ? order.items : void 0) {
-        for (let items of order.items) {
-          if (items.status === "shipped") count += items.quantity;
-        }
-      }
-      return count;
-    };
-    order.salesLocation = function() {
-      let location = '';
-      if (order !== null ? order.salesLocationId : void 0) {
-        let locations = Locations.findOne(order.salesLocationId);
-        if (locations) location = locations.name;
-      }
-      return location;
-    };
-    order.stockLocation = function() {
-      let location = '';
-      if (order !== null ? order.stockLocationId : void 0) {
-        let locations = Locations.findOne(order.stockLocationId);
-        if (locations) location = locations.name;
-      }
-      return location;
-    };
-    order.payments = function() {
-      let payments = 0;
-      if (order !== null) {
-        let cPayments = Payments.find({ orderId: order._id}).fetch();
-        _.each(cPayments, function(p) {
-          payments += p.amount;
-        });
-      }
-      return payments;
-    };
-    order.nonCashPayments = function() {
-      let payments = 0;
-      if (order !== null) {
-        let cPayments = Payments.find({ orderId: order._id, isCashInHand: false }).fetch();
-        _.each(cPayments, function(p) {
-          payments += p.amount;
-        });
-      }
-      return payments;
-    }();
-    order.cashPayments = function() {
-      let payments = 0;
-      if (order !== null) {
-        let cPayments = Payments.find({ orderId: order._id, isCashInHand: true }).fetch();
-        _.each(cPayments, function(p) {
-          payments += p.amount;
-        });
-      }
-      return payments;
-    }();
-    order.balance = function() {
-      return order.total - (order.appliedCredits + order.payments())
-    };
-    return order;
-  }
-});
-Partitioner.partitionCollection(Orders, {index: {userId: 1}});
-Orders.attachSchema(Core.Schemas.Order);
+Businesses = new Mongo.Collection("businesses");
+Partitioner.partitionCollection(Businesses, {index: {userId: 1}});
+Businesses.attachSchema(Core.Schemas.Business);
 
 /**
-* Core Collections OrderTypes
+* Core Collections BusinessUnits
 */
-OrderTypes = new Mongo.Collection("ordertypes");
-Partitioner.partitionCollection(OrderTypes);
-OrderTypes.attachSchema(Core.Schemas.OrderType);
+BusinessUnits = new Mongo.Collection("businessunits");
+Partitioner.partitionCollection(BusinessUnits);
+BusinessUnits.attachSchema(Core.Schemas.BusinessUnit);
 
 /**
-* Core Collections Shipments
-*/
-Shipments = new Mongo.Collection("shipments");
-Partitioner.partitionCollection(Shipments);
-Shipments.attachSchema(Core.Schemas.Shipment);
+ * Core Collections Departments
+ */
+Departments = new Mongo.Collection("departments");
+Partitioner.partitionCollection(Departments);
+Departments.attachSchema(Core.Schemas.Department);
 
 /**
-* Core Collections Invoices
-*/
-Invoices = new Mongo.Collection("invoices");
-Partitioner.partitionCollection(Invoices);
-Invoices.attachSchema(Core.Schemas.Invoice);
+ * Core Collections Divisions
+ */
+Divisions = new Mongo.Collection("divisions");
+Partitioner.partitionCollection(Divisions);
+Divisions.attachSchema(Core.Schemas.Division);
 
 /**
-* Core Collections Payments
-*/
-Payments = new Mongo.Collection("payments");
-Partitioner.partitionCollection(Payments);
-Payments.attachSchema(Core.Schemas.Payment);
+ * Core Collections Employees
+ */
+Employees = new Mongo.Collection("employees");
+Partitioner.partitionCollection(Employees);
+Employees.attachSchema(Core.Schemas.Employee);
 
 /**
-* Core Collections Taxes
-*/
-Taxes = new Mongo.Collection("taxes");
-Taxes.attachSchema(Core.Schemas.Tax);
-
+ * Core Collections Expenses
+ */
+Expenses = new Mongo.Collection("expenses");
+Partitioner.partitionCollection(Expenses);
+Expenses.attachSchema(Core.Schemas.Expense);
 
 /**
-* Core Collections Tenants
-*/
+ * Core Collections History
+ */
+History = new Mongo.Collection("history");
+Partitioner.partitionCollection(History);
+History.attachSchema(Core.Schemas.History);
+
+/**
+ * Core Collections Jobs
+ */
+Jobs = new Mongo.Collection("jobs");
+Partitioner.partitionCollection(Jobs);
+Jobs.attachSchema(Core.Schemas.Job);
+
+/**
+ * Core Collections Leaves
+ */
+Leaves = new Mongo.Collection("leaves");
+Partitioner.partitionCollection(Leaves);
+Leaves.attachSchema(Core.Schemas.Leave);
+
+/**
+ * Core Collections Loans
+ */
+Loans = new Mongo.Collection("loans");
+Partitioner.partitionCollection(Loans);
+Loans.attachSchema(Core.Schemas.Loan);
+
+/**
+ * Core Collections OneOffs
+ */
+OneOffs = new Mongo.Collection("oneoffs");
+Partitioner.partitionCollection(OneOffs);
+OneOffs.attachSchema(Core.Schemas.OneOff);
+
+/**
+ * Core Collections PayGrades
+ */
+PayGrades = new Mongo.Collection("paygrades");
+Partitioner.partitionCollection(PayGrades);
+PayGrades.attachSchema(Core.Schemas.PayGrade);
+
+/**
+ * Core Collections paytypes
+ */
+PayTypes = new Mongo.Collection("paytypes");
+Partitioner.partitionCollection(PayTypes);
+PayTypes.attachSchema(Core.Schemas.PayType);
+
+/**
+ * Core Collections PayGroups
+ */
+PayGroups = new Mongo.Collection("paygroups");
+Partitioner.partitionCollection(PayGroups);
+PayGroups.attachSchema(Core.Schemas.PayGroup);
+
+/**
+ * Core Collections PaymentRules
+ */
+PaymentRules = new Mongo.Collection("paymentrules");
+Partitioner.partitionCollection(PaymentRules);
+PaymentRules.attachSchema(Core.Schemas.PaymentRule);
+
+/**
+ * Core Collections PayRolls
+ */
+Payrolls = new Mongo.Collection("payrolls");
+Partitioner.partitionCollection(Payrolls);
+Payrolls.attachSchema(Core.Schemas.Payroll);
+
+/**
+ * Core Collections Payruns
+ */
+Payruns = new Mongo.Collection("payruns");
+Partitioner.partitionCollection(Payruns);
+Payruns.attachSchema(Core.Schemas.Payrun);
+
+/**
+ * Core Collections Pensions
+ */
+Pensions = new Mongo.Collection("pensions");
+Partitioner.partitionCollection(Pensions);
+Pensions.attachSchema(Core.Schemas.Pension);
+
+/**
+ * Core Collections Pensions
+ */
+PensionManagers = new Mongo.Collection("pensionmanagers");
+Partitioner.partitionCollection(PensionManagers);
+PensionManagers.attachSchema(Core.Schemas.PensionManager);
+
+/**
+ * Core Collections Positions
+ */
+Positions = new Mongo.Collection("positions");
+Partitioner.partitionCollection(Positions);
+Positions.attachSchema(Core.Schemas.Position);
+
+/**
+ * Core Collections Tax
+ */
+Tax = new Mongo.Collection("tax");
+Partitioner.partitionCollection(Tax);
+Tax.attachSchema(Core.Schemas.Tax);
+
+/**
+ * Core Collections Tax
+ */
+TimeTracks = new Mongo.Collection("timetracks");
+Partitioner.partitionCollection(TimeTracks);
+TimeTracks.attachSchema(Core.Schemas.TimeTrack);
+
+/**
+ * Core Collections Tenants
+ */
 Tenants = new Mongo.Collection("tenants");
 Tenants.attachSchema(Core.Schemas.Tenant);
-
-/**
-* Core Collections Translations
-*/
-Translations = new Mongo.Collection("translations");
-Translations.attachSchema(Core.Schemas.Translation);
-
-
-/**
-* Core Collections Products
-*/
-Products = new Mongo.Collection("products");
-Partitioner.partitionCollection(Products, {index: {handle: 1}});
-Products.attachSchema(Core.Schemas.Product);
-
-
-/**
-* Core Collections PriceListGroups
-*/
-PriceListGroups = new Mongo.Collection("pricelistgroups",  {
-  transform: function(pricelistgroup) {
-    if (pricelistgroup) {
-      pricelistgroup.priceListCodes = function(){
-        let dateUtc = moment.utc(new Date);
-        let localDate = moment(dateUtc).local();
-        let today = localDate._i
-        let prices = pricelistgroup.priceLists;
-        let availablePrices = _.filter(prices, function(a){return a.startDate <= today && a.endDate >= today});
-        return _.pluck(availablePrices, 'code');
-      }();
-    }
-    return pricelistgroup;
-  }
-});
-Partitioner.partitionCollection(PriceListGroups);
-PriceListGroups.attachSchema(Core.Schemas.PriceListGroup);
-
-
-/**
-* Core Collections ProductVariants
-*/
-ProductVariants = new Mongo.Collection("productvariants");
-Partitioner.partitionCollection(ProductVariants, {index: {code: 1}});
-ProductVariants.attachSchema(Core.Schemas.ProductVariant);
-
-/**
-* Core Collections Discounts
-*/
-Discounts = new Mongo.Collection("discounts");
-Partitioner.partitionCollection(Discounts);
-Discounts.attachSchema(Core.Schemas.Discount);
-
-
-/**
-* Core Collections Customers
-*/
-Customers = new Mongo.Collection("customers", {
-  transform: function(customer) {
-    if (customer && customer.account) {
-      customer.account.availableBalance = function(){
-        let availableBalance = 0;
-        availableBalance = customer.account.currentBalance;
-        let holds = CustomerHolds.find({customerId: customer._id}).fetch();
-        _.each(holds, function(hold) {
-          if (hold && _.isNumber(hold.amount)) availableBalance -= hold.amount;
-        });
-        return _.isNumber(availableBalance) ? availableBalance : 0;
-      }();
-      customer.availableCreditLimit = function(){
-        let availableCreditLimit = 0;
-        availableCreditLimit = _.isNumber(customer.account.remainingCreditLimit) ? customer.account.remainingCreditLimit : 0;
-        let holds = CreditHolds.find({customerId: customer._id}).fetch();
-        _.each(holds, function(hold) {
-          if (hold && _.isNumber(hold.amount)) availableCreditLimit -= hold.amount;
-        });
-        return _.isNumber(availableCreditLimit) && availableCreditLimit > 0 ? availableCreditLimit : 0;
-      }();
-    }
-    return customer;
-  }
-});
-Partitioner.partitionCollection(Customers);
-Customers.attachSchema(Core.Schemas.Customer);
-
-
-/**
- * Core Collections Suppliers
- */
-Suppliers = new Mongo.Collection("suppliers");
-Partitioner.partitionCollection(Suppliers);
-Suppliers.attachSchema(Core.Schemas.Supplier);
-
-
-/**
- * Core Collections Customers
- */
-CustomerTransactions = new Mongo.Collection("customertransactions");
-Partitioner.partitionCollection(CustomerTransactions);
-CustomerTransactions.attachSchema(Core.Schemas.CustomerTransaction);
-
-
-/**
-* Core Collections Locations
-*/
-Locations = new Mongo.Collection("locations");
-Partitioner.partitionCollection(Locations);
-Locations.attachSchema(Core.Schemas.Location);
-
-/**
-* Core Collections ReturnOrders
-*/
-ReturnOrders = new Mongo.Collection("returnorders");
-Partitioner.partitionCollection(ReturnOrders, {index: {userId: 1}});
-ReturnOrders.attachSchema(Core.Schemas.ReturnOrder);
-
-/**
- * Core Collections CustomerGroups
-*/
-CustomerGroups = new Mongo.Collection("customergroups");
-Partitioner.partitionCollection(CustomerGroups);
-CustomerGroups.attachSchema(Core.Schemas.CustomerGroup);
-
-
-/**
- * Core Collections CustomerHolds
-*/
-CustomerHolds = new Mongo.Collection("customerholds");
-Partitioner.partitionCollection(CustomerHolds, {index: {customerId: 1}});
-CustomerHolds.attachSchema(Core.Schemas.CustomerHold);
-
-/**
- * Core Collections Brands
- */
-Brands = new Mongo.Collection("brands");
-Partitioner.partitionCollection(Brands);
-Brands.attachSchema(Core.Schemas.Brand);
-
-
-/**
- * Core Collections ReturnReasons
- */
-ReturnReasons = new Mongo.Collection("returnreasons");
-Partitioner.partitionCollection(ReturnReasons);
-ReturnReasons.attachSchema(Core.Schemas.ReturnReason);
-
-/**
- * Core Collections SalesAreas
- */
-SalesAreas = new Mongo.Collection("salesareas");
-Partitioner.partitionCollection(SalesAreas);
-SalesAreas.attachSchema(Core.Schemas.SalesArea);
-
-
-/**
- * Core Collections Approvals
- */
-Approvals = new Mongo.Collection("approvals");
-Partitioner.partitionCollection(Approvals);
-Approvals.attachSchema(Core.Schemas.Approval);
-
-/**
- * Core Collections Promotions
- */
-ApprovalParameters = new Mongo.Collection("approvalparameters");
-Partitioner.partitionCollection(ApprovalParameters);
-ApprovalParameters.attachSchema(Core.Schemas.ApprovalParamater);
-
-/**
- * Core Collections CreditHolds
- */
-CreditHolds = new Mongo.Collection("creditholds");
-Partitioner.partitionCollection(CreditHolds, {index: {customerId: 1}});
-CreditHolds.attachSchema(Core.Schemas.CreditHold);
-
-/**
- * Core Collections PaymentMethods
- */
-PaymentMethods = new Mongo.Collection("paymentmethods");
-Partitioner.partitionCollection(PaymentMethods);
-PaymentMethods.attachSchema(Core.Schemas.PaymentMethod);
-
-/**
- * Core Collections Promotions
- */
-Promotions = new Mongo.Collection("promotions");
-Partitioner.partitionCollection(Promotions);
-Promotions.attachSchema(Core.Schemas.Promotion);
-
-/** 
- * Core Collections Promotions Parameters
- */
-PromotionParameters = new Mongo.Collection("promotionparameters");
-Partitioner.partitionCollection(PromotionParameters);
-PromotionParameters.attachSchema(Core.Schemas.PromotionParameter);
-
-/** 
- * Core Collections Promotions Reward Parameters
- */
-PromotionRewardParameters = new Mongo.Collection("promotionrewardparameters");
-Partitioner.partitionCollection(PromotionRewardParameters);
-PromotionRewardParameters.attachSchema(Core.Schemas.PromotionRewardParameter);
-
-/** 
- * Core Collections Promotions Reward SubTypes
- */
-PromotionRewardSubTypes = new Mongo.Collection("promotionrewardsubtypes");
-Partitioner.partitionCollection(PromotionRewardSubTypes);
-PromotionRewardSubTypes.attachSchema(Core.Schemas.PromotionRewardSubType);
-
-
-/**
- * Core Collections Promotions Rebate
- */
-PromotionRebates = new Mongo.Collection("promotionrebates");
-Partitioner.partitionCollection(PromotionRebates);
-PromotionRebates.attachSchema(Core.Schemas.PromotionRebate);
-
-
-/**
- * Core Collections Webhooks
- */
-WebHooks = new Mongo.Collection("webhooks");
-Partitioner.partitionCollection(WebHooks);
-WebHooks.attachSchema(Core.Schemas.WebHook);
-
-/**
- * Core Collections Webhooks
- */
-DocumentNumbers = new Mongo.Collection("documentnumbers");
-Partitioner.partitionCollection(DocumentNumbers);
-DocumentNumbers.attachSchema(Core.Schemas.DocumentNumber);
-
-/**
- * Core Collections Companies
- */
-Companies = new Mongo.Collection("companies");
-Companies.attachSchema(Core.Schemas.Company);
-
-/**
- * Core Collections PurchaseOrder
- */
-PurchaseOrders = new Mongo.Collection("purchaseorders");
-Partitioner.partitionCollection(PurchaseOrders);
-PurchaseOrders.attachSchema(Core.Schemas.PurchaseOrder);
-
-/**
- * Core Collections StockTransfer
- */
-StockTransfers = new Mongo.Collection("stocktransfers");
-Partitioner.partitionCollection(StockTransfers);
-StockTransfers.attachSchema(Core.Schemas.StockTransfer);
-
-/**
- * Core Collections StockTransfer
- */
-StockAdjustments = new Mongo.Collection("stockadjustments");
-Partitioner.partitionCollection(StockAdjustments);
-StockAdjustments.attachSchema(Core.Schemas.StockAdjustment);

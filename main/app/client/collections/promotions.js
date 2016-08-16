@@ -1,5 +1,0 @@
-
-/**
-* Collections for Promotions Engine
-*
-*/

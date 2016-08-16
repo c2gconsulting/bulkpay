@@ -90,11 +90,11 @@ WebHookService.sendEvent = function(collection, options) {
 };
 
 
-WebHookService.sendEvent(Orders, {collectionName: 'order'});
-WebHookService.sendEvent(Invoices, {collectionName: 'invoice'});
-WebHookService.sendEvent(ReturnOrders, {collectionName: 'returnorder'});
-WebHookService.sendEvent(Payments, {collectionName: 'payments'});
-WebHookService.sendEvent(PromotionRebates, {collectionName: 'promotionrebates'});
+//WebHookService.sendEvent(Orders, {collectionName: 'order'});
+//WebHookService.sendEvent(Invoices, {collectionName: 'invoice'});
+//WebHookService.sendEvent(ReturnOrders, {collectionName: 'returnorder'});
+//WebHookService.sendEvent(Payments, {collectionName: 'payments'});
+//WebHookService.sendEvent(PromotionRebates, {collectionName: 'promotionrebates'});
 
 function enrichDoc(doc){
     let variantIds = _.pluck(doc.items, "variantId");

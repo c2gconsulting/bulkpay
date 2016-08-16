@@ -32,7 +32,7 @@ CoreRegistry.createDefaultAdminUser = function (tenantId, domain, email, usernam
     "NORTHCENT", "NORTHEAST", "NORTHWEST", "SOUTHEAST"];
   
   // defaults use either env or generated
-  options.email = email || "baseadmin@tradedepot.co"; // temporary
+  options.email = email || "baseadmin@bulkpay.co"; // temporary
   options.username = username || "baseadmin"; // username
   options.password = process.env.BASE_ADMIN_PASS || '&nSuWhShGo!';
   options.firstname = 'Petyr';
@@ -146,7 +146,6 @@ CoreRegistry.createDefaultDetailerUser = function () {
 CoreRegistry.initData = function () {
   let tenantId = Core.getDefaultTenantId();
   Loader.loadData(Tenants);
-  Loader.loadData(Taxes);
 
   // start checking once per second if Tenants collection is ready,
   // then load the rest of the fixtures when it is
@@ -166,32 +165,8 @@ CoreRegistry.initData = function () {
       });
 
       // load sample data for key collections
-      Loader.loadPartitionData(SalesAreas);
-      Loader.loadPartitionData(CustomerGroups);
-      Loader.loadPartitionData(PriceListGroups);
-      Loader.loadPartitionData(OrderTypes);
-      Loader.loadPartitionData(Brands);
-      
-      Loader.loadPartitionDataBulk(Locations);
-      Loader.loadPartitionDataBulk(Customers);
-      Loader.loadPartitionDataBulk(CustomerTransactions);
-      Loader.loadPartitionDataBulk(Products);
-      Loader.loadPartitionDataBulk(ProductVariants);
       
       Loader.loadPartitionData(Companies);
-      Loader.loadPartitionData(Suppliers);
-      Loader.loadPartitionData(PaymentMethods);
-      Loader.loadPartitionData(ReturnReasons);
-      Loader.loadPartitionData(PromotionParameters);
-      Loader.loadPartitionData(ApprovalParameters);
-      Loader.loadPartitionData(Approvals);
-      Loader.loadPartitionData(Orders);
-      Loader.loadPartitionData(ReturnOrders); 
-      Loader.loadPartitionData(Invoices);
-      
-      
-      
-      
 
 
       /*
@@ -266,7 +241,7 @@ CoreRegistry.initData = function () {
       //}
 
       // initialization complete
-      Core.Log.info('TradeDepot Core initialization finished.');
+      Core.Log.info('Bulkpay Core initialization finished.');
     }
   }, 1000);
 };

@@ -16,13 +16,13 @@ ApplicationController = RouteController.extend({
   // return Meteor.subscribe('post', this.params._id);
   
   waitOn: function () {
-    return [
-      Meteor.subscribe('UserLocations'),
-      Meteor.subscribe('OrderTypes'),
-      Meteor.subscribe('ActivePriceLists'),
-      Meteor.subscribe('CustomerGroups'),
-      Meteor.subscribe('CashPaymentMethods')
-    ];
+    //return [
+    //  Meteor.subscribe('UserLocations'),
+    //  Meteor.subscribe('OrderTypes'),
+    //  Meteor.subscribe('ActivePriceLists'),
+    //  Meteor.subscribe('CustomerGroups'),
+    //  Meteor.subscribe('CashPaymentMethods')
+    //];
   },
   
   // A data function that can be used to automatically set the data context for
@@ -43,18 +43,18 @@ ApplicationController = RouteController.extend({
     this.next();
   },
   onBeforeAction: function () {
-    if (!Meteor.userId()) {
-      // User not logged in, redirect to login view
-      $("body").addClass("fuelux")
-      this.layout('ExtLayout');
-      this.render('Login');
-    } else {
-      // User logged in, render app view (update later to redirect)
-      $("body").removeClass("fuelux")
-      $("body").addClass("app-body")
-      this.layout('ApplicationLayout');
+    //if (!Meteor.userId()) {
+    //  // User not logged in, redirect to login view
+    //  $("body").addClass("fuelux")
+    //  this.layout('ExtLayout');
+    //  this.render('Login');
+    //} else {
+    //  // User logged in, render app view (update later to redirect)
+    //  $("body").removeClass("fuelux")
+    //  $("body").addClass("app-body")
+    //  this.layout('ApplicationLayout');
       this.next();
-    }
+    //}
   },
   
   // The same thing as providing a function as the second parameter. You can

@@ -59,7 +59,6 @@ cfs:s3
 raix:ui-dropped-event
 pcel:toastr
 mrt:allow-env
-verso:intercom
 standard-minifier-css
 standard-minifier-js
 promise

@@ -54,27 +54,27 @@ _.extend(Core, {
 
     return true;
   },
-  
+
   initSettings: function () {
-    Meteor.settings.intercom = {
-      "secret": process.env.INTERCOM_APP_SECRET, 
-      "apikey": process.env.INTERCOM_APIKEY
-    };
-
-    Meteor.settings.public.intercom = {
-      "id": process.env.INTERCOM_APP_ID
-    };
-
-
-    /* make env vars available to client
-    allowEnv({
-        INTERCOM_APP_ID: 1
-    })*/
-
-    return true;
+    //Meteor.settings.intercom = {
+    //  "secret": process.env.INTERCOM_APP_SECRET,
+    //  "apikey": process.env.INTERCOM_APIKEY
+    //};
+    //
+    //Meteor.settings.public.intercom = {
+    //  "id": process.env.INTERCOM_APP_ID
+    //};
+    //
+    //
+    //make env vars available to client
+    //allowEnv({
+    //    INTERCOM_APP_ID: 1
+    //})
+    //
+    //return true;
   },
   initAccount: function() {
-    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "TradeDepot™";
+    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "BulkPay™";
     Accounts.emailTemplates.from = process.env.MAIL_FROM || "TradeDepot™ Team <no-reply@tradedepot.co>";
 
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
