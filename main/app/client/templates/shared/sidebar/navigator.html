@@ -1,7 +1,7 @@
 <template name="navigator">
     <div class="media profile-left">
         <a class="pull-left profile-thumb" href="profile.html">
-            <img class="img-circle" src="images/photos/avatar.jpg" alt="">
+            <img class="img-circle" src="/images/photos/avatar.jpg" alt="">
         </a>
         <div class="media-body">
             <h4 class="media-heading">Michael Ocheje</h4>
@@ -15,7 +15,7 @@
         <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
             <ul class="children">
                 <li><a href="#">Update Business Info</a></li>
-                <li><a href="#">Business Units</a></li>
+                <li><a href="{{pathFor route='businessunits'}}">Business Units</a></li>
                 <li><a href="#">Divisions</a></li>
                 <li><a href="#">Departments</a></li>
                 <li><a href="#">Positions</a></li>

@@ -15,7 +15,11 @@ BusinessUnitController = ApplicationController.extend({
   // return Meteor.subscribe('post', this.params._id);
   
   waitOn: function () {
+      return [
+          Meteor.subscribe("BusinessUnits")
+      ]
     //return InvoiceSubs.subscribe('Invoice', this.params._id);
+    // return [Meteor.subscribe('BusinessUnit')];
   },
   
   // A data function that can be used to automatically set the data context for
@@ -50,6 +54,14 @@ BusinessUnitController = ApplicationController.extend({
   home: function(){
      this.render('BusinessUnit');
   },
+    show: function () {
+        let bu = BusinessUnits.findOne({_id: this.params.id});
+        if (bu){
+            this.render("BUDetail");
+        } else {
+            Router.go('businessunit');
+        }
+    },
 
   onAfterAction: function () {
   },

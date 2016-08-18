@@ -53,10 +53,16 @@ Router.route('/reset-my-password', {
     template: 'ResetMyPassword'
 });
 
-Router.route('/business-unit', {
-    name: 'businessunit',
+Router.route('/business-units', {
+    name: 'businessunits',
     controller: 'BusinessUnitController',
     action: 'home',
     where: 'client'
 });
+Router.route('/businessunit/:id', {
+    name: 'bu.details',
+    controller: 'BusinessUnitController',
+    action: 'show',
+    where: 'client'
+})
 

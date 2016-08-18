@@ -152,11 +152,11 @@ CoreRegistry.initData = function () {
             CoreRegistry.createDefaultAdminUser();
             CoreRegistry.createDefaultSelfServiceUser();
 
-            //// create document number range collections for all tenants
-            //let allTenants = Tenants.find().fetch();
-            //_.each(allTenants, function(tenant) {
-            //  Loader.loadPartitionData(DocumentNumbers, tenant._id);
-            //});
+            // create document number range collections for all tenants
+            let allTenants = Tenants.find().fetch();
+            _.each(allTenants, function(tenant) {
+              Loader.loadPartitionData(DocumentNumbers, tenant._id);
+            });
 
             // load sample data for key collections
 

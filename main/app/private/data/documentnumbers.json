@@ -1,0 +1,13 @@
+[{
+  "documentType": "employee"
+},{
+  "documentType": "job"
+},{
+  "documentType": "businessunit"
+}, {
+  "documentType": "division"
+}, {
+  "documentType": "position"
+}, {
+  "documentType": "department"
+}]
