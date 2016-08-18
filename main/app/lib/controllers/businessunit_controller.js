@@ -55,7 +55,7 @@ BusinessUnitController = ApplicationController.extend({
      this.render('BusinessUnit');
   },
     show: function () {
-        let bu = BusinessUnits.findOne({_id: this.params.id});
+        let bu = BusinessUnits.findOne({_id: this.params._id});
         if (bu){
             this.render("BUDetail");
         } else {

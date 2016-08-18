@@ -59,7 +59,7 @@ Router.route('/business-units', {
     action: 'home',
     where: 'client'
 });
-Router.route('/businessunit/:id', {
+Router.route('/businessunit/:_id', {
     name: 'bu.details',
     controller: 'BusinessUnitController',
     action: 'show',

@@ -54,7 +54,6 @@ udondan:bulk-collection-update
 jss:multiple-insert
 autoupdate
 meteorhacks:kadira
-peppelg:bootstrap-3-modal
 cfs:s3
 raix:ui-dropped-event
 pcel:toastr
@@ -82,3 +81,4 @@ taehee:rand-token
 meteorhacks:unblock
 meteorhacks:subs-manager
 fongandrew:find-and-modify
+peppelg:bootstrap-3-modal
