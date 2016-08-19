@@ -15,41 +15,40 @@
         <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
             <ul class="children">
                 <li><a href="{{pathFor route='businessunits'}}">Business Units</a></li>
-                <li><a href="#">Divisions</a></li>
-                <li><a href="#">Departments</a></li>
-                <li><a href="#">Positions</a></li>
-                <li><a href="#">Jobs</a></li>
+                <li><a href="{{pathFor route='divisions'}}">Divisions</a></li>
+                <li><a href="{{pathFor route='departments'}}">Departments</a></li>
+                <li><a href="{{pathFor route='positions'}}">Positions</a></li>
+                <li><a href="{{pathFor route='jobs'}}">Jobs</a></li>
             </ul>
         </li>
         <li class="parent"><a href=""><i class="fa fa-money"></i> <span>Pay Rules</span></a>
             <ul class="children">
-                <li><a href="#">Pay Groups</a></li>
-                <li><a href="#">Pay Types</a></li>
-                <li><a href="#">Pay Grades</a></li>
-                <li><a href="#">Taxes</a></li>
-                <li><a href="#">Pensions</a></li>
+                <li><a href="{{pathFor route='paygroups'}}">Pay Groups</a></li>
+                <li><a href="{{pathFor route='paytypes'}}">Pay Types</a></li>
+                <li><a href="{{pathFor route='paygrades'}}">Pay Grades</a></li>
+                <li><a href="{{pathFor route='taxes'}}">Taxes</a></li>
+                <li><a href="{{pathFor route='pensions'}}">Pensions</a></li>
             </ul>
         </li>
         <li class="parent"><a href=""><i class="fa fa-users"></i> <span>Employees</span></a>
             <ul class="children">
-                <li><a href="#">New Employee</a></li>
-                <li><a href="#">Manage Employees</a></li>
-                <li><a href="#">Employees Expenses</a></li>
-                <li><a href="#">Employees Leave</a></li>
-                <li><a href="#">Employees Time</a></li>
+                <li><a href="{{!pathFor route='employees'}}">Manage Employees</a></li>
+                <li><a href="{{!pathFor route='employee.expense'}}">Employees Expenses</a></li>
+                <li><a href="{{!pathFor route='employee.leave'}}">Employees Leave</a></li>
+                <li><a href="{{!pathFor route='employee.time'}}">Employees Time</a></li>
             </ul>
         </li>
         <li class="parent"><a href=""><i class="fa fa-refresh"></i> <span>Pay Runs</span></a>
             <ul class="children">
-                <li><a href="#">New Pay Run</a></li>
-                <li><a href="#">One Off Payments</a></li>
-                <li><a href="#">Pay Runs</a></li>
+                <li><a href="{{!pathFor route='payrun.new'}}">New Pay Run</a></li>
+                <li><a href="{{!pathFor route='pay.oneoff'}}">One Off Payments</a></li>
+                <li><a href="{{!pathFor route='pay.run'}}">Pay Results</a></li>
             </ul>
         </li>
         <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Loan Management</span></a>
             <ul class="children">
-                <li><a href="#">New Loan Application</a></li>
-                <li><a href="#">Manage Loans</a></li>
+                <li><a href="{{!pathFor route='loans.new'}}">New Loan Application</a></li>
+                <li><a href="{{!pathFor route='loans.manage'}}">Manage Loans</a></li>
             </ul>
         </li>
         <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>

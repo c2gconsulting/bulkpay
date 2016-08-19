@@ -25,7 +25,6 @@
             </div>
         </div>
 
-
         <div class="row">
             {{#if condition bus.size 'eq' 0 }}
                 <div class="col-md-12">
@@ -47,7 +46,7 @@
                             </thead>
                             <tbody>
                             {{#each bus}}
-                                {{> singleBu}}
+                                {{> singleBu index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -56,98 +55,14 @@
             {{/if}}
         </div><!-- row -->
 
-        <div class="row">
-
-            <div class="col-md-8">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <div class="panel-btns">
-                            <a href="" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
-                            <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
-                        </div><!-- panel-btns -->
-                        <h4 class="panel-title">Update - oldUnit.name Unit</h4>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="update-unit-name" class="control-label">Name</label>
-                                    <input  type="text" id="update-unit-name" class="form-control" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="control-label">Location</label>
-                                    <select2 options="options" ng-model="singleUnit.location" s2-options="state as state for state in states" style="width: 100%"></select2>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label class="control-label">Parent</label>
-                                    <select2 options="options" ng-model="singleUnit.parentId" s2-options="businessUnit._id as businessUnit.name for businessUnit in filteredBusinessUnit" style="width: 100%"></select2>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-12 -->
-
-                        </div><!-- row -->
-
-                        <div class="row" ng-show="histories.length > 0">
-                            <span class="pull-right">Last updated on getLastHistory().date | date:"MM/dd/yyyy 'at' h:mma", by getLastHistory().user.username</span>
-                        </div>
-
-                    </div><!-- panel-body -->
-                    <div class="panel-footer">
-                        <button class="btn btn-primary mr5">Update</button>
-                        <button type="reset" class="btn btn-warning">Cancel</button>
-                        <button type="reset" class="btn btn-danger pull-right">Delete</button>
-                    </div><!-- panel-footer -->
-                </div><!-- panel -->
-
-            </div><!-- col-md-12 -->
-
-
-            <div class="col-md-4">
-                <h5 class="lg-title mb10">Edit History</h5>
-
-                <div class="panel-group" id="accordion2">
-                    <div ng-repeat="history in histories" class="panel panel-primary">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion2" href=".history._id">
-                                    <span>history.date | date:"MM/dd/yyyy 'at' h:mma"</span>
-                                    <span class="pull-right">history.user.username</span>
-                                </a>
-                            </h4>
-                        </div>
-                        <div class="panel-collapse collapse" ng-class="history._id">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-md-12" ng-repeat="activity in history.activities">
-                                        <div class="well well-sm">activity | prettifyActivity</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div><!-- panel -->
-
-                </div><!-- panel-group -->
-
-            </div><!-- col-md-4 -->
-
-        </div>
-
-
     </div><!-- contentpanel -->
 </template>
 
 <template name="singleBu">
     <tr class="pointer">
-        <td>1</td>
-        <td>{{name}}</td>
-        <td>{{location}}</td>
-        <td>{{parent.name}}</td>
+        <td>{{index}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.location}}</td>
+        <td>{{data.parent.name}}</td>
     </tr>
 </template>

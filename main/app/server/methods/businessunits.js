@@ -28,7 +28,7 @@ Meteor.methods({
         this.unblock();
 
         let buId = BusinessUnits.insert(bu);
-        return {id: buId};
+        return {_id: buId};
         //let newBu = BusinessUnits.findOne(buId);
         ////sendOrderNotification("order.created", newOrder, userId);
         //return { _id: orderId, orderNumber: newOrder.orderNumber };

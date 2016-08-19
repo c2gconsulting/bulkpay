@@ -24,6 +24,6 @@ Template.singleBu.helpers({
 Template.singleBu.events({
     'click .pointer': function(e) {
         e.preventDefault();
-        Router.go('bu.details', this);
+        Router.go('bu.details', this.data);
     }
 });

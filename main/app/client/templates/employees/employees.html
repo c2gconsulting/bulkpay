@@ -1,0 +1,128 @@
+<template name="Employees">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>business.name</li>
+                    <li>Employees</li>
+                </ul>
+                <h4>Employees</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Employees List</h5>
+                <p class="mb20 pull-right"><a class="btn btn-primary">New Employee Profile</a></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center" ng-if="!dataFetched">
+                <img alt="" src="images/loaders/loader10.gif">
+            </div>
+            <div class="col-md-12 employee-filter">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="employee-name-filter" class="control-label">Name</label>
+                            <input  type="text" name="employee-name-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Business Unit</label>
+                            <input  type="text" name="employee-bu-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Division</label>
+                            <input  type="text" name="employee-division-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Department</label>
+                            <input  type="text" name="employee-department-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Position</label>
+                            <input  type="text" name="employee-position-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Active</label>
+                            <input  type="text" name="employee-active-filter" class="form-control" placeholder="Name" />
+                        </div><!-- form-group -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="alert alert-danger text-center">
+                    <p>No Employee available</p>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee Id</th>
+                            <th>Surname</th>
+                            <th>First Name</th>
+                            <th>Other Names</th>
+                            <th>Business Unit</th>
+                            <th>Division</th>
+                            <th>Department</th>
+                            <th>Position</th>
+                            <th>Date Employed</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each employees}}
+                            {{> SingleEmployee}}
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+                <div class="col-md-12 text-left">
+                    <!-- dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="bower_components/angularUtils-pagination/dirPagination.tpl.html"></dir-pagination-controls -->
+                </div>
+            </div>
+        </div><!-- row -->
+
+    </div><!-- contentpanel -->
+</template>
+
+<template name="SingleEmployee">
+    <tr class="pointer">
+        <td>{{@index}}</td>
+        <td>employeeID</td>
+        <td>Lastname</td>
+        <td>firstname</td>
+        <td>other names</td>
+        <td>business unit</td>
+        <td>division</td>
+        <td>department</td>
+        <td>position</td>
+        <td>employement date</td>
+        <td>
+            <span class="label label-success">status</span>
+            <span class="label label-danger">status</span>
+        </td>
+    </tr>
+</template>
