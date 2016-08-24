@@ -59,78 +59,82 @@ Router.route('/business-units', {
     action: 'home',
     where: 'client'
 });
-Router.route('/businessunit/:_id', {
+Router.route('/business/:_id', {
     name: 'bu.details',
     controller: 'BusinessUnitController',
     action: 'show',
     where: 'client'
-})
-
-
-
-Router.route('divisions', {
-  name: 'divisions',
-  controller: 'DivisionsController',
-  where: 'client'
 });
 
-Router.route('/division/:_id', {
-    name: 'division.show',
+Router.route('/business/:_id/division', {
+    name: 'divisions',
     controller: 'DivisionsController',
-    action: 'show',
     where: 'client'
-})
-
-Router.route('departments', {
-  name: 'departments',
-  controller: 'DepartmentsController',
-  where: 'client'
 });
 
-Router.route('positions', {
-  name: 'positions',
-  controller: 'PositionsController',
-  where: 'client'
+Router.route('/business/:_id/departments', {
+    name: 'departments',
+    controller: 'DepartmentsController',
+    where: 'client'
 });
 
-Router.route('jobs', {
-  name: 'jobs',
-  controller: 'JobsController',
-  where: 'client'
+Router.route('/business/:_id/positions', {
+    name: 'positions',
+    controller: 'PositionsController',
+    where: 'client'
 });
 
-Router.route('paygroups', {
-  name: 'paygroups',
-  controller: 'PaygroupsController',
-  where: 'client'
+Router.route('/business/:_id/jobs', {
+    name: 'jobs',
+    controller: 'JobsController',
+    where: 'client'
 });
 
-Router.route('paytypes', {
-  name: 'paytypes',
-  controller: 'PaytypesController',
-  where: 'client'
+Router.route('/business/:_id/paygroups', {
+    name: 'paygroups',
+    controller: 'PaygroupsController',
+    where: 'client'
 });
 
-Router.route('paygrades', {
-  name: 'paygrades',
-  controller: 'PaygradesController',
-  where: 'client'
+Router.route('/business/:_id/paytypes', {
+    name: 'paytypes',
+    controller: 'PaytypesController',
+    where: 'client'
 });
 
-Router.route('taxes', {
-  name: 'taxes',
-  controller: 'TaxesController',
-  where: 'client'
+Router.route('/business/:_id/paygrades', {
+    name: 'paygrades',
+    controller: 'PaygradesController',
+    where: 'client'
 });
 
-Router.route('pensions', {
-  name: 'pensions',
-  controller: 'PensionsController',
-  where: 'client'
+Router.route('/business/:_id/taxes', {
+    name: 'taxes',
+    controller: 'TaxesController',
+    where: 'client'
 });
 
-Router.route('employees', {
-  name: 'employees',
-  controller: 'EmployeesController',
-  where: 'client'
+Router.route('/business/:_id/pensions', {
+    name: 'pensions',
+    controller: 'PensionsController',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employees', {
+    name: 'employees',
+    controller: 'EmployeesController',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/new', {
+    name: 'employees.create',
+    controller: 'EmployeesController',
+    action: 'create',
+    where: 'client'
+});
+
+Router.route('tenant/signup', {
+    name: 'new.tenant',
+    controller: 'TenantsController',
+    where: 'client'
 });

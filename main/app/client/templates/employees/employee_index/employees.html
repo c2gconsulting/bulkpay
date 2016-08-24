@@ -8,7 +8,7 @@
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a ui-sref="business.overview">Business</a></li>
-                    <li>business.name</li>
+                    <li>{{name}}</li>
                     <li>Employees</li>
                 </ul>
                 <h4>Employees</h4>
@@ -21,13 +21,13 @@
         <div class="row">
             <div class="col-md-12">
                 <h5 class="lg-title mb5">Employees List</h5>
-                <p class="mb20 pull-right"><a class="btn btn-primary">New Employee Profile</a></p>
+                <p class="mb20 pull-right" id="createEmployee"><a class="btn btn-primary">New Employee</a></p>
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-12 text-center" ng-if="!dataFetched">
-                <img alt="" src="images/loaders/loader10.gif">
+                <img alt="" src="/images/loaders/loader10.gif">
             </div>
             <div class="col-md-12 employee-filter">
                 <div class="row">

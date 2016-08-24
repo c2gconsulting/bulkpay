@@ -1,7 +1,7 @@
 this.initAll = function() {
-   
+
    "use strict";
-   
+
    // Tooltip
    $('.tooltips').tooltip({ container: 'body'});
 
@@ -20,7 +20,7 @@ this.initAll = function() {
       $(this).closest('.panel').fadeOut(200);
       return false;
    });
-   
+
    // Minimize Panel
    $('.panel .panel-minimize').click(function(){
       var t = $(this);
@@ -38,17 +38,17 @@ this.initAll = function() {
       }
       return false;
    });
-   
+
    $('.leftpanel .nav .parent > a').click(function() {
-      
+
       var coll = $(this).parents('.collapsed').length;
-      
+
       if (!coll) {
          $('.leftpanel .nav .parent-focus').each(function() {
             $(this).find('.children').slideUp('fast');
             $(this).removeClass('parent-focus');
          });
-         
+
          var child = $(this).parent().find('.children');
          if(!child.is(':visible')) {
             child.slideDown('fast');
@@ -61,8 +61,8 @@ this.initAll = function() {
       }
       return false;
    });
-   
-   
+
+
    // Menu Toggle
    $('.menu-collapse').click(function() {
       if (!$('body').hasClass('hidden-left')) {
@@ -81,29 +81,29 @@ this.initAll = function() {
       }
       return false;
    });
-   
+
    // Add class nav-hover to mene. Useful for viewing sub-menu
    $('.leftpanel .nav li').hover(function(){
       $(this).addClass('nav-hover');
    }, function(){
       $(this).removeClass('nav-hover');
    });
-   
+
    // For Media Queries
    $(window).resize(function() {
       hideMenu();
    });
-   
+
    hideMenu(); // for loading/refreshing the page
    function hideMenu() {
-      
+
       if($('.header-right').css('position') == 'relative') {
          $('body').addClass('hidden-left');
          $('.headerwrapper, .mainwrapper').removeClass('collapsed');
       } else {
          $('body').removeClass('hidden-left');
       }
-      
+
       // Seach form move to left
       if ($(window).width() <= 360) {
          if ($('.leftpanel .form-search').length == 0) {
@@ -115,10 +115,10 @@ this.initAll = function() {
          }
       }
    }
-   
+
    collapsedMenu(); // for loading/refreshing the page
    function collapsedMenu() {
-      
+
       if($('.logo').css('position') == 'relative') {
          $('.headerwrapper, .mainwrapper').addClass('collapsed');
       } else {

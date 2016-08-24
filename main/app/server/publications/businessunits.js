@@ -3,6 +3,7 @@
  */
 
 Core.publish("BusinessUnits", function () {
+    //Meteor._sleepForMs(10000); simulate waiting for publication
     return BusinessUnits.find();
 });
 

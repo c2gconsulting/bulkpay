@@ -11,58 +11,65 @@
 
     <h5 class="leftpanel-title">Navigation</h5>
     <ul class="nav nav-pills nav-stacked">
-        <li><a href="{{pathFor route='home'}}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
-        <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
-            <ul class="children">
-                <li><a href="{{pathFor route='businessunits'}}">Business Units</a></li>
-                <li><a href="{{pathFor route='divisions'}}">Divisions</a></li>
-                <li><a href="{{pathFor route='departments'}}">Departments</a></li>
-                <li><a href="{{pathFor route='positions'}}">Positions</a></li>
-                <li><a href="{{pathFor route='jobs'}}">Jobs</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-money"></i> <span>Pay Rules</span></a>
-            <ul class="children">
-                <li><a href="{{pathFor route='paygroups'}}">Pay Groups</a></li>
-                <li><a href="{{pathFor route='paytypes'}}">Pay Types</a></li>
-                <li><a href="{{pathFor route='paygrades'}}">Pay Grades</a></li>
-                <li><a href="{{pathFor route='taxes'}}">Taxes</a></li>
-                <li><a href="{{pathFor route='pensions'}}">Pensions</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-users"></i> <span>Employees</span></a>
-            <ul class="children">
-                <li><a href="{{!pathFor route='employees'}}">Manage Employees</a></li>
-                <li><a href="{{!pathFor route='employee.expense'}}">Employees Expenses</a></li>
-                <li><a href="{{!pathFor route='employee.leave'}}">Employees Leave</a></li>
-                <li><a href="{{!pathFor route='employee.time'}}">Employees Time</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-refresh"></i> <span>Pay Runs</span></a>
-            <ul class="children">
-                <li><a href="{{!pathFor route='payrun.new'}}">New Pay Run</a></li>
-                <li><a href="{{!pathFor route='pay.oneoff'}}">One Off Payments</a></li>
-                <li><a href="{{!pathFor route='pay.run'}}">Pay Results</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Loan Management</span></a>
-            <ul class="children">
-                <li><a href="{{!pathFor route='loans.new'}}">New Loan Application</a></li>
-                <li><a href="{{!pathFor route='loans.manage'}}">Manage Loans</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>
-            <ul class="children">
-                <li><a href="#">Salary Register</a></li>
-                <li><a href="#">Pension Report</a></li>
-            </ul>
-        </li>
-        <li class="parent"><a href=""><i class="fa fa-archive" aria-hidden="true"></i> <span>Pension Reports</span></a>
-            <ul class="children">
-                <li><a href="#">Pensioners</a></li>
-            </ul>
-        </li>
-        <li><a href="#"><i class="fa fa-angle-double-left"></i> <span>Back to Home</span></a></li>
+        {{#if context}}
+         {{> navlist}}
+        {{else}}
+            <li><a href="{{pathFor 'home'}}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
+            <li><a href="{{pathFor route='businessunits'}}"><i class="fa fa-university"></i> <span>Business</span></a></li>
+        {{/if}}
+        <li><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Back to Home</span></a></li>
     </ul>
 
+</template>
+
+<template name="navlist">
+    <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
+        <ul class="children">
+            <li><a href="{{pathFor 'divisions'}}">Divisions</a></li>
+            <li><a href="{{pathFor 'departments'}}">Departments</a></li>
+            <li><a href="{{pathFor 'positions'}}">Positions</a></li>
+            <li><a href="{{pathFor 'jobs'}}">Jobs</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-money"></i> <span>Pay Rules</span></a>
+        <ul class="children">
+            <li><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
+            <li><a href="{{pathFor 'paytypes'}}">Pay Types</a></li>
+            <li><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
+            <li><a href="{{pathFor 'taxes'}}">Taxes</a></li>
+            <li><a href="{{pathFor 'pensions'}}">Pensions</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-users"></i> <span>Employees</span></a>
+        <ul class="children">
+            <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+            <li><a href="{{pathFor 'employee.expense'}}">Employees Expenses</a></li>
+            <li><a href="{{pathFor 'employee.leave'}}">Employees Leave</a></li>
+            <li><a href="{{pathFor 'employee.time'}}">Employees Time</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-refresh"></i> <span>Pay Runs</span></a>
+        <ul class="children">
+            <li><a href="{{!pathFor route='payrun.new'}}">New Pay Run</a></li>
+            <li><a href="{{!pathFor route='pay.oneoff'}}">One Off Payments</a></li>
+            <li><a href="{{!pathFor route='pay.run'}}">Pay Results</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Loan Management</span></a>
+        <ul class="children">
+            <li><a href="{{!pathFor route='loans.new'}}">New Loan Application</a></li>
+            <li><a href="{{!pathFor route='loans.manage'}}">Manage Loans</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>
+        <ul class="children">
+            <li><a href="#">Salary Register</a></li>
+            <li><a href="#">Pension Report</a></li>
+        </ul>
+    </li>
+    <li class="parent"><a href=""><i class="fa fa-archive" aria-hidden="true"></i> <span>Pension Reports</span></a>
+        <ul class="children">
+            <li><a href="#">Pensioners</a></li>
+        </ul>
+    </li>
 </template>

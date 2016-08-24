@@ -1,0 +1,73 @@
+<template name="BusinessUnit">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-puzzle-piece"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>Business.Name</li>
+                    <li>Units</li>
+                </ul>
+                <h4>Business Units</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Business Units</h5>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="newUnit">New Unit</button></p>
+            </div>
+        </div>
+
+        <div class="row">
+            {{#if Template.subscriptionsReady}}
+                {{#if condition bus.size 'eq' 0 }}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger text-center">
+                            <p>No business units available</p>
+                        </div>
+                    </div>
+                {{else}}
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-primary mb60 table-hover">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Location</th>
+                                    <th>Parent</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{#each bus}}
+                                    {{> singleBu index=@index data=this}}
+                                {{/each}}
+                                </tbody>
+                            </table>
+                        </div><!-- table-responsive -->
+                    </div>
+                {{/if}}
+            {{else}}
+                <div class="loading">{{>spinner}}</div>
+            {{/if}}
+
+        </div><!-- row -->
+
+    </div><!-- contentpanel -->
+</template>
+
+<template name="singleBu">
+    <tr class="pointer">
+        <td>{{index}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.location}}</td>
+        <td>{{parentName data}}</td>
+    </tr>
+</template>

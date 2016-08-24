@@ -1,5 +1,97 @@
 <template name="PositionCreate">
-  <div class="position-create">
-    <h1>Find me in app/client/templates/positions/position_create/position_create</h1>
-  </div>
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Position</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-job-code" class="control-label">Code</label>
+                                    <input name="code" type="text" id="new-position-code" placeholder="Position Code" class="form-control" disabled/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-position-name" class="control-label">Name</label>
+                                    <input name="name" type="text" id="new-position-name" placeholder="Position Name" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-position-allowed-employees" class="control-label">Number of Employees allowed</label>
+                                    <input name="numberOfAllowedEmployees" type="number" id="new-position-allowed-employees" placeholder="1" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-position-leave-days" class="control-label">Leave Days</label>
+                                    <input name="leaveDays" type="number" id="new-position-leave-days" placeholder="15" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Heading Section</label>
+                                    <select name="headingSection" class="form-control">
+                                        <option value="option">option</option>
+                                        <option value="option1">option1</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Business Unit</label>
+                                    <select name="businessUnitId" class="form-control">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Division</label>
+                                    <select  name="divisionId" class="form-control">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Department</label>
+                                    <select name="position.departmentId" class="form-control">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Parent Position</label>
+                                    <select name="parentPositionId" class="form-control">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                    <select name="status" class="form-control">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                        </div><!-- row -->
+
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5">Save</button>
+                        <button type="reset" class="btn btn-danger" id="new-position-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

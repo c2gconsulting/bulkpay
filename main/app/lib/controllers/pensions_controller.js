@@ -23,6 +23,7 @@ PensionsController = ApplicationController.extend({
   // return Posts.findOne({_id: this.params._id});
   
   data: function () {
+      return BusinessUnits.findOne({_id: this.params._id});
   },
   
   // You can provide any of the hook options

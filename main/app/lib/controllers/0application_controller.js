@@ -16,13 +16,13 @@ ApplicationController = RouteController.extend({
     // return Meteor.subscribe('post', this.params._id);
 
     waitOn: function () {
-        //return [
-        //  Meteor.subscribe('UserLocations'),
+        return [
+         Meteor.subscribe('BusinessUnit', this.params._id)
         //  Meteor.subscribe('OrderTypes'),
         //  Meteor.subscribe('ActivePriceLists'),
         //  Meteor.subscribe('CustomerGroups'),
         //  Meteor.subscribe('CashPaymentMethods')
-        //];
+        ];
     },
 
     // A data function that can be used to automatically set the data context for
@@ -32,6 +32,7 @@ ApplicationController = RouteController.extend({
     // return Posts.findOne({_id: this.params._id});
 
     data: function () {
+        return BusinessUnits.findOne({_id: this.params._id});
     },
 
     // You can provide any of the hook options
@@ -45,16 +46,18 @@ ApplicationController = RouteController.extend({
     onBeforeAction: function () {
         if (!Meteor.userId()) {
             // User not logged in, redirect to login view
-            $("body").addClass("fuelux")
+            $("body").addClass("fuelux");
             this.layout('ExtLayout');
             this.render('Login');
         } else {
             // User logged in, render app view (update later to redirect)
-            $("body").removeClass("fuelux")
-            $("body").addClass("app-body")
+            $("body").removeClass("fuelux");
+            $("body").addClass("app-body");
             this.layout('ApplicationLayout');
             this.next();
         }
+        //set session context for side bar nav using session store ..
+        Session.set('context', this.params._id);
     },
 
     // The same thing as providing a function as the second parameter. You can

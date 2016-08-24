@@ -1,26 +1,23 @@
 /*****************************************************************************/
-/* Employees: Event Handlers */
+/* Tenants: Event Handlers */
 /*****************************************************************************/
-Template.Employees.events({
+Template.NewTenant.events({
 });
 
 /*****************************************************************************/
-/* Employees: Helpers */
+/* Tenants: Helpers */
 /*****************************************************************************/
-Template.Employees.helpers({
-    'employees': function(){
-        return [];
-    }
+Template.NewTenant.helpers({
 });
 
 /*****************************************************************************/
-/* Employees: Lifecycle Hooks */
+/* Tenants: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Employees.onCreated(function () {
+Template.NewTenant.onCreated(function () {
 });
 
-Template.Employees.onRendered(function () {
+Template.NewTenant.onRendered(function () {
 });
 
-Template.Employees.onDestroyed(function () {
+Template.NewTenant.onDestroyed(function () {
 });

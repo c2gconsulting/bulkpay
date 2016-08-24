@@ -2,12 +2,21 @@
 /* DivisionCreate: Event Handlers */
 /*****************************************************************************/
 Template.DivisionCreate.events({
+    'click #savedivision': function(event){
+        event.preventDefault();
+        console.log('clicked save division');
+
+    },
+    'click [name=isParent]': function(e,tmpl){
+        console.log(tmpl);
+    }
 });
 
 /*****************************************************************************/
 /* DivisionCreate: Helpers */
 /*****************************************************************************/
 Template.DivisionCreate.helpers({
+    'division': () => {return Divisions.find()}
 });
 
 /*****************************************************************************/

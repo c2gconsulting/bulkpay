@@ -6,6 +6,7 @@ DivisionsController = ApplicationController.extend({
   // this.subscribe('item', this.params._id).wait();
   
   subscriptions: function() {
+      //Meteor.subscribe('Divisions', this.params.businessId);
   },
   
   // Subscriptions or other things we want to "wait" on. This also
@@ -23,6 +24,7 @@ DivisionsController = ApplicationController.extend({
   // return Posts.findOne({_id: this.params._id});
   
   data: function () {
+      return BusinessUnits.findOne({_id: this.params._id});
   },
   
   // You can provide any of the hook options
@@ -48,7 +50,7 @@ DivisionsController = ApplicationController.extend({
 
   },
   action: function () {
-    this.render();
+    this.render('Divisions');
   },
   onAfterAction: function () {
   },

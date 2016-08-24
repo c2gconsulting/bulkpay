@@ -12,14 +12,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="new-unit-name" class="control-label">Name</label>
-                                    <input type="text" name="bu-name" placeholder="Unit Name" class="form-control" />
+                                    <input type="text" name="name" placeholder="Unit Name" class="form-control" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Location</label>
-                                    <input type="text" name="bu-location" class="form-control">
+                                    <input type="text" name="location" class="form-control">
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                         </div><!-- row -->
@@ -28,7 +28,12 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label class="control-label">Parent</label>
-                                    <input type="text" name="bu-parent" class="form-control">
+                                    <select name="bu-parent" id="parentBu" class="form-control">
+                                        <option value="" selected disabled>Leave Blank if No Parent</option>
+                                        {{#each this}}
+                                                <option value="{{_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
 

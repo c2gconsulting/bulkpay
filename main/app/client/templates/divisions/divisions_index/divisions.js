@@ -21,6 +21,8 @@ Template.Divisions.helpers({
 /* Divisions: Lifecycle Hooks */
 /*****************************************************************************/
 Template.Divisions.onCreated(function () {
+    let self = this;
+    self.subscribe("Divisions", Session.get('context'));
 });
 
 Template.Divisions.onRendered(function () {

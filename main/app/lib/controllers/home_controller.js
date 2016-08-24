@@ -16,7 +16,7 @@ HomeController = ApplicationController.extend({
 
     waitOn: function () {
         return [
-            Meteor.subscribe('BusinessUnits')
+            //Meteor.subscribe('BusinessUnits')
             //Meteor.subscribe('OrderTypes'),
             //Meteor.subscribe('ActivePriceLists'),
             //Meteor.subscribe('CustomerGroups'),

@@ -35,6 +35,14 @@ Meteor.methods({
         //} else {
         //    throw new Meteor.Error(403, "You are not authorized to create an order for this location");
         //}
+    },
+    "businessunit/delete": function(id){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        // check if user has permission to delete
+        BusinessUnits.remove({_id: id})
+        return true;
     }
 
 });

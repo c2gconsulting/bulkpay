@@ -1,23 +1,31 @@
 /*****************************************************************************/
-/* Departments: Event Handlers */
+/* Employees: Event Handlers */
 /*****************************************************************************/
-Template.Departments.events({
+Template.Employees.events({
+    'click #createEmployee': (e, tmpl) => {
+        e.preventDefault();
+        Router.go('employees.create', tmpl.data);
+
+    }
 });
 
 /*****************************************************************************/
-/* Departments: Helpers */
+/* Employees: Helpers */
 /*****************************************************************************/
-Template.Departments.helpers({
+Template.Employees.helpers({
+    'employees': function(){
+        return [];
+    }
 });
 
 /*****************************************************************************/
-/* Departments: Lifecycle Hooks */
+/* Employees: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Departments.onCreated(function () {
+Template.Employees.onCreated(function () {
 });
 
-Template.Departments.onRendered(function () {
+Template.Employees.onRendered(function () {
 });
 
-Template.Departments.onDestroyed(function () {
+Template.Employees.onDestroyed(function () {
 });

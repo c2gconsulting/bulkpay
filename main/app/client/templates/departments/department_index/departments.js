@@ -1,23 +1,27 @@
 /*****************************************************************************/
-/* ShopLayout: Event Handlers */
+/* Departments: Event Handlers */
 /*****************************************************************************/
-Template.ShopLayout.events({
+Template.Departments.events({
+    'click #createDepartment': function(e){
+        e.preventDefault();
+        Modal.show('DivisionCreate');
+    }
 });
 
 /*****************************************************************************/
-/* ShopLayout: Helpers */
+/* Departments: Helpers */
 /*****************************************************************************/
-Template.ShopLayout.helpers({
+Template.Departments.helpers({
 });
 
 /*****************************************************************************/
-/* ShopLayout: Lifecycle Hooks */
+/* Departments: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ShopLayout.onCreated(function () {
+Template.Departments.onCreated(function () {
 });
 
-Template.ShopLayout.onRendered(function () {
+Template.Departments.onRendered(function () {
 });
 
-Template.ShopLayout.onDestroyed(function () {
+Template.Departments.onDestroyed(function () {
 });

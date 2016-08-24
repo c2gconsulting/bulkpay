@@ -1,23 +1,27 @@
 /*****************************************************************************/
-/* Positions: Event Handlers */
+/* Jobs: Event Handlers */
 /*****************************************************************************/
-Template.Positions.events({
+Template.Jobs.events({
+    'click #createJob': function(e){
+        e.preventDefault();
+        Modal.show('JobCreate');
+    }
 });
 
 /*****************************************************************************/
-/* Positions: Helpers */
+/* Jobs: Helpers */
 /*****************************************************************************/
-Template.Positions.helpers({
+Template.Jobs.helpers({
 });
 
 /*****************************************************************************/
-/* Positions: Lifecycle Hooks */
+/* Jobs: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Positions.onCreated(function () {
+Template.Jobs.onCreated(function () {
 });
 
-Template.Positions.onRendered(function () {
+Template.Jobs.onRendered(function () {
 });
 
-Template.Positions.onDestroyed(function () {
+Template.Jobs.onDestroyed(function () {
 });

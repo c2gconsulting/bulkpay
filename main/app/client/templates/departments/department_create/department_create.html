@@ -1,5 +1,53 @@
 <template name="DepartmentCreate">
-  <div class="department-create">
-    <h1>Find me in app/client/templates/departments/department_create/department_create</h1>
-  </div>
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Division</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-division-name" class="control-label">Name</label>
+                                    <input type="text" id="new-division-name" placeholder="Division Name" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Location</label>
+                                    <input type="text" placeholder="Division Name" name="location" class="form-control">
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Parent</label>
+                                    <select class="form-control" name="parent">
+                                        {{#each division}}
+                                            <option value="{{_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-4">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" name="isParent" checked="checked" />
+                                    <label for="new-division-parent-status">Parent</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
+
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button id="savedivision" class="btn btn-primary mr5">Save</button>
+                        <button type="reset" class="btn btn-danger" id="new-division-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

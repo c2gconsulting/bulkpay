@@ -1,4 +1,4 @@
-<template name="BusinessUnit">
+<template name="Divisions">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left">
@@ -8,28 +8,29 @@
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a ui-sref="business.overview">Business</a></li>
-                    <li>Business.Name</li>
-                    <li>Units</li>
+                    <li>{{name}}</li>
+                    <li>Divisions</li>
                 </ul>
-                <h4>Business Units</h4>
+                <h4>{{name}} - Divisions </h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
+
 
     <div class="contentpanel">
 
         <div class="row">
             <div class="col-md-12">
-                <h5 class="lg-title mb5">Business Units</h5>
-                <p class="mb20 pull-right"><button class="btn btn-primary" id="newUnit">New Unit</button></p>
+                <h5 class="lg-title mb5">Divisions</h5>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="createDivision">New Division</button></p>
             </div>
         </div>
 
         <div class="row">
-            {{#if condition bus.size 'eq' 0 }}
+            {{#if condition division.size 'eq' 0}}
                 <div class="col-md-12">
                     <div class="alert alert-danger text-center">
-                        <p>No business units available</p>
+                        <p>No divisions available</p>
                     </div>
                 </div>
             {{else}}
@@ -41,12 +42,14 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Location</th>
+                                <th>Business Unit</th>
                                 <th>Parent</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each bus}}
-                                {{> singleBu index=@index data=this}}
+                            {{#each division}}
+                                {{> singleDivision index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -54,15 +57,19 @@
                 </div>
             {{/if}}
         </div><!-- row -->
-
-    </div><!-- contentpanel -->
+    </div>
 </template>
 
-<template name="singleBu">
+<template name="singleDivision">
     <tr class="pointer">
         <td>{{index}}</td>
         <td>{{data.name}}</td>
         <td>{{data.location}}</td>
         <td>{{data.parent.name}}</td>
+        <td>{{data.bu.name}}</td>
+        <td>
+            <span class="label label-success">{{status}}</span>
+            <span class="label label-danger">{{status}}</span>
+        </td>
     </tr>
 </template>
