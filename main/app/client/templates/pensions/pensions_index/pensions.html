@@ -1,0 +1,335 @@
+<template name="Pensions">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-money"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Pensions</li>
+                </ul>
+                <h4>Pensions</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+
+    <div class="contentpanel">
+        <div class="row">
+            <!-- Nav tabs -->
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li class="active" id="pension-tab">
+                        <a style="cursor: pointer;">Pension Rules</a>
+                    </li>
+                    <li id="PFA-tab">
+                        <a style="cursor: pointer;">Pension Managers</a>
+                    </li>
+                </ul>
+            </div><!-- col-md-12 -->
+        </div><!-- row -->
+
+        <div class="col-md-12" id="pensionContext">
+            {{#if pensionContext}}
+                {{> PensionManagerIndex}}
+
+            {{else}}
+                {{> PensionIndex}}
+            {{/if}}
+        </div>
+
+    </div><!-- contentpanel -->
+
+</template>
+
+
+<template name="PensionIndex">
+    <div class="col-md-12">
+        <div class="tab-pane active" id="activities">
+            <div class="row" ng-show="!singlePensionView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPension">New Pension Rule</button></p>
+                </div>
+            </div>
+
+            <div class="row" ng-show="!singlePensionView" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="pensions.length > 0 && dataFetched">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Employee %</th>
+                                <th>Employer %</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pension }}
+                                {{> singlePension index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+            <div class="row" ng-show="singlePensionView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Update - __oldPension.name__ Pension</h4>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="update-pension-code" class="control-label">Code (alphanumeric)</label>
+                                        <input type="text" id="update-pension-code" class="form-control" placeholder="Code" ng-model="singlePension.code" />
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="update-pension-name" class="control-label">Name</label>
+                                        <input type="text" id="update-pension-name" class="form-control" placeholder="Name" ng-model="singlePension.name"/>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Pay Types</label>
+                                        {{#semanticselect}}
+                                            <select name="payTypes" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                <option value="">Select Pay Type</option>
+                                                <option value="AL">Alabama</option>
+                                                <option value="AK">Alaska</option>
+                                            </select>
+                                        {{/semanticselect}}
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-12 -->
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Employer's Contribution</label>
+                                        <input type="number" class="form-control" placeholder="Percentage" ng-model="singlePension.employerContributionRate"/>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Employee's Contribution</label>
+                                        <input type="number" class="form-control" placeholder="Percentage" ng-model="singlePension.employeeContributionRate"/>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Status</label>
+                                        <select2 ng-model="singlePension.status" s2-options="status as status for status in statuses" style="width: 100%"></select2>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-12 -->
+
+
+                                <div class="col-sm-12">
+                                    <span ng-show="histories.length > 0" class="pull-right">Last updated on __getLastHistory().date | date:"MM/dd/yyyy 'at' h:mma"__, by __getLastHistory().user.username__</span>
+                                </div><!-- col-sm-12 -->
+                            </div><!-- row -->
+
+                        </div><!-- panel-body -->
+                        <div class="panel-footer">
+                            <button class="btn btn-primary mr5" ng-click="updatePension()">Update</button>
+                            <button type="reset" class="btn btn-warning" ng-click="closePension()">Cancel</button>
+                            <button type="reset" class="btn btn-danger pull-right" ng-click="deletePension()">Delete</button>
+                        </div><!-- panel-footer -->
+                    </div><!-- panel -->
+
+                </div><!-- col-md-12 -->
+
+
+                <div class="col-md-4">
+                    <h5 class="lg-title mb10">Edit History</h5>
+
+                    <div class="panel-group" id="accordion2">
+                        <div ng-repeat="history in histories" class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion2" href=".__history._id__">
+                                        <span>__history.date | date:"MM/dd/yyyy 'at' h:mma"__</span>
+                                        <span class="pull-right">__history.user.username__</span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="panel-collapse collapse" ng-class="history._id">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12" ng-repeat="activity in history.activities">
+                                            <div class="well well-sm">__activity | prettifyActivity__</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- panel -->
+
+                    </div><!-- panel-group -->
+
+                </div><!-- col-md-4 -->
+
+            </div>
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+<template name="PensionManagerIndex">
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singlePensionManagerView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Pension Manager</button></p>
+                </div>
+            </div>
+
+            <div class="row" ng-show="!singlePensionManagerView" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="pensionManagers.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pension }}
+                                {{> singlePFA index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+            <div class="row" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Update - __oldPensionManager.name__ Pension Manager</h4>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="update-pension-manager-code" class="control-label">Code</label>
+                                        <input type="text" id="update-pension-manager-code" class="form-control" placeholder="Code" ng-model="singlePensionManager.code" />
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="update-pension-manager-name" class="control-label">Name</label>
+                                        <input type="text" id="update-pension-manager-name" class="form-control" placeholder="Name" ng-model="singlePensionManager.name"/>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                            </div><!-- row -->
+
+                            <div class="col-sm-12">
+                                <span ng-show="pensionManagerHistories.length > 0" class="pull-right">Last updated on __getLastPensionManagerHistory().date | date:"MM/dd/yyyy 'at' h:mma"__, by __getLastPensionManagerHistory().user.username__</span>
+                            </div><!-- col-sm-12 -->
+
+                        </div><!-- panel-body -->
+                        <div class="panel-footer">
+                            <button class="btn btn-primary mr5" ng-click="updatePensionManager()">Update</button>
+                            <button type="reset" class="btn btn-warning" ng-click="closePensionManager()">Cancel</button>
+                            <button type="reset" class="btn btn-danger pull-right" ng-click="deletePensionManager()">Delete</button>
+                        </div><!-- panel-footer -->
+                    </div><!-- panel -->
+
+                </div><!-- col-md-12 -->
+
+
+                <div class="col-md-4">
+                    <h5 class="lg-title mb10">Edit History</h5>
+
+                    <div class="panel-group" id="pension-accordion">
+                        <div ng-repeat="history in pensionManagerHistories" class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion2" href=".__history._id__">
+                                        <span>__history.date | date:"MM/dd/yyyy 'at' h:mma"__</span>
+                                        <span class="pull-right">__history.user.username__</span>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="panel-collapse collapse" ng-class="history._id">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12" ng-repeat="activity in history.activities">
+                                            <div class="well well-sm">__activity | prettifyActivity__</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- panel -->
+
+                    </div><!-- panel-group -->
+
+                </div><!-- col-md-4 -->
+
+            </div>
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+
+<template name="singlePension">
+    <tr class="pointer">
+    <tr>
+        <td>#</td>
+        <td>{{this.code}}</td>
+        <td>{{this.title}}</td>
+        <td>{{this.type}}</td>
+        <td>{{this.frequency}}</td>
+        <td>{{this.taxable}}</td>
+        <td>{{this.can_override}}</td>
+        <td>{{this.Derivative}}</td>
+        <td>{{this.base}}</td>
+    </tr>
+    <td>
+        <span class="label label-success">{{status}}</span>
+        <span class="label label-danger">{{status}}</span>
+    </td>
+    </tr>
+</template>
+<template name="singlePFA">
+    <tr class="pointer">
+    <tr>
+        <td>#</td>
+        <td>{{this.code}}</td>
+        <td>{{this.title}}</td>
+        <td>{{this.type}}</td>
+        <td>{{this.frequency}}</td>
+        <td>{{this.taxable}}</td>
+        <td>{{this.can_override}}</td>
+        <td>{{this.Derivative}}</td>
+        <td>{{this.base}}</td>
+    </tr>
+    <td>
+        <span class="label label-success">{{status}}</span>
+        <span class="label label-danger">{{status}}</span>
+    </td>
+    </tr>
+</template>
+

@@ -4,6 +4,7 @@
 Template.Departments.events({
     'click #createDepartment': function(e){
         e.preventDefault();
+        console.log('yaah');
         Modal.show('DivisionCreate');
     }
 });

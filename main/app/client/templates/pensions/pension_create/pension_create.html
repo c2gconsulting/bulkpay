@@ -1,5 +1,36 @@
 <template name="PensionCreate">
-  <div class="pension-create">
-    <h1>Find me in app/client/templates/pensions/pension_create/pension_create</h1>
-  </div>
+    <div class="modal fade add-pension" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Pension Rule</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pension-code" class="control-label">Code (alphanumeric)</label>
+                                    <input type="text" id="pension-code" class="form-control" placeholder="Code" ng-model="pension.code" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pension-name" class="control-label">Name</label>
+                                    <input type="text" id="pension-name" class="form-control" placeholder="Name" ng-model="pension.name"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                        </div><!-- row -->
+                        <p class="text-center error" ng-show="errorOccur">{{errorMessage}}</p>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" ng-click="createPension()">Create</button>
+                        <button type="reset" class="btn btn-danger" id="new-pension-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

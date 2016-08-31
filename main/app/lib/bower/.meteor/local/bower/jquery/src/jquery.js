@@ -32,7 +32,7 @@ define([
 	"./exports/amd",
 	"./exports/global"
 ], function( jQuery ) {
-
+console.log("ffff")
 return jQuery;
 
 });

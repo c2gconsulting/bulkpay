@@ -100,3 +100,9 @@
 #main-menu .no-margin-top{
     margin-top: 0;
 }
+.row {
+   margin-top: 3px;
+}
+.ui.dropdown .menu > .item {
+    font-size: 15px;
+}

@@ -12,9 +12,11 @@ Template.EmployeeCreate.events({
                 };
 
                 reader.readAsDataURL(e.target.files[0]);
+                //upload = UserImages.insert(e.target.files[0]);
                 $('#filename').html(e.target.files[0].name);
             }
     }
+
 });
 
 /*****************************************************************************/

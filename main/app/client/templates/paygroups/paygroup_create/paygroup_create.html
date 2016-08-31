@@ -1,5 +1,55 @@
 <template name="PaygroupCreate">
-  <div class="paygroup-create">
-    <h1>Find me in app/client/templates/paygroups/paygroup_create/paygroup_create</h1>
-  </div>
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Pay Group</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pay-group-code" class="control-label">Code (alphanumeric)</label>
+                                    <input type="text" id="pay-group-code" class="form-control" placeholder="SNR-MAN" name="code" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pay-group-name" class="control-label">Name</label>
+                                    <input type="text" id="pay-group-name" class="form-control" placeholder="Senior Managers Pay Group" name="name"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pay-group-name" class="control-label">Tax Rule</label>
+                                    <select name="tax" style="width: 100%" class="form-control">
+                                        <option value="tax rule">tax rule</option>
+                                        <option value="tax rule1">tax rule1</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="pay-group-name" class="control-label">Pension Rule</label>
+                                    <select name="pension" style="width: 100%" class="form-control">
+                                        <option value="Rule">Rule</option>
+                                        <option value="Rule1">Rule1</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" id="createPayGroup">Save</button>
+                        <button type="reset" class="btn btn-danger" id="new-pay-group-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

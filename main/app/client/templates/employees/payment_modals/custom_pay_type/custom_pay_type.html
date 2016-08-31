@@ -1,0 +1,116 @@
+<template name="CustomPayType">
+    <div class="modal fade add-custom-type" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Add Custom Pay Type</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-code" class="control-label">Code (alphanumeric)</label>
+                                    <input type="text" id="pay-type-code" class="form-control" placeholder="Unique e.g BC1" name="customType.code" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-title" class="control-label">Title</label>
+                                    <input type="text" id="pay-type-title" class="form-control" placeholder="Basic Salary" name="customType.title"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-type" class="control-label">Type</label>
+                                    <select id="pay-type-type" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.type">
+                                        <option value="">Choose One</option>
+                                        <option value="Wage">Wage</option>
+                                        <option value="Benefit">Benefit</option>
+                                        <option value="Deduction">Deduction</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-derived" class="control-label">Derived</label>
+                                    <select id="pay-type-derived" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.derived">
+                                        <option value="">Choose One</option>
+                                        <option value="Fixed">Fixed</option>
+                                        <option value="Formula">Formula</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-frequency" class="control-label">Frequency</label>
+                                    <select id="pay-type-frequency" class="form-control width100p" data-placeholder="Choose One" required name="customType.frequency">
+                                        <option value="">Choose One</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Quarterly">Quarterly</option>
+                                        <option value="Bi-Annually">Bi-Annually</option>
+                                        <option value="Annually">Annually</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-taxable" class="control-label">Taxable</label>
+                                    <select id="pay-type-taxable" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.taxable">
+                                        <option value="">Choose One</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-active" class="control-label">Status</label>
+                                    <select id="pay-type-active" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.status">
+                                        <option value="">Choose One</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pay-type-employee-edit" class="control-label">Editable per Employee</label>
+                                    <select id="pay-type-employee-edit" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.editablePerEmployee">
+                                        <option value="">Choose One</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-4">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="pay-type-key-state" checked="checked" name="customType.save" />
+                                    <label for="pay-type-key-state">Save to database</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
+
+                        </div><!-- row -->
+                        <p class="text-center error" ng-show="errorOccur">__errorMessage__</p>
+
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" ng-click="addCustomPayType()">Add</button>
+                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

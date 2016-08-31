@@ -1,0 +1,76 @@
+<template name="Paygroups">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-puzzle-piece"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a href="businessunits">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Paygroups</li>
+                </ul>
+                <h4>{{name}} - Paygroups  </h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Paygroups</h5>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="createPaygroup">New Paygroup</button></p>
+            </div>
+        </div>
+
+        <div class="row">
+            {{#if condition job.size 'eq' 0}}
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <p>Paygroups</p>
+                    </div>
+                </div>
+            {{else}}
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Tax Rule</th>
+                                <th>Pension Rule</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each job}}
+                                {{> singlePaygroup index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            {{/if}}
+        </div><!-- row -->
+    </div>
+</template>
+
+<template name="singlePaygroup">
+    <tr class="pointer">
+        <td>{{index}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.location}}</td>
+        <td>{{data.parent.name}}</td>
+        <td>{{data.parent.division}}</td>
+        <td>
+            <span class="label label-success">{{status}}</span>
+            <span class="label label-danger">{{status}}</span>
+        </td>
+    </tr>
+</template>
+

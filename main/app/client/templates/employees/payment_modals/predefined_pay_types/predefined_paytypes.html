@@ -1,0 +1,67 @@
+<template name="PredefinedPaytypes">
+    <div class="modal fade predefined-types" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Add custom pay type</h3>
+                    </div>
+                    <div class="panel-body big-font">
+
+                        <div class="row">
+                            <div class="col-md-12" ng-if="fetchedPayTypes.length === 0">
+                                <div class="alert alert-danger text-center">
+                                    <p>No Pay Type available</p>
+                                </div>
+                            </div>
+                            <div class="col-md-12" ng-if="fetchedPayTypes.length > 0">
+                                <div class="table-responsive">
+                                    <table class="table table-primary mb60 table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Code</th>
+                                            <th>Title</th>
+                                            <th>Type</th>
+                                            <th>Frequency</th>
+                                            <th>Taxable</th>
+                                            <th>Can Override</th>
+                                            <th>Derivative</th>
+                                            <th>Base</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="pointer" ng-click="addCustomPayType(payType)" ng-repeat="payType in fetchedPayTypes | customTypesFilter:currentPayGrade.payTypes.concat(customPayTypes)">
+                                            <td>__$index + 1__</td>
+                                            <td>__payType.code__</td>
+                                            <td>__payType.title__</td>
+                                            <td>__payType.type__</td>
+                                            <td>__payType.frequency__</td>
+                                            <td>__payType.taxable__</td>
+                                            <td>__payType.editablePerEmployee__</td>
+                                            <td>__payType.derived__</td>
+                                            <td>
+                                                <span ng-if="payType.isBase">Yes</span>
+                                                <span ng-if="!payType.isBase">No</span>
+                                            </td>
+                                            <td>
+                                                <span ng-if="payType.status === 'Active'" class="label label-success">__payType.status__</span>
+                                                <span ng-if="payType.status === 'Inactive'" class="label label-danger">__payType.status__</span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- table-responsive -->
+                            </div>
+                        </div><!-- row -->
+
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <button type="reset" class="btn btn-danger" id="predefined-modal-close" data-dismiss="modal">Close</button>
+                </div><!-- panel-footer -->
+            </div>
+        </div>
+    </div>
+</template>

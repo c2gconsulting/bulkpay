@@ -1,0 +1,65 @@
+<template name="PayrollSummary">
+    <div class="modal fade payroll-summary" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Summary</h3>
+                    </div>
+                    <div id="payroll-summary" class="panel-body big-font">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="lg-title mb5 text-center">__business.name__</h5>
+                                <p class="mb20 text-center">Payroll Summary</p>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-primary mb30">
+                                        <thead>
+                                        <tr>
+                                            <th>Pay Components</th>
+                                            <th>Amount ( ₦  )</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="payType in getNonDeductions()">
+                                            <td>__payType.title__</td>
+                                            <td>__payType.value | currency:""__</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Gross Pay: </b></td>
+                                            <td><b>__getPaymentGross() | currency:""__</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+                                        <tr ng-repeat="payType in getDeductions()">
+                                            <td>__payType.title__</td>
+                                            <td>__payType.value | currency:""__</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total Deductions: </b></td>
+                                            <td><b>__getTotalDeductions() | currency:""__</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Net Pay: </b></td>
+                                            <td><b>__getNetPayment() | currency:""__</b></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- table-responsive -->
+                            </div><!-- col-md-12 -->
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" ng-click="resetSummary()" class="btn btn-danger" id="payroll-summary-close" data-dismiss="modal">Close</button>
+                        <button type="reset" ng-click="print('payroll-summary')" class="btn btn-info" id="payroll-summary-print">Print</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

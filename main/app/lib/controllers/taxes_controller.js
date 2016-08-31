@@ -14,7 +14,6 @@ TaxesController = ApplicationController.extend({
   // return Meteor.subscribe('post', this.params._id);
   
   waitOn: function () {
-      return BusinessUnits.findOne({_id: this.params._id});
   },
   
   // A data function that can be used to automatically set the data context for
@@ -24,6 +23,7 @@ TaxesController = ApplicationController.extend({
   // return Posts.findOne({_id: this.params._id});
   
   data: function () {
+      return BusinessUnits.findOne({_id: this.params._id});
   },
   
   // You can provide any of the hook options

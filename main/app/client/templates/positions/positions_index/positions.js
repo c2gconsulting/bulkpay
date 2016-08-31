@@ -3,7 +3,6 @@
 /*****************************************************************************/
 Template.Positions.events({
     'click #createPositon': function(e, tmpl){
-        console.log(tmpl);
         e.preventDefault();
         Modal.show('PositionCreate');
     }

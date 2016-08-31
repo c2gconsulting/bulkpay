@@ -1,0 +1,48 @@
+<template name="ExemptedPayment">
+    <div class="modal fade restore-removed" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Exempted Pay Components</h3>
+                    </div>
+                    <div class="panel-body big-font">
+                        <div class="row">
+                            <div class="col-md-12" ng-if="exemptedPayTypes.length === 0">
+                                <div class="alert alert-danger text-center">
+                                    <p>No Exempted pay types.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-12" ng-if="exemptedPayTypes.length > 0">
+                                <h5 class="lg-title mb5 text-center">Restore exempted pay components</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered mb30">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Code</th>
+                                            <th>Title</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="payType in exemptedPayTypes">
+                                            <td>__$index + 1__</td>
+                                            <td>__payType.code__</td>
+                                            <td>__payType.title__</td>
+                                            <td><i class="fa fa-recycle pointer" ng-click="restore(payType)" data-toggle="tooltip" title="Restore"></i></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div><!-- table-responsive -->
+                            </div><!-- col-md-12 -->
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" ng-click="resetSummary()" class="btn btn-danger" id="exempted-pay-components" data-dismiss="modal">Close</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

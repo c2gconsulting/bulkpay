@@ -110,10 +110,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Gender</label>
                                         <div class="col-sm-4">
-                                                <select class="form-control selectpicker" data-live-search="true" name="selectGender">
-                                                            <option value="Male" selected>Male</option>
-                                                            <option value="Female">Female</option>
-                                                </select>
+                                            <select class="form-control selectpicker" data-live-search="true" name="selectGender">
+                                                <option value="Male" selected>Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -290,7 +290,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Location</label>
                                         <div class="col-sm-4">
-                                            <select2 name="location" options="options" s2-options="state as state for state in states" style="width: 100%"></select2>
+                                            <select name="location" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -300,7 +303,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Business Unit</label>
                                         <div class="col-sm-4">
-                                            <select2 name="businessUnitId" options="options" s2-options="businessUnit._id as businessUnit.name for businessUnit in businessUnits" style="width: 100%"></select2>
+                                            <select name="businessUnitId" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -310,7 +316,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Division</label>
                                         <div class="col-sm-4">
-                                            <select2 name="divisionId" options="options" s2-options="division._id as division.name for division in filteredDivisions" style="width: 100%"></select2>
+                                            <select name="division" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -320,7 +329,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Department</label>
                                         <div class="col-sm-4">
-                                            <select2 name="departmentId" options="options" s2-options="department._id as department.name for department in filteredDepartments" style="width: 100%"></select2>
+                                            <select name="department" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -330,7 +342,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Position</label>
                                         <div class="col-sm-4">
-                                            <select2 ng-change="checkValidity()" name="positionId" options="options" s2-options="position._id as position.name for position in filteredPositions" style="width: 100%"></select2>
+                                            <select name="position" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             <div>
@@ -366,7 +381,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Status</label>
                                         <div class="col-sm-4">
-                                            <select2 name="status" options="options" s2-options="status as status for status in statuses" style="width: 100%"></select2>
+                                            <select name="status" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -405,7 +423,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Payment Method</label>
                                         <div class="col-sm-4">
-                                            <select2 name="paymentDetails.paymentMethod" options="options" s2-options="method as method for method in paymentMethods" style="width: 100%"></select2>
+                                            <select name="paymentMethod" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -415,7 +436,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Bank</label>
                                         <div class="col-sm-4">
-                                            <select2 name="paymentDetails.bank" options="options" s2-options="bank as bank for bank in banks" style="width: 100%"></select2>
+                                            <select name="paymentMethod" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -445,7 +469,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Pension Manager</label>
                                         <div class="col-sm-4">
-                                            <select2 name="paymentDetails.pensionManager" options="options" s2-options="manager._id as manager.name for manager in pensionManagers" style="width: 100%"></select2>
+                                            <select name="pensionmanager" style="width: 100%" class="form-control">
+                                                <option value="option1">option1</option>
+                                                <option value="option2">option2</option>
+                                            </select>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;
@@ -486,25 +513,6 @@
                                                 <h6>&nbsp;Wages</h6>
                                             </div>
                                             <div class="col-sm-12">
-                                                <div class="row" ng-repeat="wage in getTypes('Wage') track by $index">
-                                                    <label class="col-sm-3"><h6>&nbsp;</h6></label>
-                                                    <div class="col-sm-1 text-right" style="padding-right:5px;">
-                                                        <span><a ng-click="removePayType(wage)" class="fa fa-times text-danger pointer"></a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm">
-                                                            <span ng-click="openType(wage)" class="input-group-addon pointer" style="width:150px">__wage.code__ - __wage.title__</span>
-                                                            <input name="wage.value" type="number" placeholder="" class="form-control" ng-disabled="wage.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm" ng-if="wage.derived !== 'Fixed'">
-                                                            <span class="input-group-addon" style="width:150px">Formula</span>
-                                                            <input name="wage.derivative" type="text" placeholder="" class="form-control" ng-disabled="wage.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
                                                 <div class="row">
                                                     <div class="col-sm-4">
@@ -512,7 +520,7 @@
                                                     </div>
 
                                                     <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a ng-click="showOptions('Wage')" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add wage]</a></span>
+                                                        <span class="help-block"><a class="fa fa-plus pointer" style="vertical-align:middle;" id="addWage">&nbsp;[add wage]</a></span>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         &nbsp;
@@ -530,25 +538,7 @@
                                                 <h6>&nbsp;Benefits</h6>
                                             </div>
                                             <div class="col-sm-12">
-                                                <div class="row" ng-repeat="benefit in getTypes('Benefit') track by $index">
-                                                    <label class="col-sm-3"><h6>&nbsp;</h6></label>
-                                                    <div class="col-sm-1 text-right" style="padding-right:0px;">
-                                                        <span><a ng-click="removePayType(benefit)" class="fa fa-times text-danger pointer" style="vertical-align:middle"></a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm">
-                                                            <span ng-click="openType(benefit)" class="input-group-addon pointer" style="width:150px">__benefit.code__ - __benefit.title__</span>
-                                                            <input name="benefit.value" type="number" placeholder="" class="form-control" ng-disabled="benefit.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm" ng-if="benefit.derived !== 'Fixed'">
-                                                            <span class="input-group-addon" style="width:150px">Formula</span>
-                                                            <input name="benefit.derivative" type="text" placeholder="" class="form-control" ng-disabled="benefit.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <!-- Enter blase template to loop through Employee benefits-->
 
                                                 <div class="row">
                                                     <div class="col-sm-4">
@@ -556,7 +546,7 @@
                                                     </div>
 
                                                     <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a ng-click="showOptions('Benefit')" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add benefit]</a></span>
+                                                        <span class="help-block"><a id="addBenefit" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add benefit]</a></span>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         &nbsp;
@@ -572,25 +562,6 @@
                                                 <h6>&nbsp;Deductions</h6>
                                             </div>
                                             <div class="col-sm-12">
-                                                <div class="row" ng-repeat="deduction in getTypes('Deduction') track by $index">
-                                                    <label class="col-sm-3"><h6>&nbsp;</h6></label>
-                                                    <div class="col-sm-1 text-right" style="padding-right:0px;">
-                                                        <span><a ng-click="removePayType(deduction)" class="fa fa-times text-danger pointer" style="vertical-align:middle"></a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm">
-                                                            <span ng-click="openType(deduction)" class="input-group-addon pointer" style="width:150px">__deduction.code__ - __deduction.title__</span>
-                                                            <input name="deduction.value" type="number" placeholder="" class="form-control" ng-disabled="deduction.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-sm-4">
-                                                        <div class="input-group input-group-sm" ng-if="deduction.derived !== 'Fixed'">
-                                                            <span class="input-group-addon" style="width:150px">Formula</span>
-                                                            <input name="deduction.derivative" type="text" placeholder="" class="form-control" ng-disabled="deduction.editablePerEmployee === 'No'"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
                                                 <div class="row">
                                                     <div class="col-sm-4">
@@ -598,7 +569,7 @@
                                                     </div>
 
                                                     <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a ng-click="showOptions('Deduction')" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add deduction]</a></span>
+                                                        <span class="help-block"><a id="addDeduction" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add deduction]</a></span>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         &nbsp;
@@ -642,301 +613,7 @@
 
     </div><!-- contentpanel -->
 
-
-    <div class="modal fade add-custom-type" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Add Custom Pay Type</h3>
-                    </div>
-                    <div class="panel-body">
-
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-code" class="control-label">Code (alphanumeric)</label>
-                                    <input type="text" id="pay-type-code" class="form-control" placeholder="Unique e.g BC1" name="customType.code" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-title" class="control-label">Title</label>
-                                    <input type="text" id="pay-type-title" class="form-control" placeholder="Basic Salary" name="customType.title"/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-type" class="control-label">Type</label>
-                                    <select id="pay-type-type" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.type">
-                                        <option value="">Choose One</option>
-                                        <option value="Wage">Wage</option>
-                                        <option value="Benefit">Benefit</option>
-                                        <option value="Deduction">Deduction</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-derived" class="control-label">Derived</label>
-                                    <select id="pay-type-derived" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.derived">
-                                        <option value="">Choose One</option>
-                                        <option value="Fixed">Fixed</option>
-                                        <option value="Formula">Formula</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-frequency" class="control-label">Frequency</label>
-                                    <select id="pay-type-frequency" class="form-control width100p" data-placeholder="Choose One" required name="customType.frequency">
-                                        <option value="">Choose One</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="Quarterly">Quarterly</option>
-                                        <option value="Bi-Annually">Bi-Annually</option>
-                                        <option value="Annually">Annually</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-taxable" class="control-label">Taxable</label>
-                                    <select id="pay-type-taxable" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.taxable">
-                                        <option value="">Choose One</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-active" class="control-label">Status</label>
-                                    <select id="pay-type-active" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.status">
-                                        <option value="">Choose One</option>
-                                        <option value="Active">Active</option>
-                                        <option value="Inactive">Inactive</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="pay-type-employee-edit" class="control-label">Editable per Employee</label>
-                                    <select id="pay-type-employee-edit" disabled class="form-control width100p" data-placeholder="Choose One" required name="customType.editablePerEmployee">
-                                        <option value="">Choose One</option>
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-4">
-                                <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="pay-type-key-state" checked="checked" name="customType.save" />
-                                    <label for="pay-type-key-state">Save to database</label>
-                                </div>
-                            </div><!-- col-sm-4 -->
-
-                        </div><!-- row -->
-                        <p class="text-center error" ng-show="errorOccur">__errorMessage__</p>
-
-                    </div>
-                    <div class="panel-footer">
-                        <button class="btn btn-primary mr5" ng-click="addCustomPayType()">Add</button>
-                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
-                    </div><!-- panel-footer -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade payroll-summary" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Summary</h3>
-                    </div>
-                    <div id="payroll-summary" class="panel-body big-font">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h5 class="lg-title mb5 text-center">__business.name__</h5>
-                                <p class="mb20 text-center">Payroll Summary</p>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-primary mb30">
-                                        <thead>
-                                        <tr>
-                                            <th>Pay Components</th>
-                                            <th>Amount ( ₦  )</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="payType in getNonDeductions()">
-                                            <td>__payType.title__</td>
-                                            <td>__payType.value | currency:""__</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Gross Pay: </b></td>
-                                            <td><b>__getPaymentGross() | currency:""__</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>...</td>
-                                            <td>...</td>
-                                        </tr>
-                                        <tr ng-repeat="payType in getDeductions()">
-                                            <td>__payType.title__</td>
-                                            <td>__payType.value | currency:""__</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Total Deductions: </b></td>
-                                            <td><b>__getTotalDeductions() | currency:""__</b></td>
-                                        </tr>
-                                        <tr>
-                                            <td>...</td>
-                                            <td>...</td>
-                                        </tr>
-                                        <tr>
-                                            <td><b>Net Pay: </b></td>
-                                            <td><b>__getNetPayment() | currency:""__</b></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div><!-- table-responsive -->
-                            </div><!-- col-md-12 -->
-                        </div><!-- row -->
-                    </div>
-                    <div class="panel-footer">
-                        <button type="reset" ng-click="resetSummary()" class="btn btn-danger" id="payroll-summary-close" data-dismiss="modal">Close</button>
-                        <button type="reset" ng-click="print('payroll-summary')" class="btn btn-info" id="payroll-summary-print">Print</button>
-                    </div><!-- panel-footer -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade restore-removed" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Exempted Pay Components</h3>
-                    </div>
-                    <div class="panel-body big-font">
-                        <div class="row">
-                            <div class="col-md-12" ng-if="exemptedPayTypes.length === 0">
-                                <div class="alert alert-danger text-center">
-                                    <p>No Exempted pay types.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-12" ng-if="exemptedPayTypes.length > 0">
-                                <h5 class="lg-title mb5 text-center">Restore exempted pay components</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered mb30">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Code</th>
-                                            <th>Title</th>
-                                            <th></th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr ng-repeat="payType in exemptedPayTypes">
-                                            <td>__$index + 1__</td>
-                                            <td>__payType.code__</td>
-                                            <td>__payType.title__</td>
-                                            <td><i class="fa fa-recycle pointer" ng-click="restore(payType)" data-toggle="tooltip" title="Restore"></i></td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div><!-- table-responsive -->
-                            </div><!-- col-md-12 -->
-                        </div><!-- row -->
-                    </div>
-                    <div class="panel-footer">
-                        <button type="reset" ng-click="resetSummary()" class="btn btn-danger" id="exempted-pay-components" data-dismiss="modal">Close</button>
-                    </div><!-- panel-footer -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Predefined pay types modal -->
     <button ng-hide="true" id="predefined-modal-button" data-toggle="modal" data-target=".predefined-types"></button>
     <button ng-hide="true" id="new-type-modal-button" data-toggle="modal" data-target=".add-custom-type"></button>
-    <div class="modal fade predefined-types" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Add custom pay type</h3>
-                    </div>
-                    <div class="panel-body big-font">
-
-                        <div class="row">
-                            <div class="col-md-12" ng-if="fetchedPayTypes.length === 0">
-                                <div class="alert alert-danger text-center">
-                                    <p>No Pay Type available</p>
-                                </div>
-                            </div>
-                            <div class="col-md-12" ng-if="fetchedPayTypes.length > 0">
-                                <div class="table-responsive">
-                                    <table class="table table-primary mb60 table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Code</th>
-                                            <th>Title</th>
-                                            <th>Type</th>
-                                            <th>Frequency</th>
-                                            <th>Taxable</th>
-                                            <th>Can Override</th>
-                                            <th>Derivative</th>
-                                            <th>Base</th>
-                                            <th>Status</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr class="pointer" ng-click="addCustomPayType(payType)" ng-repeat="payType in fetchedPayTypes | customTypesFilter:currentPayGrade.payTypes.concat(customPayTypes)">
-                                            <td>__$index + 1__</td>
-                                            <td>__payType.code__</td>
-                                            <td>__payType.title__</td>
-                                            <td>__payType.type__</td>
-                                            <td>__payType.frequency__</td>
-                                            <td>__payType.taxable__</td>
-                                            <td>__payType.editablePerEmployee__</td>
-                                            <td>__payType.derived__</td>
-                                            <td>
-                                                <span ng-if="payType.isBase">Yes</span>
-                                                <span ng-if="!payType.isBase">No</span>
-                                            </td>
-                                            <td>
-                                                <span ng-if="payType.status === 'Active'" class="label label-success">__payType.status__</span>
-                                                <span ng-if="payType.status === 'Inactive'" class="label label-danger">__payType.status__</span>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div><!-- table-responsive -->
-                            </div>
-                        </div><!-- row -->
-
-                    </div>
-                </div>
-                <div class="panel-footer">
-                    <button type="reset" class="btn btn-danger" id="predefined-modal-close" data-dismiss="modal">Close</button>
-                </div><!-- panel-footer -->
-            </div>
-        </div>
-    </div>
 </template>

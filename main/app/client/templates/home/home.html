@@ -16,14 +16,104 @@
 
     <div class="contentpanel">
 
-        <div class="row row-stat">
+            <div class="container-fluid intelligence">
+                <section class="row content-header">
+                    <div class="container-fluid">
+                        <div class="col-xs-6">
+                            <h1>
+                                {{tenant}}
+                            </h1>
+                        </div>
+                    </div>
+                </section>
 
-            <p>
-                {{tenant}}
-            </p>
-            <h2>This will contain all default actions with simple Ui for navigation like a launchpad</h2>
+                <div class="col-sm-12">
+                    <section class="content">
+                        <div class="col-sm-6">
+                            <ul class="mts">
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.sales'}}">
+                                        <i class="glyphicon icon-graph large left"></i>
+                                        <h3>Setup Organization </h3>
+                                        <p class="mtm mbn">
+                                            Setup organizational structures, defining various companies, division, departments and positions and jobs for your business.
+                                            Also define substitutions Rules for employees, jobs and positions.
+                                        </p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.salesorders'}}">
+                                        <i class="glyphicon glyphicon-tasks large left"></i>
+                                        <h3>Setup Payments</h3>
+                                        <p class="mtm mbn">
+                                            Define payments, pay Scale, pay group, pay types, for personnel reimbursement and payments.
+                                        </p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.saleshistory'}}">
+                                        <i class="glyphicon glyphicon-search large left"></i>
+                                        <h3>Setup Tax Rules</h3>
+                                        <p class="mtm mbn">
+                                            Setup rules for tax payments. This is can be assigned to employees, services and payments(one off payments).
+                                        </p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.invoicehistory'}}">
+                                        <i class="glyphicon glyphicon-folder-open large left"></i>
+                                        <h3>Setup Pension Fund Administrators</h3>
+                                        <p class="mtm mbn">
+                                            Setup Pension fund administrators, this is assigned to employees, and payments are made directly to the employees account.
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-6">
+                            <ul class="mts">
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.rabateshistory'}}">
+                                        <i class="glyphicon glyphicon-gift large left"></i>
+                                        <h3>Expense and Leave Approval</h3>
+                                        <p class="mtm mbn">
+                                            Manage expense and employee leave request.
+                                        </p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.returnorders'}}">
+                                        <i class="glyphicon glyphicon-stats large left"></i>
+                                        <h3>Setup Payment Schema</h3>
+                                        <p class="mtm mbn">
+                                            Setup payment schema or copy from our existing schema. This is a serial pattern for payroll run. It determines the order of pay type execution.
+                                        </p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.returns'}}">
+                                        <i class="glyphicon glyphicon-hourglass large left"></i>
+                                        <h3>View Payment/Pay type Reports</h3>
+                                        <p class="mtm mbn">
+                                            View report of pay types and all payments made for a run period. All
+                                        </p>
+                                    </a>
+                                </li>
 
-        </div><!-- row -->
+                                <li>
+                                    <a class="box task left full-width mbl" href="{{pathFor 'reports.returnshistory'}}">
+                                        <i class="glyphicon glyphicon-filter large left"></i>
+                                        <h3>Employee assignment report</h3>
+                                        <p class="mtm mbn">
+                                            Employee Assignment Report.
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </div>
 
     </div><!-- contentpanel -->
 </template>

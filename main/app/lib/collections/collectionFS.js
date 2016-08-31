@@ -69,7 +69,7 @@ Media = new FS.Collection("Media", {
 const ALLOWED_EXT = ['pdf', 'xls', 'docx', 'xlsx', 'png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG']
 const ALLOWED_IMAGE_EXT = ['png', 'PNG', 'jpg', 'JPG', 'jpeg', 'JPEG']
 
-const s3bucket = process.env.AWS_S3_BUCKET || "bulkpaydocuments";
+const s3bucket = process.env.AWS_S3_BUCKET || "bulkpaydocs";
 const s3AvatarSmallBucket = process.env.s3AvatarSmallBucket || "bulkpay-avatar-small";
 const s3AvatarLargeBucket = process.env.s3AvatarLargeBucket || "bulkpay-avatar-large";
 
