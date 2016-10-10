@@ -17,12 +17,10 @@ Core.Schemas.PayGroup = new SimpleSchema({
         type: String
     },
     tax: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id
+        type: String
     },
     pension: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id
+        type: String
     },
     status: {
         type: String,
@@ -39,6 +37,7 @@ Core.Schemas.PayGroup = new SimpleSchema({
                 };
             }
         },
-        denyUpdate: true
+        denyUpdate: true,
+        optional: true
     }
 });

@@ -1,5 +1,12 @@
-/*****************************************************************************/
-/* TaxCreate: Style */
-/*****************************************************************************/
-.tax-create {
+body.dragging, body.dragging * {
+    cursor: move !important;
+}
+
+.dragged {
+    position: absolute;
+    opacity: 0.5;
+    z-index: 2000;
+}
+#add-rule-button {
+    margin-bottom: 5px;
 }

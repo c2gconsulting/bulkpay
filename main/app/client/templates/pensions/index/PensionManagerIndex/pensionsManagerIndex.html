@@ -1,0 +1,57 @@
+<template name="PensionManagerIndex">
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singlePensionManagerView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Pension Manager</button></p>
+                </div>
+            </div>
+
+            <div class="row" ng-show="!singlePensionManagerView" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="pensionManagers.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Code</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pension }}
+                                {{> singlePFA index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+
+<template name="singlePFA">
+    <tr class="pointer">
+    <tr>
+        <td>#</td>
+        <td>{{this.code}}</td>
+        <td>{{this.title}}</td>
+        <td>{{this.type}}</td>
+        <td>{{this.frequency}}</td>
+        <td>{{this.taxable}}</td>
+        <td>{{this.can_override}}</td>
+        <td>{{this.Derivative}}</td>
+        <td>{{this.base}}</td>
+    </tr>
+    <td>
+        <span class="label label-success">{{status}}</span>
+        <span class="label label-danger">{{status}}</span>
+    </td>
+    </tr>
+</template>
+

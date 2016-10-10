@@ -30,19 +30,19 @@
                                         <div class="form-group">
                                             <label for="new-pay-grade-code" class="col-sm-4 control-label">Code</label>
                                             <div class="col-sm-8">
-                                                <input id="new-pay-grade-code" type="text" placeholder="Code: e.g GR-9" class="form-control" name="code" />
+                                                <input id="new-pay-grade-code" type="text" placeholder="Code: e.g GR-9" class="form-control" name="code" value="{{code}}"/>
                                             </div>
                                         </div><!-- form-group -->
                                         <div class="form-group">
                                             <label for="new-pay-grade-name" class="col-sm-4 control-label">Name</label>
                                             <div class="col-sm-8">
-                                                <input id="new-pay-grade-name" type="text" placeholder="Name" class="form-control" name="name" />
+                                                <input id="new-pay-grade-name" type="text" placeholder="Name" class="form-control" name="name" value="{{name}}"/>
                                             </div>
                                         </div><!-- form-group -->
                                         <div class="form-group">
                                             <label for="new-pay-grade-description" class="col-sm-4 control-label">Description</label>
                                             <div class="col-sm-8">
-                                                <textarea id="new-pay-grade-description" class="form-control" placeholder="Pay Grade description" name="description" rows="5"></textarea>
+                                                <textarea id="new-pay-grade-description" class="form-control" placeholder="Pay Grade description" name="description" value="{{description}}" rows="5"></textarea>
                                             </div>
                                         </div><!-- form-group -->
                                         <div class="form-group">
@@ -50,7 +50,9 @@
                                             <div class="col-sm-8">
                                                 <select name="positionIds" style="width: 100%" class="form-control">
                                                     <option value="option1">option1</option>
-                                                    <option value="option2">option2</option>
+                                                    {{#each positions}}
+                                                        <option value="{{_id}}" {{selectedPositions}}>{{code}}</option>
+                                                    {{/each}}
                                                 </select>
                                             </div>
                                         </div><!-- form-group -->
@@ -59,7 +61,9 @@
                                             <div class="col-sm-8">
                                                 <select name="taxRuleId" style="width: 100%" class="form-control">
                                                     <option value="option1">option1</option>
-                                                    <option value="option2">option2</option>
+                                                    {{#each taxrules}}
+                                                        <option value="{{_id}}" {{selectedtaxrule}}>{{code}}</option>
+                                                    {{/each}}
                                                 </select>
                                             </div>
                                         </div><!-- form-group -->
@@ -68,16 +72,18 @@
                                             <div class="col-sm-8">
                                                 <select name="pensionRuleId" style="width: 100%" class="form-control">
                                                     <option value="option1">option1</option>
-                                                    <option value="option2">option2</option>
+                                                    {{#each pensions}}
+                                                        <option value="{{_id}}" {{selectedPension}}>{{code}}</option>
+                                                    {{/each}}
                                                 </select>
                                             </div>
                                         </div><!-- form-group -->
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Status</label>
                                             <div class="col-sm-8">
-                                                <select name="status" style="width: 100%" class="form-control">
-                                                    <option value="option1">option1</option>
-                                                    <option value="option2">option2</option>
+                                                <select  name="status" class="form-control dropdown" >
+                                                    <option value="Active" {{selected "status" "Active"}}>Active</option>
+                                                    <option value="Inactive" {{selected "status" "Inactive"}}>Inactive</option>
                                                 </select>
                                             </div>
                                         </div><!-- form-group -->
@@ -253,7 +259,7 @@
                                         <button type="button" class="btn btn-primary">Next</button>
                                     </li>
                                     <li class="pull-right finish hide">
-                                        <button type="submit" class="btn btn-primary" id="createPayGrade">Finish</button>
+                                        <button type="submit" class="btn btn-primary" id="PayGradeButton">Finish</button>
                                     </li>
                                 </ul>
 

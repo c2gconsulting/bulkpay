@@ -4,8 +4,8 @@
             <img class="img-circle" src="/images/photos/avatar.jpg" alt="">
         </a>
         <div class="media-body">
-            <h4 class="media-heading">Michael Ocheje</h4>
-            <small class="text-muted"> Mocheje </small>
+            <h4 class="media-heading">{{currentUser.profile.fullName}}</h4>
+            <small class="text-muted"> {{currentUserEmail}} </small>
         </div>
     </div><!-- media -->
 
@@ -13,11 +13,8 @@
     <ul class="nav nav-pills nav-stacked">
         {{#if context}}
          {{> navlist}}
-        {{else}}
-            <li><a href="{{pathFor 'home'}}"><i class="fa fa-home"></i> <span>Dashboard</span></a></li>
-            <li><a href="{{pathFor route='businessunits'}}"><i class="fa fa-university"></i> <span>Business</span></a></li>
         {{/if}}
-        <li><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Back to Home</span></a></li>
+        <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
     </ul>
 
 </template>
@@ -25,40 +22,40 @@
 <template name="navlist">
     <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
         <ul class="children">
-            <li><a href="{{pathFor 'divisions'}}">Divisions</a></li>
-            <li><a href="{{pathFor 'departments'}}">Departments</a></li>
-            <li><a href="{{pathFor 'positions'}}">Positions</a></li>
-            <li><a href="{{pathFor 'jobs'}}">Jobs</a></li>
+            <li class="{{active "divisions"}}"><a href="{{pathFor 'divisions'}}">Divisions</a></li>
+            <li class="{{active "departments"}}"><a href="{{pathFor 'departments'}}">Departments</a></li>
+            <li class="{{active "positions"}}"><a href="{{pathFor 'positions'}}">Positions</a></li>
+            <li class="{{active "jobs"}}"><a href="{{pathFor 'jobs'}}">Jobs</a></li>
         </ul>
     </li>
     <li class="parent"><a href=""><i class="fa fa-money"></i> <span>Pay Rules</span></a>
         <ul class="children">
-            <li><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
-            <li><a href="{{pathFor 'paytypes'}}">Pay Types</a></li>
-            <li><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
-            <li><a href="{{pathFor 'taxes'}}">Taxes</a></li>
-            <li><a href="{{pathFor 'pensions'}}">Pensions</a></li>
+            <li class="{{active "paytypes"}}"><a href="{{pathFor 'paytypes'}}">Pay Types</a></li>
+            <li class="{{active "pensions"}}"><a href="{{pathFor 'pensions'}}">Pensions</a></li>
+            <li class="{{active "taxes"}}"><a href="{{pathFor 'taxes'}}">Taxes</a></li>
+            <li class="{{active "paygroups"}}"><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
+            <li class="{{active "paygrades"}}"><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
         </ul>
     </li>
     <li class="parent"><a href=""><i class="fa fa-users"></i> <span>Employees</span></a>
         <ul class="children">
-            <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
-            <li><a href="{{pathFor 'employee.expense'}}">Employees Expenses</a></li>
-            <li><a href="{{pathFor 'employee.leave'}}">Employees Leave</a></li>
-            <li><a href="{{pathFor 'employee.time'}}">Employees Time</a></li>
+            <li class="{{active "employees"}}"><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+            <li class="{{active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>
+            <li class="{{active "employee.leave"}}"><a href="{{!pathFor 'employee.leave'}}">Employees Leave</a></li>
+            <li class="{{active "employee.time"}}"><a href="{{!pathFor 'employee.time'}}">Employees Time</a></li>
         </ul>
     </li>
     <li class="parent"><a href=""><i class="fa fa-refresh"></i> <span>Pay Runs</span></a>
         <ul class="children">
-            <li><a href="{{!pathFor route='payrun.new'}}">New Pay Run</a></li>
-            <li><a href="{{!pathFor route='pay.oneoff'}}">One Off Payments</a></li>
-            <li><a href="{{!pathFor route='pay.run'}}">Pay Results</a></li>
+            <li class="{{active "payrun.new"}}"><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
+            <li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>
+            <li class="{{active "payruns"}}"><a href="{{pathFor route='payruns'}}">Pay Runs</a></li>
         </ul>
     </li>
     <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Loan Management</span></a>
         <ul class="children">
-            <li><a href="{{!pathFor route='loans.new'}}">New Loan Application</a></li>
-            <li><a href="{{!pathFor route='loans.manage'}}">Manage Loans</a></li>
+            <li class="{{active "loans.new"}}"><a href="{{pathFor 'loans.new'}}">New Loan Application</a></li>
+            <li class="{{active "loans.manage"}}"><a href="{{pathFor 'loans.manage'}}">Manage Loans</a></li>
         </ul>
     </li>
     <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>

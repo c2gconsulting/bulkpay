@@ -1,0 +1,160 @@
+<template name="NewTenant">
+    <!-- Top menu -->
+    <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Bulkpay Business Registration</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="top-navbar-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+							<span class="li-text">
+								Bulkpay your reliable payment and solution
+							</span>
+                        <a href="#"><strong>links</strong></a>
+							<span class="li-text">
+								Follow us on Social Media:
+							</span>
+							<span class="li-social">
+								<a href="#"><i class="fa fa-facebook"></i></a>
+								<a href="#"><i class="fa fa-twitter"></i></a>
+								<a href="#"><i class="fa fa-envelope"></i></a>
+								<a href="#"><i class="fa fa-skype"></i></a>
+							</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Top content -->
+    <div class="top-content">
+
+        <div class="inner-bg">
+            <div class="container">
+                <div class="row center">
+                    <div class="col-sm-8 col-sm-offset-2 text">
+                        <h1><strong>Business</strong> Registration  </h1>
+                        <div class="description">
+                            <p>
+                                Register your business or enterprise on our platform in few steps
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 form-box">
+
+                        <form role="form" class="registration-form">
+
+                            <fieldset>
+                                <div class="form-top">
+                                    <div class="form-top-left">
+                                        <h3>Step 1 / 3</h3>
+                                        <p>Tell us who you are:</p>
+                                    </div>
+                                    <div class="form-top-right">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                </div>
+                                <div class="form-bottom">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="business-name">Business name</label>
+                                        <input type="text" name="business-name" placeholder="Business Name" class="form-first-name form-control" id="form-first-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="industry">Industry</label>
+                                        <input type="text" name="industry" placeholder="Industry" class="form-last-name form-control" id="form-last-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="address">Address</label>
+				                        	<textarea name="address" placeholder="Address"
+                                                      class="form-about-yourself form-control" id="address"></textarea>
+                                    </div>
+                                    <button type="button" class="btn btn-next">Next</button>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-top">
+                                    <div class="form-top-left">
+                                        <h3>Step 2 / 3</h3>
+                                        <p>Set up root account:</p>
+                                    </div>
+                                    <div class="form-top-right">
+                                        <i class="fa fa-key"></i>
+                                    </div>
+                                </div>
+                                <div class="form-bottom">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-email">Email</label>
+                                        <input type="text" name="form-email" placeholder="Email..." class="form-email form-control" id="form-email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-password">Password</label>
+                                        <input type="password" name="form-password" placeholder="Password..." class="form-password form-control" id="form-password">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="form-repeat-password">Repeat password</label>
+                                        <input type="password" name="form-repeat-password" placeholder="Repeat password..."
+                                               class="form-repeat-password form-control" id="form-repeat-password">
+                                    </div>
+                                    <button type="button" class="btn btn-previous">Previous</button>
+                                    <button type="button" class="btn btn-next">Next</button>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="form-top">
+                                    <div class="form-top-left">
+                                        <h3>Step 3 / 3</h3>
+                                        <p>Setup Additional Details:</p>
+                                    </div>
+                                    <div class="form-top-right">
+                                        <i class="fa fa-home"></i>
+                                    </div>
+                                </div>
+                                <div class="form-bottom">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="country">country</label>
+                                        <select class="form-control selectpicker" data-live-search="true" name="country">
+                                            {{#each countries}}
+                                                <option value="{{ccode}}">{{cname}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="currency">currency</label>
+                                        <select class="form-control selectpicker" data-live-search="true" name="currency">
+                                            {{#each currencies}}
+                                                <option value="{{this}}">{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="domain">Phone Number</label>
+                                        <input type="text" name="phone-number" placeholder="Enter Default Phone number" class="form-control" id="country">
+                                    </div>
+                                    <button type="button" class="btn btn-previous">Previous</button>
+                                    <button type="submit" class="btn" id="signup">&nbsp;&nbsp;Sign me up!</button>
+                                </div>
+                            </fieldset>
+
+                        </form>
+                        <a href="{{pathFor 'home'}}" class="pull-right">&lt;&lt;login</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</template>

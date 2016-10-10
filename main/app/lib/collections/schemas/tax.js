@@ -3,10 +3,10 @@
  * Tax Types Schema
  */
 Core.Schemas.Tax = new SimpleSchema({
-  _id: {
-    type: String,
-    optional: true
-  },
+    _id: {
+        type: String,
+        optional: true
+    },
     businessId: {
         type: String
     },
@@ -24,27 +24,47 @@ Core.Schemas.Tax = new SimpleSchema({
         type: Number,
         defaultValue: 200000
     },
-    payTypes: {
-        type: [Object]
+    bucket: {
+        type: String
     },
     status: {
         type: String,
-        defaultValue: "Active"
+        defaultValue: "Active",
+        optional: true
     },
     rules: {
-        type: [Object]
+        type: Array,
+        optional: true
     },
-  createdAt: {
-    type: Date,
-    autoValue: function () {
-      if (this.isInsert) {
-        return new Date;
-      } else if (this.isUpsert) {
-        return {
-          $setOnInsert: new Date
-        };
-      }
+    "rules.$": {
+        type: Object,
+        optional: true
     },
-    denyUpdate: true
-  }
+    "rules.$.range": {
+        type: String,
+        optional: true,
+        allowedValues: ["First", "Next", "Over"]
+    },
+    "rules.$.upperLimit": {
+        type: Number,
+        optional: true
+    },
+    "rules.$.rate": {
+        type: Number,
+        optional: true
+    },
+    createdAt: {
+        type: Date,
+        autoValue: function () {
+            if (this.isInsert) {
+                return new Date;
+            } else if (this.isUpsert) {
+                return {
+                    $setOnInsert: new Date
+                };
+            }
+        },
+        denyUpdate: true,
+        optional: true
+    }
 });

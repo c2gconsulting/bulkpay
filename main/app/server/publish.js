@@ -38,3 +38,16 @@ Meteor.publish('pensions', function () {
 Meteor.publish('employees', function () {
   return Employees.find();
 });
+
+
+Meteor.publish('loans', function () {
+  return Loans.find();
+});
+
+Meteor.publish('oneoff', function () {
+  return Oneoff.find();
+});
+
+Meteor.publish('payments', function () {
+  return Payments.find();
+});

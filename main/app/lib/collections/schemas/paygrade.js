@@ -60,6 +60,7 @@ Core.Schemas.PayGrade = new SimpleSchema({
                 };
             }
         },
-        denyUpdate: true
+        denyUpdate: true,
+        optional: true
     }
 });

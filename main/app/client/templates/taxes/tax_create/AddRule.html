@@ -1,0 +1,49 @@
+<template name="AddRule">
+    <div class="modal fade add-rule" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Rule</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Range</label>
+                                    <select name="range" style="width: 100%">
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="rule-upper-limit" class="control-label">Upper Limit Value</label>
+                                    <input type="number" id="rule-upper-limit" class="form-control" placeholder="55000" name="upperLimitValue"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="rule-rate" class="control-label">Rate</label>
+                                    <input type="number" id="rule-rate" class="form-control" placeholder="7.5" name="rate"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                        </div><!-- row -->
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" id="addRule">Add</button>
+                        <button type="reset" class="btn btn-danger" id="new-rule-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

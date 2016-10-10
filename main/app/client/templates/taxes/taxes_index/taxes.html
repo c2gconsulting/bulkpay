@@ -27,7 +27,7 @@
         </div>
 
         <div class="row">
-            {{#if condition tax.size 'eq' 0}}
+            {{#if condition taxCount 'eq' 0}}
                 <div class="col-md-12">
                     <div class="alert alert-danger text-center">
                         <p>No Tax defined </p>
@@ -44,6 +44,7 @@
                                 <th>Name</th>
                                 <th>Gross Income Relief (%)</th>
                                 <th>Consolidated Relief (Annual)</th>
+                                <th>Bucket</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -63,13 +64,13 @@
 <template name="singleTax">
     <tr class="pointer">
         <td>{{index}}</td>
+        <td>{{data.code}}</td>
         <td>{{data.name}}</td>
-        <td>{{data.location}}</td>
-        <td>{{data.parent.name}}</td>
-        <td>{{data.parent.division}}</td>
+        <td>{{data.grossIncomeRelief}}</td>
+        <td>{{data.consolidatedRelief}}</td>
+        <td>{{data.bucket}}</td>
         <td>
-            <span class="label label-success">{{status}}</span>
-            <span class="label label-danger">{{status}}</span>
+            <span class="label label-{{activeClass}}">{{data.status}}</span>
         </td>
     </tr>
 </template>

@@ -30,6 +30,11 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         defaultValue: 'Active',
         optional: true
     },
+    default: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
 
     createdAt: {
         type: Date,

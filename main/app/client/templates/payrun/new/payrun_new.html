@@ -1,0 +1,82 @@
+<template name="PayrunNew">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-credit-card"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{business.name}}</li>
+                    <li>New Pay Run</li>
+                </ul>
+                <h4>New Pay Run</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12" ng-if="preSelect">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-btns"></div><!-- panel-btns -->
+                        <h4 class="panel-title">Payroll Calculator</h4>
+                    </div><!-- panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <p>
+                                    <b>This option allows you to pay a list of selected employees from a pay group by selecting the month and year.</b>
+                                </p>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <p class="text-danger">
+                                    Note: Before using this option for a new month payment, make sure salary settings for the month is complete.
+                                </p>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class="col-md-3 text-right"><b>Compute payment for:</b></div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <select name="paymentPeriod.month" class="form-control" style="width: 100%">
+                                                                {{#each month}}
+                                                                    <option value="{{this}}">{{this}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div><!-- form-group -->
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <select name="paymentPeriod.year" class="form-control" style="width: 100%">
+                                                                {{#each year}}
+                                                                    <option value="{{this}}">{{this}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div><!-- form-group -->
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <button class="btn btn-primary" ng-click="startProcessing()">Process Payrun</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- panel -->
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- panel -->
+            </div>
+        </div>
+    </div>
+</template>

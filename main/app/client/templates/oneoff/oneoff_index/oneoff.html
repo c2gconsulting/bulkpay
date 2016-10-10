@@ -1,0 +1,73 @@
+<template name="Oneoff">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-money"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>One Off</li>
+                </ul>
+                <h4>One Off Payments </h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+
+
+
+        <div class="row pay-runs-header">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">One Off Payments</h5>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="newOneOff">New One Off</button></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 text-center" ng-if="!dataFetched">
+                <img alt="" src="images/loaders/loader10.gif">
+            </div>
+            <div class="col-md-12" ng-if="oneOfffs.length === 0 && dataFetched">
+                <div class="alert alert-danger text-center">
+                    <p>No One Off Payment available</p>
+                </div>
+            </div>
+            <div class="col-md-12" ng-if="oneOfffs.length > 0 && dataFetched">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Employee</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                            <th>Serviced</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer" ng-repeat="oneOff in oneOfffs">
+                            <td>$index + 1</td>
+                            <td>getOneOffTitle(oneOff)</td>
+                            <td>oneOff.employee.fullName</td>
+                            <td>oneOff.payment.value | currency:""</td>
+                            <td>oneOff.description</td>
+                            <td>
+                                <span ng-disabled="true" ng-if="oneOff.serviced === 'Yes'"><i class="fa fa-toggle-on fa-lg" aria-hidden="true"></i></span>
+                                <span ng-click="servicePayment(oneOff)" ng-if="oneOff.serviced === 'No'"><i class="fa fa-toggle-off fa-lg" aria-hidden="true"></i></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+            </div>
+        </div><!-- row -->
+
+    </div><!-- contentpanel -->
+
+</template>

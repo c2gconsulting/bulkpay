@@ -1,0 +1,319 @@
+<template name="TenantSettings">
+  <div class="tenant-settings">
+      <div class="container-fluid">
+          <section class="row content-header">
+              <div class="container-fluid">
+                  <div class="col-sm-6">
+                      <h1 class="pull-left">
+                          Customization &nbsp; <small class="text-muted">&bull; {{tenant.name}}</small>
+                      </h1>
+                  </div>
+                  <div class="col-sm-6 hidden-xs">
+                      <ol class="breadcrumb">
+                          <li><a href="{{pathFor 'home'}}"><i class="glyphicon icon-settings"></i>Home</a></li>
+                          <li><a href="#">Customization</a></li>
+                      </ol>
+                  </div>
+              </div>
+              <div class="sub-content-header">
+                  <div class="container-fluid">
+                      <div class="col-sm-12">
+                          <div class="pull-right">
+                              <a href="#" class="btn btn-success ladda-button" id="save-tenant" {{disableSubmit}}><span class="ladda-label">Save</span></a>
+                              <button class="btn btn-default" id="cancel-edit">Cancel</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </section>
+
+          <div class="col-sm-12">
+
+              <section class="content sub-content">
+
+                  <div class="box box-lg panel panel-default">
+                      <div class="panel-body">
+                          <form class="form-horizontal">
+                              <div class="col-sm-12 col-md-2 text-center">
+                                  {{#if logo}}
+                                      <img src="{{logo.url store='tenantsSmall' }}"  style="max-width: 128px" /><br/>
+                                  {{ else }}
+                                      <div class="logo-prev logo-prev-big text-center">
+                                      </div>
+                                  {{/if}}
+                                  <div class="manual-upload" style="text-align: center">
+                                            <span class="btn btn-info mr0 mt20 fileinput-button">
+                                                <span>Choose Logo</span>
+                                                 <input type="file" name="files[]" id="manualInput">
+                                            </span>
+                                      <div class="mt15 text-muted">
+                                          <small>JPG, GIF or PNG<br/>Max Size of 1M</small>
+                                          {{#if logo}}
+                                              {{#unless logo.isUploaded}}
+                                                  {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=true}}
+                                              {{/unless}}
+                                          {{/if}}
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-sm-12 col-md-3 col-lg-3">
+                                  <div class="form-group {{#if errorsFor 'fullName'}}has-error{{/if}}">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted {{#if errorsFor 'name'}} text-danger {{/if}}" for="fullName">
+                                              {{#if errorsFor 'nema'}}
+                                                  {{errorsFor 'name'}}
+                                              {{ else  }}
+                                                  Name
+                                              {{/if}}
+                                          </label>
+                                          <input type="text" class="form-control text-gray" id="name" name="name" value="{{tenant.name}}"/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="currencies">
+                                              Currencies
+                                          </label>
+                                          {{#selectpicker}}
+                                              <select class="form-control selectpicker" id="status" data-live-search="true" name="currencies" multiple>
+                                                  {{#each currencies}}
+                                                          <option value="{{this}}" {{selected}}>{{this}}</option>
+                                                  {{/each}}
+                                              </select>
+                                          {{/selectpicker}}
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-sm-12">
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="country">Country</label>
+                                          {{#selectpicker}}
+                                              <select class="form-control selectpicker" data-live-search="true" name="country">
+                                                  {{#each countries}}
+                                                      {{#if isSame tenant.country ccode}}
+                                                          <option value="{{ccode}}" selected>{{cname}}</option>
+                                                      {{else}}
+                                                          <option value="{{ccode}}">{{cname}}</option>
+                                                      {{/if}}
+                                                  {{/each}}
+                                              </select>
+                                          {{/selectpicker}}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="timezone">Timezone</label>
+                                          {{#selectpicker}}
+                                              <select class="form-control selectpicker" data-live-search="true" name="timezone">
+                                                  {{#each timeZones}}
+                                                      {{#if isSame tenant.timezone this}}
+                                                          <option value="{{this}}" selected>{{this}}</option>
+                                                      {{else}}
+                                                          <option value="{{this}}">{{this}}</option>
+                                                      {{/if}}
+                                                  {{/each}}
+                                              </select>
+                                          {{/selectpicker}}
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-lg-3 col-md-3 col-sm-12">
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="locals">Local</label>
+                                          <input type="text" name="locals" class="form-control text-gray" id="locale" value="{{tenant.locale}}" disabled/>
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-sm-12">
+                                          <label class="text-muted" for="description">Description</label>
+                                          <input type="text" name="description" class="form-control text-gray" id="description" value="{{tenant.description}}"/>
+                                      </div>
+                                  </div>
+                              </div>
+                          </form>
+                      </div>
+                  </div>
+
+                  <div class="clearfix"></div>
+              </section>
+
+          </div>
+
+          <div class="col-sm-12">
+              <div class="row">
+                  <div class="col-sm-12">
+                      <div class="module-block" style="margin-bottom: 20px;">
+                          <p class="lead text-uppercase">Settings</p>
+
+                          <div class="row">
+                              <div class="col-sm-4">
+
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <h3 class="panel-title">Rounding Settings</h3>
+                                      </div>
+                                      <div class="panel-body">
+                                          {{#each roundings}}
+                                              <div class="row" style="margin-bottom: 10px;">
+                                                  <div class="form-group">
+                                                      <div class="col-sm-3">
+                                                          <label for="customer-company-address">Currency</label>
+                                                          {{#selectpicker}}
+                                                              <select class="form-control selectpicker" id="status" data-live-search="true" name="currency">
+                                                                  {{#each currencies}}
+                                                                      {{#if isSame this ..}}
+                                                                          <option value="{{this}}" selected>{{this}}</option>
+                                                                      {{else}}
+                                                                          <option value="{{this}}">{{this}}</option>
+                                                                      {{/if}}
+                                                                  {{/each}}
+                                                              </select>
+                                                          {{/selectpicker}}
+                                                      </div>
+                                                      <div class="col-sm-9">
+                                                          <span class="pull-right remove-sign1"><i class="glyphicon glyphicon-remove"></i></span>
+                                                          <label for="roundBy">Rounding Value</label>
+                                                          <input type="number" class="form-control" placeholder="Round By" name="roundBy" value="{{roundingValue}}"/>
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                          {{/each}}
+                                          <div class="" style="margin-top: 10px;">
+                                              <button class="btn btn-info" id="newRounding">Add New</button>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-sm-4">
+
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <h3 class="panel-title">Promotions Settings</h3>
+                                      </div>
+                                      <div class="panel-body">
+                                          <div class="form-group" style="min-height: 103px;">
+                                              <div class="col-sm-12">
+                                                  <label class="text-muted" for="orderTypes">Exclude Promotions For order types</label>
+                                                  {{#selectpicker}}
+                                                      <select class="form-control selectpicker" id="status" data-live-search="true" name="orderTypes" multiple>
+                                                          {{#each orderTypes}}
+                                                              <option value="{{code}}" {{selectedOrder}}>{{name}}</option>
+                                                          {{/each}}
+                                                      </select>
+                                                  {{/selectpicker}}
+                                              </div>
+                                              <br/><br/>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                              <div class="col-sm-4">
+
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <h3 class="panel-title">Mini Logo</h3>
+                                      </div>
+                                      <div class="panel-body">
+                                          <div class="form-group" style="min-height: 103px;">
+                                              <div class="col-sm-12">
+                                                  {{#if logoMini}}
+                                                      <img src="{{logoMini.url store='tenantsMini' }}"  style="max-width: 100px" />
+                                                  {{ else }}
+                                                      <div class="logo-prev logo-prev-big text-center">
+                                                      </div>
+                                                  {{/if}}
+                                                  <div class="manual-upload pull-right" style="text-align: center">
+                                            <span class="btn btn-info mr0 fileinput-button">
+                                                <span>Choose Logo</span>
+                                                 <input type="file" name="files[]" id="manualMiniInput">
+                                            </span>
+                                                      <div class="mt15 text-muted">
+                                                          <small>JPG, GIF or PNG<br/>Max Size of 1M</small>
+                                                          {{#if logoMini}}
+                                                              {{#unless logoMini.isUploaded}}
+                                                                  {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=true}}
+                                                              {{/unless}}
+                                                          {{/if}}
+                                                      </div>
+                                                  </div>
+                                              </div>
+                                              <br/><br/>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="col-sm-12">
+              <div class="module-block no_mobile width_700" style="margin-bottom: 50px">
+                  <div class="fix_width">
+                      <p class="lead text-uppercase">ADDRESS BOOK</p>
+
+                      <table class="table">
+                          <thead>
+                          <tr>
+                              <td>Shipping</td>
+                              <td>Billing</td>
+                              <td>Company</td>
+                              <td>Street</td>
+                              <td>City</td>
+                              <td>Postal Code</td>
+                              <td>Country</td>
+                              <td>Telephone</td>
+                              <td></td>
+                              <td></td>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          {{#each tenant.addressBook}}
+                              <tr>
+                                  <td>
+                                      <input type="radio" data-id={{_id}} name="shipping" {{getCheckedStatus isShippingDefault}} />
+                                  </td>
+                                  <td>
+                                      <input type="radio" data-id={{_id}} name="billing" {{getCheckedStatus isBillingDefault}} />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" data-column="company" class="input-transparent customer-address-items" placeholder="Company Name" value="{{company}}" />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" data-column="address1" class="input-transparent customer-address-items" placeholder="Address" value="{{address1}}" />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" data-column="city" class="input-transparent customer-address-items" placeholder="City" value="{{city}}" />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" data-column="postal" class="input-transparent customer-address-items" placeholder="Postal" value="{{postal}}" />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" name="address-book-country" class="input-transparent customer-address-items" placeholder="Country" value="{{country}}" disabled />
+                                  </td>
+                                  <td>
+                                      <input type="text" data-id="{{_id}}" data-column="phone" class="input-transparent customer-address-items" placeholder="Telephone" value="{{phone}}" />
+                                  </td>
+                                  <td></td>
+                                  <td>
+                                      <a href="#" data-id={{_id}} class="text-danger remove-item"><span class="glyphicon glyphicon-remove"></span></a>
+                                  </td>
+                              </tr>
+                          {{/each}}
+                          </tbody>
+                      </table>
+
+                      <div class="pull-left">
+                          <button class="btn btn-info" name="btnAddItem">Add new line <span class="glyphicon icon-add"></span>
+                          </button>
+                      </div>
+
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</template>

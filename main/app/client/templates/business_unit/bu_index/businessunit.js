@@ -1,6 +1,6 @@
 Template.BusinessUnit.events({
     'click #newUnit': function(event){
-       event.preventDefault();
+        event.preventDefault();
         let bus = BusinessUnits.find();
         //add none to array list after calling.fetch()
         //bus.unshift({_id: null, name: "Parent Business Unit"});
@@ -22,15 +22,14 @@ Template.BusinessUnit.onCreated(function(){
 });
 
 Template.singleBu.helpers({
-   'parentName': function(data){
-       let parent = data.parentId;
-       if(parent) {
-           let bu = BusinessUnits.findOne({_id: parent});
-           return bu.name;
-       }
+    'parentName': function(data){
+        if(data.parentId){
+            let bu = BusinessUnits.findOne({_id: data.parentId});
+            return bu.name;
+        }
         return null;
 
-   }
+    }
 });
 Template.singleBu.events({
     'click .pointer': function(e) {

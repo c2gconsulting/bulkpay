@@ -1,0 +1,62 @@
+<template name="Payslip">
+    <div class="row" style="margin-top: 25px;" ng-if="payRunReportsView">
+
+        <div class="col-md-12 big-font">
+            <p>Send pay slips in pdf format to employees...</p>
+        </div>
+
+        <div class="col-md-12 big-font">
+            <div class="row">
+                <div class="col-md-3">Pay Group:</div>
+                <div class="col-md-9">__getPayGroup()__</div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">Payment Date:</div>
+                <div class="col-md-9">__todayDate | date:"yyyy-MM-dd"__</div>
+            </div>
+        </div>
+
+        <div class="col-md-12 action-div" ng-if="payRolls.length > 0">
+            <div class="table-responsive">
+                <table class="table table-primary mb60 table-hover">
+                    <thead>
+                    <tr>
+                        <th>
+                            <div class="ckbox ckbox-success">
+                                <input ng-model="settings.selected" ng-change="selectAll()" ng-checked="settings.selected" type="checkbox" id="select-all" />
+                                <label for="select-all"></label>
+                            </div>
+                        </th>
+                        <th>Employee Id</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="pointer" dir-paginate="payRoll in payRolls | itemsPerPage: pageSize" current-page="currentPage">
+                        <td>
+                            <div class="ckbox ckbox-success">
+                                <input ng-model="payRoll.selected" ng-checked="payRoll.selected" type="checkbox" id="__'pa' + payRoll._id__" checked="checked" />
+                                <label for="__'pa' + payRoll._id__"></label>
+                            </div>
+                        </td>
+                        <td>__payRoll.employee.employeeId__</td>
+                        <td>__payRoll.employee.fullName__</td>
+                        <td>__payRoll.employee.email__</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div><!-- table-responsive -->
+            <div class="col-md-12 text-left">
+                <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="bower_components/angularUtils-pagination/dirPagination.tpl.html"></dir-pagination-controls>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <p>** Only selected employees will be emailed.</p>
+        </div>
+        <div class="col-md-12 action-div">
+            <button class="btn btn-primary" ng-click="mailPaySlips()">Send Now</button>
+            <button class="btn btn-danger" ng-click="mailLater()">Send Later</button>
+        </div>
+    </div>
+</template>

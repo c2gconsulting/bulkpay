@@ -35,7 +35,7 @@ AccountsTemplates.configureRoute('changePwd');
 // default home routes
 Router.route('/', {
     name: 'home',
-    controller: 'HomeController',
+    controller: 'BusinessUnitController',
     action: 'home',
     where: 'client'
 });
@@ -53,12 +53,6 @@ Router.route('/reset-my-password', {
     template: 'ResetMyPassword'
 });
 
-Router.route('/business-units', {
-    name: 'businessunits',
-    controller: 'BusinessUnitController',
-    action: 'home',
-    where: 'client'
-});
 Router.route('/business/:_id', {
     name: 'bu.details',
     controller: 'BusinessUnitController',
@@ -136,5 +130,42 @@ Router.route('/business/:_id/employee/new', {
 Router.route('tenant/signup', {
     name: 'new.tenant',
     controller: 'TenantsController',
+    where: 'client'
+});
+
+Router.route('/business/:_id/loans/new', {
+    name: 'loans.new',
+    controller: 'LoansController',
+    where: 'client',
+    action: 'create'
+});
+
+Router.route('/business/:_id/loans', {
+    name: 'loans.manage',
+    controller: 'LoansController',
+    where: 'client'
+});
+
+Router.route('/business/:_id/oneoffs', {
+  name: 'oneoff',
+  controller: 'OneoffController',
+  where: 'client'
+});
+
+Router.route('/business/:_id/payrun/new', {
+  name: 'payrun.new',
+  controller: 'PayrunController',
+  where: 'client'
+});
+
+Router.route('/business/:_id/payruns', {
+  name: 'payruns',
+  controller: 'PayrunController',
+  where: 'client'
+});
+Router.route('/tenant/settings', {
+    name: 'tenant.settings',
+    controller: 'HomeController',
+    action: 'settings',
     where: 'client'
 });

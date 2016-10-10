@@ -39,21 +39,6 @@ Template.Pensions.onRendered(function () {
 });
 
 Template.Pensions.onDestroyed(function () {
-});
-
-
-Template.PensionIndex.events({
-    'click #newPension': (e,tmpl) => {
-        e.preventDefault();
-        Modal.show('PensionCreate');
-    }
-
-});
-
-Template.PensionManagerIndex.events({
-    'click #newPFA': (e,tmpl) => {
-        e.preventDefault();
-        Modal.show('PensionManagerCreate');
-    }
-
+    //clear session context
+    Session.set('pensionContext', null);
 });

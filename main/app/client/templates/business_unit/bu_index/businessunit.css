@@ -1,0 +1,91 @@
+.intelligence {
+}
+
+.intelligence .mbl, .mvl, .mal {
+    margin-bottom: 20px !important;
+    font-size: 20px;
+    line-height: normal;
+}
+
+.intelligence .mts, .mvs, .mas {
+    margin-top: 5px !important;
+}
+
+.intelligence ul, ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.intelligence li {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+.intelligence .left {
+    float: left !important;
+}
+
+.intelligence .full-width {
+    width: 100% !important;
+}
+
+.intelligence .box, .card, .dashboard .widget, .file-picker-logo {
+    border-radius: 3px;
+    border: 1px solid #c4ced1;
+    background: none;
+    padding: 20px;
+    opacity: 1;
+}
+
+.intelligence .box.clickable, .box.task, .clickable.card, .card.task, .dashboard .task.widget, .dashboard .clickable.widget, .task.file-picker-logo, .clickable.file-picker-logo {
+    cursor: pointer;
+}
+
+
+.intelligence .task i.large {
+    width: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #2d3033;
+    font-size: 48px;
+    opacity: 1;
+}
+
+.intelligence .task h3, .task p {
+    line-height: normal;
+    font-size: 18px;
+    margin: 0;
+    margin-left: 70px;
+    font-weight: 400;
+    color: #4B4D4F;
+    text-rendering: optimizelegibility;
+}
+
+.intelligence .task p {
+    margin: 0 0 9px;
+    margin-left: 70px;
+    color: #585d64;
+    font-size: 13px;
+    -webkit-animation-duration: 3s;
+    animation-duration: 3s;
+    -webkit-animation-name: slidein;
+    animation-name: slidein;
+}
+
+.intelligence .mtm, .mvm, .mam {
+    margin-top: 10px !important;
+}
+
+.intelligence a{
+    text-decoration: none;
+}
+
+.intelligence a:hover{
+    background: #f4f4f5;
+    text-decoration: none;
+}

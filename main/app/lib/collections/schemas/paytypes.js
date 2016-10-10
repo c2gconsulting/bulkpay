@@ -17,27 +17,32 @@ Core.Schemas.PayType = new SimpleSchema({
         type: String
     },
     type: {
-        type: String
+        type: String,
+        allowedValues: ["Wage", "Benefit", "Deduction", "One Off"],
+        defaultValue: "Benefit"
     },
     frequency: {
         type: String,
-        defaultValue: "Monthly"
+        defaultValue: "Monthly",
+        allowedValues: ["Weekly", "Bi-Monthly", "Monthly", "Quarterly", "Bi-Annually", "Annually"]
     },
     taxable: {
-        type: String,
-        defaultValue: "Yes"
+        type: Boolean,
+        defaultValue: false
     },
     editablePerEmployee: {
-        type: String,
-        defaultValue: "No"
+        type: Boolean,
+        defaultValue: false
     },
     derivative: {
         type: String,
+        allowedValues: ["Fixed", "Formula"],
         defaultValue: "Fixed"
     },
     status: {
         type: String,
-        defaultValue: "Active"
+        defaultValue: "Active",
+        allowedValues: ["Active", "Inactive"]
     },
     isBase: {
         type: Boolean,
@@ -54,6 +59,7 @@ Core.Schemas.PayType = new SimpleSchema({
                 };
             }
         },
-        denyUpdate: true
+        denyUpdate: true,
+        optional: true
     }
 });

@@ -2,26 +2,24 @@
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left">
-                <i class="fa fa-puzzle-piece"></i>
+                <i class="fa fa-dashboard"></i>
             </div>
             <div class="media-body">
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
-                    <li><a ui-sref="business.overview">Business</a></li>
-                    <li>Business.Name</li>
-                    <li>Units</li>
+                    <li><a href="#">Business</a></li>
+                    <li>{{tenantName}}</li>
+                    <li></li>
                 </ul>
-                <h4>Business Units</h4>
+                <h4>Companies</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
 
     <div class="contentpanel">
-
         <div class="row">
             <div class="col-md-12">
-                <h5 class="lg-title mb5">Business Units</h5>
-                <p class="mb20 pull-right"><button class="btn btn-primary" id="newUnit">New Unit</button></p>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="newUnit">New Company</button></p>
             </div>
         </div>
 
@@ -34,40 +32,53 @@
                         </div>
                     </div>
                 {{else}}
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table table-primary mb60 table-hover">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Location</th>
-                                    <th>Parent</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                    <div class="container-fluid intelligence">
+                        <div class="col-sm-12">
+                            <section class="content">
                                 {{#each bus}}
-                                    {{> singleBu index=@index data=this}}
+                                    {{> singleBu data=this}}
                                 {{/each}}
-                                </tbody>
-                            </table>
-                        </div><!-- table-responsive -->
+                            </section>
+
+                        </div>
                     </div>
                 {{/if}}
             {{else}}
                 <div class="loading">{{>spinner}}</div>
             {{/if}}
-
-        </div><!-- row -->
-
+        </div>
     </div><!-- contentpanel -->
+
+
 </template>
 
 <template name="singleBu">
-    <tr class="pointer">
-        <td>{{index}}</td>
-        <td>{{data.name}}</td>
-        <td>{{data.location}}</td>
-        <td>{{parentName data}}</td>
-    </tr>
+    <div class="col-md-6 pointer">
+        <div class="panel panel-primary noborder">
+            <div class="panel-heading noborder">
+                <div class="panel-btns">
+                    <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i
+                            class="fa fa-times"></i></a>
+                </div><!-- panel-btns -->
+                <div class="panel-icon"><i class="fa fa-users"></i></div>
+                <div class="media-body">
+                    <h5 class="md-title nomargin"> Company </h5>
+                    <h1 class="mt5">{{data.name}}</h1>
+                </div><!-- media-body -->
+                <hr>
+                <div class="clearfix mt20">
+                    <div class="pull-left">
+                        <h5 class="md-title nomargin">Employees</h5>
+                        <h4 class="nomargin">10,009</h4>
+                    </div>
+                    <div class="pull-right">
+                        <h5 class="md-title nomargin"> Parent Company </h5>
+                        <h4 class="nomargin">{{#if parentName data}}{{parentName data}} {{else}} Root Company {{/if}}  </h4>
+                    </div>
+                </div>
+
+            </div><!-- panel-body -->
+        </div><!-- panel -->
+    </div><!-- col-md-6 -->
+    
 </template>

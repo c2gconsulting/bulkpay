@@ -1,5 +1,14 @@
 /*****************************************************************************/
-/* Tenants: Style */
+/* TenantSettings: Style */
 /*****************************************************************************/
-.tenants {
+.tenant-settings {
+}
+
+.remove-sign1 {
+    color: #c0c0c0;
+    cursor: pointer;
+}
+
+.remove-sign1:hover {
+    color: #999;
 }

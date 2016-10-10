@@ -55,11 +55,14 @@ HomeController = ApplicationController.extend({
 
 
     home: function () {
-        this.render('Home');
+        Router.go('businessunits');
     },
 
     onAfterAction: function () {
     },
     onStop: function () {
+    },
+    settings: function () {
+        this.render('TenantSettings');
     }
 });

@@ -8,6 +8,13 @@ Template.newBuModal.events({
         Meteor.call('businessunit/create', details, function(err, res){
             if (res){
                 Modal.hide('newBuModal');
+                swal({
+                    title: "Success",
+                    text: `Company Created`,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
                 Router.go('bu.details', res);
             } else {
                 details = JSON.parse(err.details);

@@ -12,12 +12,17 @@ Template.Paygroups.events({
 /* Paygroups: Helpers */
 /*****************************************************************************/
 Template.Paygroups.helpers({
+    payGroup(){
+        return PayGroups.find();
+    }
 });
 
 /*****************************************************************************/
 /* Paygroups: Lifecycle Hooks */
 /*****************************************************************************/
 Template.Paygroups.onCreated(function () {
+    let self = this;
+    self.subscribe("payGroups", Session.get('context'));
 });
 
 Template.Paygroups.onRendered(function () {

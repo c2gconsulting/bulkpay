@@ -11,36 +11,94 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tax-code" class="control-label">Code (alphanumeric)</label>
-                                    <input type="text" id="tax-code" class="form-control" placeholder="PAYE" name="code" />
+                                    <input type="text" id="tax-code" class="form-control" placeholder="Enter Code e.g. PAYE" name="code" value="{{code}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tax-name" class="control-label">Name</label>
-                                    <input type="text" id="tax-name" class="form-control" placeholder="Pay as you earn" name="name"/>
+                                    <input type="text" class="form-control" placeholder="Enter description e.g Pay as you earn" name="name" value="{{name}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tax-gross-income-relief" class="control-label">Gross Income Relief (%)</label>
-                                    <input type="number" id="tax-gross-income-relief" class="form-control" placeholder="20" name="grossIncomeRelief"/>
+                                    <input type="number"  class="form-control" placeholder="20" name="grossIncomeRelief" value="{{grossIncomeRelief}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tax-consolidated-relief" class="control-label">Consolidated Relief</label>
-                                    <input type="number" id="tax-consolidated-relief" class="form-control" placeholder="200000" name="consolidatedRelief"/>
+                                    <input type="number" class="form-control" placeholder="200000" name="consolidatedRelief" value="{{consolidatedRelief}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                    <select  name="status" class="form-control dropdown" >
+                                        <option value="Active" {{selected "status" "Active"}}>Active</option>
+                                        <option value="Inactive" {{selected "status" "Inactive"}}>Inactive</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Bucket</label>
+                                    <select  name="bucket" class="form-control dropdown" >
+                                        <option value="Default" {{selected "bucket" "Default"}}>Default Tax Bucket</option>
+                                        <option value="2tax" {{selected "bucket" "2tax"}}>2tax</option>
+                                        <!-- dropdown of all buckets -->
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <h5 class="lg-title mb5">Tax Rules</h5>
+                                        <p class="mb20 pull-right"><button id="add-rule-button" class="btn btn-primary btn-sm">Add Rule</button></p>
+                                    </div><!-- col-sm-12 -->
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-primary mb60 table-hover" id="ruleTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>Position</th>
+                                                    <th>Range</th>
+                                                    <th>Upper Limit Value</th>
+                                                    <th>Rate %</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {{#each rule}}
+                                                    <tr class="pointer">
+                                                        <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
+                                                        <td>{{range}}</td>
+                                                        <td><a class="pointer">{{upperLimit}}</a></td>
+                                                        <td><a class="pointer">{{rate}}</a></td>
+                                                        <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div>
+                                </div>
+                            </div><!-- col-sm-12 -->
 
                         </div><!-- row -->
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" id="createTax">Create</button>
+                        <button class="btn btn-primary mr5" id="TaxButton">{{#if edit}}Update{{else}}Create{{/if}}</button>
                         <button type="reset" class="btn btn-danger" id="new-tax-close" data-dismiss="modal">Cancel</button>
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteTax">Delete</button>{{/if}}
                     </div><!-- panel-footer -->
                 </div>
             </div>

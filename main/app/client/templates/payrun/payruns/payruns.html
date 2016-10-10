@@ -1,0 +1,96 @@
+<template name="payruns">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-refresh"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Pay Runs</li>
+                </ul>
+                <h4>Pay Runs</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Pay Runs</h5>
+                <p class="mb20 pull-right"><a class="btn btn-primary" ui-sref="business.newpayrun">New Pay Run</a></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 employee-filter">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">Start Date</label>
+                            <adm-dtp ng-model="filter.startDate" maxdate="__filter.endDate_detail.unix__"></adm-dtp>
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="control-label">End Date</label>
+                            <adm-dtp ng-model="filter.endDate" full-data="filter.endDate_detail"></adm-dtp>
+                        </div><!-- form-group -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 text-center" ng-if="!dataFetched">
+                <img alt="" src="images/loaders/loader10.gif">
+            </div>
+            <div class="col-md-12" ng-if="dataFetched && payRuns.length === 0">
+                <div class="alert alert-danger text-center">
+                    <p>No Payrun available</p>
+                </div>
+            </div>
+            <div class="col-md-12" ng-if="dataFetched && payRuns.length > 0">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Pay Group</th>
+                            <th>Number of Employees</th>
+                            <th>Payment Date</th>
+                            <th>Tax Paid</th>
+                            <th>Pension Paid</th>
+                            <th>Total Amount Paid</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {{#each payrun}}
+                                {{> singlePayrun index=@index data=this}}
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+                <div class="col-md-12 text-left">
+                    <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="bower_components/angularUtils-pagination/dirPagination.tpl.html"></dir-pagination-controls>
+                </div>
+            </div>
+        </div><!-- row -->
+
+
+
+    </div><!-- contentpanel -->
+</template>
+
+<template name="singlePayrun">
+    <tr class="pointer">
+        <td>{{index}}</td>
+        <td>{{data.paygroup}}</td>
+        <td>{{data.number_of_employees}}</td>
+        <td>{{data.payment_date}}</td>
+        <td>{{data.tax_paid}}</td>
+        <td>{{data.pension_paid}}</td>
+        <td>{{data.total_amount_paid}}</td>
+    </tr>
+</template>

@@ -1,0 +1,57 @@
+<template name="PensionIndex">
+    <div class="col-md-12">
+        <div class="tab-pane active" id="activities">
+            <div class="row" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPension">New Pension Rule</button></p>
+                </div>
+            </div>
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                {{#if condition pensionCount 'eq' 0}}
+                    <div class="col-md-12">
+                        <div class="alert alert-danger text-center">
+                            <p>No Pension Rule defined for this company</p>
+                        </div>
+                    </div>
+                {{else}}
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-primary mb60 table-hover">
+                                <thead>
+                                <tr>
+                                    <th>S/N</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Employee %</th>
+                                    <th>Employer %</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{#each pensions }}
+                                    {{> singlePension index=@index data=this}}
+                                {{/each}}
+                                </tbody>
+                            </table>
+                        </div><!-- table-responsive -->
+                    </div>
+                {{/if}}
+            </div><!-- row -->
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+
+
+<template name="singlePension">
+    <tr class="pointer">
+        <td>{{index}}</td>
+        <td>{{data.code}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.employerContributionRate}}</td>
+        <td>{{data.employeeContributionRate}}</td>
+    <td>
+        <span class="label label-{{activeClass}}">{{data.status}}</span>
+    </td>
+    </tr>
+</template>

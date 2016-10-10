@@ -1,0 +1,82 @@
+<template name="LoansManage">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-money"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>name</li>
+                    <li>Loans</li>
+                </ul>
+                <h4>Loans</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+
+
+
+        <div class="row pay-runs-header" ng-show="!singleView">
+            <div class="col-md-12">
+                <h5 class="lg-title mb5">Loans</h5>
+            </div>
+        </div>
+
+        <div class="row" ng-show="!singleView">
+            <div class="col-md-12 text-center" ng-if="!dataFetched">
+                <img alt="" src="images/loaders/loader10.gif">
+            </div>
+            <div class="col-md-12" ng-if="loans.length === 0 && dataFetched">
+                <div class="alert alert-danger text-center">
+                    <p>No Loan available</p>
+                </div>
+            </div>
+            <div class="col-md-12" ng-if="loans.length > 0 && dataFetched">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Employee</th>
+                            <th>Amount</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Rate</th>
+                            <th>Term</th>
+                            <th>Installment Paid</th>
+                            <th>Serviced</th>
+                            <th>Application Date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer" ng-repeat="loan in loans">
+                            <td>$index + 1</td>
+                            <td>loan.employee.fullName</td>
+                            <td>loan.amount | currency:""</td>
+                            <td>getAmountPaid(loan) | currency:""</td>
+                            <td>loan.amount - loan.activeAmount | currency:""</td>
+                            <td>loan.rate%</td>
+                            <td>getComputedTerm(loan.term)</td>
+                            <td>loan.payCount</td>
+                            <td>loan.fullyServiced</td>
+                            <td>loan.createdAt | date:"yyyy-MM-dd"</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+            </div>
+        </div><!-- row -->
+
+
+
+
+
+
+    </div><!-- contentpanel -->
+
+</template>

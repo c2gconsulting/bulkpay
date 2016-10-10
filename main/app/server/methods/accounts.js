@@ -429,5 +429,29 @@ Meteor.methods({
         } catch (error) {
             Core.Log.info(error);
         }
-    }
+    },
+    "accountCreate": function (user, sendEnrollmentEmail) {
+        check(user, Object);
+        check(sendEnrollmentEmail, Boolean);
+        //this method is an unauthenticated method that allows creation of defualt tenant users
+        let foundEmail =  Meteor.users.findOne({"emails.address": user.email});
+        if (foundEmail){
+            throw new Meteor.Error(404, "Email already exists");
+        }
+
+        let options = {};
+
+        options.email = user.email; // temporary
+        options.firstname = user.firstName;
+        options.lastname =  user.lastName;
+        options.tenantId = Core.getTenantId(Meteor.userId());
+        options.roles = user.roles;
+        options.employeenumber = Core.schemaNextSeqNumber('employee', options.tenantId);
+
+        let accountId = Accounts.createUser(options);
+        if (sendEnrollmentEmail){
+            Accounts.sendEnrollmentEmail(accountId, user.email);
+        }
+        return true
+    },
 });

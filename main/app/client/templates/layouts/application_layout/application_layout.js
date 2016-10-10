@@ -8,17 +8,6 @@ Template.ApplicationLayout.events({
     	Meteor.logout(function(err) {
             if (!err) {
                 Session.keys = {};
-
-                // clear subscription cache
-                OrderSubs.clear();
-                InvoiceSubs.clear();
-                ProductVariantSubs.clear();
-                CustomerSubs.clear();
-                ReturnOrderSubs.clear();
-                ReturnReasonSubs.clear();
-                PromotionSubs.clear();
-                UserSubs.clear();
-                LocationSubs.clear();
             }
         });
     }, 
@@ -99,6 +88,19 @@ Template.ApplicationLayout.helpers({
             return true;
         }
         return false;
+    },
+    currentUserId: function(){
+        return Meteor.userId();
+    },
+    loggedIn: function() {
+        return !!Meteor.userId();
+    },
+
+    avatar: function () {
+        return UserImages.findOne({owner: Meteor.userId()})
+    },
+    currentUserEmail: function() {
+        Meteor.user().emails[0].address
     }
 });
 

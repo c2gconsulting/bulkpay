@@ -1,23 +1,23 @@
 /*****************************************************************************/
-/* Tenants: Event Handlers */
+/* Loans: Event Handlers */
 /*****************************************************************************/
-Template.NewTenant.events({
+Template.LoansNew.events({
 });
 
 /*****************************************************************************/
-/* Tenants: Helpers */
+/* Loans: Helpers */
 /*****************************************************************************/
-Template.NewTenant.helpers({
+Template.LoansNew.helpers({
 });
 
 /*****************************************************************************/
-/* Tenants: Lifecycle Hooks */
+/* Loans: Lifecycle Hooks */
 /*****************************************************************************/
-Template.NewTenant.onCreated(function () {
+Template.LoansNew.onCreated(function () {
 });
 
-Template.NewTenant.onRendered(function () {
+Template.LoansNew.onRendered(function () {
 });
 
-Template.NewTenant.onDestroyed(function () {
+Template.LoansNew.onDestroyed(function () {
 });

@@ -27,10 +27,10 @@
         </div>
 
         <div class="row">
-            {{#if condition job.size 'eq' 0}}
+            {{#if condition paytypeCount 'eq' 0}}
                 <div class="col-md-12">
                     <div class="alert alert-danger text-center">
-                        <p>Paytypes</p>
+                        <p>No Pay Type defined for this company</p>
                     </div>
                 </div>
             {{else}}
@@ -39,7 +39,7 @@
                         <table class="table table-primary mb60 table-hover">
                             <thead>
                             <tr>
-                                <th>#</th>
+                                <th>S/N</th>
                                 <th>Code</th>
                                 <th>Title</th>
                                 <th>Type</th>
@@ -52,7 +52,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each job}}
+                            {{#each paytypes}}
                                 {{> singlePaytype index=@index data=this}}
                             {{/each}}
                             </tbody>
@@ -66,20 +66,30 @@
 
 <template name="singlePaytype">
     <tr class="pointer">
-    <tr>
-        <td>#</td>
-        <td>{{this.code}}</td>
-        <td>{{this.title}}</td>
-        <td>{{this.type}}</td>
-        <td>{{this.frequency}}</td>
-        <td>{{this.taxable}}</td>
-        <td>{{this.can_override}}</td>
-        <td>{{this.Derivative}}</td>
-        <td>{{this.base}}</td>
-    </tr>
+        <td>{{index}}</td>
+        <td>{{data.code}}</td>
+        <td>{{data.title}}</td>
+        <td>{{data.type}}</td>
+        <td>{{data.frequency}}</td>
+        {{#if data.taxable}}
+            <td>Yes</td>
+        {{else}}
+            <td>No</td>
+        {{/if}}
+        {{#if data.editablePerEmployee}}
+            <td>Yes</td>
+        {{else}}
+            <td>No</td>
+        {{/if}}
+        <td>{{data.derivative}}</td>
+        {{#if data.isBase}}
+            <td>Yes</td>
+        {{else}}
+            <td>No</td>
+        {{/if}}
         <td>
-            <span class="label label-success">{{status}}</span>
-            <span class="label label-danger">{{status}}</span>
+            <span class="label label-{{activeClass}}">{{data.status}}</span>
         </td>
     </tr>
+
 </template>

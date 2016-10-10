@@ -132,11 +132,13 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "status": {
         type: String,
-        defaultValue: "active"
+        defaultValue: "active",
+        optional: true
     },
     "name": {
         type: String,
-        index: 1
+        index: 1,
+        unique: true
     },
     "description": {
         type: String,
@@ -147,13 +149,27 @@ Core.Schemas.Tenant = new SimpleSchema({
         optional: true
     },
     "addressBook": {
-        type: [Core.Schemas.Address],
+        type: Array,
+        optional: true
+    },
+    "addressBook.$": {
+        type: Object,
+        optional: true
+    },
+    "addressBook.$.address1": {
+        type: String,
+        optional: true
+    },
+    "industry": {
+        type: String,
         optional: true
     },
     "domains": {
         type: [String],
         unique: true,
-        index: 1
+        index: 1,
+        optional: true
+        //autoValue: function(){return [this.field('name')]}
     },
     "emails": {
         type: [Core.Schemas.Email],
@@ -164,10 +180,11 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "baseCurrency": {
         label: "Base Currency",
+        optional: true,
         type: Object,
         autoValue: function () {
             if (this.isInsert && Meteor.isServer) {
-                let country = this.field('country')
+                let country = this.field('country');
                 if (!this.isSet && country.isSet) {
                     let locales = EJSON.parse(Assets.getText("settings/locales.json"));
                     let currency = {};
@@ -183,7 +200,8 @@ Core.Schemas.Tenant = new SimpleSchema({
         }
     },
     "baseCurrency.iso": {
-        type: String
+        type: String,
+        optional: true
     },
     "baseCurrency.symbol": {
         type: String,
@@ -195,14 +213,16 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "locale": {
         type: String,
-        defaultValue: "en"
+        defaultValue: "en",
+        optional: true
     },
     "public": {
         type: String,
         optional: true
     },
     "timezone": {
-        type: String
+        type: String,
+        optional: true
     },
     "baseUOM": {
         type: String,
@@ -216,7 +236,8 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "defaultRoles": {
         type: [String],
-        defaultValue: ["orders/manage", "customers/view"]
+        defaultValue: ["business/manage", "employee/view"],
+        optional: true
     },
     "layout": {
         type: [Object],
@@ -224,11 +245,13 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "layout.$.layout": {
         type: String,
-        defaultValue: "ApplicationLayout"
+        defaultValue: "ApplicationLayout",
+        optional: true
     },
     "layout.$.theme": {
         type: String,
-        defaultValue: "default"
+        defaultValue: "default",
+        optional: true
     },
     "layout.$.workflow": {
         type: String,
@@ -240,7 +263,8 @@ Core.Schemas.Tenant = new SimpleSchema({
     },
     "layout.$.enabled": {
         type: Boolean,
-        defaultValue: true
+        defaultValue: true,
+        optional: true
     },
     "settings": {
         type: Object,
@@ -267,7 +291,8 @@ Core.Schemas.Tenant = new SimpleSchema({
                 };
             }
         },
-        denyUpdate: true
+        denyUpdate: true,
+        optional: true
     },
     "updatedAt": {
         type: Date,

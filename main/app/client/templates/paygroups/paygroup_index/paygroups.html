@@ -48,7 +48,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each job}}
+                            {{#each payGroup}}
                                 {{> singlePaygroup index=@index data=this}}
                             {{/each}}
                             </tbody>
@@ -60,17 +60,4 @@
     </div>
 </template>
 
-<template name="singlePaygroup">
-    <tr class="pointer">
-        <td>{{index}}</td>
-        <td>{{data.name}}</td>
-        <td>{{data.location}}</td>
-        <td>{{data.parent.name}}</td>
-        <td>{{data.parent.division}}</td>
-        <td>
-            <span class="label label-success">{{status}}</span>
-            <span class="label label-danger">{{status}}</span>
-        </td>
-    </tr>
-</template>
 

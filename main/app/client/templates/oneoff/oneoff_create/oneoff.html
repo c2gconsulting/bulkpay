@@ -1,0 +1,62 @@
+<template name="OneoffCreate">
+    <div class="modal fade add-one-off" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New One Off Payment</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Employee</label>
+                                    <select class="form-control" style="width: 100%">
+                                        <option value="option1">option1</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">One Off Type</label>
+                                    <select class="form-control" style="width: 100%">
+                                        <option value="option1">option1</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Value</label>
+                                    <input ng-disabled="isCustom()" ng-model="oneOff.payment.value" type="number" placeholder="0" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12" ng-if="oneOff.id === 'custom'">
+                                <div class="form-group">
+                                    <label class="control-label">One Off Title</label>
+                                    <input ng-model="oneOff.customTitle" type="text" placeholder="Custom Title" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Value</label>
+                                    <textarea class="form-control" placeholder="One Off Payment Description" ng-model="oneOff.description" rows="5"></textarea>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                        </div><!-- row -->
+                        <p class="text-center error" ng-show="errorOccur">{{errorMessage}}</p>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" ng-click="createOneOffPayment()">Create</button>
+                        <button type="reset" class="btn btn-danger" ng-click="cancel()" id="new-on-off-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>

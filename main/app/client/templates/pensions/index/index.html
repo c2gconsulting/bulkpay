@@ -1,0 +1,46 @@
+<template name="Pensions">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-money"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Pensions</li>
+                </ul>
+                <h4>Pensions</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+
+    <div class="contentpanel">
+        <div class="row">
+            <!-- Nav tabs -->
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li class="active" id="pension-tab">
+                        <a style="cursor: pointer;">Pension Rules</a>
+                    </li>
+                    <li id="PFA-tab">
+                        <a style="cursor: pointer;">Pension Managers</a>
+                    </li>
+                </ul>
+            </div><!-- col-md-12 -->
+        </div><!-- row -->
+
+        <div class="col-md-12" id="pensionContext">
+            {{#if pensionContext}}
+                {{> PensionManagerIndex}}
+
+            {{else}}
+                {{> PensionIndex}}
+            {{/if}}
+        </div>
+
+    </div><!-- contentpanel -->
+
+</template>
