@@ -1,4 +1,4 @@
-PaygradesController = ApplicationController.extend({
+PaygradesController = BusinessUnitController.extend({
   
   // a place to put your subscriptions
   // this.subscribe('items');

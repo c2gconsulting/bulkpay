@@ -1,4 +1,4 @@
-OneoffController = ApplicationController.extend({
+OneoffController = BusinessUnitController.extend({
   
   // a place to put your subscriptions
   // this.subscribe('items');

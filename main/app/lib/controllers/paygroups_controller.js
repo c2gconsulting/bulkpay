@@ -1,4 +1,4 @@
-PaygroupsController = ApplicationController.extend({
+PaygroupsController = BusinessUnitController.extend({
   
   // a place to put your subscriptions
   // this.subscribe('items');

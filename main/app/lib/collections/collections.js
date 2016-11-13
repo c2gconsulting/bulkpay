@@ -151,6 +151,14 @@ Leaves = new Mongo.Collection("leaves");
 Partitioner.partitionCollection(Leaves);
 Leaves.attachSchema(Core.Schemas.Leave);
 
+
+/**
+ * Core Collections entityObject
+ */
+EntityObjects = new Mongo.Collection("entity_objects");
+Partitioner.partitionCollection(EntityObjects);
+EntityObjects.attachSchema(Core.Schemas.EntityObject);
+
 /**
  * Core Collections Loans
  */

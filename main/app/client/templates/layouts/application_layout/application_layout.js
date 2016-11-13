@@ -194,6 +194,7 @@ Template.ApplicationLayout.onCreated(function () {
 });
 
 Template.ApplicationLayout.onRendered(function () {
+
 });
 
 Template.ApplicationLayout.onDestroyed(function () {

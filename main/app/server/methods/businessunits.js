@@ -40,8 +40,8 @@ Meteor.methods({
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
-        // check if user has permission to delete
-        BusinessUnits.remove({_id: id})
+        // check if user has permission to delete and all dependent objects are cleared
+        BusinessUnits.remove({_id: id});
         return true;
     }
 

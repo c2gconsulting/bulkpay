@@ -54,6 +54,12 @@ Template.PaygradeCreate.events({
                 }
             });
         }
+    },
+    'click [name="input"]': (e, tmpl) => {
+        var assigned = tmpl.dict.get("assigned");
+        assigned += 1;
+        tmpl.dict.set("assigned", assigned);
+        console.log('button clicked')
     }
 });
 
@@ -79,6 +85,12 @@ Template.PaygradeCreate.helpers({
 /*****************************************************************************/
 Template.PaygradeCreate.onCreated(function () {
     let self = this;
+    self.dict = new ReactiveDict();
+    if(this.data)
+        self.dict.set("assigned", this.data); //set assigned to be data
+    self.autorun(function(){
+        console.log(self.dict.get("assigned"));
+    })
 
 });
 

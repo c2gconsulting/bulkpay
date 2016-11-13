@@ -1,4 +1,4 @@
-PensionsController = ApplicationController.extend({
+PensionsController = BusinessUnitController.extend({
   
   // a place to put your subscriptions
   // this.subscribe('items');

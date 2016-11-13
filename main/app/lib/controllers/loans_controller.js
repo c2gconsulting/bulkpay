@@ -1,4 +1,4 @@
-LoansController = ApplicationController.extend({
+LoansController = BusinessUnitController.extend({
 
     // a place to put your subscriptions
     // this.subscribe('items');

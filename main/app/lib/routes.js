@@ -60,6 +60,13 @@ Router.route('/business/:_id', {
     where: 'client'
 });
 
+Router.route('/business/:_id/orgchart', {
+    name: 'orgchart',
+    controller: 'OrgChartController',
+    where: 'client'
+
+});
+
 Router.route('/business/:_id/division', {
     name: 'divisions',
     controller: 'DivisionsController',

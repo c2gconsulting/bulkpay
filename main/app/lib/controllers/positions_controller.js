@@ -1,4 +1,4 @@
-PositionsController = ApplicationController.extend({
+PositionsController = BusinessUnitController.extend({
 
     // a place to put your subscriptions
     // this.subscribe('items');

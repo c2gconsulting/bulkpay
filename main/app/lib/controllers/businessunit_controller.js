@@ -41,7 +41,19 @@ BusinessUnitController = ApplicationController.extend({
         this.next();
     },
     onBeforeAction: function () {
-        this.next();
+        if(this.params._id){
+            let bu = BusinessUnits.findOne({_id: this.params._id});
+            if (bu){
+                this.next();
+            } else {
+                //set session context to null
+                Router.go('home');
+            }
+        } else {
+            this.next();
+        }
+
+
     },
 
     // The same thing as providing a function as the second parameter. You can
@@ -55,12 +67,7 @@ BusinessUnitController = ApplicationController.extend({
         this.render('BusinessUnit');
     },
     show: function () {
-        let bu = BusinessUnits.findOne({_id: this.params._id});
-        if (bu){
-            this.render("BUDetail");
-        } else {
-            Router.go('businessunit');
-        }
+        this.render("BuDetail");
     },
 
     onAfterAction: function () {

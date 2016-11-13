@@ -65,6 +65,8 @@ _.extend(Core, {
      * @example nextSeqNumber: Core.schemaNextSeqNumber
      * @return {Number} returns next seq number
      */
+
+
     schemaNextSeqNumber: function (documentType, tenantId) {
         let docNumber = DocumentNumbers.findAndModify({
             query: {'documentType': documentType, '_groupId': tenantId },

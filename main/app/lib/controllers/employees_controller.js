@@ -1,4 +1,4 @@
-EmployeesController = ApplicationController.extend({
+EmployeesController = BusinessUnitController.extend({
   
   // a place to put your subscriptions
   // this.subscribe('items');

@@ -1,4 +1,3 @@
-
 /**
  * Order Types Schema
  */
