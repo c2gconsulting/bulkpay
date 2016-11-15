@@ -23,7 +23,7 @@ Core.Schemas.EntityObject = new SimpleSchema({
     },
     otype: {
         type: String,
-        allowedValues: ["Unit", "Position", "Employee", "Job"]
+        allowedValues: ["Unit", "Position", "Person", "Job", "Location"]
 
     },
     businessId: {
@@ -45,6 +45,10 @@ Core.Schemas.EntityObject = new SimpleSchema({
         autoValue: function(){
             return Meteor.userId();
         },
+        optional: true
+    },
+    properties: {
+        type: Object,
         optional: true
     },
     createdAt: {

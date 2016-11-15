@@ -3,3 +3,6 @@
 /*****************************************************************************/
 .position-create {
 }
+button:disabled {
+    background-color: #ccc !important;
+}

@@ -68,21 +68,28 @@ Meteor.methods({
         return children;
     },
     "entityObject/getDecendants": function(entity){
+        //get decendants in tree structure.
+        let data;
         let descendants=[];
         let stack=[];
         let object = EntityObjects.findOne({_id: entity});
         console.log(object);
         stack.push(object);
+        let i = 0;
         while (stack.length>0){
+            i += 1;
             let currentnode = stack.pop();
-            console.log(currentnode);
-            let children = EntityObjects.find({parentId:currentnode._id});
-            children.forEach(function(child){
-                descendants.push(child._id);
+            //let children = EntityObjects.find({parentId:currentnode._id});
+            currentnode.children = EntityObjects.find({parentId: currentnode._id}).fetch();
+            if(i == 1)
+                data = currentnode;
+            //doc.children = db.product.find({_id: {$in: doc.children}}).toArray();
+            currentnode.children.forEach(function(child){
+                //descendants.push(child);
                 stack.push(child);
             })
         }
-        return descendants;
+        return data;
 
     }
 
