@@ -30,7 +30,8 @@ Core.Schemas.EntityObject = new SimpleSchema({
         type: String
     },
     order: {
-        type: Number
+        type: Number,
+        optional: true
     },
     createdBy: {
         type: String,

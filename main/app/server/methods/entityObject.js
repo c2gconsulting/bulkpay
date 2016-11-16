@@ -85,7 +85,6 @@ Meteor.methods({
             //let children = EntityObjects.find({parentId:currentnode._id});
             //addclassname for current node useful in the org tree
             let id= currentnode._id || currentnode.id;
-            console.log("got here and the id is ", id);
             currentnode.className = "asso-" + id+ " middle-level";
             //currentnode.children = EntityObjects.find({parentId: currentnode._id}).fetch();
             currentnode.children = EntityObjects.aggregate(
@@ -100,10 +99,12 @@ Meteor.methods({
                             name: 1,
                             id: "$_id"
                         }
+                    },
+                    {
+                        $sort:{order:1}
                     }
                 ]
             );
-            console.log(currentnode);
             if(i == 1)
                 data = currentnode;
             //doc.children = db.product.find({_id: {$in: doc.children}}).toArray();
@@ -117,21 +118,27 @@ Meteor.methods({
     "entityObject/getBaseCompany": function(businessId){
         //get all objects and children without a parentId as root and return tree
         //check if BU exist and user is autorized to call this function
-        let object = EntityObjects.find({parentId: null, businessId: businessId});
-        let all = {
-            'id': "root",
-            'className': ' top-level',
-            'name': 'root-node',
-            'otype': "Company",
-            'children': []
-        };
-        object.forEach(function(entity){
-            Meteor.call("entityObject/getDecendants", entity._id, function(err, res){
-                if(!err)
-                    all.children.push(res);
-            })
-        });
-        return all;
+        let bu = BusinessUnits.find({_id: businessId}).fetch();
+        if(bu){
+            let object = EntityObjects.find({parentId: null, businessId: businessId});
+            let all = {
+                'id': "root",
+                'className': ' top-level',
+                'name': bu[0].name,
+                'otype': "Company",
+                'children': []
+            };
+            object.forEach(function(entity){
+                Meteor.call("entityObject/getDecendants", entity._id, function(err, res){
+                    if(!err)
+                        all.children.push(res);
+                })
+            });
+            return all;
+        } else{
+            throw new Meteor.Error(401, "Business Not Found");
+        }
+
     }
 
 

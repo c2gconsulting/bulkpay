@@ -8,10 +8,15 @@ Core.publish("getChildrenEntityObject", function (parent) {
 });
 
 /**
- * Business units
+ * Entity
  */
 
 Core.publish("getRootEntities", function (bu) {
     //perform neccessary checks
     return EntityObjects.find({parentId: null, businessId: bu});
+});
+
+Core.publish("getEntity", function (id) {
+    //perform neccessary checks
+    return EntityObjects.find({_id: id});
 });

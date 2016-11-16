@@ -11,7 +11,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="parent" class="control-label">Object</label>
-                                    <input name="object" type="text" value="MDS Logistics" id="node-object" class="form-control" disabled />
+                                    <input name="object" type="text" value="{{parentName}}" id="node-object" class="form-control" disabled />
                                 </div><!-- form-group -->
                             </div>
                         </div>
@@ -38,8 +38,8 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Level</label> <br />
-                                    <label class="control-label radio-inline"><input type="radio" name="level" value="sibling">same level</label>
-                                    <label class="control-label radio-inline"><input type="radio" name="level" value="child">Child</label>
+                                    <label class="control-label radio-inline"><input type="radio" name="level" value="sibling" {{checked}}>same level</label>
+                                    <label class="control-label radio-inline"><input type="radio" name="level" value="child" {{checked}}>Child</label>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-6">

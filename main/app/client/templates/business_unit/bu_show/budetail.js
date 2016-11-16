@@ -73,7 +73,6 @@ Template.BuDetail.onRendered(function(){
     let businessId = Session.get('context');
     Meteor.call('entityObject/getBaseCompany', businessId, function(err, res){
         if(!err){
-            console.log(res);
             initOrgchart(root._id,res);
             $("[data-toggle=popover]")
                 .popover({html:true});
@@ -82,8 +81,6 @@ Template.BuDetail.onRendered(function(){
             console.log(err);
         }
     });
-
-
     /* rootClass Object data obj*/
     function initOrgchart(rootClass, data) {
         $('#chart-container').orgchart({
