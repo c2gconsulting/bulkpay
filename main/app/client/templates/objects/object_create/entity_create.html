@@ -8,11 +8,18 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="parent" class="control-label">Object</label>
+                                    <input name="object" type="text" value="MDS Logistics" id="node-object" class="form-control" disabled />
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="new-position-name" class="control-label">Name</label>
-                                    <input name="name" type="text" id="new-position-name" placeholder="Position Name" class="form-control" />
+                                    <label for="new-entity-name" class="control-label">Name</label>
+                                    <input name="name" type="text" id="new-entity-name" placeholder="Object Name" class="form-control" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
@@ -26,7 +33,15 @@
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
-
+                        </div><!-- row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Level</label> <br />
+                                    <label class="control-label radio-inline"><input type="radio" name="level" value="sibling">same level</label>
+                                    <label class="control-label radio-inline"><input type="radio" name="level" value="child">Child</label>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Node Type</label>
@@ -39,23 +54,12 @@
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
-
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="control-label">Level</label> <br />
-                                    <label class="control-label radio-inline"><input type="radio" name="level">same level</label>
-                                    <label class="control-label radio-inline"><input type="radio" name="level">Child</label>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-
-
-                        </div><!-- row -->
-
+                        </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" {{disabled}} id="createEntity">Save</button>
-                        <button type="reset" class="btn btn-danger" id="new-position-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5 {{disabled}}" id="createEntity">{{#if edit}}Update{{else}}Save{{/if}}</button>
+                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteEntity">Delete</button>{{/if}}
                     </div><!-- panel-footer -->
                 </div>
             </div>

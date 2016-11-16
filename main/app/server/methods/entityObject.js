@@ -68,30 +68,72 @@ Meteor.methods({
         return children;
     },
     "entityObject/getDecendants": function(entity){
-        //get decendants in tree structure.
+        //get decendants in tree structure. refactor this method
         let data;
-        let descendants=[];
         let stack=[];
-        let object = EntityObjects.findOne({_id: entity});
-        console.log(object);
+        let cursor = EntityObjects.findOne({_id: entity});
+        let object = {};
+        object.id= cursor._id,
+        object.className = "asso-" + cursor._id+ " middle-level";
+        object.name = cursor.name;
+        object.otype = cursor.otype;
         stack.push(object);
         let i = 0;
         while (stack.length>0){
             i += 1;
             let currentnode = stack.pop();
             //let children = EntityObjects.find({parentId:currentnode._id});
-            currentnode.children = EntityObjects.find({parentId: currentnode._id}).fetch();
+            //addclassname for current node useful in the org tree
+            let id= currentnode._id || currentnode.id;
+            console.log("got here and the id is ", id);
+            currentnode.className = "asso-" + id+ " middle-level";
+            //currentnode.children = EntityObjects.find({parentId: currentnode._id}).fetch();
+            currentnode.children = EntityObjects.aggregate(
+                [
+                    {
+                        $match: {parentId: id}
+                    },
+                    {
+                        $project: {
+                            _id: 0,
+                            otype: 1,
+                            name: 1,
+                            id: "$_id"
+                        }
+                    }
+                ]
+            );
+            console.log(currentnode);
             if(i == 1)
                 data = currentnode;
             //doc.children = db.product.find({_id: {$in: doc.children}}).toArray();
             currentnode.children.forEach(function(child){
-                //descendants.push(child);
                 stack.push(child);
             })
         }
         return data;
 
+    },
+    "entityObject/getBaseCompany": function(businessId){
+        //get all objects and children without a parentId as root and return tree
+        //check if BU exist and user is autorized to call this function
+        let object = EntityObjects.find({parentId: null, businessId: businessId});
+        let all = {
+            'id': "root",
+            'className': ' top-level',
+            'name': 'root-node',
+            'otype': "Company",
+            'children': []
+        };
+        object.forEach(function(entity){
+            Meteor.call("entityObject/getDecendants", entity._id, function(err, res){
+                if(!err)
+                    all.children.push(res);
+            })
+        });
+        return all;
     }
+
 
 });
 
