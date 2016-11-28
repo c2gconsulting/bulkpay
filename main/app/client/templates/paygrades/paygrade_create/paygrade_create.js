@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /* PaygradeCreate: Event Handlers */
 /*****************************************************************************/
+import Ladda from 'ladda';
 Template.PaygradeCreate.events({
     'click #PayGradeButton': (e, tmpl) => {
         event.preventDefault();
@@ -9,7 +10,6 @@ Template.PaygradeCreate.events({
         const details = {
             businessId: BusinessUnits.findOne()._id,
             code: $('[name="code"]').val(),
-            name: $('[name="name"]').val(),
             description: $('[name="description"]').val(),
             positions: $('[name="positionIds"]').val(),
             taxRules: $('[name="taxRules"]').val(),
@@ -77,7 +77,17 @@ Template.PaygradeCreate.helpers({
             }
             return Template.instance().data[context] === self._id ? selected="selected" : '';
         }
+    },
+    'pensions': () => {
+        return Pensions.find({}).fetch();
+    },
+    'taxrules': () => {
+        return Tax.find({}).fetch();
+    },
+    "paytype": (type) => {
+        return PayTypes.find({type: type}).fetch();
     }
+
 });
 
 /*****************************************************************************/
@@ -90,7 +100,11 @@ Template.PaygradeCreate.onCreated(function () {
         self.dict.set("assigned", this.data); //set assigned to be data
     self.autorun(function(){
         console.log(self.dict.get("assigned"));
-    })
+    });
+    self.subscribe("PayTypes", Session.get('context'));
+    self.subscribe("taxes", Session.get('context'));
+    self.subscribe("pensions", Session.get('context'));
+
 
 });
 

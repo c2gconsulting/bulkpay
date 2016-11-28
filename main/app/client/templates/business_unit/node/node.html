@@ -1,0 +1,85 @@
+<template name="Node">
+    <div class="box box-lg panel panel-default">
+
+        <div class="panel-body">
+            {{#if Template.subscriptionsReady}}
+                {{#with node}}
+                    <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm">
+                        <div class="avatar text-center">
+
+                            <img src="/admin/img/{{otype}}.png" class="img-circle" id="avatar-image"><br>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                        <h2 class="name mt0 fs28">{{name}}<br><small>{{otype}}</small></h2>
+                        <div>
+                            <address>
+
+                                <span class="glyphicon icon-phone"></span>
+                                8033470532
+                                <br>
+
+
+
+                                <span class="glyphicon icon-map" title="Default Depot"></span>
+                                Sales Depot - Isolo
+                                <br>
+
+
+                                <span class="glyphicon glyphicon-credit-card" title="Credit Limits"></span>
+                                <a href="#" class="credit-limit" data-toggle="tooltip" title="Total Credit Limit">NGN 14,000,000</a> | <a href="#" class="credit-limit" data-toggle="tooltip" title="Available Credit Limit">NGN 11,916,338</a>
+
+                            </address>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-4 col-lg-3 col-sm-6">
+                        <p class="lead text-uppercase mb7">Members</p>
+                        <table class="table table-non-bordered table-td-padd-custom1 table-td-no-pl">
+                            {{#each children }}
+                                <tr>
+                                    <td class="bull-text"><span class="fa {{icon otype}}"></span><a href="/business/{{businessid}}/entity/{{_id}}"> {{name}}</a></td>
+                                </tr>
+                            {{/each}}
+                        </table>
+                    </div>
+                    <div class="col-sm-12 col-md-5">
+                        <p class="pull-left lead text-uppercase">Properties</p>
+                        {{#each property}}
+                            prop 1
+                        {{/each}}
+                        <div class="pull-right">
+                            <span class="h0 text-muted f_helvetcia_ul">257</span>
+                            <div class="text-muted">this year</div>
+                        </div>
+                    </div>
+                {{/with}}
+                <div class="col-sm-12">
+                    <div class="module-block">
+                        <p class="lead text-uppercase">Key Occupants</p>
+                        <div class="row">
+                            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
+                                <div class="well" id="ordersBarWell">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h4 class="mt0">NAMES<br><small>will be shown here </small>
+
+                                            </h4>
+                                        </div>
+                                    </div>
+                                    <div class="chart-responsive">
+                                        <canvas id="ordersBar" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
+                                    </div>
+                                    <div id="chartjs-tooltip-orders" class="chartjs-tooltip below" style="opacity: 0; left: 124px; top: 79px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">April: 115</span></div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {{else}}
+                {{> Loading}}
+            {{/if}}
+        </div>
+    </div>
+</template>

@@ -27,8 +27,8 @@ random@1.0.10
 ejson@1.0.13
 spacebars
 check@1.2.4
-ecmascript@0.5.9
-less@2.7.6
+ecmascript@0.6.1
+less@2.7.8
 cfs:storage-adapter
 cfs:graphicsmagick
 cfs:gridfs
@@ -39,7 +39,7 @@ reactive-var@1.0.11
 reactive-dict@1.1.8
 oauth-encryption@1.2.1
 accounts-base@1.2.14
-accounts-password@1.3.1
+accounts-password@1.3.3
 browser-policy@1.0.9
 ongoworks:bunyan-logger
 amplify
@@ -82,4 +82,4 @@ meteorhacks:unblock
 meteorhacks:subs-manager
 fongandrew:find-and-modify
 peppelg:bootstrap-3-modal
-shell-server
+shell-server@0.2.1

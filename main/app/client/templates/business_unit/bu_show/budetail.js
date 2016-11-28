@@ -1,3 +1,4 @@
+import { Tracker } from 'meteor/tracker';
 Template.BuDetail.events({
     'click #delete-bu': function(event, tmpl){
         event.preventDefault();
@@ -46,6 +47,7 @@ Template.BuDetail.events({
             Meteor.call("entityObject/delete", selectedNode, function(err,res){
                 if(!err){
                     console.log(res);
+                    Tracker.flush();
                     swal("Deleted!", "Node deleted" , "success");
                 } else {
                     console.log(err);
@@ -58,28 +60,39 @@ Template.BuDetail.events({
     'click .editnode': (e, tmpl) => {
         let selectedNode = $(e.target).parent('.node')[0].id;
         Modal.show('EntityCreate', {node: selectedNode, action: "edit"});
+    },
+    'click .node': (e, tmpl) => {
+        let selectedNode = $(e.target).parent('.node')[0].id;
+        Session.set('node', selectedNode);
     }
 });
 
 Template.BuDetail.onCreated(function(){
     //reactively subscribe to all children of parents
     var self = this;
-    self.dict = new ReactiveDict();
+    //self.dict = new ReactiveDict();
+    //set session to root node company
+    Session.set('node', "root");
 });
 
 Template.BuDetail.onRendered(function(){
     let self = this;
     let root = self.data;
-    let businessId = Session.get('context');
-    Meteor.call('entityObject/getBaseCompany', businessId, function(err, res){
-        if(!err){
-            initOrgchart(root._id,res);
-            $("[data-toggle=popover]")
-                .popover({html:true});
-            $('[data-toggle="tooltip"]').tooltip();
-        } else {
-            console.log(err);
-        }
+    self.autorun(function(){
+        let businessId = Session.get('context');
+        console.log("From autorun:", EntityObjects.find().count()) ;//--->Line1
+        Meteor.call('entityObject/getBaseCompany', businessId, function(err, res){
+            if(!err){
+                //clear all content of orgchart
+                $('#chart-container').html('');
+                initOrgchart(root._id,res);
+                $("[data-toggle=popover]")
+                    .popover({html:true});
+                $('[data-toggle="tooltip"]').tooltip();
+            } else {
+                console.log(err);
+            }
+        });
     });
     /* rootClass Object data obj*/
     function initOrgchart(rootClass, data) {
@@ -90,7 +103,7 @@ Template.BuDetail.onRendered(function(){
             'data' : data,
             'nodeContent': 'otype',
             'draggable': true,
-            'depth': 4,
+            'depth': 2,
             'dropCriteria': function($draggedNode, $dragZone, $dropZone) {
                 if($draggedNode.find('.content').text().indexOf('Company') > -1 && $dropZone.find('.content').text().indexOf('Unit') > -1) {
                     return false;

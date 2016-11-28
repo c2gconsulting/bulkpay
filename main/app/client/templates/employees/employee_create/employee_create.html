@@ -8,8 +8,8 @@
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a ui-sref="business.overview">Business</a></li>
-                    <li><a href="">Employees</a></li>
-                    <li>New</li>
+                    <li><a href="">{{name}}</a></li>
+                    <li>Employee</li>
                 </ul>
                 <h4>New Employee</h4>
             </div>
@@ -21,32 +21,15 @@
 
         <div class="row">
 
-
-            <div class="col-sm-4 col-md-3">
-                <div class="text-center">
-                    <img src="/images/photos/avatar.jpg" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
-                    <br><br>
-                <span class="btn btn-primary btn-file">
-                    Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />
-                </span><br>
-                    <span id="filename"></span>
-                </div>
-                <!-- text-center -->
-                <select>
-                    {{#each states}}
-                        <option value="1">first option</option>
-                    {{/each}}
-                </select>
-
-            </div>
             <!-- col-sm-4 col-md-3 -->
 
 
-            <div class="col-sm-8 col-md-9">
+            <div class="">
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-line">
                     <li class="active"><a href=".personal" data-toggle="tab"><strong>Personal Details</strong></a></li>
+                    <li><a href=".nextOfKin" data-toggle="tab"><strong>Next Of Kin</strong></a></li>
                     <li><a href=".employment" data-toggle="tab"><strong>Employment Details </strong></a></li>
                     <li><a href=".payment" data-toggle="tab"><strong>Payment Details</strong></a></li>
                     <li><a href=".payroll" data-toggle="tab"><strong>Payroll Details</strong></a></li>
@@ -62,149 +45,122 @@
                             <!-- panel-heading -->
                             <div class="panel-body nopadding">
                                 <form class="form-horizontal form-bordered">
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Employee ID</label>
-                                        <div class="col-sm-4">
-                                            <input name="employeeId" type="text" placeholder="Unique" class="form-control"/>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <div class="text-center">
+                                                <img src="/images/photos/avatar.jpg" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
+                                                <br><br>
+                                            <span class="btn btn-primary btn-file">
+                                                Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />
+                                            </span><br>
+                                                <span id="filename"></span>
+                                            </div>
+                                            <!-- text-center -->
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="">
+                                                <label for="employeeId" class="col-sm-4 control-label">Employee ID</label>
+                                                <div class="col-sm-8">
+                                                    <input name="employeeId" type="text" placeholder="Unique ID" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="firstName" class="col-sm-4 control-label">First Name</label>
+                                                <div class="col-sm-8">
+                                                    <input name="firstName" type="text" placeholder="First Name" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="lastName" class="col-sm-4 control-label">Last Name</label>
+                                                <div class="col-sm-8">
+                                                    <input name="lastName" type="text" placeholder="Last Name" class="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="">
+                                                <label for="otherNames" class="col-sm-4 control-label">Other Names</label>
+                                                <div class="col-sm-8">
+                                                    <input name="otherNames" type="text" placeholder="Last Name" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="employee-address" class="col-sm-4 control-label">Address</label>
+                                                <div class="col-sm-8">
+                                                    <textarea name="address" id="employee-address" class="form-control" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="">
+                                                <label class="col-sm-4 control-label">Email</label>
+                                                <div class="col-sm-8">
+                                                    <input name="email" type="text" placeholder="Email" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label class="col-sm-4 control-label">Date of Birth</label>
+                                                <div class="col-sm-8">
+                                                    {{#datepicker dateOfBirth}}
+                                                        <input type="text" class="form-control datepicker" data-field="dateOfBirth" />
+                                                    {{/datepicker}}
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="gender" class="col-sm-4 control-label">Gender</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control selectpicker" data-live-search="true" name="gender">
+                                                        <option value="Male" selected>Male</option>
+                                                        <option value="Female">Female</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="maritalStatus" class="col-sm-4 control-label">Marital Status</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control selectpicker" data-live-search="true" name="mar italStatus">
+                                                        <option value="Male" selected>Single</option>
+                                                        <option value="Female">Maried</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="employee-phone" class="col-sm-4 control-label">Phone Number</label>
+                                                <div class="col-sm-8">
+                                                    <input name="phone" type="tel" id="employee-phone" placeholder="Phone Number" class="form-control"/>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label class="col-sm-4 control-label">State</label>
+                                                <div class="col-sm-8">
+                                                    <select name="state" class="form-control selectpicker" data-live-search="true">
+                                                        <option value="Abia">Abia</option>
+                                                        <option value="Adamawa">Adamawa</option>
+                                                        <option value="Akwa-Ibom">Akwa-Ibom</option>
+                                                        <option value="Anambra">Anambra</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
+                                </form>
+                            </div>
 
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">First Name</label>
-                                        <div class="col-sm-4">
-                                            <input name="firstName" type="text" placeholder="First Name" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
+                            <!-- panel-body -->
+                        </div>
+                        <!-- panel -->
 
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Last Name</label>
-                                        <div class="col-sm-4">
-                                            <input name="lastName" type="text" placeholder="Last Name" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
+                    </div>
+                    <!-- tab-pane -->
 
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Other Names</label>
-                                        <div class="col-sm-4">
-                                            <input name="otherNames" type="text" placeholder="Other Names" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Date of Birth</label>
-                                        <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
-                                            {{#datepicker dateOfBirth}}
-                                                <input type="text" class="form-control datepicker" data-field="dateOfBirth" />
-                                            {{/datepicker}}
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Gender</label>
-                                        <div class="col-sm-4">
-                                            <select class="form-control selectpicker" data-live-search="true" name="selectGender">
-                                                <option value="Male" selected>Male</option>
-                                                <option value="Female">Female</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Marital
-                                            Status</label>
-                                        <div class="col-sm-4">
-                                            <select class="form-control selectpicker" data-live-search="true" name="maritalStatus">
-                                                <option value="Single" selected>Single</option>
-                                                <option value="Married">Married</option>
-                                                <option value="Divorced">Divorced</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="employee-email" class="col-sm-4 control-label">Email</label>
-                                        <div class="col-sm-4">
-                                            <input name="email" type="email" id="employee-email" placeholder="Email" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="employee-phone" class="col-sm-4 control-label">Phone Number</label>
-                                        <div class="col-sm-4">
-                                            <input name="phone" type="tel" id="employee-phone" placeholder="Phone Number" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <label for="employee-address" class="col-sm-4 control-label">Address</label>
-                                        <div class="col-sm-4">
-                                            <textarea name="address" id="employee-address" class="form-control" rows="5"></textarea>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="employee-city" class="col-sm-4 control-label">City</label>
-                                        <div class="col-sm-4">
-                                            <input name="city" id="employee-city" type="text" placeholder="City" class="form-control"/>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">State</label>
-                                        <div class="col-sm-4">
-                                            <select name="state" class="form-control selectpicker" data-live-search="true">
-                                                <option value="Abia">Abia</option>
-                                                <option value="Adamawa">Adamawa</option>
-                                                <option value="Akwa-Ibom">Akwa-Ibom</option>
-                                                <option value="Anambra">Anambra</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="col-sm-12">
-                                            <h5>Next of Kin/Guarantor</h5></div>
-
-                                    </div>
+                    <div class="tab-pane nextOfKin" id="nextOfKin">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Next of Kin/Guarantor</h4>
+                            </div>
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
+                                <form class="form-horizontal form-bordered">
                                     <div class="form-group">
                                         <label for="employee-guarantor-name" class="col-sm-4 control-label">Full
                                             Name</label>
@@ -263,7 +219,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">State</label>
                                         <div class="col-sm-4">
-                                            <select name="state" class="form-control selectpicker" data-live-search="true">
+                                            <select name="guarantor.state" class="form-control selectpicker" data-live-search="true">
                                                 <option value="Abia">Abia</option>
                                                 <option value="Adamawa">Adamawa</option>
                                                 <option value="Akwa-Ibom">Akwa-Ibom</option>
@@ -280,7 +236,6 @@
                             <!-- panel-body -->
                         </div>
                         <!-- panel -->
-
                     </div>
                     <!-- tab-pane -->
 
@@ -294,58 +249,6 @@
                                 <form class="form-horizontal form-bordered">
 
                                     <div class="form-group">
-                                        <label class="col-sm-4 control-label">Location</label>
-                                        <div class="col-sm-4">
-                                            <select name="location" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Business Unit</label>
-                                        <div class="col-sm-4">
-                                            <select name="businessUnitId" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Division</label>
-                                        <div class="col-sm-4">
-                                            <select name="division" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-sm-4 control-label">Department</label>
-                                        <div class="col-sm-4">
-                                            <select name="department" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
                                         <label class="col-sm-4 control-label">Position</label>
                                         <div class="col-sm-4">
                                             <select name="position" style="width: 100%" class="form-control">
@@ -355,7 +258,7 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <div>
-                                                <span class="label label-danger">__message__</span>
+                                                <span>Use Org Reassignment</span>
                                             </div>
                                         </div>
                                     </div>
@@ -442,7 +345,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Bank</label>
                                         <div class="col-sm-4">
-                                            <select name="paymentMethod" style="width: 100%" class="form-control">
+                                            <select name="bank" style="width: 100%" class="form-control">
                                                 <option value="option1">option1</option>
                                                 <option value="option2">option2</option>
                                             </select>
@@ -588,7 +491,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                <h5><a class="pointer" ng-click="prepareSummary()" data-toggle="modal" data-target=".payroll-summary">View Payroll Summary</a></h5>
+                                                <h5><a class="pointer" id="prepareSummary" data-toggle="modal" data-target=".payroll-summary">View Payroll Summary</a></h5>
                                             </div>
                                             <div class="col-sm-6">
                                                 <h5 class="text-right"><a class="pointer" data-toggle="modal" data-target=".restore-removed">Restore</a></h5>
@@ -601,7 +504,7 @@
                                         <div class="col-md-12">
                                             <ul class="list-unstyled wizard">
                                                 <li class="pull-right">
-                                                    <button type="button" class="btn btn-primary" ng-click="createEmployee()">Save</button>
+                                                    <button type="button" class="btn btn-primary" id="createEmployee">Save</button>
                                                 </li>
                                             </ul>
                                         </div><!-- col-md-12 -->
@@ -618,8 +521,4 @@
         </div><!-- row -->
 
     </div><!-- contentpanel -->
-
-    <!-- Predefined pay types modal -->
-    <button ng-hide="true" id="predefined-modal-button" data-toggle="modal" data-target=".predefined-types"></button>
-    <button ng-hide="true" id="new-type-modal-button" data-toggle="modal" data-target=".add-custom-type"></button>
 </template>

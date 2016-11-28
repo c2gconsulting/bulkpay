@@ -67,33 +67,15 @@ Router.route('/business/:_id/orgchart', {
 
 });
 
-Router.route('/business/:_id/division', {
-    name: 'divisions',
-    controller: 'DivisionsController',
-    where: 'client'
-});
-
-Router.route('/business/:_id/departments', {
-    name: 'departments',
-    controller: 'DepartmentsController',
-    where: 'client'
-});
-
-Router.route('/business/:_id/positions', {
-    name: 'positions',
-    controller: 'PositionsController',
-    where: 'client'
-});
-
-Router.route('/business/:_id/jobs', {
-    name: 'jobs',
-    controller: 'JobsController',
-    where: 'client'
-});
-
 Router.route('/business/:_id/paygroups', {
     name: 'paygroups',
     controller: 'PaygroupsController',
+    where: 'client'
+});
+
+Router.route('/business/:_id/entity/:id', {
+    name: 'entity',
+    controller: 'EntityController',
     where: 'client'
 });
 

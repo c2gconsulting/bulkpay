@@ -22,7 +22,7 @@
     display: inline-block;
     top: 10px;
     left: 10px;
-    height: 420px;
+    max-height: 420px;
     width: calc(100% - 24px);
     border-radius: 5px;
     overflow: auto;
@@ -31,9 +31,11 @@
     font-size: 14px;
     line-height: 1.428571429;
     color: #333333;
+    background-color: #f9f9f9;
 }
 .orgchart {
-    background: #fff !important;
+    background: none !important;
+
 }
 .orgchart .middle-level .title {
     background-color: #006699 !important;
