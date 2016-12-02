@@ -104,6 +104,7 @@ Template.PaygradeCreate.onCreated(function () {
     self.subscribe("PayTypes", Session.get('context'));
     self.subscribe("taxes", Session.get('context'));
     self.subscribe("pensions", Session.get('context'));
+    self.subscribe("getPositions", Session.get('context'));
 
 
 });

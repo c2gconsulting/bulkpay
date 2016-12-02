@@ -50,27 +50,60 @@
                         {{/each}}
                         <div class="pull-right">
                             <span class="h0 text-muted f_helvetcia_ul">257</span>
-                            <div class="text-muted">this year</div>
+                            <div class="text-muted"><div class="btn-group mr5">
+                                <button type="button" class="btn btn-default">Action</button>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                </ul>
+                            </div></div>
                         </div>
                     </div>
                 {{/with}}
-                <div class="col-sm-12">
+                <div class="col-md-12">
                     <div class="module-block">
-                        <p class="lead text-uppercase">Key Occupants</p>
+                        <p class="lead text-uppercase">Employees</p>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
-                                <div class="well" id="ordersBarWell">
-                                    <div class="media">
-                                        <div class="media-body">
-                                            <h4 class="mt0">NAMES<br><small>will be shown here </small>
+                            <div class="col-xs-12 col-lg-4 col-md-6 col-sm-12">
+                                <div class="">
+                                    <ul class="media-list msg-list">
+                                        <li class="media">
+                                            <a class="pull-left" href="#">
+                                                <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                            </a>
+                                            <div class="media-body">
+                                                <div class="pull-right media-option">
+                                                    <small>July 6</small>
+                                                    <a href=""><i class="fa fa-star"></i></a>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fa fa-cog"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu pull-right" role="menu">
+                                                            <li><a href="#">Mark as Unread</a></li>
+                                                            <li><a href="#">Reply</a></li>
+                                                            <li><a href="#">Forward</a></li>
+                                                            <li><a href="#">Archive</a></li>
+                                                            <li><a href="#">Move to Folder</a></li>
+                                                            <li><a href="#">Delete</a></li>
+                                                            <li class="divider"></li>
+                                                            <li><a href="#">Report as Spam</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <h4 class="sender">Perturo Ranodu</h4>
+                                                <p><a href="view_message.html"><strong class="subject">Brown Bag Reminder</strong></a></p>
+                                            </div>
+                                        </li>
+                                    </ul>
 
-                                            </h4>
-                                        </div>
-                                    </div>
-                                    <div class="chart-responsive">
-                                        <canvas id="ordersBar" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
-                                    </div>
-                                    <div id="chartjs-tooltip-orders" class="chartjs-tooltip below" style="opacity: 0; left: 124px; top: 79px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">April: 115</span></div></div>
                                 </div>
                             </div>
                         </div>

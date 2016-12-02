@@ -119,8 +119,14 @@ Core.Schemas.Employee = new SimpleSchema({
     phone: {
         type: String
     },
-    positionId: {
-        type: String
+    positions: {
+        type: Array,
+        optional: true
+
+    },
+    'positions.$': {   //[{positionId: 1, percentage: 50}]
+        type: Object,
+        blackbox: true
     },
     state: {
         type: String

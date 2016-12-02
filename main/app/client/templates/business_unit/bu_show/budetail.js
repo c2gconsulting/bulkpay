@@ -30,11 +30,13 @@ Template.BuDetail.events({
             });
     },
     'click .addnode': (e, tmpl) => {
-        let selectedNode = $(e.target).parent('.node')[0].id;
+        e.preventDefault();
+        let selectedNode = $(e.target).closest('.node')[0].id;
         Modal.show('EntityCreate', {node: selectedNode, action: "create"});
     },
     'click .deletenode': (e, tmpl) => {
-        var selectedNode = $(e.target).parent('.node')[0].id;
+        e.preventDefault();
+        var selectedNode = $(e.target).closest('.node')[0].id;
         swal({
             title: "Are you sure?",
             text: "This node will only be deleted if there are no active children",
@@ -58,11 +60,13 @@ Template.BuDetail.events({
         });
     },
     'click .editnode': (e, tmpl) => {
-        let selectedNode = $(e.target).parent('.node')[0].id;
+        e.preventDefault();
+        let selectedNode = $(e.target).closest('.node')[0].id;
+        console.log(selectedNode);
         Modal.show('EntityCreate', {node: selectedNode, action: "edit"});
     },
     'click .node': (e, tmpl) => {
-        let selectedNode = $(e.target).parent('.node')[0].id;
+        let selectedNode = $(e.target).closest('.node')[0].id;
         Session.set('node', selectedNode);
     }
 });
@@ -78,7 +82,7 @@ Template.BuDetail.onCreated(function(){
 Template.BuDetail.onRendered(function(){
     let self = this;
     let root = self.data;
-    self.autorun(function(){
+
         let businessId = Session.get('context');
         console.log("From autorun:", EntityObjects.find().count()) ;//--->Line1
         Meteor.call('entityObject/getBaseCompany', businessId, function(err, res){
@@ -86,14 +90,11 @@ Template.BuDetail.onRendered(function(){
                 //clear all content of orgchart
                 $('#chart-container').html('');
                 initOrgchart(root._id,res);
-                $("[data-toggle=popover]")
-                    .popover({html:true});
-                $('[data-toggle="tooltip"]').tooltip();
             } else {
                 console.log(err);
             }
         });
-    });
+
     /* rootClass Object data obj*/
     function initOrgchart(rootClass, data) {
         $('#chart-container').orgchart({
@@ -111,29 +112,18 @@ Template.BuDetail.onRendered(function(){
                 return true;
             },
             'createNode': function($node, data) {
-                var infoMenuIcon = $('<i>', {
-                    'class': 'fa fa-info-circle drill-icon info',
-                    click: function() {
-                        $(this).siblings('.info-menu').toggle();
-                    }
-                });
-                var addMenuIcon = $('<i>', {
-                    'class': 'fa fa-plus menu-icon addnode',
-                    'data-toggle': "tooltip",
-                    'title': "Add Siblings/Children"
-                });
-                var deleteMenuIcon = $('<i>', {
-                    'class': 'fa fa-times menu-icon deletenode',
-                    'data-toggle': "tooltip",
-                    'title': "Delete this object"
-                });
-                var editMenuIcon = $('<i>', {
-                    'class': 'fa fa-pencil menu-icon editnode',
-                    'data-toggle': "tooltip",
-                    'title': "Edit Properties"
-                });
-                var infoMenu = '<div class="info-menu"><img class="avatar" src="/img/avatar/1.jpg"></div>';
-                $node.append(infoMenuIcon).append(infoMenu).append(addMenuIcon).append(deleteMenuIcon).append(editMenuIcon);
+                //var infoMenuIcon = $('<i>', {
+                //    'class': 'fa fa-info-circle drill-icon info',
+                //    click: function() {
+                //        $(this).siblings('.info-menu').toggle();
+                //    }
+                //});
+                //var infoMenu = '<div class="info-menu"><img class="avatar" src="/img/avatar/1.jpg"></div>';
+
+                var infoMenu = '<div class="acMenu drill-icon info"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
+                    + '<i class="fa fa-cog"></i></a><ul class="dropdown-menu pull-right" role="menu"><li><a href="#" data-toggle="tooltip" title="Create Menu" class="addnode">Create Object</a></li><li><a href="#" class="editnode">Edit Object</a></li>'
+                    + '<li><a href="#" class="deletenode">Delete</a></li></ul></div>';
+                $node.append(infoMenu);
 
             }
         })

@@ -45,8 +45,8 @@ Accounts.onCreateUser(function (options, user) {
     user.profile['firstname'] = options.firstname;
     user.profile['lastname'] = options.lastname;
     user.employeeProfile = options.employeeProfile || {};
-    user.employeeProfile['salesAreas'] = options.salesAreas;
     user.roles = options.roles || {};
+    user.businessIds = options.businessIds
     // assign user to his tenant Partition
     Partitioner.setUserGroup(user._id, tenantId);
 
@@ -95,6 +95,7 @@ Meteor.methods({
     "account/update": function (user, userId) {
         check(user, Object);
         check(userId, String);
+        check(user.businessId, String);
         if (!Meteor.userId()){
             throw new Meteor.Error(404, "Unauthorized");
         }
@@ -161,16 +162,20 @@ Meteor.methods({
         if (foundEmail){
             throw new Meteor.Error(404, "Email already exists");
         }
-
+        //also check if employee number is unique ... allowing users to enter thier employee ids for compatibility
+        let numberExist = Meteor.users.findOne({$and: [{"employeeProfile.employeeId": user.employeeId}, {"businessId": {"$in" : [user.businessId]}}]});
+        if (numberExist) {
+            throw new Meteor.Error(404, "Employee Id already taken");
+        }
         let options = {};
 
         options.email = user.email; // temporary
         options.firstname = user.firstName;
         options.lastname =  user.lastName;
-        options.salesProfile = user.salesProfile;
         options.tenantId = Core.getTenantId(Meteor.userId());
         options.roles = user.roles;
-        options.employeenumber = Core.schemaNextSeqNumber('employee', options.tenantId);
+        options.employeeProfile = user.employeeProfile;
+        options.businessIds = [user.businessId];
 
         let accountId = Accounts.createUser(options);
         if (sendEnrollmentEmail){

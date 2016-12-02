@@ -16,6 +16,8 @@
         </div><!-- media -->
     </div><!-- pageheader -->
 
+
+
     <div class="contentpanel">
         <div class="row">
             <div class="col-md-12">
@@ -54,85 +56,85 @@
 
 <template name="singleBu">
 
-    <div class="module-block">
-        <p class="lead text-uppercase">ACCOUNT BALANCE</p>
-        <div class="row">
-            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
-                <div class="well">
-                    <div class="media">
-                        <div class="media-left">
-                            <div class="chart-responsive">
-                                <canvas id="dchart" style="height: 32px; width: 32px;" width="24" height="24"></canvas>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="mt0">DEPOSITS<br><small>NGN 1,397,370.23</small></h4>
-                        </div>
-                    </div>
-                    <div class="chart-responsive">
-                        <canvas id="depositsLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
-                    </div>
-                </div>
-                <div id="chartjs-tooltip-deposits" class="chartjs-tooltip below" style="opacity: 0; left: 260px; top: 94px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">September: 0</span></div></div>
-            </div>
-            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
-                <div class="well">
-                    <div class="media">
-                        <div class="media-left">
-                            <div class="chart-responsive">
-                                <canvas id="rebatesPie" style="height: 32px; width: 32px;" width="24" height="24"></canvas>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="mt0">CREDITS/REBATES<br><small>NGN 0.00</small></h4>
-                        </div>
-                    </div>
-                    <div class="chart-responsive">
-                        <canvas id="rebatesLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
-                    </div>
-                </div>
-                <div id="chartjs-tooltip-rebates" class="chartjs-tooltip below" style="opacity: 0; left: 37px; top: 94px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">January: 0</span></div></div>
-            </div>
-            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
-                <div class="well">
-                    <div class="media">
-                        <div class="media-left">
-                            <div class="chart-responsive">
-                                <canvas id="creditsPie" style="height: 32px; width: 32px;" width="24" height="24"></canvas>
-                            </div>
-                        </div>
-                        <div class="media-body">
-                            <h4 class="mt0">BALANCE<br><small>NGN 1,397,370.23
+    <!--<div class="module-block">-->
+        <!--<p class="lead text-uppercase">ACCOUNT BALANCE</p>-->
+        <!--<div class="row">-->
+            <!--<div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">-->
+                <!--<div class="well">-->
+                    <!--<div class="media">-->
+                        <!--<div class="media-left">-->
+                            <!--<div class="chart-responsive">-->
+                                <!--<canvas id="dchart" style="height: 32px; width: 32px;" width="24" height="24"></canvas>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="media-body">-->
+                            <!--<h4 class="mt0">DEPOSITS<br><small>NGN 1,397,370.23</small></h4>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="chart-responsive">-->
+                        <!--<canvas id="depositsLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div id="chartjs-tooltip-deposits" class="chartjs-tooltip below" style="opacity: 0; left: 260px; top: 94px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">September: 0</span></div></div>-->
+            <!--</div>-->
+            <!--<div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">-->
+                <!--<div class="well">-->
+                    <!--<div class="media">-->
+                        <!--<div class="media-left">-->
+                            <!--<div class="chart-responsive">-->
+                                <!--<canvas id="rebatesPie" style="height: 32px; width: 32px;" width="24" height="24"></canvas>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="media-body">-->
+                            <!--<h4 class="mt0">CREDITS/REBATES<br><small>NGN 0.00</small></h4>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="chart-responsive">-->
+                        <!--<canvas id="rebatesLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div id="chartjs-tooltip-rebates" class="chartjs-tooltip below" style="opacity: 0; left: 37px; top: 94px; font-family: &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 14px; font-style: normal;"><div class="chartjs-tooltip-section">	<span class="chartjs-tooltip-value">January: 0</span></div></div>-->
+            <!--</div>-->
+            <!--<div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">-->
+                <!--<div class="well">-->
+                    <!--<div class="media">-->
+                        <!--<div class="media-left">-->
+                            <!--<div class="chart-responsive">-->
+                                <!--<canvas id="creditsPie" style="height: 32px; width: 32px;" width="24" height="24"></canvas>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="media-body">-->
+                            <!--<h4 class="mt0">BALANCE<br><small>NGN 1,397,370.23-->
 
-                                | <a href="#" class="text-default" title="Available Balance" style="text-decoration:none;">NGN -5,037,141.77 </a>
+                                <!--| <a href="#" class="text-default" title="Available Balance" style="text-decoration:none;">NGN -5,037,141.77 </a>-->
 
-                            </small></h4>
-                        </div>
-                    </div>
-                    <div class="chart-responsive">
-                        <canvas id="creditsLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
-                    </div>
-                    <div id="chartjs-tooltip-credits" class="chartjs-tooltip"></div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">
-                <div class="well" id="ordersBarWell">
-                    <div class="media">
-                        <div class="media-body">
-                            <h4 class="mt0">ORDERS BY MONTHS<br><small>Total this year: 257 </small>
+                            <!--</small></h4>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="chart-responsive">-->
+                        <!--<canvas id="creditsLine" style="height: 35px; width: 316px;" width="237" height="26"></canvas>-->
+                    <!--</div>-->
+                    <!--<div id="chartjs-tooltip-credits" class="chartjs-tooltip"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div class="col-xs-12 col-lg-3 col-md-6 col-sm-12">-->
+                <!--<div class="well" id="ordersBarWell">-->
+                    <!--<div class="media">-->
+                        <!--<div class="media-body">-->
+                            <!--<h4 class="mt0">ORDERS BY MONTHS<br><small>Total this year: 257 </small>-->
 
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="chart-responsive">
-                        <canvas id="ordersBar" style="height: 35px; width: 316px;" width="237" height="26"></canvas>
-                    </div>
-                    <div id="chartjs-tooltip-orders" class="chartjs-tooltip"></div>
-                </div>
-            </div>
-        </div>
+                            <!--</h4>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="chart-responsive">-->
+                        <!--<canvas id="ordersBar" style="height: 35px; width: 316px;" width="237" height="26"></canvas>-->
+                    <!--</div>-->
+                    <!--<div id="chartjs-tooltip-orders" class="chartjs-tooltip"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
 
-    </div>
+    <!--</div>-->
 
     <div class="col-md-6 pointer">
         <div class="panel panel-primary noborder">

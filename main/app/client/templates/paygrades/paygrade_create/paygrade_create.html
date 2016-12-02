@@ -102,16 +102,16 @@
                                                             </thead>
                                                             <tbody>
                                                             {{#each paytype "Wage"}}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="col-sm-8">
-                                                                        <div class="ckbox ckbox-success">
-                                                                            <input ng-checked="isPresent(benefit._id)" type="checkbox" id="{{_id}}"  checked="checked" name="paymentCheck" />
-                                                                            <label for="{{_id}}">{{code}}</label>
-                                                                        </div>
-                                                                    </div><!-- col-sm-4 -->
-                                                                </td>
-                                                            </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="ckbox ckbox-success">
+                                                                                <input ng-checked="isPresent(benefit._id)" type="checkbox" id="{{_id}}"  checked="checked" name="paymentCheck" />
+                                                                                <label for="{{_id}}">{{code}}</label>
+                                                                            </div>
+                                                                        </div><!-- col-sm-4 -->
+                                                                    </td>
+                                                                </tr>
                                                             {{/each}}
                                                             </tbody>
                                                         </table>
@@ -127,16 +127,16 @@
                                                             </thead>
                                                             <tbody>
                                                             {{#each paytype "Benefit"}}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="col-sm-8">
-                                                                        <div class="ckbox ckbox-success">
-                                                                            <input type="checkbox" id="{{_id}}"  checked="checked" />
-                                                                            <label for="{{_id}}">{{code}}</label>
-                                                                        </div>
-                                                                    </div><!-- col-sm-4 -->
-                                                                </td>
-                                                            </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="ckbox ckbox-success">
+                                                                                <input type="checkbox" id="{{_id}}"  checked="checked" />
+                                                                                <label for="{{_id}}">{{code}}</label>
+                                                                            </div>
+                                                                        </div><!-- col-sm-4 -->
+                                                                    </td>
+                                                                </tr>
                                                             {{/each}}
                                                             </tbody>
                                                         </table>
@@ -152,16 +152,16 @@
                                                             </thead>
                                                             <tbody>
                                                             {{#each paytype "Deduction"}}
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="col-sm-8">
-                                                                        <div class="ckbox ckbox-success">
-                                                                            <input type="checkbox" id="{{_id}}"  checked="checked"/>
-                                                                            <label for="{{_id}}">{{code}}</label>
-                                                                        </div>
-                                                                    </div><!-- col-sm-4 -->
-                                                                </td>
-                                                            </tr>
+                                                                <tr>
+                                                                    <td>
+                                                                        <div class="col-sm-8">
+                                                                            <div class="ckbox ckbox-success">
+                                                                                <input type="checkbox" id="{{_id}}"  checked="checked"/>
+                                                                                <label for="{{_id}}">{{code}}</label>
+                                                                            </div>
+                                                                        </div><!-- col-sm-4 -->
+                                                                    </td>
+                                                                </tr>
                                                             {{/each}}
                                                             </tbody>
                                                         </table>
@@ -224,23 +224,27 @@
                                                         <th>Monthly Equivalent</th>
                                                     </tr>
                                                     </thead>
-                                                    <tbody ng-sortable="payTypeSortConfig" id="new-data-body">
-                                                    <tr ng-repeat="payType in payTypes" class="item" style="cursor: move;">
-                                                        <td>index</td>
-                                                        <td>payType.code</td>
-                                                        <td>payType.title</td>
-                                                        <td>payType.derived</td>
-                                                        <td>
-                                                            <input type="number" ng-if="payType.derived === 'Fixed'" placeholder="Fixed e.g 50000" class="form-control calc" name="payType.value" />
-                                                            <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="payType.derivative" />
-                                                        </td>
-                                                        <td>
-                                                            <span><b> payType.value || 0 | currency:"" </b></span>
-                                                        </td>
-                                                        <td>
-                                                            <span><b>payType.value / 12 | currency:"" </b></span>
-                                                        </td>
-                                                    </tr>
+                                                    <tbody id="new-data-body">
+                                                    {{#each paytypes}}
+                                                        <tr class="item" style="cursor: move;">
+
+                                                            <td>index</td>
+                                                            <td>payType.code</td>
+                                                            <td>payType.title</td>
+                                                            <td>payType.derived</td>
+                                                            <td>
+                                                                {{#if fixed}}
+                                                                    <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="payType.value" />
+                                                                {{else}}
+                                                                    <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="payType.derivative" />
+
+                                                                {{/if}}
+                                                            </td>
+                                                            <td>
+                                                                <span><b> payType.value</b></span>
+                                                            </td>
+                                                        </tr>
+                                                    {{/each}}
                                                     </tbody>
                                                 </table>
                                             </div><!-- table-responsive -->

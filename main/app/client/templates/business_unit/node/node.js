@@ -59,6 +59,8 @@ Template.Node.onCreated(function () {
        if(node === "root")
            node = null;
        self.subscribe("getChildrenEntityObject", node, bu);
+       //also subscribe to all employees in the department
+
    });
 });
 

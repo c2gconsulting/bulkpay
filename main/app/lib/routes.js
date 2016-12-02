@@ -59,6 +59,11 @@ Router.route('/business/:_id', {
     action: 'show',
     where: 'client'
 });
+Router.route('/business/:_id/payslip', {
+    name: 'payslip',
+    controller: 'PayslipController',
+    where: 'client'
+});
 
 Router.route('/business/:_id/orgchart', {
     name: 'orgchart',

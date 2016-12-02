@@ -23,6 +23,12 @@ Core.publish("getEntity", function (id) {
     return EntityObjects.find({_id: id});
 });
 
+Core.publish("getPositions", function (businessId) {
+    //perform neccessary checks
+    return EntityObjects.find({otype: "Position", businessId: businessId});
+});
+
+
 Core.publish("getEntityWithDirectDecent", function(id){
 
 });
