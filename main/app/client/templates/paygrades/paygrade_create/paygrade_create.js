@@ -2,6 +2,7 @@
 /* PaygradeCreate: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
+import _ from 'underscore'
 Template.PaygradeCreate.events({
     'click #PayGradeButton': (e, tmpl) => {
         event.preventDefault();
@@ -55,11 +56,22 @@ Template.PaygradeCreate.events({
             });
         }
     },
-    'click [name="input"]': (e, tmpl) => {
-        var assigned = tmpl.dict.get("assigned");
-        assigned += 1;
+    'click .payment': (e, tmpl) => {
+        let selected = $(e.target).is(":checked");
+        let assigned = tmpl.dict.get("assigned");
+        let id = $(e.target).attr('id');
+        if(selected){
+            //add to assigned components
+            let selectedPay = PayTypes.find({_id: id}).fetch()[0];
+            assigned.push(selectedPay);
+            //assigned.sort();
+        } else {
+            let index = _.findIndex(assigned, {_id: id});
+            assigned.splice(index, 1);
+        }
+        console.log(assigned);
+        //set the assigned dict;
         tmpl.dict.set("assigned", assigned);
-        console.log('button clicked')
     }
 });
 
@@ -96,10 +108,13 @@ Template.PaygradeCreate.helpers({
 Template.PaygradeCreate.onCreated(function () {
     let self = this;
     self.dict = new ReactiveDict();
-    if(this.data)
+    if(this.data){
         self.dict.set("assigned", this.data); //set assigned to be data
+    } else {
+        self.dict.set("assigned", []);
+    }
     self.autorun(function(){
-        console.log(self.dict.get("assigned"));
+        //console.log(self.dict.get("assigned"));
     });
     self.subscribe("PayTypes", Session.get('context'));
     self.subscribe("taxes", Session.get('context'));

@@ -106,7 +106,7 @@
                                                                     <td>
                                                                         <div class="col-sm-8">
                                                                             <div class="ckbox ckbox-success">
-                                                                                <input ng-checked="isPresent(benefit._id)" type="checkbox" id="{{_id}}"  checked="checked" name="paymentCheck" />
+                                                                                <input type="checkbox" id="{{_id}}"  name="paymentCheck" class="payment" />
                                                                                 <label for="{{_id}}">{{code}}</label>
                                                                             </div>
                                                                         </div><!-- col-sm-4 -->
@@ -131,7 +131,7 @@
                                                                     <td>
                                                                         <div class="col-sm-8">
                                                                             <div class="ckbox ckbox-success">
-                                                                                <input type="checkbox" id="{{_id}}"  checked="checked" />
+                                                                                <input type="checkbox" id="{{_id}}" class="payment"/>
                                                                                 <label for="{{_id}}">{{code}}</label>
                                                                             </div>
                                                                         </div><!-- col-sm-4 -->
@@ -156,7 +156,7 @@
                                                                     <td>
                                                                         <div class="col-sm-8">
                                                                             <div class="ckbox ckbox-success">
-                                                                                <input type="checkbox" id="{{_id}}"  checked="checked"/>
+                                                                                <input type="checkbox" id="{{_id}}" class="payment"/>
                                                                                 <label for="{{_id}}">{{code}}</label>
                                                                             </div>
                                                                         </div><!-- col-sm-4 -->
@@ -194,8 +194,8 @@
                                                                 <td>
                                                                     <div class="col-sm-8">
                                                                         <div class="ckbox ckbox-success">
-                                                                            <input type="checkbox" id="checkbox2"  checked="checked" name="paymentCheck" />
-                                                                            <label for="checkbox2">benefits blah</label>
+                                                                            <input type="checkbox" id="checkbox2" name="paymentCheck" />
+                                                                            <label for="checkbox2">One Off</label>
                                                                         </div>
                                                                     </div><!-- col-sm-4 -->
                                                                 </td>
@@ -234,9 +234,9 @@
                                                             <td>payType.derived</td>
                                                             <td>
                                                                 {{#if fixed}}
-                                                                    <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="payType.value" />
+                                                                    <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="value" />
                                                                 {{else}}
-                                                                    <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="payType.derivative" />
+                                                                    <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="derivative" />
 
                                                                 {{/if}}
                                                             </td>

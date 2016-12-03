@@ -2,13 +2,9 @@
 /* Paygrades: Event Handlers */
 /*****************************************************************************/
 Template.Paygrades.events({
-    'click #createPaygrade': (e, tmpl) => {
+    'click #createPaygrade': (e,tmpl) => {
         e.preventDefault();
         Modal.show('PaygradeCreate');
-    },
-    'click input': function(e,tmpl) {
-        var x = $(e.target).is(":checked").val();
-        console.log(x);
     }
 });
 
@@ -18,9 +14,6 @@ Template.Paygrades.events({
 Template.Paygrades.helpers({
     fixed: (paytype) => {
         return paytype.derivative == "Fixed"
-    },
-    paytypes: () => {
-        return Template.instance().get('assigned');
     }
 });
 
@@ -29,8 +22,6 @@ Template.Paygrades.helpers({
 /*****************************************************************************/
 Template.Paygrades.onCreated(function () {
     let self = this;
-    var dict = new ReactiveDict('myDict');
-    dict.set("assigned", {})
 });
 
 Template.Paygrades.onRendered(function () {
@@ -61,34 +52,6 @@ Template.Paygrades.onRendered(function () {
                 error.innerText = parsed.error;
             }
         });
-
-        var listFormulas = (function() {
-            var container = document.querySelector('#suportedList'),
-                ul = document.createElement('ul');
-
-            container.appendChild(ul);
-
-            //var methods = [];
-            //for (var method in rules.helper.SUPPORTED_FORMULAS) {
-            //  methods.push(method);
-            //}
-            //methods.sort();
-
-            var methods = rules.helper.SUPPORTED_FORMULAS.sort();
-
-            methods.forEach(function (item) {
-                var li = document.createElement('li'),
-                    a = document.createElement('a');
-
-                a.href = 'http://www.stoic.com/pages/formula/function?function=' + item;
-                a.target = '_blank';
-                a.innerHTML = item;
-
-                li.appendChild(a);
-                ul.appendChild(li);
-            });
-
-        })();
 
     })();
 });
