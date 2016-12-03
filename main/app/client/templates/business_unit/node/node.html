@@ -4,7 +4,7 @@
         <div class="panel-body">
             {{#if Template.subscriptionsReady}}
                 {{#with node}}
-                    <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm">
+                    <div class="col-sm-2 pl0 ml0 hidden-md hidden-xs hidden-sm">
                         <div class="avatar text-center">
 
                             <img src="/admin/img/{{otype}}.png" class="img-circle" id="avatar-image"><br>
@@ -14,98 +14,97 @@
                     <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
                         <h2 class="name mt0 fs28">{{name}}<br><small>{{otype}}</small></h2>
                         <div>
-                            <address>
-
-                                <span class="glyphicon icon-phone"></span>
-                                8033470532
-                                <br>
-
-
-
-                                <span class="glyphicon icon-map" title="Default Depot"></span>
-                                Sales Depot - Isolo
-                                <br>
-
-
-                                <span class="glyphicon glyphicon-credit-card" title="Credit Limits"></span>
-                                <a href="#" class="credit-limit" data-toggle="tooltip" title="Total Credit Limit">NGN 14,000,000</a> | <a href="#" class="credit-limit" data-toggle="tooltip" title="Available Credit Limit">NGN 11,916,338</a>
-
-                            </address>
+                            <div class="panel panel-success-head widget-todo">
+                                <div class="col-sm-6">
+                                    <div class="pull-right">
+                                        <a title="" class="dropdown-toggle" data-toggle="dropdown" href="" ><i class="glyphicon glyphicon-cog"></i></a>
+                                        <a title="" data-toggle="tooltip" class="tooltips addnode" id="addnode" href="" data-original-title="Add New"><i class="glyphicon glyphicon-plus"></i></a>
+                                        <ul class="dropdown-menu pull-right" role="menu">
+                                            <li><a href="#" class="editnode">Edit</a></li>
+                                            <li><a href="#">Add Feature</a></li>
+                                            <li><a href="#">Assign User</a></li>
+                                            <li><a href="#">Move to Folder</a></li>
+                                            <li class="divider"></li>
+                                            <li><a href="#" class="deletenode">Delete</a></li>
+                                        </ul>
+                                    </div><!-- panel-btns -->
+                                    <h3 class="panel-title">Actions</h3>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-4 col-lg-3 col-sm-6">
-                        <p class="lead text-uppercase mb7">Members</p>
-                        <table class="table table-non-bordered table-td-padd-custom1 table-td-no-pl">
-                            {{#each children }}
-                                <tr>
-                                    <td class="bull-text"><span class="fa {{icon otype}}"></span><a href="/business/{{businessid}}/entity/{{_id}}"> {{name}}</a></td>
-                                </tr>
-                            {{/each}}
-                        </table>
+                        <div>
+                            <div class="panel">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Members</h3>
+                                </div>
+                                <ul class="panel-body list-group nopadding">
+                                    {{#each children }}
+                                        <li>
+                                            <div class="ckbox ckbox-default">
+                                                <span class="fa {{icon otype}}"></span>
+                                                <a href="/business/{{businessid}}/entity/{{_id}}"> {{name}}</a>
+                                            </div>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-12 col-md-5">
-                        <p class="pull-left lead text-uppercase">Properties</p>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Properties</h3>
+                        </div>
                         {{#each property}}
                             prop 1
                         {{/each}}
-                        <div class="pull-right">
-                            <span class="h0 text-muted f_helvetcia_ul">257</span>
-                            <div class="text-muted"><div class="btn-group mr5">
-                                <button type="button" class="btn btn-default">Action</button>
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Action</a></li>
-                                    <li><a href="#">Another action</a></li>
-                                    <li><a href="#">Something else here</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#">Separated link</a></li>
-                                </ul>
-                            </div></div>
-                        </div>
                     </div>
                 {{/with}}
+
                 <div class="col-md-12">
                     <div class="module-block">
                         <p class="lead text-uppercase">Employees</p>
                         <div class="row">
-                            <div class="col-xs-12 col-lg-4 col-md-6 col-sm-12">
-                                <div class="">
-                                    <ul class="media-list msg-list">
-                                        <li class="media">
-                                            <a class="pull-left" href="#">
-                                                <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
-                                            </a>
-                                            <div class="media-body">
-                                                <div class="pull-right media-option">
-                                                    <small>July 6</small>
-                                                    <a href=""><i class="fa fa-star"></i></a>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                            <i class="fa fa-cog"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu pull-right" role="menu">
-                                                            <li><a href="#">Mark as Unread</a></li>
-                                                            <li><a href="#">Reply</a></li>
-                                                            <li><a href="#">Forward</a></li>
-                                                            <li><a href="#">Archive</a></li>
-                                                            <li><a href="#">Move to Folder</a></li>
-                                                            <li><a href="#">Delete</a></li>
-                                                            <li class="divider"></li>
-                                                            <li><a href="#">Report as Spam</a></li>
-                                                        </ul>
+                            {{#each employees}}
+                                <div class="col-xs-12 col-lg-4 col-md-6 col-sm-12">
+                                    <div class="">
+                                        <ul class="media-list msg-list">
+                                            <li class="media">
+                                                <a class="pull-left" href="#">
+                                                    <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                                </a>
+                                                <div class="media-body">
+                                                    <div class="pull-right media-option">
+                                                        <small>July 6</small>
+                                                        <a href=""><i class="fa fa-star {{unitHead employeeProfile.position}}"></i></a>
+                                                        <div class="btn-group">
+                                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                                <i class="fa fa-cog"></i>
+                                                            </a>
+                                                            <ul class="dropdown-menu pull-right" role="menu">
+                                                                <li><a href="#">Mark as Unread</a></li>
+                                                                <li><a href="#">Reply</a></li>
+                                                                <li><a href="#">Forward</a></li>
+                                                                <li><a href="#">Archive</a></li>
+                                                                <li><a href="#">Move to Folder</a></li>
+                                                                <li><a href="#">Delete</a></li>
+                                                                <li class="divider"></li>
+                                                                <li><a href="#">Report as Spam</a></li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
+                                                    <h4 class="sender">{{profile.fullName}}</h4>
+                                                    <p><a href="view_message.html"><strong class="subject">{{positionName employeeProfile.position}}({{emails.[0].address}})</strong></a></p>
                                                 </div>
-                                                <h4 class="sender">Perturo Ranodu</h4>
-                                                <p><a href="view_message.html"><strong class="subject">Brown Bag Reminder</strong></a></p>
-                                            </div>
-                                        </li>
-                                    </ul>
+                                            </li>
+                                        </ul>
+
+                                    </div>
 
                                 </div>
-                            </div>
+                            {{/each}}
                         </div>
 
                     </div>
