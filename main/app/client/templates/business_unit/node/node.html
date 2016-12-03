@@ -4,7 +4,7 @@
         <div class="panel-body">
             {{#if Template.subscriptionsReady}}
                 {{#with node}}
-                    <div class="col-sm-2 pl0 ml0 hidden-md hidden-xs hidden-sm">
+                    <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm">
                         <div class="avatar text-center">
 
                             <img src="/admin/img/{{otype}}.png" class="img-circle" id="avatar-image"><br>
@@ -63,55 +63,56 @@
                     </div>
                 {{/with}}
 
-                <div class="col-md-12">
-                    <div class="module-block">
-                        <p class="lead text-uppercase">Employees</p>
-                        <div class="row">
-                            {{#each employees}}
-                                <div class="col-xs-12 col-lg-4 col-md-6 col-sm-12">
-                                    <div class="">
-                                        <ul class="media-list msg-list">
-                                            <li class="media">
-                                                <a class="pull-left" href="#">
-                                                    <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
-                                                </a>
-                                                <div class="media-body">
-                                                    <div class="pull-right media-option">
-                                                        <small>July 6</small>
-                                                        <a href=""><i class="fa fa-star {{unitHead employeeProfile.position}}"></i></a>
-                                                        <div class="btn-group">
-                                                            <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                                                <i class="fa fa-cog"></i>
-                                                            </a>
-                                                            <ul class="dropdown-menu pull-right" role="menu">
-                                                                <li><a href="#">Set as Head</a></li>
-                                                                <li><a href="#">Add Employee</a></li>
-                                                                <li><a href="#">Remove Employee</a></li>
-                                                                <li><a href="#">Exempt from Payroll</a></li>
-                                                                <li><a href="#">Set as Inactive</a></li>
-                                                                <li><a href="#">Delete</a></li>
-                                                                <li class="divider"></li>
-                                                                <li><a href="#">Pay Now</a></li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                    <h4 class="sender">{{profile.fullName}}</h4>
-                                                    <p><a href="view_message.html"><strong class="subject">{{positionName employeeProfile.position}}({{emails.[0].address}})</strong></a></p>
-                                                </div>
-                                            </li>
-                                        </ul>
 
-                                    </div>
-
-                                </div>
-                            {{/each}}
-                        </div>
-
-                    </div>
-                </div>
             {{else}}
                 {{> Loading}}
             {{/if}}
+        </div>
+        <div class="col-md-12">
+            <div class="module-block">
+                <p class="lead text-uppercase">Employees</p>
+                <div class="row">
+                    {{#each employees}}
+                        <div class="col-xs-12 col-lg-4 col-md-6 col-sm-12">
+                            <div class="">
+                                <ul class="media-list msg-list">
+                                    <li class="media">
+                                        <a class="pull-left" href="#">
+                                            <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                        </a>
+                                        <div class="media-body">
+                                            <div class="pull-right media-option">
+                                                <small>July 6</small>
+                                                <a href=""><i class="fa fa-star {{unitHead employeeProfile.position}}"></i></a>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                        <i class="fa fa-cog"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu pull-right" role="menu">
+                                                        <li><a href="#">Set as Head</a></li>
+                                                        <li><a href="#">Add Employee</a></li>
+                                                        <li><a href="#">Remove Employee</a></li>
+                                                        <li><a href="#">Exempt from Payroll</a></li>
+                                                        <li><a href="#">Set as Inactive</a></li>
+                                                        <li><a href="#">Delete</a></li>
+                                                        <li class="divider"></li>
+                                                        <li><a href="#">Pay Now</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <h4 class="sender">{{profile.fullName}}</h4>
+                                            <p><a href="view_message.html"><strong class="subject">{{positionName employeeProfile.position}}({{emails.[0].address}})</strong></a></p>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    {{/each}}
+                </div>
+
+            </div>
         </div>
     </div>
 </template>

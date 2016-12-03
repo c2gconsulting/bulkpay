@@ -36,11 +36,19 @@ Accounts.onCreateUser(function (options, user) {
     let tenantId = options.tenantId;
     let roles = {};
 
-    user.employeeProfile = options.employeeProfile || {};
-    user.employeeProfile.fullname = options.employeeProfile.firstName + " " + options.employeeProfile.lastName;
-    user.roles = options.roles || {};
+    user.profile = {};
+
+    let fullName = [options.firstname, options.lastname];
+
+
+    user.profile['fullName'] = fullName.join(" ");
+    user.profile['firstname'] = options.firstname;
+    user.profile['lastname'] = options.lastname;
     user.employee = options.employee;
-    user.businessIds = options.businessIds;
+
+    user.salesProfile = options.salesProfile || {};
+    user.salesProfile['salesAreas'] = options.salesAreas;
+    user.roles = options.roles || {};
     // assign user to his tenant Partition
     Partitioner.setUserGroup(user._id, tenantId);
 
@@ -159,16 +167,18 @@ Meteor.methods({
         //also check if employee number is unique ... allowing users to enter thier employee ids for compatibility
         let numberExist = Meteor.users.findOne({$and: [{"employeeProfile.employeeId": user.employeeId}, {"businessId": {"$in" : [user.businessId]}}]});
         if (numberExist) {
-            throw new Meteor.Error(404, "Employee Id already taken");
+            throw new Meteor.Error(404, "Employee Id already taken ")
         }
         let options = {};
 
-        options.email = user.email; // temporary
+        options.email = user.email; // tempo
+        options.firstname = user.firstName;
+        options.lastname =  user.lastName;
+
         options.tenantId = Core.getTenantId(Meteor.userId());
         options.roles = user.roles;
-        options.employee = true;
         options.employeeProfile = user.employeeProfile;
-        options.businessIds = [user.businessId];
+        options.businessIds.push(user.businessId);
 
         let accountId = Accounts.createUser(options);
         if (sendEnrollmentEmail){
@@ -451,5 +461,5 @@ Meteor.methods({
             Accounts.sendEnrollmentEmail(accountId, user.email);
         }
         return true
-    },
+    }
 });

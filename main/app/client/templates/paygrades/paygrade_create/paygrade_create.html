@@ -43,9 +43,8 @@
                                             <label class="col-sm-4 control-label">Positions</label>
                                             <div class="col-sm-8">
                                                 <select name="positionIds" style="width: 100%" class="form-control">
-                                                    <option value="option1">option1</option>
                                                     {{#each positions}}
-                                                        <option value="{{_id}}" {{selectedPositions}}>{{code}}</option>
+                                                        <option value="{{_id}}" {{selectedPositions}}>{{name}}</option>
                                                     {{/each}}
                                                 </select>
                                             </div>

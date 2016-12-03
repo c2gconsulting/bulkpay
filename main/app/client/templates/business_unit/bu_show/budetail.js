@@ -39,7 +39,7 @@ Template.BuDetail.onRendered(function(){
             'data' : data,
             'nodeContent': 'otype',
             'draggable': true,
-            'depth': 2,
+            'depth': 3,
             'dropCriteria': function($draggedNode, $dragZone, $dropZone) {
                 if($draggedNode.find('.content').text().indexOf('Company') > -1 && $dropZone.find('.content').text().indexOf('Unit') > -1) {
                     return false;

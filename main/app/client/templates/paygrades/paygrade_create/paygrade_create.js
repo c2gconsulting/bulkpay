@@ -112,6 +112,9 @@ Template.PaygradeCreate.helpers({
     },
     'fixed': (derivative) => {
         return derivative == "Fixed";
+    },
+    'positions': () => {
+        return EntityObjects.find();
     }
 
 });

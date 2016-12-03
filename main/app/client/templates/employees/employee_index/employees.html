@@ -11,103 +11,73 @@
                     <li>{{name}}</li>
                     <li>Employees</li>
                 </ul>
-                <h4>Employees</h4>
+                <h4>Employees <span class="mb20 pull-right" id="createEmployee"><a class="btn btn-primary">New Employee</a></span></h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
 
     <div class="contentpanel">
-
         <div class="row">
-            <div class="col-md-12">
-                <h5 class="lg-title mb5">Employees List</h5>
-                <p class="mb20 pull-right" id="createEmployee"><a class="btn btn-primary">New Employee</a></p>
+            <div class="col-sm-12">
+
+                <div class="well mt10">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <input type="text" placeholder="Who are you looking for?" class="form-control">
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="select2-container width100p" id="s2id_search-type"><a href="javascript:void(0)" class="select2-choice" tabindex="-1">   <span class="select2-chosen" id="select2-chosen-1">Position</span><abbr class="select2-search-choice-close"></abbr>   <span class="select2-arrow" role="presentation"><b role="presentation"></b></span></a><label for="s2id_autogen1" class="select2-offscreen"></label><input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-1" id="s2id_autogen1"></div><select id="search-type" class="width100p select2-offscreen" data-placeholder="Search Type" tabindex="-1" title="">
+                            <option value="">Choose One</option>
+                            <option value="Full Name" selected="">Full Name</option>
+                            <option value="Position">Position</option>
+                            <option value="Company">Company</option>
+                        </select>
+                        </div>
+                    </div>
+                </div><!-- well -->
+
+                <br>
+
+                <div class="pull-right">
+                    <ul class="pagination pagination-split pagination-sm pagination-contact">
+                        <li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                    </ul>
+                </div>
+                <h3 class="xlg-title">All Employees</h3>
+                {{#each employees}}
+                    {{> SingleEmployee data=this index = @index}}
+                {{/each}}
+
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-12 employee-filter">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label for="employee-name-filter" class="control-label">Name</label>
-                            <input  type="text" name="employee-name-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Business Unit</label>
-                            <input  type="text" name="employee-bu-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Division</label>
-                            <input  type="text" name="employee-division-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Department</label>
-                            <input  type="text" name="employee-department-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Position</label>
-                            <input  type="text" name="employee-position-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="control-label">Active</label>
-                            <input  type="text" name="employee-active-filter" class="form-control" placeholder="Name" />
-                        </div><!-- form-group -->
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="table-responsive">
-                    <table class="table table-primary mb60 table-hover">
-                        <thead>
-                        <tr>
-                            <th>S/N</th>
-                            <th>Employee Id</th>
-                            <th>Surname</th>
-                            <th>First Name</th>
-                            <th>Other Names</th>
-                            <th>Position</th>
-                            <th>Date Employed</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {{#each employees}}
-                            {{> SingleEmployee data=this index = @index}}
-                        {{/each}}
-                        </tbody>
-                    </table>
-                </div><!-- table-responsive -->
-                <div class="col-md-12 text-left">
-                    <!-- dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="bower_components/angularUtils-pagination/dirPagination.tpl.html"></dir-pagination-controls -->
-                </div>
-            </div>
-        </div><!-- row -->
-
     </div><!-- contentpanel -->
 </template>
 
 <template name="SingleEmployee">
-    <tr class="pointer">
-        <td>{{index}}</td>
-        <td>{{data.employeeProfile.employeeId}}</td>
-        <td>{{data.profile.lastname}}</td>
-        <td>{{data.firstname}}</td>
-        <td>{{data.otherNames}}</td>
-        <td>{{data.employeeProfile.position}}</td>
-        <td>{{data.hireDate}}</td>
-        <td>
-            <span class="label label-{{activeClass}}">{{data.status}}</span>
-        </td>
-    </tr>
+        <div class="list-group contact-group pointer">
+            <a href="#" class="list-group-item">
+                <div class="media">
+                    <div class="pull-left">
+                        <img class="img-circle img-online" src="/images/photos/user1.png" alt="...">
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading">Weno Carasbong <small>Software Engineer at Apple, Inc.</small></h4>
+                        <div class="media-content">
+                            <i class="fa fa-map-marker"></i> Lagos (Inherit location if any)
+                            <ul class="list-unstyled">
+                                <li><i class="fa fa-skype"></i> weno.carasbong</li>
+                                <li><i class="fa fa-mobile"></i> +63 934 345 3433</li>
+                                <li><i class="fa fa-envelope-o"></i> weno.carasbong@email.com</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- media -->
+            </a><!-- list-group -->
+        </div><!-- list-group -->
 </template>
