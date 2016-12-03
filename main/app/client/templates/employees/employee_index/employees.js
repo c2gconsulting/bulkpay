@@ -14,7 +14,7 @@ Template.Employees.events({
 /*****************************************************************************/
 Template.Employees.helpers({
     'employees': function(){
-        return [];
+        return Meteor.users.find({});
     }
 });
 
@@ -22,6 +22,8 @@ Template.Employees.helpers({
 /* Employees: Lifecycle Hooks */
 /*****************************************************************************/
 Template.Employees.onCreated(function () {
+    let self = this;
+    self.subscribe("allEmployees", Session.get('context'));
 });
 
 Template.Employees.onRendered(function () {

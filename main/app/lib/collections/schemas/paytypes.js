@@ -18,7 +18,7 @@ Core.Schemas.PayType = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: ["Wage", "Benefit", "Deduction", "One Off"],
+        allowedValues: ["Wage", "Benefit", "Deduction", "OneOff"],
         defaultValue: "Benefit"
     },
     frequency: {

@@ -22,8 +22,10 @@ Template.EmployeeCreate.events({
         let l = Ladda.create(tmpl.$('#createEmployee')[0]);
         l.start();
         const employeeProfile = {
-            employeeId: $('[name="employeeId"]').val(),
+            firstName: $('[name="firstName"]').val(),
+            lastName: $('[name="lastName"]').val(),
             otherNames: $('[name="otherNames"]').val(),
+            employeeId: $('[name="employeeId"]').val(),
             address: $('[name="address"]').val(),
             dateOfBirth: $('[data-field="dateOfBirth"]').val(),
             gender: $('[name="gender"]').val(),
@@ -50,8 +52,6 @@ Template.EmployeeCreate.events({
             RSAPin: $('[name="RSAPin"]').val()
         };
         const employee = {
-            firstName: $('[name="firstName"]').val(),
-            lastName: $('[name="lastName"]').val(),
             email: $('[name="email"]').val(),
             employeeProfile: employeeProfile,
             businessId: BusinessUnits.findOne()._id
@@ -72,7 +72,7 @@ Template.EmployeeCreate.events({
                     type: "success",
                     confirmButtonText: "OK"
                 });
-                Router.go('employees');
+                Router.go('employees', {_id: Session.get('context')});
             } else {
                 console.log(err);
                 //err = JSON.parse(err.details);

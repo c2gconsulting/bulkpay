@@ -72,6 +72,14 @@ Template.PaygradeCreate.events({
         console.log(assigned);
         //set the assigned dict;
         tmpl.dict.set("assigned", assigned);
+    },
+    'blur [name="value"]': (e, tmpl) => {
+        console.log("perform calculation from top to down")
+    },
+    'keypress input': (e, tmpl) => {
+        if (e.keyCode == 13) {
+            $(e.target).blur();
+        }
     }
 });
 
@@ -79,7 +87,7 @@ Template.PaygradeCreate.events({
 /* PaygradeCreate: Helpers */
 /*****************************************************************************/
 Template.PaygradeCreate.helpers({
-    selected(context,val) {
+    'selected': (context,val) => {
         let self = this;
         if(Template.instance().data){
             //get value of the option element
@@ -98,6 +106,12 @@ Template.PaygradeCreate.helpers({
     },
     "paytype": (type) => {
         return PayTypes.find({type: type}).fetch();
+    },
+    'assigned': () => {
+        return Template.instance().dict.get('assigned');
+    },
+    'fixed': (derivative) => {
+        return derivative == "Fixed";
     }
 
 });
@@ -113,8 +127,25 @@ Template.PaygradeCreate.onCreated(function () {
     } else {
         self.dict.set("assigned", []);
     }
+    let rules = new ruleJS('calc');
+    rules.init();
     self.autorun(function(){
-        //console.log(self.dict.get("assigned"));
+        //rerun computation if assigned value changes
+        let assigned = self.dict.get('assigned');
+        assigned.forEach(x => {
+            let formula = x.value;
+            //var parsed = rules.parse(formula, input);
+            //if (parsed.result !== null) {
+            //    x.value = parsed.result;
+            //}
+            //
+            //if (parsed.error) {
+            //    x.value = parsed.error;
+            //
+            //}
+        });
+        self.dict.set('assigned', assigned);
+
     });
     self.subscribe("PayTypes", Session.get('context'));
     self.subscribe("taxes", Session.get('context'));
@@ -151,6 +182,20 @@ Template.PaygradeCreate.onRendered(function () {
             return true;
         }
     });
+    //initialize rule table
+    $('#derivativeTable').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDrop: function($item, container, _super) {
+            console.log($item);
+            console.log(container);
+            _super($item, container);
+        }
+    });
+
+
 
 });
 

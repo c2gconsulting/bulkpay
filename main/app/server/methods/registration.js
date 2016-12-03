@@ -34,6 +34,7 @@ Meteor.methods({
         options.password = user.password;
         options.firstname = "Default";
         options.lastname =  "Admin";
+        options.employee = false;
         options.tenantId = tenantId;
         //assign default admin role
         options.roles = ["admin/all"];

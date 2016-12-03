@@ -10,12 +10,12 @@
                         <div class="row">
 
                             <!-- PROGRESS WIZARD -->
-                            <form id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
+                            <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                                 <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                     <li><a href="#new-tab1-2" data-toggle="tab" id="step1"><strong>Step 1:</strong> Description</a></li>
                                     <li><a href="#new-tab2-2" data-toggle="tab"><strong>Step 2:</strong> Pay Types</a></li>
-                                    <li><a href="#new-tab3-2" data-toggle="tab"><strong>Step 3:</strong> One Off Payments</a></li>
-                                    <li><a href="#new-tab4-2" data-toggle="tab"><strong>Step 4:</strong> Derivatives</a></li>
+                                    <li><a href="#calc" data-toggle="tab"><strong>Step 3:</strong> Derivatives</a></li>
+                                    <li><a href="#new-tab3-2" data-toggle="tab"><strong>Step 4:</strong> Payslip </a></li>
                                 </ul>
 
 
@@ -72,80 +72,97 @@
                                                         </div>
                                                     </div><!-- form-group -->
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>Wages</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            {{#each paytype "Wage"}}
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="col-sm-8">
-                                                                            <div class="ckbox ckbox-success">
-                                                                                <input type="checkbox" id="{{_id}}"  name="paymentCheck" class="payment" />
-                                                                                <label for="{{_id}}">{{code}}</label>
+                                                <div class="col-md-12">
+                                                    <div class="panel-group" id="accordion2">
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <h4 class="panel-title">
+                                                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2" class="collapsed">
+                                                                        Wages
+                                                                    </a>
+                                                                </h4>
+                                                            </div>
+                                                            <div id="collapseOne2" class="panel-collapse collapse in">
+                                                                <ul class="panel-body list-group nopadding">
+                                                                    {{#each paytype "Wage"}}
+                                                                        <li class="list-group-item">
+                                                                            <div class="ckbox ckbox-default">
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
-                                                                        </div><!-- col-sm-4 -->
-                                                                    </td>
-                                                                </tr>
-                                                            {{/each}}
-                                                            </tbody>
-                                                        </table>
-                                                    </div><!-- table-responsive -->
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>Benefits</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            {{#each paytype "Benefit"}}
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="col-sm-8">
-                                                                            <div class="ckbox ckbox-success">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment"/>
-                                                                                <label for="{{_id}}">{{code}}</label>
+                                                                        </li>
+                                                                    {{/each}}
+                                                                </ul>
+                                                            </div>
+                                                        </div><!-- panel -->
+
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <h4 class="panel-title">
+                                                                    <a data-toggle="collapse" class="" data-parent="#accordion2" href="#collapseTwo2">
+                                                                        Benefits
+                                                                    </a>
+                                                                </h4>
+                                                            </div>
+                                                            <div id="collapseTwo2" class="panel-collapse collapse">
+                                                                <ul class="panel-body list-group nopadding">
+                                                                    {{#each paytype "Benefit"}}
+                                                                        <li class="list-group-item">
+                                                                            <div class="ckbox ckbox-default">
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
-                                                                        </div><!-- col-sm-4 -->
-                                                                    </td>
-                                                                </tr>
-                                                            {{/each}}
-                                                            </tbody>
-                                                        </table>
-                                                    </div><!-- table-responsive -->
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>Deductions</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            {{#each paytype "Deduction"}}
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="col-sm-8">
-                                                                            <div class="ckbox ckbox-success">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment"/>
-                                                                                <label for="{{_id}}">{{code}}</label>
+                                                                        </li>
+                                                                    {{/each}}
+                                                                </ul>
+                                                            </div>
+                                                        </div><!-- panel -->
+
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <h4 class="panel-title">
+                                                                    <a data-toggle="collapse" class="" data-parent="#accordion2" href="#collapseThree2">
+                                                                        Deductions
+                                                                    </a>
+                                                                </h4>
+                                                            </div>
+                                                            <div id="collapseThree2" class="panel-collapse collapse">
+                                                                <ul class="panel-body list-group nopadding">
+                                                                    {{#each paytype "Deduction"}}
+                                                                        <li class="list-group-item">
+                                                                            <div class="ckbox ckbox-default">
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
-                                                                        </div><!-- col-sm-4 -->
-                                                                    </td>
-                                                                </tr>
-                                                            {{/each}}
-                                                            </tbody>
-                                                        </table>
-                                                    </div><!-- table-responsive -->
+                                                                        </li>
+                                                                    {{/each}}
+                                                                </ul>
+                                                            </div>
+                                                        </div><!-- panel -->
+
+                                                        <div class="panel panel-primary">
+                                                            <div class="panel-heading">
+                                                                <h4 class="panel-title">
+                                                                    <a data-toggle="collapse" class="" data-parent="#accordion2" href="#collapseFour2">
+                                                                        One Off Payments
+                                                                    </a>
+                                                                </h4>
+                                                            </div>
+                                                            <div id="collapseFour2" class="panel-collapse collapse">
+                                                                <ul class="panel-body list-group nopadding">
+                                                                    {{#each paytype "OneOff"}}
+                                                                        <li class="list-group-item">
+                                                                            <div class="ckbox ckbox-default">
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
+                                                                            </div>
+                                                                        </li>
+                                                                    {{/each}}
+                                                                </ul>
+                                                            </div>
+                                                        </div><!-- panel -->
+
+                                                    </div><!-- panel-group -->
                                                 </div>
                                             </div>
                                         </div><!-- form-group -->
@@ -154,45 +171,19 @@
                                     <div class="tab-pane" id="new-tab3-2">
                                         <div class="form-group">
                                             <div class="row">
+                                                <p>This section, you determine what is shown/displayed in the payslip for this Payment Grade</p>
                                                 <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <div class="col-sm-12">
-                                                            <input id="filter" type="text" placeholder="Search..." class="form-control" name="oneOffSearchText" />
-                                                        </div>
-                                                    </div><!-- form-group -->
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-hover">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>One Off Payments</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <div class="col-sm-8">
-                                                                        <div class="ckbox ckbox-success">
-                                                                            <input type="checkbox" id="checkbox2" name="paymentCheck" />
-                                                                            <label for="checkbox2">One Off</label>
-                                                                        </div>
-                                                                    </div><!-- col-sm-4 -->
-                                                                </td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div><!-- table-responsive -->
+
                                                 </div>
                                             </div>
                                         </div><!-- form-group -->
                                     </div><!-- tab-pane -->
 
-                                    <div class="tab-pane" id="new-tab4-2">
+                                    <div class="tab-pane" id="calc">
                                         <div class="form-group">
-                                            <h5 class="lg-title">Define Pay Types Values</h5><br/>
+                                            <h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>
                                             <div class="table-responsive">
-                                                <table class="table table-hover">
+                                                <table class="table table-hover" id="derivativeTable">
                                                     <thead>
                                                     <tr>
                                                         <th>S/N</th>
@@ -205,23 +196,25 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody id="new-data-body">
-                                                    {{#each paytypes}}
+                                                    {{#each assigned}}
                                                         <tr class="item" style="cursor: move;">
 
-                                                            <td>index</td>
-                                                            <td>payType.code</td>
-                                                            <td>payType.title</td>
-                                                            <td>payType.derived</td>
+                                                            <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
+                                                            <td>{{code}}</td>
+                                                            <td>{{title}}</td>
+                                                            <td>{{derivative}}</td>
                                                             <td>
-                                                                {{#if fixed}}
+                                                                {{#if fixed derivative}}
                                                                     <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="value" />
                                                                 {{else}}
                                                                     <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="derivative" />
-
                                                                 {{/if}}
                                                             </td>
                                                             <td>
-                                                                <span><b> payType.value</b></span>
+                                                                <span><b> {{value}}</b></span>
+                                                            </td>
+                                                            <td>
+                                                                <span><b> {{monthly}}</b></span>
                                                             </td>
                                                         </tr>
                                                     {{/each}}
@@ -245,7 +238,7 @@
                                     </li>
                                 </ul>
 
-                            </form><!-- panel-wizard -->
+                            </div><!-- panel-wizard -->
 
                         </div><!-- row -->
                     </div>

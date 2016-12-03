@@ -40,6 +40,25 @@ Core.publish("employees", function (node,businessId) {
     }
 
 });
+Core.publish("allEmployees", function (businessId) {
+    this.unblock(); // eliminate wait time impact
+    let selector = { "businessIds": businessId };
+    check(businessId, String);
+    if (businessId){
+        //return all meteor users in that position
+        return Meteor.users.find(selector, {
+            fields: {
+                "emails": true,
+                "profile": true,
+                "employeeProfile": true,
+                "username": true
+            }
+        });
+    } else {
+        return this.ready();
+    }
+
+});
 
 
 Core.publish("SalesUsers", function (salesArea) {

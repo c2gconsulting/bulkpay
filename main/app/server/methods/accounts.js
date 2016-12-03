@@ -36,17 +36,11 @@ Accounts.onCreateUser(function (options, user) {
     let tenantId = options.tenantId;
     let roles = {};
 
-    user.profile = {};
-
-    let fullName = [options.firstname, options.lastname];
-
-
-    user.profile['fullName'] = fullName.join(" ");
-    user.profile['firstname'] = options.firstname;
-    user.profile['lastname'] = options.lastname;
     user.employeeProfile = options.employeeProfile || {};
+    user.employeeProfile.fullname = options.employeeProfile.firstName + " " + options.employeeProfile.lastName;
     user.roles = options.roles || {};
-    user.businessIds = options.businessIds
+    user.employee = options.employee;
+    user.businessIds = options.businessIds;
     // assign user to his tenant Partition
     Partitioner.setUserGroup(user._id, tenantId);
 
@@ -170,10 +164,9 @@ Meteor.methods({
         let options = {};
 
         options.email = user.email; // temporary
-        options.firstname = user.firstName;
-        options.lastname =  user.lastName;
         options.tenantId = Core.getTenantId(Meteor.userId());
         options.roles = user.roles;
+        options.employee = true;
         options.employeeProfile = user.employeeProfile;
         options.businessIds = [user.businessId];
 

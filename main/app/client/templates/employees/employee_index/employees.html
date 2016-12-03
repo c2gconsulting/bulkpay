@@ -71,14 +71,11 @@
                     <table class="table table-primary mb60 table-hover">
                         <thead>
                         <tr>
-                            <th>#</th>
+                            <th>S/N</th>
                             <th>Employee Id</th>
                             <th>Surname</th>
                             <th>First Name</th>
                             <th>Other Names</th>
-                            <th>Business Unit</th>
-                            <th>Division</th>
-                            <th>Department</th>
                             <th>Position</th>
                             <th>Date Employed</th>
                             <th>Status</th>
@@ -86,7 +83,7 @@
                         </thead>
                         <tbody>
                         {{#each employees}}
-                            {{> SingleEmployee}}
+                            {{> SingleEmployee data=this index = @index}}
                         {{/each}}
                         </tbody>
                     </table>
@@ -102,19 +99,15 @@
 
 <template name="SingleEmployee">
     <tr class="pointer">
-        <td>{{@index}}</td>
-        <td>employeeID</td>
-        <td>Lastname</td>
-        <td>firstname</td>
-        <td>other names</td>
-        <td>business unit</td>
-        <td>division</td>
-        <td>department</td>
-        <td>position</td>
-        <td>employement date</td>
+        <td>{{index}}</td>
+        <td>{{data.employeeProfile.employeeId}}</td>
+        <td>{{data.profile.lastname}}</td>
+        <td>{{data.firstname}}</td>
+        <td>{{data.otherNames}}</td>
+        <td>{{data.employeeProfile.position}}</td>
+        <td>{{data.hireDate}}</td>
         <td>
-            <span class="label label-success">status</span>
-            <span class="label label-danger">status</span>
+            <span class="label label-{{activeClass}}">{{data.status}}</span>
         </td>
     </tr>
 </template>
