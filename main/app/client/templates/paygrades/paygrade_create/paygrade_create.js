@@ -69,12 +69,18 @@ Template.PaygradeCreate.events({
             let index = _.findIndex(assigned, {_id: id});
             assigned.splice(index, 1);
         }
+        assigned = _.sortBy(assigned, 'derivative');
         console.log(assigned);
         //set the assigned dict;
         tmpl.dict.set("assigned", assigned);
     },
-    'blur [name="value"]': (e, tmpl) => {
-        console.log("perform calculation from top to down")
+    'blur .calc': (e, tmpl) => {
+        console.log($(e.target).val());
+        let index = $(e.target).closest('tr')[0].rowIndex;
+        //set value of assigned index and recalculate computation
+        let assigned = tmpl.dict.get('assigned');
+        assigned[index-1].value = $(e.target).val();
+        tmpl.dict.set('assigned', assigned);
     },
     'keypress input': (e, tmpl) => {
         if (e.keyCode == 13) {
@@ -132,20 +138,35 @@ Template.PaygradeCreate.onCreated(function () {
     }
     let rules = new ruleJS('calc');
     rules.init();
+
     self.autorun(function(){
         //rerun computation if assigned value changes
         let assigned = self.dict.get('assigned');
-        assigned.forEach(x => {
+        let input = $('input[type=text]');
+        assigned.forEach((x,index) => {
             let formula = x.value;
-            //var parsed = rules.parse(formula, input);
-            //if (parsed.result !== null) {
-            //    x.value = parsed.result;
-            //}
-            //
-            //if (parsed.error) {
-            //    x.value = parsed.error;
-            //
-            //}
+            if(formula){
+                //replace all wagetypes with values
+                for (var i = 0; i < index; i++) {
+                    var regex = new RegExp(assigned[i].code, "g");
+                    formula = formula.replace(regex, assigned[i].parsedValue);
+                }
+                var parsed = rules.parse(formula, input);
+                console.log(parsed);
+                if (parsed.result !== null) {
+                    x.parsedValue = parsed.result;
+                    x.monthly = (parsed.result / 12).toFixed(2);
+                }
+                //
+                if (parsed.error) {
+                    x.parsedValue = parsed.error;
+                    x.monthly = ""
+
+                }
+            } else {
+                x.parsedValue = "";
+                x.monthly = "";
+            }
         });
         self.dict.set('assigned', assigned);
 
@@ -159,6 +180,8 @@ Template.PaygradeCreate.onCreated(function () {
 });
 
 Template.PaygradeCreate.onRendered(function () {
+    var self = this;
+    var oldIndex, newIndex;
     // fix a little rendering bug by clicking on step 1
     $('#step1').click();
     $('#progress-wizard-new').bootstrapWizard({
@@ -191,16 +214,40 @@ Template.PaygradeCreate.onRendered(function () {
         itemPath: '> tbody',
         itemSelector: 'tr',
         placeholder: '<tr class="placeholder"/>',
+        onDragStart: function ($item, container, _super) {
+            oldIndex = $item.index();
+            //$item.appendTo($item.parent());
+            _super($item, container);
+        },
         onDrop: function($item, container, _super) {
-            console.log($item);
-            console.log(container);
+            newIndex = $item.index() ;//.attr('id'));
+            //get assigned
+            let assigned = self.dict.get('assigned');
+            assigned.move(oldIndex, newIndex);
+            console.log(assigned);
+            self.dict.set('assigned', assigned);
             _super($item, container);
         }
     });
-
-
-
+    
 });
 
 Template.PaygradeCreate.onDestroyed(function () {
+
 });
+Array.prototype.move = function (old_index, new_index) {
+    while (old_index < 0) {
+        old_index += this.length;
+    }
+    while (new_index < 0) {
+        new_index += this.length;
+    }
+    if (new_index >= this.length) {
+        var k = new_index - this.length;
+        while ((k--) + 1) {
+            this.push(undefined);
+        }
+    }
+    this.splice(new_index, 0, this.splice(old_index, 1)[0]);
+    return this; // for testing purposes
+};

@@ -45,7 +45,8 @@ Core.Schemas.PayGrade = new SimpleSchema({
         defaultValue: "Active"
     },
     payTypes: {
-        type: [Core.Schemas.PayTypes]
+        type: Object,
+        blackbox: true
     },
 
     createdAt: {
