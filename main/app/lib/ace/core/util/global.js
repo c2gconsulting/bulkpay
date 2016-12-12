@@ -196,53 +196,74 @@ _.extend(Core, {
     hasAdminAccess: function (userId) {
         return this.hasPermission(Core.Permissions.ADMIN_ALL, userId);
     },
+    hasEmployeeAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.EMPLOYEE_MANAGE, userId);
+    },
+    hasTimeApprovalAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.TIME_APPROVE, userId);
+    },
+    hasLeaveApprovalAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LEAVE_APPROVE, userId);
+    },
+    hasLeaveManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LEAVE_MANAGE, userId);
+    },
+    hasTimeManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.TIME_MANAGE, userId);
+    },
+    hasPayrollAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYROLL_MANAGE, userId);
+    },
+    hasSelfServiceAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
+    },
     hasViewAllAccess: function (userId) {
         return this.hasPermission(Core.Permissions.VIEW_ALL, userId);
     },
-    hasOrderAccess: function (userId, group, readonly) {
-        // check if user has orders/manage access for the location specified
-        let orderPermissions = readonly ? Core.Permissions.ORDERS_VIEW : Core.Permissions.ORDERS_MANAGE;
-        return this.hasPermission(orderPermissions, userId, group, readonly);
-    },
-    hasOrderApprovalAccess: function (userId, orderGroup, orderTypeGroup) {
-        // check if user has orders/approve access for the salesArea specified, and ordertypes/approve for orderTypes
-        return this.hasPermission(Core.Permissions.ORDERS_APPROVE, userId, orderGroup) && this.hasPermission(Core.Permissions.ORDERTYPES_APPROVE, userId, orderTypeGroup);
-    },
-    hasReturnApprovalAccess: function (userId, group) {
-        // check if user has returnorder/approve access for the location specified
-        // note: calling without a group specified returns true if user has access for ANY group
-        return this.hasPermission(Core.Permissions.RETURNORDERS_APPROVE, userId, group);
-    },
-    hasReturnOrderAccess: function (userId, group, readonly) {
-        // check if user has returns/manage access for the location specified
-        let returnOrderPermissions = readonly ? Core.Permissions.RETURNORDERS_VIEW : Core.Permissions.RETURNORDERS_MANAGE;
-        return this.hasPermission(returnOrderPermissions, userId, group, readonly);
-    },
-    hasCustomerAccess: function (userId, group, readonly) {
-        // check if user has customers/maintain access for the location specified
-        let customerPermissions = readonly ? Core.Permissions.CUSTOMERS_VIEW : Core.Permissions.CUSTOMERS_MAINTAIN;
-        return this.hasPermission(customerPermissions, userId, group, readonly);
-    },
-    hasInvoiceAccess: function (userId, group, readonly) {
-        // check if user has invoices/manage access for the location specified
-        let invoicePermissions = readonly ? Core.Permissions.INVOICES_VIEW : Core.Permissions.INVOICES_MANAGE;
-        return this.hasPermission(invoicePermissions, userId, group, readonly);
-    },
-    hasPromotionAccess: function (userId, group, readonly) {
-        // check if user has promotions/manage access for the location specified
-        let promotionPermissions = readonly ? Core.Permissions.PROMOTIONS_VIEW : Core.Permissions.PROMOTIONS_MANAGE;
-        return this.hasPermission(promotionPermissions, userId, group, readonly);
-    },
-    hasPromotionApprovalAccess: function (userId, group) {
-        // check if user has promotion/approve access for the location specified
-        // note: calling without a group specified returns true if user has access for ANY group
-        return this.hasPermission(Core.Permissions.PROMOTIONS_APPROVE, userId, group);
-    },
-    hasRebateAccess: function (userId, group, readonly) {
-        // check if user has rebates/manage access for the location specified
-        let rebatePermissions = readonly ? Core.Permissions.REBATES_VIEW : Core.Permissions.REBATES_MANAGE;
-        return this.hasPermission(rebatePermissions, userId, group, readonly);
-    },
+    //hasOrderAccess: function (userId, group, readonly) {
+    //    // check if user has orders/manage access for the location specified
+    //    let orderPermissions = readonly ? Core.Permissions.ORDERS_VIEW : Core.Permissions.ORDERS_MANAGE;
+    //    return this.hasPermission(orderPermissions, userId, group, readonly);
+    //},
+    //hasOrderApprovalAccess: function (userId, orderGroup, orderTypeGroup) {
+    //    // check if user has orders/approve access for the salesArea specified, and ordertypes/approve for orderTypes
+    //    return this.hasPermission(Core.Permissions.ORDERS_APPROVE, userId, orderGroup) && this.hasPermission(Core.Permissions.ORDERTYPES_APPROVE, userId, orderTypeGroup);
+    //},
+    //hasReturnApprovalAccess: function (userId, group) {
+    //    // check if user has returnorder/approve access for the location specified
+    //    // note: calling without a group specified returns true if user has access for ANY group
+    //    return this.hasPermission(Core.Permissions.RETURNORDERS_APPROVE, userId, group);
+    //},
+    //hasReturnOrderAccess: function (userId, group, readonly) {
+    //    // check if user has returns/manage access for the location specified
+    //    let returnOrderPermissions = readonly ? Core.Permissions.RETURNORDERS_VIEW : Core.Permissions.RETURNORDERS_MANAGE;
+    //    return this.hasPermission(returnOrderPermissions, userId, group, readonly);
+    //},
+    //hasCustomerAccess: function (userId, group, readonly) {
+    //    // check if user has customers/maintain access for the location specified
+    //    let customerPermissions = readonly ? Core.Permissions.CUSTOMERS_VIEW : Core.Permissions.CUSTOMERS_MAINTAIN;
+    //    return this.hasPermission(customerPermissions, userId, group, readonly);
+    //},
+    //hasInvoiceAccess: function (userId, group, readonly) {
+    //    // check if user has invoices/manage access for the location specified
+    //    let invoicePermissions = readonly ? Core.Permissions.INVOICES_VIEW : Core.Permissions.INVOICES_MANAGE;
+    //    return this.hasPermission(invoicePermissions, userId, group, readonly);
+    //},
+    //hasPromotionAccess: function (userId, group, readonly) {
+    //    // check if user has promotions/manage access for the location specified
+    //    let promotionPermissions = readonly ? Core.Permissions.PROMOTIONS_VIEW : Core.Permissions.PROMOTIONS_MANAGE;
+    //    return this.hasPermission(promotionPermissions, userId, group, readonly);
+    //},
+    //hasPromotionApprovalAccess: function (userId, group) {
+    //    // check if user has promotion/approve access for the location specified
+    //    // note: calling without a group specified returns true if user has access for ANY group
+    //    return this.hasPermission(Core.Permissions.PROMOTIONS_APPROVE, userId, group);
+    //},
+    //hasRebateAccess: function (userId, group, readonly) {
+    //    // check if user has rebates/manage access for the location specified
+    //    let rebatePermissions = readonly ? Core.Permissions.REBATES_VIEW : Core.Permissions.REBATES_MANAGE;
+    //    return this.hasPermission(rebatePermissions, userId, group, readonly);
+    //},
 
     /**
      * getAuthorizedGroups - check for authorized user groups

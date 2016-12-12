@@ -15,6 +15,7 @@ Template.PaytypeCreate.events({
             derivative: $('[name="derivative"]').val(),
             frequency: $('[name="frequency"]').val(),
             taxable: returnBool($('[name="taxable"]').val()),
+            currency: $('[name="currency"]').val(),
             status: $('[name="status"]').val(),
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
             isBase: $('[name="isBase"]').is(':checked') ? true : false
@@ -108,6 +109,9 @@ Template.PaytypeCreate.helpers({
             //check and return selected if the template instce of data.val matches
             return Template.instance().data[context] === val ? selected="selected" : '';
         }
+    },
+    'currencies': () => {
+        return Core.currencies();
     }
 });
 
@@ -119,6 +123,7 @@ Template.PaytypeCreate.onCreated(function () {
 });
 
 Template.PaytypeCreate.onRendered(function () {
+    let self = this;
     self.$('select.dropdown').dropdown();
     //if the data context of template.instance().data is empty then the action is new as template.instance.data will be undefined
     //change id of save button to update and populate input/select domobjects with required value

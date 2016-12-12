@@ -31,7 +31,13 @@ EmployeesController = BusinessUnitController.extend({
     create: function(){
       this.render('EmployeeCreate')  ;
     },
-  
+    time: function(){
+        this.render('EmployeeTime');
+    },
+    expense: function(){
+        this.render('EmployeeExpense');
+    },
+
   onRun: function () {
     this.next();
   },

@@ -9,6 +9,8 @@ meteorhacks:cluster
 aldeed:simple-schema
 aldeed:collection2
 aldeed:autoform
+tsega:bootstrap3-datetimepicker@=3.1.3_3
+aldeed:autoform-bs-datetimepicker
 alanning:roles
 ongoworks:security
 aldeed:template-extension
@@ -83,3 +85,4 @@ meteorhacks:subs-manager
 fongandrew:find-and-modify
 peppelg:bootstrap-3-modal
 shell-server@0.2.1
+reywood:publish-composite

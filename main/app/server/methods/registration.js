@@ -37,10 +37,11 @@ Meteor.methods({
         options.employee = false;
         options.tenantId = tenantId;
         //assign default admin role
-        options.roles = ["admin/all"];
+        let roles = ["admin/all"];
 
         try{
             accountId = Accounts.createUser(options);
+            Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
         } catch(e) {
             throw new Meteor.Error(401, e);
         }

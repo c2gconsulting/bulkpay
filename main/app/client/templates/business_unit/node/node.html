@@ -78,7 +78,13 @@
                                 <ul class="media-list msg-list">
                                     <li class="media">
                                         <a class="pull-left" href="#">
-                                            <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                            {{#with images employeeProfile.photo._id}}
+                                                {{#if _id}}
+                                                    <img src="{{url store='avatarsLarge' }}" class="media-object img-circle img-online" id="avatar-image" /><br/>
+                                                {{ else }}
+                                                    <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                                {{/if}}
+                                            {{/with}}
                                         </a>
                                         <div class="media-body">
                                             <div class="pull-right media-option">

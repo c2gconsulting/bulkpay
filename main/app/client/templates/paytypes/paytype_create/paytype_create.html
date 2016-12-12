@@ -12,7 +12,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="pay-type-code" class="control-label">Code (alphanumeric)</label>
-                                    <input type="text" id="pay-type-code" class="form-control" placeholder="Unique e.g BC1" name="code" value="{{code}}" />
+                                    <input type="text" id="pay-type-code" class="form-control text-uppercase" placeholder="Unique e.g BC1" name="code" value="{{code}}" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
@@ -92,7 +92,20 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Payment Currency</label>
+                                    <select  name="currency" class="form-control dropdown" >
+                                        <option value="" {{selected "currency" ""}}>Select Currency</option>
+                                        {{#each currencies}}
+                                            <option value="{{this}}" {{selected "currency" this}} >{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
                             <div class="col-sm-4">
+                                <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
                                     <input type="checkbox" id="pay-type-key-state" checked="{{checked}}" name="isBase" />
                                     <label for="pay-type-key-state">Base Type (For Valuation)</label>
@@ -100,7 +113,6 @@
                             </div><!-- col-sm-4 -->
 
                         </div><!-- row -->
-
                     </div>
                     <div class="panel-footer">
                         <button class="btn btn-primary mr5" id="PayType">{{#if edit}}Update{{else}}Save{{/if}}</button>

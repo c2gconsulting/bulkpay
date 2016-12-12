@@ -1,103 +1,103 @@
 
 /**
-* TD Core Collections
-* Maintain collections available from the main service
-*
-*/
+ * TD Core Collections
+ * Maintain collections available from the main service
+ *
+ */
 
 
 /**
-* Core transform collections
-*
-* transform methods used to return cart calculated values
-* cartCount, cartSubTotal, cartShipping, cartTaxes, cartTotal
-* are calculated by a transformation on the collection
-* and are available to use in template as cart.xxx
-* in template: {{cart.cartCount}}
-* in code: Cart.findOne().cartTotal()
-*/
+ * Core transform collections
+ *
+ * transform methods used to return cart calculated values
+ * cartCount, cartSubTotal, cartShipping, cartTaxes, cartTotal
+ * are calculated by a transformation on the collection
+ * and are available to use in template as cart.xxx
+ * in template: {{cart.cartCount}}
+ * in code: Cart.findOne().cartTotal()
+ */
 
 /*
-Core.Helpers.cartTransform = {
-  cartCount: function () {
-    let count = 0;
-    if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
-      for (let items of this.items) {
-        count += items.quantity;
-      }
-    }
-    return count;
-  },
-  cartShipping: function () {
-    let shippingTotal = 0;
-    // loop through the cart.shipping, sum shipments.
-    if (this.shipping) {
-      for (let shipment of this.shipping) {
-        shippingTotal += shipment.shipmentMethod.rate;
-      }
-    }
-    return parseFloat(shippingTotal);
-  },
-  cartSubTotal: function () {
-    let subtotal = 0;
-    if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
-      for (let items of this.items) {
-        subtotal += items.quantity * items.variants.price;
-      }
-    }
-    subtotal = subtotal.toFixed(2);
-    return subtotal;
-  },
-  cartTaxes: function () {
-    let subtotal = 0;
-    if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
-      for (let items of this.items) {
-        let tax = this.tax || 0;
-        subtotal += items.variants.price * tax;
-      }
-    }
-    subtotal = subtotal.toFixed(2);
-    return subtotal;
-  },
-  cartDiscounts: function () {
-    return "0.00";
-  },
-  cartTotal: function () {
-    let total;
-    let subtotal = 0;
-    let shippingTotal = 0;
-    if (this.items) {
-      for (let items of this.items) {
-        subtotal += items.quantity * items.variants.price;
-      }
-    }
-    // loop through the cart.shipping, sum shipments.
-    if (this.shipping) {
-      for (let shipment of this.shipping) {
-        shippingTotal += shipment.shipmentMethod.rate;
-      }
-    }
+ Core.Helpers.cartTransform = {
+ cartCount: function () {
+ let count = 0;
+ if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
+ for (let items of this.items) {
+ count += items.quantity;
+ }
+ }
+ return count;
+ },
+ cartShipping: function () {
+ let shippingTotal = 0;
+ // loop through the cart.shipping, sum shipments.
+ if (this.shipping) {
+ for (let shipment of this.shipping) {
+ shippingTotal += shipment.shipmentMethod.rate;
+ }
+ }
+ return parseFloat(shippingTotal);
+ },
+ cartSubTotal: function () {
+ let subtotal = 0;
+ if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
+ for (let items of this.items) {
+ subtotal += items.quantity * items.variants.price;
+ }
+ }
+ subtotal = subtotal.toFixed(2);
+ return subtotal;
+ },
+ cartTaxes: function () {
+ let subtotal = 0;
+ if (typeof this !== "undefined" && this !== null ? this.items : void 0) {
+ for (let items of this.items) {
+ let tax = this.tax || 0;
+ subtotal += items.variants.price * tax;
+ }
+ }
+ subtotal = subtotal.toFixed(2);
+ return subtotal;
+ },
+ cartDiscounts: function () {
+ return "0.00";
+ },
+ cartTotal: function () {
+ let total;
+ let subtotal = 0;
+ let shippingTotal = 0;
+ if (this.items) {
+ for (let items of this.items) {
+ subtotal += items.quantity * items.variants.price;
+ }
+ }
+ // loop through the cart.shipping, sum shipments.
+ if (this.shipping) {
+ for (let shipment of this.shipping) {
+ shippingTotal += shipment.shipmentMethod.rate;
+ }
+ }
 
-    shippingTotal = parseFloat(shippingTotal);
-    if (!isNaN(shippingTotal)) {
-      subtotal = subtotal + shippingTotal;
-    }
-    total = subtotal.toFixed(2);
-    return total;
-  }
-}; */
+ shippingTotal = parseFloat(shippingTotal);
+ if (!isNaN(shippingTotal)) {
+ subtotal = subtotal + shippingTotal;
+ }
+ total = subtotal.toFixed(2);
+ return total;
+ }
+ }; */
 
 
 /**
-* Core Collections Businesses
-*/
+ * Core Collections Businesses
+ */
 Businesses = new Mongo.Collection("businesses");
 Partitioner.partitionCollection(Businesses, {index: {userId: 1}});
 Businesses.attachSchema(Core.Schemas.Business);
 
 /**
-* Core Collections BusinessUnits
-*/
+ * Core Collections BusinessUnits
+ */
 BusinessUnits = new Mongo.Collection("businessunits");
 Partitioner.partitionCollection(BusinessUnits);
 BusinessUnits.attachSchema(Core.Schemas.BusinessUnit);
@@ -268,3 +268,29 @@ Translations.attachSchema(Core.Schemas.Translation);
 DocumentNumbers = new Mongo.Collection("documentnumbers");
 Partitioner.partitionCollection(DocumentNumbers);
 DocumentNumbers.attachSchema(Core.Schemas.DocumentNumber);
+
+/**
+ * Core Collections Leave Types
+ */
+LeaveTypes = new Mongo.Collection("leavetypes");
+Partitioner.partitionCollection(LeaveTypes);
+LeaveTypes.attachSchema(Core.Schemas.LeaveType);
+
+
+LeaveTypes.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return Core.hasLeaveManageAccess(Meteor.userId());
+    }
+});
+
+Leaves.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return doc.employeeId === Meteor.userId()
+    },
+    update: function(userId, doc) {
+        // only allow updating if you are logged in
+        return doc.employeeId === Meteor.userId()
+    }
+});

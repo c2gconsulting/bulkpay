@@ -1,23 +1,23 @@
 /*****************************************************************************/
-/* EmployeeLeave: Event Handlers */
+/* LeaveTypeEntry: Event Handlers */
 /*****************************************************************************/
-Template.EmployeeLeave.events({
+Template.LeaveTypeEntry.events({
 });
 
 /*****************************************************************************/
-/* EmployeeLeave: Helpers */
+/* LeaveTypeEntry: Helpers */
 /*****************************************************************************/
-Template.EmployeeLeave.helpers({
+Template.LeaveTypeEntry.helpers({
 });
 
 /*****************************************************************************/
-/* EmployeeLeave: Lifecycle Hooks */
+/* LeaveTypeEntry: Lifecycle Hooks */
 /*****************************************************************************/
-Template.EmployeeLeave.onCreated(function () {
+Template.LeaveTypeEntry.onCreated(function () {
 });
 
-Template.EmployeeLeave.onRendered(function () {
+Template.LeaveTypeEntry.onRendered(function () {
 });
 
-Template.EmployeeLeave.onDestroyed(function () {
+Template.LeaveTypeEntry.onDestroyed(function () {
 });

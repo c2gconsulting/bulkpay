@@ -12,11 +12,22 @@ Template.PaygradeCreate.events({
             businessId: BusinessUnits.findOne()._id,
             code: $('[name="code"]').val(),
             description: $('[name="description"]').val(),
-            positions: $('[name="positionIds"]').val(),
-            taxRules: $('[name="taxRules"]').val(),
-            pensionRule: $('[name="pensionRule"]').val(),
-            status: $('[name="status"]').val()
+            positions: Core.returnSelection($('[name="positions"]')),
+            payGroups: Core.returnSelection($('[name="paygroups"]')),
+            status: $('[name="status"]').val(),
+            payTypes: getPaytypes()
 
+        };
+        function getPaytypes(){
+            let paytypes =  [];
+            let assigned = Template.instance().dict.get('assigned');
+            //return relevant fields
+            assigned.forEach(x => {
+                let payment = {};
+                payment.paytype = x._id; payment.value = x.value; payment.displayInPayslip = x.displayInPayslip;
+                paytypes.push(payment);
+            });
+            return paytypes;
         };
         if(tmpl.data){//edit action for updating tax
             const pygId = tmpl.data._id;
@@ -52,6 +63,7 @@ Template.PaygradeCreate.events({
                         $('[name=' + obj.name +']').attr("placeholder", obj.name + ' ' + obj.type);
 
                     })
+                    swal("error", "Please check all components are entired", "error");
                 }
             });
         }
@@ -70,16 +82,24 @@ Template.PaygradeCreate.events({
             assigned.splice(index, 1);
         }
         assigned = _.sortBy(assigned, 'derivative');
-        console.log(assigned);
+        //set the assigned dict;
+        tmpl.dict.set("assigned", assigned);
+    },
+    'click .payslip': (e, tmpl) => {
+        let selected = $(e.target).is(":checked");
+        let assigned = tmpl.dict.get("assigned");
+        let id = $(e.target).attr('id');
+
+        let index = parseInt(id);
+        assigned[index].displayInPayslip = selected;
         //set the assigned dict;
         tmpl.dict.set("assigned", assigned);
     },
     'blur .calc': (e, tmpl) => {
-        console.log($(e.target).val());
         let index = $(e.target).closest('tr')[0].rowIndex;
         //set value of assigned index and recalculate computation
         let assigned = tmpl.dict.get('assigned');
-        assigned[index-1].value = $(e.target).val();
+        assigned[index-1].value = $(e.target).val().toUpperCase();
         tmpl.dict.set('assigned', assigned);
     },
     'keypress input': (e, tmpl) => {
@@ -121,6 +141,45 @@ Template.PaygradeCreate.helpers({
     },
     'positions': () => {
         return EntityObjects.find();
+    },
+    'paygroup': () => {
+        return PayGroups.find();
+    },
+    selectedObj: function (x) {
+        let self = this;
+        let selected;
+        let prop = Template.instance().data[x];
+        selected = _.find(prop, function(r) {
+            return r ===  self._id;
+        });
+        if (selected){
+            return "selected"
+        }
+    },
+    'checked': (id) => {
+        if(Template.instance().data){
+           let index =  _.findLastIndex(Template.instance().data.payTypes, {paytype: id});
+            return index !== -1? true:false;
+        }
+
+        return false;
+    },
+    'displayInSlip': (id) => {
+        if(Template.instance().data){
+           let index =  _.findLastIndex(Template.instance().data.payTypes, {paytype: id});
+            if(index !== -1)
+                return Template.instance().data.payTypes[index].displayInPayslip;
+        }
+
+        //return false;
+    },
+    'action': () => {
+        data = Template.instance().data;
+        if(data){
+            return `PAYGROUP - ${data.code} (${data.description})`
+        } else {
+            return 'New Pay Grade'
+        }
     }
 
 });
@@ -130,51 +189,68 @@ Template.PaygradeCreate.helpers({
 /*****************************************************************************/
 Template.PaygradeCreate.onCreated(function () {
     let self = this;
+    let context = Session.get('context');
     self.dict = new ReactiveDict();
-    if(this.data){
-        self.dict.set("assigned", this.data); //set assigned to be data
+    self.subscribe("PayTypes", context);
+    self.subscribe("taxes", context);
+    self.subscribe("pensions", context);
+    self.subscribe("getPositions", context);
+    self.subscribe("payGroups", context);
+    if(self.data){
+        //populate and map paytypes
+        self.autorun(function(){
+            if (Template.instance().subscriptionsReady()){
+                self.data.payTypes.forEach(x=>{
+                    //extend all assigned paytypes with reference doc. properties
+                    let ptype = PayTypes.findOne({_id: x.paytype});
+                    delete ptype.paytype;
+                    _.extend(x, ptype);
+                    return x;
+                });
+                self.dict.set("assigned", self.data.payTypes); //set assigned to be data
+            }
+        });
     } else {
         self.dict.set("assigned", []);
     }
     let rules = new ruleJS('calc');
     rules.init();
 
+
     self.autorun(function(){
         //rerun computation if assigned value changes
         let assigned = self.dict.get('assigned');
         let input = $('input[type=text]');
-        assigned.forEach((x,index) => {
-            let formula = x.value;
-            if(formula){
-                //replace all wagetypes with values
-                for (var i = 0; i < index; i++) {
-                    var regex = new RegExp(assigned[i].code, "g");
-                    formula = formula.replace(regex, assigned[i].parsedValue);
-                }
-                var parsed = rules.parse(formula, input);
-                console.log(parsed);
-                if (parsed.result !== null) {
-                    x.parsedValue = parsed.result;
-                    x.monthly = (parsed.result / 12).toFixed(2);
-                }
-                //
-                if (parsed.error) {
-                    x.parsedValue = parsed.error;
-                    x.monthly = ""
+        if(assigned){
+            assigned.forEach((x,index) => {
+                let formula = x.value;
+                if(formula){
+                    //replace all wagetypes with values
+                    for (var i = 0; i < index; i++) {
+                        var regex = new RegExp(assigned[i].code? assigned[i].code.toUpperCase():assigned[i].code, "g");
+                        formula = formula.replace(regex, assigned[i].parsedValue);
+                    }
+                    var parsed = rules.parse(formula, input);
+                    if (parsed.result !== null) {
+                        x.parsedValue = parsed.result;
+                        x.monthly = (parsed.result / 12).toFixed(2);
+                    }
+                    //
+                    if (parsed.error) {
+                        x.parsedValue = parsed.error;
+                        x.monthly = ""
 
+                    }
+                } else {
+                    x.parsedValue = "";
+                    x.monthly = "";
                 }
-            } else {
-                x.parsedValue = "";
-                x.monthly = "";
-            }
-        });
-        self.dict.set('assigned', assigned);
+            });
+            self.dict.set('assigned', assigned);
+        }
 
     });
-    self.subscribe("PayTypes", Session.get('context'));
-    self.subscribe("taxes", Session.get('context'));
-    self.subscribe("pensions", Session.get('context'));
-    self.subscribe("getPositions", Session.get('context'));
+
 
 
 });
@@ -207,6 +283,8 @@ Template.PaygradeCreate.onRendered(function () {
         onTabClick: function (tab, navigation, index) {
             return true;
         }
+
+
     });
     //initialize rule table
     $('#derivativeTable').sortable({
@@ -224,12 +302,11 @@ Template.PaygradeCreate.onRendered(function () {
             //get assigned
             let assigned = self.dict.get('assigned');
             assigned.move(oldIndex, newIndex);
-            console.log(assigned);
             self.dict.set('assigned', assigned);
             _super($item, container);
         }
     });
-    
+    $('select.dropdown').dropdown();
 });
 
 Template.PaygradeCreate.onDestroyed(function () {

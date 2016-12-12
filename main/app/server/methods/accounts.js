@@ -45,10 +45,11 @@ Accounts.onCreateUser(function (options, user) {
     user.profile['firstname'] = options.firstname;
     user.profile['lastname'] = options.lastname;
     user.employee = options.employee;
-
+    user.employeeProfile = options.employeeProfile || {};
     user.salesProfile = options.salesProfile || {};
     user.salesProfile['salesAreas'] = options.salesAreas;
     user.roles = options.roles || {};
+    user.businessIds = options.businessIds || [];
     // assign user to his tenant Partition
     Partitioner.setUserGroup(user._id, tenantId);
 
@@ -174,13 +175,16 @@ Meteor.methods({
         options.email = user.email; // tempo
         options.firstname = user.firstName;
         options.lastname =  user.lastName;
-
+        options.employee =  true;
         options.tenantId = Core.getTenantId(Meteor.userId());
-        options.roles = user.roles;
+        //options.roles = ["employee/all"];
         options.employeeProfile = user.employeeProfile;
-        options.businessIds.push(user.businessId);
-
+        options.businessIds = [user.businessId];
         let accountId = Accounts.createUser(options);
+        if(accountId){
+            let roles = ["ess/all"];
+            Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+        }
         if (sendEnrollmentEmail){
             Accounts.sendEnrollmentEmail(accountId, user.email);
         }

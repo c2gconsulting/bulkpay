@@ -44,6 +44,9 @@ Core.Schemas.PayType = new SimpleSchema({
         defaultValue: "Active",
         allowedValues: ["Active", "Inactive"]
     },
+    currency: {
+        type: String
+    },
     isBase: {
         type: Boolean,
         defaultValue: false

@@ -50,6 +50,62 @@ Template.registerHelper("hasAdminAccess", function () {
   return Core.hasAdminAccess(userId);
 });
 
+
+/**
+ * hasEmployeeAccess template helper
+ * @summary check if user has employee access
+ * @return {Boolean} return true if employee
+ */
+Template.registerHelper("hasEmployeeAccess", function () {
+    // default to checking this.userId
+    let userId = Meteor.userId();
+    return Core.hasEmployeeAccess(userId);
+});
+
+/**
+ * hasTimeApprovalAccess template helper
+ * @summary check if user has time approval access
+ * @return {Boolean} return true if user has hasTimeApprovalAccess
+ */
+Template.registerHelper("hasTimeApprovalAccess", function () {
+    // default to checking this.userId
+    let userId = Meteor.userId();
+    return Core.hasTimeApprovalAccess(userId);
+});
+
+/**
+ * hasLeaveApprovalAccess template helper
+ * @summary check if user has time approval access
+ * @return {Boolean} return true if user has hasLeaveApprovalAccess
+ */
+Template.registerHelper("hasLeaveApprovalAccess", function () {
+    // default to checking this.userId
+    let userId = Meteor.userId();
+    return Core.hasLeaveApprovalAccess(userId);
+});
+
+/**
+ * hasPayrollAccess template helper
+ * @summary check if user has time approval access
+ * @return {Boolean} return true if user has hasLeaveApprovalAccess
+ */
+Template.registerHelper("hasPayrollAccess", function () {
+    // default to checking this.userId
+    let userId = Meteor.userId();
+    return Core.hasPayrollAccess(userId);
+});
+
+/**
+ * hasselfServiceAccess template helper
+ * @summary check if user has self service access
+ * @return {Boolean} return true if user has self service Access
+ */
+Template.registerHelper("hasSelfServiceAccess", function () {
+    // default to checking this.userId
+    let userId = Meteor.userId();
+    return Core.hasSelfServiceAccess(userId);
+});
+
 /**
  * hasOrderAccess template helper
  * @summary check if user has order access

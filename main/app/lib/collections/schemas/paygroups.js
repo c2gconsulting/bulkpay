@@ -20,7 +20,8 @@ Core.Schemas.PayGroup = new SimpleSchema({
         type: String
     },
     pension: {
-        type: String
+        type: String,
+        optional: true
     },
     status: {
         type: String,

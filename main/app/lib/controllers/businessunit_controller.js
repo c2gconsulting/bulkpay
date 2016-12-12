@@ -64,8 +64,17 @@ BusinessUnitController = ApplicationController.extend({
     // Example:
     //  action: 'myActionFunction'
     home: function(){
+        //let customer = Customers.findOne({_id: this.params._id});
+        //if (customer && Core.hasCustomerAccess(Meteor.userId())) {
+        //    this.render('DistributorsEdit');
+        //} else if (customer && Core.hasCustomerAccess(Meteor.userId(), customer.groupCode, true)) {
+        //    Router.go('distributors.detail', {_id: this.params._id});
+        //} else {
+        //    Router.go('distributors.list');
+        //}
         this.render('BusinessUnit');
     },
+
     show: function () {
         this.render("BuDetail");
     },

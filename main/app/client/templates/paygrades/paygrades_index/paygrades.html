@@ -39,16 +39,16 @@
                         <table class="table table-primary mb60 table-hover">
                             <thead>
                             <tr>
-                                <th>#</th>
+                                <th>S/N</th>
                                 <th>Code</th>
-                                <th>Name</th>
                                 <th>Description</th>
                                 <th>Positions</th>
+                                <th>Pay Groups</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each job}}
+                            {{#each paygrades}}
                                 {{> singlePaygrade index=@index data=this}}
                             {{/each}}
                             </tbody>
@@ -66,13 +66,12 @@
 <template name="singlePaygrade">
     <tr class="pointer">
         <td>{{index}}</td>
-        <td>{{data.name}}</td>
-        <td>{{data.location}}</td>
-        <td>{{data.parent.name}}</td>
-        <td>{{data.parent.division}}</td>
+        <td>{{data.code}}</td>
+        <td>{{data.description}}</td>
+        <td>{{data.positions.length}} Designation(s)</td>
+        <td>{{data.payGroups.length}} Py Groups(s)</td>
         <td>
-            <span class="label label-success">{{status}}</span>
-            <span class="label label-danger">{{status}}</span>
+            <span class="label label-{{activeClass}}">{{data.status}}</span>
         </td>
     </tr>
 </template>

@@ -11,19 +11,10 @@ Template.PensionCreate.events({
             businessId: BusinessUnits.findOne()._id,
             code: $('[name="code"]').val(),
             name: $('[name="name"]').val(),
-            payTypes: returnSelection($('[name="payTypes"]')),
+            payTypes: Core.returnSelection($('[name="payTypes"]')),
             employerContributionRate: +$('[name="employerContributionRate"]').val(),// converts empty string to 0
             employeeContributionRate: +$('[name="employeeContributionRate"]').val(),// converts empty string to 0
             status: $('[name="status"]').val()
-        };
-
-        function returnSelection(selection){
-            let options = [];
-            let selected = selection.find("option:selected");
-            _.each(selected, function(select){
-                options.push(select.value)
-            });
-            return _.uniq(options);
         };
 
         if(tmpl.data){//edit action for updating paytype

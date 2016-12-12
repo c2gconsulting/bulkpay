@@ -9,43 +9,25 @@ Core.Schemas.PayGrade = new SimpleSchema({
     code: {
         type: String
     },
-    name: {
-        type: String
-    },
     description: {
         type: String
     },
     businessId: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id
-    },
-    positionIds: {
-        type: [String]
+        type: String
     },
     positions: {
-        type: [String],
-        regEx: SimpleSchema.RegEx.Id
+        type: [String]
     },
-    taxRuleId: {
-        type: String
-    },
-    tax: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id
-    },
-    pensionRuleId: {
-        type: String
-    },
-    pension: {
-        type: String,
-        regEx: SimpleSchema.RegEx.Id
+    payGroups: {
+        type: [String]
     },
     status: {
         type: String,
-        defaultValue: "Active"
+        defaultValue: "Active",
+        allowedValues: ["Active", "Inactive"]
     },
     payTypes: {
-        type: Object,
+        type: [Object],
         blackbox: true
     },
 

@@ -25,9 +25,9 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="pay-group-name" class="control-label">Tax Rule</label>
-                                    <select name="tax" style="width: 100%" class="form-control dropdown">
+                                    <select name="tax" style="width: 100%" class="form-control dropdown" >
                                         {{#each taxList}}
-                                            <option value="{{_id}}" {{selected "tax"}}>{{code}}</option>
+                                            <option value="{{_id}}" {{selected "tax" nil}}>{{code}}</option>
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->
@@ -37,8 +37,9 @@
                                 <div class="form-group">
                                     <label for="pay-group-name" class="control-label">Pension Rule</label>
                                     <select name="pension" style="width: 100%" class="form-control dropdown">
+                                        <option value="" {{selected "pension" nil}}>None</option>
                                         {{#each pensionList}}
-                                            <option value="{{_id}}" {{selected "pension"}}>{{code}}</option>
+                                            <option value="{{_id}}" {{selected "pension" nil}}>{{code}}</option>
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->

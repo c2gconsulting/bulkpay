@@ -11,7 +11,8 @@
                     <li>{{tenantName}}</li>
                     <li></li>
                 </ul>
-                <h4>Companies</h4>
+                <h4>Companies<span class="mb20 pull-right">{{#if hasAdminAccess }}<button class="btn btn-primary" id="newUnit">New Company</button>{{/if}}</span></h4>
+
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -19,32 +20,34 @@
     <div class="contentpanel">
         <div class="row row-stat">
             {{#if Template.subscriptionsReady}}
-                <div class="col-md-4">
-                    <div class="panel panel-success-alt noborder">
-                        <div class="panel-heading noborder">
-                            <div class="panel-btns" style="display: none;">
-                                <a href="" class="panel-close tooltips" data-toggle="tooltip" title="" data-original-title="Close Panel"><i class="fa fa-times"></i></a>
-                            </div><!-- panel-btns -->
-                            <div class="panel-icon"><i class="fa fa-dollar"></i></div>
-                            <div class="media-body">
-                                <h5 class="md-title nomargin">Today's Earnings</h5>
-                                <h1 class="mt5">$8,102.32</h1>
-                            </div><!-- media-body -->
-                            <hr>
-                            <div class="clearfix mt20">
-                                <div class="pull-left">
-                                    <h5 class="md-title nomargin">Yesterday</h5>
-                                    <h4 class="nomargin">$29,009.17</h4>
+                {{#if hasAdminAccess}}
+                    <div class="col-md-4">
+                        <div class="panel panel-success-alt noborder">
+                            <div class="panel-heading noborder">
+                                <div class="panel-btns" style="display: none;">
+                                    <a href="" class="panel-close tooltips" data-toggle="tooltip" title="" data-original-title="Close Panel"><i class="fa fa-times"></i></a>
+                                </div><!-- panel-btns -->
+                                <div class="panel-icon"><i class="fa fa-money"></i></div>
+                                <div class="media-body">
+                                    <h5 class="md-title nomargin">Total Payments</h5>
+                                    <h1 class="mt5">₦ 0.00 </h1>
+                                </div><!-- media-body -->
+                                <hr>
+                                <div class="clearfix mt20">
+                                    <div class="pull-left">
+                                        <h5 class="md-title nomargin">PREVIOUS PERIOD</h5>
+                                        <h4 class="nomargin">₦ 0.00 </h4>
+                                    </div>
+                                    <div class="pull-right">
+                                        <h5 class="md-title nomargin">CURRENT PERIOD</h5>
+                                        <h4 class="nomargin">₦ 0.00 </h4>
+                                    </div>
                                 </div>
-                                <div class="pull-right">
-                                    <h5 class="md-title nomargin">This Week</h5>
-                                    <h4 class="nomargin">$99,103.67</h4>
-                                </div>
-                            </div>
 
-                        </div><!-- panel-body -->
-                    </div><!-- panel -->
-                </div>
+                            </div><!-- panel-body -->
+                        </div><!-- panel -->
+                    </div>
+                {{/if}}
                 {{#if condition bus.size 'eq' 0 }}
                     <div class="col-md-12">
                         <div class="alert alert-danger text-center">
@@ -64,93 +67,101 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <p class="mb20 pull-right"><button class="btn btn-primary" id="newUnit">New Company</button></p>
+
             </div>
         </div>
-        <div class="alert alert-info">
-            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-            <strong>Heads up!</strong> This <a class="alert-link" href="">alert needs your attention</a>, but it's not super important.
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-body padding15">
-                        <h5 class="md-title mt0 mb10">Site Statistics</h5>
-                        <div id="basicFlotLegend" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #03c3c4;overflow:hidden"></div></div></td><td class="legendLabel">New Customer</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #905dd1;overflow:hidden"></div></div></td><td class="legendLabel">Returning Customer</td></tr></tbody></table></div>
-                        <div id="basicflot" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
-                    </div><!-- panel-body -->
-                    <div class="panel-footer">
-                        <div class="tinystat pull-left">
-                            <div id="sparkline" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Average</span>
-                                <h4>$9,201</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                        <div class="tinystat pull-right">
-                            <div id="sparkline2" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Total</span>
-                                <h4>$8,201</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                    </div><!-- panel-footer -->
-                </div><!-- panel -->
+        {{#if hasAdminAccess}}
+            <div class="alert alert-info">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <strong>Key Metrics!</strong> Below <a class="alert-link" href=""> are graphs to show system metrics </a>.
             </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body padding15">
+                            <h5 class="md-title mt0 mb10">Payment Variance</h5>
+                            <div id="basicFlotLegend" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #03c3c4;overflow:hidden"></div></div></td><td class="legendLabel">Previous Period</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #905dd1;overflow:hidden"></div></div></td><td class="legendLabel">Current Period</td></tr></tbody></table></div>
+                            <div id="basicflot" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
+                        </div><!-- panel-body -->
+                        <div class="panel-footer">
+                            <div class="tinystat pull-left">
+                                <div id="sparkline" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Average</span>
+                                    <h4>₦ 0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                            <div class="tinystat pull-right">
+                                <div id="sparkline2" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Total</span>
+                                    <h4>₦ 0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                        </div><!-- panel-footer -->
+                    </div><!-- panel -->
+                </div>
 
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-body padding15">
-                        <h5 class="md-title mt0 mb10">Site Visitors</h5>
-                        <div id="basicFlotLegend2" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #428bca;overflow:hidden"></div></div></td><td class="legendLabel">Visits</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #b830b3;overflow:hidden"></div></div></td><td class="legendLabel">Unique Visits</td></tr></tbody></table></div>
-                        <div id="basicflot2" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
-                    </div><!-- panel-body -->
-                    <div class="panel-footer">
-                        <div class="tinystat pull-left">
-                            <div id="sparkline3" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Average</span>
-                                <h4>52,201</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                        <div class="tinystat pull-right">
-                            <div id="sparkline4" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Total</span>
-                                <h4>11,201</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                    </div><!-- panel-footer -->
-                </div><!-- panel -->
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body padding15">
+                            <h5 class="md-title mt0 mb10">Payment Variance</h5>
+                            <div id="basicFlotLegend2" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #428bca;overflow:hidden"></div></div></td><td class="legendLabel">Visits</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #b830b3;overflow:hidden"></div></div></td><td class="legendLabel">Unique Visits</td></tr></tbody></table></div>
+                            <div id="basicflot2" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
+                        </div><!-- panel-body -->
+                        <div class="panel-footer">
+                            <div class="tinystat pull-left">
+                                <div id="sparkline3" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Average</span>
+                                    <h4>0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                            <div class="tinystat pull-right">
+                                <div id="sparkline4" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Total</span>
+                                    <h4>0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                        </div><!-- panel-footer -->
+                    </div><!-- panel -->
+                </div>
+
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-body padding15">
+                            <h5 class="md-title mt0 mb10">Site Impressions</h5>
+                            <div id="basicFlotLegend3" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #905dd1;overflow:hidden"></div></div></td><td class="legendLabel">Impressions</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #428bca;overflow:hidden"></div></div></td><td class="legendLabel">Unique Impressions</td></tr></tbody></table></div>
+                            <div id="basicflot3" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
+                        </div><!-- panel-body -->
+                        <div class="panel-footer">
+                            <div class="tinystat pull-left">
+                                <div id="sparkline5" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Average</span>
+                                    <h4>0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                            <div class="tinystat pull-right">
+                                <div id="sparkline6" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
+                                <div class="datainfo">
+                                    <span class="text-muted">Total</span>
+                                    <h4>0.00</h4>
+                                </div>
+                            </div><!-- tinystat -->
+                        </div><!-- panel-footer -->
+                    </div><!-- panel -->
+                </div>
+
             </div>
-
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-body padding15">
-                        <h5 class="md-title mt0 mb10">Site Impressions</h5>
-                        <div id="basicFlotLegend3" class="flotLegend"><table style="font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #905dd1;overflow:hidden"></div></div></td><td class="legendLabel">Impressions</td><td class="legendColorBox"><div style="border:1px solid #ccc;padding:1px"><div style="width:4px;height:0;border:5px solid #428bca;overflow:hidden"></div></div></td><td class="legendLabel">Unique Impressions</td></tr></tbody></table></div>
-                        <div id="basicflot3" class="flotChart" style="padding: 0px; position: relative;"><canvas class="flot-base" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 10px; text-align: center;">0.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 83px; text-align: center;">1.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 156px; text-align: center;">2.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 230px; text-align: center;">3.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 303px; text-align: center;">4.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 376px; text-align: center;">5.0</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 66px; top: 185px; left: 450px; text-align: center;">6.0</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 173px; left: 7px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 115px; left: 7px; text-align: right;">5</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 58px; left: 0px; text-align: right;">10</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 1px; left: 0px; text-align: right;">15</div></div></div><canvas class="flot-overlay" width="348" height="150" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 465px; height: 200px;"></canvas></div>
-                    </div><!-- panel-body -->
-                    <div class="panel-footer">
-                        <div class="tinystat pull-left">
-                            <div id="sparkline5" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Average</span>
-                                <h4>37,101</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                        <div class="tinystat pull-right">
-                            <div id="sparkline6" class="chart mt5"><canvas width="59" height="30" style="display: inline-block; width: 59px; height: 30px; vertical-align: top;"></canvas></div>
-                            <div class="datainfo">
-                                <span class="text-muted">Total</span>
-                                <h4>18,899</h4>
-                            </div>
-                        </div><!-- tinystat -->
-                    </div><!-- panel-footer -->
-                </div><!-- panel -->
+            {{else}}
+            <div class="alert alert-info">
+                <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                <strong>Select Company!</strong> You could be assigned to different companies<a class="alert-link" href=""> Choose among the list above. </a>.
             </div>
+        {{/if}}
 
-        </div>
     </div><!-- contentpanel -->
 
 
@@ -173,7 +184,7 @@
                 <div class="clearfix mt20">
                     <div class="pull-left">
                         <h5 class="md-title nomargin">Employees</h5>
-                        <h4 class="nomargin">10,009</h4>
+                        <h4 class="nomargin">0</h4>
                     </div>
                     <div class="pull-right">
                         <h5 class="md-title nomargin"> Parent Company </h5>

@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">New Pay Grade</h3>
+                        <h3 class="panel-title">{{action}}</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -39,16 +39,35 @@
                                                 <textarea id="new-pay-grade-description" class="form-control" placeholder="Pay Grade description" name="description" value="{{description}}" rows="5"></textarea>
                                             </div>
                                         </div><!-- form-group -->
+
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Positions</label>
                                             <div class="col-sm-8">
-                                                <select name="positionIds" style="width: 100%" class="form-control">
-                                                    {{#each positions}}
-                                                        <option value="{{_id}}" {{selectedPositions}}>{{name}}</option>
-                                                    {{/each}}
-                                                </select>
+                                                {{#semanticselect}}
+                                                    <select name="positions" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                        <option value="">Select Pay Type</option>
+                                                        {{#each positions}}
+                                                            <option value="{{_id}}" {{selectedObj "positions"}}>{{name}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                {{/semanticselect}}
                                             </div>
                                         </div><!-- form-group -->
+
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Pay Groups</label>
+                                            <div class="col-sm-8">
+                                                {{#semanticselect}}
+                                                    <select name="paygroups" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                        <option value="">Select Pay Type</option>
+                                                        {{#each paygroup}}
+                                                            <option value="{{_id}}" {{selectedObj "payGroups"}}>{{name}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                {{/semanticselect}}
+                                            </div>
+                                        </div><!-- form-group -->
+
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Status</label>
                                             <div class="col-sm-8">
@@ -76,7 +95,7 @@
                                                         <div class="panel panel-primary">
                                                             <div class="panel-heading">
                                                                 <h4 class="panel-title">
-                                                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2" class="collapsed">
+                                                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
                                                                         Wages
                                                                     </a>
                                                                 </h4>
@@ -86,7 +105,7 @@
                                                                     {{#each paytype "Wage"}}
                                                                         <li class="list-group-item">
                                                                             <div class="ckbox ckbox-default">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >
                                                                                 <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
                                                                         </li>
@@ -98,7 +117,7 @@
                                                         <div class="panel panel-primary">
                                                             <div class="panel-heading">
                                                                 <h4 class="panel-title">
-                                                                    <a data-toggle="collapse" class="" data-parent="#accordion2" href="#collapseTwo2">
+                                                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo2" class="collapsed">
                                                                         Benefits
                                                                     </a>
                                                                 </h4>
@@ -108,7 +127,7 @@
                                                                     {{#each paytype "Benefit"}}
                                                                         <li class="list-group-item">
                                                                             <div class="ckbox ckbox-default">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >
                                                                                 <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
                                                                         </li>
@@ -130,7 +149,7 @@
                                                                     {{#each paytype "Deduction"}}
                                                                         <li class="list-group-item">
                                                                             <div class="ckbox ckbox-default">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >
                                                                                 <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
                                                                         </li>
@@ -152,7 +171,7 @@
                                                                     {{#each paytype "OneOff"}}
                                                                         <li class="list-group-item">
                                                                             <div class="ckbox ckbox-default">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment" >
+                                                                                <input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >
                                                                                 <label for="{{_id}}">{{code}} - {{title}}</label>
                                                                             </div>
                                                                         </li>
@@ -162,17 +181,6 @@
                                                         </div><!-- panel -->
 
                                                     </div><!-- panel-group -->
-                                                </div>
-                                            </div>
-                                        </div><!-- form-group -->
-                                    </div><!-- tab-pane -->
-
-                                    <div class="tab-pane" id="new-tab3-2">
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <p>This section, you determine what is shown/displayed in the payslip for this Payment Grade</p>
-                                                <div class="col-sm-12">
-
                                                 </div>
                                             </div>
                                         </div><!-- form-group -->
@@ -204,9 +212,9 @@
                                                             <td>{{derivative}}</td>
                                                             <td>
                                                                 {{#if fixed derivative}}
-                                                                    <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="value" />
+                                                                    <input type="number" placeholder="Fixed e.g 50000" class="form-control calc" name="value" value="{{value}}"/>
                                                                 {{else}}
-                                                                    <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="derivative" />
+                                                                    <input type="text" placeholder="% or Formula e.g 5 % DC1" class="form-control calc" name="derivative" value="{{value}}"/>
                                                                 {{/if}}
                                                             </td>
                                                             <td>
@@ -220,6 +228,25 @@
                                                     </tbody>
                                                 </table>
                                             </div><!-- table-responsive -->
+                                        </div><!-- form-group -->
+                                    </div><!-- tab-pane -->
+
+
+                                    <div class="tab-pane" id="new-tab3-2">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <p>This section, you determine what is shown/displayed in the payslip for this Payment Grade</p>
+                                                <div class="col-sm-12">
+                                                    {{#each assigned }}
+                                                        <li class="list-group-item">
+                                                            <div class="ckbox ckbox-default">
+                                                                <input type="checkbox" id="{{@index}}" class="payslip" checked="{{displayInSlip _id}}" >
+                                                                <label for="{{@index}}">{{code}} - {{title}}</label>
+                                                            </div>
+                                                        </li>
+                                                    {{/each}}
+                                                </div>
+                                            </div>
                                         </div><!-- form-group -->
                                     </div><!-- tab-pane -->
 

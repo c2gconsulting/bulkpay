@@ -90,6 +90,13 @@ Router.route('/business/:_id/paytypes', {
     where: 'client'
 });
 
+Router.route('/business/:_id/leavetypes', {
+    name: 'leavetypes',
+    controller: 'LeaveTypesController',
+    action: 'list',
+    where: 'client'
+});
+
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',
     controller: 'PaygradesController',
@@ -118,6 +125,18 @@ Router.route('/business/:_id/employee/new', {
     name: 'employees.create',
     controller: 'EmployeesController',
     action: 'create',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/time', {
+    name: 'employee.time',
+    controller: 'EmployeesController',
+    action: 'time',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/expense', {
+    name: 'employee.expense',
+    controller: 'EmployeesController',
+    action: 'expense',
     where: 'client'
 });
 
@@ -161,5 +180,11 @@ Router.route('/tenant/settings', {
     name: 'tenant.settings',
     controller: 'HomeController',
     action: 'settings',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/leaves', {
+    name: 'leave.list',
+    controller: 'EmployeesController',
     where: 'client'
 });

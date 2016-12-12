@@ -29,7 +29,6 @@ Template.singlePaygroup.helpers({
 });
 Template.singlePaygroup.events({
     'click .pointer': function(e, tmpl){
-        console.log(this.data);
         Modal.show('PaygroupCreate', this.data);
     }
 })

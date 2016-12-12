@@ -14,27 +14,25 @@ Core.publish("employees", function (node,businessId) {
     let nodeSelector = {};
 
     node = node == "root"? null : node;
-    console.log(node);
-    console.log(businessId);
     nodeSelector = {$and: [{"parentId": node},{otype: "Position"},{businessId: businessId}]};
 
     //get all entities of node
     let entities = EntityObjects.find(nodeSelector).map(x => {
         return x._id;
     });
-    console.log(entities);
-    selector = { "businessIds": businessId, "employeeProfile.position": {$in: entities} };
+    selector = { "businessIds": businessId, "employeeProfile.position": {$in: entities}, "employee":true };
 
     if (entities){
         //return all meteor users in that position
-        return Meteor.users.find(selector, {
+        return [Meteor.users.find(selector, {
             fields: {
                 "emails": true,
+                "employee": true,
                 "profile": true,
                 "employeeProfile": true,
                 "username": true
             }
-        });
+        }),UserImages.find({})];
     } else {
         return this.ready();
     }
@@ -42,18 +40,20 @@ Core.publish("employees", function (node,businessId) {
 });
 Core.publish("allEmployees", function (businessId) {
     this.unblock(); // eliminate wait time impact
-    let selector = { "businessIds": businessId };
+    let selector = { "businessIds": businessId, employee: true };
     check(businessId, String);
     if (businessId){
         //return all meteor users in that position
-        return Meteor.users.find(selector, {
+        return [Meteor.users.find(selector, {
             fields: {
                 "emails": true,
+                "employee": true,
                 "profile": true,
                 "employeeProfile": true,
                 "username": true
             }
-        });
+        }),
+        UserImages.find({})];
     } else {
         return this.ready();
     }

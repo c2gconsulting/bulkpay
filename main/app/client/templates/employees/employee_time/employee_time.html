@@ -1,5 +1,41 @@
 <template name="EmployeeTime">
-  <div class="employee-time">
-    <h1>Find me in app/client/templates/employees/employee_time/employee_time</h1>
-  </div>
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-calendar"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a href="">Pages</a></li>
+                    <li>Calendar</li>
+                </ul>
+                <h4>Calendar</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-md-9">
+                <div id="calendar"></div>
+            </div><!-- col-md-9 -->
+
+            <div class="col-md-3">
+                <h5 class="lg-title mb10">Last 10 Time sheets</h5>
+                <div id='external-events'>
+                    <div class='external-event'>Unpaid Leave</div>
+                    <div class='external-event'>Maternity leave</div>
+                    <div class='external-event'>My Event 3</div>
+                    <div class='external-event'>My Event 4</div>
+                    <div class='external-event'>My Event 5</div>
+                </div>
+
+            </div><!-- col-md-3 -->
+
+        </div><!-- row -->
+    </div><!-- contentpanel -->
+
+
+
 </template>

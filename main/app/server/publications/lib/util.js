@@ -8,5 +8,14 @@ _.extend(Core, {
             var bound = _.bind(callback, this);
             return bound.apply(this, arguments);
         });
+    },
+    publishComposite: function(name, callback) {
+        Meteor.publishComposite(name, function() {
+            if (!this.userId) {
+                return this.ready();
+            }
+            var bound = _.bind(callback, this);
+            return bound.apply(this, arguments);
+        });
     }
 });

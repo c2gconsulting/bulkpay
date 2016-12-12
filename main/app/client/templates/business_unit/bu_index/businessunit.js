@@ -37,18 +37,18 @@ Template.BusinessUnit.onRendered(function(){
 
         /*****SIMPLE CHART*****/
 
-        var newCust = [[0, 0], [1, 10], [2,5], [3, 12], [4, 5], [5, 8], [6, 0]];
-        var retCust = [[0, 0], [1, 8], [2,3], [3, 10], [4, 3], [5, 6], [6,0]];
+        var newCust = [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
+        var retCust = [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
 
         var plot = jQuery.plot(jQuery("#basicflot"),
             [{
                 data: newCust,
-                label: "New Customer",
+                label: "Previous Period",
                 color: "#03c3c4"
             },
                 {
                     data: retCust,
-                    label: "Returning Customer",
+                    label: "Current Period",
                     color: "#905dd1"
                 }
             ],
@@ -123,18 +123,18 @@ Template.BusinessUnit.onRendered(function(){
 
         /*****CHART 2 *****/
 
-        var visitors = [[0, 0], [1, 3], [2,2], [3, 5], [4, 4], [5, 5], [6, 0]];
-        var unique = [[0, 0], [1, 2], [2,1], [3, 3], [4, 3], [5, 4], [6,0]];
+        var visitors = [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
+        var unique = [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
 
         var plot = jQuery.plot(jQuery("#basicflot2"),
             [{
                 data: visitors,
-                label: "Visits",
+                label: "Previous Period",
                 color: "#428bca"
             },
                 {
                     data: unique,
-                    label: "Unique Visits",
+                    label: "Current Period",
                     color: "#b830b3"
                 }
             ],
@@ -209,18 +209,18 @@ Template.BusinessUnit.onRendered(function(){
 
         /*****CHART 3 *****/
 
-        var impressions =       [[0, 0], [1, 5], [2,2], [3, 7], [4, 4], [5, 5], [6, 0]];
-        var uniqueimpressions = [[0, 0], [1, 2], [2,1], [3, 6], [4, 3], [5, 4], [6,0]];
+        var impressions =       [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
+        var uniqueimpressions = [[0,1], [1, 1], [2,1], [3, 1], [4, 1], [5, 1], [6, 1]];
 
         var plot = jQuery.plot(jQuery("#basicflot3"),
             [{
                 data: impressions,
-                label: "Impressions",
+                label: "Previous Period",
                 color: "#905dd1"
             },
                 {
                     data: uniqueimpressions,
-                    label: "Unique Impressions",
+                    label: "Current Period",
                     color: "#428bca"
                 }
             ],
@@ -387,6 +387,10 @@ Template.singleBu.helpers({
 Template.singleBu.events({
     'click .pointer': function(e) {
         e.preventDefault();
-        Router.go('bu.details', this.data);
+        //check if permissions // route default to employee time
+        //Router.go('bu.details', this.data);
+        Router.go('employee.time', this.data);
+
+
     }
 });

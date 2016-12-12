@@ -112,13 +112,17 @@ Template.Node.helpers({
         return Session.get('context');
     },
     'employees': () => {
-        return Meteor.users.find();
+        return Meteor.users.find({employee: true});
     },
     'positionName': (positionId) => {
         return EntityObjects.findOne({"_id": positionId}).name
     },
     'unitHead': (positionId) => {
         return !!EntityObjects.findOne({"_id": positionId}).unitHead == true? "hod":"";
+    },
+    "images": (id) => {
+        return UserImages.findOne({_id: id});
+
     }
 });
 

@@ -14,7 +14,14 @@ Template.Employees.events({
 /*****************************************************************************/
 Template.Employees.helpers({
     'employees': function(){
-        return Meteor.users.find({});
+        return Meteor.users.find({"employee": true});
+    },
+    "images": (id) => {
+        return UserImages.findOne({_id: id});
+
+    },
+    "getName": (id) => {
+        console.log(id);
     }
 });
 
@@ -31,3 +38,4 @@ Template.Employees.onRendered(function () {
 
 Template.Employees.onDestroyed(function () {
 });
+

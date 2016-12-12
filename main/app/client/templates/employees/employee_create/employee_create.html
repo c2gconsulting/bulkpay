@@ -30,9 +30,11 @@
                 <ul class="nav nav-tabs nav-line">
                     <li class="active"><a href=".personal" data-toggle="tab"><strong>Personal Details</strong></a></li>
                     <li><a href=".nextOfKin" data-toggle="tab"><strong>Next Of Kin</strong></a></li>
+                    <li><a href=".emergencyContact" data-toggle="tab"><strong>Emergency Contact</strong></a></li>
                     <li><a href=".employment" data-toggle="tab"><strong>Employment Details </strong></a></li>
                     <li><a href=".payment" data-toggle="tab"><strong>Payment Details</strong></a></li>
                     <li><a href=".payroll" data-toggle="tab"><strong>Payroll Details</strong></a></li>
+                    <li><a href=".summary" data-toggle="tab"><strong>Summary</strong></a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -109,7 +111,7 @@
                                             <div class="">
                                                 <label for="gender" class="col-sm-4 control-label">Gender</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control selectpicker" data-live-search="true" name="gender">
+                                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="gender">
                                                         <option value="Male" selected>Male</option>
                                                         <option value="Female">Female</option>
                                                     </select>
@@ -118,7 +120,7 @@
                                             <div class="">
                                                 <label for="maritalStatus" class="col-sm-4 control-label">Marital Status</label>
                                                 <div class="col-sm-8">
-                                                    <select class="form-control selectpicker" data-live-search="true" name="mar italStatus">
+                                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="mar italStatus">
                                                         <option value="Male" selected>Single</option>
                                                         <option value="Female">Maried</option>
                                                     </select>
@@ -130,14 +132,25 @@
                                                     <input name="phone" type="tel" id="employee-phone" placeholder="Phone Number" class="form-control"/>
                                                 </div>
                                             </div>
+
+                                            <div class="">
+                                                <label class="col-sm-4 control-label">Country</label>
+                                                <div class="col-sm-8">
+                                                    <select name="nationality" class="form-control selectpicker dropdown" data-live-search="true" >
+                                                        {{#each countries}}
+                                                            <option value="{{ccode}}" {{defaultCountry ccode}}>{{cname}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                             <div class="">
                                                 <label class="col-sm-4 control-label">State</label>
                                                 <div class="col-sm-8">
-                                                    <select name="state" class="form-control selectpicker" data-live-search="true">
-                                                        <option value="Abia">Abia</option>
-                                                        <option value="Adamawa">Adamawa</option>
-                                                        <option value="Akwa-Ibom">Akwa-Ibom</option>
-                                                        <option value="Anambra">Anambra</option>
+                                                    <select name="state" class="form-control selectpicker dropdown" data-live-search="true">
+                                                        {{#each states}}
+                                                            <option value="{{code}}">{{name}}</option>
+                                                        {{/each}}
                                                     </select>
                                                 </div>
                                             </div>
@@ -219,11 +232,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">State</label>
                                         <div class="col-sm-4">
-                                            <select name="guarantor.state" class="form-control selectpicker" data-live-search="true">
-                                                <option value="Abia">Abia</option>
-                                                <option value="Adamawa">Adamawa</option>
-                                                <option value="Akwa-Ibom">Akwa-Ibom</option>
-                                                <option value="Anambra">Anambra</option>
+                                            <select name="guarantor.state" class="form-control selectpicker dropdown" data-live-search="true">
+                                                {{#each states}}
+                                                    <option value="{{code}}">{{name}}</option>
+                                                {{/each}}
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
@@ -239,6 +251,93 @@
                     </div>
                     <!-- tab-pane -->
 
+
+                    <div class="tab-pane emergencyContact" id="nextOfKin">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Emergency Contact</h4>
+                            </div>
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
+                                <form class="form-horizontal form-bordered">
+                                    <div class="form-group">
+                                        <label for="employee-contact-name" class="col-sm-4 control-label">Full
+                                            Name</label>
+                                        <div class="col-sm-4">
+                                            <input name="contact.fullName" id="employee-contact-name" type="text" placeholder="Contacts Full Name" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="employee-contact-email"
+                                               class="col-sm-4 control-label">Email</label>
+                                        <div class="col-sm-4">
+                                            <input name="contact.email" id="employee-contact-email" type="email" placeholder="Contact's Email" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="employee-contact-phone" class="col-sm-4 control-label">Phone
+                                            Number</label>
+                                        <div class="col-sm-4">
+                                            <input name="contact.phone" id="employee-contact-phone" type="tel" placeholder="Contact's Phone" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="employee-contact-address"
+                                               class="col-sm-4 control-label">Address</label>
+                                        <div class="col-sm-4">
+                                            <textarea name="contact.address" id="employee-contact-address" class="form-control" rows="5"></textarea>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="employee-guarantor-city" class="col-sm-4 control-label">City</label>
+                                        <div class="col-sm-4">
+                                            <input name="contact.city" id="employee-contact-city" type="text" placeholder="Contact City" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">State</label>
+                                        <div class="col-sm-4">
+                                            <select name="contact.state" class="form-control selectpicker dropdown" data-live-search="true">
+                                                {{#each states}}
+                                                    <option value="{{code}}">{{name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- panel-body -->
+                        </div>
+                        <!-- panel -->
+                    </div>
+                    <!-- tab-pane -->
+
+
                     <div class="tab-pane employment" id="followers">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -251,7 +350,8 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Position</label>
                                         <div class="col-sm-4">
-                                            <select name="position" style="width: 100%" class="form-control">
+                                            <select name="position" style="width: 100%" class="form-control dropdown">
+                                                <option value="">Unassigned</option>
                                                 {{#each positions}}
                                                     <option value="{{_id}}">{{name}}</option>
                                                 {{/each}}
@@ -263,6 +363,22 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{#if selectedPosition}}
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">PayGrade</label>
+                                            <div class="col-sm-4">
+                                                {{#each grades}}
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="paygrade" value="{{_id}}"> {{code}}
+                                                    </label>
+                                                {{/each}}
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{/if}}
 
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Hire Date</label>
@@ -291,7 +407,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Status</label>
                                         <div class="col-sm-4">
-                                            <select name="status" style="width: 100%" class="form-control">
+                                            <select name="status" style="width: 100%" class="form-control dropdown">
                                                 <option value="Active">Active</option>
                                                 <option value="Inactive">Inactive</option>
                                             </select>
@@ -333,9 +449,10 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Payment Method</label>
                                         <div class="col-sm-4">
-                                            <select name="paymentMethod" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
+                                            <select name="paymentMethod" style="width: 100%" class="form-control dropdown">
+                                                <option value="Cash">Cash</option>
+                                                <option value="Cheque">Cheque</option>
+                                                <option value="Bank Account">Bank Account</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
@@ -346,9 +463,11 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Bank</label>
                                         <div class="col-sm-4">
-                                            <select name="bank" style="width: 100%" class="form-control">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
+                                            <select name="bank" style="width: 100%" class="form-control dropdown">
+                                                <option value="Ecobank Nigeria Plc">Ecobank Nigeria Plc</option>
+                                                <option value="Equitorial Trust Bank Limited">Equitorial Trust Bank Limited</option>
+                                                <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
+                                                <option value="First Bank of Nigeria Plc">First Bank of Nigeria Plc</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
@@ -379,7 +498,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Pension Manager</label>
                                         <div class="col-sm-4">
-                                            <select name="pensionmanager" style="width: 100%" class="form-control">
+                                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
                                                 <option value="option1">option1</option>
                                                 <option value="option2">option2</option>
                                             </select>
@@ -404,113 +523,52 @@
 
                     </div><!-- tab-pane -->
 
-                    <div class="tab-pane payroll" id="events">
+                    <div class="tab-pane payroll" id="payroll">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h4 class="panel-title">Payroll Details</h4>
+                                <h4 class="panel-title">Payment Details</h4>
                             </div>
                             <!-- panel-heading -->
                             <div class="panel-body nopadding">
-                                <form class="form-horizontal form-bordered">
+                                <div class="table-responsive">
+                                    <table class="table table-primary mb30 calc">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Payment Code</th>
+                                            <th>Description</th>
+                                            <th>assigned Value</th>
+                                            <th>Amount(If Editable per Employee)</th>
+                                            <th>Employee Calculated</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {{#each assignable}}
+                                            <tr>
+                                                <td>{{increment @index}}</td>
+                                                <td>{{code}}</td>
+                                                <td>{{title}}</td>
+                                                <td>{{value}}</td>
+                                                <td><input type="text" value="{{inputed}}" class="payAmount form-group" id="{{_id}}" {{disabled _id}}></td>
+                                                <td>{{parsedValue}}</td>
+                                            </tr>
+                                        {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!-- panel-body -->
+                        </div><!-- panel -->
+                    </div><!-- tab-pane -->
 
-                                    <div class="form-group">
+                    <div class="tab-pane summary" id="summary">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Employee Summary</h4>
+                            </div>
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
 
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <h6>&nbsp;Wages</h6>
-                                            </div>
-                                            <div class="col-sm-12">
-
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-
-                                                    <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a class="fa fa-plus pointer" style="vertical-align:middle;" id="addWage">&nbsp;[add wage]</a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <h6>&nbsp;Benefits</h6>
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <!-- Enter blase template to loop through Employee benefits-->
-
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-
-                                                    <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a id="addBenefit" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add benefit]</a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <h6>&nbsp;Deductions</h6>
-                                            </div>
-                                            <div class="col-sm-12">
-
-                                                <div class="row">
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-
-                                                    <div class="col-sm-4 text-right">
-                                                        <span class="help-block"><a id="addDeduction" class="fa fa-plus pointer" style="vertical-align:middle;">&nbsp;[add deduction]</a></span>
-                                                    </div>
-                                                    <div class="col-sm-4">
-                                                        &nbsp;
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-sm-6">
-                                                <h5><a class="pointer" id="prepareSummary" data-toggle="modal" data-target=".payroll-summary">View Payroll Summary</a></h5>
-                                            </div>
-                                            <div class="col-sm-6">
-                                                <h5 class="text-right"><a class="pointer" data-toggle="modal" data-target=".restore-removed">Restore</a></h5>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="form-group">
-                                        <div class="col-md-12">
-                                            <ul class="list-unstyled wizard">
-                                                <li class="pull-right">
-                                                    <button type="button" class="btn btn-primary" id="createEmployee">Save</button>
-                                                </li>
-                                            </ul>
-                                        </div><!-- col-md-12 -->
-                                    </div>
-                                </form>
+                                <span id="createEmployee" class="btn btn-warning pull-right">Create Employee</span>
                             </div><!-- panel-body -->
                         </div><!-- panel -->
                     </div><!-- tab-pane -->

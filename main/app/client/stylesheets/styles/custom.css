@@ -134,6 +134,11 @@ ul {
     padding: 5px;
 }
 
-
+.panel-icon {
+    padding-right: 74px;
+}
+.msg-list .media-object{
+    width: 50px !important;
+}
 
 
