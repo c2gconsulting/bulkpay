@@ -9,7 +9,7 @@ Template.LeaveTypeCreate.events({
 /*****************************************************************************/
 Template.LeaveTypeCreate.helpers({
     leaveTypes: function () {
-        let leaveTypes = [{name: "maternity leave", _id: "234342342"},{name: "maternity not leave", _id: "234ere342342"}]//LeaveTypes.find().fetch();
+        let leaveTypes = LeaveTypes.find().fetch();
         let returnedArray = [];
         _.each(leaveTypes, function(leave){
             returnedArray.push({label: leave.name, value: leave._id})
@@ -17,14 +17,31 @@ Template.LeaveTypeCreate.helpers({
         return returnedArray
     },
     'payGrades': () => {
-        return [{label:'expat', value:'expat'},{label:'national', value:'national'},{label:'allpaygrades', value:'allpaygrades'}];
+        return PayGrades.find().fetch().map(x => {
+            return {label: x.code, value: x._id}
+        })
 
     },
     'positions': () => {
-        return [{label:'hrs', value:'hrs'},{label:'md', value:'md'},{label:'group', value:'group'}];
+        return EntityObjects.find().fetch().map(x => {
+            return {label: x.name, value: x._id}
+        })
     },
     'gender': () => {
-        return [{label:'Male', value:'Male'},{label:'Female', value:'Female'},{label:'all', value:'Allgenders'}];
+        return [{label:'Male', value:'Male'},{label:'Female', value:'Female'},{label:'all', value:'All'}];
+    },
+    'formAction': () => {
+        if(Template.instance().data)
+            return "update";
+        return "insert";
+    },
+    'formType': () => {
+        if(Template.instance().data)
+            return "leavesTypesForm";
+        return "updateLeaveTypesForm";
+    },
+    'data': () => {
+        return Template.instance().data? true:false;
     }
 });
 
@@ -35,6 +52,10 @@ Template.LeaveTypeCreate.helpers({
 Template.LeaveTypeCreate.onCreated(function () {
     let self = this;
     self.profile = new ReactiveDict();
+    //subscribe to positions and paygrades
+    self.subscribe('getPositions', Session.get('context'));
+    self.subscribe('paygrades', Session.get('context'));
+    
 });
 
 Template.LeaveTypeCreate.onRendered(function () {
@@ -42,7 +63,7 @@ Template.LeaveTypeCreate.onRendered(function () {
     $('select.dropdown').dropdown();
 
     let start = $("#startDate").val();
-    let end = $("#endDate").val()
+    let end = $("#endDate").val();
     if (start && end){
         start = moment(start);
         end = moment(end);

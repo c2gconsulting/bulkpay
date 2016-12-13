@@ -15,6 +15,7 @@ Core.Schemas.LeaveType = new SimpleSchema({
     },
     positionIds: {
         type: [String],
+        label: "Positions",
         optional: true
     },
     gender: {
@@ -22,13 +23,18 @@ Core.Schemas.LeaveType = new SimpleSchema({
         allowedValues: ['Male', 'Female', 'All'],
         optional: true
     },
-    payGradeId: {
-        type: String,
+    payGradeIds: {
+        type: [String],
+        label: "Pay Grades",
         optional: true
     },
     maximumDuration: {
         type: String,
         optional: true
+    },
+    paid: {
+        type: Boolean,
+        defaultValue: true
     },
     businessId: {
         type: String,
@@ -42,7 +48,7 @@ Core.Schemas.LeaveType = new SimpleSchema({
         allowedValues: ['Active', 'Inactive'],
         optional: true
     },
-    notAllowedOn: {
+    deductFrom: {
         type: [String],
         optional: true
     },
@@ -97,7 +103,6 @@ Core.Schemas.Leave = new SimpleSchema({
                 startDate = moment(startDate);
                 endDate = moment(endDate);
                 var duration = endDate.diff(startDate, 'days');
-                console.log(duration)
                 return duration;
             }
         },
@@ -105,7 +110,24 @@ Core.Schemas.Leave = new SimpleSchema({
     },
     type: {
         type: String,
-        optional: true
+        custom: function () {
+            if (Meteor.isClient && this.isSet) {
+                let selectedType = this.value;
+                let duration = parseInt(this.siblingField("duration").value);
+                let selectedQuota = parseInt(LeaveTypes.findOne({_id: selectedType}).maximumDuration);
+                console.log(selectedQuota);
+                if(duration > selectedQuota){
+                    console.log("got here");
+                    Core.Schemas.Leave.namedContext('leavesForm').addInvalidKeys([{name: "type", type: "ExceededDays" }]);
+                }
+                //Meteor.call("accountsIsUsernameAvailable", this.value, function (error, result) {
+                //    if (!result) {
+                //        Meteor.users.simpleSchema().namedContext("createUserForm").addInvalidKeys([{name: "username", type: "notUnique"}]);
+                //    }
+                //});
+            }
+        }
+
     },
     description: {
         type: String,

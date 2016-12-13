@@ -655,5 +655,21 @@ _.extend(Core, {
             {"code": "Zamfara", "name": "Zamfara"}
         ]
 
+    },
+    'months': function(){
+        return [
+            {name:'January',period: '01'},
+            {name:'February',period: '02'},
+            {name:'March',period: '03'},
+            {name:'April',period: '04'},
+            {name:'May',period: '05'},
+            {name:'June',period: '06'},
+            {name:'July',period: '07'},
+            {name:'August',period: '08'},
+            {name:'September',period: '09'},
+            {name:'October',period: '10'},
+            {name:'November',period: '11'},
+            {name:'December',period: '12'}
+        ];
     }
 });

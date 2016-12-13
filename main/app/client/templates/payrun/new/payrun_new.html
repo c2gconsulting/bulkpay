@@ -49,7 +49,7 @@
                                                         <div class="form-group">
                                                             <select name="paymentPeriod.month" class="form-control" style="width: 100%">
                                                                 {{#each month}}
-                                                                    <option value="{{this}}">{{this}}</option>
+                                                                    <option value="{{period}}">{{name}}</option>
                                                                 {{/each}}
                                                             </select>
                                                         </div><!-- form-group -->
@@ -64,7 +64,7 @@
                                                         </div><!-- form-group -->
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <button class="btn btn-primary" ng-click="startProcessing()">Process Payrun</button>
+                                                        <button class="btn btn-primary" id="startProcessing">Process Payrun</button>
                                                     </div>
                                                 </div>
                                             </div>

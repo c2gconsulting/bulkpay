@@ -22,3 +22,26 @@ Core.publish("LeaveTypes", function (filter, limit, sort) {
     return this.ready();
     //enhnace this method..
 });
+
+
+Core.publish("employeeLeaveTypes", function (bid) {
+    let user = this.userId;
+    if(bid && user){
+        let found = Meteor.users.findOne({_id: user});
+        if(found.employee){
+            let positions = found.employeeProfile.employment.position;
+            let paygrade = found.employeeProfile.employment.paygrade;
+            //return leavetypes of user in either positions or paygrades
+            return LeaveTypes.find({$or: [{positionIds: positions}, {payGradeIds: paygrade}]})
+        }
+    }
+    return this.ready();
+});
+
+Core.publish("employeeLeaves", function (bid, limit, sort) {
+    let user = this.userId;
+    if(bid && user){
+        return Leaves.find({businessId: bid, employeeId: user})
+    }
+    return this.ready();
+});

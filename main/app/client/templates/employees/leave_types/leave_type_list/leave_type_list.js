@@ -66,5 +66,5 @@ Template.LeaveTypeList.onDestroyed(function () {
 
 
 function getLimit() {
-    return 10;
+    return 5;
 }

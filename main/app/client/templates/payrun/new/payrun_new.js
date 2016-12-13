@@ -9,20 +9,7 @@ Template.PayrunNew.events({
 /*****************************************************************************/
 Template.PayrunNew.helpers({
     'month': function(){
-        return [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ];
+        return Core.months()
     },
     'year': function(){
         let years = [];

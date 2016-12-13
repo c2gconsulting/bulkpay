@@ -2,6 +2,11 @@
 /* LeaveTypeEntry: Event Handlers */
 /*****************************************************************************/
 Template.LeaveTypeEntry.events({
+    'click .pointer': (e,tmpl) => {
+        console.log(tmpl.data);
+        Modal.show('LeaveTypeCreate', tmpl.data);
+        //swal("you clicked pointer", this, "success");
+    }
 });
 
 /*****************************************************************************/

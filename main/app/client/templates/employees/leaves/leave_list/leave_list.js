@@ -34,9 +34,8 @@ Template.LeaveList.onCreated(function () {
         let sortDirection =  -1;
         let sort = {};
         sort[sortBy] = sortDirection;
-        
-        let subscription = Meteor.subscribe('Leaves', {businessId: instance.data._id}, limit, sort);
-        
+        let subscription = instance.subscribe('employeeLeaves', Session.get('context'), limit, sort);
+
 
         // if subscription is ready, set limit to newLimit
         if (subscription.ready()) {
