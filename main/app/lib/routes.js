@@ -133,6 +133,11 @@ Router.route('/business/:_id/employee/time', {
     action: 'time',
     where: 'client'
 });
+Router.route('/business/:_id/projects', {
+    name: 'project.list',
+    controller: 'EmployeesController',
+    where: 'client'
+});
 Router.route('/business/:_id/employee/expense', {
     name: 'employee.expense',
     controller: 'EmployeesController',

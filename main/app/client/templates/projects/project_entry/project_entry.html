@@ -1,0 +1,45 @@
+<template name="ProjectEntry">
+    <div class="list-group contact-group pointer">
+        <a href="#" class="list-group-item">
+            <div class="media">
+                <div class="media-body">
+                    <div class="media-content">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="media-manager-sidebar">
+                                    <h5 class="lg-title projectName">{{name}}</h5>
+                                    <span class="tag-list">
+                                        <p>{{description}}</p>
+                                        <ul class="list-unstyled">
+                                            <li><span class="label label-{{active status}}">{{status}}</span></li>
+                                        </ul>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="media-manager-sidebar">
+                                    <h5 class="lg-title">Assigned Positions</h5>
+                                    <ul class="tag-list">
+                                        {{#each positionIds}}
+                                            <li><a href="">{{name this}}</a></li>
+                                        {{/each}}
+                                    </ul>
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="media-manager-sidebar">
+                                    <h5 class="lg-title">Actions</h5>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default btn-sm" type="button" id="edit"><i class="fa fa-pencil mr5"></i> Edit</button>
+                                        <button class="btn btn-default btn-sm" type="button" id="delete" ><i class="fa fa-trash-o mr5"></i> Delete</button>
+                                    </div>
+                                </div><!-- btn-toolbar -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- media -->
+        </a><!-- list-group -->
+    </div><!-- list-group -->
+</template>

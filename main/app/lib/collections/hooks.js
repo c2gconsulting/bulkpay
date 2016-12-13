@@ -30,6 +30,22 @@ if (Meteor.isClient){
             onError: function(operation, error, template) {
                 console.log(error)
             }
+        },
+        projectForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('ProjectCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
+        },
+        updateProjectForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('ProjectCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
         }
     });
 }

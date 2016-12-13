@@ -23,7 +23,7 @@ Meteor.methods({
 
         let existingelemscount = EntityObjects.find({parentId:obj.parentId}).count();
         let order = (existingelemscount+1)*10;
-        EntityObjects.insert({parentId:obj.parentId, name:obj.name, otype:obj.otype, businessId: obj.businessId, order: order});
+        EntityObjects.insert({parentId:obj.parentId, name:obj.name, otype:obj.otype, businessId: obj.businessId, order: order,properties:obj.properties});
         //{ "_id" : "LG", "parent" : "Electronics", "someadditionalattr" : "test", "order" : 40 }
         return true;
     },

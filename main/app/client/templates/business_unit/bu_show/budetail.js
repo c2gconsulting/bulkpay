@@ -55,10 +55,10 @@ Template.BuDetail.onRendered(function(){
                 //});
                 //var infoMenu = '<div class="info-menu"><img class="avatar" src="/img/avatar/1.jpg"></div>';
 
-                var infoMenu = '<div class="acMenu drill-icon info"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
-                    + '<i class="fa fa-cog"></i></a><ul class="dropdown-menu pull-right" role="menu"><li><a href="#" data-toggle="tooltip" title="Create Menu" class="addnode">Create Object</a></li><li><a href="#" class="editnode">Edit Object</a></li>'
-                    + '<li><a href="#" class="deletenode">Delete</a></li></ul></div>';
-                $node.append(infoMenu);
+                //var infoMenu = '<div class="acMenu drill-icon info"><a class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
+                //    + '<i class="fa fa-cog"></i></a><ul class="dropdown-menu pull-right" role="menu"><li><a href="#" data-toggle="tooltip" title="Create Menu" class="addnode">Create Object</a></li><li><a href="#" class="editnode">Edit Object</a></li>'
+                //    + '<li><a href="#" class="deletenode">Delete</a></li></ul></div>';
+                //$node.append(infoMenu);
 
             }
         })

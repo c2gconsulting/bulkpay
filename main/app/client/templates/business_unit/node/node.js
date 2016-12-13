@@ -55,7 +55,7 @@ Template.Node.events({
                     swal("Deleted!", "Node deleted" , "success");
                 } else {
                     console.log(err);
-                    swal("Deleted!", err , "Error");
+                    swal("Deleted!", err , "error");
                 }
             })
 
@@ -89,7 +89,7 @@ Template.Node.helpers({
         console.log(nodeProp);
         return nodeProp;
     },
-    'nodeProperties': () => {
+    'properties': () => {
 
     },
 

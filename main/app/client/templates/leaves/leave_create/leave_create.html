@@ -2,7 +2,7 @@
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {{#autoForm collection="Leaves" id="leavesForm" type="insert" }}
+                {{#autoForm collection="Leaves" id=formType doc=this type=formAction }}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Apply for Leave</h3>

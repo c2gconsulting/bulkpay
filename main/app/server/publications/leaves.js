@@ -41,7 +41,13 @@ Core.publish("employeeLeaveTypes", function (bid) {
 Core.publish("employeeLeaves", function (bid, limit, sort) {
     let user = this.userId;
     if(bid && user){
-        return Leaves.find({businessId: bid, employeeId: user})
+        let cursor = Leaves.find({businessId: bid, employeeId: user});
+        let leaves = _.uniq(cursor.fetch().map(x => {
+            if(x.type && x.type !== undefined)
+                return x.type;
+        }));
+        console.log(leaves);
+        return [cursor, LeaveTypes.find({_id: {$in: leaves}})];
     }
     return this.ready();
 });

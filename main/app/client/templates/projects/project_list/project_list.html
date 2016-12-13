@@ -1,0 +1,30 @@
+<template name="ProjectList">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Projects</a></li>
+                    <li>Manage Projects</li>
+                </ul>
+                <h4>Projects <span class="mb20 pull-right" id="createProject"><a class="btn btn-primary">New Project</a></span></h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <br>
+                <h3 class="xlg-title">All Projects</h3>
+                {{#each project}}
+                    {{> ProjectEntry }}
+                {{/each}}
+            </div>
+        </div>
+    </div><!-- contentpanel -->
+</template>

@@ -276,6 +276,13 @@ LeaveTypes = new Mongo.Collection("leavetypes");
 Partitioner.partitionCollection(LeaveTypes);
 LeaveTypes.attachSchema(Core.Schemas.LeaveType);
 
+/**
+ * Core Collections Projects
+ */
+Projects = new Mongo.Collection("projects");
+Partitioner.partitionCollection(Projects);
+Projects.attachSchema(Core.Schemas.Project);
+
 
 LeaveTypes.allow({
     insert: function(userId, doc) {
@@ -296,5 +303,16 @@ Leaves.allow({
     update: function(userId, doc) {
         // only allow updating if you are logged in
         return doc.employeeId === Meteor.userId()
+    }
+});
+
+Projects.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return Core.hasTimeManageAccess(Meteor.userId());
+    },
+    update: function(userId, doc){
+        //only allow if user has Admin access
+        return Core.hasTimeManageAccess(Meteor.userId());
     }
 });

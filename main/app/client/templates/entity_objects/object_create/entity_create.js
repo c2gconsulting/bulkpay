@@ -13,7 +13,8 @@ Template.EntityCreate.events({
             name: $('[name="name"]').val(),
             parentId: getParent($('[name="level"]:checked').val()),
             otype: $('[name="otype"]').val(),
-            status: $('[name="status"]').val()
+            status: $('[name="status"]').val(),
+            properties: getProp()
         };
         function getParent(val) {
             if (!Template.instance().isroot.get()) {
@@ -22,16 +23,20 @@ Template.EntityCreate.events({
                 switch (val) {
                     case "sibling":
                         //parent id = entity.parent
-                        console.log(entity.parentId, " AS RETURND ", val);
                         return entity.parentId;
                     case  "child":
                         return entity._id;
-                        console.log(entity._id, "AS RETURNED ", val);
                 }
             }else {
                 return null;
             }
 
+        };
+        function getProp(){
+           let prop = {};
+            prop.supervisor =  $('[name="supervisor"]').val();
+            prop.alternateSupervisor =  $('[name="alternateSupervisor"]').val();
+            return prop;
         };
         if(tmpl.data.edit === "true"){//edit action for updating paytype
             const ptId = tmpl.data._id;
@@ -74,12 +79,11 @@ Template.EntityCreate.events({
         }
     },
     'change [name=otype]': (e, tmpl ) => {
-        console.log($(e.target).val());
-        //if ( $( event.target ).val() === 'show' ) {
-        //    template.templateDictionary.set( 'showExtraFields', true );
-        //} else {
-        //    template.templateDictionary.set( 'showExtraFields', false );
-        //}
+        if ( $(e.target ).val() === 'Position' ) {
+            tmpl.showProp.set(true);
+        } else {
+            tmpl.showProp.set(false);
+        }
     }
 });
 
@@ -110,6 +114,12 @@ Template.EntityCreate.helpers({
         //if(Template.instance().data)
         //    return Template.instance().data.isBase ? true:false;
         //return false;
+    },
+    'selectedPos': () => {
+        return Template.instance().showProp.get();
+    },
+    'positions': () => {
+       return EntityObjects.find({otype: "Position"})
     }
 });
 
@@ -119,17 +129,21 @@ Template.EntityCreate.helpers({
 Template.EntityCreate.onCreated(function () {
     //node root means company level parent id = null
     let self = this;
+    self.showProp = new ReactiveVar();
     let baseCompany = self.data.node === "root";
     //set reactiveVar to indicate node selection
     self.isroot = new ReactiveVar( baseCompany );
     if(!baseCompany){
         self.subscribe("getEntity", self.data.node).wait;
     }
+    self.subscribe("getPositions", Session.get('context'));
 
 
 });
 
 Template.EntityCreate.onRendered(function () {
+    //init dropdown
+    $('select.dropdown').dropdown();
 });
 
 Template.EntityCreate.onDestroyed(function () {

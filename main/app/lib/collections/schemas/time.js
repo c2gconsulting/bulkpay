@@ -4,37 +4,27 @@
  */
 
 
-Core.Schemas.LeaveType = new SimpleSchema({
+Core.Schemas.Time = new SimpleSchema({
     _id: {
         type: String,
         optional: true
     },
-    name: {
+    employeeId: {
         type: String,
-        optional: true
-    },
-    positionIds: {
-        type: [String],
-        label: "Positions",
-        optional: true
-    },
-    gender: {
-        type: String,
-        allowedValues: ['Male', 'Female', 'All'],
-        optional: true
-    },
-    payGradeIds: {
-        type: [String],
-        label: "Pay Grades",
-        optional: true
-    },
-    maximumDuration: {
-        type: String,
-        optional: true
-    },
-    paid: {
-        type: Boolean,
-        defaultValue: true
+        index: 1,
+        autoform: {
+            type: "hidden",
+            label: false
+        },
+        autoValue: function() {
+            if (this.isInsert) {
+                if (this.isSet && Meteor.isServer) {
+                    return this.value;
+                } else {
+                    return this.userId;
+                }
+            }
+        }
     },
     businessId: {
         type: String,
@@ -42,16 +32,59 @@ Core.Schemas.LeaveType = new SimpleSchema({
             return BusinessUnits.findOne()._id
         }
     },
+    project: {
+        type: String
+    },
+    activity:{
+        type: String
+    },
+    startTime: {
+        type: Date,
+        autoform: {
+            afFieldInput: {
+                class: 'calendar datepicker',
+                type: "bootstrap-datetimepicker"
+            }
+        }
+    },
+    endTime: {
+        type: Date,
+        autoform: {
+            afFieldInput: {
+                class: 'calendar datepicker',
+                type: "bootstrap-datetimepicker"
+            }
+        }
+    },
+    duration: {
+        type: Number,
+        autoform: {
+            readonly: true
+        },
+        autoValue:function(){
+            let startDate = this.field("startTime").value;
+            let endDate = this.field("endTime").value;
+            if (startDate && endDate){
+                startDate = moment(startDate);
+                endDate = moment(endDate);
+                var duration = moment.utc(startDate.diff(endDate)).format("HH:mm:ss");
+                return duration;
+            }
+        },
+        optional: true
+    },
     status: {
         type: String,
-        defaultValue: 'Active',
-        allowedValues: ['Active', 'Inactive'],
+        defaultValue: 'Open',
+        allowedValues: ['Approved', 'Open', "Rejected"],
         optional: true
     },
-    deductFrom: {
-        type: [String],
+    approvedBy: {
+        type: String,
+        regEx: SimpleSchema.RegEx.Id,
         optional: true
     },
+
     createdAt: {
         type: Date,
         autoValue: function () {
@@ -66,7 +99,7 @@ Core.Schemas.LeaveType = new SimpleSchema({
         denyUpdate: true
     }
 
-})
+});
 
 Core.Schemas.Leave = new SimpleSchema({
     _id: {

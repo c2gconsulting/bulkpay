@@ -4,6 +4,7 @@
         <div class="panel-body">
             {{#if Template.subscriptionsReady}}
                 {{#with node}}
+
                     <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm">
                         <div class="avatar text-center">
 
@@ -11,55 +12,63 @@
 
                         </div>
                     </div>
+
                     <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                        <h2 class="name mt0 fs28">{{name}}<br><small>{{otype}}</small></h2>
-                        <div>
-                            <div class="panel panel-success-head widget-todo">
-                                <div class="col-sm-6">
-                                    <div class="pull-right">
-                                        <a title="" class="dropdown-toggle" data-toggle="dropdown" href="" ><i class="glyphicon glyphicon-cog"></i></a>
-                                        <a title="" data-toggle="tooltip" class="tooltips addnode" id="addnode" href="" data-original-title="Add New"><i class="glyphicon glyphicon-plus"></i></a>
-                                        <ul class="dropdown-menu pull-right" role="menu">
-                                            <li><a href="#" class="editnode">Edit</a></li>
-                                            <li><a href="#">Add Feature</a></li>
-                                            <li><a href="#">Assign User</a></li>
-                                            <li><a href="#">Move to Folder</a></li>
-                                            <li class="divider"></li>
-                                            <li><a href="#" class="deletenode">Delete</a></li>
-                                        </ul>
-                                    </div><!-- panel-btns -->
-                                    <h3 class="panel-title">Actions</h3>
-                                </div>
+                        <div class="panel panel-success-head widget-todo">
+                            <div class="col-sm-6">
+                                {{otype}}
+                                <h3 class="name mt0 fs28">{{name}}</h3>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-md-4 col-lg-3 col-sm-6">
-                        <div>
-                            <div class="panel">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Members</h3>
-                                </div>
-                                <ul class="panel-body list-group nopadding">
-                                    {{#each children }}
-                                        <li>
-                                            <div class="ckbox ckbox-default">
-                                                <span class="fa {{icon otype}}"></span>
-                                                <a href="/business/{{businessid}}/entity/{{_id}}"> {{name}}</a>
-                                            </div>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </div>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="media-manager-sidebar">
+
+                            <button class="btn btn-primary btn-block">Members</button>
+
+                            <div class="mb30"></div>
+
+                            <h5 class="lg-title">Decendants<a href="" class="pull-right addnode">+ Add New Member</a></h5>
+                            <ul class="folder-list">
+                                {{#each children }}
+                                    <li><a href="/business/{{businessid}}/entity/{{_id}}"><i class="fa {{icon otype}}"></i> {{name}}
+                                        <span class="pull-right">
+                                            <i class="fa fa-edit editnode"></i>
+                                            <i class="fa fa-trash-o deletenode"></i>
+                                        </span><!-- panel-btns -->
+                                    </a></li>
+                                {{/each}}
+                            </ul>
+
+                            <div class="mb30"></div>
+
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-4">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Properties</h3>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="panel panel-success-alt widget-todo">
+                            <div class="panel-heading">
+                                <div class="pull-right">
+                                    <a href="" class="tooltips mr5" data-toggle="tooltip" title="" data-original-title="Settings"><i class="glyphicon glyphicon-cog"></i></a>
+                                    <a href="" id="addnewtodo" class="tooltips" data-toggle="tooltip" title="" data-original-title="Add New"><i class="glyphicon glyphicon-plus"></i></a>
+                                </div><!-- panel-btns -->
+                                <h3 class="panel-title">Properties</h3>
+                            </div>
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div class="">
+                                        Supervisor
+                                    </div>
+                                </li>
+                                <li class="list-group-item">
+                                    <div class="">
+                                        Alternate Supervisor
+                                    </div>
+                                </li>
+
+                            </ul>
                         </div>
-                        {{#each property}}
-                            prop 1
-                        {{/each}}
+
                     </div>
                 {{/with}}
 

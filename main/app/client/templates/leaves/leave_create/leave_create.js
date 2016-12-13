@@ -15,6 +15,16 @@ Template.LeaveCreate.helpers({
             returnedArray.push({label: leave.name, value: leave._id})
         });
         return returnedArray
+    },
+    'formType': () => {
+        if(Template.instance().data)
+            return "leaveForm";
+        return "updateLeaveForm";
+    },
+    'formAction': () => {
+        if(Template.instance().data)
+            return "update";
+        return "insert";
     }
 });
 
