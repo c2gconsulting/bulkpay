@@ -281,6 +281,10 @@ LeaveTypes.allow({
     insert: function(userId, doc) {
         // only allow updating if you are logged in
         return Core.hasLeaveManageAccess(Meteor.userId());
+    },
+    update: function(userId, doc){
+        //only allow if user has Admin access
+        return Core.hasLeaveManageAccess(Meteor.userId());
     }
 });
 

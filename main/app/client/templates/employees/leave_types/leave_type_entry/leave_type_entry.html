@@ -3,14 +3,24 @@
         <a href="#" class="list-group-item">
             <div class="media">
                 <div class="media-body">
-                    <h4 class="media-heading">{{name}} <small>Software Engineer at Apple, Inc.</small></h4>
+                    <h4 class="media-heading">{{name}} <small>Does not accrue when on.</small></h4>
                     <div class="media-content">
-                        <i class="fa fa-map-marker"></i> Lagos (Inherit location if any)
+                        <div class="pull-left">
+                        <i class="fa fa-calendar-o"></i> Total number of days ({{maximumDuration}})
                         <ul class="list-unstyled">
-                            <li><i class="fa fa-skype"></i> weno.carasbong</li>
-                            <li><i class="fa fa-mobile"></i> +63 934 345 3433</li>
-                            <li><i class="fa fa-envelope-o"></i> weno.carasbong@email.com</li>
+                            <li><i class="fa fa-money"></i> {{paidUnpaid paid}}</li>
+                            <li><i class="fa fa-tasks"></i> <span class="label label-{{active status}}">{{status}}</span></li>
+                            <li><i class="fa fa-users"></i> {{gender}}</li>
                         </ul>
+                        </div>
+                        <div class="pull-right">
+                            <div class="btn-toolbar">
+                                <div class="btn-group">
+                                    <button class="btn btn-default btn-sm" type="button" id="edit"><i class="fa fa-pencil mr5"></i> Edit</button>
+                                    <button class="btn btn-default btn-sm" type="button" id="delete" ><i class="fa fa-trash-o mr5"></i> Delete</button>
+                                </div>
+                            </div><!-- btn-toolbar -->
+                        </div>
                     </div>
                 </div>
             </div><!-- media -->

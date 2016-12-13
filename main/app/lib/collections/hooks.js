@@ -22,6 +22,14 @@ if (Meteor.isClient){
             onError: function(operation, error, template) {
                 console.log(error)
             }
+        },
+        updateLeaveTypesForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('LeaveCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
         }
     });
 }

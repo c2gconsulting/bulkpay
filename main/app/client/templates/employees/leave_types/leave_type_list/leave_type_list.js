@@ -12,8 +12,11 @@ Template.LeaveTypeList.events({
 /* LeaveTypeList: Helpers */
 /*****************************************************************************/
 Template.LeaveTypeList.helpers({
-    leaveType: function() {
+    'leaveType': function() {
         return Template.instance().leaveType();
+    },
+    'leaveTypeCount': () => {
+        return LeaveTypes.find().fetch().length;
     }
 });
 
@@ -54,7 +57,7 @@ Template.LeaveTypeList.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = instance.loaded.get();
         
-        return LeaveTypes.find({businessId: instance.data._id}, options);
+        return LeaveTypes.find({}, options);
     };
 });
 
@@ -66,5 +69,5 @@ Template.LeaveTypeList.onDestroyed(function () {
 
 
 function getLimit() {
-    return 5;
+    return 20;
 }

@@ -27,8 +27,12 @@ Template.LeaveTypeCreate.helpers({
             return {label: x.name, value: x._id}
         })
     },
+
+    'status': () => {
+        return [{label: "Active", value: "Active"},{label: "Inactive", value: "Inactive"}];
+    },
     'gender': () => {
-        return [{label:'Male', value:'Male'},{label:'Female', value:'Female'},{label:'all', value:'All'}];
+        return [{label:'Male', value:'Male'},{label:'Female', value:'Female'},{label:'All', value:'All'}];
     },
     'formAction': () => {
         if(Template.instance().data)
@@ -46,6 +50,7 @@ Template.LeaveTypeCreate.helpers({
 });
 
 
+
 /*****************************************************************************/
 /* LeaveTypeCreate: Lifecycle Hooks */
 /*****************************************************************************/
@@ -55,7 +60,7 @@ Template.LeaveTypeCreate.onCreated(function () {
     //subscribe to positions and paygrades
     self.subscribe('getPositions', Session.get('context'));
     self.subscribe('paygrades', Session.get('context'));
-    
+
 });
 
 Template.LeaveTypeCreate.onRendered(function () {
@@ -70,7 +75,7 @@ Template.LeaveTypeCreate.onRendered(function () {
         let duration = end.diff(start, 'days');
         $("#duration").val(duration <= 0 ? 0 : duration)
     }
-    
+
     self.autorun(function() {
         if (!self.profile.get('duration')){
             let propertyType = self.$("#duration").val();
