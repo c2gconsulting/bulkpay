@@ -46,6 +46,22 @@ if (Meteor.isClient){
             onError: function(operation, error, template) {
                 console.log(error)
             }
+        },
+        TimeForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('TimeCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
+        },
+        updateTimeForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('TimeCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
         }
     });
 }

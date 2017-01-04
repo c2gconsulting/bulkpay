@@ -140,5 +140,8 @@ ul {
 .msg-list .media-object{
     width: 50px !important;
 }
-
+.ladda-spinner > div:first-child{
+    position: relative !important;
+    left: 50% !important;
+}
 

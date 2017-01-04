@@ -59,165 +59,33 @@ Core.publish("allEmployees", function (businessId) {
     }
 
 });
-
-
-Core.publish("SalesUsers", function (salesArea) {
+Core.publish("subUsers", function (businessId) {
     this.unblock(); // eliminate wait time impact
-
-    let selector = {};
-    if (salesArea) {
-        selector = { "salesProfile.salesAreas": salesArea };
-    }
-    return Meteor.users.find(selector, {
-        fields: {
-            "emails": true,
-            "profile": true,
-            "salesProfile": true,
-            "username": true
-        }
-    });
-});
-
-/**
- * OrderUsers
- * Publish profile of users relevant to an order
- *
- * @params {String} orderId -  view users for this order
- */
-
-Core.publish("OrderUsers", function (orderId) {
-    check(orderId, String);
-
-    // look up the order
-    let order = Orders.findOne({ _id: orderId });
-
-    if (order) {
-        let orderUsers = [order.userId, order.assigneeId];
-        _.each(order.history, function(activity) {
-            orderUsers.push(activity.userId);
+    check(businessId, String);
+    let currentId = this.userId;
+    let user = Meteor.users.findOne({_id: currentId});
+    if (user && user.employeeProfile.employment.position){
+       let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
+            return x._id
         });
-
-        _.each(order.notes, function(note) {
-            orderUsers.push(note.userId);
-        });
-
-        return Meteor.users.find({ _id: { $in: orderUsers }
-        }, {
+        //return all meteor users in that position
+        let selector = { "businessIds": businessId, employee: true, "employeeProfile.employment.position": {$in: positions} };
+        return [Meteor.users.find(selector, {
             fields: {
                 "emails": true,
+                "employee": true,
                 "profile": true,
-                "salesProfile": true,
+                "employeeProfile": true,
                 "username": true
             }
-        });
+        }),UserImages.find({})];
+    } else {
+        return this.ready();
     }
-    return this.ready();
+
 });
 
 
-
-/**
- * ReturnOrderUsers
- * Publish profile of users relevant to a return order
- *
- * @params {String} returnOrderId -  view users for this returnorder
- */
-
-Core.publish("ReturnOrderUsers", function (returnOrderId) {
-    check(returnOrderId, String);
-
-    // look up the return order
-    let returnOrder = ReturnOrders.findOne({ _id: returnOrderId });
-
-    if (returnOrder) {
-        let returnOrderUsers = [returnOrder.userId, returnOrder.assigneeId];
-        _.each(returnOrder.history, function(activity) {
-            returnOrderUsers.push(activity.userId);
-        });
-
-        _.each(returnOrder.notes, function(note) {
-            returnOrderUsers.push(note.userId);
-        });
-
-        return Meteor.users.find({ _id: { $in: returnOrderUsers }
-        }, {
-            fields: {
-                "emails": true,
-                "profile": true,
-                "salesProfile": true,
-                "username": true
-            }
-        });
-    }
-    return this.ready();
-});
-
-/**
- * InvoiceUsers
- * Publish profile of users relevant to an invoice
- *
- * @params {String} invoiceId -  view users for this invoice
- */
-
-Core.publish("InvoiceUsers", function (invoiceId) {
-    check(invoiceId, String);
-
-    // look up the order
-    let invoice = Invoices.findOne({ _id: invoiceId });
-
-    if (invoice) {
-        let invoiceUsers = [invoice.userId];
-        _.each(invoice.history, function(activity) {
-            invoiceUsers.push(activity.userId);
-        });
-
-        _.each(invoice.notes, function(note) {
-            invoiceUsers.push(note.userId);
-        });
-
-        return Meteor.users.find({ _id: { $in: invoiceUsers }
-        }, {
-            fields: {
-                "emails": true,
-                "profile": true,
-                "salesProfile": true,
-                "username": true
-            }
-        });
-    }
-    return this.ready();
-});
-
-
-
-/**
- * CustomerDefaultAssignee
- * Publish profile of the customer's default salesperson
- *
- * @params {String} customerId -  view the default user for this customer
- */
-
-Core.publish("CustomerDefaultAssignee", function (customerId) {
-    this.unblock(); // eliminate wait time impact
-
-    check(customerId, String);
-
-    // look up the customer
-    let customer = Customers.findOne({ _id: customerId });
-
-    if (customer && customer.defaultAssigneeId) {
-        return Meteor.users.find({ _id: customer.defaultAssigneeId }, {
-            fields: {
-                "emails": true,
-                "profile": true,
-                "salesProfile": true,
-                "username": true
-            }
-        });
-    }
-    return this.ready();
-
-});
 
 /**
  * Users

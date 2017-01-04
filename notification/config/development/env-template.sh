@@ -10,8 +10,8 @@
 
 
 # aws env vars
-export AWS_ACCESS_KEY_ID=""
-export AWS_SECRET_ACCESS_KEY=""
+export AWS_ACCESS_KEY_ID="AKIAIVV6GSU6SKC7HU2Q"
+export AWS_SECRET_ACCESS_KEY="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"
 
 # service env vars
 export RABBIT_URL="amqp://localhost"

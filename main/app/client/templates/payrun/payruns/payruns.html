@@ -10,72 +10,69 @@
                     <li><a ui-sref="business.overview">Business</a></li>
                     <li>{{name}}</li>
                     <li>Pay Runs</li>
+                    <p class="mb20 pull-right"><a class="btn btn-primary" href="{{pathFor "payrun.new"}}">New Pay Run</a></p>
                 </ul>
                 <h4>Pay Runs</h4>
+
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
 
     <div class="contentpanel">
 
-
-        <div class="row">
-            <div class="col-md-12">
-                <h5 class="lg-title mb5">Pay Runs</h5>
-                <p class="mb20 pull-right"><a class="btn btn-primary" ui-sref="business.newpayrun">New Pay Run</a></p>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-12 employee-filter">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label class="control-label">Start Date</label>
-                            <adm-dtp ng-model="filter.startDate" maxdate="__filter.endDate_detail.unix__"></adm-dtp>
+                            <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
+                                {{#each month}}
+                                    <option value="{{period}}">{{name}}</option>
+                                {{/each}}
+                            </select>
                         </div><!-- form-group -->
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label class="control-label">End Date</label>
-                            <adm-dtp ng-model="filter.endDate" full-data="filter.endDate_detail"></adm-dtp>
+                            <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
+                                {{#each year}}
+                                    <option value="{{this}}">{{this}}</option>
+                                {{/each}}
+                            </select>
                         </div><!-- form-group -->
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 text-center" ng-if="!dataFetched">
-                <img alt="" src="images/loaders/loader10.gif">
-            </div>
-            <div class="col-md-12" ng-if="dataFetched && payRuns.length === 0">
-                <div class="alert alert-danger text-center">
-                    <p>No Payrun available</p>
-                </div>
-            </div>
-            <div class="col-md-12" ng-if="dataFetched && payRuns.length > 0">
-                <div class="table-responsive">
-                    <table class="table table-primary mb60 table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Pay Group</th>
-                            <th>Number of Employees</th>
-                            <th>Payment Date</th>
-                            <th>Tax Paid</th>
-                            <th>Pension Paid</th>
-                            <th>Total Amount Paid</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+            {{#if payrun}}
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Pay Group</th>
+                                <th>Number of Employees</th>
+                                <th>Payment Date</th>
+                                <th>Tax Paid</th>
+                                <th>Pension Paid</th>
+                                <th>Total Amount Paid</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                             {{#each payrun}}
                                 {{> singlePayrun index=@index data=this}}
                             {{/each}}
-                        </tbody>
-                    </table>
-                </div><!-- table-responsive -->
-                <div class="col-md-12 text-left">
-                    <dir-pagination-controls boundary-links="true" on-page-change="pageChangeHandler(newPageNumber)" template-url="bower_components/angularUtils-pagination/dirPagination.tpl.html"></dir-pagination-controls>
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
                 </div>
-            </div>
+            {{else}}
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <p>No Payrun available</p>
+                    </div>
+                </div>
+            {{/if}}
         </div><!-- row -->
 
 

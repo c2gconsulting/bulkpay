@@ -8,16 +8,17 @@
                         <div class="pull-left">
                             <i class="fa fa-calendar-o"></i> Duration of Leave Request <span class="leavedays">{{duration}} Day(s)</span>
                             <ul class="list-unstyled">
-                                <li><i class="fa fa-money"></i> From: {{formatTime startDate}}</li>
-                                <li><i class="fa fa-money"></i> To: {{formatTime endDate}}</li>
+                                <li><i class="fa fa-calendar-o"></i> From: {{formatTime startDate}}</li>
+                                <li><i class="fa fa-calendar"></i> To: {{formatTime endDate}}</li>
                                 <li><i class="fa fa-tasks"></i> <span class="label label-{{active approvalStatus}}">{{approvalStatus}}</span></li>
-                                <li><i class="fa fa-users"></i> Date Created: {{formatTime createdAt}}</li>
+                                <li><i class="fa fa-calendar"></i> Date Created: {{formatTime createdAt}}</li>
                             </ul>
                         </div>
                         {{#if canEdit}}
                             <div class="pull-right">
                                 <div class="btn-toolbar">
                                     <div class="btn-group">
+                                        <button class="btn btn-default btn-sm" type="button" id="view"><i class="fa fa-eye mr5"></i> View </button>
                                         <button class="btn btn-default btn-sm" type="button" id="edit"><i class="fa fa-pencil mr5"></i> Edit</button>
                                         <button class="btn btn-default btn-sm" type="button" id="delete" ><i class="fa fa-trash-o mr5"></i> Delete</button>
                                     </div>

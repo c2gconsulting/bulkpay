@@ -19,7 +19,7 @@ Template.EmployeeCreate.events({
         }
     },
     'click #createEmployee': function(e, tmpl){
-        event.preventDefault();
+        e.preventDefault();
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         let l = Ladda.create(tmpl.$('#createEmployee')[0]);
         l.start();

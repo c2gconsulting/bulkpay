@@ -17,6 +17,21 @@ Core.publish("getRootEntities", function (bu) {
     //perform neccessary checks
     return EntityObjects.find({parentId: null, businessId: bu});
 });
+/**
+ * Entity
+ */
+
+Core.publish("getSupervisors", function (id) {
+    //perform neccessary checks
+    let eObj = EntityObjects.findOne({_id: id});
+    if(eObj && eObj.properties){
+        const vals = Object.keys(eObj.properties).map(key => eObj.properties[key]);
+        return EntityObjects.find({_id: {$in: vals}});
+
+    }
+    return this.ready();
+    //return EntityObjects.find({parentId: null, businessId: bu});
+});
 
 Core.publish("getEntity", function (id) {
     //perform neccessary checks

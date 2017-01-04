@@ -2,6 +2,12 @@
 /* Payments: Event Handlers */
 /*****************************************************************************/
 Template.PayrunNew.events({
+    'click #startProcessing': (e,tmpl) => {
+        var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
+        Meteor.setTimeout(function(){
+            Blaze.remove(view);
+        },10000);
+    }
 });
 
 /*****************************************************************************/
@@ -17,6 +23,9 @@ Template.PayrunNew.helpers({
             years.push(String(x));
         }
         return years;
+    },
+    'paygrades': () => {
+       return PayGrades.find();
     }
 });
 
@@ -24,6 +33,7 @@ Template.PayrunNew.helpers({
 /* Payments: Lifecycle Hooks */
 /*****************************************************************************/
 Template.PayrunNew.onCreated(function () {
+    this.subscribe("paygrades", Session.get('context'));
 });
 
 Template.PayrunNew.onRendered(function () {

@@ -6,6 +6,7 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "amqplib": "^0.4.1",
+    "babel-runtime": "^6.20.0",
     "hiredis": "^0.4.1",
     "promise-redis": "0.0.5",
     "when": "^3.7.7"

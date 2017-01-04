@@ -52,6 +52,9 @@ Template.LeaveEntry.helpers({
         if(status){
             return status !== "Approved";
         }
+    },
+    'click view': () => {
+
     }
 });
 

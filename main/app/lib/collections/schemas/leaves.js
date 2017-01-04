@@ -168,8 +168,8 @@ Core.Schemas.Leave = new SimpleSchema({
     },
     approvalStatus: {
         type: String,
-        defaultValue: 'Pending',
-        allowedValues: ['Pending', 'Approved', 'Rejected'],
+        defaultValue: 'Open',
+        allowedValues: ['Open', 'Approved', 'Rejected'],
         optional: true
     },
     approvedBy: {

@@ -1,0 +1,52 @@
+<template name="TimeCreate">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {{#autoForm collection="Times" id=formType doc=this type=formAction }}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Enter Time Data</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                {{> afQuickField name="project" options=projects class="dropdown" id="project"}}
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                {{> afQuickField name="activity"  id="project"}}
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                {{> afQuickField name="startTime" class="datepicker" id="startTime"}}
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                {{> afQuickField name="endTime" class="datepicker" id="endTime"}}
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                {{> afQuickField name="duration" disabled=true id="duration"}}
+                            </div><!-- col-sm-3 -->
+
+                        </div><!-- row -->
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                {{> afQuickField name="note" rows=3 }}
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" id="TimeCreate">Save</button>
+                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+               {{/autoForm}}
+            </div>
+        </div>
+    </div>
+</template>

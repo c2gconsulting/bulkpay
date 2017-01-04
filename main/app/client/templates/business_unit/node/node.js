@@ -89,10 +89,6 @@ Template.Node.helpers({
         console.log(nodeProp);
         return nodeProp;
     },
-    'properties': () => {
-
-    },
-
     'icon': (type) => {
         switch (type){
             case "Unit":
@@ -137,6 +133,7 @@ Template.Node.onCreated(function () {
        let bu = Session.get('context');
        if(node === "root")
            node = null;
+       self.subscribe("getSupervisors", node);
        self.subscribe("getChildrenEntityObject", node, bu);
        self.subscribe("employees", node, bu);
 

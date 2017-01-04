@@ -29,12 +29,12 @@
                         <div class="row">
                             <div class="col-md-12 text-center">
                                 <p>
-                                    <b>This option allows you to pay a list of selected employees from a pay group by selecting the month and year.</b>
+                                    <b>This option allows you to pay a list of selected employees from a pay Grade by selecting the Period.</b>
                                 </p>
                             </div>
                             <div class="col-md-12 text-center">
                                 <p class="text-danger">
-                                    Note: Before using this option for a new month payment, make sure salary settings for the month is complete.
+                                    Note: Payments can only be processed for Periods that are open for payments. you can run Simulation for other periods
                                 </p>
                             </div>
                             <div class="col-md-12">
@@ -63,8 +63,21 @@
                                                             </select>
                                                         </div><!-- form-group -->
                                                     </div>
+
                                                     <div class="col-md-3">
                                                         <button class="btn btn-primary" id="startProcessing">Process Payrun</button>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12 center">
+                                                        <div class="form-group">
+                                                            <ul class="list-inline">
+                                                                {{#each paygrades}}
+                                                                    <li><input type="checkbox" name="paygrades" id="{{_id}}"/>{{code}}</li>
+                                                                {{/each}}
+                                                            </ul>
+                                                        </div><!-- form-group -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -73,6 +86,8 @@
                                     <div class="col-md-2"></div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row" id="spinner">
                         </div>
                     </div>
                 </div><!-- panel -->

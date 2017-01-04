@@ -283,6 +283,13 @@ Projects = new Mongo.Collection("projects");
 Partitioner.partitionCollection(Projects);
 Projects.attachSchema(Core.Schemas.Project);
 
+/**
+ * Core Collections Times
+ */
+Times = new Mongo.Collection("times");
+Partitioner.partitionCollection(Times);
+Times.attachSchema(Core.Schemas.Time);
+
 
 LeaveTypes.allow({
     insert: function(userId, doc) {
@@ -314,5 +321,16 @@ Projects.allow({
     update: function(userId, doc){
         //only allow if user has Admin access
         return Core.hasTimeManageAccess(Meteor.userId());
+    }
+});
+
+Times.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return Core.hasSelfServiceAccess(Meteor.userId());
+    },
+    update: function(userId, doc){
+        //only allow if user has Admin access
+        return doc.employeeId === Meteor.userId();
     }
 });
