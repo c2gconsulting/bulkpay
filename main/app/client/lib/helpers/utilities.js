@@ -485,3 +485,8 @@ Template.registerHelper('lowerCase', function(str){
 Template.registerHelper("prune", function (str, length) {
   return s.prune(str, length);
 });
+
+getPayRegex = function(code){
+    const pattern = `\\b${code}\\b`;
+    return new RegExp(pattern, "g");
+}

@@ -21,7 +21,7 @@
 
 <template name="navlist">
     {{#if hasAdminAccess}}
-        <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Business</span></a>
+        <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Company</span></a>
             <ul class="children">
                 <li class="{{active "bu.details"}}"><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
             </ul>
@@ -31,6 +31,7 @@
         <li class="parent"><a href=""><i class="fa fa-money"></i> <span>Pay Rules</span></a>
             <ul class="children">
                 <li class="{{active "paytypes"}}"><a href="{{pathFor 'paytypes'}}">Pay Types</a></li>
+                <li class="{{active "constant.list"}}"><a href="{{pathFor 'constant.list'}}">Constants</a></li>
                 <li class="{{active "pensions"}}"><a href="{{pathFor 'pensions'}}">Pensions</a></li>
                 <li class="{{active "taxes"}}"><a href="{{pathFor 'taxes'}}">Taxes</a></li>
                 <li class="{{active "paygroups"}}"><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>

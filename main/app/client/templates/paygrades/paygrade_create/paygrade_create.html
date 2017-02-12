@@ -92,27 +92,27 @@
                                                 </div>
                                                 <div class="col-md-12">
                                                     <div class="panel-group" id="accordion2">
-                                                        <div class="panel panel-primary">
-                                                            <div class="panel-heading">
-                                                                <h4 class="panel-title">
-                                                                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
-                                                                        Wages
-                                                                    </a>
-                                                                </h4>
-                                                            </div>
-                                                            <div id="collapseOne2" class="panel-collapse collapse in">
-                                                                <ul class="panel-body list-group nopadding">
-                                                                    {{#each paytype "Wage"}}
-                                                                        <li class="list-group-item">
-                                                                            <div class="ckbox ckbox-default">
-                                                                                <input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >
-                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
-                                                                            </div>
-                                                                        </li>
-                                                                    {{/each}}
-                                                                </ul>
-                                                            </div>
-                                                        </div><!-- panel -->
+                                                        <!--<div class="panel panel-primary">-->
+                                                            <!--<div class="panel-heading">-->
+                                                                <!--<h4 class="panel-title">-->
+                                                                    <!--<a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">-->
+                                                                        <!--Wages-->
+                                                                    <!--</a>-->
+                                                                <!--</h4>-->
+                                                            <!--</div>-->
+                                                            <!--<div id="collapseOne2" class="panel-collapse collapse in">-->
+                                                                <!--<ul class="panel-body list-group nopadding">-->
+                                                                    <!--{{#each paytype "Wage"}}-->
+                                                                        <!--<li class="list-group-item">-->
+                                                                            <!--<div class="ckbox ckbox-default">-->
+                                                                                <!--<input type="checkbox" id="{{_id}}" class="payment" checked="{{checked _id}}" >-->
+                                                                                <!--<label for="{{_id}}">{{code}} - {{title}}</label>-->
+                                                                            <!--</div>-->
+                                                                        <!--</li>-->
+                                                                    <!--{{/each}}-->
+                                                                <!--</ul>-->
+                                                            <!--</div>-->
+                                                        <!--</div>&lt;!&ndash; panel &ndash;&gt;-->
 
                                                         <div class="panel panel-primary">
                                                             <div class="panel-heading">
@@ -122,7 +122,7 @@
                                                                     </a>
                                                                 </h4>
                                                             </div>
-                                                            <div id="collapseTwo2" class="panel-collapse collapse">
+                                                            <div id="collapseTwo2" class="panel-collapse collapse in">
                                                                 <ul class="panel-body list-group nopadding">
                                                                     {{#each paytype "Benefit"}}
                                                                         <li class="list-group-item">
@@ -199,7 +199,7 @@
                                                         <th>Derivative</th>
                                                         <th>Formula / Value</th>
                                                         <th>Value</th>
-                                                        <th>Monthly Equivalent</th>
+                                                        <!--<th>Monthly Equivalent</th>-->
                                                     </tr>
                                                     </thead>
                                                     <tbody id="new-data-body">
@@ -220,9 +220,9 @@
                                                             <td>
                                                                 <span><b> {{parsedValue}}</b></span>
                                                             </td>
-                                                            <td>
-                                                                <span><b> {{monthly}}</b></span>
-                                                            </td>
+                                                            <!--<td>-->
+                                                                <!--<span><b> {{monthly}}</b></span>-->
+                                                            <!--</td>-->
                                                         </tr>
                                                     {{/each}}
                                                     </tbody>

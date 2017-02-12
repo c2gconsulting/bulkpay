@@ -75,6 +75,13 @@ _.extend(Core, {
             options.push(select.value)
         });
         return _.uniq(options);
+    },
+    returnChecked: function (selection){
+        selected = [];
+        selection.each(x => {
+            selected.push($(x).attr("id"));
+        });
+        return selected;
     }
 
 });

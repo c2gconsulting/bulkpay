@@ -90,6 +90,13 @@ Router.route('/business/:_id/paytypes', {
     where: 'client'
 });
 
+Router.route('/business/:_id/constants', {
+    name: 'constant.list',
+    controller: 'ConstantsController',
+    where: 'client'
+});
+
+
 Router.route('/business/:_id/leavetypes', {
     name: 'leavetypes',
     controller: 'LeaveTypesController',

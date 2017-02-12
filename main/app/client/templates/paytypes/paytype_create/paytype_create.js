@@ -18,7 +18,8 @@ Template.PaytypeCreate.events({
             currency: $('[name="currency"]').val(),
             status: $('[name="status"]').val(),
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
-            isBase: $('[name="isBase"]').is(':checked') ? true : false
+            isBase: $('[name="isBase"]').is(':checked') ? true : false,
+            addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false
         };
         function returnBool(val){
             if(val === "Yes") return true;
@@ -98,9 +99,9 @@ Template.PaytypeCreate.helpers({
     'paytype': () => {
         return Template.instance().data.code;
     },
-    'checked': () => {
+    'checked': (prop) => {
         if(Template.instance().data)
-            return Template.instance().data.isBase ? true:false;
+            return Template.instance().data[prop];
         return false;
     },
     selected: function (context, val) {

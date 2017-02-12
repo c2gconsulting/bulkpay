@@ -196,18 +196,20 @@ Template.PaygradeCreate.onCreated(function () {
     self.subscribe("pensions", context);
     self.subscribe("getPositions", context);
     self.subscribe("payGroups", context);
+    self.subscribe("getbuconstants", context);
     if(self.data){
         //populate and map paytypes
         self.autorun(function(){
             if (Template.instance().subscriptionsReady()){
                 self.data.payTypes.forEach(x=>{
                     //extend all assigned paytypes with reference doc. properties
-                    let ptype = PayTypes.findOne({_id: x.paytype});
+                    let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
                     delete ptype.paytype;
                     _.extend(x, ptype);
                     return x;
                 });
                 self.dict.set("assigned", self.data.payTypes); //set assigned to be data
+                console.log(self.data.payTypes);
             }
         });
     } else {
@@ -227,12 +229,21 @@ Template.PaygradeCreate.onCreated(function () {
                 if(formula){
                     //replace all wagetypes with values
                     for (var i = 0; i < index; i++) {
-                        var regex = new RegExp(assigned[i].code? assigned[i].code.toUpperCase():assigned[i].code, "g");
+                        const code = assigned[i].code? assigned[i].code.toUpperCase():assigned[i].code;
+                        const regex = getPayRegex(code);
                         formula = formula.replace(regex, assigned[i].parsedValue);
                     }
+                    //do the same for all contansts and replace the values
+                    //will find a better way of doing this... NOTE
+                    let k = Constants.find().fetch();
+                    k.forEach(c => {
+                        const code = c.code? c.code.toUpperCase():c.code;
+                        const regex = getPayRegex(code);
+                        formula = formula.replace(regex, c.value);
+                    });
                     var parsed = rules.parse(formula, input);
                     if (parsed.result !== null) {
-                        x.parsedValue = parsed.result;
+                        x.parsedValue = parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
                         x.monthly = (parsed.result / 12).toFixed(2);
                     }
                     //

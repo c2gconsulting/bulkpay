@@ -277,6 +277,13 @@ Partitioner.partitionCollection(LeaveTypes);
 LeaveTypes.attachSchema(Core.Schemas.LeaveType);
 
 /**
+ * Core Collections Constants
+ */
+Constants = new Mongo.Collection("constants");
+Partitioner.partitionCollection(Constants);
+Constants.attachSchema(Core.Schemas.Constant);
+
+/**
  * Core Collections Projects
  */
 Projects = new Mongo.Collection("projects");
@@ -332,5 +339,17 @@ Times.allow({
     update: function(userId, doc){
         //only allow if user has Admin access
         return doc.employeeId === Meteor.userId();
+    }
+});
+
+
+Constants.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return Core.hasPayrollAccess(Meteor.userId());
+    },
+    update: function(userId, doc){
+        //only allow if user has Admin access
+        return Core.hasPayrollAccess(Meteor.userId());
     }
 });

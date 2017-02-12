@@ -18,6 +18,9 @@ Template.EmployeeCreate.events({
             //$('#filename').html(e.target.files[0].name);
         }
     },
+    'change [data-field="dateOfBirth"]': (e, tmpl) => {
+        console.log($(e.target).val());
+    },
     'click #createEmployee': function(e, tmpl){
         e.preventDefault();
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -26,7 +29,7 @@ Template.EmployeeCreate.events({
         const employeeProfile = {
             employeeId: $('[name="employeeId"]').val(),
             address: $('[name="address"]').val(),
-            dateOfBirth: $('[data-field="dateOfBirth"]').val(),
+            dateOfBirth: new Date($('[data-field="dateOfBirth"]').val()),
             gender: $('[name="gender"]').val(),
             maritalStatus: $('[name="maritalStatus"]').val(),
             phone: $('[name="phone"]').val(),
@@ -54,10 +57,10 @@ Template.EmployeeCreate.events({
             position: $('[name="position"]').val(),
                 paygrade: $('[name="paygrade"]').val(),
                 paytypes: getPaytypes(),
-                hireDate: $('[name="hireDate"]').val(),
-                confirmationDate: $('[name="confirmationDate"]').val(),
+                hireDate: new Date($('[data-field="hireDate"]').val()),
+                confirmationDate: new Date($('[data-field="confirmationDate"]').val()),
                 status: $('[name="status"]').val(),
-                terminationDate: $('[name="terminationDate"]').val()
+                terminationDate: new Date($('[data-field="terminationDate"]').val())
             }
         };
         function payment() {
@@ -101,7 +104,10 @@ Template.EmployeeCreate.events({
         function getPaytypes(){
             let assigned = tmpl.assignedTypes.get();
             if(assigned){
-              return assigned;
+                let wage = assigned.map(x => {
+                    return {paytype: x.paytype, value: x.inputed}
+                });
+              return wage;
             }
         };
 
@@ -142,6 +148,20 @@ Template.EmployeeCreate.events({
         tmpl.selectedGrade.set(paygrade);
 
     },
+    'blur [name="employeeId"]': (e,tmpl) => {
+        const id = $(e.target).val();
+        console.log(id);
+        //check if user exists
+        //returns true if user exists
+        Meteor.call("checkEmployeeExistence", id, Session.get("context"), function(err, res){
+            console.log(res);
+            if(res && res.exist){
+                $(e.target).addClass("errorValidation");
+            } else {
+                $(e.target).removeClass("errorValidation");
+            }
+        })
+    },
     'blur .payAmount': (e,tmpl) => {
         let entered = $(e.target).val();
         let id = $(e.target).attr('id');
@@ -154,13 +174,13 @@ Template.EmployeeCreate.events({
             }
         }
 
-        //if(entered){
-        //    if(isNaN(entered)){
-        //        $(e.target).addClass('errorValidation');
-        //    } else {
-        //        $(e.target).removeClass('errorValidation');
-        //    }
-        //}
+        if(entered){
+           if(isNaN(entered)){
+               $(e.target).addClass('errorValidation');
+           } else {
+               $(e.target).removeClass('errorValidation');
+           }
+        }
     }
 });
 
@@ -209,9 +229,12 @@ Template.EmployeeCreate.onCreated(function () {
     //subscribe to all positions
     var self = this;
     self.selectedPosition = new ReactiveVar();
+    self.dict = new ReactiveDict();
     self.selectedGrade = new ReactiveVar();
     self.assignedTypes = new ReactiveVar();
     self.subscribe("getPositions", Session.get('context'));
+    self.subscribe("getbuconstants", Session.get('context'));
+
     self.autorun(function(){
         let position = Template.instance().selectedPosition.get();
         if(position)
@@ -259,10 +282,19 @@ Template.EmployeeCreate.onRendered(function () {
                     //replace all wagetypes with values
                     for (var i = 0; i < index; i++) {
                         if(assigned[i].code){
-                            var regex = new RegExp(assigned[i].code.toUpperCase(), "g");
-                            formula = formula.replace(regex, assigned[i].inputed);
+                            const code = assigned[i].code? assigned[i].code.toUpperCase():assigned[i].code;
+                            const regex = getPayRegex(code);
+                            formula = formula.replace(regex, assigned[i].parsedValue);
                         }
                     }
+                    //do the same for all contansts and replace the values
+                    //will find a better way of doing this... NOTE
+                    let k = Constants.find().fetch();
+                    k.forEach(c => {
+                        const code = c.code? c.code.toUpperCase():c.code;
+                        const regex = getPayRegex(code);
+                        formula = formula.replace(regex, c.value);
+                    });
                     var parsed = rules.parse(formula, input);
                     if (!isNaN(parsed.result)) {
                         x.parsedValue = parsed.result.toFixed(2);

@@ -18,7 +18,7 @@ Core.Schemas.PayType = new SimpleSchema({
     },
     type: {
         type: String,
-        allowedValues: ["Wage", "Benefit", "Deduction", "OneOff"],
+        allowedValues: ["Benefit", "Deduction", "OneOff"], //removed allowed value wage
         defaultValue: "Benefit"
     },
     frequency: {
@@ -27,6 +27,10 @@ Core.Schemas.PayType = new SimpleSchema({
         allowedValues: ["Weekly", "Bi-Monthly", "Monthly", "Quarterly", "Bi-Annually", "Annually"]
     },
     taxable: {
+        type: Boolean,
+        defaultValue: false
+    },
+    addToTotal: {
         type: Boolean,
         defaultValue: false
     },

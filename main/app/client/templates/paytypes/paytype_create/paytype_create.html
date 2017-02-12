@@ -27,7 +27,7 @@
                                 <div class="form-group">
                                     <label class="control-label">Type</label>
                                     <select  name="type" class="form-control dropdown" >
-                                        <option value="Wage" {{selected "type" "Wage"}}>Wage</option>
+                                        <!--<option value="Wage" {{selected "type" "Wage"}}>Wage</option>-->
                                         <option value="Benefit" {{selected "type" "Benefit" }}>Benefit</option>
                                         <option value="Deduction" {{selected "type" "Deduction"}}>Deduction</option>
                                         <option value="OneOff" {{selected "type" "OneOff"}}>One Off</option>
@@ -107,8 +107,16 @@
                             <div class="col-sm-4">
                                 <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="pay-type-key-state" checked="{{checked}}" name="isBase" />
+                                    <input type="checkbox" id="pay-type-key-state" checked="{{checked 'isBase'}}" name="isBase" />
                                     <label for="pay-type-key-state">Base Type (For Valuation)</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
+
+                            <div class="col-sm-4">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="pay-type-output-state" checked="{{checked 'addToTotal'}}" name="addToTotal" />
+                                    <label for="pay-type-output-state">Add to Total</label>
                                 </div>
                             </div><!-- col-sm-4 -->
 

@@ -124,3 +124,24 @@ Core.publish("User", function (id) {
         return this.ready();
     }
 });
+
+Core.publish("activeEmployees", function (businessId) {
+    this.unblock(); // eliminate wait time impact
+    let selector = { 'businessIds': businessId, 'employee': true, 'employeeProfile.employment.status': "Active" };
+    check(businessId, String);
+    if (businessId && Core.hasPayrollAccess(this.userId)){
+        //return all meteor users in that position
+        return Meteor.users.find(selector, {
+            fields: {
+                "emails": true,
+                "employee": true,
+                "profile": true,
+                "employeeProfile": true,
+                "username": true
+            }
+        });
+    } else {
+        return this.ready();
+    }
+
+});

@@ -47,7 +47,7 @@
                                 <th>Taxable</th>
                                 <th>Can Override</th>
                                 <th>Derivative</th>
-                                <th>Base</th>
+                                <th>Currency</th>
                                 <th>Status</th>
                             </tr>
                             </thead>
@@ -82,11 +82,7 @@
             <td>No</td>
         {{/if}}
         <td>{{data.derivative}}</td>
-        {{#if data.isBase}}
-            <td>Yes</td>
-        {{else}}
-            <td>No</td>
-        {{/if}}
+        <td>{{data.currency}}</td>
         <td>
             <span class="label label-{{activeClass}}">{{data.status}}</span>
         </td>

@@ -62,6 +62,30 @@ if (Meteor.isClient){
             onError: function(operation, error, template) {
                 console.log(error)
             }
+        },
+        ConstantForm: {
+            before: {
+                insert: function(doc) {
+                    doc.businessId = Session.get('context');
+                    console.log(doc);
+                    return doc;
+                }
+            },
+            onSuccess: function(formType, result) {
+                console.log("git here after on success call");
+                Modal.hide('ConstantCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
+        },
+        updateConstantForm: {
+            onSuccess: function(formType, result) {
+                Modal.hide('ConstantCreate')
+            },
+            onError: function(operation, error, template) {
+                console.log(error)
+            }
         }
     });
 }

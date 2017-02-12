@@ -388,8 +388,8 @@ Template.singleBu.events({
     'click .pointer': function(e) {
         e.preventDefault();
         //check if permissions // route default to employee time
-        //Router.go('bu.details', this.data);
-        Router.go('employee.time', this.data);
+        Router.go('bu.details', this.data);
+        //Router.go('employee.time', this.data);
 
 
     }
