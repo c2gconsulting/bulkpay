@@ -6,9 +6,16 @@ Template.PayrunNew.events({
         let payGrades = function(){
             let selected = [];
             $("input:checkbox[name=paygrades]:checked").each(function () {
-                console.log("each called");
                 selected.push($(this).attr("id"));
             });
+            return selected;
+        };
+        let annualPay = function(){
+            let selected = [];
+            $("input:checkbox[name=selectAnnual]:checked").each(function () {
+                selected.push($(this).attr("id"));
+            });
+            console.log(selected);
             return selected;
         };
         var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
@@ -20,24 +27,45 @@ Template.PayrunNew.events({
                 year: $('[name="paymentPeriod.year"]').val(),
 
             },
-            type: $('[name="runtype"]').val()
+            type: $('[name="runtype"]').val(),
+            annuals: annualPay()
+        };
+        //check if any valid selection is made
+        if (params.employees.length > 0 || params.paygrades.length > 0){
+            Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
+                if(res){
+                    console.log("success", res);
+                } else{
+                    console.log("err", err)
+                }
+                Blaze.remove(view);
+            })
+        } else {
+            Blaze.remove(view);
+            swal("notice","A valid selection must be made", "error");
         }
 
-        Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
-            if(res){
-                console.log("success", res);
-            } else{
-                console.log("err", err)
-            }
-            Blaze.remove(view);
-        })
+
+    },
+    'change [name="annualPay"]': (e, tmpl) => {
+        tmpl.includePay.set($(e.target).is(':checked'));
+
     },
     'change [name="employee"]': (e, tmpl) => {
         let selected = Core.returnSelection($(e.target));
         selected.length > 0 ? tmpl.showPayGrade.set(false):tmpl.showPayGrade.set(true);
+        //add employee paygrades
+        let employeeGrade = selected.map(x => {
+            return Meteor.users.findOne({_id: x, 'employee': true}).employeeProfile.employment.paygrade;
+        });
+        tmpl.grades.set(employeeGrade);
     },
-    'click [name="paygrades"]': (e, tmpl) => {
-
+    'change [name="paygrades"]': (e, tmpl) => {
+        let selected = [];
+        $("input:checkbox[name=paygrades]:checked").each(function () {
+            selected.push($(this).attr("id"));
+        });
+        tmpl.grades.set(selected);
     }
 });
 
@@ -63,6 +91,15 @@ Template.PayrunNew.helpers({
     },
     "showPayGrade": () => {
         return Template.instance().showPayGrade.get();
+    },
+    "showAnnualPay": () => {
+        return Template.instance().includePay.get();
+    },
+    'annualPay': () => {
+        return PayTypes.find().fetch();
+    },
+    'checkInitial': (index) => {
+        return index === 0 ? 'checked': null;
     }
 });
 
@@ -74,11 +111,26 @@ Template.PayrunNew.onCreated(function () {
     self.subscribe("paygrades", Session.get('context'));
     self.subscribe("activeEmployees", Session.get('context'));
     self.showPayGrade = new ReactiveVar(true);
-    //
+    self.grades = new ReactiveVar([]);
+    self.includePay = new ReactiveVar(false);
+    // if annual payment included, subscribe to all annual pay.
+    self.autorun(function(){
+        let includeType = self.includePay.get();
+        let selectedGrade = self.grades.get();
+        console.log(selectedGrade);
+        if (includeType)
+            self.subscribe("AdditionalPayTypes", selectedGrade, Session.get('context'));
+    })
 });
 
 Template.PayrunNew.onRendered(function () {
-    $('select.dropdown').dropdown();
+    // $('select.dropdown').dropdown();
+    // //
+    // let selected = [];
+    // $("input:checkbox[name=paygrades]:checked").each(function () {
+    //     selected.push($(this).attr("id"));
+    // });
+    // Template.instance().grades.set(selected);
 });
 
 Template.PayrunNew.onDestroyed(function () {

@@ -97,6 +97,37 @@
                                                 {{/if}}
 
                                                 <div class="row">
+                                                    <div class="col-md-3 text-right"><b>Include Other Pay(s) : </b></div>
+                                                    <div class="col-md-9">
+                                                        <div class="form-group">
+                                                            <ul class="list-inline">
+                                                                <li><input type="checkbox" id="annual-pay-selection" name="annualPay" />Annual Pay</li>
+                                                            </ul>
+                                                        </div><!-- form-group -->
+                                                    </div>
+                                                </div>
+
+                                                {{#if showAnnualPay}}
+                                                    <div class="row">
+                                                        <div class="col-md-3 text-right"><b>Select Payments to be Included : </b></div>
+                                                        <div class="col-md-9">
+                                                            <div class="form-group">
+                                                                <ul class="panel-body list-group nopadding">
+                                                                    {{#each annualPay }}
+                                                                        <li class="list-group-item">
+                                                                            <div class="ckbox ckbox-default">
+                                                                                <input type="checkbox" id="{{_id}}" name="selectAnnual" class="payment">
+                                                                                <label for="{{_id}}">{{code}} - {{title}}</label>
+                                                                            </div>
+                                                                        </li>
+                                                                    {{/each}}
+                                                                </ul>
+                                                            </div><!-- form-group -->
+                                                        </div>
+                                                    </div>
+                                                {{/if}}
+
+                                                <div class="row">
                                                     <div class="col-md-3 text-right"><b>Run Type: </b></div>
                                                     <div class="col-md-9">
                                                         <div class="form-group">
