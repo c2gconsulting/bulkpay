@@ -34,9 +34,11 @@ Template.PayrunNew.events({
         if (params.employees.length > 0 || params.paygrades.length > 0){
             Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
                 if(res){
-                    console.log("success", res);
+                    console.log(res);
+                    //set result as reactive dict payResult
+                    tmpl.dict.set("payResult", res);
                 } else{
-                    console.log("err", err)
+                    console.log(err);
                 }
                 Blaze.remove(view);
             })
@@ -66,6 +68,9 @@ Template.PayrunNew.events({
             selected.push($(this).attr("id"));
         });
         tmpl.grades.set(selected);
+    },
+    'hover .table tbody tr': (e,tmpl) => {
+            console.log('hover called');
     }
 });
 
@@ -100,6 +105,17 @@ Template.PayrunNew.helpers({
     },
     'checkInitial': (index) => {
         return index === 0 ? 'checked': null;
+    },
+    'nopayresult': () =>{
+        const payresult = Template.instance().dict.get('payResult');
+        if (!payresult) return true;
+        return false;
+    },
+    'employeeResult': () => {
+        const payResult = Template.instance().dict.get('payResult');
+        if (payResult) {
+            return payResult.payObj.result;
+        }
     }
 });
 
@@ -110,6 +126,7 @@ Template.PayrunNew.onCreated(function () {
     let self = this;
     self.subscribe("paygrades", Session.get('context'));
     self.subscribe("activeEmployees", Session.get('context'));
+    self.dict = new ReactiveDict();
     self.showPayGrade = new ReactiveVar(true);
     self.grades = new ReactiveVar([]);
     self.includePay = new ReactiveVar(false);
@@ -131,6 +148,7 @@ Template.PayrunNew.onRendered(function () {
     //     selected.push($(this).attr("id"));
     // });
     // Template.instance().grades.set(selected);
+    // Show aciton upon row hover
 });
 
 Template.PayrunNew.onDestroyed(function () {

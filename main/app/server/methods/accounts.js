@@ -186,7 +186,7 @@ Meteor.methods({
             Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
         }
         if (sendEnrollmentEmail){
-            Accounts.sendEnrollmentEmail(accountId, user.email);
+            //Accounts.sendEnrollmentEmail(accountId, user.email);
         }
         return true
     },

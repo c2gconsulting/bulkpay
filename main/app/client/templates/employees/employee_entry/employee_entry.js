@@ -1,33 +1,23 @@
 /*****************************************************************************/
-/* Payslip: Event Handlers */
+/* EmployeeEntry: Event Handlers */
 /*****************************************************************************/
-Template.Payslip.events({
-    'click #createPaygrade': (e,tmpl) => {
-        e.preventDefault();
-        Modal.show('PaygradeCreate');
-    }
+Template.EmployeeEntry.events({
 });
 
 /*****************************************************************************/
-/* Payslip: Helpers */
+/* EmployeeEntry: Helpers */
 /*****************************************************************************/
-Template.Payslip.helpers({
-
+Template.EmployeeEntry.helpers({
 });
 
 /*****************************************************************************/
-/* Payslip: Lifecycle Hooks */
+/* EmployeeEntry: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Payslip.onCreated(function () {
-    let self = this;
-
+Template.EmployeeEntry.onCreated(function () {
 });
 
-Template.Payslip.onRendered(function () {
-    console.log(Template.instance().data);
-
+Template.EmployeeEntry.onRendered(function () {
 });
 
-Template.Payslip.onDestroyed(function () {
-
+Template.EmployeeEntry.onDestroyed(function () {
 });

@@ -28,6 +28,7 @@ Meteor.methods({
         let payObj = {};
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
         if (employees.length === 0 && paygrades.length > 0) {
+            console.log("getting active employees");
             res = getActiveEmployees(paygrades, period, businessId);
             //res contains employees ready for payment processing
 
@@ -37,7 +38,14 @@ Meteor.methods({
         } else if (employees.length > 0) {
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
-            const users = Meteor.users.find({_id: {$in: employees}}).fetch();
+            const users = Meteor.users.find({_id: {$in: employees},
+                $or: [
+                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                    {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                ],
+                'employeeProfile.employment.status': 'Active',
+                'businessIds': businessId, }).fetch();
             payObj.result = users && processEmployeePay(users, annuals, businessId);
         }
 
@@ -49,6 +57,7 @@ Meteor.methods({
 // use oop
 // instantiate payment object for employee with props for all methods required
 function processEmployeePay(employees, includedAnnuals, businessId) {
+    console.log("Employees to Process are: ", employees);
     let paygrades = [];
     let payresult = [];
     let specifiedAsProcess = function (paytype) {
@@ -60,7 +69,6 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
     let runPayrun = (counter) => {
         let x = employees[counter];
         if (x) {
-            const fullname = x.profile.fullName;
             const pg = x.employeeProfile.employment.paygrade;  //paygrade
             let pt = x.employeeProfile.employment.paytypes;  //paytype
 
@@ -90,7 +98,7 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
             let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
             let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
             let empDerivedPayElements = [];
-            let benefit = [], deduction = [];
+            let benefit = [], deduction = [], others = [];
             let rules = new ruleJS();
 
             rules.init();
@@ -168,16 +176,34 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
                                 switch (x.type) {
                                     case 'Benefit':
                                         //add to payslip benefit if display in payslip
-                                        if (x.displayInPayslip) benefit.push({
-                                            'title': x.title,
-                                            value: parseFloat(x.parsedValue)
-                                        });
+                                        if (x.displayInPayslip && x.addToTotal) {
+                                            benefit.push({
+                                                title: x.title,
+                                                code: x.code,
+                                                value: parseFloat(x.parsedValue)
+                                            });
+                                        } else if(x.displayInPayslip && !x.addToTotal){
+                                            others.push({
+                                                title: x.title,
+                                                code: x.code,
+                                                value: parseFloat(x.parsedValue)
+                                            });
+                                        }
                                         break;
                                     case 'Deduction':
-                                        if (x.displayInPayslip) deduction.push({
-                                            'title': x.title,
-                                            value: parseFloat(x.parsedValue)
-                                        });
+                                        if (x.displayInPayslip && x.addToTotal){
+                                            deduction.push({
+                                                title: x.title,
+                                                code: x.code,
+                                                value: parseFloat(x.parsedValue)
+                                            });
+                                        } else if(x.displayInPayslip && !x.addToTotal){
+                                            others.push({
+                                                title: x.title,
+                                                code: x.code,
+                                                value: parseFloat(x.parsedValue)
+                                            });
+                                        }
                                 }
                             } else {
                                 //when there is an error, stop processing this employee and move to the next one
@@ -207,16 +233,25 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
             let final = {};
             final.log = log;
             final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
-            final.payslip.deduction.push({title: tax.code , value: netTax * -1}); // negate add tax to deduction
-            final.payslip.deduction.push({title: `${pension.code}_EE`, value: employeePenContrib * -1}); // negate and add pension to deduction
-            if(pension.displayEmployerInPayslip) final.payslip.others = {title: `${pension.code}_ER`, value: employerPenContrib}; //if employer contribution (displayEmployerInPayslip) add to other payments
-           //calculate net payment as payment - deductions;
+            final.payslip.deduction.push({title: tax.code , code: tax.name, value: netTax * -1}); // negate add tax to deduction
+            if(pension) {
+                final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1});
+                if(pension.displayEmployerInPayslip) final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+
+            }
+            //calculate net payment as payment - deductions;
+            // negate and add pension to deduction
             const totalPayment = sumPayments(final.payslip.benefit);
             const totalDeduction = sumPayments(final.payslip.deduction);
-            const netPayment = totalPayment - totalDeduction;    //@@technicalPaytype
+            const netPayment = totalPayment + totalDeduction;    //@@technicalPaytype
             final.payslip.totalPayment = totalPayment;
             final.payslip.totalDeduction = totalDeduction;
             final.payslip.netPayment = netPayment;
+
+
+            //Add currently process employee details to final.payslip.employee
+            const employee = getDetailsInPayslip(x);
+            final.payslip.employee = employee;
 
             //payement will also be sent to result for factoring and storage;
             payresult.push(final);
@@ -298,7 +333,7 @@ function getPensionContribution(pensionBucket, pension) {
         const errate = pension.employerContributionRate;
         const employee = (eerate / 100) * pensionBucket;
         const employer = (errate / 100) * pensionBucket;
-        return {employeePenContrib: employee, employerPenContrib: employer};
+        return {employeePenContrib: parseFloat(employee).toFixed(2), employerPenContrib: parseFloat(employer).toFixed(2)};
     } else {
         return {employeePenContrib: null, employerPenContrib: null}
     }
@@ -339,7 +374,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
         }
     }
 
-    return totalTax;
+    return parseFloat(totalTax).toFixed(2);
 }
 
 /*
@@ -353,4 +388,17 @@ function sumPayments(payments){
         return total + val.value;
     }, 0);
     return sum;
+}
+
+/*
+import employee doc.
+return {} object containing employee details to be displayed on payslip
+ */
+function getDetailsInPayslip(employee){
+    let details = {};
+    details.employeeId = employee.employeeProfile.employeeId;
+    details.fullname = employee.profile.fullName;
+    // add other details
+
+    return details;
 }

@@ -26,7 +26,8 @@
                         <h4 class="panel-title">Payment Processing & Simulation</h4>
                     </div><!-- panel-heading -->
                     <div class="panel-body">
-                        <div class="row">
+                        {{#if nopayresult}}
+                            <div class="row">
                             <div class="col-md-12 text-center">
                                 <p>
                                     <b>This option allows you to pay a list of selected employees from a pay Grade by selecting the Period.</b>
@@ -152,6 +153,33 @@
                                 </div>
                             </div>
                         </div>
+                        {{ else }}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h5 class="lg-title mb5">List of Processed Employees</h5>
+                                    <p class="mb20">Tha table below shows a list of processed employees You can View the Log or payslip of any given employee.</p>
+                                    <div class="table-responsive">
+                                        <table class="table table-hidaction table-hover mb30">
+                                            <thead>
+                                            <tr>
+                                                <th>S/N</th>
+                                                <th>Employee ID</th>
+                                                <th>Full Name</th>
+                                                <th>Pay Grade</th>
+                                                <th>Status</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {{#each employeeResult}}
+                                                {{> ResultEntry this}}
+                                            {{/each}}
+                                            </tbody>
+                                        </table>
+                                    </div><!-- table-responsive -->
+                                </div>
+                            </div>
+                        {{/if}}
                         <div class="row" id="spinner">
                         </div>
                     </div>

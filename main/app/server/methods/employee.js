@@ -21,11 +21,13 @@ Meteor.methods({
 
 
 getActiveEmployees = (paygrade, period, businessId) => {
+    console.log("executing funciton get Active employees with paygrade", paygrade);
     check(paygrade, Array);
     const year = period.year;
     const month = period.month;
     const firsDayOfPeriod = `01-${month}-${year} GMT`;
     const DateLimit = new Date(firsDayOfPeriod);
+    console.log("Termination Date limit", DateLimit);
     return Meteor.users.find({'employeeProfile.employment.status': 'Active',
         $or: [
             {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
