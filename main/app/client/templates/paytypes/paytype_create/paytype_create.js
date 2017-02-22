@@ -45,7 +45,7 @@ Template.PaytypeCreate.events({
                     Modal.hide('PaytypeCreate');
                     swal({
                         title: "Success",
-                        text: `Company Created`,
+                        text: `Payment type created`,
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"

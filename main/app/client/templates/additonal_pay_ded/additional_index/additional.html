@@ -1,0 +1,57 @@
+<template name="AdditionalPay">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-money"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>One Off</li>
+                </ul>
+                <h4>Addtional Payments and Deductions</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+
+
+
+        <div class="row pay-runs-header">
+            <div class="col-md-12">
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="newAddPay">Add Additional Payment</button></p>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="uploadAddPay">Upload Additional Payment</button></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <h2>Listing Additional Payments / Deduction</h2>
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-primary mb60 table-hover">
+                        <thead>
+                        <tr>
+                            <th>S/N</th>
+                            <th>Employee</th>
+                            <th>Pay Type</th>
+                            <th>Amount</th>
+                            <th>Period</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{#each additonalPay}}
+                            {{> AdditionalPayEntry index=@index data=this}}
+                        {{/each}}
+                        </tbody>
+                    </table>
+                </div><!-- table-responsive -->
+            </div>
+        </div><!-- row -->
+
+    </div><!-- contentpanel -->
+
+</template>

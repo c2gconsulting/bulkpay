@@ -671,5 +671,13 @@ _.extend(Core, {
             {name:'November',period: '11'},
             {name:'December',period: '12'}
         ];
+    },
+    'years': function(){
+        //this is not the right thing to do .. used temporarily for getting years
+        let years = [];
+        for (let x = new Date().getFullYear() - 10; x < new Date().getFullYear() + 10; x++) {
+            years.push(String(x));
+        }
+        return years;
     }
 });

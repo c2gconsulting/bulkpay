@@ -277,6 +277,13 @@ Partitioner.partitionCollection(LeaveTypes);
 LeaveTypes.attachSchema(Core.Schemas.LeaveType);
 
 /**
+ * Core Collections Addtional Payments
+ */
+AdditionalPayments = new Mongo.Collection("additionalpay");
+Partitioner.partitionCollection(AdditionalPayments);
+AdditionalPayments.attachSchema(Core.Schemas.AdditionalPayment);
+
+/**
  * Core Collections Constants
  */
 Constants = new Mongo.Collection("constants");

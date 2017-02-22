@@ -252,6 +252,7 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
             //Add currently process employee details to final.payslip.employee
             const employee = getDetailsInPayslip(x);
             final.payslip.employee = employee;
+            final.payslip.employee.grade = grade.code;
 
             //payement will also be sent to result for factoring and storage;
             payresult.push(final);

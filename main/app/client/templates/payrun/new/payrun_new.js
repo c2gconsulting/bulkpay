@@ -82,11 +82,7 @@ Template.PayrunNew.helpers({
         return Core.months()
     },
     'year': function(){
-        let years = [];
-        for (let x = new Date().getFullYear(); x < new Date().getFullYear() + 50; x++) {
-            years.push(String(x));
-        }
-        return years;
+        return Core.years();
     },
     'paygrades': () => {
        return PayGrades.find();
@@ -134,14 +130,13 @@ Template.PayrunNew.onCreated(function () {
     self.autorun(function(){
         let includeType = self.includePay.get();
         let selectedGrade = self.grades.get();
-        console.log(selectedGrade);
         if (includeType)
             self.subscribe("AdditionalPayTypes", selectedGrade, Session.get('context'));
     })
 });
 
 Template.PayrunNew.onRendered(function () {
-    // $('select.dropdown').dropdown();
+     $('select.dropdown').dropdown();
     // //
     // let selected = [];
     // $("input:checkbox[name=paygrades]:checked").each(function () {

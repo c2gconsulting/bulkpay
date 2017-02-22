@@ -177,6 +177,12 @@ Router.route('/business/:_id/oneoffs', {
   where: 'client'
 });
 
+Router.route('/business/:_id/additional', {
+    name: 'additional.pay',
+    controller: 'AdditionalController',
+    where: 'client'
+});
+
 Router.route('/business/:_id/payrun/new', {
   name: 'payrun.new',
   controller: 'PayrunController',
