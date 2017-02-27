@@ -61,17 +61,10 @@ Template.selectedEvent.helpers({
 /*****************************************************************************/
 Template.selectedEvent.onCreated(function () {
     let self = this;
-
-
-
-
 });
 
 Template.selectedEvent.onRendered(function () {
     let self = this;
-    console.log('logging data as ', self.data);
-
-
 });
 
 

@@ -20,6 +20,10 @@ Template.EmployeeTime.helpers({
     },
     'selected': () => {
         return Template.instance().dict.get('selected');
+    },
+    'getPositionDescription': (id) => {
+        return EntityObjects.findOne({_id: id}).name;
+
     }
 });
 

@@ -9,7 +9,6 @@ Meteor.methods({
     //     throw new Meteor.Error(403, "Access Denied");
     // }
     let name = Meteor.users.findOne({'employeeProfile.employeeId': employeeId, 'businessIds': businessId});
-    console.log(name);
     return name ? {exist: true} : {exist: false};
   },
     /**
@@ -26,7 +25,6 @@ getActiveEmployees = (paygrade, period, businessId) => {
     const month = period.month;
     const firsDayOfPeriod = `01-${month}-${year} GMT`;
     const DateLimit = new Date(firsDayOfPeriod);
-    console.log("Termination Date limit", DateLimit);
     return Meteor.users.find({'employeeProfile.employment.status': 'Active',
         $or: [
             {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},

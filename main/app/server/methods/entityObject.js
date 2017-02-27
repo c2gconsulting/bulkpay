@@ -139,6 +139,11 @@ Meteor.methods({
             throw new Meteor.Error(401, "Business Not Found");
         }
 
+    },
+    'getPositionName': function(id){
+        const name = EntityObjects.findOne({_id: id}).name;
+        console.log(`position name for ${id} is `, name);
+        return name;
     }
 
 
