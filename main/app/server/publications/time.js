@@ -8,7 +8,6 @@ Core.publish("timedata", function (businessId) {
     check(businessId, String);
     let currentId = this.userId;
     let user = Meteor.users.findOne({_id: currentId});
-    console.log(user);
     if (user && user.employeeProfile.employment.position){
         let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
             return x._id
@@ -21,8 +20,7 @@ Core.publish("timedata", function (businessId) {
             return x._id;
         });
         allSubs.push(currentId);
-        //console.log(allSubs);
-        return [Times.find({employeeId: {$in: allSubs}}), Leaves.find({employeeId: {$in: [allSubs]}}), UserImages.find({})]
+        return [Times.find({employeeId: {$in: allSubs}}), Leaves.find({employeeId: {$in: allSubs}}), LeaveTypes.find({businessId: businessId, status: 'Active'}), UserImages.find({})]
     } else {
         return this.ready();
     }

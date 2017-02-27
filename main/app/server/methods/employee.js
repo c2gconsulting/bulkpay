@@ -21,7 +21,6 @@ Meteor.methods({
 
 
 getActiveEmployees = (paygrade, period, businessId) => {
-    console.log("executing funciton get Active employees with paygrade", paygrade);
     check(paygrade, Array);
     const year = period.year;
     const month = period.month;

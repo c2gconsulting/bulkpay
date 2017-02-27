@@ -39,7 +39,7 @@
                                     <ul class="media-list msg-list">
                                         <li class="media emplist" id="{{_id}}">
                                             <a class="pull-left" href="#">
-                                                <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
                                             </a>
                                             <div class="media-body">
                                                 <h4 class="sender">Marketting Manager</h4>
@@ -66,7 +66,7 @@
                                     {{#each supervisee}}
                                         <li class="media emplist" id="{{_id}}">
                                             <a class="pull-left" href="#">
-                                                <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
+                                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
                                             </a>
                                             <div class="media-body">
                                                 <h4 class="sender">Marketting Manager</h4>
@@ -79,32 +79,49 @@
                         </div>
                     </div><!-- panel -->
 
-                    <div class="panel panel-primary">
+                    <!--<div class="panel panel-primary">-->
+                        <!--<div class="panel-heading">-->
+                            <!--<h4 class="panel-title">-->
+                                <!--<a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseThree2">-->
+                                    <!--Subordinates-->
+                                <!--</a>-->
+                            <!--</h4>-->
+                        <!--</div>-->
+                        <!--<div id="collapseThree2" class="panel-collapse collapse">-->
+                            <!--<div class="panel-body">-->
+                                <!--<ul class="media-list msg-list">-->
+                                    <!--{{#each subordinate}}-->
+                                        <!--<li class="media emplist" id="{{_id}}">-->
+                                            <!--<a class="pull-left" href="#">-->
+                                                <!--<img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">-->
+                                            <!--</a>-->
+                                            <!--<div class="media-body">-->
+                                                <!--<h4 class="sender">Marketting Manager</h4>-->
+                                                <!--<p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>-->
+                                            <!--</div>-->
+                                        <!--</li>-->
+                                    <!--{{/each}}-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>&lt;!&ndash; panel &ndash;&gt;-->
+                    <div class="row">
+                        <div class="approvals">
+                            <h5 class="lg-title mb10">Approvals </h5>
+                            <p class="mb20">Section for approving Times/Leave</p>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-primary widget-newsletter">
                         <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseThree2">
-                                    Subordinates
-                                </a>
-                            </h4>
+                            <h4 class="panel-title">Selected Event</h4>
                         </div>
-                        <div id="collapseThree2" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <ul class="media-list msg-list">
-                                    {{#each subordinate}}
-                                        <li class="media emplist" id="{{_id}}">
-                                            <a class="pull-left" href="#">
-                                                <img class="media-object img-circle img-online" src="/images/photos/user5.png" alt="...">
-                                            </a>
-                                            <div class="media-body">
-                                                <h4 class="sender">Marketting Manager</h4>
-                                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
-                                            </div>
-                                        </li>
-                                    {{/each}}
-                                </ul>
-                            </div>
-                        </div>
-                    </div><!-- panel -->
+                        <div class="panel-body">
+                            {{#if selected}}
+                               {{> selectedEvent selected}}
+                            {{/if}}
+                        </div><!-- panel-body -->
+                    </div>
 
                 </div><!-- panel-group -->
 

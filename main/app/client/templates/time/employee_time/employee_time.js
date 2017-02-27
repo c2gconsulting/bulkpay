@@ -17,6 +17,9 @@ Template.EmployeeTime.helpers({
     },
     'self': () => {
         return Meteor.users.findOne({_id: Meteor.userId()});
+    },
+    'selected': () => {
+        return Template.instance().dict.get('selected');
     }
 });
 
@@ -26,18 +29,47 @@ Template.EmployeeTime.helpers({
 Template.EmployeeTime.onCreated(function () {
     //subscribe to employees that is under user
     let self = this;
-    self.subscribe("subUsers", Session.get('context'));
-    self.subscribe("timedata", Session.get('context'));
+    self.dict = new ReactiveDict();
 
 
 });
 
 Template.EmployeeTime.onRendered(function () {
-    console.log("redered template");
     $('select.dropdown').dropdown();
     let self = this;
     self.autorun(function(){
-        Meteor.defer(() => {
+        let events = [];
+        const leaves = Leaves.find({}).fetch();
+        const times = Times.find({}).fetch();
+        leaves.forEach(x => {
+            const user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
+            const leaveDescription = LeaveTypes.findOne({_id: x.type}).name;
+            const obj = {};
+            obj._id = x._id;
+            obj.type = 'Leaves';
+            obj.title = user + "-" + leaveDescription;
+            obj.start = moment(x.startDate).format('YYYY-MM-DDTHH:mm:ss');
+            obj.end = moment(x.endDate).format('YYYY-MM-DDTHH:mm:ss');
+            obj.constraint = 'businessHours';
+            obj.color = getColor(x.approvalStatus);
+            events.push(obj);
+        });
+        times.forEach(x => {
+            let user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
+            let obj = {};
+            obj._id = x._id;
+            obj.type = 'Times';
+            obj.title = user + "-" + x.activity;
+            obj.start = moment(x.startTime).format('YYYY-MM-DDTHH:mm:ss');
+            obj.end = moment(x.endTime).format('YYYY-MM-DDTHH:mm:ss');
+            obj.constraint = 'businessHours';
+            obj.color = getColor(x.status);
+            events.push(obj);
+        });
+
+            if ( $('#calendar').children().length > 0 )
+                $('#calendar').fullCalendar('destroy');
+
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -55,41 +87,16 @@ Template.EmployeeTime.onRendered(function () {
                 },
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
-                events: getEvents()
+                events: events,
+                eventClick: function(event) {
+                    if (event._id) {
+                        self.dict.set('selected', {type: event.type, id: event._id});
+                        return false;
+                    }
+                }
             });
 
-        })
-
     });
-
-    function getEvents(){
-        let events = [];
-        let leaves = Leaves.find({}).fetch();
-        let times = Times.find({}).fetch();
-        leaves.forEach(x => {
-            let user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
-            let obj = {};
-            obj.title = user + "-" + x.description;
-            obj.start = moment(x.startDate).format('YYYY-MM-DDTHH:mm:ss');
-            obj.end = moment(x.endDate).format('YYYY-MM-DDTHH:mm:ss');
-            obj.constraint = 'businessHours';
-            obj.url = "/";
-            obj.color = getColor(x.approvalStatus);
-            events.push(obj);
-        });
-        times.forEach(x => {
-            let user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
-            let obj = {};
-            obj.title = user + "-" + x.activity;
-            obj.start = moment(x.startTime).format('YYYY-MM-DDTHH:mm:ss');
-            obj.end = moment(x.endTime).format('YYYY-MM-DDTHH:mm:ss');
-            obj.constraint = 'businessHours';
-            obj.url = "/";
-            obj.color = getColor(x.status);
-            events.push(obj);
-        });
-        return  events;
-    }
 
     function getColor(status){
         switch (status){

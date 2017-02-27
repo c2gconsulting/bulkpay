@@ -89,7 +89,10 @@ Core.Schemas.Time = new SimpleSchema({
         regEx: SimpleSchema.RegEx.Id,
         optional: true
     },
-
+    approvedDate: {
+        type: Date,
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

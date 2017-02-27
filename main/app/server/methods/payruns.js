@@ -28,12 +28,11 @@ Meteor.methods({
         let payObj = {};
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
         if (employees.length === 0 && paygrades.length > 0) {
-            console.log("getting active employees");
             res = getActiveEmployees(paygrades, period, businessId);
             //res contains employees ready for payment processing
 
             if (res && res.length > 0) {
-                payObj.result = processEmployeePay(res, annuals, businessId);
+                payObj.result = processEmployeePay(res, annuals, businessId, period);
             }
         } else if (employees.length > 0) {
             //get all employees specified
@@ -46,7 +45,7 @@ Meteor.methods({
                 ],
                 'employeeProfile.employment.status': 'Active',
                 'businessIds': businessId, }).fetch();
-            payObj.result = users && processEmployeePay(users, annuals, businessId);
+            payObj.result = users && processEmployeePay(users, annuals, businessId, period);
         }
 
         //just return something for now .... testing
@@ -56,8 +55,7 @@ Meteor.methods({
 });
 // use oop
 // instantiate payment object for employee with props for all methods required
-function processEmployeePay(employees, includedAnnuals, businessId) {
-    console.log("Employees to Process are: ", employees);
+function processEmployeePay(employees, includedAnnuals, businessId, period) {
     let paygrades = [];
     let payresult = [];
     let specifiedAsProcess = function (paytype) {
@@ -111,7 +109,23 @@ function processEmployeePay(employees, includedAnnuals, businessId) {
 
                     return x;
                 });
-                paytypes.forEach((x, index) => {
+
+                //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
+                const newPeriod = period.month + period.year;   //get period value as 012017 ..ex.
+                const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod});
+                //include additional pay to match paytype values
+                let mergedPay, formattedPay;
+                if(addPay && addPay.length > 0){
+                    console.log('found additional pay for employee', addPay);
+                    formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
+                    console.log('login formatted pay as',formattedPay);
+                }
+                if(formattedPay && formattedPay.length > 0){
+                    mergedPay = paytypes.concat(formattedPay);
+                } else {
+                    mergedPay = [...paytypes];
+                }
+                mergedPay.forEach((x, index) => {
                     //skip processing of Annual non selected annual paytypes
                     //revisit this to factor in all payment frequency and create a logic on how processing is made
                     if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
@@ -402,4 +416,16 @@ function getDetailsInPayslip(employee){
     // add other details
 
     return details;
+}
+
+function getPaytypeIdandValue(additionalPay, businessId) {
+    let newAddPay = [...additionalPay];
+    let paytypes = []; //lazyload paytypes to reduce number of database query.
+    newAddPay.forEach(x => {
+        const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId});
+        if(paytype)
+            paytype.value = x.amount;   // add the value as additional pay value
+            paytypes.push(paytype);
+    });
+    return paytypes;
 }

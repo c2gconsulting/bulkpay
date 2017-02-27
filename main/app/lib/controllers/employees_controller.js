@@ -6,6 +6,7 @@ EmployeesController = BusinessUnitController.extend({
   // this.subscribe('item', this.params._id).wait();
   
   subscriptions: function() {
+
   },
   
   // Subscriptions or other things we want to "wait" on. This also
@@ -14,6 +15,9 @@ EmployeesController = BusinessUnitController.extend({
   // return Meteor.subscribe('post', this.params._id);
   
   waitOn: function () {
+      this.subscribe("subUsers", this.params._id);
+      this.subscribe("timedata", this.params._id);
+
   },
   
   // A data function that can be used to automatically set the data context for
