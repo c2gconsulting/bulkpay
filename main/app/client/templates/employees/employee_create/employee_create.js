@@ -24,8 +24,7 @@ Template.EmployeeCreate.events({
     'click #createEmployee': function(e, tmpl){
         e.preventDefault();
         let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        let l = Ladda.create(tmpl.$('#createEmployee')[0]);
-        l.start();
+        var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         const employeeProfile = {
             employeeId: $('[name="employeeId"]').val(),
             address: $('[name="address"]').val(),
@@ -53,15 +52,25 @@ Template.EmployeeCreate.events({
 
         };
         function employment(){
-            return{
+            console.log('termination date', ('[data-field="hireDate"]') ? true : false);
+            hireDate = $('[data-field="hireDate"]').val() ? new Date($('[data-field="hireDate"]').val()) : null;
+            terminationDate = $('[data-field="terminationDate"]').val() ? new Date($('[data-field="terminationDate"]').val()) : null;
+            confirmationDate =  $('[data-field="confirmationDate"]').val() ? new Date($('[data-field="confirmationDate"]').val()) : null;
+
+            const details = {
             position: $('[name="position"]').val(),
                 paygrade: $('[name="paygrade"]').val(),
                 paytypes: getPaytypes(),
-                hireDate: new Date($('[data-field="hireDate"]').val()),
-                confirmationDate: new Date($('[data-field="confirmationDate"]').val()),
                 status: $('[name="status"]').val(),
-                terminationDate: new Date($('[data-field="terminationDate"]').val())
             }
+            if(hireDate)
+                details.hireDate = hireDate;
+            if(terminationDate)
+                details.terminationDate = terminationDate;
+            if(confirmationDate)
+                details.confirmationDate = confirmationDate;
+            return details;
+
         };
         function payment() {
             return {
@@ -112,7 +121,7 @@ Template.EmployeeCreate.events({
         };
 
         Meteor.call('account/create', employee, true, (err, res) => {
-            l.stop();
+            Blaze.remove(view);
             if (res){
                 swal({
                     title: "Success",

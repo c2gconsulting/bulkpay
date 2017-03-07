@@ -1,0 +1,72 @@
+module.exports = {
+  servers: {
+    one: {
+      host: 'ec2-52-44-86-235.compute-1.amazonaws.com',
+      username: 'ubuntu',
+      pem: '/path to pem file'
+      // password:
+      // or leave blank for authenticate from ssh-agent
+    }
+  },
+
+  meteor: {
+    name: 'bulkpay',
+    path: 'full path to app ',
+    servers: {
+      one: {},
+    },
+    buildOptions: {
+      serverOnly: true,
+    },
+    env: {
+        KADIRA_ID: "",
+        KADIRA_SECRET: "",
+        //MONGO_URL: "",
+        ROOT_URL: "",
+
+
+        // cluster env vars
+         //CLUSTER_DISCOVERY_URL: "mongodb://172.17.0.1/service-discovery",
+         //CLUSTER_SERVICE: "main",
+         //CLUSTER_PUBLIC_SERVICES: "main, search, notification",
+
+        // aws env vars
+         AWS_ACCESS_KEY_ID: "",
+         AWS_SECRET_ACCESS_KEY: "",
+
+        // service env vars
+         RABBIT_URL: "amqp://127.0.0.1",
+
+        // base auth env vars
+         //BASE_ADMIN_PASS: "",
+
+        // redis env vars
+         REDIS_HOST: "127.0.0.1",
+         REDIS_PORT: "6379",
+
+        //other service env vars
+         MAIL_URL: "smtp://username:password@smtp.gmail.com:587/",
+         //AWS_S3_BUCKET: "",
+         MAIL_SITE_NAME: "BulkPay™",
+         MAIL_FROM: "BulkPay™ Team <no-reply@bulkpay.co>"
+
+    },
+
+    // change to 'kadirahq/meteord' if your app is not using Meteor 1.4
+    dockerImage: 'abernix/meteord:base',
+    deployCheckWaitTime: 60,
+
+    // Show progress bar while uploading bundle to server
+    // You might need to disable it on CI servers
+    enableUploadProgressBar: false
+  },
+
+  mongo: {
+    oplog: true,
+    port: 27017,
+    version: '3.4.1',
+    servers: {
+      one: {},
+    },
+  },
+};

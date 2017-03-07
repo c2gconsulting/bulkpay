@@ -171,6 +171,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Employee Id already taken ")
         }
         let options = {};
+        console.log('termination date is ', user.employeeProfile.employment.terminationDate);
 
         options.email = user.email; // tempo
         options.firstname = user.firstName;
@@ -186,7 +187,7 @@ Meteor.methods({
             Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
         }
         if (sendEnrollmentEmail){
-            //Accounts.sendEnrollmentEmail(accountId, user.email);
+            Accounts.sendEnrollmentEmail(accountId, user.email);
         }
         return true
     },

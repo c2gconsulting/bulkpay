@@ -35,6 +35,10 @@ Meteor.methods({
                 payObj.result = processEmployeePay(res, annuals, businessId, period);
             }
         } else if (employees.length > 0) {
+            const year = period.year;
+            const month = period.month;
+            const firsDayOfPeriod = `01-${month}-${year} GMT`;
+            const DateLimit = new Date(firsDayOfPeriod);
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
             const users = Meteor.users.find({_id: {$in: employees},
@@ -112,7 +116,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
                 //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
                 const newPeriod = period.month + period.year;   //get period value as 012017 ..ex.
-                const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod});
+                const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod}).fetch();
                 //include additional pay to match paytype values
                 let mergedPay, formattedPay;
                 if(addPay && addPay.length > 0){
@@ -121,10 +125,19 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     console.log('login formatted pay as',formattedPay);
                 }
                 if(formattedPay && formattedPay.length > 0){
+                        //loop thru formatted pay and update merged pay
+                        formattedPay.forEach(x => {
+                            let index = _.findLastIndex(paytypes, {_id: x._id});
+                            if(index > -1) { //found
+                                paytypes.splice(index,1);
+                            }
+                        });
                     mergedPay = paytypes.concat(formattedPay);
                 } else {
                     mergedPay = [...paytypes];
                 }
+                Core.hasTimeApprovalAccess()
+                console.log(mergedPay);
                 mergedPay.forEach((x, index) => {
                     //skip processing of Annual non selected annual paytypes
                     //revisit this to factor in all payment frequency and create a logic on how processing is made
@@ -424,7 +437,7 @@ function getPaytypeIdandValue(additionalPay, businessId) {
     newAddPay.forEach(x => {
         const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId});
         if(paytype)
-            paytype.value = x.amount;   // add the value as additional pay value
+            paytype.value = x.amount.toString();   // add the value as additional pay value
             paytypes.push(paytype);
     });
     return paytypes;

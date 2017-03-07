@@ -47,3 +47,11 @@ Core.publish("getPositions", function (businessId) {
 Core.publish("getEntityWithDirectDecent", function(id){
 
 });
+
+/**
+ * Entity
+ */
+
+Core.publish("getCostElement", function (businessId) {
+    return EntityObjects.find({otype: 'Unit', businessId: businessId});
+});

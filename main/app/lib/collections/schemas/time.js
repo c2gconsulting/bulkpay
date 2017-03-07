@@ -38,6 +38,10 @@ Core.Schemas.Time = new SimpleSchema({
     activity:{
         type: String
     },
+    costCenter: {
+        type: String,
+        optional: true
+    },
     note: {
         type: String,
         optional: true
@@ -60,19 +64,27 @@ Core.Schemas.Time = new SimpleSchema({
             }
         }
     },
+    includeBreak: {
+        type: Boolean,
+        defaultValue: true
+    },
     duration: {
         type: Number,
         autoform: {
             readonly: true
         },
         autoValue:function(){
-            let startTime = this.field("startTime").value;
-            let endTime = this.field("endTime").value;
+            const startTime = this.field("startTime").value;
+            const endTime = this.field("endTime").value;
+            console.log('loggin field value as ', this.field("includeBreak").value );
+            const breakflag = this.field('includeBreak').value == true? 1 : 0;
             if (startTime && endTime){
                 start = moment(startTime);
                 end = moment(endTime);
-                var duration = moment.duration(end.diff(start));
-                var hours = duration.asHours();
+                const duration = moment.duration(end.diff(start));
+                let hours = duration.asHours();
+                if (breakflag)
+                    hours -= 1;
                 return hours;
             }
         },

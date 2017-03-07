@@ -35,7 +35,7 @@ Template.LeaveEntry.events({
 /*****************************************************************************/
 Template.LeaveEntry.helpers({
     'active': (status) => {
-        if(status === "Pending")
+        if(status === "Open")
             return "warning";
         if(status === "Approved")
             return "success";

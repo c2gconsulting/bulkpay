@@ -8,7 +8,7 @@ Template.LeaveCreate.events({
 /* LeaveCreate: Helpers */
 /*****************************************************************************/
 Template.LeaveCreate.helpers({
-    leaveTypes: function () {
+    'leaveTypes': function () {
         let leaveTypes = LeaveTypes.find().fetch();
         let returnedArray = [];
         _.each(leaveTypes, function(leave){

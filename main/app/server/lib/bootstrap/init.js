@@ -78,6 +78,7 @@ _.extend(Core, {
     Accounts.emailTemplates.from = process.env.MAIL_FROM || "BulkPay™ Team <no-reply@bulkpay.co>";
 
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
+      console.log('login url as', url);
       let tenantDomain = Core.getCurrentDomain(user._id);
       let baseDomain = Core.getDefaultDomain();
       let tenantUrl = url.replace(baseDomain, tenantDomain);
@@ -87,7 +88,7 @@ _.extend(Core, {
               tenant: user.group,
               user: user.profile.fullName,
               thisYear: new Date().getFullYear(),
-              url: tenantUrl
+              url: url
             });
     };
 

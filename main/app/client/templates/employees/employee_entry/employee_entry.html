@@ -12,14 +12,14 @@
                     {{/if}}
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading">{{profile.fullName}} <small>Software Engineer at Apple, Inc.</small></h4>
+                    <h4 class="media-heading">{{profile.fullName}} <small> </small> </h4>
                     <div class="media-content">
                         <i class="fa fa-map-marker"></i> Lagos
                         <ul class="list-unstyled">
                             <li><i class="fa fa-skype"></i> {{profile.firstname}}.{{profile.lastname}}</li>
                             <li><i class="fa fa-mobile"></i> {{employeeProfile.phone}}</li>
                             <li><i class="fa fa-envelope-o"></i> {{emails.[0].address}}</li>
-                            <li><i class="fa fa-star"></i> {{getName employeeProfile.position}}</li>
+                            <li><i class="fa fa-star"></i> {{positionName employeeProfile.employment.position}}</li>
                         </ul>
                     </div>
                 </div>

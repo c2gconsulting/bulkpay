@@ -8,26 +8,65 @@
                         <h3 class="panel-title">Enter Time Data</h3>
                     </div>
                     <div class="panel-body">
-
                         <div class="row">
-                            <div class="col-sm-3">
-                                {{> afQuickField name="project" options=projects class="dropdown" id="project"}}
-                            </div><!-- col-sm-3 -->
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Cost Element</label>
+                                <div class="col-sm-8">
 
-                            <div class="col-sm-3">
-                                {{> afQuickField name="activity"  id="project"}}
-                            </div><!-- col-sm-3 -->
+                                    <div class="rdio rdio-default">
+                                        <input type="radio" name="costElement" id="Project" value="Project" checked="checked">
+                                        <label for="Project">Project</label>
+                                    </div>
 
-                            <div class="col-sm-3">
+                                    <div class="rdio rdio-primary">
+                                        <input type="radio" name="costElement" value="costCenter" id="costCenter">
+                                        <label for="costCenter">Cost Center</label>
+                                    </div>
+
+                                </div><!-- col-sm-8 -->
+                            </div>
+                        </div> <!-- row -->
+                        <div class="row">
+                            {{#if projectSelected}}
+                                    <div class="col-sm-6">
+                                        {{> afQuickField name="project" options=projects class="dropdown" id="project"}}
+                                    </div><!-- col-sm-3 -->
+
+                                    <div class="col-sm-6">
+                                        {{> afQuickField name="activity"  id="activity" options=projectActivities class="dropdown" }}
+                                    </div><!-- col-sm-3 -->
+                            {{/if}}
+                             {{#if costCenterSelected}}
+                                <div class="col-sm-6">
+                                    {{> afQuickField name="costCenter" options=costCenters class="dropdown" id="cost"}}
+                                </div><!-- col-sm-3 -->
+
+                                <div class="col-sm-6">
+                                    {{> afQuickField name="activity"  id="activity" options=costCenterActivities class="dropdown" }}
+                                </div><!-- col-sm-3 -->
+                             {{/if}}
+
+                            <div class="col-sm-6">
                                 {{> afQuickField name="startTime" class="datepicker" id="startTime"}}
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
                                 {{> afQuickField name="endTime" class="datepicker" id="endTime"}}
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
                                 {{> afQuickField name="duration" disabled=true id="duration"}}
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-6">
+                                <label>&nbsp;</label>
+                                <div class="">
+                                    {{> afQuickField name="includeBreak" class="ckbox ckbox-success" id="includeBreak"}}
+                                </div>
+                            </div><!-- col-sm-4 -->
+
+                            <div class="col-sm-3">
+
                             </div><!-- col-sm-3 -->
 
                         </div><!-- row -->

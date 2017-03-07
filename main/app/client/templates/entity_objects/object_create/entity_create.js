@@ -19,7 +19,6 @@ Template.EntityCreate.events({
         function getParent(val) {
             if (!Template.instance().isroot.get()) {
                 let entity = EntityObjects.findOne();
-                console.log(entity);
                 switch (val) {
                     case "sibling":
                         //parent id = entity.parent
@@ -36,6 +35,7 @@ Template.EntityCreate.events({
            let prop = {};
             prop.supervisor =  $('[name="supervisor"]').val();
             prop.alternateSupervisor =  $('[name="alternateSupervisor"]').val();
+            prop.costCenter = $('[name="costCenter"]').val();
             return prop;
         };
         if(tmpl.data.edit === "true"){//edit action for updating paytype
@@ -52,9 +52,7 @@ Template.EntityCreate.events({
             });
 
         } else{ //New Action for creating paytype}
-            console.log("will perform a meteor call method");
             Meteor.call('entityObject/create', details, (err, res) => {
-                console.log("about creating entity");
                 l.stop();
                 if (res){
                     Modal.hide('EntityCreate');
@@ -84,6 +82,13 @@ Template.EntityCreate.events({
         } else {
             tmpl.showProp.set(false);
         }
+        //for unit show costcenters ... refactor code...
+        if($(e.target ).val() === 'Unit' ){
+            tmpl.ccAssignment.set(true);
+        } else{
+            tmpl.ccAssignment.set(false);
+        }
+
     }
 });
 
@@ -102,24 +107,35 @@ Template.EntityCreate.helpers({
         return Template.instance().data.action == "edit";
         //use ReactiveVar or reactivedict instead of sessions..
     },
-    'parentName': () => {
+    'parentName': (parentId) => {
+        if(parentId){
+            return EntityObjects.findOne({_id: parentId}).name;
+        }
         let root = Template.instance().isroot.get();
         if(root)
             return BusinessUnits.findOne().name;
         return EntityObjects.findOne().name;
     },
-    'checked': () => {
-        return "checked";
-        //check if action is edit and return the previous value
-        //if(Template.instance().data)
-        //    return Template.instance().data.isBase ? true:false;
-        //return false;
+    'checked': (prop) => {
+        if(Template.instance().data)
+            return Template.instance().data[prop];
+        return false;
     },
     'selectedPos': () => {
         return Template.instance().showProp.get();
     },
     'positions': () => {
        return EntityObjects.find({otype: "Position"})
+    },
+    'unit': () => {
+       return Template.instance().ccAssignment.get();
+    },
+    selected: function (context, val) {
+        if(Template.instance().data){
+            //get value of the option element
+            //check and return selected if the template instce of data.val matches
+            return Template.instance().data[context] === val ? selected="selected" : '';
+        }
     }
 });
 
@@ -130,6 +146,7 @@ Template.EntityCreate.onCreated(function () {
     //node root means company level parent id = null
     let self = this;
     self.showProp = new ReactiveVar();
+    self.ccAssignment = new ReactiveVar(true);
     let baseCompany = self.data.node === "root";
     //set reactiveVar to indicate node selection
     self.isroot = new ReactiveVar( baseCompany );
@@ -144,6 +161,7 @@ Template.EntityCreate.onCreated(function () {
 Template.EntityCreate.onRendered(function () {
     //init dropdown
     $('select.dropdown').dropdown();
+    console.log('template data is ', Template.instance().data);
 });
 
 Template.EntityCreate.onDestroyed(function () {

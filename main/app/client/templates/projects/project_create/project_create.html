@@ -29,6 +29,27 @@
                                     {{> afQuickField name="description" rows=3 }}
                                 </div><!-- col-sm-3 -->
                             </div><!-- row -->
+                            <div class="row">
+                                {{#afEachArrayItem name="activities"}}
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <label for="activity_fullcode">Activity FullCode</label>
+                                            {{> afFieldInput name=this.current.fullcode class="form-control"}}
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <label for="activity_description">Activity Description</label>
+                                            {{> afFieldInput name=this.current.description class="form-control"}}
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <button class="btn input-group-addon autoform-remove-item"><i class="glyphicon glyphicon-minus"></i>Remove</button>
+                                        </div>
+                                    </div>
+
+                                {{/afEachArrayItem}}
+                                <div class="row">
+                                    <button class="btn input-group-addon autoform-add-item" data-autoform-field="activities"><i class="glyphicon glyphicon-plus"></i> Add Activity </button>
+                                </div>
+                            </div>
 
                         </div>
                         <div class="panel-footer">

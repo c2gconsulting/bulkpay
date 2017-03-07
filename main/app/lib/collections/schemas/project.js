@@ -26,6 +26,20 @@ Core.Schemas.Project = new SimpleSchema({
             return BusinessUnits.findOne()._id
         }
     },
+    'activities': {
+        type: [Object],
+        optional: true
+    },
+    'activities.$': {
+        type: Object,
+        optional: true
+    },
+    'activities.$.fullcode': {
+        type: String
+    },
+    'activities.$.description': {
+        type: String
+    },
     status: {
         type: String,
         defaultValue: 'Active',

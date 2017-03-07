@@ -15,13 +15,6 @@ Template.Employees.events({
 Template.Employees.helpers({
     'employees': function(){
         return Meteor.users.find({"employee": true});
-    },
-    "images": (id) => {
-        return UserImages.findOne({_id: id});
-
-    },
-    "getName": (id) => {
-        console.log(id);
     }
 });
 
@@ -31,6 +24,7 @@ Template.Employees.helpers({
 Template.Employees.onCreated(function () {
     let self = this;
     self.subscribe("allEmployees", Session.get('context'));
+    self.subscribe("getPositions", Session.get('context'));
 });
 
 Template.Employees.onRendered(function () {
