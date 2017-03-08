@@ -35,8 +35,7 @@
 
 
                       <div class="form-group">
-                          <label for="employee-guarantor-phone" class="col-sm-4 control-label">Phone
-                              Number</label>
+                          <label for="employee-guarantor-phone" class="col-sm-4 control-label">Phone Number</label>
                           <div class="col-sm-4">
                               <input name="guarantorPhone" id="employee-guarantor-phone" type="tel" placeholder="Guarantor's Phone" class="form-control"
                                 value="{{employeeProfile.guarantor.phone}}"/>
@@ -48,10 +47,9 @@
 
 
                       <div class="form-group">
-                          <label for="employee-guarantor-address"
-                                 class="col-sm-4 control-label">Address</label>
+                          <label for="employee-guarantor-address" class="col-sm-4 control-label">Address</label>
                           <div class="col-sm-4">
-                              <textarea name="guarantor.address" id="employee-guarantor-address" class="form-control" rows="5"
+                              <textarea name="guarantorAddress" id="employee-guarantor-address" class="form-control" rows="5"
                                 value="{{employeeProfile.guarantor.address}}"></textarea>
                           </div>
                           <div class="col-sm-4">
@@ -62,7 +60,8 @@
                       <div class="form-group">
                           <label for="employee-guarantor-city" class="col-sm-4 control-label">City</label>
                           <div class="col-sm-4">
-                              <input name="guarantor.city" id="employee-guarantor-city" type="text" placeholder="Guarantor's City" class="form-control"/>
+                              <input name="guarantorCity" id="employee-guarantor-city" type="text" placeholder="Guarantor's City" class="form-control"
+                                value="{{employeeProfile.guarantor.city}}"/>
                           </div>
                           <div class="col-sm-4">
                               &nbsp;
@@ -72,7 +71,8 @@
                       <div class="form-group">
                           <label class="col-sm-4 control-label">State</label>
                           <div class="col-sm-4">
-                              <select name="guarantor.state" class="form-control selectpicker dropdown" data-live-search="true">
+                              <select name="guarantorState" class="form-control selectpicker dropdown" data-live-search="true"
+                                value="{{employeeProfile.guarantor.state}}">
                                   {{#each states}}
                                       <option value="{{code}}">{{name}}</option>
                                   {{/each}}

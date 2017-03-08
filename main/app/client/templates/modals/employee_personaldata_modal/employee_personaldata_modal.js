@@ -13,7 +13,7 @@ Template.EmployeePersonalDataModal.events({
           if (res){
               swal({
                   title: "Success",
-                  text: `Employee Updated`,
+                  text: `Employee personal details updated`,
                   confirmButtonClass: "btn-success",
                   type: "success",
                   confirmButtonText: "OK"

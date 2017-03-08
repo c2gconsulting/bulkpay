@@ -6,7 +6,95 @@ Template.EmployeeNextOfKinDataModal.events({
       Modal.hide('EmployeeNextOfKinDataModal');
     },
     'click #save': (e, tmpl) => {
-      Modal.hide('EmployeeNextOfKinDataModal');
+      let user = Template.instance().getEditUser();
+      console.log("User to update on server: \n" + JSON.stringify(user));
+
+      Meteor.call('account/updateNextOfKinData', user, user._id, (err, res) => {
+          if (res){
+              swal({
+                  title: "Success",
+                  text: `Employee next of kin data updated`,
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+              Modal.hide('EmployeeNextOfKinDataModal');
+          } else {
+              console.log(err);
+          }
+      });
+    },
+    'blur [name=guarantorFullName]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.fullName = value;
+
+        console.log("user guarantor fullName changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=guarantorEmail]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.email = value;
+
+        console.log("user guarantor email changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=guarantorPhone]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.phone = value;
+
+        console.log("user guarantor phone changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=guarantorAddress]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.address = value;
+
+        console.log("user guarantor address changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=guarantorCity]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.city = value;
+
+        console.log("user guarantor city changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=guarantorState]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.guarantor = user.employeeProfile.guarantor || {};
+        user.employeeProfile.guarantor.state = value;
+
+        console.log("user guarantor state changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
     }
 });
 
@@ -39,7 +127,7 @@ Template.EmployeeNextOfKinDataModal.onCreated(function () {
   }
 
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
-  delete selectedEmployee.employeeProfile.guarantor;
+  //delete selectedEmployee.employeeProfile.guarantor;
   delete selectedEmployee.employeeProfile.employment;
   delete selectedEmployee.employeeProfile.emergencyContact;
   delete selectedEmployee.employeeProfile.payment;
