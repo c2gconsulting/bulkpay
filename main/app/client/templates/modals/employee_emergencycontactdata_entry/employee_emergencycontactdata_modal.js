@@ -3,11 +3,23 @@
 /*****************************************************************************/
 Template.EmployeeEmergencyContactDataModal.events({
   'click #save-close': (e, tmpl) => {
-    Modal.hide('EmployeeNextOfKinDataModal');
+    Modal.hide('EmployeeEmergencyContactDataModal');
   },
   'click #save': (e, tmpl) => {
-    Modal.hide('EmployeeNextOfKinDataModal');
-  }
+    Modal.hide('EmployeeEmergencyContactDataModal');
+  },
+  'blur [name=emergencyContactFullName]': function (e, tmpl) {
+    let user = Template.instance().getEditUser();
+    let value = e.currentTarget.value;
+    if (value && value.trim().length > 0) {
+      user.employeeProfile = user.employeeProfile || {};
+      user.employeeProfile.emergencyContact = user.employeeProfile.emergencyContact || {};
+      user.employeeProfile.emergencyContact.name = value;
+
+      console.log("user emergencycontact fullName changed to: " + value);
+    }
+    Template.instance().setEditUser(user);
+  },
 });
 
 /*****************************************************************************/
@@ -41,7 +53,7 @@ Template.EmployeeEmergencyContactDataModal.onCreated(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   delete selectedEmployee.employeeProfile.guarantor;
   delete selectedEmployee.employeeProfile.employment;
-  delete selectedEmployee.employeeProfile.emergencyContact;
+  //delete selectedEmployee.employeeProfile.emergencyContact;
   delete selectedEmployee.employeeProfile.payment;
 
   self.setEditUser(selectedEmployee);

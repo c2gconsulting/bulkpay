@@ -155,6 +155,7 @@ Template.EmployeeCreate.events({
     'change [name="paygrade"]': (e,tmpl) => {
         let paygrade = $(e.target).val();
         tmpl.selectedGrade.set(paygrade);
+
     },
     'blur [name="employeeId"]': (e,tmpl) => {
         const id = $(e.target).val();
@@ -271,6 +272,7 @@ Template.EmployeeCreate.onCreated(function () {
 
         }
     });
+
 });
 
 Template.EmployeeCreate.onRendered(function () {

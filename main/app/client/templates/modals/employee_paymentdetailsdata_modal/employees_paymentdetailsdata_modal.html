@@ -1,4 +1,5 @@
 <template name="EmployeePaymentDetailsDataModal">
+{{#each selectedEmployee}}
   <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -14,7 +15,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Payment Method</label>
                         <div class="col-sm-4">
-                            <select name="paymentMethod" style="width: 100%" class="form-control dropdown">
+                            <select name="paymentMethod" style="width: 100%" class="form-control dropdown"
+                              value="{{employeeProfile.payment.paymentMethod}}">
                                 <option value="Cash">Cash</option>
                                 <option value="Cheque">Cheque</option>
                                 <option value="Bank Account">Bank Account</option>
@@ -28,7 +30,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Bank</label>
                         <div class="col-sm-4">
-                            <select name="bank" style="width: 100%" class="form-control dropdown">
+                            <select name="bank" style="width: 100%" class="form-control dropdown"
+                              value="{{employeeProfile.payment.bank}}">
                                 <option value="Ecobank Nigeria Plc">Ecobank Nigeria Plc</option>
                                 <option value="Equitorial Trust Bank Limited">Equitorial Trust Bank Limited</option>
                                 <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
@@ -43,7 +46,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Bank Account No.</label>
                         <div class="col-sm-4">
-                            <input name="paymentDetails.accountNumber" type="text" placeholder="Account Number" class="form-control"/>
+                            <input name="paymentDetailsAccountNumber" type="text" placeholder="Account Number" class="form-control"
+                              value="{{employeeProfile.payment.accountNumber}}"/>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -53,7 +57,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Bank Account Name</label>
                         <div class="col-sm-4">
-                            <input name="paymentDetails.accountName" type="text" placeholder="Account Name" class="form-control"/>
+                            <input name="paymentDetailsAccountName" type="text" placeholder="Account Name" class="form-control"
+                              value="{{employeeProfile.payment.accountName}}" />
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -63,7 +68,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Pension Manager</label>
                         <div class="col-sm-4">
-                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
+                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown"
+                              value="{{employeeProfile.payment.pensionmanager}}">
                                 <option value="option1">option1</option>
                                 <option value="option2">option2</option>
                             </select>
@@ -76,7 +82,8 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">RSA Pin</label>
                         <div class="col-sm-4">
-                            <input name="paymentDetails.RSAPin" type="text" placeholder="RSA Pin" class="form-control"/>
+                            <input name="paymentDetailsRSAPin" type="text" placeholder="RSA Pin" class="form-control"
+                              value="{{employeeProfile.payment.RSAPin}}"/>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -92,4 +99,5 @@
           </div>
       </div>
   </div>
+{{/each}}
 </template>
