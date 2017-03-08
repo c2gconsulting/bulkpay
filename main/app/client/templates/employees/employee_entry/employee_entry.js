@@ -15,7 +15,7 @@ Template.EmployeeEntry.helpers({
     "images": (id) => {
         return UserImages.findOne({_id: id});
 
-    },
+    }
 });
 
 /*****************************************************************************/

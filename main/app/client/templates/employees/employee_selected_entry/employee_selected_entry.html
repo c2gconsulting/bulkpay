@@ -8,21 +8,27 @@
                 </a>
             </h4>
         </div>
-        <div id="collapseOne2" class="panel-collapse collapse">
+        <div id="collapseOne2" class="panel-collapse collapse in">
             <div class="panel-body">
-                {{#with self}}
-                    <ul class="media-list msg-list">
-                        <li class="media emplist" id="{{_id}}">
-                            <a class="pull-left" href="#">
-                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
-                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
-                            </div>
-                        </li>
-                    </ul>
-                {{/with}}
+              <div class="media emplist">
+                  <div class="pull-left">
+                      {{#if images selectedEmployee.photo._id }}
+                          {{#with images selectedEmployee.photo._id}}
+                              <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
+                          {{/with}}
+                      {{ else }}
+                          <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                      {{/if}}
+                  </div>
+                  <div class="media-body">
+                    {{selectedEmployee.profile.fullName}}
+
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="save">Edit</button>
             </div>
         </div>
     </div><!-- panel -->
@@ -35,20 +41,27 @@
                 </a>
             </h4>
         </div>
-        <div id="collapseTwo2" class="panel-collapse collapse in">
+        <div id="collapseTwo2" class="panel-collapse collapse">
             <div class="panel-body">
                 <ul class="media-list msg-list">
-                    {{#each supervisee}}
-                        <li class="media emplist" id="{{_id}}">
-                            <a class="pull-left" href="#">
-                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
-                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
-                            </div>
-                        </li>
-                    {{/each}}
+
+                </ul>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo2">
+                    Emergency contact data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo2" class="panel-collapse collapse">
+            <div class="panel-body">
+                <ul class="media-list msg-list">
+
                 </ul>
             </div>
         </div>
