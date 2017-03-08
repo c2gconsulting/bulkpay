@@ -5,7 +5,13 @@ Template.Employees.events({
     'click #createEmployee': (e, tmpl) => {
         e.preventDefault();
         Router.go('employees.create', tmpl.data);
+    },
+    'click .anEmployee': (e, tmpl) => {
+        let employeeRowElem = e.currentTarget;
+        let employeeIdToEdit = employeeRowElem.getAttribute("name");
+        console.log("Employee Id to edit: " + employeeIdToEdit);
 
+        //Modal.show('EmployeeEditEmploymentPayrollModal', employeeIdToEdit);
     }
 });
 
@@ -32,4 +38,3 @@ Template.Employees.onRendered(function () {
 
 Template.Employees.onDestroyed(function () {
 });
-

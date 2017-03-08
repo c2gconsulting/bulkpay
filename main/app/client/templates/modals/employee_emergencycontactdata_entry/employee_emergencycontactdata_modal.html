@@ -1,0 +1,91 @@
+<template name="EmployeeEmergencyContactDataModal">
+  <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">Emergency Contact</h4>
+              </div>
+
+              <div class="panel-body nopadding">
+                <form class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label for="employee-contact-name" class="col-sm-4 control-label">Full
+                            Name</label>
+                        <div class="col-sm-4">
+                            <input name="contact.fullName" id="employee-contact-name" type="text" placeholder="Contacts Full Name" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="employee-contact-email"
+                               class="col-sm-4 control-label">Email</label>
+                        <div class="col-sm-4">
+                            <input name="contact.email" id="employee-contact-email" type="email" placeholder="Contact's Email" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="employee-contact-phone" class="col-sm-4 control-label">Phone
+                            Number</label>
+                        <div class="col-sm-4">
+                            <input name="contact.phone" id="employee-contact-phone" type="tel" placeholder="Contact's Phone" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="employee-contact-address"
+                               class="col-sm-4 control-label">Address</label>
+                        <div class="col-sm-4">
+                            <textarea name="contact.address" id="employee-contact-address" class="form-control" rows="5"></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employee-guarantor-city" class="col-sm-4 control-label">City</label>
+                        <div class="col-sm-4">
+                            <input name="contact.city" id="employee-contact-city" type="text" placeholder="Contact City" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">State</label>
+                        <div class="col-sm-4">
+                            <select name="contact.state" class="form-control selectpicker dropdown" data-live-search="true">
+                                {{#each states}}
+                                    <option value="{{code}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+                </form>
+              </div><!-- End of panel-body -->
+
+              <div class="panel-footer">
+                  <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</template>

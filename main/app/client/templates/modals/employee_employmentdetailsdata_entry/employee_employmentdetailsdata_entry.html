@@ -1,0 +1,100 @@
+<template name="EmployeeEmploymentDetailsDataEntry">
+  <div class="tab-pane employment" id="followers">
+      <div class="panel panel-default">
+          <!-- <div class="panel-heading">
+              <h4 class="panel-title">Employment Details</h4>
+          </div> -->
+
+          <!-- panel-heading -->
+          <div class="panel-body nopadding">
+              <form class="form-horizontal form-bordered">
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Position</label>
+                      <div class="col-sm-4">
+                          <select name="position" style="width: 100%" class="form-control dropdown">
+                              <option value="">Unassigned</option>
+                              {{#each positions}}
+                                  <option value="{{_id}}">{{name}}</option>
+                              {{/each}}
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          <div>
+                              <span>Use Org Reassignment</span>
+                          </div>
+                      </div>
+                  </div>
+                  {{#if selectedPosition}}
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">PayGrade</label>
+                          <div class="col-sm-4">
+                              {{#each grades}}
+                                  <label class="radio-inline">
+                                      <input type="radio" name="paygrade" value="{{_id}}"> {{code}}
+                                  </label>
+                              {{/each}}
+                          </div>
+                          <div class="col-sm-4">
+                              <div>
+                              </div>
+                          </div>
+                      </div>
+                  {{/if}}
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Hire Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker hireDate}}
+                              <input type="text" class="form-control datepicker" data-field="hireDate" />
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Confirmation Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker confirmationDate}}
+                              <input type="text" class="form-control datepicker" data-field="confirmationDate" />
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Status</label>
+                      <div class="col-sm-4">
+                          <select name="status" style="width: 100%" class="form-control dropdown">
+                              <option value="Active">Active</option>
+                              <option value="Inactive">Inactive</option>
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Termination/Resignation Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker terminationDate}}
+                              <input type="text" class="form-control datepicker" data-field="terminationDate" />
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+              </form>
+          </div>
+
+          <!-- panel-body -->
+      </div>
+      <!-- panel -->
+  </div>
+</template>

@@ -1,0 +1,28 @@
+<template name="EmployeeEditEmploymentPayrollModal">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <ul class="nav nav-tabs nav-line">
+                      <li class="active"><a href=".employment" data-toggle="tab"><strong>Employment Details</strong></a></li>
+                      <li><a href=".payroll" data-toggle="tab"><strong>Payroll details</strong></a></li>
+                  </ul>
+                </div>
+                <div class="panel-body">
+                    <!-- Tab panes -->
+                    <ul class="nav nav-tabs nav-line">
+                        {{> EmployeeEmploymentDetailsDataEntry}}
+                        {{> EmployeePayrollDetailsDataEntry}}
+                    </ul><!-- End of tab panes -->
+                </div><!-- End of panel-body -->
+
+                <div class="panel-footer">
+                    <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

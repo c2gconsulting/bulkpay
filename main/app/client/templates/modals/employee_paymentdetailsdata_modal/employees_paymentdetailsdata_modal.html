@@ -1,0 +1,95 @@
+<template name="EmployeePaymentDetailsDataModal">
+  <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">Payment Details</h4>
+              </div>
+
+              <div class="panel-body nopadding">
+                <form class="form-horizontal form-bordered">
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Payment Method</label>
+                        <div class="col-sm-4">
+                            <select name="paymentMethod" style="width: 100%" class="form-control dropdown">
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Bank Account">Bank Account</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Bank</label>
+                        <div class="col-sm-4">
+                            <select name="bank" style="width: 100%" class="form-control dropdown">
+                                <option value="Ecobank Nigeria Plc">Ecobank Nigeria Plc</option>
+                                <option value="Equitorial Trust Bank Limited">Equitorial Trust Bank Limited</option>
+                                <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
+                                <option value="First Bank of Nigeria Plc">First Bank of Nigeria Plc</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Bank Account No.</label>
+                        <div class="col-sm-4">
+                            <input name="paymentDetails.accountNumber" type="text" placeholder="Account Number" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Bank Account Name</label>
+                        <div class="col-sm-4">
+                            <input name="paymentDetails.accountName" type="text" placeholder="Account Name" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Pension Manager</label>
+                        <div class="col-sm-4">
+                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
+                                <option value="option1">option1</option>
+                                <option value="option2">option2</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">RSA Pin</label>
+                        <div class="col-sm-4">
+                            <input name="paymentDetails.RSAPin" type="text" placeholder="RSA Pin" class="form-control"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+                </form>
+              </div><!-- End of panel-body -->
+
+              <div class="panel-footer">
+                  <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</template>

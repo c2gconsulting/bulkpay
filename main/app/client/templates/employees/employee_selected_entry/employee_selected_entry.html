@@ -1,0 +1,57 @@
+<template name="EmployeeSelectedEntry">
+<div class="panel-group" id="accordion2">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
+                    Personal data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne2" class="panel-collapse collapse">
+            <div class="panel-body">
+                {{#with self}}
+                    <ul class="media-list msg-list">
+                        <li class="media emplist" id="{{_id}}">
+                            <a class="pull-left" href="#">
+                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                            </a>
+                            <div class="media-body">
+                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
+                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
+                            </div>
+                        </li>
+                    </ul>
+                {{/with}}
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo2">
+                    Next of kin
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo2" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <ul class="media-list msg-list">
+                    {{#each supervisee}}
+                        <li class="media emplist" id="{{_id}}">
+                            <a class="pull-left" href="#">
+                                <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                            </a>
+                            <div class="media-body">
+                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
+                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div><!-- panel -->
+</div>
+</template>
