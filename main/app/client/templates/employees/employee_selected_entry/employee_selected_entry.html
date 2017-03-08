@@ -53,13 +53,33 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    <b>Full name</b>: {{employeeProfile.guarantor.fullName}}
+                    <b>Full name</b>:
+                    {{#if employeeProfile.guarantor.fullName}}
+                      {{employeeProfile.guarantor.fullName}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Email</b>: {{employeeProfile.guarantor.email}}
+                    <b>Email</b>:
+                    {{#if employeeProfile.guarantor.email}}
+                      {{employeeProfile.guarantor.email}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Phone</b>: {{employeeProfile.guarantor.phone}}
+                    <b>Phone</b>:
+                    {{#if employeeProfile.guarantor.phone}}
+                      {{employeeProfile.guarantor.phone}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Address</b>: {{employeeProfile.guarantor.address}}
+                    <b>Address</b>:
+                    {{#if employeeProfile.guarantor.address}}
+                      {{employeeProfile.guarantor.address}}
+                    {{else}}
+                      ----
+                    {{/if}}
                   </div>
               </div>
             </div>
