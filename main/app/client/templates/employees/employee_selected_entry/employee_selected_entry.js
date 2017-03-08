@@ -38,14 +38,17 @@ Template.EmployeeSelectedEntry.events({
 /* EmployeeSelectedEntry: Helpers */
 /*****************************************************************************/
 Template.EmployeeSelectedEntry.helpers({
-  "selectedEmployee": function() {
+  "selectedEmployee": () => {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      return [selectedEmployee];
+      if(selectedEmployee)
+        return [selectedEmployee];
+      else
+        return null;
   },
   "images": (id) => {
       return UserImages.findOne({_id: id});
   },
-  positionName: (id)=>{
+  positionName: (id)=> {
       console.log('position id as', id);
       return EntityObjects.findOne({_id: id}).name;
   }
