@@ -9,7 +9,7 @@ Template.EmployeePersonalDataModal.events({
       let user = Template.instance().getEditUser();
       console.log("User to update on server: \n" + JSON.stringify(user));
 
-      Meteor.call('account/update', user, user._id, (err, res) => {
+      Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
           if (res){
               swal({
                   title: "Success",
@@ -30,6 +30,8 @@ Template.EmployeePersonalDataModal.events({
       if (value && value.trim().length > 0) {
         user.profile = user.profile || {};
         user.profile.firstname = value;
+        user.profile.fullName = value + " " + user.profile.lastname + " " + (user.profile.othernames || "");
+
         console.log("user firstname changed to: " + value);
       }
       Template.instance().setEditUser(user);
@@ -40,6 +42,8 @@ Template.EmployeePersonalDataModal.events({
       if (value && value.trim().length > 0) {
         user.profile = user.profile || {};
         user.profile.lastname = value;
+        user.profile.fullName = user.profile.firstname + " " + value + " " + (user.profile.othernames || "");
+
         console.log("user lastName changed to: " + value);
       }
       Template.instance().setEditUser(user);
@@ -50,6 +54,8 @@ Template.EmployeePersonalDataModal.events({
       if (value && value.trim().length > 0) {
         user.profile = user.profile || {};
         user.profile.othernames = value;
+        user.profile.fullName = user.profile.firstname + " " + user.profile.lastname + " " + value;
+
         console.log("user otherNames changed to: " + value);
       }
       Template.instance().setEditUser(user);

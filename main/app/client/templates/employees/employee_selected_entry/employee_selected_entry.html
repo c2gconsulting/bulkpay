@@ -53,13 +53,13 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    {{employeeProfile.guarantorfullName}}
+                    <b>Full name</b>: {{employeeProfile.guarantorfullName}}
                     <br/>
-                    {{employeeProfile.guarantoremail}}
+                    <b>Email</b>: {{employeeProfile.guarantoremail}}
                     <br/>
-                    {{employeeProfile.guarantorphone}}
+                    <b>Phone</b>: {{employeeProfile.guarantorphone}}
                     <br/>
-                    {{employeeProfile.guarantoraddress}}
+                    <b>Address</b>: {{employeeProfile.guarantoraddress}}
                   </div>
               </div>
             </div>
@@ -82,19 +82,49 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    {{emergencyContact.[0].name}}
+                    <b>Name</b>: {{emergencyContact.[0].name}}
                     <br/>
-                    {{emergencyContact.[0].email}}
+                    <b>Email</b>: {{emergencyContact.[0].email}}
                     <br/>
-                    {{emergencyContact.[0].phone}}
+                    <b>Phone</b>: {{emergencyContact.[0].phone}}
                     <br/>
-                    {{emergencyContact.[0].address}}
+                    <b>Address</b>: {{emergencyContact.[0].address}}
                   </div>
               </div>
             </div>
 
             <div class="panel-footer">
                 <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-emergencycontact-data">Edit</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo4">
+                    Payment data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo4" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <b>Bank</b>: {{employeeProfile.bank}}
+                    <br/>
+                    <b>Bank Account Number</b>: {{employeeProfile.bankAccount}}
+                    <br/>
+                    <b>Payment method</b>: {{employeeProfile.payment.paymentMethod}}
+                    <br/>
+                    <b>Pension Fund Manager</b>: {{employeeProfile.pensionmanager}}
+                    <br/>
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-paymentdetails-data">Edit</button>
             </div>
         </div>
     </div><!-- panel -->

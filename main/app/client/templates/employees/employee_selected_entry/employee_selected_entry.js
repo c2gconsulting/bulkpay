@@ -20,6 +20,12 @@ Template.EmployeeSelectedEntry.events({
       Modal.show('EmployeeEmergencyContactDataModal');
     }
   },
+  'click #employee-edit-paymentdetails-data': function(e, tmpl) {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    if(selectedEmployee) {
+      Modal.show('EmployeePaymentDetailsDataModal');
+    }
+  },
   'click #employment-payroll-link': function(e, tmpl) {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
     if(selectedEmployee) {

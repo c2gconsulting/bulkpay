@@ -120,6 +120,29 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    "account/updatePersonalData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+                "emails.0.address": user.emails[0].address,
+                "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
+                "profile.othernames": user.profile.othernames,
+                "profile.workPhone": user.profile.workPhone,
+                "profile.homePhone": user.profile.homePhone
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
 
     "account/getUsernamesByIds": function (userIds) {
         if (!Meteor.userId()){
