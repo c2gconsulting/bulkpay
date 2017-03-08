@@ -12,7 +12,6 @@ Template.Employees.events({
         console.log("Employee Id to edit: " + employeeIdToEdit);
 
         Session.set("employeesList_selectedEmployeeId", employeeIdToEdit);
-        //Modal.show('EmployeeEditEmploymentPayrollModal', employeeIdToEdit);
     }
 });
 

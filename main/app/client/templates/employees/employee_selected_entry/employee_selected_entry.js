@@ -2,6 +2,12 @@
 /* EmployeeSelectedEntry: Event Handlers */
 /*****************************************************************************/
 Template.EmployeeSelectedEntry.events({
+  'click #employee-edit-personaldata': function(e, tmpl) {
+    let selectedEmployeeId = Session.get('employeesList_selectedEmployeeId');
+    if(selectedEmployeeId) {
+      Modal.show('EmployeePersonalDataModal');      
+    }
+  }
 });
 
 /*****************************************************************************/
