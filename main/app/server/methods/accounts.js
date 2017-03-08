@@ -98,7 +98,7 @@ Meteor.methods({
     "account/update": function (user, userId) {
         check(user, Object);
         check(userId, String);
-        check(user.businessId, String);
+        //check(user.businessId, String);
         if (!Meteor.userId()){
             throw new Meteor.Error(404, "Unauthorized");
         }
@@ -107,6 +107,8 @@ Meteor.methods({
             Meteor.users.update({_id: account._id}, {$set: {
                 "emails.0.address": user.emails[0].address,
                 "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
                 "profile.workPhone": user.profile.workPhone,
                 "profile.homePhone": user.profile.homePhone,
                 "roles": user.roles,

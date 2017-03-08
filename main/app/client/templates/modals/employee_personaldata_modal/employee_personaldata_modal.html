@@ -113,7 +113,7 @@
                                 <div class="col-sm-8">
                                     <select name="state" class="form-control selectpicker dropdown" data-live-search="true">
                                         {{#each states}}
-                                            <option value="{{code}}">{{name}}</option>
+                                            <option value="{{code}}" {{defaultState code}}>{{name}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
