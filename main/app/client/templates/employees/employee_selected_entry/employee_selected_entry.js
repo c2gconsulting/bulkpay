@@ -19,6 +19,12 @@ Template.EmployeeSelectedEntry.events({
     if(selectedEmployee) {
       Modal.show('EmployeeEmergencyContactDataModal');
     }
+  },
+  'click #employment-payroll-link': function(e, tmpl) {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    if(selectedEmployee) {
+      Modal.show("EmployeeEditEmploymentPayrollModal");
+    }
   }
 });
 
@@ -32,6 +38,10 @@ Template.EmployeeSelectedEntry.helpers({
   },
   "images": (id) => {
       return UserImages.findOne({_id: id});
+  },
+  positionName: (id)=>{
+      console.log('position id as', id);
+      return EntityObjects.findOne({_id: id}).name;
   }
 });
 

@@ -27,7 +27,10 @@
                     {{employeeProfile.employeeId}}
                     <br/>
                     {{employeeProfile.phone}}
-
+                    <br/>
+                    {{#if employeeProfile}}
+                    <i class="fa fa-star"></i> {{positionName employeeProfile.employment.position}}
+                    {{/if}}
                   </div>
               </div>
             </div>
@@ -95,6 +98,16 @@
             </div>
         </div>
     </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion2" id="employment-payroll-link">
+                    Employment & Payroll data
+                </a>
+            </h4>
+        </div>
+    </div>
 </div>
 {{/each}}
 </template>
