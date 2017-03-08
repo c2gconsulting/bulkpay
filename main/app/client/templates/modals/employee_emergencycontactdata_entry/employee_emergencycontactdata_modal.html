@@ -1,4 +1,5 @@
 <template name="EmployeeEmergencyContactDataModal">
+{{#each selectedEmployee}}
   <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -11,10 +12,10 @@
               <div class="panel-body nopadding">
                 <form class="form-horizontal form-bordered">
                     <div class="form-group">
-                        <label for="employee-contact-name" class="col-sm-4 control-label">Full
-                            Name</label>
+                        <label for="employee-contact-name" class="col-sm-4 control-label">Full Name</label>
                         <div class="col-sm-4">
-                            <input name="contact.fullName" id="employee-contact-name" type="text" placeholder="Contacts Full Name" class="form-control"/>
+                            <input name="emergencyContactFullName" id="employee-contact-name" type="text" placeholder="Contacts Full Name" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].name}}" />
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -24,7 +25,8 @@
                         <label for="employee-contact-email"
                                class="col-sm-4 control-label">Email</label>
                         <div class="col-sm-4">
-                            <input name="contact.email" id="employee-contact-email" type="email" placeholder="Contact's Email" class="form-control"/>
+                            <input name="emergencyContactEmail" id="employee-contact-email" type="email" placeholder="Contact's Email" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].email}}" />
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -33,10 +35,10 @@
 
 
                     <div class="form-group">
-                        <label for="employee-contact-phone" class="col-sm-4 control-label">Phone
-                            Number</label>
+                        <label for="employee-contact-phone" class="col-sm-4 control-label">Phone Number</label>
                         <div class="col-sm-4">
-                            <input name="contact.phone" id="employee-contact-phone" type="tel" placeholder="Contact's Phone" class="form-control"/>
+                            <input name="emergencyContacthone" id="employee-contact-phone" type="tel" placeholder="Contact's Phone" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].phone}}"/>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -48,7 +50,8 @@
                         <label for="employee-contact-address"
                                class="col-sm-4 control-label">Address</label>
                         <div class="col-sm-4">
-                            <textarea name="contact.address" id="employee-contact-address" class="form-control" rows="5"></textarea>
+                            <textarea name="emergencyContactAddress" id="employee-contact-address" class="form-control" rows="5"
+                              value="{{employeeProfile.emergencyContact.[0].address}}"></textarea>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -58,7 +61,8 @@
                     <div class="form-group">
                         <label for="employee-guarantor-city" class="col-sm-4 control-label">City</label>
                         <div class="col-sm-4">
-                            <input name="contact.city" id="employee-contact-city" type="text" placeholder="Contact City" class="form-control"/>
+                            <input name="emergencyContactCity" id="employee-contact-city" type="text" placeholder="Contact City" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].city}}"/>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
@@ -68,7 +72,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">State</label>
                         <div class="col-sm-4">
-                            <select name="contact.state" class="form-control selectpicker dropdown" data-live-search="true">
+                            <select name="emergencyContactState" class="form-control selectpicker dropdown" data-live-search="true">
                                 {{#each states}}
                                     <option value="{{code}}">{{name}}</option>
                                 {{/each}}
@@ -88,4 +92,5 @@
           </div>
       </div>
   </div>
+{{/each}}
 </template>

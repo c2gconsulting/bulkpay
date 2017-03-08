@@ -2,43 +2,49 @@
 /* EmployeeEmergencyContactDataModal: Event Handlers */
 /*****************************************************************************/
 Template.EmployeeEmergencyContactDataModal.events({
-
+  'click #save-close': (e, tmpl) => {
+    Modal.hide('EmployeeNextOfKinDataModal');
+  },
+  'click #save': (e, tmpl) => {
+    Modal.hide('EmployeeNextOfKinDataModal');
+  }
 });
 
 /*****************************************************************************/
 /* EmployeeEmergencyContactDataModal: Helpers */
 /*****************************************************************************/
 Template.EmployeeEmergencyContactDataModal.helpers({
-    'employees': function(){
-        return Meteor.users.find({"employee": true});
-    },
-    positions: () => {
-        return EntityObjects.find();
-    },
-    'states': () => {
-        return Core.states();
-    },
-    'countries': () => {
-        return Core.IsoCountries();
-    },
-    'defaultCountry': (ccode) => {
-        return ccode === Core.country ? selected="selected":"";
-    },
-    'selectedPosition': () => {
-        return Template.instance().selectedPosition.get();
-    },
-    'grades': () => {
-        return PayGrades.find();
-    },
+  "selectedEmployee": function() {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      return [selectedEmployee];
+  },
+  'states': () => {
+      return Core.states();
+  }
 });
 
 /*****************************************************************************/
 /* EmployeeEmergencyContactDataModal: Lifecycle Hooks */
 /*****************************************************************************/
 Template.EmployeeEmergencyContactDataModal.onCreated(function () {
-    let self = this;
-    // self.subscribe("allEmployees", Session.get('context'));
-    // self.subscribe("getPositions", Session.get('context'));
+  let self = this;
+
+  self.getEditUser = () => {
+    return Session.get('employeeNextOfKinData');
+  }
+
+  self.setEditUser = (editUser) => {
+    console.log("Inside setEditUser");
+    Session.set('employeeNextOfKinData', editUser);
+  }
+
+  let selectedEmployee = Session.get('employeesList_selectedEmployee')
+  delete selectedEmployee.employeeProfile.guarantor;
+  delete selectedEmployee.employeeProfile.employment;
+  delete selectedEmployee.employeeProfile.emergencyContact;
+  delete selectedEmployee.employeeProfile.payment;
+
+  self.setEditUser(selectedEmployee);
 });
 
 Template.EmployeeEmergencyContactDataModal.onRendered(function () {
