@@ -11,7 +11,8 @@ Template.Employees.events({
         let employeeIdToEdit = employeeRowElem.getAttribute("name");
         console.log("Employee Id to edit: " + employeeIdToEdit);
 
-        Session.set("employeesList_selectedEmployeeId", employeeIdToEdit);
+        let selectedEmployee = Meteor.users.findOne({_id: employeeIdToEdit});
+        Session.set("employeesList_selectedEmployee", selectedEmployee);
     }
 });
 

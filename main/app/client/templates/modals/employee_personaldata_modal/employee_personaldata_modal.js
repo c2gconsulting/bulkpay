@@ -15,8 +15,8 @@ Template.EmployeePersonalDataModal.events({
 /*****************************************************************************/
 Template.EmployeePersonalDataModal.helpers({
     "selectedEmployee": function() {
-        let selectedEmployeeId = Session.get('employeesList_selectedEmployeeId');
-        return Meteor.users.findOne({_id: selectedEmployeeId});
+        let selectedEmployee = Session.get('employeesList_selectedEmployee');
+        return selectedEmployee;
     },
     positions: () => {
         return EntityObjects.find();

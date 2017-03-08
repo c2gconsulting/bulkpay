@@ -3,9 +3,21 @@
 /*****************************************************************************/
 Template.EmployeeSelectedEntry.events({
   'click #employee-edit-personaldata': function(e, tmpl) {
-    let selectedEmployeeId = Session.get('employeesList_selectedEmployeeId');
-    if(selectedEmployeeId) {
-      Modal.show('EmployeePersonalDataModal');      
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    if(selectedEmployee) {
+      Modal.show('EmployeePersonalDataModal');
+    }
+  },
+  'click #employee-edit-nextofkin-data': function(e, tmpl) {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    if(selectedEmployee) {
+      Modal.show('EmployeeNextOfKinDataModal');
+    }
+  },
+  'click #employee-edit-emergencycontact-data': function(e, tmpl) {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    if(selectedEmployee) {
+      Modal.show('EmployeeEmergencyContactDataModal');
     }
   }
 });
@@ -15,8 +27,8 @@ Template.EmployeeSelectedEntry.events({
 /*****************************************************************************/
 Template.EmployeeSelectedEntry.helpers({
   "selectedEmployee": function() {
-      let selectedEmployeeId = Session.get('employeesList_selectedEmployeeId');
-      return Meteor.users.findOne({_id: selectedEmployeeId});
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      return [selectedEmployee];
   },
   "images": (id) => {
       return UserImages.findOne({_id: id});
@@ -28,7 +40,7 @@ Template.EmployeeSelectedEntry.helpers({
 /*****************************************************************************/
 Template.EmployeeSelectedEntry.onCreated(function () {
     let self = this;
-    Session.set('employeesList_selectedEmployeeId', undefined);
+    Session.set('employeesList_selectedEmployee', undefined);
 
     self.autorun(()=> {
 
@@ -40,5 +52,5 @@ Template.EmployeeSelectedEntry.onRendered(function () {
 });
 
 Template.EmployeeSelectedEntry.onDestroyed(function () {
-  Session.set('employeesList_selectedEmployeeId', undefined);
+  Session.set('employeesList_selectedEmployee', undefined);
 });

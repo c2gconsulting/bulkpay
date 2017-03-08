@@ -1,19 +1,20 @@
 <template name="EmployeeSelectedEntry">
+{{#each selectedEmployee}}
 <div class="panel-group" id="accordion2">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
+                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne1">
                     Personal data
                 </a>
             </h4>
         </div>
-        <div id="collapseOne2" class="panel-collapse collapse in">
+        <div id="collapseOne1" class="panel-collapse collapse in">
             <div class="panel-body">
               <div class="media emplist">
                   <div class="pull-left">
-                      {{#if images selectedEmployee.photo._id }}
-                          {{#with images selectedEmployee.photo._id}}
+                      {{#if images photo._id }}
+                          {{#with images photo._id}}
                               <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
                           {{/with}}
                       {{ else }}
@@ -21,11 +22,11 @@
                       {{/if}}
                   </div>
                   <div class="media-body">
-                    {{selectedEmployee.profile.fullName}}
+                    {{profile.fullName}}
                     <br/>
-                    {{selectedEmployee.employeeProfile.employeeId}}
+                    {{employeeProfile.employeeId}}
                     <br/>
-                    {{selectedEmployee.employeeProfile.phone}}
+                    {{employeeProfile.phone}}
 
                   </div>
               </div>
@@ -47,9 +48,21 @@
         </div>
         <div id="collapseTwo2" class="panel-collapse collapse">
             <div class="panel-body">
-                <ul class="media-list msg-list">
+              <div class="media emplist">
+                  <div class="media-body">
+                    {{employeeProfile.guarantorfullName}}
+                    <br/>
+                    {{employeeProfile.guarantoremail}}
+                    <br/>
+                    {{employeeProfile.guarantorphone}}
+                    <br/>
+                    {{employeeProfile.guarantoraddress}}
+                  </div>
+              </div>
+            </div>
 
-                </ul>
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-nextofkin-data">Edit</button>
             </div>
         </div>
     </div><!-- panel -->
@@ -57,18 +70,31 @@
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo2">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo3">
                     Emergency contact data
                 </a>
             </h4>
         </div>
-        <div id="collapseTwo2" class="panel-collapse collapse">
+        <div id="collapseTwo3" class="panel-collapse collapse">
             <div class="panel-body">
-                <ul class="media-list msg-list">
+              <div class="media emplist">
+                  <div class="media-body">
+                    {{emergencyContact.[0].name}}
+                    <br/>
+                    {{emergencyContact.[0].email}}
+                    <br/>
+                    {{emergencyContact.[0].phone}}
+                    <br/>
+                    {{emergencyContact.[0].address}}
+                  </div>
+              </div>
+            </div>
 
-                </ul>
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-emergencycontact-data">Edit</button>
             </div>
         </div>
     </div><!-- panel -->
 </div>
+{{/each}}
 </template>
