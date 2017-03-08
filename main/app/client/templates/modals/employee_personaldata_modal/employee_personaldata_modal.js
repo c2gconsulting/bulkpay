@@ -150,7 +150,7 @@ Template.EmployeePersonalDataModal.helpers({
     },
     'grades': () => {
         return PayGrades.find();
-    },
+    }
 });
 
 /*****************************************************************************/
@@ -158,8 +158,6 @@ Template.EmployeePersonalDataModal.helpers({
 /*****************************************************************************/
 Template.EmployeePersonalDataModal.onCreated(function () {
     let self = this;
-    // self.subscribe("allEmployees", Session.get('context'));
-    // self.subscribe("getPositions", Session.get('context'));
 
     self.getEditUser = () => {
       return Session.get('employeePersonalData');

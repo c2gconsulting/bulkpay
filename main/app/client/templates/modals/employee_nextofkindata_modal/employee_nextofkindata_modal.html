@@ -1,4 +1,5 @@
 <template name="EmployeeNextOfKinDataModal">
+{{#each selectedEmployee}}
   <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -11,10 +12,10 @@
               <div class="panel-body nopadding">
                   <form class="form-horizontal form-bordered">
                       <div class="form-group">
-                          <label for="employee-guarantor-name" class="col-sm-4 control-label">Full
-                              Name</label>
+                          <label for="employee-guarantor-name" class="col-sm-4 control-label">Full Name</label>
                           <div class="col-sm-4">
-                              <input name="guarantor.fullName" id="employee-guarantor-name" type="text" placeholder="Guarantor's Full Name" class="form-control"/>
+                              <input name="guarantorFullName" id="employee-guarantor-name" type="text" placeholder="Guarantor's Full Name" class="form-control"
+                                value="{{employeeProfile.guarantor.fullName}}"/>
                           </div>
                           <div class="col-sm-4">
                               &nbsp;
@@ -24,7 +25,8 @@
                           <label for="employee-guarantor-email"
                                  class="col-sm-4 control-label">Email</label>
                           <div class="col-sm-4">
-                              <input name="guarantor.email" id="employee-guarantor-email" type="email" placeholder="Guarantor's Email" class="form-control"/>
+                              <input name="guarantorEmail" id="employee-guarantor-email" type="email" placeholder="Guarantor's Email" class="form-control"
+                                value="{{employeeProfile.guarantor.email}}" />
                           </div>
                           <div class="col-sm-4">
                               &nbsp;
@@ -36,7 +38,8 @@
                           <label for="employee-guarantor-phone" class="col-sm-4 control-label">Phone
                               Number</label>
                           <div class="col-sm-4">
-                              <input name="guarantor.phone" id="employee-guarantor-phone" type="tel" placeholder="Guarantor's Phone" class="form-control"/>
+                              <input name="guarantorPhone" id="employee-guarantor-phone" type="tel" placeholder="Guarantor's Phone" class="form-control"
+                                value="{{employeeProfile.guarantor.phone}}"/>
                           </div>
                           <div class="col-sm-4">
                               &nbsp;
@@ -48,7 +51,8 @@
                           <label for="employee-guarantor-address"
                                  class="col-sm-4 control-label">Address</label>
                           <div class="col-sm-4">
-                              <textarea name="guarantor.address" id="employee-guarantor-address" class="form-control" rows="5"></textarea>
+                              <textarea name="guarantor.address" id="employee-guarantor-address" class="form-control" rows="5"
+                                value="{{employeeProfile.guarantor.address}}"></textarea>
                           </div>
                           <div class="col-sm-4">
                               &nbsp;
@@ -88,4 +92,5 @@
           </div>
       </div>
   </div>
+{{/each}}
 </template>
