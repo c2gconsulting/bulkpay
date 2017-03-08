@@ -53,13 +53,13 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    <b>Full name</b>: {{employeeProfile.guarantorfullName}}
+                    <b>Full name</b>: {{employeeProfile.guarantor.fullName}}
                     <br/>
-                    <b>Email</b>: {{employeeProfile.guarantoremail}}
+                    <b>Email</b>: {{employeeProfile.guarantor.email}}
                     <br/>
-                    <b>Phone</b>: {{employeeProfile.guarantorphone}}
+                    <b>Phone</b>: {{employeeProfile.guarantor.phone}}
                     <br/>
-                    <b>Address</b>: {{employeeProfile.guarantoraddress}}
+                    <b>Address</b>: {{employeeProfile.guarantor.address}}
                   </div>
               </div>
             </div>
@@ -111,14 +111,18 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    <b>Bank</b>: {{employeeProfile.bank}}
+                    <b>Bank</b>: {{employeeProfile.payment.bank}}
                     <br/>
-                    <b>Bank Account Number</b>: {{employeeProfile.bankAccount}}
+                    <b>Bank Account Number</b>: {{employeeProfile.payment.accountNumber}}
+                    <br/>
+                    <b>Bank Account Name</b>: {{employeeProfile.payment.accountName}}
                     <br/>
                     <b>Payment method</b>: {{employeeProfile.payment.paymentMethod}}
+                    <br/><br/>
+
+                    <b>Pension Fund Manager</b>: {{employeeProfile.payment.pensionmanager}}
                     <br/>
-                    <b>Pension Fund Manager</b>: {{employeeProfile.pensionmanager}}
-                    <br/>
+                    <b>RSA Number</b>: {{employeeProfile.payment.RSAPin}}
                   </div>
               </div>
             </div>
