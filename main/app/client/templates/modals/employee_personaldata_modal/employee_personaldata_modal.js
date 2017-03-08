@@ -28,11 +28,92 @@ Template.EmployeePersonalDataModal.events({
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;
       if (value && value.trim().length > 0) {
-        user.firstname = value;
+        user.profile = user.profile || {};
+        user.profile.firstname = value;
         console.log("user firstname changed to: " + value);
       }
       Template.instance().setEditUser(user);
-    }
+    },
+    'blur [name=lastName]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.profile = user.profile || {};
+        user.profile.lastname = value;
+        console.log("user lastName changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=otherNames]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.profile = user.profile || {};
+        user.profile.othernames = value;
+        console.log("user otherNames changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=address]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.address = value;
+        console.log("user address changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=email]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.emails = user.emails || [];
+        if(user.emails.length > 0) {
+          user.emails.splice(0, 1).push({
+            address: value,
+            verified: false
+          })
+        } else {
+          user.emails.push({
+            address: value,
+            verified: false
+          })
+        }
+        console.log("user email changed to: " + JSON.stringify(user.emails));
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=dateOfBirth]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.dateOfBirth = value;
+        console.log("user dateOfBirth changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'change [name=gender]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.gender = value;
+        console.log("user gender changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'change [name=maritalStatus]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.maritalStatus = value;
+        console.log("user maritalStatus changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
 });
 
 /*****************************************************************************/
@@ -83,7 +164,13 @@ Template.EmployeePersonalDataModal.onCreated(function () {
       Session.set('employeePersonalData', editUser);
     }
 
-    self.setEditUser(Session.get('employeesList_selectedEmployee'));
+    let selectedEmployee = Session.get('employeesList_selectedEmployee')
+    delete selectedEmployee.employeeProfile.guarantor;
+    delete selectedEmployee.employeeProfile.employment;
+    delete selectedEmployee.employeeProfile.emergencyContact;
+    delete selectedEmployee.employeeProfile.payment;
+
+    self.setEditUser(selectedEmployee);
 });
 
 Template.EmployeePersonalDataModal.onRendered(function () {
