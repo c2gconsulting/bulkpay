@@ -102,13 +102,33 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    <b>Name</b>: {{employeeProfile.emergencyContact.[0].name}}
+                    <b>Name</b>:
+                    {{#if employeeProfile.emergencyContact.[0].name}}
+                      {{employeeProfile.emergencyContact.[0].name}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Email</b>: {{employeeProfile.emergencyContact.[0].email}}
+                    <b>Email</b>:
+                    {{#if employeeProfile.emergencyContact.[0].email}}
+                      {{employeeProfile.emergencyContact.[0].email}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Phone</b>: {{employeeProfile.emergencyContact.[0].phone}}
+                    <b>Phone</b>:
+                    {{#if employeeProfile.emergencyContact.[0].phone}}
+                      {{employeeProfile.emergencyContact.[0].phone}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Address</b>: {{employeeProfile.emergencyContact.[0].address}}
+                    <b>Address</b>:
+                    {{#if employeeProfile.emergencyContact.[0].address}}
+                      {{employeeProfile.emergencyContact.[0].address}}
+                    {{else}}
+                      ----
+                    {{/if}}
                   </div>
               </div>
             </div>
@@ -131,18 +151,48 @@
             <div class="panel-body">
               <div class="media emplist">
                   <div class="media-body">
-                    <b>Bank</b>: {{employeeProfile.payment.bank}}
+                    <b>Bank</b>:
+                    {{#if employeeProfile.payment.bank}}
+                      {{employeeProfile.payment.bank}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Bank Account Number</b>: {{employeeProfile.payment.accountNumber}}
+                    <b>Bank Account Number</b>:
+                    {{#if employeeProfile.payment.accountNumber}}
+                      {{employeeProfile.payment.accountNumber}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Bank Account Name</b>: {{employeeProfile.payment.accountName}}
+                    <b>Bank Account Name</b>:
+                    {{#if employeeProfile.payment.accountName}}
+                      {{employeeProfile.payment.accountName}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>Payment method</b>: {{employeeProfile.payment.paymentMethod}}
+                    <b>Payment method</b>:
+                    {{#if employeeProfile.payment.paymentMethod}}
+                      {{employeeProfile.payment.paymentMethod}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/><br/>
 
-                    <b>Pension Fund Manager</b>: {{employeeProfile.payment.pensionmanager}}
+                    <b>Pension Fund Manager</b>:
+                    {{#if employeeProfile.payment.pensionmanager}}
+                      {{employeeProfile.payment.pensionmanager}}
+                    {{else}}
+                      ----
+                    {{/if}}
                     <br/>
-                    <b>RSA Number</b>: {{employeeProfile.payment.RSAPin}}
+                    <b>RSA Number</b>:
+                    {{#if employeeProfile.payment.RSAPin}}
+                      {{employeeProfile.payment.RSAPin}}
+                    {{else}}
+                      ----
+                    {{/if}}
                   </div>
               </div>
             </div>
