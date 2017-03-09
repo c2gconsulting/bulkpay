@@ -11,6 +11,7 @@ Template.EmployeeNextOfKinDataModal.events({
 
       Meteor.call('account/updateNextOfKinData', user, user._id, (err, res) => {
           if (res){
+              Session.set('employeesList_selectedEmployee', user);
               swal({
                   title: "Success",
                   text: `Employee next of kin data updated`,

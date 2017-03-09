@@ -11,6 +11,7 @@ Template.EmployeePaymentDetailsDataModal.events({
 
     Meteor.call('account/updatePaymentData', user, user._id, (err, res) => {
         if (res){
+            Session.set('employeesList_selectedEmployee', user);
             swal({
                 title: "Success",
                 text: `Employee payment details updated`,

@@ -11,6 +11,7 @@ Template.EmployeePersonalDataModal.events({
 
       Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
           if (res){
+              Session.set('employeesList_selectedEmployee', user);
               swal({
                   title: "Success",
                   text: `Employee personal details updated`,
@@ -125,10 +126,14 @@ Template.EmployeePersonalDataModal.events({
 /*****************************************************************************/
 /* EmployeePersonalDataModal: Helpers */
 /*****************************************************************************/
+Template.registerHelper('formatDate', function(date) {
+  return moment(date).format('MM-DD-YYYY');
+});
+
 Template.EmployeePersonalDataModal.helpers({
     "selectedEmployee": function() {
         let selectedEmployee = Session.get('employeesList_selectedEmployee');
-        return selectedEmployee;
+        return [selectedEmployee];
     },
     positions: () => {
         return EntityObjects.find();

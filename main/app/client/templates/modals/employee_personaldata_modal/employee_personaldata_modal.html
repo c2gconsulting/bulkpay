@@ -1,4 +1,5 @@
 <template name="EmployeePersonalDataModal">
+{{#each selectedEmployee}}
   <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
@@ -26,21 +27,21 @@
                                 <label for="employeeId" class="col-sm-4 control-label">Employee ID</label>
                                 <div class="col-sm-8">
                                     <input name="employeeId" type="text" placeholder="Unique ID" class="form-control"
-                                      value="{{selectedEmployee.employeeProfile.employeeId}}"/>
+                                      value="{{employeeProfile.employeeId}}"/>
                                 </div>
                             </div>
                             <div class="">
                                 <label for="firstName" class="col-sm-4 control-label">First Name</label>
                                 <div class="col-sm-8">
                                     <input name="firstName" type="text" placeholder="First Name" class="form-control"
-                                      value="{{selectedEmployee.profile.firstname}}"/>
+                                      value="{{profile.firstname}}"/>
                                 </div>
                             </div>
                             <div class="">
                                 <label for="lastName" class="col-sm-4 control-label">Last Name</label>
                                 <div class="col-sm-8">
                                     <input name="lastName" type="text" placeholder="Last Name" class="form-control"
-                                      value="{{selectedEmployee.profile.lastname}}"/>
+                                      value="{{profile.lastname}}"/>
                                 </div>
                             </div>
 
@@ -48,14 +49,14 @@
                                 <label for="otherNames" class="col-sm-4 control-label">Other Names</label>
                                 <div class="col-sm-8">
                                     <input name="otherNames" type="text" placeholder="Other Names" class="form-control"
-                                      value="{{selectedEmployee.profile.otherNames}}"/>
+                                      value="{{profile.otherNames}}"/>
                                 </div>
                             </div>
                             <div class="">
                                 <label for="employee-address" class="col-sm-4 control-label">Address</label>
                                 <div class="col-sm-8">
                                     <textarea name="address" id="employee-address" class="form-control" rows="2"
-                                      value="{{selectedEmployee.employeeProfile.address}}"></textarea>
+                                      value="{{employeeProfile.address}}"></textarea>
                                 </div>
                             </div>
                             <hr/>
@@ -63,22 +64,24 @@
                             <div class="">
                                 <label class="col-sm-4 control-label">Email</label>
                                 <div class="col-sm-8">
-                                    <input name="email" type="email" placeholder="Email" class="form-control"/>
+                                    <input name="email" type="email" placeholder="Email" class="form-control"
+                                      value="{{employeeProfile.emails.[0].address}}"/>
                                 </div>
                             </div>
                             <div class="">
                                 <label class="col-sm-4 control-label">Date of Birth</label>
                                 <div class="col-sm-8">
-                                    {{#datepicker dateOfBirth}}
+                                    {{#datepicker formatDate employeeProfile.dateOfBirth}}
                                         <input name="dateOfBirth" type="text" class="form-control datepicker" data-field="dateOfBirth"
-                                          value="{{selectedEmployee.employeeProfile.dateOfBirth}}"/>
+                                          value="{{formatDate employeeProfile.dateOfBirth}}"/>
                                     {{/datepicker}}
                                 </div>
                             </div>
                             <div class="">
                                 <label for="gender" class="col-sm-4 control-label">Gender</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="gender">
+                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="gender"
+                                      value="{{employeeProfile.gender}}">
                                         <option value="Male" selected>Male</option>
                                         <option value="Female">Female</option>
                                     </select>
@@ -87,7 +90,8 @@
                             <div class="">
                                 <label for="maritalStatus" class="col-sm-4 control-label">Marital Status</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="maritalStatus">
+                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="maritalStatus"
+                                      value="{{employeeProfile.maritalStatus}}">
                                         <option value="Single" selected>Single</option>
                                         <option value="Married">Married</option>
                                     </select>
@@ -97,14 +101,15 @@
                                 <label for="employee-phone" class="col-sm-4 control-label">Phone Number</label>
                                 <div class="col-sm-8">
                                     <input name="phone" type="tel" id="employee-phone" placeholder="Phone Number" class="form-control"
-                                      value="{{selectedEmployee.employeeProfile.phone}}"/>
+                                      value="{{employeeProfile.phone}}"/>
                                 </div>
                             </div>
 
                             <div class="">
                                 <label class="col-sm-4 control-label">Country</label>
                                 <div class="col-sm-8">
-                                    <select name="nationality" class="form-control selectpicker dropdown" data-live-search="true" >
+                                    <select name="nationality" class="form-control selectpicker dropdown" data-live-search="true"
+                                      value="{{employeeProfile.nationality}}">
                                         {{#each countries}}
                                             <option value="{{ccode}}" {{defaultCountry ccode}}>{{cname}}</option>
                                         {{/each}}
@@ -115,7 +120,8 @@
                             <div class="">
                                 <label class="col-sm-4 control-label">State</label>
                                 <div class="col-sm-8">
-                                    <select name="state" class="form-control selectpicker dropdown" data-live-search="true">
+                                    <select name="state" class="form-control selectpicker dropdown" data-live-search="true"
+                                      value="{{employeeProfile.state}}">
                                         {{#each states}}
                                             <option value="{{code}}" {{defaultState employeeProfile.state}}>{{name}}</option>
                                         {{/each}}
@@ -134,4 +140,5 @@
           </div>
       </div>
   </div>
+{{/each}}
 </template>
