@@ -231,6 +231,7 @@ Template.EmployeeEmploymentDetailsDataEntry.onRendered(function () {
   console.log("Positon: " + selectedEmployee.employeeProfile.employment.position);
 
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
+  $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
 });
 
 Template.EmployeeEmploymentDetailsDataEntry.onDestroyed(function () {
