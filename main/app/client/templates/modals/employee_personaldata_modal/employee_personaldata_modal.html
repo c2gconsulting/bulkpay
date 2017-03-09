@@ -108,10 +108,9 @@
                             <div class="">
                                 <label class="col-sm-4 control-label">Country</label>
                                 <div class="col-sm-8">
-                                    <select name="nationality" class="form-control selectpicker dropdown" data-live-search="true"
-                                      value="{{employeeProfile.nationality}}">
+                                    <select name="nationality" class="form-control selectpicker dropdown" data-live-search="true">
                                         {{#each countries}}
-                                            <option value="{{ccode}}" {{defaultCountry ccode}}>{{cname}}</option>
+                                            <option value="{{ccode}}">{{cname}}</option>
                                         {{/each}}
                                     </select>
                                 </div>
@@ -120,10 +119,9 @@
                             <div class="">
                                 <label class="col-sm-4 control-label">State</label>
                                 <div class="col-sm-8">
-                                    <select name="state" class="form-control selectpicker dropdown" data-live-search="true"
-                                      value="{{employeeProfile.state}}">
+                                    <select name="state" class="form-control selectpicker dropdown" data-live-search="true">
                                         {{#each states}}
-                                            <option value="{{code}}" {{defaultState employeeProfile.state}}>{{name}}</option>
+                                            <option value="{{code}}">{{name}}</option>
                                         {{/each}}
                                     </select>
                                 </div>

@@ -109,13 +109,43 @@ Template.EmployeePersonalDataModal.events({
       }
       Template.instance().setEditUser(user);
     },
-    'change [name=maritalStatus]': function (e, tmpl) {
+    'blur [name=maritalStatus]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;
       if (value && value.trim().length > 0) {
         user.employeeProfile = user.employeeProfile || {};
         user.employeeProfile.maritalStatus = value;
         console.log("user maritalStatus changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=phone]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.phone = value;
+        console.log("user maritalStatus changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=nationality]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.nationality = value;
+        console.log("user nationality changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=state]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.state = value;
+        console.log("user state changed to: " + value);
       }
       Template.instance().setEditUser(user);
     },
@@ -179,6 +209,14 @@ Template.EmployeePersonalDataModal.onCreated(function () {
 });
 
 Template.EmployeePersonalDataModal.onRendered(function () {
+  let selectedEmployee = Session.get('employeesList_selectedEmployee');
+  console.log("person country: " + selectedEmployee.employeeProfile.nationality);
+  console.log("person state: " + selectedEmployee.employeeProfile.nationality);
+
+  $('[name="gender"]').val(selectedEmployee.employeeProfile.gender);
+  $('[name="maritalStatus"]').val(selectedEmployee.employeeProfile.maritalStatus);
+  $('[name="nationality"]').val(selectedEmployee.employeeProfile.nationality);
+  $('[name="state"]').val(selectedEmployee.employeeProfile.state);
 });
 
 Template.EmployeePersonalDataModal.onDestroyed(function () {

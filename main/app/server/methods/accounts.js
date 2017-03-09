@@ -135,8 +135,14 @@ Meteor.methods({
                 "profile.firstname": user.profile.firstname,
                 "profile.lastname": user.profile.lastname,
                 "profile.othernames": user.profile.othernames,
-                "profile.workPhone": user.profile.workPhone,
-                "profile.homePhone": user.profile.homePhone
+                
+                "employeeProfile.address": user.employeeProfile.address,
+                "employeeProfile.dateOfBirth": user.employeeProfile.dateOfBirth,
+                "employeeProfile.gender": user.employeeProfile.gender,
+                "employeeProfile.maritalStatus": user.employeeProfile.maritalStatus,
+                "employeeProfile.phone": user.employeeProfile.phone,
+                "employeeProfile.nationality": user.employeeProfile.nationality,
+                "employeeProfile.state": user.employeeProfile.state
             }});
             return true
         } else {
