@@ -212,6 +212,75 @@
             </h4>
         </div>
     </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo5">
+                    Roles management
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo5" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <div class="row">
+                        <label for="employeeManage" class="col-sm-4 control-label">Employee manage</label>
+                        <div class="col-sm-3">
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage"
+                              value="">
+                                <option value="yes" selected>Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                        <label for="leaveApprove" class="col-sm-4 control-label">Leave approve</label>
+                        <div class="col-sm-3">
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove"
+                              value="">
+                                <option value="yes" selected>Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <br/>
+
+                    <div class="row">
+                        <label for="timeApprove" class="col-sm-4 control-label">Time approve</label>
+                        <div class="col-sm-3">
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove"
+                              value="">
+                                <option value="yes" selected>Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                        <label for="timeManage" class="col-sm-4 control-label">Time manage</label>
+                        <div class="col-sm-3">
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage"
+                              value="">
+                                <option value="yes" selected>Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-roles-data">Save</button>
+            </div>
+        </div>
+    </div><!-- panel -->
 </div>
 {{else}}
   <div class="panel-group" id="accordion2">

@@ -31,6 +31,12 @@ Template.EmployeeSelectedEntry.events({
     if(selectedEmployee) {
       Modal.show("EmployeeEditEmploymentPayrollModal");
     }
+  },
+  'click #employee-edit-roles-data': function(e, tmpl) {
+    // let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    // if(selectedEmployee) {
+    //   Modal.show("EmployeeEditEmploymentPayrollModal");
+    // }
   }
 });
 
