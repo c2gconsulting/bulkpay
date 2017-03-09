@@ -213,6 +213,7 @@
         </div>
     </div>
 
+    {{#if hasRoleManageAccess}}
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -226,50 +227,107 @@
               <div class="media emplist">
                   <div class="media-body">
                     <div class="row">
+
                         <label for="employeeManage" class="col-sm-4 control-label">Employee manage</label>
                         <div class="col-sm-3">
+                            {{#if hasEmployeeAccess}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage"
                               value="">
-                                <option value="yes" selected>Yes</option>
-                                <option value="no">No</option>
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
                             </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage"
+                              value="">
+                                <option value="true">Yes</option>
+                                <option value="false" selected="">No</option>
+                            </select>
+                            {{/if}}
                         </div>
                     </div>
-                    <br/>
 
                     <div class="row">
                         <label for="leaveApprove" class="col-sm-4 control-label">Leave approve</label>
                         <div class="col-sm-3">
-                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove"
-                              value="">
-                                <option value="yes" selected>Yes</option>
-                                <option value="no">No</option>
+                            {{#if hasLeaveApprovalAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
                             </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
                         </div>
                     </div>
 
-                    <br/>
+                    <div class="row">
+                        <label for="leaveManage" class="col-sm-4 control-label">Leave manage</label>
+                        <div class="col-sm-3">
+                            {{#if hasLeaveManageAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
+                        </div>
+                    </div>
 
                     <div class="row">
                         <label for="timeApprove" class="col-sm-4 control-label">Time approve</label>
                         <div class="col-sm-3">
-                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove"
-                              value="">
-                                <option value="yes" selected>Yes</option>
-                                <option value="no">No</option>
+                            {{#if hasTimeApprovalAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
                             </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
                         </div>
                     </div>
-                    <br/>
 
                     <div class="row">
                         <label for="timeManage" class="col-sm-4 control-label">Time manage</label>
                         <div class="col-sm-3">
-                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage"
-                              value="">
-                                <option value="yes" selected>Yes</option>
-                                <option value="no">No</option>
+                            {{#if hasTimeManageAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
                             </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="payrollManage" class="col-sm-4 control-label">Payroll manage</label>
+                        <div class="col-sm-3">
+                            {{#if hasPayrollAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
                         </div>
                     </div>
                   </div>
@@ -281,6 +339,7 @@
             </div>
         </div>
     </div><!-- panel -->
+    {{/if}}
 </div>
 {{else}}
   <div class="panel-group" id="accordion2">

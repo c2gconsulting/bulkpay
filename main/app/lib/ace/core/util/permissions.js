@@ -1,5 +1,6 @@
 Core.Permissions = {
 	"ADMIN_ALL" : ["admin/all", "tenant/maintain"],
+		"ROLE_MANAGE" : "role/manage",
     "EMPLOYEE_MANAGE" : ["employee/all"],
     "LEAVE_APPROVE" : "leave/approve",
     "TIME_APPROVE" : "time/approve",
@@ -29,6 +30,7 @@ Core.Permissions = {
 
 Core.PermissionNames = {
 	"admin/all" : "Administrator",
+    "role/manage" : "Role Manage",
     "employee/all" : "Employee",
     "leave/manage" : "Manage Leave",
     "time/manage" : "Manage Time",

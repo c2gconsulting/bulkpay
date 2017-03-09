@@ -57,6 +57,49 @@ Template.EmployeeSelectedEntry.helpers({
   positionName: (id)=> {
       console.log('position id as', id);
       return EntityObjects.findOne({_id: id}).name;
+  },
+  hasRoleManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    //console.log("selectedEmployee: " + JSON.stringify(selectedEmployee));
+
+    let canManageRoles = Core.hasRoleManageAccess(Meteor.userId())
+    return canManageRoles;
+  },
+  hasEmployeeAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canManageEmployeeData = Core.hasEmployeeAccess(selectedEmployee._id)
+    return canManageEmployeeData;
+  },
+  hasTimeApprovalAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canApproveTime = Core.hasTimeApprovalAccess(selectedEmployee._id)
+    return canApproveTime;
+  },
+  hasTimeManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canManageTime = Core.hasTimeManageAccess(selectedEmployee._id)
+    return canManageTime;
+  },
+  hasLeaveApprovalAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canApproveLeave = Core.hasLeaveApprovalAccess(selectedEmployee._id);
+    return canApproveLeave;
+  },
+  hasLeaveManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canManageLeave = Core.hasLeaveManageAccess(selectedEmployee._id);
+    return canManageLeave;
+  },
+  hasPayrollAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canManagePayroll = Core.hasPayrollAccess(selectedEmployee._id);
+    return canManagePayroll;
   }
 });
 
