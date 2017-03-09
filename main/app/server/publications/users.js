@@ -50,7 +50,8 @@ Core.publish("allEmployees", function (businessId) {
                 "employee": true,
                 "profile": true,
                 "employeeProfile": true,
-                "username": true
+                "username": true,
+                "roles": true
             }
         }),
         UserImages.find({})];
@@ -64,6 +65,7 @@ Core.publish("subUsers", function (businessId) {
     check(businessId, String);
     let currentId = this.userId;
     let user = Meteor.users.findOne({_id: currentId});
+
     if (user && user.employeeProfile.employment.position){
        let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
             return x._id

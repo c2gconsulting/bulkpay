@@ -1,0 +1,44 @@
+<template name="EmployeePayrollDetailsDataEntry">
+  <div class="tab-pane payroll">
+      <div class="panel panel-default">
+          <!-- <div class="panel-heading">
+              <h4 class="panel-title">Employment Details</h4>
+          </div> -->
+
+          <!-- panel-heading -->
+          <div class="panel-body nopadding">
+            <div class="table-responsive">
+                <table class="table table-primary mb30 calc">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Payment Code</th>
+                        <th>Description</th>
+                        <th>assigned Value</th>
+                        <th>Amount(If Editable per Employee)</th>
+                        <th>Employee Calculated</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each assignable}}
+                        <tr>
+                            <td>{{increment @index}}</td>
+                            <td>{{code}}</td>
+                            <td>{{title}}</td>
+                            <td>{{value}}</td>
+                            <td><input type="text" value="{{inputed}}" class="payAmount form-group" id="{{_id}}" {{disabled _id}}></td>
+                            <td>{{parsedValue}}</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+          </div><!-- panel-body -->
+          
+          <div class="panel-footer">
+              <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+          </div>
+      </div>
+  </div>
+</template>

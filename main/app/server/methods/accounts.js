@@ -98,7 +98,7 @@ Meteor.methods({
     "account/update": function (user, userId) {
         check(user, Object);
         check(userId, String);
-        check(user.businessId, String);
+        //check(user.businessId, String);
         if (!Meteor.userId()){
             throw new Meteor.Error(404, "Unauthorized");
         }
@@ -107,6 +107,8 @@ Meteor.methods({
             Meteor.users.update({_id: account._id}, {$set: {
                 "emails.0.address": user.emails[0].address,
                 "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
                 "profile.workPhone": user.profile.workPhone,
                 "profile.homePhone": user.profile.homePhone,
                 "roles": user.roles,
@@ -118,7 +120,123 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    "account/updatePersonalData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+                "emails.0.address": user.emails[0].address,
+                "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
+                "profile.othernames": user.profile.othernames,
+                
+                "employeeProfile.address": user.employeeProfile.address,
+                "employeeProfile.dateOfBirth": user.employeeProfile.dateOfBirth,
+                "employeeProfile.gender": user.employeeProfile.gender,
+                "employeeProfile.maritalStatus": user.employeeProfile.maritalStatus,
+                "employeeProfile.phone": user.employeeProfile.phone,
+                "employeeProfile.nationality": user.employeeProfile.nationality,
+                "employeeProfile.state": user.employeeProfile.state
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
+    "account/updateNextOfKinData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.guarantor.fullName": user.employeeProfile.guarantor.fullName,
+              "employeeProfile.guarantor.email": user.employeeProfile.guarantor.email,
+              "employeeProfile.guarantor.phone": user.employeeProfile.guarantor.phone,
+              "employeeProfile.guarantor.address": user.employeeProfile.guarantor.address,
+              "employeeProfile.guarantor.city": user.employeeProfile.guarantor.city,
+              "employeeProfile.guarantor.state": user.employeeProfile.guarantor.state
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
+    "account/updateEmergencyContactData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.emergencyContact.0.name": user.employeeProfile.emergencyContact[0].name,
+              "employeeProfile.emergencyContact.0.email": user.employeeProfile.emergencyContact[0].email,
+              "employeeProfile.emergencyContact.0.phone": user.employeeProfile.emergencyContact[0].phone,
+              "employeeProfile.emergencyContact.0.address": user.employeeProfile.emergencyContact[0].address,
+              "employeeProfile.emergencyContact.0.city": user.employeeProfile.emergencyContact[0].city,
+              "employeeProfile.emergencyContact.0.state": user.employeeProfile.emergencyContact[0].state
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
+    "account/updateEmploymentData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.employment.position": user.employeeProfile.employment.position,
+              "employeeProfile.employment.hireDate": user.employeeProfile.employment.hireDate,
+              "employeeProfile.employment.confirmationDate": user.employeeProfile.employment.confirmationDate,
+              "employeeProfile.employment.status": user.employeeProfile.employment.status,
+              "employeeProfile.employment.terminationDate": user.employeeProfile.employment.terminationDate
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
 
+    "account/updatePaymentData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.payment.paymentMethod": user.employeeProfile.payment.paymentMethod,
+              "employeeProfile.payment.bank": user.employeeProfile.payment.bank,
+              "employeeProfile.payment.accountNumber": user.employeeProfile.payment.accountNumber,
+              "employeeProfile.payment.accountName": user.employeeProfile.payment.accountName,
+              "employeeProfile.payment.pensionmanager": user.employeeProfile.payment.pensionmanager,
+              "employeeProfile.payment.RSAPin": user.employeeProfile.payment.RSAPin,
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
     "account/getUsernamesByIds": function (userIds) {
         if (!Meteor.userId()){
             throw new Meteor.Error(404, "Unauthorized");

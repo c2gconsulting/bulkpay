@@ -35,26 +35,39 @@
                         </div>
                     </div>
                 </div><!-- well -->
-
                 <br>
 
-                <div class="pull-right">
-                    <ul class="pagination pagination-split pagination-sm pagination-contact">
-                        <li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
-                        <li class="active"><a href="#">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-                    </ul>
-                </div>
-                <h3 class="xlg-title">All Employees</h3>
-                {{#each employees}}
-                    {{> EmployeeEntry this}}
-                {{/each}}
+                <div class="container-fluid">
+                    <div class="col-lg-8">
+                      <div class="row">
+                        <h3 class="xlg-title">All Employees</h3>
+                        <div class="pull-right">
+                            <ul class="pagination pagination-split pagination-sm pagination-contact">
+                                <li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                            </ul>
+                        </div>
+                      </div>
+                    </div>
 
+                      <div class="row">
+                          <div class="col-lg-8 employeesList">
+                          {{#each employees}}
+                              {{> EmployeeEntry this}}
+                          {{/each}}
+                          </div>
+
+                          <div class="col-lg-4">
+                          {{> EmployeeSelectedEntry}}
+                          </div>
+                      </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div><!-- contentpanel -->
+        </div><!-- contentpanel -->
 </template>

@@ -1,0 +1,114 @@
+<template name="EmployeeEmploymentDetailsDataEntry">
+{{#each selectedEmployee}}
+  <div class="tab-pane active employment">
+      <div class="panel panel-default">
+          <!-- <div class="panel-heading">
+              <h4 class="panel-title">Employment Details</h4>
+          </div> -->
+
+          <!-- panel-heading -->
+          <div class="panel-body nopadding">
+              <form class="form-horizontal form-bordered">
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Position</label>
+                      <div class="col-sm-4">
+                          <select name="employmentPosition" style="width: 100%" class="form-control dropdown">
+                              <option value="">Unassigned</option>
+                              {{#each positions}}
+                                  <option value="{{_id}}">{{name}}</option>
+                              {{/each}}
+                          </select>
+                      </div>
+                      <div class="col-sm-4">
+                          <div>
+                              <span>Use Org Reassignment</span>
+                          </div>
+                      </div>
+                  </div>
+                  {{#if getSelectedPosition}}
+                      <div class="form-group">
+                          <label class="col-sm-4 control-label">PayGrade</label>
+                          <div class="col-sm-4">
+                              {{#each grades}}
+                                  <label class="radio-inline">
+                                      <input type="radio" name="employmentPayGrade" value="{{_id}}"> {{code}}
+                                  </label>
+                              {{/each}}
+                          </div>
+                          <div class="col-sm-4">
+                              <div>
+                              </div>
+                          </div>
+                      </div>
+                  {{/if}}
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Hire Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker employeeProfile.employment.hireDate}}
+                              <input name="employmentHireDate" type="text" class="form-control datepicker" data-field="hireDate"
+                                value="{{formatDate employeeProfile.employment.hireDate}}"/>
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Confirmation Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker employeeProfile.employment.confirmationDate}}
+                              <input name="employmentConfirmationDate" type="text" class="form-control datepicker" data-field="confirmationDate"
+                                value="{{formatDate employeeProfile.employment.confirmationDate}}" />
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Status</label>
+                      <div class="col-sm-4">
+                        {{#if employeeProfile.employment.status}}
+                          <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                              <option value="Active" selected>Active</option>
+                              <option value="Inactive">Inactive</option>
+                          </select>
+                        {{else}}
+                          <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                              <option value="Active">Active</option>
+                              <option value="Inactive" selected>Inactive</option>
+                          </select>
+                        {{/if}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <label class="col-sm-4 control-label">Termination/Resignation Date</label>
+                      <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                          {{#datepicker employeeProfile.employment.terminationDate}}
+                              <input name="employmentTerminationDate" type="text" class="form-control datepicker" data-field="terminationDate"
+                                value="{{formatDate employeeProfile.employment.terminationDate}}" />
+                          {{/datepicker}}
+                      </div>
+                      <div class="col-sm-4">
+                          &nbsp;
+                      </div>
+                  </div>
+              </form>
+          </div><!-- panel-body -->
+
+          <div class="panel-footer">
+              <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+          </div>
+      </div>
+  </div>
+{{/each}}
+</template>

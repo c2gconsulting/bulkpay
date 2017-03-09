@@ -199,6 +199,9 @@ _.extend(Core, {
     hasEmployeeAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_MANAGE, userId);
     },
+    hasRoleManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.ROLE_MANAGE, userId);
+    },
     hasTimeApprovalAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TIME_APPROVE, userId);
     },

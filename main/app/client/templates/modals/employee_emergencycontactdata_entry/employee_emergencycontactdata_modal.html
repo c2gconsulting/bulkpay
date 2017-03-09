@@ -1,0 +1,96 @@
+<template name="EmployeeEmergencyContactDataModal">
+{{#each selectedEmployee}}
+  <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">Emergency Contact</h4>
+              </div>
+
+              <div class="panel-body nopadding">
+                <form class="form-horizontal form-bordered">
+                    <div class="form-group">
+                        <label for="employee-contact-name" class="col-sm-4 control-label">Full Name</label>
+                        <div class="col-sm-4">
+                            <input name="emergencyContactFullName" id="employee-contact-name" type="text" placeholder="Contacts Full Name" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].name}}" />
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergencyContactEmail"
+                               class="col-sm-4 control-label">Email</label>
+                        <div class="col-sm-4">
+                            <input name="emergencyContactEmail" id="employee-contact-email" type="email" placeholder="Contact's Email" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].email}}" />
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="emergencyContactPhone" class="col-sm-4 control-label">Phone Number</label>
+                        <div class="col-sm-4">
+                            <input name="emergencyContactPhone" id="employee-contact-phone" type="tel" placeholder="Contact's Phone" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].phone}}"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="emergencyContactAddress"
+                               class="col-sm-4 control-label">Address</label>
+                        <div class="col-sm-4">
+                            <textarea name="emergencyContactAddress" id="employee-contact-address" class="form-control" rows="5"
+                              value="{{employeeProfile.emergencyContact.[0].address}}"></textarea>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emergencyContactCity" class="col-sm-4 control-label">City</label>
+                        <div class="col-sm-4">
+                            <input name="emergencyContactCity" id="employee-contact-city" type="text" placeholder="Contact City" class="form-control"
+                              value="{{employeeProfile.emergencyContact.[0].city}}"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">State</label>
+                        <div class="col-sm-4">
+                            <select name="emergencyContactState" class="form-control selectpicker dropdown" data-live-search="true">
+                                {{#each states}}
+                                    <option value="{{code}}">{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+                </form>
+              </div><!-- End of panel-body -->
+
+              <div class="panel-footer">
+                  <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+                  <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
+              </div>
+          </div>
+      </div>
+  </div>
+{{/each}}
+</template>

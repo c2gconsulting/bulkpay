@@ -1,0 +1,378 @@
+<template name="EmployeeSelectedEntry">
+{{#each selectedEmployee}}
+<div class="panel-group" id="accordion2">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne1">
+                    Personal data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseOne1" class="panel-collapse collapse in">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="pull-left">
+                      {{#if images photo._id }}
+                          {{#with images photo._id}}
+                              <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
+                          {{/with}}
+                      {{ else }}
+                          <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                      {{/if}}
+                  </div>
+                  <div class="media-body">
+                    {{profile.fullName}}
+                    <br/>
+                    {{employeeProfile.employeeId}}
+                    <br/>
+                    {{employeeProfile.phone}}
+                    <br/>
+                    {{#if employeeProfile}}
+                    <i class="fa fa-star"></i> {{positionName employeeProfile.employment.position}}
+                    {{/if}}
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-personaldata">Edit</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo2">
+                    Next of kin
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo2" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <b>Full name</b>:
+                    {{#if employeeProfile.guarantor.fullName}}
+                      {{employeeProfile.guarantor.fullName}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Email</b>:
+                    {{#if employeeProfile.guarantor.email}}
+                      {{employeeProfile.guarantor.email}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Phone</b>:
+                    {{#if employeeProfile.guarantor.phone}}
+                      {{employeeProfile.guarantor.phone}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Address</b>:
+                    {{#if employeeProfile.guarantor.address}}
+                      {{employeeProfile.guarantor.address}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-nextofkin-data">Edit</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo3">
+                    Emergency contact data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo3" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <b>Name</b>:
+                    {{#if employeeProfile.emergencyContact.[0].name}}
+                      {{employeeProfile.emergencyContact.[0].name}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Email</b>:
+                    {{#if employeeProfile.emergencyContact.[0].email}}
+                      {{employeeProfile.emergencyContact.[0].email}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Phone</b>:
+                    {{#if employeeProfile.emergencyContact.[0].phone}}
+                      {{employeeProfile.emergencyContact.[0].phone}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Address</b>:
+                    {{#if employeeProfile.emergencyContact.[0].address}}
+                      {{employeeProfile.emergencyContact.[0].address}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-emergencycontact-data">Edit</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo4">
+                    Payment data
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo4" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <b>Bank</b>:
+                    {{#if employeeProfile.payment.bank}}
+                      {{employeeProfile.payment.bank}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Bank Account Number</b>:
+                    {{#if employeeProfile.payment.accountNumber}}
+                      {{employeeProfile.payment.accountNumber}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Bank Account Name</b>:
+                    {{#if employeeProfile.payment.accountName}}
+                      {{employeeProfile.payment.accountName}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>Payment method</b>:
+                    {{#if employeeProfile.payment.paymentMethod}}
+                      {{employeeProfile.payment.paymentMethod}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/><br/>
+
+                    <b>Pension Fund Manager</b>:
+                    {{#if employeeProfile.payment.pensionmanager}}
+                      {{employeeProfile.payment.pensionmanager}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                    <br/>
+                    <b>RSA Number</b>:
+                    {{#if employeeProfile.payment.RSAPin}}
+                      {{employeeProfile.payment.RSAPin}}
+                    {{else}}
+                      ----
+                    {{/if}}
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-paymentdetails-data">Edit</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion2" id="employment-payroll-link">
+                    Employment & Payroll data
+                </a>
+            </h4>
+        </div>
+    </div>
+
+    {{#if hasRoleManageAccess}}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo5">
+                    Roles management
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTwo5" class="panel-collapse collapse">
+            <div class="panel-body">
+              <div class="media emplist">
+                  <div class="media-body">
+                    <div class="row">
+
+                        <label for="employeeManage" class="col-sm-4 control-label">Employee manage</label>
+                        <div class="col-sm-3">
+                          {{#if hasEmployeeAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="leaveApprove" class="col-sm-4 control-label">Leave approve</label>
+                        <div class="col-sm-3">
+
+                            {{#if hasLeaveApprovalAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="leaveManage" class="col-sm-4 control-label">Leave manage</label>
+                        <div class="col-sm-3">
+                            {{#if hasLeaveManageAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                            {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                            {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="timeApprove" class="col-sm-4 control-label">Time approve</label>
+                        <div class="col-sm-3">
+                          {{#if hasTimeApprovalAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="timeManage" class="col-sm-4 control-label">Time manage</label>
+                        <div class="col-sm-3">
+                          {{#if hasTimeManageAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="employeeSelfService" class="col-sm-4 control-label">Employee self service</label>
+                        <div class="col-sm-3">
+                          {{#if hasEmployeeSelfServiceAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeSelfService">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeSelfService">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="payrollManage" class="col-sm-4 control-label">Payroll manage</label>
+                        <div class="col-sm-3">
+                          {{#if hasPayrollAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-primary mr5 ladda-button pull-right" id="employee-edit-roles-data">Save</button>
+            </div>
+        </div>
+    </div><!-- panel -->
+    {{/if}}
+</div>
+{{else}}
+  <div class="panel-group" id="accordion2">
+      <div class="panel panel-primary">
+          <div class="panel-heading">
+              <!-- <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne1">
+                      Personal data
+                  </a>
+              </h4> -->
+          </div>
+          <div id="collapseOne1" class="panel-collapse collapse in">
+              <div class="panel-body">
+                <div style="text-align: center;">No employee has been selected.</div>
+              </div>
+          </div>
+      </div><!-- panel -->
+    </div>
+{{/each}}
+</template>

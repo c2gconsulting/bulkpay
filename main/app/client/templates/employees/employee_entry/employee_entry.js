@@ -9,13 +9,12 @@ Template.EmployeeEntry.events({
 /*****************************************************************************/
 Template.EmployeeEntry.helpers({
     positionName: (id)=>{
-        console.log('position id as', id);
         return EntityObjects.findOne({_id: id}).name;
     },
     "images": (id) => {
         return UserImages.findOne({_id: id});
 
-    },
+    }
 });
 
 /*****************************************************************************/
