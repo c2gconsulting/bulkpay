@@ -75,21 +75,19 @@ Template.EmployeePersonalDataModal.events({
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;
       if (value && value.trim().length > 0) {
-        user.emails = user.emails || [];
         if(user.emails.length > 0) {
-          user.emails.splice(0, 1).push({
-            address: value,
-            verified: false
-          })
+          let emailObj = user.emails[0];
+          emailObj.address = value;
+          emailObj.verified = value;
         } else {
           user.emails.push({
-            address: value,
-            verified: false
-          })
+            name : value,
+            verified : false
+          });
         }
         console.log("user email changed to: " + JSON.stringify(user.emails));
       }
-      //Template.instance().setEditUser(user);
+      Template.instance().setEditUser(user);
     },
     'blur [name=dateOfBirth]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
@@ -174,6 +172,9 @@ Template.EmployeePersonalDataModal.onCreated(function () {
     }
 
     let selectedEmployee = Session.get('employeesList_selectedEmployee')
+    if(!selectedEmployee.emails) {
+      selectedEmployee.emails = [];
+    }
     self.setEditUser(selectedEmployee);
 });
 
