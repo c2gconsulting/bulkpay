@@ -43,9 +43,17 @@ Template.EmployeeSelectedEntry.events({
 Template.EmployeeSelectedEntry.helpers({
   "selectedEmployee": () => {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      if(selectedEmployee)
+      if(selectedEmployee) {
+        if(selectedEmployee.roles) {
+          if(!selectedEmployee.roles[Roles.GLOBAL_GROUP]) {
+            selectedEmployee.roles[Roles.GLOBAL_GROUP] = [];
+          }
+        } else {
+          selectedEmployee.roles = {};
+          selectedEmployee.roles[Roles.GLOBAL_GROUP] = [];
+        }
         return [selectedEmployee];
-      else
+      } else
         return null;
   },
   "images": (id) => {
@@ -71,6 +79,7 @@ Template.EmployeeSelectedEntry.helpers({
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
     let canApproveTime = Core.hasTimeApprovalAccess(selectedEmployee._id)
+    console.log("canApproveTime: " + canApproveTime);
     return canApproveTime;
   },
   hasTimeManageAccess: () => {

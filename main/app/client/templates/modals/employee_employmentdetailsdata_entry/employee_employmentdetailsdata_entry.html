@@ -13,11 +13,14 @@
                   <div class="form-group">
                       <label class="col-sm-4 control-label">Position</label>
                       <div class="col-sm-4">
-                          <select name="employmentPosition" style="width: 100%" class="form-control dropdown"
-                            value={{employeeProfile.employment.position}}>
+                          <select name="employmentPosition" style="width: 100%" class="form-control dropdown">
                               <option value="">Unassigned</option>
                               {{#each positions}}
-                                  <option value="{{_id}}">{{name}}</option>
+                                  {{#if condition this._id "eq" employeeProfile.employment.position}}
+                                  <option value="{{this._id}}" selected>{{name}}</option>
+                                  {{else}}
+                                  <option value="{{this._id}}">{{name}}</option>
+                                  {{/if}}
                               {{/each}}
                           </select>
                       </div>
@@ -73,11 +76,17 @@
                   <div class="form-group">
                       <label class="col-sm-4 control-label">Status</label>
                       <div class="col-sm-4">
-                          <select name="employmentStatus" style="width: 100%" class="form-control dropdown"
-                            value="{{employeeProfile.employment.status}}">
-                              <option value="Active">Active</option>
+                        {{#if employeeProfile.employment.status}}
+                          <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                              <option value="Active" selected>Active</option>
                               <option value="Inactive">Inactive</option>
                           </select>
+                        {{else}}
+                          <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                              <option value="Active">Active</option>
+                              <option value="Inactive" selected>Inactive</option>
+                          </select>
+                        {{/if}}
                       </div>
                       <div class="col-sm-4">
                           &nbsp;

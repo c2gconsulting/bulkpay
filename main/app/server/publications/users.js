@@ -50,7 +50,8 @@ Core.publish("allEmployees", function (businessId) {
                 "employee": true,
                 "profile": true,
                 "employeeProfile": true,
-                "username": true
+                "username": true,
+                "roles": true
             }
         }),
         UserImages.find({})];

@@ -11,6 +11,7 @@ Template.EmployeeEmploymentDetailsDataEntry.events({
 
     Meteor.call('account/updateEmploymentData', user, user._id, (err, res) => {
         if (res){
+            Session.set('employeesList_selectedEmployee', user);
             swal({
                 title: "Success",
                 text: `Employee employment data updated`,
