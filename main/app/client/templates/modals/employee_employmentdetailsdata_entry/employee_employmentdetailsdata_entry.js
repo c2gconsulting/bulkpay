@@ -113,6 +113,10 @@ Template.EmployeeEmploymentDetailsDataEntry.events({
 /*****************************************************************************/
 /* EmployeeEmploymentDetailsDataEntry: Helpers */
 /*****************************************************************************/
+Template.registerHelper('formatDate', function(date) {
+  return moment(date).format('MM-DD-YYYY');
+});
+
 Template.EmployeeEmploymentDetailsDataEntry.helpers({
     'employees': function(){
         return Meteor.users.find({"employee": true});

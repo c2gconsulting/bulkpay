@@ -33,10 +33,7 @@ Template.EmployeeSelectedEntry.events({
     }
   },
   'click #employee-edit-roles-data': function(e, tmpl) {
-    // let selectedEmployee = Session.get('employeesList_selectedEmployee');
-    // if(selectedEmployee) {
-    //   Modal.show("EmployeeEditEmploymentPayrollModal");
-    // }
+    Template.instance().setEmployeePermissons();
   }
 });
 
@@ -55,7 +52,6 @@ Template.EmployeeSelectedEntry.helpers({
       return UserImages.findOne({_id: id});
   },
   positionName: (id)=> {
-      console.log('position id as', id);
       return EntityObjects.findOne({_id: id}).name;
   },
   hasRoleManageAccess: () => {
@@ -97,8 +93,11 @@ Template.EmployeeSelectedEntry.helpers({
   },
   hasPayrollAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    console.log("selected employee id: " + selectedEmployee._id);
 
     let canManagePayroll = Core.hasPayrollAccess(selectedEmployee._id);
+    console.log("canManagePayroll: " + canManagePayroll);
+
     return canManagePayroll;
   }
 });
@@ -114,9 +113,69 @@ Template.EmployeeSelectedEntry.onCreated(function () {
 
       }
     );
+
+    self.setEmployeePermissons = function() {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      if(selectedEmployee) {
+        let shouldManageEmployeeData = $("[name=employeeManage]").val();
+        let shouldApproveLeave = $("[name=leaveApprove]").val();
+        let shouldManageLeave = $("[name=leaveManage]").val();
+        let shouldApproveTime = $("[name=timeApprove]").val();
+        let shouldManageTime = $("[name=timeManage]").val();
+        let shouldManagePayroll = $("[name=payrollManage]").val();
+
+        let arrayOfRoles = [];
+        if(shouldManageEmployeeData === "true") {
+          arrayOfRoles.push(Core.Permissions.EMPLOYEE_MANAGE)
+        }
+        if(shouldApproveLeave === "true") {
+          arrayOfRoles.push(Core.Permissions.LEAVE_APPROVE)
+        }
+        if(shouldManageLeave === "true") {
+          arrayOfRoles.push(Core.Permissions.LEAVE_MANAGE)
+        }
+        if(shouldApproveTime === "true") {
+          arrayOfRoles.push(Core.Permissions.TIME_APPROVE)
+        }
+        if(shouldManageTime === "true") {
+          arrayOfRoles.push(Core.Permissions.TIME_MANAGE)
+        }
+        if(shouldManagePayroll === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)
+        }
+        console.log("shouldManageEmployeeData: " + shouldManageEmployeeData);
+        console.log("shouldApproveLeave: " + shouldApproveLeave);
+        console.log("shouldManageLeave: " + shouldManageLeave);
+        console.log("shouldApproveTime: " + shouldApproveTime);
+        console.log("shouldManageTime: " + shouldManageTime);
+        console.log("shouldManagePayroll: " + shouldManagePayroll);
+
+        Meteor.call('role/setRolesForUser', selectedEmployee._id, arrayOfRoles, (err, res) => {
+            if (res){
+                swal({
+                    title: "Success",
+                    text: `Employee roles updated`,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                console.log(err);
+            }
+        });
+      }
+    };
 });
 
 Template.EmployeeSelectedEntry.onRendered(function () {
+  // let selectedEmployee = Session.get('employeesList_selectedEmployee');
+  // if(selectedEmployee) {
+  //   console.log("has payroll access: " + self.hasPayrollAccess());
+  //
+  //   $("[name=payrollManage]").val(self.hasPayrollAccess());
+  // } else {
+  //
+  // }
 });
 
 Template.EmployeeSelectedEntry.onDestroyed(function () {

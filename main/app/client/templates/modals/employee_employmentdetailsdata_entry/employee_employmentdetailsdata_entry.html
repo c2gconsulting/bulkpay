@@ -49,7 +49,7 @@
                       <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
                           {{#datepicker employeeProfile.employment.hireDate}}
                               <input name="employmentHireDate" type="text" class="form-control datepicker" data-field="hireDate"
-                                value="{{employeeProfile.employment.hireDate}}"/>
+                                value="{{formatDate employeeProfile.employment.hireDate}}"/>
                           {{/datepicker}}
                       </div>
                       <div class="col-sm-4">
@@ -62,7 +62,7 @@
                       <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
                           {{#datepicker employeeProfile.employment.confirmationDate}}
                               <input name="employmentConfirmationDate" type="text" class="form-control datepicker" data-field="confirmationDate"
-                                value="{{employeeProfile.employment.confirmationDate}}" />
+                                value="{{formatDate employeeProfile.employment.confirmationDate}}" />
                           {{/datepicker}}
                       </div>
                       <div class="col-sm-4">
@@ -89,7 +89,7 @@
                       <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
                           {{#datepicker employeeProfile.employment.terminationDate}}
                               <input name="employmentTerminationDate" type="text" class="form-control datepicker" data-field="terminationDate"
-                                value="{{employeeProfile.employment.terminationDate}}" />
+                                value="{{formatDate employeeProfile.employment.terminationDate}}" />
                           {{/datepicker}}
                       </div>
                       <div class="col-sm-4">
@@ -100,8 +100,12 @@
           </div>
 
           <!-- panel-body -->
+      </div><!-- panel -->
+
+      <div class="panel-footer">
+          <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
       </div>
-      <!-- panel -->
   </div>
 {{/each}}
 </template>
