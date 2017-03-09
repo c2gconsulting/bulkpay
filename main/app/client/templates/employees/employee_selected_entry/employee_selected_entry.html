@@ -230,25 +230,24 @@
 
                         <label for="employeeManage" class="col-sm-4 control-label">Employee manage</label>
                         <div class="col-sm-3">
-                            {{#if hasEmployeeAccess}}
-                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage"
-                              value="">
+                          {{#if hasEmployeeAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage">
                                 <option value="true" selected>Yes</option>
                                 <option value="false">No</option>
                             </select>
-                            {{else}}
-                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage"
-                              value="">
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeManage">
                                 <option value="true">Yes</option>
-                                <option value="false" selected="">No</option>
+                                <option value="false" selected>No</option>
                             </select>
-                            {{/if}}
+                          {{/if}}
                         </div>
                     </div>
 
                     <div class="row">
                         <label for="leaveApprove" class="col-sm-4 control-label">Leave approve</label>
                         <div class="col-sm-3">
+
                             {{#if hasLeaveApprovalAccess}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="leaveApprove">
                                 <option value="true" selected>Yes</option>
@@ -283,51 +282,68 @@
                     <div class="row">
                         <label for="timeApprove" class="col-sm-4 control-label">Time approve</label>
                         <div class="col-sm-3">
-                            {{#if hasTimeApprovalAccess}}
+                          {{#if hasTimeApprovalAccess}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
                                 <option value="true" selected>Yes</option>
                                 <option value="false">No</option>
                             </select>
-                            {{else}}
+                          {{else}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="timeApprove">
                                 <option value="true">Yes</option>
                                 <option value="false" selected>No</option>
                             </select>
-                            {{/if}}
+                          {{/if}}
                         </div>
                     </div>
 
                     <div class="row">
                         <label for="timeManage" class="col-sm-4 control-label">Time manage</label>
                         <div class="col-sm-3">
-                            {{#if hasTimeManageAccess}}
+                          {{#if hasTimeManageAccess}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
                                 <option value="true" selected>Yes</option>
                                 <option value="false">No</option>
                             </select>
-                            {{else}}
+                          {{else}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="timeManage">
                                 <option value="true">Yes</option>
                                 <option value="false" selected>No</option>
                             </select>
-                            {{/if}}
+                          {{/if}}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label for="employeeSelfService" class="col-sm-4 control-label">Employee self service</label>
+                        <div class="col-sm-3">
+                          {{#if hasEmployeeSelfServiceAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeSelfService">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeSelfService">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
                         </div>
                     </div>
 
                     <div class="row">
                         <label for="payrollManage" class="col-sm-4 control-label">Payroll manage</label>
                         <div class="col-sm-3">
-                            {{#if hasPayrollAccess}}
+                          {{#if hasPayrollAccess}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
                                 <option value="true" selected>Yes</option>
                                 <option value="false">No</option>
                             </select>
-                            {{else}}
+                          {{else}}
                             <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollManage">
                                 <option value="true">Yes</option>
                                 <option value="false" selected>No</option>
                             </select>
-                            {{/if}}
+                          {{/if}}
                         </div>
                     </div>
                   </div>

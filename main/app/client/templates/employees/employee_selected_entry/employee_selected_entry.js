@@ -60,7 +60,11 @@ Template.EmployeeSelectedEntry.helpers({
       return UserImages.findOne({_id: id});
   },
   positionName: (id)=> {
-      return EntityObjects.findOne({_id: id}).name;
+      if(id)
+        return EntityObjects.findOne({_id: id}).name;
+      else {
+        return "";
+      }
   },
   hasRoleManageAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
@@ -100,6 +104,12 @@ Template.EmployeeSelectedEntry.helpers({
     let canManageLeave = Core.hasLeaveManageAccess(selectedEmployee._id);
     return canManageLeave;
   },
+  hasEmployeeSelfServiceAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canDoSelfService = Core.hasSelfServiceAccess(selectedEmployee._id);
+    return canDoSelfService;
+  },
   hasPayrollAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
     console.log("selected employee id: " + selectedEmployee._id);
@@ -131,6 +141,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManageLeave = $("[name=leaveManage]").val();
         let shouldApproveTime = $("[name=timeApprove]").val();
         let shouldManageTime = $("[name=timeManage]").val();
+        let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
         let shouldManagePayroll = $("[name=payrollManage]").val();
 
         let arrayOfRoles = [];
@@ -149,6 +160,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(shouldManageTime === "true") {
           arrayOfRoles.push(Core.Permissions.TIME_MANAGE)
         }
+        if(shouldHaveEmployeeSelfService === "true") {
+          arrayOfRoles.push(Core.Permissions.EMPLOYEE_SS)
+        }
         if(shouldManagePayroll === "true") {
           arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)
         }
@@ -157,6 +171,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         console.log("shouldManageLeave: " + shouldManageLeave);
         console.log("shouldApproveTime: " + shouldApproveTime);
         console.log("shouldManageTime: " + shouldManageTime);
+        console.log("shouldHaveEmployeeSelfService: " + shouldHaveEmployeeSelfService);
         console.log("shouldManagePayroll: " + shouldManagePayroll);
 
         Meteor.call('role/setRolesForUser', selectedEmployee._id, arrayOfRoles, (err, res) => {
@@ -177,14 +192,6 @@ Template.EmployeeSelectedEntry.onCreated(function () {
 });
 
 Template.EmployeeSelectedEntry.onRendered(function () {
-  // let selectedEmployee = Session.get('employeesList_selectedEmployee');
-  // if(selectedEmployee) {
-  //   console.log("has payroll access: " + self.hasPayrollAccess());
-  //
-  //   $("[name=payrollManage]").val(self.hasPayrollAccess());
-  // } else {
-  //
-  // }
 });
 
 Template.EmployeeSelectedEntry.onDestroyed(function () {
