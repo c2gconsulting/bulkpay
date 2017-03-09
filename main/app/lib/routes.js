@@ -206,3 +206,11 @@ Router.route('/business/:_id/employee/leaves', {
     controller: 'EmployeesController',
     where: 'client'
 });
+
+
+Router.route('/business/:_id/reports/netpay', {
+    name: 'reports.netpay',
+    controller: 'ReportsController',
+    action: 'netpay',
+    where: 'client'
+});
