@@ -89,7 +89,7 @@ Template.EmployeePersonalDataModal.events({
         }
         console.log("user email changed to: " + JSON.stringify(user.emails));
       }
-      Template.instance().setEditUser(user);
+      //Template.instance().setEditUser(user);
     },
     'blur [name=dateOfBirth]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
