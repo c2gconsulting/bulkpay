@@ -35,12 +35,10 @@ Template.NetPayReport.helpers({
       return Session.get('payrollPeriod');
     },
     'payrollResults': function() {
-        return [{
-          fullName : "Adetunji Akinde",
-          bank : "First bank",
-          accountNumber : "9090323232",
-          netPay : 90000
-        }]
+      return Meteor.users.find({
+        "employee": true,
+        "employeeProfile.employment.status": "Active"
+      });
     }
 });
 

@@ -11,22 +11,24 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="pension-manager-code" class="control-label">Code</label>
-                                    <input type="text" id="pension-manager-code" class="form-control" placeholder="Code" ng-model="pensionManager.code" />
+                                    <input type="text" name="pension-manager-code" class="form-control" placeholder="Code" ng-model="pensionManager.code" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="pension-manager-name" class="control-label">Name</label>
-                                    <input type="text" id="pension-manager-name" class="form-control" placeholder="Name" ng-model="pensionManager.name"/>
+                                    <input type="text" name="pension-manager-name" class="form-control" placeholder="Name" ng-model="pensionManager.name"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                         </div><!-- row -->
-                        <p class="text-center error" ng-show="errorOccur">{{errorMessage}}</p>
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" ng-click="createPensionManager()">Create</button>
                         <button type="reset" class="btn btn-danger" id="new-pension-manager-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="save">Create</button>
                     </div><!-- panel-footer -->
                 </div>
             </div>

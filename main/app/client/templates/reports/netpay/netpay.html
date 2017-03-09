@@ -72,10 +72,10 @@
                                                   <tbody>
                                                     {{#each payrollResults}}
                                                       <tr>
-                                                          <td>{{fullName}}</td>
-                                                          <td>{{bank}}</td>
-                                                          <td>{{accountNumber}}</td>
-                                                          <td>{{netPay}}</td>
+                                                          <td>{{this.profile.fullName}}</td>
+                                                          <td>{{this.employeeProfile.payment.bank}}</td>
+                                                          <td>{{this.employeeProfile.payment.accountNumber}}</td>
+                                                          <td>---</td>
                                                       </tr>
                                                     {{/each}}
                                                   </tbody>
