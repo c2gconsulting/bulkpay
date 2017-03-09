@@ -16,11 +16,7 @@
                           <select name="employmentPosition" style="width: 100%" class="form-control dropdown">
                               <option value="">Unassigned</option>
                               {{#each positions}}
-                                  {{#if condition this._id "eq" employeeProfile.employment.position}}
-                                  <option value="{{this._id}}" selected>{{name}}</option>
-                                  {{else}}
-                                  <option value="{{this._id}}">{{name}}</option>
-                                  {{/if}}
+                                  <option value="{{_id}}">{{name}}</option>
                               {{/each}}
                           </select>
                       </div>

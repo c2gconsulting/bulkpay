@@ -161,6 +161,7 @@ Template.EmployeeEmploymentDetailsDataEntry.onCreated(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
 
+
   // var self = this;
   //
   // self.selectedPosition = new ReactiveVar();
@@ -226,6 +227,10 @@ Template.EmployeeEmploymentDetailsDataEntry.onCreated(function () {
 });
 
 Template.EmployeeEmploymentDetailsDataEntry.onRendered(function () {
+  let selectedEmployee = Session.get('employeesList_selectedEmployee');
+  console.log("Positon: " + selectedEmployee.employeeProfile.employment.position);
+
+  $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
 });
 
 Template.EmployeeEmploymentDetailsDataEntry.onDestroyed(function () {

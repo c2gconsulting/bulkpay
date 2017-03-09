@@ -132,6 +132,10 @@ Template.EmployeeNextOfKinDataModal.onCreated(function () {
 });
 
 Template.EmployeeNextOfKinDataModal.onRendered(function () {
+  let selectedEmployee = Session.get('employeesList_selectedEmployee');
+  console.log("next of kin state: " + selectedEmployee.employeeProfile.guarantor.state);
+
+  $('[name="guarantorState"]').val(selectedEmployee.employeeProfile.guarantor.state);
 });
 
 Template.EmployeeNextOfKinDataModal.onDestroyed(function () {
