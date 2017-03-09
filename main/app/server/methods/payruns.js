@@ -122,7 +122,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 if(addPay && addPay.length > 0){
                     console.log('found additional pay for employee', addPay);
                     formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
-                    console.log('login formatted pay as',formattedPay);
                 }
                 if(formattedPay && formattedPay.length > 0){
                         //loop thru formatted pay and update merged pay
@@ -136,7 +135,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 } else {
                     mergedPay = [...paytypes];
                 }
-                Core.hasTimeApprovalAccess()
                 console.log(mergedPay);
                 mergedPay.forEach((x, index) => {
                     //skip processing of Annual non selected annual paytypes
@@ -436,6 +434,7 @@ function getPaytypeIdandValue(additionalPay, businessId) {
     let paytypes = []; //lazyload paytypes to reduce number of database query.
     newAddPay.forEach(x => {
         const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId});
+        console.log('after getting each add pay, loggind specific pay as', paytype);
         if(paytype)
             paytype.value = x.amount.toString();   // add the value as additional pay value
             paytypes.push(paytype);

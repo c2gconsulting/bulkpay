@@ -31,7 +31,7 @@ Template.EmployeeTime.helpers({
 /* EmployeeTime: Lifecycle Hooks */
 /*****************************************************************************/
 Template.EmployeeTime.onCreated(function () {
-    //subscribe to employees that is under user
+    //subscribe to employees that are under user
     let self = this;
     self.dict = new ReactiveDict();
 

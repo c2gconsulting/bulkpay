@@ -6,19 +6,62 @@ Template.selectedEvent.events({
     'click #approve': (e, tmpl) => {
         let selected = tmpl.data;
         if(selected && selected.hasOwnProperty('type')){
-            Meteor.call('approveTimeData', selected, function(err, res){
-                if(res){
-                    console.log(res);
-                    swal('notify', 'are you sure ', 'success');
-                } else {
-                    console.log(err);
-                    swal('Approval Error', `error when approving time data: ${err.message}`, 'error');
-                }
-            })
+            swal({
+                    title: "Are you sure?",
+                    text: "This action cannot be reversed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, Approve!",
+                    cancelButtonText: "No, cancel plx!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                        Meteor.call('approveTimeData', selected, function(err, res){
+                            if(res){
+                                swal('Success', 'Successfully approved event', 'success');
+                            } else {
+                                swal('Approval Error', `error when approving time data: ${err.message}`, 'error');
+                            }
+                        })
+                    } else {
+                        swal("Cancelled", "Approval action cancelled :)", "error");
+                    }
+                });
+
         }
     },
     'click #reject': (e, tmpl) => {
-        swal('notify', 'are you sure ', 'success');
+        let selected = tmpl.data;
+        if(selected && selected.hasOwnProperty('type')){
+            swal({
+                    title: "Are you sure?",
+                    text: "This action cannot be reversed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, Reject!",
+                    cancelButtonText: "No, cancel",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+                        Meteor.call('rejectTimeData', selected, function(err, res){
+                            if(res){
+                                swal('Success', 'Successfully Rejected event', 'success');
+                            } else {
+                                swal('Approval Error', `error when rejecting time data: ${err.message}`, 'error');
+                            }
+                        })
+                    } else {
+                        swal("Cancelled", "Approval action cancelled :)", "error");
+                    }
+                });
+
+        }
     }
 
 });

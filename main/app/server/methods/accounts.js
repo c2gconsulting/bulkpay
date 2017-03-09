@@ -172,7 +172,7 @@ Meteor.methods({
         }
         let options = {};
         console.log('termination date is ', user.employeeProfile.employment.terminationDate);
-
+            Core.hasPayrollAccess()
         options.email = user.email; // tempo
         options.firstname = user.firstName;
         options.lastname =  user.lastName;
