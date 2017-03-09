@@ -165,6 +165,28 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    "account/updateEmergencyContactData": function (user, userId) {
+        check(user, Object);
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.emergencyContact.0.name": user.employeeProfile.emergencyContact[0].name,
+              "employeeProfile.emergencyContact.0.email": user.employeeProfile.emergencyContact[0].email,
+              "employeeProfile.emergencyContact.0.phone": user.employeeProfile.emergencyContact[0].phone,
+              "employeeProfile.emergencyContact.0.address": user.employeeProfile.emergencyContact[0].address,
+              "employeeProfile.emergencyContact.0.city": user.employeeProfile.emergencyContact[0].city,
+              "employeeProfile.emergencyContact.0.state": user.employeeProfile.emergencyContact[0].state
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
     "account/updateEmploymentData": function (user, userId) {
         check(user, Object);
         check(userId, String);

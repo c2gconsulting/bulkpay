@@ -71,10 +71,13 @@
                       <div class="form-group">
                           <label class="col-sm-4 control-label">State</label>
                           <div class="col-sm-4">
-                              <select name="guarantorState" class="form-control selectpicker dropdown" data-live-search="true"
-                                value="{{employeeProfile.guarantor.state}}">
+                              <select name="guarantorState" class="form-control selectpicker dropdown" data-live-search="true">
                                   {{#each states}}
-                                      <option value="{{code}}">{{name}}</option>
+                                    {{#if condition code "eq" employeeProfile.guarantor.state}}
+                                        <option value="{{code}}" selected>{{name}}</option>
+                                    {{else}}
+                                        <option value="{{code}}">{{name}}</option>
+                                    {{/if}}
                                   {{/each}}
                               </select>
                           </div>

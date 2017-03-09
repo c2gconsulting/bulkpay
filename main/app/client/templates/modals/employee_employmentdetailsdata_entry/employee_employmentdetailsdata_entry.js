@@ -36,6 +36,7 @@ Template.EmployeeEmploymentDetailsDataEntry.events({
       console.log("user employment position changed to: " + value);
     }
     Template.instance().setEditUser(user);
+    Template.instance().setSelectedPosition(value);
   },
   'blur [name=employmentPayGrade]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
@@ -129,15 +130,6 @@ Template.EmployeeEmploymentDetailsDataEntry.helpers({
     positions: () => {
         return EntityObjects.find();
     },
-    'states': () => {
-        return Core.states();
-    },
-    'countries': () => {
-        return Core.IsoCountries();
-    },
-    'defaultCountry': (ccode) => {
-        return ccode === Core.country ? selected="selected":"";
-    },
     'selectedPosition': () => {
         let editUser = Template.instance().getEditUser();
         if(editUser) {
@@ -175,35 +167,62 @@ Template.EmployeeEmploymentDetailsDataEntry.onCreated(function () {
   // self.selectedGrade = new ReactiveVar();
   // self.assignedTypes = new ReactiveVar();
   // // self.subscribe("getPositions", Session.get('context'));
-  // // self.subscribe("getbuconstants", Session.get('context'));
+  self.subscribe("getbuconstants", selectedEmployee._id);
   //
-  // self.autorun(function(){
-  //     let position = Template.instance().selectedPosition.get();
-  //     if(position)
-  //         self.subscribe("assignedGrades", position);
-  // });
-  // self.autorun(function(){
-  //     let selectedGrade = Template.instance().selectedGrade.get();
-  //     if(selectedGrade){
-  //         let grade = PayGrades.findOne({_id: selectedGrade});
-  //         if (grade){
-  //             let paytypes = grade.payTypes.map(x => {
-  //                 return x.paytype;
-  //             });
-  //             self.subscribe("getpositionGrades", paytypes);
-  //         }
-  //         //
-  //         let pgObj = PayGrades.findOne({_id: selectedGrade});
-  //         let paytypes = pgObj.payTypes;
-  //         paytypes.forEach(x => {
-  //             pt = PayTypes.findOne({_id: x.paytype});
-  //             if (pt)
-  //                 _.extend(x, pt);
-  //             return x
-  //         });
-  //         Template.instance().assignedTypes.set(paytypes);
-  //     }
-  // });
+  self.autorun(function(){
+      // let position = self.getSelectedPosition();
+      let position = Session.get("selectedEmployee_employmentDetails_selectedPosition");
+      if(position)
+          self.subscribe("assignedGrades", position);
+  });
+
+  self.getSelectedPosition = () => {
+    return Session.get("selectedEmployee_employmentDetails_selectedPosition");
+  }
+
+  self.setSelectedPosition = (selectedPosition) => {
+    Session.set("selectedEmployee_employmentDetails_selectedPosition", selectedPosition);
+  }
+  //--
+  self.getSelectedPayGrade = () => {
+    return Session.get("selectedEmployee_employmentDetails_selectedPayGrade");
+  }
+
+  self.setSelectedPayGrade = (selectedPayGrade) => {
+    Session.set("selectedEmployee_employmentDetails_selectedPayGrade", selectedPayGrade);
+  }
+  //--
+  self.getAssignedPayTypes = () => {
+    return Session.get("selectedEmployee_employmentDetails_assignedPayTypes");
+  }
+
+  self.setAssignedPayTypes = (selectedPosition) => {
+    Session.set("selectedEmployee_employmentDetails_assignedPayTypes", selectedPosition);
+  }
+
+
+  self.autorun(function(){
+      let selectedGrade = Template.instance().getSelectedPayGrade();
+      if(selectedGrade){
+          let grade = PayGrades.findOne({_id: selectedGrade});
+          if (grade){
+              let paytypes = grade.payTypes.map(x => {
+                  return x.paytype;
+              });
+              self.subscribe("getpositionGrades", paytypes);
+          }
+          //
+          let pgObj = PayGrades.findOne({_id: selectedGrade});
+          let paytypes = pgObj.payTypes;
+          paytypes.forEach(x => {
+              pt = PayTypes.findOne({_id: x.paytype});
+              if (pt)
+                  _.extend(x, pt);
+              return x
+          });
+          Template.instance().setAssignedPayTypes(paytypes);
+      }
+  });
 });
 
 Template.EmployeeEmploymentDetailsDataEntry.onRendered(function () {
@@ -211,3 +230,5 @@ Template.EmployeeEmploymentDetailsDataEntry.onRendered(function () {
 
 Template.EmployeeEmploymentDetailsDataEntry.onDestroyed(function () {
 });
+
+//----

@@ -85,7 +85,7 @@ Template.EmployeeNextOfKinDataModal.events({
       }
       Template.instance().setEditUser(user);
     },
-    'blur [name=guarantorState]': function (e, tmpl) {
+    'change [name=guarantorState]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;
       if (value && value.trim().length > 0) {

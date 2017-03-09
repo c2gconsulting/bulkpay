@@ -30,7 +30,7 @@
                           </div>
                       </div>
                   </div>
-                  {{#if selectedPosition}}
+                  {{#if getSelectedPosition}}
                       <div class="form-group">
                           <label class="col-sm-4 control-label">PayGrade</label>
                           <div class="col-sm-4">
@@ -106,14 +106,12 @@
                       </div>
                   </div>
               </form>
+          </div><!-- panel-body -->
+
+          <div class="panel-footer">
+              <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
+              <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
           </div>
-
-          <!-- panel-body -->
-      </div><!-- panel -->
-
-      <div class="panel-footer">
-          <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
-          <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
       </div>
   </div>
 {{/each}}
