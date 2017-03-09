@@ -21,11 +21,10 @@ Template.Employees.events({
 
       if (text && text.trim().length > 0) {
         Session.set("isSearchView", true);
-        PackageSearch.search(text);
+        EmployeesSearch.search(text);
       } else {
         Session.set("isSearchView", false);
       }
-
     }, 200)
 });
 
@@ -36,8 +35,8 @@ Template.Employees.helpers({
     'employees': function(){
         return Meteor.users.find({"employee": true});
     },
-    getPackages: function() {
-      return PackageSearch.getData({
+    getEmployeeSearchResults: function() {
+      return EmployeesSearch.getData({
         sort: {isoScore: -1}
       });
     },
@@ -45,7 +44,7 @@ Template.Employees.helpers({
       return Session.get("isSearchView");
     },
     isLoading: function() {
-      return PackageSearch.getStatus().loading;
+      return EmployeesSearch.getStatus().loading;
     }
 });
 
@@ -56,7 +55,6 @@ Template.Employees.onCreated(function () {
     let self = this;
     self.subscribe("allEmployees", Session.get('context'));
     self.subscribe("getPositions", Session.get('context'));
-    self.subscribe("allEmployees", Session.get('context'));
 });
 
 Template.Employees.onRendered(function () {

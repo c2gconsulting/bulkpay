@@ -12,10 +12,7 @@ SearchSource.defineSource('users', function(searchText, options) {
       }
     ]};
 
-    let usersFoundForSearch = Meteor.users.find(selector, options).fetch();
-    console.log("Num usersFoundForSearch: " + usersFoundForSearch.length);
-
-    return usersFoundForSearch
+    return Meteor.users.find(selector, options).fetch();
   } else {
     return Meteor.users.find({}, options).fetch();
   }

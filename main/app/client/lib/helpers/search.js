@@ -4,5 +4,5 @@ var options = {
 };
 var fields = ['profile.fullName', 'profile.firstname', 'profile.lastname'];
 
-PackageSearch = new SearchSource('users', fields, options);
-console.log("Client side package search");
+EmployeesSearch = new SearchSource('users', fields, options);
+console.log("Client side - search");

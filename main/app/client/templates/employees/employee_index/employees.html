@@ -58,7 +58,7 @@
                       <div class="row">
                           <div class="col-lg-8 employeesList">
                           {{#if isSearchView}}
-                            {{#each getPackages}}
+                            {{#each getEmployeeSearchResults}}
                               {{> EmployeeEntry this}}
                             {{/each}}
                           {{else}}
