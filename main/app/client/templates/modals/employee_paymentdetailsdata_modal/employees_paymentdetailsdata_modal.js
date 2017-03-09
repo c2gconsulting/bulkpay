@@ -125,11 +125,6 @@ Template.EmployeePaymentDetailsDataModal.onCreated(function () {
   }
 
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
-  delete selectedEmployee.employeeProfile.guarantor;
-  delete selectedEmployee.employeeProfile.employment;
-  delete selectedEmployee.employeeProfile.emergencyContact;
-  //delete selectedEmployee.employeeProfile.payment;
-
   self.setEditUser(selectedEmployee);
 });
 

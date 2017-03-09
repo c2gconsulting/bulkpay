@@ -64,6 +64,7 @@ Core.publish("subUsers", function (businessId) {
     check(businessId, String);
     let currentId = this.userId;
     let user = Meteor.users.findOne({_id: currentId});
+
     if (user && user.employeeProfile.employment.position){
        let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
             return x._id
