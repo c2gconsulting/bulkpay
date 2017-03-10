@@ -45,7 +45,11 @@
                                             <div class="col-sm-4">
                                                 {{#each grades}}
                                                     <label class="radio-inline">
+                                                        {{#if isEqual ../employeeProfile.employment.paygrade this._id}}
+                                                        <input type="radio" name="employmentPayGrade" value="{{_id}}" checked="checked"> {{code}}
+                                                        {{else}}
                                                         <input type="radio" name="employmentPayGrade" value="{{_id}}"> {{code}}
+                                                        {{/if}}
                                                     </label>
                                                 {{/each}}
                                             </div>
