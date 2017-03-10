@@ -4,7 +4,7 @@
 /*****************************************************************************/
 import Ladda from 'ladda';
 Template.EmployeeEditEmploymentPayrollModal.events({
-  'click #save': (e, tmpl) => {
+  'click #saveEmployment': (e, tmpl) => {
     let user = Template.instance().getEditUser();
     console.log("User to update on server: \n" + JSON.stringify(user));
 
@@ -24,7 +24,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         }
     });
   },
-  'blur [name=employmentPosition]': function (e, tmpl) {
+  'change [name=employmentPosition]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
     let value = e.currentTarget.value;
     if (value && value.trim().length > 0) {
@@ -36,20 +36,19 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       tmpl.selectedPosition.set(value);
     }
     Template.instance().setEditUser(user);
-    Template.instance().setSelectedPosition(value);
   },
-  'blur [name=employmentPayGrade]': function (e, tmpl) {
-    let user = Template.instance().getEditUser();
-    let value = e.currentTarget.value;
-    if (value && value.trim().length > 0) {
-      user.employeeProfile = user.employeeProfile || {};
-      user.employeeProfile.employment = user.employeeProfile.employment || {};
-      user.employeeProfile.employment.paygrade = value;
+  'change [name=employmentPayGrade]': function(e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.employment = user.employeeProfile.employment || {};
+        user.employeeProfile.employment.paygrade = value;
 
-      console.log("user employment paygrade changed to: " + value);
-      tmpl.selectedGrade.set(value);
-    }
-    Template.instance().setEditUser(user);
+        console.log("user employment paygrade changed to: " + value);
+        tmpl.selectedGrade.set(value);
+      }
+      Template.instance().setEditUser(user);
   },
   'blur [name=employmentHireDate]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
@@ -98,19 +97,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       console.log("user employment terminationDate changed to: " + value);
     }
     Template.instance().setEditUser(user);
-  },
-  'change [name=employmentPayGrade]': function(e, tmpl) {
-      let user = Template.instance().getEditUser();
-      let value = e.currentTarget.value;
-      if (value && value.trim().length > 0) {
-        user.employeeProfile = user.employeeProfile || {};
-        user.employeeProfile.employment = user.employeeProfile.employment || {};
-        user.employeeProfile.employment.paygrade = value;
-
-        console.log("user employment paygrade changed to: " + value);
-        Template.instance().setSelectedPayGrade(value);
-      }
-      Template.instance().setEditUser(user);
   },
   'blur .payAmount': (e,tmpl) => {
       let entered = $(e.target).val();
@@ -193,7 +179,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
     console.log("Inside setEditUser");
     Session.set('employeeEmploymentDetailsData', editUser);
   }
-  
+
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
   //--
@@ -271,9 +257,13 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
                   });
                   var parsed = rules.parse(formula, input);
                   if (!isNaN(parsed.result)) {
-                      x.parsedValue = parsed.result.toFixed(2);
-                      x.monthly = (parsed.result / 12).toFixed(2);
-                      //set default inputed as parsed value if not editable per employee
+                      if(parsed.result) {
+                        x.parsedValue = parsed.result.toFixed(2);
+                        x.monthly = (parsed.result / 12).toFixed(2);
+                        //set default inputed as parsed value if not editable per employee
+                      } else {
+                        console.log("[Autorun] x.parsed.result is NULL");
+                      }
                   }
                   //
                   if (parsed.error) {
