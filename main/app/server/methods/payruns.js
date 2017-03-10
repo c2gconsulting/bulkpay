@@ -118,25 +118,22 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const newPeriod = period.month + period.year;   //get period value as 012017 ..ex.
                 const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod}).fetch();
                 //include additional pay to match paytype values
-                let mergedPay, formattedPay;
                 if(addPay && addPay.length > 0){
-                    console.log('found additional pay for employee', addPay);
-                    formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
-                }
-                if(formattedPay && formattedPay.length > 0){
-                        //loop thru formatted pay and update merged pay
+                    let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
+                    if(formattedPay && formattedPay.length > 0) {
                         formattedPay.forEach(x => {
                             let index = _.findLastIndex(paytypes, {_id: x._id});
-                            if(index > -1) { //found
-                                paytypes.splice(index,1);
+                            if (index > -1) { //found
+                                console.log('found paytype to be ', paytypes[index]);
+                                paytypes[index].value = x.value;
+                                console.log('paytyps after changing value is', paytypes[index]);
                             }
+
                         });
-                    mergedPay = paytypes.concat(formattedPay);
-                } else {
-                    mergedPay = [...paytypes];
+                    }
                 }
-                console.log(mergedPay);
-                mergedPay.forEach((x, index) => {
+
+                paytypes.forEach((x, index) => {
                     //skip processing of Annual non selected annual paytypes
                     //revisit this to factor in all payment frequency and create a logic on how processing is made
                     if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
@@ -152,7 +149,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                             return b;
                         });
                         input = input.concat(clone);
-
                         let formula = x.value;
                         let old = formula;
                         if (formula) {
@@ -268,7 +264,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
             // negate and add pension to deduction
             const totalPayment = sumPayments(final.payslip.benefit);
             const totalDeduction = sumPayments(final.payslip.deduction);
-            const netPayment = totalPayment + totalDeduction;    //@@technicalPaytype
+            const netPayment = parseFloat(totalPayment + totalDeduction).toFixed(2);    //@@technicalPaytype
             final.payslip.totalPayment = totalPayment;
             final.payslip.totalDeduction = totalDeduction;
             final.payslip.netPayment = netPayment;
@@ -413,7 +409,7 @@ function sumPayments(payments){
     const sum = newPay.reduce(function(total, val) {
         return total + val.value;
     }, 0);
-    return sum;
+    return parseFloat(sum).toFixed(2) ;
 }
 
 /*
@@ -433,8 +429,7 @@ function getPaytypeIdandValue(additionalPay, businessId) {
     let newAddPay = [...additionalPay];
     let paytypes = []; //lazyload paytypes to reduce number of database query.
     newAddPay.forEach(x => {
-        const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId});
-        console.log('after getting each add pay, loggind specific pay as', paytype);
+        const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId, status: 'Active'});
         if(paytype)
             paytype.value = x.amount.toString();   // add the value as additional pay value
             paytypes.push(paytype);

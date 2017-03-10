@@ -37,7 +37,7 @@
                                         <select name="employee" style="width: 100%" class="ui fluid search dropdown form-control">
                                             <option value="">Employees</option>
                                             {{#each employees}}
-                                                <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                             {{/each}}
                                         </select>
                                     {{/semanticselect}}
@@ -50,7 +50,7 @@
                                     <select name="paytype" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="">Pay Type</option>
                                         {{#each paytypes}}
-                                            <option value="{{_id}}">{{code}} - {{title}}</option>
+                                            <option value="{{code}}">{{code}} - {{title}}</option>
                                         {{/each}}
                                     </select>
                                 {{/semanticselect}}
