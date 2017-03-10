@@ -13,7 +13,10 @@ Template.PensionManagerIndex.events({
 /*****************************************************************************/
 Template.PensionManagerIndex.helpers({
     'pfas': function(){
-        return PensionManagers.find();
+      console.log("Inside pfas");
+
+      let allPfas = PensionManagers.find({});
+      return allPfas;
     },
     'pfaCount': function(){
         return PensionManagers.find().count();
@@ -26,7 +29,7 @@ Template.PensionManagerIndex.helpers({
 /*****************************************************************************/
 Template.PensionManagerIndex.onCreated(function () {
     let self = this;
-    self.subscribe("PensionManagers", Session.get('context'));
+    self.subscribe("pensionManagers", Session.get('context'));
 });
 
 Template.PensionManagerIndex.onRendered(function () {

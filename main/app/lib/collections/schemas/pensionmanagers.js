@@ -18,13 +18,16 @@ Core.Schemas.PensionManager = new SimpleSchema({
     },
     status: {
         type: String,
+        optional: true,
         defaultValue: "Active"
     },
     accountDetails: {
-        type: Object
+        type: Object,
+        optional: true
     },
   createdAt: {
     type: Date,
+    optional: true,
     autoValue: function () {
       if (this.isInsert) {
         return new Date;

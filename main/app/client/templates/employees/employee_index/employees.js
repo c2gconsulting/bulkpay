@@ -13,7 +13,19 @@ Template.Employees.events({
 
         let selectedEmployee = Meteor.users.findOne({_id: employeeIdToEdit});
         Session.set("employeesList_selectedEmployee", selectedEmployee);
-    }
+    },
+    "keyup #search-box": _.throttle(function(e) {
+      console.log("Inside throttle of searchbox");
+      var text = $(e.target).val().trim();
+      console.log("Text enterd: " + text);
+
+      if (text && text.trim().length > 0) {
+        Session.set("isSearchView", true);
+        EmployeesSearch.search(text);
+      } else {
+        Session.set("isSearchView", false);
+      }
+    }, 200)
 });
 
 /*****************************************************************************/
@@ -22,6 +34,17 @@ Template.Employees.events({
 Template.Employees.helpers({
     'employees': function(){
         return Meteor.users.find({"employee": true});
+    },
+    getEmployeeSearchResults: function() {
+      return EmployeesSearch.getData({
+        sort: {isoScore: -1}
+      });
+    },
+    isSearchView: function() {
+      return Session.get("isSearchView");
+    },
+    isLoading: function() {
+      return EmployeesSearch.getStatus().loading;
     }
 });
 

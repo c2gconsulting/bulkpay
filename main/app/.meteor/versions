@@ -101,6 +101,8 @@ meteorhacks:cluster@1.6.9
 meteorhacks:collection-utils@1.2.0
 meteorhacks:kadira@2.30.2
 meteorhacks:meteorx@1.4.1
+meteorhacks:picker@1.0.3
+meteorhacks:search-source@1.4.2
 meteorhacks:ssr@2.2.0
 meteorhacks:subs-manager@1.6.4
 meteorhacks:unblock@1.1.0

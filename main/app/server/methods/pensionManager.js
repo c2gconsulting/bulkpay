@@ -6,14 +6,14 @@ Meteor.methods({
     /* pension Manger
      */
 
-    "pensionManager/create": function(paytype){
+    "pensionManager/create": function(pensionManager){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         let userId = Meteor.userId();
 
         try {
-            check(paytype, Core.Schemas.PensionManager);
+            check(pensionManager, Core.Schemas.PensionManager);
         } catch (e) {
             console.log(e);
             throw new Meteor.Error(401, "There's invalid data in the pension Manager. Please correct and retry");
@@ -23,8 +23,8 @@ Meteor.methods({
         //    // must have orders/manage permissions
         this.unblock();
 
-        let payTypeId = PayTypes.insert(paytype);
-        return {_id: payTypeId};
+        let pensionManagerId = PensionManagers.insert(pensionManager);
+        return {_id: pensionManagerId};
         //let newBu = BusinessUnits.findOne(buId);
         ////sendOrderNotification("order.created", newOrder, userId);
         //return { _id: orderId, orderNumber: newOrder.orderNumber };
@@ -37,7 +37,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Unauthorized");
         }
         // check if user has permission to delete
-        PayTypes.remove({_id: id});
+        PensionManagers.remove({_id: id});
         return true;
     },
     "pensionManager/update": function(id, details){
@@ -49,9 +49,8 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = PayTypes.update(selector, {$set: details} );
+        const result = PensionManagers.update(selector, {$set: details} );
         return result;
     }
 
 });
-

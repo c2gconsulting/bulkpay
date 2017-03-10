@@ -23,7 +23,7 @@
                 <div class="well mt10">
                     <div class="row">
                         <div class="col-sm-9">
-                            <input type="text" placeholder="Who are you looking for?" class="form-control">
+                            <input id="search-box" type="text" placeholder="Who are you looking for?" class="form-control">
                         </div>
                         <div class="col-sm-3">
                             <div class="select2-container width100p" id="s2id_search-type"><a href="javascript:void(0)" class="select2-choice" tabindex="-1">   <span class="select2-chosen" id="select2-chosen-1">Position</span><abbr class="select2-search-choice-close"></abbr>   <span class="select2-arrow" role="presentation"><b role="presentation"></b></span></a><label for="s2id_autogen1" class="select2-offscreen"></label><input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-1" id="s2id_autogen1"></div><select id="search-type" class="width100p select2-offscreen" data-placeholder="Search Type" tabindex="-1" title="">
@@ -41,7 +41,7 @@
                     <div class="col-lg-8">
                       <div class="row">
                         <h3 class="xlg-title">All Employees</h3>
-                        <div class="pull-right">
+                        <!-- <div class="pull-right">
                             <ul class="pagination pagination-split pagination-sm pagination-contact">
                                 <li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
                                 <li class="active"><a href="#">1</a></li>
@@ -51,15 +51,21 @@
                                 <li><a href="#">5</a></li>
                                 <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
                             </ul>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
 
                       <div class="row">
                           <div class="col-lg-8 employeesList">
-                          {{#each employees}}
+                          {{#if isSearchView}}
+                            {{#each getEmployeeSearchResults}}
                               {{> EmployeeEntry this}}
-                          {{/each}}
+                            {{/each}}
+                          {{else}}
+                            {{#each employees}}
+                                {{> EmployeeEntry this}}
+                            {{/each}}
+                          {{/if}}
                           </div>
 
                           <div class="col-lg-4">
