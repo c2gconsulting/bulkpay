@@ -106,7 +106,13 @@ Template.EmployeePaymentDetailsDataModal.helpers({
     "selectedEmployee": function() {
         let selectedEmployee = Session.get('employeesList_selectedEmployee');
         return [selectedEmployee];
-    }
+    },
+    'pfas': function(){
+      console.log("[PaymentDetails] Inside pfas");
+
+      let allPfas = PensionManagers.find({});
+      return allPfas;
+    },
 });
 
 /*****************************************************************************/
@@ -114,6 +120,8 @@ Template.EmployeePaymentDetailsDataModal.helpers({
 /*****************************************************************************/
 Template.EmployeePaymentDetailsDataModal.onCreated(function () {
   let self = this;
+
+  self.subscribe("pensionManagers", Session.get('context'));
 
   self.getEditUser = () => {
     return Session.get('employeeNextOfKinData');

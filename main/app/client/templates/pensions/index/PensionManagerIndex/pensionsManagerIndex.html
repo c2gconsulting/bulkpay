@@ -8,7 +8,7 @@
                 </div>
             </div>
 
-            <div class="row" ng-show="!singlePensionManagerView" style="margin-left: 10px; margin-right: 10px;">
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12" ng-if="pensionManagers.length > 0">
                     <div class="table-responsive">
                         <table class="table table-primary mb60 table-hover">
@@ -21,8 +21,19 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each pension }}
-                                {{> singlePFA index=@index data=this}}
+                            {{#each pfas}}
+                            <tr>
+                                <td class="pointer">#{{@index}}</td>
+                                <td>{{this.code}}</td>
+                                <td>{{this.name}}</td>
+                                <td>
+                                  {{#if condition status "eq" "Active"}}
+                                    <span class="label label-success">{{this.status}}</span>
+                                  {{else}}
+                                    <span class="label label-danger">{{this.status}}</span>
+                                  {{/if}}
+                                </td>
+                            </tr>
                             {{/each}}
                             </tbody>
                         </table>
@@ -54,4 +65,3 @@
     </td>
     </tr>
 </template>
-

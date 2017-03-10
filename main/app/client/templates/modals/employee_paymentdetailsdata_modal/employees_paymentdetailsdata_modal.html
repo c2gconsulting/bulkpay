@@ -68,10 +68,10 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Pension Manager</label>
                         <div class="col-sm-4">
-                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown"
-                              value="{{employeeProfile.payment.pensionmanager}}">
-                                <option value="option1">option1</option>
-                                <option value="option2">option2</option>
+                            <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
+                              {{#each pfas}}
+                                <option value="{{code}}">{{name}}</option>
+                              {{/each}}
                             </select>
                         </div>
                         <div class="col-sm-4">

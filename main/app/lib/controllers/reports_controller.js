@@ -59,8 +59,5 @@ ReportsController = BusinessUnitController.extend({
     onAfterAction: function () {
     },
     onStop: function () {
-    },
-    settings: function () {
-        this.render('TenantSettings');
     }
 });
