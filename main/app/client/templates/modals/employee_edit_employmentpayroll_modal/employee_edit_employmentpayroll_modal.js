@@ -159,6 +159,10 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
   positions: () => {
       return EntityObjects.find();
   },
+  isEqual: (a, b) => {
+    console.log("Inside isEqual. a=" + a + ", b=" + b);
+    return a === b;
+  },
   'states': () => {
       return Core.states();
   },
