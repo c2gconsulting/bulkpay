@@ -11,18 +11,162 @@
                   </ul>
                 </div>
                 <div class="panel-body">
-                    <!-- Tab panes -->
-                    <!-- Tab panes -->
-                    <div class="tab-content nopadding noborder">
+                    <!-- <div class="tab-content nopadding noborder">
                         {{> EmployeeEmploymentDetailsDataEntry}}
                         {{> EmployeePayrollDetailsDataEntry}}
-                    </div><!-- End of tab panes -->
-                </div><!-- End of panel-body -->
+                    </div> -->
+                    <div class="tab-content nopadding noborder">
 
-                <!-- <div class="panel-footer">
-                    <button type="reset" class="btn btn-danger" id="save-close" data-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary mr5 ladda-button" id="save">Save</button>
-                </div> -->
+                    {{#each selectedEmployee}}
+                    <div class="tab-pane active employment" id="followers">
+                        <div class="panel panel-default">
+                            <div class="panel-body nopadding">
+                                <form class="form-horizontal form-bordered">
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Position</label>
+                                        <div class="col-sm-4">
+                                            <select name="employmentPosition" style="width: 100%" class="form-control dropdown">
+                                                <option value="">Unassigned</option>
+                                                {{#each positions}}
+                                                    <option value="{{_id}}">{{name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div>
+                                                <span>Use Org Reassignment</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{#if selectedPosition}}
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">PayGrade</label>
+                                            <div class="col-sm-4">
+                                                {{#each grades}}
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="employmentPayGrade" value="{{_id}}"> {{code}}
+                                                    </label>
+                                                {{/each}}
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{/if}}
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Hire Date</label>
+                                        <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                                          {{#datepicker employeeProfile.employment.hireDate}}
+                                              <input name="employmentHireDate" type="text" class="form-control datepicker" data-field="hireDate"
+                                                value="{{formatDate employeeProfile.employment.hireDate}}"/>
+                                          {{/datepicker}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Confirmation Date</label>
+                                        <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                                          {{#datepicker employeeProfile.employment.confirmationDate}}
+                                              <input name="employmentConfirmationDate" type="text" class="form-control datepicker" data-field="confirmationDate"
+                                                value="{{formatDate employeeProfile.employment.confirmationDate}}" />
+                                          {{/datepicker}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Status</label>
+                                        <div class="col-sm-4">
+                                            {{#if employeeProfile.employment.status}}
+                                              <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                                                  <option value="Active" selected>Active</option>
+                                                  <option value="Inactive">Inactive</option>
+                                              </select>
+                                            {{else}}
+                                              <select name="employmentStatus" style="width: 100%" class="form-control dropdown">
+                                                  <option value="Active">Active</option>
+                                                  <option value="Inactive" selected>Inactive</option>
+                                              </select>
+                                            {{/if}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">Termination/Resignation Date</label>
+                                        <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
+                                            {{#datepicker terminationDate}}
+                                                <input type="text" class="form-control datepicker" data-field="terminationDate"
+                                                  value="{{formatDate employeeProfile.employment.terminationDate}}"/>
+                                            {{/datepicker}}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </form>
+                            </div><!-- panel-body -->
+
+                            <div class="panel-footer">
+                                <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary mr5 ladda-button" id="saveEmployment">Save</button>
+                            </div>
+                        </div>
+                        <!-- panel -->
+                    </div>
+                    {{/each}}
+
+                    <div class="tab-pane payroll" id="payroll">
+                        <div class="panel">
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
+                                <div class="table-responsive">
+                                    <table class="table table-primary mb30 calc">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Payment Code</th>
+                                            <th>Description</th>
+                                            <th>assigned Value</th>
+                                            <th>Amount(If Editable per Employee)</th>
+                                            <th>Employee Calculated</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {{#each assignable}}
+                                            <tr>
+                                                <td>{{increment @index}}</td>
+                                                <td>{{code}}</td>
+                                                <td>{{title}}</td>
+                                                <td>{{value}}</td>
+                                                <td><input type="text" value="{{inputed}}" class="payAmount form-group" id="{{_id}}" {{disabled _id}}></td>
+                                                <td>{{parsedValue}}</td>
+                                            </tr>
+                                        {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!-- panel-body -->
+
+                            <div class="panel-footer">
+                                <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary mr5 ladda-button" id="saveEmployeePayrollPaytypes">Save</button>
+                            </div>
+                        </div><!-- panel -->
+                    </div><!-- tab-pane -->
+                  </div>
+
+                </div>
             </div>
         </div>
     </div>

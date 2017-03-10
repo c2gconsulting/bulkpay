@@ -135,7 +135,7 @@ Meteor.methods({
                 "profile.firstname": user.profile.firstname,
                 "profile.lastname": user.profile.lastname,
                 "profile.othernames": user.profile.othernames,
-                
+
                 "employeeProfile.address": user.employeeProfile.address,
                 "employeeProfile.dateOfBirth": user.employeeProfile.dateOfBirth,
                 "employeeProfile.gender": user.employeeProfile.gender,
@@ -208,6 +208,22 @@ Meteor.methods({
               "employeeProfile.employment.confirmationDate": user.employeeProfile.employment.confirmationDate,
               "employeeProfile.employment.status": user.employeeProfile.employment.status,
               "employeeProfile.employment.terminationDate": user.employeeProfile.employment.terminationDate
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
+    "account/updatePayTypesData": function (payTypesArray, userId) {
+        check(userId, String);
+        //check(user.businessId, String);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.employment.paytypes": payTypesArray
             }});
             return true
         } else {
