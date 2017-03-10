@@ -3,6 +3,9 @@
 /* EmployeeEditEmploymentPayrollModal: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
+
+import _ from 'underscore';
+
 Template.EmployeeEditEmploymentPayrollModal.events({
   'click #saveEmployment': (e, tmpl) => {
     let user = Template.instance().getEditUser();
@@ -14,6 +17,27 @@ Template.EmployeeEditEmploymentPayrollModal.events({
             swal({
                 title: "Success",
                 text: `Employee employment data updated`,
+                confirmButtonClass: "btn-success",
+                type: "success",
+                confirmButtonText: "OK"
+            });
+            Modal.hide('EmployeeEditEmploymentPayrollModal');
+        } else {
+            console.log(err);
+        }
+    });
+  },
+  'click #saveEmployeePayrollPaytypes': (e, tmpl) => {
+    let user = Template.instance().getEditUser();
+
+    let payTypesArray = tmpl.getPaytypes();
+    console.log("Pay types array: " + JSON.stringify(payTypesArray));
+
+    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, (err, res) => {
+        if (res){
+            swal({
+                title: "Success",
+                text: `Employee pay types updated`,
                 confirmButtonClass: "btn-success",
                 type: "success",
                 confirmButtonText: "OK"
@@ -180,11 +204,23 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
     Session.set('employeeEmploymentDetailsData', editUser);
   }
 
+  self.getPaytypes = () => {
+      let assigned = Template.instance().assignedTypes.get();
+      if(assigned){
+          let wage = assigned.map(x => {
+              return {paytype: x.paytype, value: x.inputed}
+          });
+        return wage;
+      }
+  };
+
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
   //--
 
   self.selectedPosition = new ReactiveVar();
+  self.selectedPosition.set(selectedEmployee.employeeProfile.employment.position);
+
   self.selectedGrade = new ReactiveVar();
   self.assignedTypes = new ReactiveVar();
   self.subscribe("getPositions", Session.get('context'));
