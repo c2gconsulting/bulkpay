@@ -2,16 +2,17 @@
 /* Payslip: Event Handlers */
 /*****************************************************************************/
 Template.Payslip.events({
-    'click #createPaygrade': (e,tmpl) => {
-        e.preventDefault();
-        Modal.show('PaygradeCreate');
-    }
+
 });
 
 /*****************************************************************************/
 /* Payslip: Helpers */
 /*****************************************************************************/
 Template.Payslip.helpers({
+    'currency': () => {
+        return Core.getTenantBaseCurrency().iso;
+
+    }
 
 });
 

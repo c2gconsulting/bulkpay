@@ -41,7 +41,7 @@
                                     <th>Payments</th>
                                     <th>Code</th>
                                     <th>Local Currency(NGN)</th>
-                                    <th>Exchange Currency</th>
+                                    <th>Paytype Currency</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -52,8 +52,8 @@
                                         <p></p>
                                     </td>
                                     <td>{{code}}</td>
-                                    <td>{{value}}</td>
-                                    <td>{{value}}</td>
+                                    <td>{{formatMoneyD value}}</td>
+                                    <td>{{formatMoneyD value}}</td>
                                 </tr>
                                 {{/each}}
                                 </tbody>
@@ -65,8 +65,8 @@
                                 <tr>
                                     <th>Deduction</th>
                                     <th>Code</th>
-                                    <th>Local Currency(NGN)</th>
-                                    <th>Exchange Currency</th>
+                                    <th>Local Currency({{currency}})</th>
+                                    <th>Paytype Currency</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -77,8 +77,8 @@
                                             <p></p>
                                         </td>
                                         <td>{{code}}</td>
-                                        <td>{{value}}</td>
-                                        <td>{{value}}</td>
+                                        <td>{{formatMoneyD value}}</td>
+                                        <td>{{formatMoneyD value}}</td>
                                     </tr>
                                 {{/each}}
                                 </tbody>
@@ -92,7 +92,7 @@
                                     <th>Other Payments</th>
                                     <th>Code</th>
                                     <th>Local Currency(NGN)</th>
-                                    <th>Exchange Currency</th>
+                                    <th>Paytype Currency</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -103,8 +103,8 @@
                                             <p></p>
                                         </td>
                                         <td>{{code}}</td>
-                                        <td>{{value}}</td>
-                                        <td>{{value}}</td>
+                                        <td>{{formatMoneyD value}}</td>
+                                        <td>{{formatMoneyD value}}</td>
                                     </tr>
                                 {{/each}}
                                 </tbody>
@@ -115,15 +115,15 @@
                             <tbody>
                             <tr>
                                 <td>Total Payments:</td>
-                                <td>{{totalPayment}}</td>
+                                <td>{{formatMoneyD totalPayment}}</td>
                             </tr>
                             <tr>
                                 <td>Total Deductions:</td>
-                                <td>{{totalDeduction}}</td>
+                                <td>{{formatMoneyD totalDeduction}}</td>
                             </tr>
                             <tr>
                                 <td>Payment Amount:</td>
-                                <td>{{netPayment}}</td>
+                                <td>{{formatMoneyD netPayment}}</td>
                             </tr>
                             </tbody>
                         </table>
