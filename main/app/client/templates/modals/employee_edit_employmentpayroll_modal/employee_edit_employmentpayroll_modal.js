@@ -226,6 +226,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   self.selectedPosition.set(selectedEmployee.employeeProfile.employment.position);
 
   self.selectedGrade = new ReactiveVar();
+  self.selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
+
   self.assignedTypes = new ReactiveVar();
   self.subscribe("getPositions", Session.get('context'));
   self.subscribe("getbuconstants", Session.get('context'));
