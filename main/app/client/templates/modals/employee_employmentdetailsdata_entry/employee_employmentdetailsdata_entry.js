@@ -177,30 +177,6 @@ Template.EmployeeEmploymentDetailsDataEntry.onCreated(function () {
       if(position)
           self.subscribe("assignedGrades", position);
   });
-  //
-  // self.getSelectedPosition = () => {
-  //   return Session.get("selectedEmployee_employmentDetails_selectedPosition");
-  // }
-  //
-  // self.setSelectedPosition = (selectedPosition) => {
-  //   Session.set("selectedEmployee_employmentDetails_selectedPosition", selectedPosition);
-  // }
-  // //--
-  // self.getSelectedPayGrade = () => {
-  //   return Session.get("selectedEmployee_employmentDetails_selectedPayGrade");
-  // }
-  //
-  // self.setSelectedPayGrade = (selectedPayGrade) => {
-  //   Session.set("selectedEmployee_employmentDetails_selectedPayGrade", selectedPayGrade);
-  // }
-  // //--
-  // self.getAssignedPayTypes = () => {
-  //   return Session.get("selectedEmployee_employmentDetails_assignedPayTypes");
-  // }
-  //
-  // self.setAssignedPayTypes = (selectedPosition) => {
-  //   Session.set("selectedEmployee_employmentDetails_assignedPayTypes", selectedPosition);
-  // }
 });
 
 Template.EmployeeEmploymentDetailsDataEntry.onRendered(function () {
