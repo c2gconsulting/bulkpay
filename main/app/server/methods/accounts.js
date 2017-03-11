@@ -111,6 +111,7 @@ Meteor.methods({
                 "profile.lastname": user.profile.lastname,
                 "profile.workPhone": user.profile.workPhone,
                 "profile.homePhone": user.profile.homePhone,
+                // "employeeProfile.photo": user.employeeProfile.photo,
                 "roles": user.roles,
                 "notifications": user.notifications,
                 "salesProfile": user.salesProfile

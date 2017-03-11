@@ -7,6 +7,10 @@ Template.EmployeePersonalDataModal.events({
     },
     'click #save': (e, tmpl) => {
       let user = Template.instance().getEditUser();
+
+      // if ($('#uploadBtn')[0].files[0]) {
+      //   user.employeeProfile.photo = UserImages.insert($('#uploadBtn')[0].files[0]);
+      // }
       console.log("User to update on server: \n" + JSON.stringify(user));
 
       Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
@@ -24,6 +28,19 @@ Template.EmployeePersonalDataModal.events({
               console.log(err);
           }
       });
+    },
+    'change #uploadBtn': function(e){
+        if (e.target.files && e.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profile-img')
+                    .attr('src', e.target.result)
+            };
+
+            reader.readAsDataURL(e.target.files[0]);
+            //upload = UserImages.insert(e.target.files[0]);
+            //$('#filename').html(e.target.files[0].name);
+        }
     },
     'blur [name=firstName]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
