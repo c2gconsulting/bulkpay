@@ -252,11 +252,11 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
             //further process after evaluation of all paytypes pension calculation and tax calculation
 
             //get employee and employer contribution
-            const {employerPenContrib, employeePenContrib, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+            const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
             if(pensionLog)    //add pension calculation log
                 log.push(pensionLog);
             //add employee to relief Bucket
-            reliefBucket += (employeePenContrib * -1); //nagate employee Pension contribution and add to relief bucket
+            reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
 
             //get tax;
             const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
@@ -385,7 +385,7 @@ function getPensionContribution(pensionBucket, pension) {
         processing.push({code: `Employee Net Rate`, derived: netee });
 
         const log = {paytype: pension.code, input: input, processing: processing};
-        return {employeePenContrib: parseFloat(netee).toFixed(2), employerPenContrib: parseFloat(neter).toFixed(2), pensionLog: log};
+        return {employeePenContrib: parseFloat(netee).toFixed(2), employerPenContrib: parseFloat(neter).toFixed(2), grossPension: employee, pensionLog: log};
     } else {
         return {employeePenContrib: null, employerPenContrib: null}
     }
