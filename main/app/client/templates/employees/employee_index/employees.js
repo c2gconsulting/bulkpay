@@ -14,16 +14,16 @@ Template.Employees.events({
         let selectedEmployee = Meteor.users.findOne({_id: employeeIdToEdit});
         Session.set("employeesList_selectedEmployee", selectedEmployee);
     },
-    "keyup #search-box": _.throttle(function(e) {
+    "keyup #search-box": _.throttle(function(e, tmpl) {
       console.log("Inside throttle of searchbox");
       var text = $(e.target).val().trim();
       console.log("Text enterd: " + text);
 
       if (text && text.trim().length > 0) {
-        Session.set("isSearchView", true);
+        tmpl.isSearchView.set(true);
         EmployeesSearch.search(text);
       } else {
-        Session.set("isSearchView", false);
+        tmpl.isSearchView.set(false);
       }
     }, 200)
 });
@@ -41,7 +41,7 @@ Template.Employees.helpers({
       });
     },
     isSearchView: function() {
-      return Session.get("isSearchView");
+      return Template.instance().isSearchView.get();
     },
     isLoading: function() {
       return EmployeesSearch.getStatus().loading;
@@ -55,6 +55,9 @@ Template.Employees.onCreated(function () {
     let self = this;
     self.subscribe("allEmployees", Session.get('context'));
     self.subscribe("getPositions", Session.get('context'));
+    
+    self.isSearchView = new ReactiveVar();
+    self.isSearchView.set(false);
 });
 
 Template.Employees.onRendered(function () {
