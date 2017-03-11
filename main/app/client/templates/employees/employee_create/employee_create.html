@@ -499,12 +499,10 @@
                                         <label class="col-sm-4 control-label">Pension Manager</label>
                                         <div class="col-sm-4">
                                             <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
-                                                <option value="option1">option1</option>
-                                                <option value="option2">option2</option>
+                                              {{#each pfas}}
+                                                <option value="{{code}}">{{name}}</option>
+                                              {{/each}}
                                             </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            &nbsp;
                                         </div>
                                     </div>
 

@@ -226,9 +226,13 @@ Template.EmployeeCreate.helpers({
         if(paytype){
             return paytype.editablePerEmployee? '':'disabled';
         }
+    },
+    'pfas': function(){
+      console.log("[PaymentDetails] Inside pfas");
+
+      let allPfas = PensionManagers.find({});
+      return allPfas;
     }
-
-
 });
 
 /*****************************************************************************/
@@ -243,6 +247,8 @@ Template.EmployeeCreate.onCreated(function () {
     self.assignedTypes = new ReactiveVar();
     self.subscribe("getPositions", Session.get('context'));
     self.subscribe("getbuconstants", Session.get('context'));
+
+    self.subscribe("pensionManagers", Session.get('context'));
 
     self.autorun(function(){
         let position = Template.instance().selectedPosition.get();
