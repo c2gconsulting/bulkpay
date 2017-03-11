@@ -98,7 +98,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     }
     Template.instance().setEditUser(user);
   },
-  'blur [name=employmentStatus]': function (e, tmpl) {
+  'change [name=employmentStatus]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
     let value = e.currentTarget.value;
     if (value && value.trim().length > 0) {
