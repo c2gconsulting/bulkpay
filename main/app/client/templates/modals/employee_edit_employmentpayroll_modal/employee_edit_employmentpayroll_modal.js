@@ -176,7 +176,13 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       return Template.instance().selectedPosition.get();
   },
   'grades': () => {
-      return PayGrades.find();
+      let thePayGrades = PayGrades.find();
+      if(thePayGrades.count() == 1) {
+        Template.instance().selectedGrade.set(thePayGrades.fetch()[0]._id);
+      } else {
+        Template.instance().selectedGrade.set(null);
+      }
+      return thePayGrades;
   },
   'assignable': () => {
      return Template.instance().assignedTypes.get();
@@ -257,7 +263,6 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
               return x
           });
           Template.instance().assignedTypes.set(paytypes);
-
       }
   });
 });
