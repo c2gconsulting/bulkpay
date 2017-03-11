@@ -118,27 +118,22 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const newPeriod = period.month + period.year;   //get period value as 012017 ..ex.
                 const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod}).fetch();
                 //include additional pay to match paytype values
-                let mergedPay, formattedPay;
                 if(addPay && addPay.length > 0){
-                    console.log('found additional pay for employee', addPay);
-                    formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
-                    console.log('login formatted pay as',formattedPay);
-                }
-                if(formattedPay && formattedPay.length > 0){
-                        //loop thru formatted pay and update merged pay
+                    let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
+                    if(formattedPay && formattedPay.length > 0) {
                         formattedPay.forEach(x => {
                             let index = _.findLastIndex(paytypes, {_id: x._id});
-                            if(index > -1) { //found
-                                paytypes.splice(index,1);
+                            if (index > -1) { //found
+                                paytypes[index].value = x.value;
+                                paytypes[index].additionalPay = true;
+                                //add additional pay flag to skip monthly division
                             }
+
                         });
-                    mergedPay = paytypes.concat(formattedPay);
-                } else {
-                    mergedPay = [...paytypes];
+                    }
                 }
-                Core.hasTimeApprovalAccess()
-                console.log(mergedPay);
-                mergedPay.forEach((x, index) => {
+
+                paytypes.forEach((x, index) => {
                     //skip processing of Annual non selected annual paytypes
                     //revisit this to factor in all payment frequency and create a logic on how processing is made
                     if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
@@ -154,7 +149,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                             return b;
                         });
                         input = input.concat(clone);
-
                         let formula = x.value;
                         let old = formula;
                         if (formula) {
@@ -183,6 +177,14 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                 x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
                                 processing.push({code: x.code, derived: x.parsedValue});
                                 //negate value if paytype is deduction.
+
+                                let netPayTypeAmount; //net amount used if payment type is monthly
+                                if(x.frequency === 'Monthly' && !x.additionalPay){
+                                    netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+                                    processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
+                                }
+
+
                                 //if add to total, add wt to totalsBucket
                                 totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
                                 //add parsed value to defaultTax bucket if paytype is taxable
@@ -207,13 +209,13 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             benefit.push({
                                                 title: x.title,
                                                 code: x.code,
-                                                value: parseFloat(x.parsedValue)
+                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
                                             });
                                         } else if(x.displayInPayslip && !x.addToTotal){
                                             others.push({
                                                 title: x.title,
                                                 code: x.code,
-                                                value: parseFloat(x.parsedValue)
+                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
                                             });
                                         }
                                         break;
@@ -222,19 +224,20 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             deduction.push({
                                                 title: x.title,
                                                 code: x.code,
-                                                value: parseFloat(x.parsedValue)
+                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
                                             });
                                         } else if(x.displayInPayslip && !x.addToTotal){
                                             others.push({
                                                 title: x.title,
                                                 code: x.code,
-                                                value: parseFloat(x.parsedValue)
+                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
                                             });
                                         }
                                 }
                             } else {
                                 //when there is an error, stop processing this employee and move to the next one
                                 processing.push(parsed);
+                                console.log('Error in processing paytype');   //handle error and indicate failure in client side
                             }
                             log.push({paytype: x.code, input: input, processing: processing});
                             empDerivedPayElements.push(x);
@@ -249,13 +252,17 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
             //further process after evaluation of all paytypes pension calculation and tax calculation
 
             //get employee and employer contribution
-            const {employerPenContrib, employeePenContrib} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+            const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+            if(pensionLog)    //add pension calculation log
+                log.push(pensionLog);
             //add employee to relief Bucket
-            reliefBucket += (employeePenContrib * -1); //nagate employee Pension contribution and add to relief bucket
+            reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
 
             //get tax;
             const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
-            const netTax = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+            const {netTax, taxLog} = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+            if(taxLog)
+                log.push(taxLog);
             //collate results and populate paySlip; and push to payresult
             let final = {};
             final.log = log;
@@ -270,7 +277,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
             // negate and add pension to deduction
             const totalPayment = sumPayments(final.payslip.benefit);
             const totalDeduction = sumPayments(final.payslip.deduction);
-            const netPayment = totalPayment + totalDeduction;    //@@technicalPaytype
+            const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
             final.payslip.totalPayment = totalPayment;
             final.payslip.totalDeduction = totalDeduction;
             final.payslip.netPayment = netPayment;
@@ -357,11 +364,28 @@ function getPensionContribution(pensionBucket, pension) {
     //all elements of pension already derived into pensionBucket
     //calculate employer and employee contribution
     if (pension) {
+        const input = [{code: 'Pension Bucket', value: pensionBucket}];
+        const processing = [];
         const eerate = pension.employeeContributionRate;
         const errate = pension.employerContributionRate;
         const employee = (eerate / 100) * pensionBucket;
+        processing.push({code: `Employee rate`, derived: `(${eerate} / 100) * ${pensionBucket}` });
+        processing.push({code: `Employee rate`, derived: employee });
         const employer = (errate / 100) * pensionBucket;
-        return {employeePenContrib: parseFloat(employee).toFixed(2), employerPenContrib: parseFloat(employer).toFixed(2)};
+        processing.push({code: `Employer rate`, derived: `(${errate} / 100) * ${pensionBucket}` });
+        processing.push({code: `Employer rate`, derived: employer });
+        const netee = employee / 12;
+        const neter = employer / 12;
+        //log for net employee contribution
+        processing.push({code: `Employer rate`, derived: `(${employer} / 12) ` });
+        processing.push({code: `Employer Net Rate`, derived: neter });
+
+        //log for net employee contribution
+        processing.push({code: `Employee rate`, derived: `(${employee} / 12) ` });
+        processing.push({code: `Employee Net Rate`, derived: netee });
+
+        const log = {paytype: pension.code, input: input, processing: processing};
+        return {employeePenContrib: parseFloat(netee).toFixed(2), employerPenContrib: parseFloat(neter).toFixed(2), grossPension: employee, pensionLog: log};
     } else {
         return {employeePenContrib: null, employerPenContrib: null}
     }
@@ -375,10 +399,20 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
     //calculate reliefs
     //no checks done yet exceptions NAN undefined checkes
     //return result {finalTax: log[] }
+    const input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
+    const processing = [];
     const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
+    processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
+    processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
     const consolidatedRelief = tax.consolidatedRelief;
+    processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
     const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
+    processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
+    processing.push({code: `Total Relief`, derived: totalRelief });
     let taxableIncome = taxBucket - totalRelief;
+    processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
+    processing.push({code: `Taxable Income`, derived: taxableIncome });
+
     let totalTax = 0;
     //apply tax rules on taxable income
     const rules = [...tax.rules];
@@ -389,6 +423,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
         for (let i = 0; i < rules.length; i++) {
             let x = rules[i];
             if (x.range !== 'Over') {
+                processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: `${x.rate} * (${taxableIncome} - ${x.upperLimit}) / 100` });
                 if (taxableIncome >= x.upperLimit) {
                     taxableIncome -= x.upperLimit;
                     totalTax += x.rate * (x.upperLimit / 100);
@@ -396,13 +431,20 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
                     totalTax += x.rate * (taxableIncome / 100);
                     break;
                 }
+                processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: totalTax });
             } else {
+                processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: `${x.rate} * (${taxableIncome}) / 100` });
                 totalTax += x.rate * (taxableIncome / 100);
+                processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: totalTax });
             }
         }
     }
+    const netTax = totalTax / 12;
+    processing.push({code: `Net Tax(Total Tax / 12 )`, derived: `${totalTax}` / 12 });
+    processing.push({code: `Net Tax`, derived: netTax });
+    const log = {paytype: tax.code, input: input, processing: processing};
 
-    return parseFloat(totalTax).toFixed(2);
+    return {netTax: parseFloat(netTax).toFixed(2), taxLog: log};
 }
 
 /*
@@ -413,9 +455,9 @@ Sum payments in groups
 function sumPayments(payments){
     const newPay = [...payments];
     const sum = newPay.reduce(function(total, val) {
-        return total + val.value;
+        return total + parseFloat(val.value);
     }, 0);
-    return sum;
+    return parseFloat(sum).toFixed(2) ;
 }
 
 /*
@@ -435,7 +477,7 @@ function getPaytypeIdandValue(additionalPay, businessId) {
     let newAddPay = [...additionalPay];
     let paytypes = []; //lazyload paytypes to reduce number of database query.
     newAddPay.forEach(x => {
-        const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId});
+        const paytype = PayTypes.findOne({code: x.paytype, businessId: businessId, status: 'Active'});
         if(paytype)
             paytype.value = x.amount.toString();   // add the value as additional pay value
             paytypes.push(paytype);

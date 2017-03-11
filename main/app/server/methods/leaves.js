@@ -54,6 +54,40 @@ Meteor.methods({
                     throw new Meteor.Error('401', 'Unauthorized');
                 }
         }
+    },
+
+    'rejectTimeData': function(timeObj){
+        check(timeObj, Object);
+        switch (timeObj.type){
+            case 'Leaves':
+                if(Core.hasLeaveApprovalAccess(this.userId)){
+                    let request = Leaves.findOne({_id: timeObj.id});
+                    if (request && request.approvalStatus === 'Open'){  //cannot approve self leave
+                        if(request.employeeId === this.userId)
+                            throw new Meteor.Error('401', 'Cannot Approve your own Request');
+                        const approval = Leaves.update({_id: timeObj.id}, {$set: {approvalStatus: 'Rejected', approvedBy: this.userId, approvedDate: new Date()}})
+                        return approval;
+                    } else {
+                        throw new Meteor.Error('403', 'No action can be taken when Leave is not Open')
+                    }
+                } else {
+                    throw new Meteor.Error('401', 'Unauthorized');
+                }
+            case 'Times':
+                if(Core.hasTimeApprovalAccess(this.userId)){
+                    let time = Times.findOne({_id: timeObj.id});
+                    if(time && time.status === 'Open') {
+                        if (time.employeeId === this.userId)
+                            throw new Meteor.Error('401', 'Cannot approve your own Timesheet');
+                        const approval = Times.update({_id: timeObj.id}, {$set: {status: 'Rejected', approvedBy: this.userId, approvedDate: new Date()}});
+                        return approval;
+                    } else {
+                        throw new Meteor.Error('403', 'No action can be taken when Time is not Open')
+                    }
+                } else {
+                    throw new Meteor.Error('401', 'Unauthorized');
+                }
+        }
     }
 
 });
