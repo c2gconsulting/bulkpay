@@ -18,6 +18,26 @@ SearchSource.defineSource('users', function(searchText, options) {
   }
 });
 
+SearchSource.defineSource('paytypes', function(searchText, options) {
+  var options = {sort: {isoScore: -1}, limit: 20};
+
+  if(searchText) {
+    var regExp = buildRegExp(searchText);
+    var selector = {$or: [{
+        "code": regExp
+      },{
+        "title": regExp
+      }, {
+        "type": regExp
+      }
+    ]};
+
+    return PayTypes.find(selector, options).fetch();
+  } else {
+    return PayTypes.find({}, options).fetch();
+  }
+});
+
 function buildRegExp(searchText) {
   // this is a dumb implementation
   var parts = searchText.trim().split(/[ \-\:]+/);
