@@ -253,13 +253,28 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
               self.subscribe("getpositionGrades", paytypes);
           }
           //
-          let pgObj = PayGrades.findOne({_id: selectedGrade});
-          let paytypes = pgObj.payTypes;
+          let selectedEmployee = self.getEditUser();
+          let paytypes = null;
+
+          if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
+            paytypes = selectedEmployee.employeeProfile.employment.paytypes;
+          } else {
+            let pgObj = PayGrades.findOne({_id: selectedGrade});
+            paytypes = pgObj.payTypes;
+          }
           paytypes.forEach(x => {
-              pt = PayTypes.findOne({_id: x.paytype});
-              if (pt)
-                  _.extend(x, pt);
-              return x
+            //console.log("a paytype : " + JSON.stringify(x));
+            pt = PayTypes.findOne({_id: x.paytype});
+            //console.log("paytype from db : " + JSON.stringify(pt));
+
+            if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
+              if(pt) {
+                pt.inputed = x.value;
+              }
+            }
+            if (pt)
+                _.extend(x, pt);
+            return x
           });
           Template.instance().assignedTypes.set(paytypes);
       }
