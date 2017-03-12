@@ -52,6 +52,19 @@ Meteor.methods({
             payObj = users && processEmployeePay(users, annuals, businessId, period);
         }
 
+        //if live run and no error then save result
+        if (runtype === 'LiveRun' && payObj.error.length === 0){
+            //store result in Payrun Collection.
+           try {
+               payObj.payrun.forEach(x => {
+                   Payruns.insert(x);
+               })
+           } catch (e){
+               console.log(e);
+           }
+
+        }
+
         //just return something for now .... testing
         return {payObj};
     }
@@ -61,7 +74,8 @@ Meteor.methods({
 // instantiate payment object for employee with props for all methods required
 function processEmployeePay(employees, includedAnnuals, businessId, period) {
     let paygrades = [];
-    let payresult = [];
+    let payresult = [];  // holds result that will be sent to client
+    let payrun = [];  //holds payrun for storing if not simulation
     let specifiedAsProcess = function (paytype) {
         return _.indexOf(includedAnnuals, paytype) !== -1 ? true : false;
     };
@@ -72,252 +86,285 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
     let runPayrun = (counter) => {
         let x = employees[counter];
         if (x) {
-            const pg = x.employeeProfile.employment.paygrade;  //paygrade
-            let pt = x.employeeProfile.employment.paytypes;  //paytype
-
-            let grade, pgp;  //grade(paygrade) && pgp(paygroup);
-            const gradeIndex = _.findLastIndex(paygrades, {_id: pg});
-            let empSpecificType;  //contains employee payments derived from paygrade
-            if (gradeIndex !== -1) {
-                grade = paygrades[gradeIndex];
-                empSpecificType = determineRule(pt, grade);
-            } else {
-                //get paygrade and update paygrades
-                grade = getEmployeeGrade(pg);
-                if (grade) {
-                    paygrades.push(grade);
-                    empSpecificType = determineRule(pt, grade);
-                }
-            }
-
-            if (grade && grade.hasOwnProperty('payGroups') && grade.payGroups.length > 0) {
-                pgp = grade.payGroups[0]; //first element of paygroup// {review}
-            }
-            //payElemnts derivation;
-            const {tax, pension} = getPaygroup(pgp);
-
-            let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
-            let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
-            let empDerivedPayElements = [];
-            let benefit = [], deduction = [], others = [];
-            let rules = new ruleJS();
-
-            rules.init();
-            let skipToNextEmployee = false;
-            try {
-                //let formular = x.value
-                let paytypes = empSpecificType.map(x => {    //changes paygrades of currently processed employee to include paytypes
-                    let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-                    delete x.paytype;
-                    _.extend(x, ptype);
-
-                    return x;
-                });
-
-                //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
-                const newPeriod = period.month + period.year;   //get period value as 012017 ..ex.
-                const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: newPeriod}).fetch();
-                //include additional pay to match paytype values
-                if(addPay && addPay.length > 0){
-                    let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
-                    if(formattedPay && formattedPay.length > 0) {
-                        formattedPay.forEach(x => {
-                            let index = _.findLastIndex(paytypes, {_id: x._id});
-                            if (index > -1) { //found
-                                paytypes[index].value = x.value;
-                                paytypes[index].additionalPay = true;
-                                //add additional pay flag to skip monthly division
-                            }
-
-                        });
-                    }
-                }
-
-                paytypes.forEach((x, index) => {
-                    //skip processing of Annual non selected annual paytypes
-                    //revisit this to factor in all payment frequency and create a logic on how processing is made
-                    if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
-                        let input = [], processing = [];
-
-                        let boundary = [...paytypes]; //available types as at current processing
-                        boundary.length = index + 1;
-                        //format boundary for display in log
-                        let clone = boundary.map(x => {
-                            let b = {};
-                            b.code = x.code;
-                            b.value = x.value;
-                            return b;
-                        });
-                        input = input.concat(clone);
-                        let formula = x.value;
-                        let old = formula;
-                        if (formula) {
-                            //replace all wagetypes with values
-                            for (var i = 0; i < index; i++) {
-                                const code = paytypes[i].code ? paytypes[i].code.toUpperCase() : paytypes[i].code;
-                                const pattern = `\\b${code}\\b`;
-                                const regex = new RegExp(pattern, "g");
-                                formula = formula.replace(regex, paytypes[i].value);
-
-                            }
-                            //do the same for all contansts and replace the values
-                            //will find a better way of doing this... NOTE
-                            let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
-                            k.forEach(c => {
-                                const code = c.code ? c.code.toUpperCase() : c.code;
-                                const pattern = `\\b${code}\\b`;
-                                const regex = new RegExp(pattern, "g");
-                                formula = formula.replace(regex, c.value);
-
-                            });
-                            processing.push({code: x.code, previous: old, derived: formula});
-                            var parsed = rules.parse(formula, '');
-
-                            if (parsed.result !== null && !isNaN(parsed.result)) {
-                                x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
-                                processing.push({code: x.code, derived: x.parsedValue});
-                                //negate value if paytype is deduction.
-
-                                let netPayTypeAmount; //net amount used if payment type is monthly
-                                if(x.frequency === 'Monthly' && !x.additionalPay){
-                                    netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
-                                    processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
-                                }
-
-
-                                //if add to total, add wt to totalsBucket
-                                totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
-                                //add parsed value to defaultTax bucket if paytype is taxable
-                                defaultTaxBucket += x.taxable ? parseFloat(x.parsedValue) : 0;
-                                //for reliefs add to relief bucket
-                                reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
-                                //assigned bucket if one of the paytype is selected as tax bucket
-                                assignedTaxBucket = x._id === tax.bucket ? parseFloat(x.parsedValue) : null;
-                                processing.push({code: x.code, taxBucket: defaultTaxBucket});
-                                //if paytype in pension then add to default pension buket
-                                const ptIndex = pension && _.indexOf(pension.payTypes, x._id);
-                                pensionBucket += ptIndex !== -1 ? parseFloat(x.parsedValue) : 0; // add parsed value to pension bucket if paytype is found
-                                //gross income for pension relief;
-                                grossIncomeBucket += tax.grossIncomeBucket === x._id ? parseFloat(x.parsedValue) : 0;
-                                processing.push({code: x.code, pensionBucket: pensionBucket});
-
-                                //check if payment or deduction and add to corresponding payslip state
-                                switch (x.type) {
-                                    case 'Benefit':
-                                        //add to payslip benefit if display in payslip
-                                        if (x.displayInPayslip && x.addToTotal) {
-                                            benefit.push({
-                                                title: x.title,
-                                                code: x.code,
-                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
-                                            });
-                                        } else if(x.displayInPayslip && !x.addToTotal){
-                                            others.push({
-                                                title: x.title,
-                                                code: x.code,
-                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
-                                            });
-                                        }
-                                        break;
-                                    case 'Deduction':
-                                        if (x.displayInPayslip && x.addToTotal){
-                                            deduction.push({
-                                                title: x.title,
-                                                code: x.code,
-                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
-                                            });
-                                        } else if(x.displayInPayslip && !x.addToTotal){
-                                            others.push({
-                                                title: x.title,
-                                                code: x.code,
-                                                value: netPayTypeAmount || parseFloat(x.parsedValue)
-                                            });
-                                        }
-                                }
-                                log.push({paytype: x.code, input: input, processing: processing});
-                            } else {
-                                //when there is an error, stop processing this employee and move to the next one
-                                processing.push({code: x.code, derived: `Unable to handle Paytype Derivative ${formula}  = ${parsed}`});
-                                log.push({paytype: x.code, input: input, processing: processing});
-                                throw new PaytypeException('Unable to handle Paytype Derivative', `${formula}  = ${parsed.error}`);
-                            }
-                            empDerivedPayElements.push(x);
-                            //
-                        }
-                    }
-                })
-            } catch (e) {
+            //first check if result exist for employee for that period and if not, continue processing.
+            const periodFormat = period.month + period.year;// format is 012017 ex.
+            result = Payruns.findOne({employeeId: x._id, period: periodFormat, businessId: businessId});
+            if (result){
+                //add relevant errors
                 const error  = {};
                 error.employee = `${x.employeeProfile.employeeId} - ${x.profile.fullName}`;
-                error.reason = e.message;
-                error.details = e.paytype;
+                error.reason = `Payment Exists for Period ${periodFormat}`;
+                error.details = `Cannot Process Payroll for Employee ... as Payment for this period exists. To run payroll, Contact Admin to cross-check and delete previous payment data if neccessary`;
                 processingError.push(error);
-                //set processing to false and do not save result.
-                skipToNextEmployee = true
 
-            }
-            if(!skipToNextEmployee) {
-                //further process after evaluation of all paytypes pension calculation and tax calculation
+            } else {
+                const employeeResult = {businessId: businessId, employeeId: x._id, period: periodFormat, payment : []}; //holds every payment to be saved for employee in payrun
+                const pg = x.employeeProfile.employment.paygrade;  //paygrade
+                let pt = x.employeeProfile.employment.paytypes;  //paytype
 
-                //get employee and employer contribution
-                const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
-                if(pensionLog)    //add pension calculation log
-                    log.push(pensionLog);
-                //add employee to relief Bucket
-                reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
+                let grade, pgp;  //grade(paygrade) && pgp(paygroup);
+                const gradeIndex = _.findLastIndex(paygrades, {_id: pg});
+                let empSpecificType;  //contains employee payments derived from paygrade
+                if (gradeIndex !== -1) {
+                    grade = paygrades[gradeIndex];
+                    empSpecificType = determineRule(pt, grade);
+                } else {
+                    //get paygrade and update paygrades
+                    grade = getEmployeeGrade(pg);
+                    if (grade) {
+                        paygrades.push(grade);
+                        empSpecificType = determineRule(pt, grade);
+                    }
+                }
 
-                //get tax;
-                const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
-                const {netTax, taxLog} = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
-                if(taxLog)
-                    log.push(taxLog);
-                //collate results and populate paySlip; and push to payresult
-                let final = {};
-                final.log = log; //payrun processing log
-                final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
-                final.payslip.deduction.push({title: tax.code , code: tax.name, value: netTax * -1}); // negate add tax to deduction
-                if(pension) {
-                    final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1});
-                    if(pension.displayEmployerInPayslip) final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+                if (grade && grade.hasOwnProperty('payGroups') && grade.payGroups.length > 0) {
+                    pgp = grade.payGroups[0]; //first element of paygroup// {review}
+                }
+                //payElemnts derivation;
+                const {tax, pension} = getPaygroup(pgp);
+
+                let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
+                let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
+                let empDerivedPayElements = [];
+                let benefit = [], deduction = [], others = [];
+                let rules = new ruleJS();
+
+                rules.init();
+                let skipToNextEmployee = false;
+                try {
+                    //let formular = x.value
+                    let paytypes = empSpecificType.map(x => {    //changes paygrades of currently processed employee to include paytypes
+                        let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+                        delete x.paytype;
+                        _.extend(x, ptype);
+
+                        return x;
+                    });
+
+                    //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
+                    const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: periodFormat}).fetch();
+                    //include additional pay to match paytype values
+                    if(addPay && addPay.length > 0){
+                        let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
+                        if(formattedPay && formattedPay.length > 0) {
+                            formattedPay.forEach(x => {
+                                let index = _.findLastIndex(paytypes, {_id: x._id});
+                                if (index > -1) { //found
+                                    paytypes[index].value = x.value;
+                                    paytypes[index].additionalPay = true;
+                                    //add additional pay flag to skip monthly division
+                                }
+
+                            });
+                        }
+                    }
+
+                    paytypes.forEach((x, index) => {
+                        //skip processing of Annual non selected annual paytypes
+                        //revisit this to factor in all payment frequency and create a logic on how processing is made
+                        if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
+                            let input = [], processing = [];
+
+                            let boundary = [...paytypes]; //available types as at current processing
+                            boundary.length = index + 1;
+                            //format boundary for display in log
+                            let clone = boundary.map(x => {
+                                let b = {};
+                                b.code = x.code;
+                                b.value = x.value;
+                                return b;
+                            });
+                            input = input.concat(clone);
+                            let formula = x.value;
+                            let old = formula;
+                            if (formula) {
+                                //replace all wagetypes with values
+                                for (var i = 0; i < index; i++) {
+                                    const code = paytypes[i].code ? paytypes[i].code.toUpperCase() : paytypes[i].code;
+                                    const pattern = `\\b${code}\\b`;
+                                    const regex = new RegExp(pattern, "g");
+                                    formula = formula.replace(regex, paytypes[i].value);
+
+                                }
+                                //do the same for all contansts and replace the values
+                                //will find a better way of doing this... NOTE
+                                let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                                k.forEach(c => {
+                                    const code = c.code ? c.code.toUpperCase() : c.code;
+                                    const pattern = `\\b${code}\\b`;
+                                    const regex = new RegExp(pattern, "g");
+                                    formula = formula.replace(regex, c.value);
+
+                                });
+                                processing.push({code: x.code, previous: old, derived: formula});
+                                var parsed = rules.parse(formula, '');
+
+                                if (parsed.result !== null && !isNaN(parsed.result)) {
+                                    x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
+                                    processing.push({code: x.code, derived: x.parsedValue});
+                                    //negate value if paytype is deduction.
+
+                                    let netPayTypeAmount; //net amount used if payment type is monthly
+                                    if(x.frequency === 'Monthly' && !x.additionalPay){
+                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+                                        processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
+                                    }
+
+
+                                    //if add to total, add wt to totalsBucket
+                                    totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
+                                    //add parsed value to defaultTax bucket if paytype is taxable
+                                    defaultTaxBucket += x.taxable ? parseFloat(x.parsedValue) : 0;
+                                    //for reliefs add to relief bucket
+                                    reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
+                                    //assigned bucket if one of the paytype is selected as tax bucket
+                                    assignedTaxBucket = x._id === tax.bucket ? parseFloat(x.parsedValue) : null;
+                                    processing.push({code: x.code, taxBucket: defaultTaxBucket});
+                                    //if paytype in pension then add to default pension buket
+                                    const ptIndex = pension && _.indexOf(pension.payTypes, x._id);
+                                    pensionBucket += ptIndex !== -1 ? parseFloat(x.parsedValue) : 0; // add parsed value to pension bucket if paytype is found
+                                    //gross income for pension relief;
+                                    grossIncomeBucket += tax.grossIncomeBucket === x._id ? parseFloat(x.parsedValue) : 0;
+                                    processing.push({code: x.code, pensionBucket: pensionBucket});
+                                    //set value
+                                    const value = netPayTypeAmount || parseFloat(x.parsedValue);
+                                    //check if payment or deduction and add to corresponding payslip state
+                                    switch (x.type) {
+                                        case 'Benefit':
+                                            //add to payslip benefit if display in payslip
+                                            if (x.displayInPayslip && x.addToTotal) {
+                                                benefit.push({
+                                                    title: x.title,
+                                                    code: x.code,
+                                                    value
+                                                });
+                                            } else if(x.displayInPayslip && !x.addToTotal){
+                                                others.push({
+                                                    title: x.title,
+                                                    code: x.code,
+                                                    value
+                                                });
+                                            }
+                                            break;
+                                        case 'Deduction':
+                                            if (x.displayInPayslip && x.addToTotal){
+                                                deduction.push({
+                                                    title: x.title,
+                                                    code: x.code,
+                                                    value
+                                                });
+                                            } else if(x.displayInPayslip && !x.addToTotal){
+                                                others.push({
+                                                    title: x.title,
+                                                    code: x.code,
+                                                    value
+                                                });
+                                            }
+                                    }
+                                    //add value to result
+                                    employeeResult.payment.push({id: x._id, reference: 'Paytype', amountLC: value, amountPC: value, code: x.code, description: x.title, type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type });
+                                    log.push({paytype: x.code, input: input, processing: processing});
+                                } else {
+                                    //when there is an error, stop processing this employee and move to the next one
+                                    processing.push({code: x.code, derived: `Unable to handle Paytype Derivative ${formula}  = ${parsed}`});
+                                    log.push({paytype: x.code, input: input, processing: processing});
+                                    throw new PaytypeException('Unable to handle Paytype Derivative', `${formula}  = ${parsed.error}`);
+                                }
+                                empDerivedPayElements.push(x);
+                                //
+                            }
+                        }
+                    })
+                } catch (e) {
+                    const error  = {};
+                    error.employee = `${x.employeeProfile.employeeId} - ${x.profile.fullName}`;
+                    error.reason = e.message;
+                    error.details = e.paytype;
+                    processingError.push(error);
+                    //set processing to false and do not save result.
+                    skipToNextEmployee = true
 
                 }
-                //calculate net payment as payment - deductions;
-                // negate and add pension to deduction
-                const totalPayment = sumPayments(final.payslip.benefit);
-                const totalDeduction = sumPayments(final.payslip.deduction);
-                const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
-                final.payslip.totalPayment = totalPayment;
-                final.payslip.totalDeduction = totalDeduction;
-                final.payslip.netPayment = netPayment;
+                if(!skipToNextEmployee) {
+                    //further process after evaluation of all paytypes pension calculation and tax calculation
+
+                    //get employee and employer contribution
+                    const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+                    //populate result for employee and employer pension contribution
+                    if(pension){
+                        employeeResult.payment.push({id: pension._id, reference: 'Pension', amountLC: employeePenContrib, amountPC: employeePenContrib, code: pension.code + '_EE', description: pension.name + ' Employee', type: 'Deduction'});
+                        employeeResult.payment.push({id: pension._id, reference: 'Pension', amountLC: employerPenContrib, amountPC: employerPenContrib, code: pension.code + '_ER', description: pension.name + ' Employer', type: 'Others'});
+
+                    }
+                   if(pensionLog)    //add pension calculation log
+                        log.push(pensionLog);
+                    //add employee to relief Bucket
+                    reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
+
+                    //get tax;
+                    const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
+                    const {netTax, taxLog} = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+
+                    //populate result for tax
+                    employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTax, amountPC: netTax, code: tax.code, description: tax.name, type: 'Deduction'  });
+
+                    if(taxLog)
+                        log.push(taxLog);
+                    //collate results and populate paySlip; and push to payresult
+                    let final = {};
+                    final.log = log; //payrun processing log
+                    final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
+                    final.payslip.deduction.push({title: tax.code , code: tax.name, value: netTax * -1}); // negate add tax to deduction
+                    if(pension) {
+                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1});
+                        if(pension.displayEmployerInPayslip) final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+
+                    }
+                    //calculate net payment as payment - deductions;
+                    // negate and add pension to deduction
+                    const totalPayment = sumPayments(final.payslip.benefit);
+                    const totalDeduction = sumPayments(final.payslip.deduction);
+                    const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
+
+                    //populate result for net payment
+                    employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: netPayment, code: 'NMP', description: 'Net Payment', type: 'netPayment' });
 
 
-                //Add currently process employee details to final.payslip.employee
-                const employee = getDetailsInPayslip(x);
-                final.payslip.employee = employee;
-                final.payslip.employee.grade = grade.code;
-
-                //payement will also be sent to result for factoring and storage;
-                payresult.push(final);
-
-                //factor payments for storage if not simulation
+                    final.payslip.totalPayment = totalPayment;
+                    final.payslip.totalDeduction = totalDeduction;
+                    final.payslip.netPayment = netPayment;
 
 
+                    //Add currently process employee details to final.payslip.employee
+                    const employee = getDetailsInPayslip(x);
+                    final.payslip.employee = employee;
+                    final.payslip.employee.grade = grade.code;
 
-                //map default buckets and paytypes used to assigned in config.
-            } else {
-                //when there is an exception
-                let final = {};
-                final.log = log; //payrun processing log
-                final.payslip = {benefit: [], deduction: []};
+                    //payement will also be sent to result for factoring and storage;
+                    payresult.push(final);
+                    // also push employee result
+                    payrun.push(employeeResult);
 
-                //Add currently process employee details to final.payslip.employee
-                const employee = getDetailsInPayslip(x);
-                final.payslip.employee = employee;
-                final.payslip.employee.grade = grade.code;
-                final.error = true;
+                    //factor payments for storage if not simulation
 
-                //payement will also be sent to result for factoring and storage;
-                payresult.push(final);
+
+
+                    //map default buckets and paytypes used to assigned in config.
+                } else {
+                    //when there is an exception
+                    let final = {};
+                    final.log = log; //payrun processing log
+                    final.payslip = {benefit: [], deduction: []};
+
+                    //Add currently process employee details to final.payslip.employee
+                    const employee = getDetailsInPayslip(x);
+                    final.payslip.employee = employee;
+                    final.payslip.employee.grade = grade.code;
+                    final.error = true;
+
+                    //payement will also be sent to result for factoring and storage;
+                    payresult.push(final);
+                }
             }
 
             count++;
@@ -331,7 +378,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
     runPayrun(count);
     //after the recurssion return result to calling function;
-    return {result: payresult, error:processingError};
+    return {result: payresult, error:processingError, payrun};
 };
 
 function derivePayElement(person) {

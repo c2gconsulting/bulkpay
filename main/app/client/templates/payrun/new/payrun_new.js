@@ -27,7 +27,7 @@ Template.PayrunNew.events({
                 year: $('[name="paymentPeriod.year"]').val(),
 
             },
-            type: $('[name="runtype"]').val(),
+            type: $('input[name=runtype]:checked').val(),
             annuals: annualPay()
         };
         //check if any valid selection is made
