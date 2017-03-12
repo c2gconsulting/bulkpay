@@ -89,7 +89,7 @@ Core.getProc = function(arr){
         } else if(x.pensionBucket){
             return {name: `pensionBucket = ${x.pensionBucket}`}
         } else {
-            const obj = {name: `${x.code} ` }
+            const obj = {name: `${x.code} ` };
             if(x.previous){
                 obj.name += ` previous = ${x.previous}`;
             }

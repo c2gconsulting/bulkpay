@@ -112,6 +112,10 @@ Template.PayrunNew.helpers({
         if (payResult) {
             return payResult.payObj.result;
         }
+    },
+    'processingError': () => {
+        const payresult = Template.instance().dict.get('payResult');
+        return payresult.payObj.error.length;
     }
 });
 

@@ -22,6 +22,9 @@ Template.ResultEntry.events({
 /* ResultEntry: Helpers */
 /*****************************************************************************/
 Template.ResultEntry.helpers({
+    getlineColor: (status) => {
+        return status? 'error': 'success';
+    }
 
 });
 

@@ -1,10 +1,10 @@
 <template name="ResultEntry">
-    <tr>
+    <tr class="{{getlineColor this.error}}">
         <td>1</td>
         <td>{{this.payslip.employee.employeeId}}</td>
         <td>{{this.payslip.employee.fullname}}</td>
         <td>{{this.payslip.employee.grade}}</td>
-        <td class="table-action-hide"><i class="fa  fa-check-square-o"></i></td>
+        <td class="table-action-hide">{{#if this.error}}<i class="fa   fa-times-circle-o"></i> {{else}} <i class="fa  fa-check-square-o"></i> {{/if}}</td>
         <td class="table-action">
             <a href="" data-toggle="tooltip" title="View Log" class="log tooltips"><i class="fa fa-folder-open"></i>View Processing Log</a> |
             <a href="" data-toggle="tooltip" title="Payslip" class="payslip tooltips"><i class="fa fa-file-text-o"></i>View Payslip</a>
