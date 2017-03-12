@@ -202,7 +202,6 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
 /* EmployeeEditEmploymentPayrollModal: Lifecycle Hooks */
 /*****************************************************************************/
 Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
-  //subscribe to all positions
   var self = this;
 
   self.getEditUser = () => {
@@ -210,7 +209,6 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   }
 
   self.setEditUser = (editUser) => {
-    console.log("Inside setEditUser");
     Session.set('employeeEmploymentDetailsData', editUser);
   }
 
@@ -227,56 +225,68 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
   //--
-
   self.selectedPosition = new ReactiveVar();
   self.selectedPosition.set(selectedEmployee.employeeProfile.employment.position);
 
   self.selectedGrade = new ReactiveVar();
   self.selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
   self.assignedTypes = new ReactiveVar();
+
   self.subscribe("getPositions", Session.get('context'));
   self.subscribe("getbuconstants", Session.get('context'));
+
+  self.changePayTypesForSelectedPayGrade = (selectedGrade) => {
+    let grade = PayGrades.findOne({_id: selectedGrade});
+    if (grade){
+        let paytypes = null;
+        let paytypeIds = grade.payTypes.map(x => {
+            return x.paytype;
+        });
+        // The name of this subscription is confusing fpr what it actually does.
+        // It actually makes it possible to 'find' paytypes
+        self.subscribe("getpositionGrades", paytypeIds);
+
+        let selectedEmployee = Session.get('employeesList_selectedEmployee')
+
+        if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
+          paytypes = selectedEmployee.employeeProfile.employment.paytypes;
+
+          paytypes.forEach(x => {
+            //console.log("a paytype : " + JSON.stringify(x));
+            let pt = PayTypes.findOne({_id: x.paytype});
+            //console.log("paytype from db : " + JSON.stringify(pt));
+            if(pt) {
+              pt.inputed = x.value;
+              _.extend(x, pt);
+              return x;
+            }
+          });
+        } else {
+          paytypes = grade.payTypes.map(x => {
+              return x;
+          });
+
+          paytypes = paytypes.map(x => {
+            let pt = PayTypes.findOne({_id: x.paytype});
+            if(pt) {
+              //This is necessary so that x still has the 'value' key
+              _.extend(x, pt);
+            }
+            return x;
+          });
+        }
+        Template.instance().assignedTypes.set(paytypes);
+    }
+  }
 
   self.autorun(function(){
       let position = Template.instance().selectedPosition.get();
       if(position)
           self.subscribe("assignedGrades", position);
-  });
-  self.autorun(function(){
+
       let selectedGrade = Template.instance().selectedGrade.get();
       if(selectedGrade){
-          let grade = PayGrades.findOne({_id: selectedGrade});
-          if (grade){
-              let paytypes = grade.payTypes.map(x => {
-                  return x.paytype;
-              });
-              self.subscribe("getpositionGrades", paytypes);
-          }
-          //
-          let selectedEmployee = self.getEditUser();
-          let paytypes = null;
-
-          if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
-            paytypes = selectedEmployee.employeeProfile.employment.paytypes;
-          } else {
-            let pgObj = PayGrades.findOne({_id: selectedGrade});
-            paytypes = pgObj.payTypes;
-          }
-          paytypes.forEach(x => {
-            //console.log("a paytype : " + JSON.stringify(x));
-            pt = PayTypes.findOne({_id: x.paytype});
-            //console.log("paytype from db : " + JSON.stringify(pt));
-
-            if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
-              if(pt) {
-                pt.inputed = x.value;
-              }
-            }
-            if (pt)
-                _.extend(x, pt);
-            return x
-          });
-          Template.instance().assignedTypes.set(paytypes);
+        self.changePayTypesForSelectedPayGrade(selectedGrade);
       }
   });
 });
