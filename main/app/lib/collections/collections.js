@@ -201,12 +201,6 @@ PaymentRules = new Mongo.Collection("paymentrules");
 Partitioner.partitionCollection(PaymentRules);
 PaymentRules.attachSchema(Core.Schemas.PaymentRule);
 
-/**
- * Core Collections PayRolls
- */
-Payrolls = new Mongo.Collection("payrolls");
-Partitioner.partitionCollection(Payrolls);
-Payrolls.attachSchema(Core.Schemas.Payroll);
 
 /**
  * Core Collections Payruns
