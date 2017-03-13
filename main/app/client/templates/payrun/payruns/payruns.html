@@ -23,20 +23,22 @@
         <div class="row">
             <div class="col-md-12 employee-filter">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <h5>Please select an employee</h5>
-                            <select name="employees" class="form-control dropdown" style="width: 100%">
-                                <option value="">----------</option>
-                                {{#each employees}}
-                                    <option value="{{_id}}">{{employeeProfile.employeeId}} {{profile.fullName}}</option>
-                                {{/each}}
-                            </select>
+                            {{#semanticselect}}
+                                <select name="employees" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <option value="">Employees</option>
+                                    {{#each employees}}
+                                        <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                    {{/each}}
+                                </select>
+                            {{/semanticselect}}
                         </div><!-- form-group -->
                     </div>
 
                     <div class="col-md-8">
-                      <div class="row ">
+                      <div class="row">
                           <h5>Please select a period</h5>
 
                           <div class="row">
@@ -59,7 +61,7 @@
                                   </div><!-- form-group -->
                               </div>
 
-                              <div class="col-md-2">
+                              <div class="col-md-3">
                                   <button class="btn btn-primary mr5 ladda-button"
                                       id="get-employee-payresults">Get Pay Results</button>
                               </div>
@@ -80,23 +82,13 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Code</th>
-                                <th>Description</th>
-                                <th>Type</th>
-                                <th>Amount</th>
+                                <th>Employee Id</th>
+                                <th>Employee Full Name</th>
                             </tr>
                             </thead>
                             <tbody>
                             {{#each payrun}}
-                                {{#each this.payment}}
-                                <tr class="pointer">
-                                    <td>{{@index}}</td>
-                                    <td>{{code}}</td>
-                                    <td>{{description}}</td>
-                                    <td>{{type}}</td>
-                                    <td>{{amountLC}}</td>
-                                </tr>
-                                {{/each}}
+                              {{> singlePayrunResult index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -123,4 +115,12 @@
         <td>{{data.pension_paid}}</td>
         <td>{{data.total_amount_paid}}</td>
     </tr>
+</template>
+
+<template name="singlePayrunResult">
+  <tr class="pointer anEmployeePayResult">
+      <td>{{index}}</td>
+      <td>{{data.employeeId}}</td>
+      <td>{{getEmployeeFullName data.employeeId}}</td>
+  </tr>
 </template>

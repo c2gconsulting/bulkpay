@@ -13,11 +13,12 @@ Template.payruns.events({
         let selectedEmployeeId = $('[name="employees"]').val();
         let paymentPeriodMonth = $('[name="paymentPeriodMonth"]').val();
         let paymentPeriodYear = $('[name="paymentPeriodYear"]').val();
+        let selectedEmployeeIds = Core.returnSelection($('[name="employees"]'))
 
-        if(selectedEmployeeId && selectedEmployeeId.trim().length > 0) {
+        if(selectedEmployeeId && selectedEmployeeIds.length > 0) {
             let period = paymentPeriodMonth + paymentPeriodYear;
 
-            Template.instance().currentPayrunEmployeeId.set(selectedEmployeeId);
+            Template.instance().currentPayrunEmployeeIds.set(selectedEmployeeIds);
             Template.instance().currentPayrunPeriod.set(period);
         } else {
             Template.instance().currentPayrun.set(null);
@@ -61,8 +62,8 @@ Template.payruns.onCreated(function () {
     self.currentPayrun = new ReactiveVar();
     self.currentPayrun.set(false);
 
-    self.currentPayrunEmployeeId = new ReactiveVar();
-    self.currentPayrunEmployeeId.set(null);
+    self.currentPayrunEmployeeIds = new ReactiveVar();
+    self.currentPayrunEmployeeIds.set(null);
 
     self.currentPayrunPeriod = new ReactiveVar();
     self.currentPayrunPeriod.set(null);
@@ -71,22 +72,20 @@ Template.payruns.onCreated(function () {
     self.errorMsg.set("No Payrun available");
 
     self.autorun(() => {
-      let currentPayrunEmployeeId = Template.instance().currentPayrunEmployeeId.get();
+      let employeeIds = Template.instance().currentPayrunEmployeeIds.get();
       let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
 
-      if(currentPayrunEmployeeId && currentPayrunEmployeeId.trim().length > 0) {
-        self.subscribe("Payruns", currentPayrunEmployeeId, currentPayrunPeriod);
+      if(employeeIds && employeeIds.length > 0) {
+        self.subscribe("Payruns", employeeIds, currentPayrunPeriod);
 
         if (self.subscriptionsReady()) {
-          console.log("payrun called. currentPayrunEmployeeId: " + currentPayrunEmployeeId);
-          console.log("currentPayrunPeriod: " + currentPayrunPeriod);
+          let payRun = Payruns.find({employeeId: {$in: employeeIds}, period: currentPayrunPeriod});
 
-          let payRun = Payruns.find({employeeId: currentPayrunEmployeeId, period: currentPayrunPeriod});
           if(payRun && payRun.count() > 0)
             Template.instance().currentPayrun.set(payRun);
           else
             Template.instance().currentPayrun.set(null);
-            Template.instance().errorMsg.set("No Payrun available for that employee for that time period");
+            Template.instance().errorMsg.set("No Payrun available for that time period");
         }
       }
   });
@@ -97,4 +96,49 @@ Template.payruns.onRendered(function () {
 });
 
 Template.payruns.onDestroyed(function () {
+});
+
+
+//----------
+
+Template.singlePayrunResult.helpers({
+  'getEmployeeFullName': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+      return employee.profile.fullName;
+    else
+      return ""
+  }
+});
+
+Template.singlePayrunResult.events({
+    'click .anEmployeePayResult': (e, tmpl) => {
+      //console.log("this context: " + JSON.stringify(Template.parentData()));
+      let thisContext = Template.parentData();
+
+      let employee = Meteor.users.findOne({_id: thisContext.employeeId});
+      let employeeFullName = "";
+      if(employee)
+        employeeFullName = employee.profile.fullName;
+      else
+        employeeFullName = null;
+      //--
+      let monthId = thisContext.period.substring(0,2);
+      console.log("Month id: " + monthId);
+
+      let monthName = "";
+      let months = Core.months();
+      months.forEach((aMonth) => {
+        if(aMonth.period === monthId) {
+          monthName = aMonth.name;
+          return;
+        }
+      })
+      thisContext.monthName = monthName;
+      //--
+      thisContext.employeeFullName = employeeFullName;
+      thisContext.periodAsWords = thisContext.monthName + " " + thisContext.period.substring(2);
+
+      Modal.show("PayRunResultModal", thisContext);
+    }
 });

@@ -1,0 +1,45 @@
+<template name="PayRunResultModal">
+  <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+          </div>
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">Pay result for {{employeeFullName}} for {{periodAsWords}}</h4>
+              </div>
+              <div class="panel-body nopadding">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {{#each payment}}
+                                <tr class="pointer">
+                                    <td>{{@index}}</td>
+                                    <td>{{code}}</td>
+                                    <td>{{description}}</td>
+                                    <td>{{type}}</td>
+                                    <td>{{amountLC}}</td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+              </div><!-- End of panel-body -->
+
+            <div class="panel-footer">
+                <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+      </div>
+  </div>
+</template>
