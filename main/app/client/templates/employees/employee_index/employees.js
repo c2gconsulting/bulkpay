@@ -1,6 +1,14 @@
 /*****************************************************************************/
 /* Employees: Event Handlers */
 /*****************************************************************************/
+
+/*
+  To understand how search works on this page, you'll have to look at two files
+  client/lib/helpers/search.js and
+  server/search.js
+*/
+
+
 Template.Employees.events({
     'click #createEmployee': (e, tmpl) => {
         e.preventDefault();
@@ -55,7 +63,7 @@ Template.Employees.onCreated(function () {
     let self = this;
     self.subscribe("allEmployees", Session.get('context'));
     self.subscribe("getPositions", Session.get('context'));
-    
+
     self.isSearchView = new ReactiveVar();
     self.isSearchView.set(false);
 });

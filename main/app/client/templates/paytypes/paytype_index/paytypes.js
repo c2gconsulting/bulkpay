@@ -1,6 +1,13 @@
 /*****************************************************************************/
 /* Paytypes: Event Handlers */
 /*****************************************************************************/
+
+/*
+  To understand how search works on this page, you'll have to look at two files
+  client/lib/helpers/search.js and
+  server/search.js
+*/
+
 Template.Paytypes.events({
     'click #createPaytype': function(e){
         e.preventDefault();
