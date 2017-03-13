@@ -61,7 +61,7 @@
                                           <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
                                             {{#datepicker employeeProfile.employment.hireDate}}
                                                 <input name="employmentHireDate" type="text" class="form-control datepicker" data-field="hireDate"
-                                                  value="{{formatDate employeeProfile.employment.hireDate}}"/>
+                                                  value="{{employeeProfile.employment.hireDate}}"/>
                                             {{/datepicker}}
                                           </div>
                                           <div class="col-sm-4">
@@ -74,7 +74,7 @@
                                           <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
                                             {{#datepicker employeeProfile.employment.confirmationDate}}
                                                 <input name="employmentConfirmationDate" type="text" class="form-control datepicker" data-field="confirmationDate"
-                                                  value="{{formatDate employeeProfile.employment.confirmationDate}}" />
+                                                  value="{{employeeProfile.employment.confirmationDate}}" />
                                             {{/datepicker}}
                                           </div>
                                           <div class="col-sm-4">
@@ -102,9 +102,9 @@
                                       <div class="form-group">
                                           <label class="col-sm-4 control-label">Termination/Resignation Date</label>
                                           <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
-                                              {{#datepicker terminationDate}}
-                                                  <input type="text" class="form-control datepicker" data-field="terminationDate"
-                                                    value="{{formatDate employeeProfile.employment.terminationDate}}"/>
+                                              {{#datepicker employeeProfile.employment.terminationDate}}
+                                                  <input name="employmentTerminationDate" type="text" class="form-control datepicker" data-field="terminationDate"
+                                                    value="{{employeeProfile.employment.terminationDate}}"/>
                                               {{/datepicker}}
                                           </div>
                                           <div class="col-sm-4">
