@@ -25,22 +25,52 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
-                                {{#each month}}
-                                    <option value="{{period}}">{{name}}</option>
+                            <h5>Please select an employee</h5>
+                            <select name="employees" class="form-control dropdown" style="width: 100%">
+                                <option value="">----------</option>
+                                {{#each employees}}
+                                    <option value="{{_id}}">{{employeeProfile.employeeId}} {{profile.fullName}}</option>
                                 {{/each}}
                             </select>
                         </div><!-- form-group -->
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
-                                {{#each year}}
-                                    <option value="{{this}}">{{this}}</option>
-                                {{/each}}
-                            </select>
-                        </div><!-- form-group -->
+
+                    <div class="col-md-8">
+                      <div class="row ">
+                          <h5>Please select a period</h5>
+
+                          <div class="row">
+                              <div class="col-md-3">
+                                  <div class="form-group">
+                                      <select name="paymentPeriodMonth" class="form-control dropdown" style="width: 100%">
+                                          {{#each month}}
+                                              <option value="{{period}}">{{name}}</option>
+                                          {{/each}}
+                                      </select>
+                                  </div><!-- form-group -->
+                              </div>
+                              <div class="col-md-3">
+                                  <div class="form-group">
+                                      <select name="paymentPeriodYear" class="form-control dropdown" style="width: 100%">
+                                          {{#each year}}
+                                              <option value="{{this}}">{{this}}</option>
+                                          {{/each}}
+                                      </select>
+                                  </div><!-- form-group -->
+                              </div>
+
+                              <div class="col-md-2">
+                                  <button class="btn btn-primary mr5 ladda-button"
+                                      id="get-employee-payresults">Get Pay Results</button>
+                              </div>
+                          </div>
+                      </div>
                     </div>
+
+                    <!-- <div class="col-md-1">
+                        <button class="btn btn-primary mr5 ladda-button pull-right"
+                            id="get-employee-payresults">Edit</button>
+                    </div> -->
                 </div>
             </div>
             {{#if payrun}}
@@ -50,17 +80,23 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Pay Group</th>
-                                <th>Number of Employees</th>
-                                <th>Payment Date</th>
-                                <th>Tax Paid</th>
-                                <th>Pension Paid</th>
-                                <th>Total Amount Paid</th>
+                                <th>Code</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                                <th>Amount</th>
                             </tr>
                             </thead>
                             <tbody>
                             {{#each payrun}}
-                                {{> singlePayrun index=@index data=this}}
+                                {{#each this.payment}}
+                                <tr class="pointer">
+                                    <td>{{@index}}</td>
+                                    <td>{{code}}</td>
+                                    <td>{{description}}</td>
+                                    <td>{{type}}</td>
+                                    <td>{{amountLC}}</td>
+                                </tr>
+                                {{/each}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -69,14 +105,11 @@
             {{else}}
                 <div class="col-md-12">
                     <div class="alert alert-danger text-center">
-                        <p>No Payrun available</p>
+                        <p>{{errorMsg}}</p>
                     </div>
                 </div>
             {{/if}}
         </div><!-- row -->
-
-
-
     </div><!-- contentpanel -->
 </template>
 
