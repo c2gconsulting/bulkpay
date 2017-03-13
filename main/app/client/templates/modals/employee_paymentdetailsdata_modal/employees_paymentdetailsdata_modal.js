@@ -138,6 +138,9 @@ Template.EmployeePaymentDetailsDataModal.onCreated(function () {
 
 Template.EmployeePaymentDetailsDataModal.onRendered(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
+
+  $('[name="paymentMethod"]').val(selectedEmployee.employeeProfile.payment.paymentMethod);
+  $('[name="bank"]').val(selectedEmployee.employeeProfile.payment.bank);
   $('[name="pensionmanager"]').val(selectedEmployee.employeeProfile.payment.pensionmanager);
 });
 
