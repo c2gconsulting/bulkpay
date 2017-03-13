@@ -137,6 +137,8 @@ Template.EmployeePaymentDetailsDataModal.onCreated(function () {
 });
 
 Template.EmployeePaymentDetailsDataModal.onRendered(function () {
+  let selectedEmployee = Session.get('employeesList_selectedEmployee')
+  $('[name="pensionmanager"]').val(selectedEmployee.employeeProfile.payment.pensionmanager);
 });
 
 Template.EmployeePaymentDetailsDataModal.onDestroyed(function () {
