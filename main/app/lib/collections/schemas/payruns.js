@@ -30,17 +30,22 @@ Core.Schemas.Payrun = new SimpleSchema({
           defaultValue: 'Paytype'
         },
         'payment.$.amountLC': { // amount in Local Currency
-          type: Number
+          type: Number,
+            decimal: true
         },
-
+        'payment.$.type': {
+            type: String,
+            optional: true
+        },
         'payment.$.amountPC': { // amount in paytype Currency
-            type: Number
+            type: Number,
+            decimal: true
         },
         'payment.$.code': { // Will be used if paytype is deleted from the system... keeps a reference to the payment code as as payroll run
-          type: Number
+          type: String
         },
         'payment.$.description': { // Will be used if paytype is deleted from the system... keeps a reference to the payment description as as payroll run
-          type: Number
+          type: String
         },
         period: {
           type: String
