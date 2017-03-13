@@ -227,7 +227,6 @@
               <div class="media emplist">
                   <div class="media-body">
                     <div class="row">
-
                         <label for="employeeManage" class="col-sm-6 control-label">Employee manage</label>
                         <div class="col-sm-5">
                           {{#if hasEmployeeAccess}}
@@ -243,6 +242,25 @@
                           {{/if}}
                         </div>
                     </div>
+
+                    {{#if hasRoleManageAccess}}
+                    <div class="row">
+                        <label for="roleManage" class="col-sm-6 control-label">Role manage</label>
+                        <div class="col-sm-5">
+                          {{#if doesEmployeeHasRoleManageAccess}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="roleManage">
+                                <option value="true" selected>Yes</option>
+                                <option value="false">No</option>
+                            </select>
+                          {{else}}
+                            <select class="form-control selectpicker dropdown" data-live-search="true" name="roleManage">
+                                <option value="true">Yes</option>
+                                <option value="false" selected>No</option>
+                            </select>
+                          {{/if}}
+                        </div>
+                    </div>
+                    {{/if}}
 
                     <div class="row">
                         <label for="leaveApprove" class="col-sm-6 control-label">Leave approve</label>

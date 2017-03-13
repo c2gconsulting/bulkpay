@@ -67,11 +67,13 @@ Template.EmployeeSelectedEntry.helpers({
       }
   },
   hasRoleManageAccess: () => {
-    let selectedEmployee = Session.get('employeesList_selectedEmployee');
-    //console.log("selectedEmployee: " + JSON.stringify(selectedEmployee));
-
     let canManageRoles = Core.hasRoleManageAccess(Meteor.userId())
     return canManageRoles;
+  },
+  doesEmployeeHasRoleManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    return Core.hasRoleManageAccess(selectedEmployee._id);
   },
   hasEmployeeAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
@@ -128,11 +130,6 @@ Template.EmployeeSelectedEntry.onCreated(function () {
     let self = this;
     Session.set('employeesList_selectedEmployee', undefined);
 
-    self.autorun(()=> {
-
-      }
-    );
-
     self.setEmployeePermissons = function() {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
       if(selectedEmployee) {
@@ -166,13 +163,15 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(shouldManagePayroll === "true") {
           arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)
         }
-        console.log("shouldManageEmployeeData: " + shouldManageEmployeeData);
-        console.log("shouldApproveLeave: " + shouldApproveLeave);
-        console.log("shouldManageLeave: " + shouldManageLeave);
-        console.log("shouldApproveTime: " + shouldApproveTime);
-        console.log("shouldManageTime: " + shouldManageTime);
-        console.log("shouldHaveEmployeeSelfService: " + shouldHaveEmployeeSelfService);
-        console.log("shouldManagePayroll: " + shouldManagePayroll);
+        if(Core.hasRoleManageAccess(Meteor.userId())) {
+          let shouldHaveRoleManageAccess = $("[name=roleManage]").val();
+          if(shouldHaveRoleManageAccess === "true") {
+            arrayOfRoles.push(Core.Permissions.ROLE_MANAGE);
+          }
+          console.log("shouldHaveRoleManageAccess: " + shouldHaveRoleManageAccess);
+        } else {
+          console.log("Does current user have role manage access");
+        }
 
         Meteor.call('role/setRolesForUser', selectedEmployee._id, arrayOfRoles, (err, res) => {
             if (res){
