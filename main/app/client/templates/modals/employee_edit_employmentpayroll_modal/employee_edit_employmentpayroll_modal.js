@@ -11,6 +11,15 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let user = Template.instance().getEditUser();
     console.log("User to update on server: \n" + JSON.stringify(user));
 
+    let hireDate = $('[data-field="employmentHireDate"]').val() ? new Date($('[data-field="employmentHireDate"]').val()) : null;
+    let confirmationDate = $('[data-field="employmentConfirmationDate"]').val() ? new Date($('[data-field="employmentConfirmationDate"]').val()) : null;
+    let terminationDate = $('[data-field="employmentTerminationDate"]').val() ? new Date($('[data-field="employmentTerminationDate"]').val()) : null;
+
+    user.employeeProfile.employment.hireDate = hireDate;
+    user.employeeProfile.employment.confirmationDate = confirmationDate;
+    user.employeeProfile.employment.terminationDate = terminationDate;
+    Template.instance().setEditUser(user);
+    //--
     Meteor.call('account/updateEmploymentData', user, user._id, (err, res) => {
         if (res){
             Session.set('employeesList_selectedEmployee', user);
@@ -297,6 +306,7 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
   $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
 
+  //--
   $('select.dropdown').dropdown();
   let self = this;
   let rules = new ruleJS('calc');

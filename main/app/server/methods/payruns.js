@@ -62,7 +62,8 @@ Meteor.methods({
            } catch (e){
                console.log(e);
            }
-
+        } else {
+          console.log("Payrun errors: " + JSON.stringify(payObj.error));
         }
 
         //just return something for now .... testing
