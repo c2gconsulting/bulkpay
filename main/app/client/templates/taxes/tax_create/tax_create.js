@@ -92,6 +92,17 @@ Template.TaxCreate.events({
         // remove the rowIndex from the array element
         if(rules[rowIndex] !== undefined){
             rules.splice(rowIndex,1);
+            rules.forEach((aRule, index) => {
+              if(index === 0) {
+                aRule.range = "First";
+              } else {
+                aRule.range = "Next";
+                if(index === rules.length - 1) {
+                  aRule.range = "Over";
+                }
+              }
+              //rules[index] = aRule;
+            })
         }
         tmpl.dict.set("taxRules", rules);
         e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
@@ -130,7 +141,7 @@ Template.TaxCreate.events({
         let rule = rules[rowIndex];
         rule.upperLimit = rowUpperLimitVal;
         rule.rate = rowRateVal;
-        rules[rowIndex] = rule;
+        //rules[rowIndex] = rule;
         tmpl.dict.set("taxRules", rules);
       }
 
