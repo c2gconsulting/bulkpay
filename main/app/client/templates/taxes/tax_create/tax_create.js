@@ -26,7 +26,7 @@ Template.TaxCreate.events({
                 if(err){
                     swal("Update Failed", `Cannot Update tax ${code}`, "error");
                 } else {
-                    swal("Successful Update!", `Succesffully update tax ${code}`, "success");
+                    swal("Successful Update!", `Tax ${code} was updated successfully`, "success");
                     Modal.hide("TaxCreate");
                 }
             });
