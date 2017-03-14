@@ -94,12 +94,39 @@ Template.TaxCreate.events({
             rules.splice(rowIndex,1);
         }
         tmpl.dict.set("taxRules", rules);
+        e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+    },
+    'click .aTaxRuleItem': (e, tmpl) => {
+      console.log("a tax rule was clicked");
+      let taxRuleRowElement = e.currentTarget;
+
+      let taxRuleRowName = taxRuleRowElement.getAttribute("name");
+      let taxRuleRowNameParts = taxRuleRowName.split("_");
+      let taxRuleIndex = taxRuleRowNameParts[1];
+      console.log("taxRuleIndex: " + taxRuleIndex);
+      taxRuleIndex = parseInt(taxRuleIndex);
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(taxRuleIndex);
+
+      Template.instance().isATaxRuleSelectedForEdit.set(true);
+    },
+    'click .confirmTaxRuleEdit': (e, tmpl) => {
+
     }
 });
 
 /*****************************************************************************/
 /* TaxCreate: Helpers */
 /*****************************************************************************/
+Template.registerHelper('and',(a,b)=>{
+  return a && b;
+});
+Template.registerHelper('or',(a,b)=>{
+  return a || b;
+});
+Template.registerHelper('equals',(a,b)=>{
+  return a == b;
+});
+
 Template.TaxCreate.helpers({
     selected(context, val) {
         if(Template.instance().data){
@@ -124,6 +151,14 @@ Template.TaxCreate.helpers({
         //get default rule for new tax
         return Template.instance().dict.get("taxRules") || [];
     },
+    isTaxRuleSelected : function() {
+      console.log("isTaxRuleSelected called: " + Template.instance().isATaxRuleSelectedForEdit.get());
+
+      return Template.instance().isATaxRuleSelectedForEdit.get();
+    },
+    indexOfSelectedTaxRule : function() {
+      return Template.instance().indexOfSelectedTaxRuleForEdit.get();
+    },
     edit() {
         return
     }
@@ -134,6 +169,12 @@ Template.TaxCreate.helpers({
 /*****************************************************************************/
 Template.TaxCreate.onCreated(function () {
     this.dict = new ReactiveDict();
+    this.isATaxRuleSelectedForEdit = new ReactiveVar();
+    this.isATaxRuleSelectedForEdit.set(false);
+
+    this.indexOfSelectedTaxRuleForEdit = new ReactiveVar();
+    this.indexOfSelectedTaxRuleForEdit.set(null);
+
     if(this.data){
         this.dict.set("taxRules", this.data.rules);
     } else {

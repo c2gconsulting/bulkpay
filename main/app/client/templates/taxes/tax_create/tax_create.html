@@ -77,15 +77,43 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                {{#if isTaxRuleSelected}}
                                                 {{#each rule}}
-                                                    <tr class="pointer">
+                                                    <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
                                                         <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
                                                         <td>{{range}}</td>
+
+                                                        {{#if equals @index indexOfSelectedTaxRule}}
+                                                          <td>
+                                                            <input name="taxRuleToEditUpperLimit" type="text" placeholder="" class="form-control"
+                                                              value="{{upperLimit}}"/>
+                                                          </td>
+                                                          <td>
+                                                            <input name="taxRuleToEditName" type="text" placeholder="" class="form-control"
+                                                              value="{{rate}}"/>
+                                                          </td>
+                                                          <td>
+                                                              <button class="btn btn-primary mr5 ladda-button" id="confirmTaxRuleEdit">Confirm</button>
+                                                          </td>
+                                                        {{else}}
+                                                        <td><a class="pointer">{{upperLimit}}</a></td>
+                                                        <td><a class="pointer">{{rate}}</a></td>
+                                                        <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                        {{/if}}
+                                                    </tr>
+                                                {{/each}}
+                                                {{else}}
+                                                {{#each rule}}
+                                                    <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
+                                                        <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
+                                                        <td>{{range}}</td>
+
                                                         <td><a class="pointer">{{upperLimit}}</a></td>
                                                         <td><a class="pointer">{{rate}}</a></td>
                                                         <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
                                                     </tr>
                                                 {{/each}}
+                                                {{/if}}
                                                 </tbody>
                                             </table>
                                         </div><!-- table-responsive -->
