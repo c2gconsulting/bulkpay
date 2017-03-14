@@ -82,7 +82,33 @@ Template.TaxCreate.events({
     'click #add-rule-button': (e,tmpl) => {
         e.preventDefault();
         console.log("clicked me will probably add a tr to the end of the table");
-        Modal.show("AddRule");
+        //Modal.show("AddRule");
+
+        let rules = tmpl.dict.get("taxRules");
+        let newRuleToAdd = {
+          upperLimit : 0,
+          rate : 0
+        };
+        if(rules.length == 0) {
+          newRuleToAdd.range = "First";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(0);
+        } else if(rules.length === 1) {
+          newRuleToAdd.range = "Over";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
+        } else if(rules.length === 2) {
+          newRuleToAdd.range = "Next";
+          rules.splice(1, 0, newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
+        } else if(rules.length > 2) {
+          newRuleToAdd.range = "Next";
+          rules.splice(1, 0, newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
+        }
+        tmpl.dict.set("taxRules", rules);
+
+        Template.instance().isATaxRuleSelectedForEdit.set(true);
     },
     'click .deletetr': (e,tmpl) => {
         e.preventDefault();
@@ -160,6 +186,9 @@ Template.TaxCreate.events({
 /*****************************************************************************/
 /* TaxCreate: Helpers */
 /*****************************************************************************/
+Template.registerHelper('equals',(a,b)=>{
+  return a == b;
+});
 
 Template.TaxCreate.helpers({
     selected(context, val) {
