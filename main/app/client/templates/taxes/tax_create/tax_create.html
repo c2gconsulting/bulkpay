@@ -80,7 +80,8 @@
                                                 {{#if isTaxRuleSelected}}
                                                 {{#each rule}}
                                                     <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
-                                                        <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
+                                                        <!-- <td><i class="glyphicon glyphicon-resize-vertical"></i></td> -->
+                                                        <td>{{@index}}</td>
                                                         <td>{{range}}</td>
 
                                                         {{#if equals @index indexOfSelectedTaxRule}}
@@ -106,7 +107,8 @@
                                                 {{else}}
                                                 {{#each rule}}
                                                     <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
-                                                        <td><i class="glyphicon glyphicon-resize-vertical"></i></td>
+                                                        <!-- <td><i class="glyphicon glyphicon-resize-vertical"></i></td> -->
+                                                        <td>{{@index}}</td>
                                                         <td>{{range}}</td>
 
                                                         <td><a class="pointer">{{upperLimit}}</a></td>

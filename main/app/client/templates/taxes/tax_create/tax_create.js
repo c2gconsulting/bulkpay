@@ -2,6 +2,7 @@
 /* TaxCreate: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
+import _ from 'underscore';
 
 Template.TaxCreate.events({
     'click #TaxButton': (e, tmpl) => {
@@ -97,14 +98,13 @@ Template.TaxCreate.events({
           newRuleToAdd.range = "Over";
           rules.push(newRuleToAdd);
           Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
-        } else if(rules.length === 2) {
-          newRuleToAdd.range = "Next";
-          rules.splice(1, 0, newRuleToAdd);
-          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
-        } else if(rules.length > 2) {
-          newRuleToAdd.range = "Next";
-          rules.splice(1, 0, newRuleToAdd);
-          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
+        } else if(rules.length >= 2) {
+          let lastTaxRule = rules[rules.length - 1];
+          lastTaxRule.range = "Next";
+
+          newRuleToAdd.range = "Over";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(rules.length - 1);
         }
         tmpl.dict.set("taxRules", rules);
 
@@ -240,7 +240,10 @@ Template.TaxCreate.onCreated(function () {
 
     this.indexOfSelectedTaxRuleForEdit = new ReactiveVar();
     this.indexOfSelectedTaxRuleForEdit.set(null);
-
+    //--
+    this.currentIndexOfDraggedTaxRule = new ReactiveVar();
+    this.currentIndexOfDraggedTaxRule.set(null);
+    //--
     if(this.data){
         this.dict.set("taxRules", this.data.rules);
     } else {
@@ -250,12 +253,39 @@ Template.TaxCreate.onCreated(function () {
 });
 
 Template.TaxCreate.onRendered(function () {
-    $('#ruleTable').sortable({
-        containerSelector: 'table',
-        itemPath: '> tbody',
-        itemSelector: 'tr',
-        placeholder: '<tr class="placeholder"/>'
-    });
+    let self = this;
+
+    // $('#ruleTable')
+    // .sortable({
+    //     containerSelector: 'table',
+    //     itemPath: '> tbody',
+    //     itemSelector: 'tr',
+    //     placeholder: '<tr class="placeholder"/>',
+    //     onDragStart: function($item, container, _super) {
+    //       self.currentIndexOfDraggedTaxRule.set($item.index());
+    //       let rules = self.dict.get("taxRules");
+    //       console.log("Rules before drag: " + JSON.stringify(rules));
+    //
+    //       _super($item, container);  // Very important else the drag will crash
+    //     },
+    //     onDrop: function ($item, container, _super) {
+    //       let currentIndexOfDraggedTaxRule = self.currentIndexOfDraggedTaxRule.get();
+    //       if($item.index() !== currentIndexOfDraggedTaxRule) {
+    //         let rules = self.dict.get("taxRules");
+    //         let taxRuleDataBeingDragged = rules[currentIndexOfDraggedTaxRule];
+    //
+    //         rules.splice(currentIndexOfDraggedTaxRule, 1);
+    //         rules.splice($item.index(), 0, taxRuleDataBeingDragged);
+    //         console.log("Rules after drag: " + JSON.stringify(rules));
+    //
+    //         console.log("Rules after range modify: ", rules);
+    //         self.dict.set("taxRules", rules);
+    //         console.log("Rules from reactive dict after range modify: ", self.dict.get("taxRules"));
+    //       }
+    //       self.currentIndexOfDraggedTaxRule.set(null);
+    //       _super($item, container);
+    //     }
+    // })
     self.$('select.dropdown').dropdown();
 });
 
