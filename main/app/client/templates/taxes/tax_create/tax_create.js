@@ -109,8 +109,33 @@ Template.TaxCreate.events({
 
       Template.instance().isATaxRuleSelectedForEdit.set(true);
     },
-    'click .confirmTaxRuleEdit': (e, tmpl) => {
+    'click #confirmTaxRuleEdit': (e, tmpl) => {
+      const rowElement = e.currentTarget.closest('tr');
+      let jqueryRowElement = $(rowElement);
+      let rowUpperLimit = jqueryRowElement.find('td [name="taxRuleToEditUpperLimit"]');
+      let rowUpperLimitVal = rowUpperLimit.val();
+      console.log("Row upperlimit val: " + rowUpperLimitVal);
 
+      let rowRate = jqueryRowElement.find('td [name="taxRuleToEditRate"]');
+      let rowRateVal = rowRate.val();
+      console.log("Row rate val: " + rowRateVal);
+
+      e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+      //--
+      const rowIndex = rowElement.rowIndex - 1;
+
+      let rules = tmpl.dict.get("taxRules");
+      // remove the rowIndex from the array element
+      if(rules[rowIndex] !== undefined){
+        let rule = rules[rowIndex];
+        rule.upperLimit = rowUpperLimitVal;
+        rule.rate = rowRateVal;
+        rules[rowIndex] = rule;
+        tmpl.dict.set("taxRules", rules);
+      }
+
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(null);
+      Template.instance().isATaxRuleSelectedForEdit.set(false);
     }
 });
 
