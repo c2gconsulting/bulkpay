@@ -7,6 +7,16 @@ import _ from 'underscore';
 Template.TaxCreate.events({
     'click #TaxButton': (e, tmpl) => {
         event.preventDefault();
+        let newTaxRuleCode = $('[name="code"]').val();
+        let newTaxRuleName = $('[name="name"]').val();
+
+        if(!newTaxRuleCode || newTaxRuleCode.trim().length < 1) {
+            swal("Validation error", `Please enter a valid code`, "error");
+            return;
+        } else if(!newTaxRuleName || newTaxRuleName.trim().length < 1) {
+            swal("Validation error", `Please enter a valid name`, "error");
+            return;
+        }
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
         l.start();
         const details = {
