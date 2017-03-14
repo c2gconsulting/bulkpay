@@ -160,15 +160,6 @@ Template.TaxCreate.events({
 /*****************************************************************************/
 /* TaxCreate: Helpers */
 /*****************************************************************************/
-Template.registerHelper('and',(a,b)=>{
-  return a && b;
-});
-Template.registerHelper('or',(a,b)=>{
-  return a || b;
-});
-Template.registerHelper('equals',(a,b)=>{
-  return a == b;
-});
 
 Template.TaxCreate.helpers({
     selected(context, val) {
@@ -177,6 +168,9 @@ Template.TaxCreate.helpers({
             //check and return selected if the template instce of data.val matches
             return Template.instance().data[context] === val ? selected="selected" : '';
         }
+    },
+    'modalHeaderTitle': function() {
+      return Template.instance().data.modalHeaderTitle || "New Tax Rule";
     },
     ranges(){
         //var ranges = ['FIRST', 'NEXT', 'OVER'];
