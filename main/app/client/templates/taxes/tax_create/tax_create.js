@@ -147,6 +147,13 @@ Template.TaxCreate.events({
 
       Template.instance().indexOfSelectedTaxRuleForEdit.set(null);
       Template.instance().isATaxRuleSelectedForEdit.set(false);
+    },
+    'click #cancelTaxRuleEdit': (e, tmpl) => {
+      e.preventDefault();
+      e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(null);
+      Template.instance().isATaxRuleSelectedForEdit.set(false);
     }
 });
 
