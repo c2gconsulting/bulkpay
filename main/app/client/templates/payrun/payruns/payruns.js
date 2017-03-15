@@ -97,6 +97,7 @@ Template.payruns.helpers({
     'payrun': function(){
         return Template.instance().currentPayrun.get();
     },
+
     'errorMsg': function() {
       return Template.instance().errorMsg.get();
     }
@@ -156,6 +157,13 @@ Template.singlePayrunResult.helpers({
     let employee = Meteor.users.findOne({_id: employeeId});
     if(employee)
       return employee.profile.fullName;
+    else
+      return ""
+  },
+  'getEmployeeRealId': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+      return employee.employeeProfile.employeeId;
     else
       return ""
   }

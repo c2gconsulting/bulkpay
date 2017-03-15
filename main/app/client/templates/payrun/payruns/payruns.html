@@ -114,7 +114,7 @@
 <template name="singlePayrunResult">
   <tr class="pointer anEmployeePayResult">
       <td>{{index}}</td>
-      <td>{{data.employeeId}}</td>
+      <td>{{getEmployeeRealId data.employeeId}}</td>
       <td>{{getEmployeeFullName data.employeeId}}</td>
   </tr>
 </template>
