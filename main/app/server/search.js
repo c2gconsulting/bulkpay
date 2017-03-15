@@ -1,3 +1,13 @@
+
+/**
+ * Look at the below link to understand more how search works
+ * https://github.com/meteorhacks/search-source
+ * 
+ * meteor add meteorhacks:search-source
+ * Running the above command will add the Meteor package needed
+ * for the below code to work
+ */
+
 SearchSource.defineSource('users', function(searchText, options) {
   var options = {sort: {isoScore: -1}, limit: 20};
 

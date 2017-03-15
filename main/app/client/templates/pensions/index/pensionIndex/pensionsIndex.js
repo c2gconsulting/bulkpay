@@ -34,6 +34,7 @@ Template.PensionIndex.onRendered(function () {
 });
 
 Template.PensionIndex.onDestroyed(function () {
+  Modal.hide('PensionCreate');
 });
 
 

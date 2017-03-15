@@ -2,10 +2,21 @@
 /* TaxCreate: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
+import _ from 'underscore';
 
 Template.TaxCreate.events({
     'click #TaxButton': (e, tmpl) => {
         event.preventDefault();
+        let newTaxRuleCode = $('[name="code"]').val();
+        let newTaxRuleName = $('[name="name"]').val();
+
+        if(!newTaxRuleCode || newTaxRuleCode.trim().length < 1) {
+            swal("Validation error", `Please enter a valid code`, "error");
+            return;
+        } else if(!newTaxRuleName || newTaxRuleName.trim().length < 1) {
+            swal("Validation error", `Please enter a valid name`, "error");
+            return;
+        }
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
         l.start();
         const details = {
@@ -26,7 +37,7 @@ Template.TaxCreate.events({
                 if(err){
                     swal("Update Failed", `Cannot Update tax ${code}`, "error");
                 } else {
-                    swal("Successful Update!", `Succesffully update tax ${code}`, "success");
+                    swal("Successful Update!", `Tax ${code} was updated successfully`, "success");
                     Modal.hide("TaxCreate");
                 }
             });
@@ -82,7 +93,32 @@ Template.TaxCreate.events({
     'click #add-rule-button': (e,tmpl) => {
         e.preventDefault();
         console.log("clicked me will probably add a tr to the end of the table");
-        Modal.show("AddRule");
+        //Modal.show("AddRule");
+
+        let rules = tmpl.dict.get("taxRules");
+        let newRuleToAdd = {
+          upperLimit : 0,
+          rate : 0
+        };
+        if(rules.length == 0) {
+          newRuleToAdd.range = "First";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(0);
+        } else if(rules.length === 1) {
+          newRuleToAdd.range = "Over";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(1);
+        } else if(rules.length >= 2) {
+          let lastTaxRule = rules[rules.length - 1];
+          lastTaxRule.range = "Next";
+
+          newRuleToAdd.range = "Over";
+          rules.push(newRuleToAdd);
+          Template.instance().indexOfSelectedTaxRuleForEdit.set(rules.length - 1);
+        }
+        tmpl.dict.set("taxRules", rules);
+
+        Template.instance().isATaxRuleSelectedForEdit.set(true);
     },
     'click .deletetr': (e,tmpl) => {
         e.preventDefault();
@@ -92,14 +128,78 @@ Template.TaxCreate.events({
         // remove the rowIndex from the array element
         if(rules[rowIndex] !== undefined){
             rules.splice(rowIndex,1);
+            rules.forEach((aRule, index) => {
+              if(index === 0) {
+                aRule.range = "First";
+              } else {
+                aRule.range = "Next";
+                if(index === rules.length - 1) {
+                  aRule.range = "Over";
+                }
+              }
+              //rules[index] = aRule;
+            })
         }
         tmpl.dict.set("taxRules", rules);
+        e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+    },
+    'click .aTaxRuleItem': (e, tmpl) => {
+      console.log("a tax rule was clicked");
+      let taxRuleRowElement = e.currentTarget;
+
+      let taxRuleRowName = taxRuleRowElement.getAttribute("name");
+      let taxRuleRowNameParts = taxRuleRowName.split("_");
+      let taxRuleIndex = taxRuleRowNameParts[1];
+      console.log("taxRuleIndex: " + taxRuleIndex);
+      taxRuleIndex = parseInt(taxRuleIndex);
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(taxRuleIndex);
+
+      Template.instance().isATaxRuleSelectedForEdit.set(true);
+    },
+    'click #confirmTaxRuleEdit': (e, tmpl) => {
+      const rowElement = e.currentTarget.closest('tr');
+      let jqueryRowElement = $(rowElement);
+      let rowUpperLimit = jqueryRowElement.find('td [name="taxRuleToEditUpperLimit"]');
+      let rowUpperLimitVal = rowUpperLimit.val();
+      console.log("Row upperlimit val: " + rowUpperLimitVal);
+
+      let rowRate = jqueryRowElement.find('td [name="taxRuleToEditRate"]');
+      let rowRateVal = rowRate.val();
+      console.log("Row rate val: " + rowRateVal);
+
+      e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+      //--
+      const rowIndex = rowElement.rowIndex - 1;
+
+      let rules = tmpl.dict.get("taxRules");
+      // remove the rowIndex from the array element
+      if(rules[rowIndex] !== undefined){
+        let rule = rules[rowIndex];
+        rule.upperLimit = rowUpperLimitVal;
+        rule.rate = rowRateVal;
+        //rules[rowIndex] = rule;
+        tmpl.dict.set("taxRules", rules);
+      }
+
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(null);
+      Template.instance().isATaxRuleSelectedForEdit.set(false);
+    },
+    'click #cancelTaxRuleEdit': (e, tmpl) => {
+      e.preventDefault();
+      e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
+
+      Template.instance().indexOfSelectedTaxRuleForEdit.set(null);
+      Template.instance().isATaxRuleSelectedForEdit.set(false);
     }
 });
 
 /*****************************************************************************/
 /* TaxCreate: Helpers */
 /*****************************************************************************/
+Template.registerHelper('equals',(a,b)=>{
+  return a == b;
+});
+
 Template.TaxCreate.helpers({
     selected(context, val) {
         if(Template.instance().data){
@@ -107,6 +207,9 @@ Template.TaxCreate.helpers({
             //check and return selected if the template instce of data.val matches
             return Template.instance().data[context] === val ? selected="selected" : '';
         }
+    },
+    'modalHeaderTitle': function() {
+      return Template.instance().data.modalHeaderTitle || "New Tax Rule";
     },
     ranges(){
         //var ranges = ['FIRST', 'NEXT', 'OVER'];
@@ -124,6 +227,14 @@ Template.TaxCreate.helpers({
         //get default rule for new tax
         return Template.instance().dict.get("taxRules") || [];
     },
+    isTaxRuleSelected : function() {
+      console.log("isTaxRuleSelected called: " + Template.instance().isATaxRuleSelectedForEdit.get());
+
+      return Template.instance().isATaxRuleSelectedForEdit.get();
+    },
+    indexOfSelectedTaxRule : function() {
+      return Template.instance().indexOfSelectedTaxRuleForEdit.get();
+    },
     edit() {
         return
     }
@@ -134,6 +245,15 @@ Template.TaxCreate.helpers({
 /*****************************************************************************/
 Template.TaxCreate.onCreated(function () {
     this.dict = new ReactiveDict();
+    this.isATaxRuleSelectedForEdit = new ReactiveVar();
+    this.isATaxRuleSelectedForEdit.set(false);
+
+    this.indexOfSelectedTaxRuleForEdit = new ReactiveVar();
+    this.indexOfSelectedTaxRuleForEdit.set(null);
+    //--
+    this.currentIndexOfDraggedTaxRule = new ReactiveVar();
+    this.currentIndexOfDraggedTaxRule.set(null);
+    //--
     if(this.data){
         this.dict.set("taxRules", this.data.rules);
     } else {
@@ -143,12 +263,39 @@ Template.TaxCreate.onCreated(function () {
 });
 
 Template.TaxCreate.onRendered(function () {
-    $('#ruleTable').sortable({
-        containerSelector: 'table',
-        itemPath: '> tbody',
-        itemSelector: 'tr',
-        placeholder: '<tr class="placeholder"/>'
-    });
+    let self = this;
+
+    // $('#ruleTable')
+    // .sortable({
+    //     containerSelector: 'table',
+    //     itemPath: '> tbody',
+    //     itemSelector: 'tr',
+    //     placeholder: '<tr class="placeholder"/>',
+    //     onDragStart: function($item, container, _super) {
+    //       self.currentIndexOfDraggedTaxRule.set($item.index());
+    //       let rules = self.dict.get("taxRules");
+    //       console.log("Rules before drag: " + JSON.stringify(rules));
+    //
+    //       _super($item, container);  // Very important else the drag will crash
+    //     },
+    //     onDrop: function ($item, container, _super) {
+    //       let currentIndexOfDraggedTaxRule = self.currentIndexOfDraggedTaxRule.get();
+    //       if($item.index() !== currentIndexOfDraggedTaxRule) {
+    //         let rules = self.dict.get("taxRules");
+    //         let taxRuleDataBeingDragged = rules[currentIndexOfDraggedTaxRule];
+    //
+    //         rules.splice(currentIndexOfDraggedTaxRule, 1);
+    //         rules.splice($item.index(), 0, taxRuleDataBeingDragged);
+    //         console.log("Rules after drag: " + JSON.stringify(rules));
+    //
+    //         console.log("Rules after range modify: ", rules);
+    //         self.dict.set("taxRules", rules);
+    //         console.log("Rules from reactive dict after range modify: ", self.dict.get("taxRules"));
+    //       }
+    //       self.currentIndexOfDraggedTaxRule.set(null);
+    //       _super($item, container);
+    //     }
+    // })
     self.$('select.dropdown').dropdown();
 });
 

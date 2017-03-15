@@ -32,6 +32,7 @@ Template.Taxes.onRendered(function () {
 });
 
 Template.Taxes.onDestroyed(function () {
+  Modal.hide('TaxCreate');
 });
 
 
@@ -45,6 +46,7 @@ Template.singleTax.helpers({
 });
 Template.singleTax.events({
     'click .pointer': function(e, tmpl){
+        this.data.modalHeaderTitle = "Tax Rule Edit";
         Modal.show('TaxCreate', this.data);
     }
 })

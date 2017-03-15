@@ -1,6 +1,7 @@
 /**
- *  Leave Types Methods
+ *  Roles access Methods
  */
+
 Meteor.methods({
     "role/setRolesForUser": function(userId, arrayOfRoles){
         if(!this.userId){
