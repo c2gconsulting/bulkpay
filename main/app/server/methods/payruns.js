@@ -3,7 +3,79 @@ import _ from 'underscore';
  *  Payruns Methods
  */
 Meteor.methods({
+    /* Get net monthly pay amount NMP
 
+     */
+    'getnetPayResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period}).fetch();
+            const netpay = result.map(x => {
+                const netPayIndex = _.findLastIndex(x.payment, {code: 'NMP'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
+                if(netPayIndex > -1) {
+                    const amountPC = x.payment[netPayIndex].amountPC;
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        const info = {
+                            fullName: employee.profile.fullName,
+                            bank: employee.employeeProfile.payment.bank,
+                            accountNumber: employee.employeeProfile.payment.accountNumber,
+                            amount: amountPC
+                        }
+                        return info;
+                    }
+                }
+            });
+            return netpay;
+        }
+    },
+
+    'getPensionResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Pension'}).fetch();
+            const pension = result.map(x => {
+                const pensionsContribution = _.where(x.payment, {reference: 'Pension'}); //get all pension pay)
+                if(pensionsContribution.length) {
+                    const pensionAmount = {};
+                    let pensionDescription;
+                    pensionsContribution.forEach(x => {
+                       //pension is always suffixed with _EE or _ER
+                        const pensionLength = x.code.length;
+                        if (!pensionDescription)
+                            pensionDescription = x.description;
+                        const type = x.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
+                        if(type === '_EE')
+                            pensionAmount.employeeContribution  = x.amountPC;
+                        if(type === '_ER')
+                            pensionAmount.employerContribution = x.amountPC;
+                    });
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        const info = {
+                            fullName: employee.profile.fullName,
+                            pensionManager: employee.employeeProfile.payment.pensionmanager,
+                            pin: employee.employeeProfile.payment.RSAPin,
+                            employeeContribution: pensionAmount.employeeContribution,
+                            employerContribution: pensionAmount.employerContribution
+                        }
+                        return info;
+                    }
+                }
+            });
+            return pension;
+        }
+    },
     /* Payment run
      */
 
@@ -561,3 +633,6 @@ function PaytypeException(message, paytype) {
     this.name = 'PaytypeEvaluationException';
     this.paytype = paytype;
 }
+
+
+

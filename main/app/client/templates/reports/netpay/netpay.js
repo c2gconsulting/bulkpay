@@ -10,7 +10,25 @@ Template.NetPayReport.events({
       Session.get('payrollPeriod', value);
       console.log("payrollPeriod changed to: " + value);
     }
-  }
+  },
+   'click .getResult': (e, tmpl) => {
+      const month = $('[name="paymentPeriod.month"]').val();
+      const year = $('[name="paymentPeriod.year"]').val();
+      if(month && year) {
+          const period = month + year;
+          Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
+              if(res && res.length){
+                  console.log('logging response as ', res);
+                  tmpl.dict.set('result', res);
+              } else {
+                  swal('No result found', 'Payroll Result not found for period', 'error');
+              }
+          });
+      } else {
+          swal('Error', 'Please select Period', 'error');
+      }
+
+   }
 });
 
 /*****************************************************************************/
@@ -31,14 +49,8 @@ Template.NetPayReport.helpers({
     'year': function(){
         return Core.years();
     },
-    'payrollPeriod': function() {
-      return Session.get('payrollPeriod');
-    },
-    'payrollResults': function() {
-      return Meteor.users.find({
-        "employee": true,
-        "employeeProfile.employment.status": "Active"
-      });
+    'result': () => {
+        return Template.instance().dict.get('result');
     }
 });
 
@@ -46,6 +58,8 @@ Template.NetPayReport.helpers({
 /* NetPayReport: Lifecycle Hooks */
 /*****************************************************************************/
 Template.NetPayReport.onCreated(function () {
+    let self = this;
+    self.dict = new ReactiveDict();
 
 });
 

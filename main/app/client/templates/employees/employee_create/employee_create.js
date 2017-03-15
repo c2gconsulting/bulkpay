@@ -14,8 +14,8 @@ Template.EmployeeCreate.events({
             };
 
             reader.readAsDataURL(e.target.files[0]);
-            //upload = UserImages.insert(e.target.files[0]);
-            //$('#filename').html(e.target.files[0].name);
+            upload = UserImages.insert(e.target.files[0]);
+            $('#filename').html(e.target.files[0].name);
         }
     },
     'change [data-field="dateOfBirth"]': (e, tmpl) => {
