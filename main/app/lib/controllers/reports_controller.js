@@ -53,6 +53,9 @@ ReportsController = BusinessUnitController.extend({
     netpay: function () {
         this.render('NetPayReport');
     },
+    tax: function () {
+        this.render('TaxReport');
+    },
     pension: function () {
         this.render('PensionReport');
     },

@@ -96,6 +96,18 @@ Template.EmployeePaymentDetailsDataModal.events({
       console.log("user payment RSAPin changed to: " + value);
     }
     Template.instance().setEditUser(user);
+  },
+  'blur [name=paymentDetailsTaxPayerId]': function (e, tmpl) {
+    let user = Template.instance().getEditUser();
+    let value = e.currentTarget.value;
+    if (value && value.trim().length > 0) {
+      user.employeeProfile = user.employeeProfile || {};
+      user.employeeProfile.payment = user.employeeProfile.payment || {};
+      user.employeeProfile.payment.taxPayerId = value;
+
+      console.log("user Tax Payer Id changed to: " + value);
+    }
+    Template.instance().setEditUser(user);
   }
 });
 
@@ -113,6 +125,9 @@ Template.EmployeePaymentDetailsDataModal.helpers({
       let allPfas = PensionManagers.find({});
       return allPfas;
     },
+    banks: function() {
+      return Core.banks();
+    }
 });
 
 /*****************************************************************************/

@@ -3,6 +3,59 @@ import _ from 'underscore';
  *  Payruns Methods
  */
 Meteor.methods({
+
+    /* Get net monthly pay amount NMP
+
+     */
+    'exportPaymentsforPeriod': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+            const result =  Payruns.find({businessId: businessId, period: period}).fetch();
+            const paytypes = [], export_header = ["Full Name", "Employee Number", "Period"];
+            //for every header, loop at employee payment and populate value
+            result.forEach(x => {
+                let payments = x.payment;
+                // for every payment, push value if it exists or 0.00 into result
+                payments.forEach(p => {
+                        const header = {code: p.code , reference: p.reference};
+                        console.log(header);
+                        const index = _.findLastIndex(paytypes, header);
+                        if(index === -1) {
+                            paytypes.push(header);
+                            export_header.push(p.code);
+                        }
+
+                    });
+                });
+            //header population complete now use header index and fill each employee data
+            // review this method
+            const data = [];
+            result.forEach(x => {
+                // for every payment, push value if it exists or 0.00 into result
+                //get personnel details first
+                let employee = Meteor.users.findOne({_id: x.employeeId});
+                if (employee) {
+                    
+                    //push employee name, employeeId and period
+                    const employeePay = [];
+                    paytypes.forEach(p => {
+                        const payments = x.payment;
+                        const index = _.findLastIndex(payments, p);
+                        if(index > -1) {
+                            employeePay.push(payments[index].amountPC);
+                        } else {
+                            employeePay.push(0.00);
+                        }
+
+                    });
+                    data.push(employeePay);
+                }
+            });
+            let exportData = {fields: export_header, data: data};
+            return exportData   ;
+    },
+
     /* Get net monthly pay amount NMP
 
      */
@@ -10,7 +63,7 @@ Meteor.methods({
         //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
-        if(Core.hasPayrollAccess(this.userId)){
+        if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             const result =  Payruns.find({businessId: businessId, period: period}).fetch();
@@ -26,12 +79,44 @@ Meteor.methods({
                             bank: employee.employeeProfile.payment.bank,
                             accountNumber: employee.employeeProfile.payment.accountNumber,
                             amount: amountPC
-                        }
+                        };
                         return info;
                     }
                 }
             });
+            console.log('as net pay', netpay);
             return netpay;
+        }
+    },
+
+    /* Get Tax pay
+     */
+    'getTaxResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userid)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Tax'}).fetch();
+            const tax = result.map(x => {
+                const taxIndex = _.findLastIndex(x.payment, {reference: 'Tax'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
+                if(taxIndex > -1) {
+                    const amountLC = x.payment[taxIndex].amountLC;
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        const info = {
+                            fullName: employee.profile.fullName,
+                            state: employee.employeeProfile.state,
+                            taxPayerId: employee.employeeProfile.payment.taxPayerId,
+                            amount: amountLC
+                        };
+                        return info;
+                    }
+                }
+            });
+            return tax;
         }
     },
 

@@ -659,6 +659,18 @@ _.extend(Core, {
         ]
 
     },
+    banks: function() {
+        return [
+            {name: 'Access Bank', code: "Access"},
+            {name: 'Diamond Bank', code: "DIAMOND"},
+            {name: 'Equitorial Trust Bank', code: "ETB"},
+            {name: 'Eco Bank', code: "ECO"},
+            {name: 'Fidelity Bank', code: "ETB"},
+            {name: 'First Bank', code: "FBN"},
+            {name: 'Guarantee Trust Bank', code: "GTB"},
+            {name: 'Stanbic Ibtck Bank', code: "STANBIC"},
+        ]
+    },
     'months': function(){
         return [
             {name:'January',period: '01'},

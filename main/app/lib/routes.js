@@ -215,6 +215,13 @@ Router.route('/business/:_id/reports/netpay', {
     where: 'client'
 });
 
+Router.route('/business/:_id/reports/tax', {
+    name: 'reports.tax',
+    controller: 'ReportsController',
+    action: 'tax',
+    where: 'client'
+});
+
 Router.route('/business/:_id/reports/pension', {
     name: 'reports.pension',
     controller: 'ReportsController',

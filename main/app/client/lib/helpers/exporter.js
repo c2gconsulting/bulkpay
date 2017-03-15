@@ -1,4 +1,4 @@
-TDCExporter = {
+BulkpayExplorer = {
     exportAllData: function(data, fileName) {
         var self = this;
         var csv = Papa.unparse(data);

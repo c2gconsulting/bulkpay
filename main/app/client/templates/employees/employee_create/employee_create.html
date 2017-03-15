@@ -52,7 +52,7 @@
                                             <div class="text-center">
                                                 <img src="/images/photos/avatar.jpg" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
                                                 <br><br>
-                                            <span class="btn btn-primary btn-file">
+                                                <span class="btn btn-primary btn-file">
                                                 Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />
                                             </span><br>
                                                 <span id="filename"></span>
@@ -464,10 +464,9 @@
                                         <label class="col-sm-4 control-label">Bank</label>
                                         <div class="col-sm-4">
                                             <select name="bank" style="width: 100%" class="form-control dropdown">
-                                                <option value="Ecobank Nigeria Plc">Ecobank Nigeria Plc</option>
-                                                <option value="Equitorial Trust Bank Limited">Equitorial Trust Bank Limited</option>
-                                                <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
-                                                <option value="First Bank of Nigeria Plc">First Bank of Nigeria Plc</option>
+                                                {{#each banks}}
+                                                    <option value="{{name}}">{{name}}</option>
+                                                {{/each}}
                                             </select>
                                         </div>
                                         <div class="col-sm-4">
@@ -499,9 +498,9 @@
                                         <label class="col-sm-4 control-label">Pension Manager</label>
                                         <div class="col-sm-4">
                                             <select name="pensionmanager" style="width: 100%" class="form-control dropdown">
-                                              {{#each pfas}}
-                                                <option value="{{code}}">{{name}}</option>
-                                              {{/each}}
+                                                {{#each pfas}}
+                                                    <option value="{{code}}">{{name}}</option>
+                                                {{/each}}
                                             </select>
                                         </div>
                                     </div>
@@ -509,7 +508,16 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">RSA Pin</label>
                                         <div class="col-sm-4">
-                                            <input name="paymentDetails.RSAPin" type="text" placeholder="RSA Pin" class="form-control"/>
+                                            <input name="RSAPin" type="text" placeholder="RSA Pin" class="form-control"/>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">RSA Pin</label>
+                                        <div class="col-sm-4">
+                                            <input name="taxPayerId" type="text" placeholder="Tax Payer ID" class="form-control"/>
                                         </div>
                                         <div class="col-sm-4">
                                             &nbsp;

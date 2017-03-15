@@ -1,4 +1,4 @@
-<template name="NetPayReport">
+<template name="TaxReport">
   <div class="pageheader">
       <div class="media">
           <div class="pageicon pull-left">
@@ -23,7 +23,7 @@
               <div class="panel panel-default">
                   <div class="panel-heading">
                       <div class="panel-btns"></div><!-- panel-btns -->
-                      <h4 class="panel-title">Net Payment Report</h4>
+                      <h4 class="panel-title">Tax Report</h4>
                   </div><!-- panel-heading -->
                   <div class="panel-body">
                           <div class="row">
@@ -62,7 +62,7 @@
                                                   </div>
 
                                                   <div class="col-md-3">
-                                                      <button class="btn btn-success getResu    lt"><i class="fa fa-bar-chart-o"></i> View</button>
+                                                      <button class="btn btn-success getResult"><i class="fa fa-bar-chart-o"></i> View</button>
                                                       <button class="btn btn-primary Export"> <i class="fa fa-file-excel-o"></i> Download </button>
                                                   </div>
                                               </div>
@@ -71,17 +71,17 @@
                                                   <thead>
                                                       <tr>
                                                           <th>Name</th>
-                                                          <th>Bank</th>
-                                                          <th>Account Number</th>
-                                                          <th>Net pay</th>
+                                                          <th>State</th>
+                                                          <th>Tax Payer ID</th>
+                                                          <th>Amount in LC</th>
                                                       </tr>
                                                   </thead>
                                                   <tbody>
                                                     {{#each result}}
                                                       <tr>
                                                           <td>{{fullName}}</td>
-                                                          <td>{{bank}}</td>
-                                                          <td>{{accountNumber}}</td>
+                                                          <td>{{state}}</td>
+                                                          <td>{{taxPayerId}}</td>
                                                           <td>{{formatMoneyD amount 'NGN'}}</td>
                                                       </tr>
                                                     {{/each}}
