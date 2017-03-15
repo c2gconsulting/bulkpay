@@ -16,8 +16,6 @@ ReportsController = BusinessUnitController.extend({
 
     waitOn: function () {
         return [
-            Meteor.subscribe('allEmployees', this.params._id),
-            Meteor.subscribe('PayTypes', this.params._id)
         ];
     },
 
