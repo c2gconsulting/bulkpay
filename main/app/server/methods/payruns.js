@@ -88,7 +88,6 @@ Meteor.methods({
                     }
                 }
             });
-            console.log('as net pay', netpay);
             return netpay;
         }
     },
