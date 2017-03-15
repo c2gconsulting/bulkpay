@@ -39,6 +39,10 @@ Meteor.methods({
                     
                     //push employee name, employeeId and period
                     const employeePay = [];
+                    employeePay.push(employee.profile.fullName)
+                    employeePay.push(employee.employeeProfile.employeeId)
+                    employeePay.push(x.period)
+
                     paytypes.forEach(p => {
                         const payments = x.payment;
                         const index = _.findLastIndex(payments, p);
