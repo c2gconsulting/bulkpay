@@ -45,6 +45,7 @@
                               <div class="col-md-3">
                                   <div class="form-group">
                                       <select name="paymentPeriodMonth" class="form-control dropdown" style="width: 100%">
+                                          <option value="">Select Month</option>
                                           {{#each month}}
                                               <option value="{{period}}">{{name}}</option>
                                           {{/each}}
@@ -54,6 +55,7 @@
                               <div class="col-md-3">
                                   <div class="form-group">
                                       <select name="paymentPeriodYear" class="form-control dropdown" style="width: 100%">
+                                          <option value="">Select Year </option>
                                           {{#each year}}
                                               <option value="{{this}}">{{this}}</option>
                                           {{/each}}
@@ -62,8 +64,11 @@
                               </div>
 
                               <div class="col-md-3">
-                                  <button class="btn btn-primary mr5 ladda-button"
-                                      id="get-employee-payresults">Get Pay Results</button>
+                                  <button class="btn btn-primary mr5 ladda-button" id="get-employee-payresults">Get Pay Results</button>
+                              </div>
+
+                              <div class="col-md-3">
+                                  <button class="btn btn-primary excel"> <i class="fa fa-file-excel-o"></i> Download </button>
                               </div>
                           </div>
                       </div>

@@ -1,8 +1,8 @@
 
 /*****************************************************************************/
-/* NetPayReport: Event Handlers */
+/* TaxReport: Event Handlers */
 /*****************************************************************************/
-Template.NetPayReport.events({
+Template.TaxReport.events({
   'change [name=payrollReportPeriod]': function (e, tmpl) {
     let value = e.currentTarget.value;
 
@@ -16,8 +16,7 @@ Template.NetPayReport.events({
       const year = $('[name="paymentPeriod.year"]').val();
       if(month && year) {
           const period = month + year;
-          Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
-              console.log(res);
+          Meteor.call('getTaxResult', Session.get('context'), period, function(err, res){
               if(res && res.length){
                   console.log('logging response as ', res);
                   tmpl.dict.set('result', res);
@@ -33,13 +32,13 @@ Template.NetPayReport.events({
 });
 
 /*****************************************************************************/
-/* NetPayReport: Helpers */
+/* TaxReport: Helpers */
 /*****************************************************************************/
 Template.registerHelper('formatDate', function(date) {
   return moment(date).format('MMYYYY');
 });
 
-Template.NetPayReport.helpers({
+Template.TaxReport.helpers({
     'tenant': function(){
         let tenant = Tenants.findOne();
         return tenant.name;
@@ -56,17 +55,17 @@ Template.NetPayReport.helpers({
 });
 
 /*****************************************************************************/
-/* NetPayReport: Lifecycle Hooks */
+/* TaxReport: Lifecycle Hooks */
 /*****************************************************************************/
-Template.NetPayReport.onCreated(function () {
+Template.TaxReport.onCreated(function () {
     let self = this;
     self.dict = new ReactiveDict();
 
 });
 
-Template.NetPayReport.onRendered(function () {
+Template.TaxReport.onRendered(function () {
   //$('#example').DataTable();
 });
 
-Template.NetPayReport.onDestroyed(function () {
+Template.TaxReport.onDestroyed(function () {
 });

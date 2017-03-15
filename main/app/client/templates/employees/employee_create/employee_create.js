@@ -58,7 +58,7 @@ Template.EmployeeCreate.events({
             confirmationDate =  $('[data-field="confirmationDate"]').val() ? new Date($('[data-field="confirmationDate"]').val()) : null;
 
             const details = {
-            position: $('[name="position"]').val(),
+                position: $('[name="position"]').val(),
                 paygrade: $('[name="paygrade"]').val(),
                 paytypes: getPaytypes(),
                 status: $('[name="status"]').val(),
@@ -74,12 +74,13 @@ Template.EmployeeCreate.events({
         };
         function payment() {
             return {
-            paymentMethod: $('[name="paymentMethod"]').val(),
-            bank: $('[name="bank"]').val(),
-            accountNumber: $('[name="accountNumber"]').val(),
-            accountName: $('[name="accountName"]').val(),
-            pensionmanager: $('[name="pensionmanager"]').val(),
-            RSAPin: $('[name="RSAPin"]').val()
+                paymentMethod: $('[name="paymentMethod"]').val(),
+                bank: $('[name="bank"]').val(),
+                accountNumber: $('[name="accountNumber"]').val(),
+                accountName: $('[name="accountName"]').val(),
+                pensionmanager: $('[name="pensionmanager"]').val(),
+                RSAPin: $('[name="RSAPin"]').val(),
+                taxPayerId: $('[name="taxPayerId"]').val()
             }
 
         };
@@ -116,7 +117,7 @@ Template.EmployeeCreate.events({
                 let wage = assigned.map(x => {
                     return {paytype: x.paytype, value: x.inputed}
                 });
-              return wage;
+                return wage;
             }
         };
 
@@ -184,11 +185,11 @@ Template.EmployeeCreate.events({
         }
 
         if(entered){
-           if(isNaN(entered)){
-               $(e.target).addClass('errorValidation');
-           } else {
-               $(e.target).removeClass('errorValidation');
-           }
+            if(isNaN(entered)){
+                $(e.target).addClass('errorValidation');
+            } else {
+                $(e.target).removeClass('errorValidation');
+            }
         }
     }
 });
@@ -203,6 +204,9 @@ Template.EmployeeCreate.helpers({
     'states': () => {
         return Core.states();
     },
+    'banks': () => {
+        return Core.banks();
+    },
     'countries': () => {
         return Core.IsoCountries();
     },
@@ -216,7 +220,7 @@ Template.EmployeeCreate.helpers({
         return PayGrades.find();
     },
     'assignable': () => {
-       return Template.instance().assignedTypes.get();
+        return Template.instance().assignedTypes.get();
     },
     'increment': (index) => {
         return index += 1;
@@ -228,10 +232,10 @@ Template.EmployeeCreate.helpers({
         }
     },
     'pfas': function(){
-      console.log("[PaymentDetails] Inside pfas");
+        console.log("[PaymentDetails] Inside pfas");
 
-      let allPfas = PensionManagers.find({});
-      return allPfas;
+        let allPfas = PensionManagers.find({});
+        return allPfas;
     }
 });
 

@@ -30,10 +30,9 @@
                         <label class="col-sm-4 control-label">Bank</label>
                         <div class="col-sm-4">
                             <select name="bank" style="width: 100%" class="form-control dropdown">
-                                <option value="Ecobank Nigeria Plc">Ecobank Nigeria Plc</option>
-                                <option value="Equitorial Trust Bank Limited">Equitorial Trust Bank Limited</option>
-                                <option value="Fidelity Bank Plc">Fidelity Bank Plc</option>
-                                <option value="First Bank of Nigeria Plc">First Bank of Nigeria Plc</option>
+                                {{#each banks}}
+                                    <option value="{{name}}">{{name}}</option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="col-sm-4">
@@ -82,6 +81,17 @@
                         <div class="col-sm-4">
                             <input name="paymentDetailsRSAPin" type="text" placeholder="RSA Pin" class="form-control"
                               value="{{employeeProfile.payment.RSAPin}}"/>
+                        </div>
+                        <div class="col-sm-4">
+                            &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Tax Payer ID </label>
+                        <div class="col-sm-4">
+                            <input name="paymentDetailsTaxPayerId" type="text" placeholder="Tax Payer ID" class="form-control"
+                              value="{{employeeProfile.payment.taxPayerId}}"/>
                         </div>
                         <div class="col-sm-4">
                             &nbsp;
