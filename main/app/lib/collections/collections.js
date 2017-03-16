@@ -292,6 +292,13 @@ Partitioner.partitionCollection(Projects);
 Projects.attachSchema(Core.Schemas.Project);
 
 /**
+ * Core Collections Activities
+ */
+Activities = new Mongo.Collection("activities");
+Partitioner.partitionCollection(Activities);
+Activities.attachSchema(Core.Schemas.Activity);
+
+/**
  * Core Collections Times
  */
 Times = new Mongo.Collection("times");

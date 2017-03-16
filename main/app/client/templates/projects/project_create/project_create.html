@@ -18,39 +18,107 @@
                                 </div><!-- col-sm-3 -->
 
                             </div><!-- row -->
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    {{> afQuickField name="positionIds" options=positions class="dropdown"}}
-                                </div><!-- col-sm-3 -->
-                            </div>
+                            
                             <div class="row">
 
                                 <div class="col-sm-12">
                                     {{> afQuickField name="description" rows=3 }}
                                 </div><!-- col-sm-3 -->
                             </div><!-- row -->
+
                             <div class="row">
-                                {{#afEachArrayItem name="activities"}}
+                                <div class="col-sm-12">
+                                    {{> afQuickField name="positionIds" options=positions class="dropdown"}}
+                                </div><!-- col-sm-3 -->
+                            </div>
+                            
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <h5 class="lg-title mb5">Activities</h5>
+                                        {{#if isAnActivityBeingCreated}}
+                                        {{else}}
+                                        <p class="mb20 pull-right"><button id="addActivity" class="btn btn-primary btn-sm">Add Activity</button></p>
+                                        {{/if}}
+                                    </div><!-- col-sm-12 -->
+                                    
                                     <div class="row">
-                                        <div class="col-sm-5">
-                                            <label for="activity_fullcode">Activity FullCode</label>
-                                            {{> afFieldInput name=this.current.fullcode class="form-control"}}
-                                        </div>
-                                        <div class="col-sm-5">
-                                            <label for="activity_description">Activity Description</label>
-                                            {{> afFieldInput name=this.current.description class="form-control"}}
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <button class="btn input-group-addon autoform-remove-item"><i class="glyphicon glyphicon-minus"></i>Remove</button>
-                                        </div>
+                                        {{#if errorMessage}}
+                                            <div class="col-md-12">
+                                                <div class="alert alert-danger text-center">
+                                                    <p>{{errorMessage}}</p>
+                                                </div>
+                                            </div>
+                                        {{/if}}
                                     </div>
 
-                                {{/afEachArrayItem}}
-                                <div class="row">
-                                    <button class="btn input-group-addon autoform-add-item" data-autoform-field="activities"><i class="glyphicon glyphicon-plus"></i> Add Activity </button>
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-primary mb60 table-hover" id="ruleTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>Full code</th>
+                                                    <th>Description</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {{#if isActivitySelected}}
+                                                    {{#each editableActivities}}
+                                                        <tr class="pointer anActivity" name="taxRuleIndex_{{@index}}">
+                                                            {{#if equals @index indexOfSelectedActivity}}
+                                                            <td>
+                                                                <input name="activityFullCode" type="text" placeholder="Name" class="form-control"
+                                                                value="{{fullcode}}"/>
+                                                            </td>
+                                                            <td>
+                                                                <input name="activityDescription" type="text" placeholder="Description" class="form-control"
+                                                                value="{{description}}"/>
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn btn-primary mr5 ladda-button" id="confirmActivityEdit">Confirm</button>
+                                                                <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelActivityEdit">Cancel</button>
+                                                            </td>
+                                                            {{else}}
+                                                            <td><a class="pointer">{{fullcode}}</a></td>
+                                                            <td><a class="pointer">{{description}}</a></td>
+                                                            <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                            {{/if}}
+                                                        </tr>
+                                                    {{/each}}
+                                                {{else}}
+                                                    {{#each activities}}
+                                                        <tr class="pointer anActivity" name="taxRuleIndex_{{@index}}">
+                                                            <td><a class="pointer">{{fullcode}}</a></td>
+                                                            <td><a class="pointer">{{description}}</a></td>
+                                                            <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    {{#if isAnActivityBeingCreated}}
+                                                    <tr class="pointer anActivity">
+                                                        <td>
+                                                        <input name="activityFullCode" type="text" placeholder="Name" class="form-control"
+                                                            value=""/>
+                                                        </td>
+                                                        <td>
+                                                        <input name="activityDescription" type="text" placeholder="Description" class="form-control"
+                                                            value=""/>
+                                                        </td>
+                                                        <td>
+                                                            <button class="btn btn-primary mr5 ladda-button" id="confirmActivityCreate">Create</button>
+                                                            <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelActivityEdit">Cancel</button>
+                                                        </td>
+                                                    </tr>
+                                                    {{/if}}
+                                                {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div>
                                 </div>
-                            </div>
-
+                            </div><!-- col-sm-12 -->
+                            
                         </div>
                         <div class="panel-footer">
                             <button type="submit" class="btn btn-primary mr5">Save</button>

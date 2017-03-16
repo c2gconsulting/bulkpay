@@ -11,26 +11,25 @@ Template.ProjectEntry.events({
     },
     'click #delete': (e,tmpl) => {
         swal({
-                title: "Are you sure?",
-                text: "You will not be able to recover this Leave Type!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            },
-            function(){
-                let docId = tmpl.data._id;
-                let leavetype = tmpl.data.name;
-                Meteor.call("project/delete", docId, function(err,res){
-                    if(!err){
-                        swal("Deleted!", `Leave Type ${leavetype} deleted`, "success");
-                    } else {
-                        swal("Error!", `Cannot delete ${leavetype}`, "error");
-                    }
-                });
-
+            title: "Are you sure?",
+            text: "You will not be able to recover this project!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function(){
+            let docId = tmpl.data._id;
+            let leavetype = tmpl.data.name;
+            Meteor.call("project/delete", docId, function(err,res){
+                if(!err){
+                    swal("Deleted!", `Leave Type ${leavetype} deleted`, "success");
+                } else {
+                    swal("Error!", `Cannot delete ${leavetype}`, "error");
+                }
             });
+        });
     }
 });
 
