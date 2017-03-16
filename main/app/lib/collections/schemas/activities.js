@@ -15,10 +15,10 @@ Core.Schemas.Activity = new SimpleSchema({
         type: String,
         optional: true
     },
-    type: {// can be either 'department' or 'project'
+    type: {// can be either 'unit' or 'project'
         type: String
     },
-    departmentOrProjectId: {
+    unitOrProjectId: {
         type: String
     },
     businessId: {

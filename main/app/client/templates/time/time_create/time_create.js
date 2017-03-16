@@ -2,6 +2,11 @@
 /* TimeCreate: Event Handlers */
 /*****************************************************************************/
 Template.TimeCreate.events({
+    'change [name="costElement"]': (e, tmpl) => {
+        let selected = $(e.target).val();
+        if(selected)
+            Template.instance().selectedElement.set(selected);
+    },
     'change [name="project"]': (e,tmpl) => {
         let project = $(e.target).val();
         tmpl.project.set(project);
@@ -9,11 +14,6 @@ Template.TimeCreate.events({
     'change [name="costCenter"]': (e,tmpl) => {
         let center = $(e.target).val();
         tmpl.costCenter.set(center);
-    },
-    'change [name="costElement"]': (e, tmpl) => {
-        let selected = $(e.target).val();
-        if(selected)
-            Template.instance().selectedElement.set(selected);
     }
 });
 
@@ -25,6 +25,8 @@ Template.TimeCreate.helpers({
         const projects = Projects.find().fetch().map(x => {
             return {label: x.name, value: x._id};
         });
+        // console.log("projects: " + JSON.stringify(projects));
+
         return projects;
     },
     'costCenters': function () {
@@ -51,27 +53,27 @@ Template.TimeCreate.helpers({
     },
     'projectActivities': () => {
         const id = Template.instance().project.get();
-        const project = Projects.findOne({_id: id});
-        const activities = [];
-        if(project && project.hasOwnProperty('activities')){
-           project.activities.forEach(x => {
-               if(x)
-                activities.push({label: `${x.fullcode} - ${x.description}`, value: `${x.fullcode} - ${x.description}`});
-           })
-        }
-        return activities;
+        let activities = Activities.find({type: "project", unitOrProjectId: id}).fetch();
+
+        let activitiesForDisplay = activities.map(x => {
+            return {
+                label: `${x.fullcode} - ${x.description}`,
+                value: `${x.fullcode} - ${x.description}`
+            };
+        })
+        return activitiesForDisplay;
     },
     'costCenterActivities': () => {
         const id = Template.instance().costCenter.get();
-        const costCenter = EntityObjects.findOne({_id: id});
-        const activities = [];
-        if(costCenter && costCenter.hasOwnProperty('activities')){
-            costCenter.activities.forEach(x => {
-                if(x)
-                    activities.push({label: `${x.fullcode} - ${x.description}`, value: `${x.fullcode} - ${x.description}`});
-            })
-        }
-        return activities;
+        let activities = Activities.find({type: "unit", unitOrProjectId: id}).fetch();
+
+        let activitiesForDisplay = activities.map(x => {
+            return {
+                label: `${x.fullcode} - ${x.description}`,
+                value: `${x.fullcode} - ${x.description}`
+            };
+        })
+        return activitiesForDisplay;
     }
 });
 
@@ -85,9 +87,19 @@ Template.TimeCreate.onCreated(function () {
     self.project = new ReactiveVar();
     self.costCenter = new ReactiveVar();
     self.selectedElement = new ReactiveVar("Project");
-    //subscribe to leave types that user belongs to
+
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
+
+    //--
+    self.autorun(function(){
+        if(self.project.get()) {
+            self.subscribe('activities', "project", self.project.get());
+        }
+        if(self.costCenter.get()) {
+            self.subscribe('activities', "unit", self.costCenter.get());
+        }
+    });
 });
 
 Template.TimeCreate.onRendered(function () {

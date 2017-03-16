@@ -10,7 +10,7 @@ Core.publish("projects", function (filter, limit, sort) {
         return Meteor.Error(401, "Unauthorized");
     }
 
-    return this.ready();
+    // return this.ready();
 });
 
 
@@ -19,13 +19,11 @@ Core.publish("employeeprojects", function (bid) {
     //get user current position
     let user = Meteor.users.findOne({_id: userId});
     if (Core.hasSelfServiceAccess(this.userId) && user){
-        let position = user.employeeProfile.employment.position;
-        if(position){
-            return Projects.find({positionIds: position, businessId: bid, status: "Active"});
-        }
+        //return Projects.find({positionIds: position, businessId: bid, status: "Active"});
+        return Projects.find({businessId: bid, status: "Active"});
     } else {
         return Meteor.Error(401, "Unauthorized");
     }
-    return this.ready();
+    //return this.ready();
 });
 

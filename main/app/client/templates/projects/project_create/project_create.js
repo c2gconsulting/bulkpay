@@ -69,7 +69,7 @@ Template.ProjectCreate.events({
             fullcode: rowFullCodeVal,
             description: rowDescriptionVal,
             type: "project",
-            departmentOrProjectId : projectId,
+            unitOrProjectId : projectId,
             businessId : Session.get('context')
         };
 
@@ -169,7 +169,7 @@ Template.ProjectCreate.helpers({
     'activities': () => {
         let projectDetails = Template.instance().projectDetails.get();
 
-        return Activities.find({type: "project", departmentOrProjectId: projectDetails._id});
+        return Activities.find({type: "project", unitOrProjectId: projectDetails._id});
     },
     'editableActivities': () => {
         return Template.instance().editableProjectActivities.get();
@@ -225,7 +225,7 @@ Template.ProjectCreate.onCreated(function () {
             console.log("activities subscription is ready");
             let activitiesFromDb = Activities.find({
                 type: "project", 
-                departmentOrProjectId: self.projectDetails.get()._id
+                unitOrProjectId: self.projectDetails.get()._id
             }).fetch();
             self.editableProjectActivities.set(activitiesFromDb);
         }

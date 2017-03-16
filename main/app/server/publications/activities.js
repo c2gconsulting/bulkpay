@@ -2,9 +2,9 @@
  * Paytypes activities
  */
 
-Core.publish("activities", function (type, departmentOrProjectId) {
+Core.publish("activities", function (type, projectOrUnitId) {
     check(type, String);
-    check(departmentOrProjectId, String);
+    check(projectOrUnitId, String);
 
-    return Activities.find({type: type, departmentOrProjectId: departmentOrProjectId});
+    return Activities.find({type: type, unitOrProjectId: projectOrUnitId});
 });
