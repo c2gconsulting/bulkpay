@@ -58,7 +58,7 @@ Template.TimeCreate.helpers({
         let activitiesForDisplay = activities.map(x => {
             return {
                 label: `${x.fullcode} - ${x.description}`,
-                value: `${x.fullcode} - ${x.description}`
+                value: x._id
             };
         })
         return activitiesForDisplay;
@@ -70,7 +70,7 @@ Template.TimeCreate.helpers({
         let activitiesForDisplay = activities.map(x => {
             return {
                 label: `${x.fullcode} - ${x.description}`,
-                value: `${x.fullcode} - ${x.description}`
+                value: x._id
             };
         })
         return activitiesForDisplay;
@@ -145,7 +145,9 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                $("#duration").val(hours);
+                
+                let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
+                $("#duration").val(hoursToTwoDecimals);
                 if (hours <= 12){
                     $('#TimeCreate').prop('disabled', false);
                 }
@@ -163,7 +165,9 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                $("#duration").val(hours);
+                
+                let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
+                $("#duration").val(hoursToTwoDecimals);
                 if (hours >= 1 && hours <= 12){
                     $('#TimeCreate').prop('disabled', false);
                 }
@@ -182,7 +186,9 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                $("#duration").val(hours);
+                
+                let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
+                $("#duration").val(hoursToTwoDecimalshours);
                 if (hours >= 1 && hours <= 12){
                     $('#TimeCreate').prop('disabled', false);
                 }

@@ -55,7 +55,7 @@
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-6">
-                                {{> afQuickField name="duration" disabled=true id="duration"}}
+                                {{> afQuickField name="duration" disabled=true id="duration" title="(in hours)"}}
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-6">
@@ -80,8 +80,8 @@
 
                     </div>
                     <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                         <button class="btn btn-primary mr5" id="TimeCreate">Save</button>
-                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
                     </div><!-- panel-footer -->
                 </div>
                {{/autoForm}}
