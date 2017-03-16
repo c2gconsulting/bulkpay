@@ -23,9 +23,14 @@ Meteor.methods({
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
-        // check if user has permission to delete
-        Activities.remove({_id: id});
-        return true;
+        let numberOfTimeRecords = Times.find({activity: id}).count();
+        if(numberOfTimeRecords > 0) {
+            let errMsg = "Sorry, that activity can't be deleted because it is used by a time record.";
+            throw new Meteor.Error(409, errMsg);
+        } else {
+          Activities.remove({_id: id});
+          return true;            
+        }
     },
     "activity/update": function(id, details){
         if(!this.userId){

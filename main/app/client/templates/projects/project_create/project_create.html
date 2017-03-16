@@ -66,7 +66,7 @@
                                                 <tbody>
                                                 {{#if isActivitySelected}}
                                                     {{#each editableActivities}}
-                                                        <tr class="pointer anActivity" id="{{this._id}}" name="taxRuleIndex_{{@index}}">
+                                                        <tr class="pointer anActivity" id="{{this._id}}" name="activityIndex_{{@index}}">
                                                             {{#if equals @index indexOfSelectedActivity}}
                                                             <td>
                                                                 <input name="activityFullCode" type="text" placeholder="Name" class="form-control"
@@ -83,16 +83,16 @@
                                                             {{else}}
                                                             <td><a class="pointer">{{fullcode}}</a></td>
                                                             <td><a class="pointer">{{description}}</a></td>
-                                                            <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                            <td><a class="pointer"><i class="fa fa-trash-o deleteActivity"></i></a></td>
                                                             {{/if}}
                                                         </tr>
                                                     {{/each}}
                                                 {{else}}
                                                     {{#each activities}}
-                                                        <tr class="pointer anActivity" name="taxRuleIndex_{{@index}}">
+                                                        <tr class="pointer anActivity" id="{{this._id}}" name="activityIndex_{{@index}}">
                                                             <td><a class="pointer">{{fullcode}}</a></td>
                                                             <td><a class="pointer">{{description}}</a></td>
-                                                            <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                            <td><a class="pointer"><i class="fa fa-trash-o deleteActivity"></i></a></td>
                                                         </tr>
                                                     {{/each}}
                                                     {{#if isAnActivityBeingCreated}}

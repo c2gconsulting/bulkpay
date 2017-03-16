@@ -10,39 +10,35 @@ Template.ProjectCreate.events({
         e.preventDefault();
         Template.instance().isAnActivityBeingCreated.set(true);
     },
-    // 'click .deletetr': (e,tmpl) => {
-    //     e.preventDefault();
-    //     const rowIndex = e.target.closest('tr').rowIndex - 1;
-    //     //get dict taxRule and delete the index
-    //     let rules = tmpl.dict.get("taxRules");
-    //     // remove the rowIndex from the array element
-    //     if(rules[rowIndex] !== undefined){
-    //         rules.splice(rowIndex,1);
-    //         rules.forEach((aRule, index) => {
-    //           if(index === 0) {
-    //             aRule.range = "First";
-    //           } else {
-    //             aRule.range = "Next";
-    //             if(index === rules.length - 1) {
-    //               aRule.range = "Over";
-    //             }
-    //           }
-    //           //rules[index] = aRule;
-    //         })
-    //     }
-    //     tmpl.dict.set("taxRules", rules);
-    //     e.stopPropagation();    // To prevent 'click .anActivity' from being called
-    // },
+    'click .deleteActivity': (e,tmpl) => {
+        e.preventDefault();
+        e.stopPropagation();    // To prevent 'click .anActivity' from being called
+
+        const rowElement = e.currentTarget.closest('tr');
+        let jqueryRowElement = $(rowElement);
+        let activityId = jqueryRowElement.attr('id');
+        console.log("Activity id: " + activityId);
+
+        Meteor.call('activity/delete', activityId, (err, res) => {
+            if (res){
+
+            } else {
+              swal("Server error", `Please try again at a later time`, "error");
+            }
+        });
+    },
     'click .anActivity': (e, tmpl) => {
       let taxRuleRowElement = e.currentTarget;
 
       let activityRowName = taxRuleRowElement.getAttribute("name");
-      let activityParts = activityRowName.split("_");
-      let activityIndex = activityParts[1];
-      activityIndex = parseInt(activityIndex);
+      if(activityRowName) {
+        let activityParts = activityRowName.split("_");
+        let activityIndex = activityParts[1];
+        activityIndex = parseInt(activityIndex);
 
-      Template.instance().indexOfSelectedActivityForEdit.set(activityIndex);
-      Template.instance().isAnActivitySelectedForEdit.set(true);
+        Template.instance().indexOfSelectedActivityForEdit.set(activityIndex);
+        Template.instance().isAnActivitySelectedForEdit.set(true);
+      }
     },
     'click #confirmActivityCreate': (e, tmpl) => {
       const rowElement = e.currentTarget.closest('tr');
