@@ -88,6 +88,50 @@ Template.ProjectCreate.events({
         Template.instance().isAnActivityBeingCreated.set(false);
       }
     },
+    'click #confirmActivityEdit': (e, tmpl) => {
+      const rowElement = e.currentTarget.closest('tr');
+      let jqueryRowElement = $(rowElement);
+      let activityId = jqueryRowElement.attr('id');
+      console.log("Activity id: " + activityId);
+      //--
+      let rowFullCode = jqueryRowElement.find('td [name="activityFullCode"]');
+      let rowFullCodeVal = rowFullCode.val();
+
+      let rowDescription = jqueryRowElement.find('td [name="activityDescription"]');
+      let rowDescriptionVal = rowDescription.val();
+
+      e.stopPropagation();    // To prevent 'click .anActivity' from being called
+
+      if(!rowFullCodeVal || rowFullCodeVal.trim().length == 0) {
+        //swal("Validation error", `Please enter a fullcode for your activity`, "error");
+        Template.instance().errorMessage.set(`Please enter a fullcode for your activity`);
+      } else if(!rowDescriptionVal || rowDescriptionVal.trim().length == 0) {
+        //swal("Validation error", `Please enter a description for your activity`, "error");
+        Template.instance().errorMessage.set(`Please enter a description for your activity`);
+      } else {
+        Template.instance().errorMessage.set(null);
+
+        let l = Ladda.create(tmpl.$('#confirmActivityEdit')[0]);
+        l.start();
+
+        let projectId = Template.instance().projectDetails.get()._id;
+        let updatedActivity = {
+            fullcode: rowFullCodeVal,
+            description: rowDescriptionVal
+        };
+
+        Meteor.call('activity/update', activityId, updatedActivity, (err, res) => {
+            l.stop();
+            if (res){
+
+            } else {
+              swal("Server error", `Please try again at a later time`, "error");
+            }
+        });
+        Template.instance().indexOfSelectedActivityForEdit.set(null);
+        Template.instance().isAnActivitySelectedForEdit.set(false);
+      }
+    },
     'click #cancelActivityEdit': (e, tmpl) => {
       e.preventDefault();
       e.stopPropagation();    // To prevent 'click .aTaxRuleItem' from being called
