@@ -25,7 +25,7 @@ Template.ConstantCreate.helpers({
         return "ConstantForm";
     },
     'data': () => {
-        return Template.instance().data? true:false;
+        return Template.instance().data ? true:false;
     }
 });
 
