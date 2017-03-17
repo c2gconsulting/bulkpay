@@ -3,10 +3,10 @@
  */
 Meteor.methods({
     "currency/create": function(currency){
+        console.log(`Currency details: ${JSON.stringify(currency)}`)
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
-        let userId = Meteor.userId();
 
         try {
             check(currency, Core.Schemas.Currency);
@@ -21,7 +21,8 @@ Meteor.methods({
             let errMsg = "Sorry, that currency can't be created because it is already exists.";
             throw new Meteor.Error(409, errMsg);
         } else {
-            let newCurrencyId = Activities.insert(currency);
+            console.log("About to insert");
+            let newCurrencyId = Currencies.insert(currency);
             return {_id: newCurrencyId};
         }
     },

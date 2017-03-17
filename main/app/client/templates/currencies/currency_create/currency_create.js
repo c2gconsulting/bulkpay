@@ -11,15 +11,16 @@ Template.CurrencyCreate.events({
         //--
         let currentTenantId = Session.get('context');
         console.log(`Current tenantId: ${currentTenantId}`);
-        let selectedMonth = $('[name="paymentPeriod.month"]').val();
-        let selectedYear = $('[name="paymentPeriod.year"]').val();
+        let selectedMonth = $('[name="periodMonth"]').val();
+        let selectedYear = $('[name="periodYear"]').val();
 
         const newCurrencyDetails = {
-            //businessId: currentTenantId,
+            businessId: currentTenantId,
             code: $('[name="currencyCode"]').val(),
-            rateToBaseCurrency: $('[name="rateToBaseCurrency"]').val(),
+            rateToBaseCurrency: parseFloat($('[name="rateToBaseCurrency"]').val()),
             period: `${selectedMonth}${selectedYear}`,
         };
+        console.log(`new current details: ${JSON.stringify(newCurrencyDetails)}`)
         //--
 
         Meteor.call('currency/create', newCurrencyDetails, (err, res) => {

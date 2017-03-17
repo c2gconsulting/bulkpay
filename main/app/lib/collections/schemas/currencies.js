@@ -1,6 +1,6 @@
 
 /**
- * Currency Schema
+ * PaytypeCurrency Schema
  */
 Core.Schemas.Currency = new SimpleSchema({
     _id: {
@@ -12,13 +12,13 @@ Core.Schemas.Currency = new SimpleSchema({
     },
     rateToBaseCurrency: {
         type: Number,
-        decimal: true,
+        decimal: true
     },
     period: {
-        type: String,
+        type: String
     },
     businessId: {
-        type: String,
+        type: String
     },
     createdAt: {
         type: Date,
