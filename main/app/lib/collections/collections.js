@@ -298,6 +298,14 @@ Activities = new Mongo.Collection("activities");
 Partitioner.partitionCollection(Activities);
 Activities.attachSchema(Core.Schemas.Activity);
 
+
+/**
+ * Core Collections Currencies
+ */
+Currencies = new Mongo.Collection("currencies");
+Partitioner.partitionCollection(Currencies);
+Currencies.attachSchema(Core.Schemas.Currency);
+
 /**
  * Core Collections Times
  */

@@ -1,5 +1,5 @@
 /**
- * Paytypes activities
+ * Activities publications
  */
 
 Core.publish("activities", function (type, projectOrUnitId) {

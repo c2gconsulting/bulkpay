@@ -1,0 +1,71 @@
+<template name="CurrrencyList">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Currencies</a></li>
+                    <li>Manage Currencies</li>
+                </ul>
+                <h4>Currencies <span class="mb20 pull-right" id="createCurrency"><a class="btn btn-primary">New Currency</a></span></h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Code</th>
+                                <th>Value(compared to Naira)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {{#if isCurrencySelected}}
+                                    {{#each editableCurrencies}}
+                                        <tr class="pointer aCurrency" id="{{this._id}}" name="currencyIndex_{{@index}}">
+                                            {{#if equals @index indexOfSelectedCurrency}}
+                                            <td>
+                                                <input name="currencyCode" type="text" placeholder="Code" class="form-control"
+                                                value="{{code}}"/>
+                                            </td>
+                                            <td>
+                                                <input name="currencyValueToNaira" type="text" placeholder="Value to Naira" class="form-control"
+                                                value="{{valueToNaira}}"/>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary mr5 ladda-button" id="confirmCurrencyEdit">Confirm</button>
+                                                <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelCurrencyEdit">Cancel</button>
+                                            </td>
+                                            {{else}}
+                                            <td><a class="pointer">{{code}}</a></td>
+                                            <td><a class="pointer">{{valueToNaira}}</a></td>
+                                            <td><a class="pointer"><i class="fa fa-trash-o deleteCurrency"></i></a></td>
+                                            {{/if}}
+                                        </tr>
+                                    {{/each}}
+                                {{else}}
+                                    {{#each currencies}}
+                                        <tr class="pointer aCurrency" id="{{this._id}}" name="currencyIndex_{{@index}}">
+                                            <td><a class="pointer">{{code}}</a></td>
+                                            <td><a class="pointer">{{valueToNaira}}</a></td>
+                                            <td><a class="pointer"><i class="fa fa-trash-o deleteCurrency"></i></a></td>
+                                        </tr>
+                                    {{/each}}
+                                {{/if}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div>
+        </div>
+    </div><!-- contentpanel -->
+</template>

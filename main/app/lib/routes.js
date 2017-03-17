@@ -96,6 +96,11 @@ Router.route('/business/:_id/constants', {
     where: 'client'
 });
 
+Router.route('/business/:_id/currencies', {
+    name: 'currency.list',
+    controller: 'CurrenciesController',
+    where: 'client'
+});
 
 Router.route('/business/:_id/leavetypes', {
     name: 'leavetypes',
