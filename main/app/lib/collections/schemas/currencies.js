@@ -10,9 +10,12 @@ Core.Schemas.Currency = new SimpleSchema({
     code: {
         type: String
     },
-    valueToNaira: {
+    rateToBaseCurrency: {
         type: Number,
         decimal: true,
+    },
+    period: {
+        type: String,
     },
     businessId: {
         type: String,

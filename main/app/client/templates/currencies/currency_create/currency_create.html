@@ -1,0 +1,65 @@
+<template name="CurrencyCreate">
+    <div class="modal fade add-one-off" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Add Currency</h3>
+                    </div>
+                    
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Currency</label>
+                                    <select name="currencyCode" class="form-control dropdown" style="width: 100%">
+                                        {{#each allCurrencies}}
+                                            <option value="{{this}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Rate to Base Currency</label>
+                                    <input type="number" placeholder="0" name="rateToBaseCurrency" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Period Month</label>
+                                    <select name="periodMonth" class="form-control dropdown" style="width: 100%">
+                                        {{#each month}}
+                                            <option value="{{period}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Period Year</label>
+                                    <select name="periodYear" class="form-control dropdown" style="width: 100%">
+                                        {{#each years}}
+                                            <option value="{{this}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="createCurrency">Create</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</template>

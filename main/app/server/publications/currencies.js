@@ -2,6 +2,6 @@
  * Currencies publications
  */
 
-Core.publish("currencies", function () {
-    return Currencies.find();
+Core.publish("currenciesForPeriod", function (period) {
+    return Currencies.find({period: period});
 });

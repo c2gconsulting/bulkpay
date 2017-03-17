@@ -16,7 +16,6 @@ Meteor.methods({
         }
         this.unblock();
 
-
         let numberOfCurrencyWithSameCode = Currencies.find({code: currency.code}).count();
         if(numberOfCurrencyWithSameCode > 0) {
             let errMsg = "Sorry, that currency can't be created because it is already exists.";

@@ -47,7 +47,7 @@ CurrenciesController = BusinessUnitController.extend({
   //  action: 'myActionFunction'
   
   action: function () {
-    this.render('CurrrencyList');
+    this.render('CurrencyList');
   },
   onAfterAction: function () {
   },
