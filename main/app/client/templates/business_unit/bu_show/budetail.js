@@ -1,4 +1,5 @@
 import { Tracker } from 'meteor/tracker';
+
 Template.BuDetail.events({
     'click .node': (e, tmpl) => {
         let selectedNode = $(e.target).closest('.node')[0].id;

@@ -1,10 +1,10 @@
 /*****************************************************************************/
-/* ProjectCreate: Event Handlers */
+/* BusinessUnitActivities: Event Handlers */
 /*****************************************************************************/
 
 import Ladda from 'ladda';
 
-Template.ProjectCreate.events({
+Template.BusinessUnitActivities.events({
 
     'click #addActivity': (e,tmpl) => {
         e.preventDefault();
@@ -64,12 +64,12 @@ Template.ProjectCreate.events({
         let l = Ladda.create(tmpl.$('#confirmActivityCreate')[0]);
         l.start();
 
-        let projectId = Template.instance().projectDetails.get()._id;
+        let businessUnitId = Template.instance().unitDetails.get()._id;
         let newActivity = {
             fullcode: rowFullCodeVal,
             description: rowDescriptionVal,
-            type: "project",
-            unitOrProjectId : projectId,
+            type: "unit",
+            unitOrProjectId : businessUnitId,
             businessId : Session.get('context')
         };
 
@@ -110,7 +110,6 @@ Template.ProjectCreate.events({
         let l = Ladda.create(tmpl.$('#confirmActivityEdit')[0]);
         l.start();
 
-        //let projectId = Template.instance().projectDetails.get()._id;
         let updatedActivity = {
             fullcode: rowFullCodeVal,
             description: rowDescriptionVal
@@ -139,14 +138,9 @@ Template.ProjectCreate.events({
 });
 
 /*****************************************************************************/
-/* ProjectCreate: Helpers */
+/* BusinessUnitActivities: Helpers */
 /*****************************************************************************/
-Template.ProjectCreate.helpers({
-    'positions': () => {
-        return EntityObjects.find().fetch().map(x => {
-            return {label: x.name, value: x._id}
-        })
-    },
+Template.BusinessUnitActivities.helpers({
     'status': () => {
         return [{label: "Active", value: "Active"},{label: "Inactive", value: "Inactive"}];
     },
@@ -155,21 +149,16 @@ Template.ProjectCreate.helpers({
             return "update";
         return "insert";
     },
-    'formType': () => {
-        if(Template.instance().data)
-            return "projectForm";
-        return "updateProjectForm";
-    },
-    'data': () => {
-        return Template.instance().data ? true:false;
+    'unitName': () => {
+        return Template.instance().unitDetails.get().name;
     },
     'errorMessage': () => {
         return Template.instance().errorMessage.get();
     },
     'activities': () => {
-        let projectDetails = Template.instance().projectDetails.get();
+        let unitDetails = Template.instance().unitDetails.get();
 
-        return Activities.find({type: "project", unitOrProjectId: projectDetails._id});
+        return Activities.find({type: "unit", unitOrProjectId: unitDetails._id});
     },
     'editableActivities': () => {
         return Template.instance().editableProjectActivities.get();
@@ -188,19 +177,18 @@ Template.ProjectCreate.helpers({
 
 
 /*****************************************************************************/
-/* ProjectCreate: Lifecycle Hooks */
+/* BusinessUnitActivities: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ProjectCreate.onCreated(function () {
+Template.BusinessUnitActivities.onCreated(function () {
     let self = this;
-
-    //subscribe to positions and paygrades
-    self.subscribe('getPositions', Session.get('context'));
-
     //--
-    console.log("template instance data: " + JSON.stringify(Template.instance().data));
+    let unitId = Template.instance().data;
+    console.log(`template instance data(unitid): ${unitId}`);
 
-    self.projectDetails = new ReactiveVar();
-    self.projectDetails.set(Template.instance().data);
+    let unitDetails = EntityObjects.findOne({_id: unitId});
+
+    self.unitDetails = new ReactiveVar();
+    self.unitDetails.set(unitDetails);
 
     //--
     self.editableProjectActivities = new ReactiveVar();
@@ -219,24 +207,21 @@ Template.ProjectCreate.onCreated(function () {
     self.errorMessage.set(null);
 
     self.autorun(function () {
-        let activitiesSubscription = self.subscribe('activities', "project", self.projectDetails.get()._id);
+        let activitiesSubscription = self.subscribe('activities', "unit", self.unitDetails.get()._id);
 
         if (activitiesSubscription.ready()) {
             console.log("activities subscription is ready");
             let activitiesFromDb = Activities.find({
-                type: "project",
-                unitOrProjectId: self.projectDetails.get()._id
+                type: "unit",
+                unitOrProjectId: self.unitDetails.get()._id
             }).fetch();
             self.editableProjectActivities.set(activitiesFromDb);
         }
     });
 });
 
-Template.ProjectCreate.onRendered(function () {
-    let self = this;
-    $('select.dropdown').dropdown();
+Template.BusinessUnitActivities.onRendered(function () {
 });
 
-Template.ProjectCreate.onDestroyed(function () {
-    Modal.hide("ProjectCreate");
+Template.BusinessUnitActivities.onDestroyed(function () {
 });
