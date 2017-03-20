@@ -32,21 +32,22 @@
                             <ul class="folder-list">
                                 {{#each children }}
                                     <li>
-                                        {{#if isChildAUnit otype}}
+                                        {{> MemberNode otypeData=otype currentNodeData=this}}
+                                        <!-- {{#if isChildAUnit otype}}
                                         <a class="selectedNodeChildUnit" name="{{_id}}" style="cursor: pointer;"><i class="fa {{icon otype}}"></i> {{name}}
                                             <span class="pull-right">
                                                 <i class="fa fa-edit editnode"></i>
                                                 <i class="fa fa-trash-o deletenode"></i>
-                                            </span><!-- panel-btns -->
+                                            </span>
                                         </a>
                                         {{else}}
                                         <a class="selectedLeafNode" name={{_id}}><i class="fa {{icon otype}}"></i> {{name}}
                                             <span class="pull-right">
                                                 <i class="fa fa-edit editnode"></i>
                                                 <i class="fa fa-trash-o deletenode"></i>
-                                            </span><!-- panel-btns -->
+                                            </span>
                                         </a>
-                                        {{/if}}
+                                        {{/if}} -->
                                     </li>
                                 {{/each}}
                             </ul>
@@ -141,4 +142,22 @@
             </div>
         </div>
     </div>
+</template>
+
+<template name="MemberNode">
+    {{#if isChildAUnit otypeData.otype}}
+    <a class="selectedNodeChildUnit" name="{{currentNodeData._id}}" style="cursor: pointer;"><i class="fa {{icon otypeData.otype}}"></i> {{currentNodeData.name}}
+        <span class="pull-right">
+            <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
+            <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>
+        </span><!-- panel-btns -->
+    </a>
+    {{else}}
+    <a class="selectedLeafNode" name={{currentNodeData._id}}><i class="fa {{icon otypeData.otype}}"></i> {{currentNodeData.name}}
+        <span class="pull-right">
+            <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
+            <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>
+        </span><!-- panel-btns -->
+    </a>
+    {{/if}}
 </template>

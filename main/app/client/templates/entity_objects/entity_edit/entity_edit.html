@@ -1,0 +1,89 @@
+<template name="EntityEdit">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Edit Entity</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="new-entity-name" class="control-label">Name</label>
+                                    <input name="name" type="text" value="{{currentEntityData.name}}" id="new-entity-name" placeholder="Object Name" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                    <select name="status" class="form-control dropdown">
+                                        <option value="Active" {{selected "status" "Active" }}>Active</option>
+                                        <option value="Inactive" {{selected "status" "Inactive" }}>Inactive</option>
+
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Node Type</label>
+                                    <select name="otype" id="otype" class="form-control dropdown">
+                                        <option value="Unit" {{selected "otype" "Unit" }}>Unit</option>
+                                        <option value="Position" {{selected "otype" "Position" }}>Position</option>
+                                        <option value="Job" {{selected "otype" "Job" }}>Job</option>
+                                        <option value="Location" {{selected "otype" "Location" }}>Location</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+                        </div>
+
+                        {{#if selectedPos}}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Supervisor</label>
+                                        <select name="supervisor" class="form-control dropdown">
+                                            <option value="">Select Positions</option>
+                                            {{#each positions}}
+                                                <option value="{{_id}}" {{getSelectedSupervisor "supervisor" _id}}>{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Alternate Supervisor</label>
+                                        <select name="alternateSupervisor" class="form-control dropdown">
+                                            <option value="">Select Positions</option>
+                                            {{#each positions}}
+                                                <option value="{{_id}}" {{getSelectedSupervisor "alternateSupervisor" _id}}>{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                            </div>
+                        {{/if}}
+                        {{#if unit}}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="costCenter" class="control-label">Cost Center</label>
+                                        <input name="costCenter" type="text" id="costCenter" placeholder="Enter Cost Center" class="form-control" />
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                            </div><!-- row -->
+                        {{/if}}
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5 {{disabled}}" id="createEntity">Update</button>
+                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                        <button type="reset" class="btn btn-danger pull-right" id="deleteEntity">Delete</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

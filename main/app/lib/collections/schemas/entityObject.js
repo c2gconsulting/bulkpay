@@ -38,7 +38,7 @@ Core.Schemas.EntityObject = new SimpleSchema({
         autoValue: function(){
             return Meteor.userId();
         },
-        denyUpdate: true,
+        //denyUpdate: true,
         optional: true
     },
     lastEditedBy: {
