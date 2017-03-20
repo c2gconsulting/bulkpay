@@ -74,6 +74,16 @@ Template.Node.events({
         console.log(`Unit id: ${unitId}`)
 
         Modal.show('BusinessUnitActivities', unitId);
+    },
+    'click .selectedNode': (e, tmpl) => {
+        e.preventDefault();
+        let selectedNodeElement = e.currentTarget;
+        let entityId = selectedNodeElement.getAttribute("name");
+
+        let nodeProp = EntityObjects.findOne({_id: entityId});
+        console.log("node properties: " + JSON.stringify(nodeProp));
+
+        swal(nodeProp.name, nodeProp.otype , "success");
     }
 });
 
