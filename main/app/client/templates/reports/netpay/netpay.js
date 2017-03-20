@@ -65,7 +65,8 @@ Template.NetPayReport.onCreated(function () {
 });
 
 Template.NetPayReport.onRendered(function () {
-  //$('#example').DataTable();
+    //$('#example').DataTable();
+  	self.$('select.dropdown').dropdown();
 });
 
 Template.NetPayReport.onDestroyed(function () {

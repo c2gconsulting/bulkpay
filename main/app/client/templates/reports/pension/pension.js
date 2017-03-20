@@ -56,7 +56,8 @@ Template.PensionReport.onCreated(function () {
 });
 
 Template.PensionReport.onRendered(function () {
-  //$('#example').DataTable();
+    //$('#example').DataTable();
+    self.$('select.dropdown').dropdown();
 });
 
 Template.PensionReport.onDestroyed(function () {
