@@ -108,13 +108,17 @@ Template.EntityCreate.helpers({
         //use ReactiveVar or reactivedict instead of sessions..
     },
     'parentName': (parentId) => {
+        console.log("Parent id: " + parentId);
+
         if(parentId){
             return EntityObjects.findOne({_id: parentId}).name;
         }
         let root = Template.instance().isroot.get();
-        if(root)
+        if(root) {
             return BusinessUnits.findOne().name;
-        return EntityObjects.findOne().name;
+        } else {
+            return EntityObjects.findOne().name;  
+        }
     },
     'checked': (prop) => {
         if(Template.instance().data)
