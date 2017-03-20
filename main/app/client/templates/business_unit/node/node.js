@@ -65,6 +65,8 @@ Template.Node.events({
         e.preventDefault();
         let selectedNode = Session.get('node');
         console.log(selectedNode);
+        e.stopPropagation();
+        
         Modal.show('EntityCreate', {node: selectedNode, action: "edit"});
     },
     'click .selectedNodeChildUnit': (e, tmpl) => {
@@ -75,7 +77,7 @@ Template.Node.events({
 
         Modal.show('BusinessUnitActivities', unitId);
     },
-    'click .selectedNode': (e, tmpl) => {
+    'click .selectedLeafNode': (e, tmpl) => {
         e.preventDefault();
         let selectedNodeElement = e.currentTarget;
         let entityId = selectedNodeElement.getAttribute("name");
