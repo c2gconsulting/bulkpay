@@ -8,7 +8,19 @@ Template.CurrencyList.events({
     },
     'click #uploadCurrencies': function(e){
         e.preventDefault();
-        Modal.show('ImportModal');
+        Modal.show('ImportCurrenciesModal');
+    },
+    'change [name="periodMonth"]': function(e){
+      let selectedMonth = e.currentTarget.value;
+      console.log("Selected month: " + selectedMonth);
+
+      Template.instance().selectedMonth.set(selectedMonth);
+    },
+    'change [name="periodYear"]': function(e){
+      let selectedYear = e.currentTarget.value;
+      console.log("Selected year: " + selectedYear);
+
+      Template.instance().selectedYear.set(selectedYear);
     }
 });
 
@@ -20,8 +32,15 @@ Template.CurrencyList.helpers({
         let selectedMonth = Template.instance().selectedMonth.get();
         let selectedYear = Template.instance().selectedYear.get();
         const period = `${selectedMonth}${selectedYear}`
-        
+
         return Currencies.find({period: period});
+    },
+    'currenciesCount': function(){
+        let selectedMonth = Template.instance().selectedMonth.get();
+        let selectedYear = Template.instance().selectedYear.get();
+        const period = `${selectedMonth}${selectedYear}`
+
+        return Currencies.find({period: period}).count();
     },
     'month': () => {
         return Core.months()
@@ -39,21 +58,26 @@ Template.CurrencyList.onCreated(function () {
 
     self.selectedMonth = new ReactiveVar();
     self.selectedYear = new ReactiveVar();
+    //--
+    let theMoment = moment();
+    // console.log(`Current month: ${theMoment.month()} ... alternative: ${theMoment.format('MM')}`);
+    // console.log(`Current year: ${theMoment.year()}`)
+    self.selectedMonth.set(theMoment.format('MM'))
+    self.selectedYear.set(theMoment.format('YYYY'))
 
     self.autorun(function() {
-        let theMoment = moment();
-        // console.log(`Current month: ${theMoment.month()} ... alternative: ${theMoment.format('MM')}`);
-        // console.log(`Current year: ${theMoment.year()}`)
-        self.selectedMonth.set(theMoment.format('MM'))
-        self.selectedYear.set(theMoment.format('YYYY'))
         const period = `${self.selectedMonth.get()}${self.selectedYear.get()}`
-
         self.subscribe('currenciesForPeriod', period);
     });
 });
 
 Template.CurrencyList.onRendered(function () {
+    let self = this;
+
     $('select.dropdown').dropdown();
+
+    $('[name="periodMonth"]').val(self.selectedMonth.get());
+    $('[name="periodYear"]').val(self.selectedYear.get());
 });
 
 Template.CurrencyList.onDestroyed(function () {

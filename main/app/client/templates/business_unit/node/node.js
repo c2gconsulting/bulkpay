@@ -66,8 +66,15 @@ Template.Node.events({
         let selectedNode = Session.get('node');
         console.log(selectedNode);
         Modal.show('EntityCreate', {node: selectedNode, action: "edit"});
-    }
+    },
+    'click .selectedNodeChildUnit': (e, tmpl) => {
+        e.preventDefault();
+        let selectedNodeElement = e.currentTarget;
+        let unitId = selectedNodeElement.getAttribute("name");
+        console.log(`Unit id: ${unitId}`)
 
+        Modal.show('BusinessUnitActivities', unitId);
+    }
 });
 
 /*****************************************************************************/
@@ -104,6 +111,9 @@ Template.Node.helpers({
         };
 
     },
+    'isChildAUnit': (type) => {
+        return type === "Unit" ? true : false;
+    },
     'businessid': () => {
         return Session.get('context');
     },
@@ -127,6 +137,7 @@ Template.Node.helpers({
 /*****************************************************************************/
 Template.Node.onCreated(function () {
     var self = this;
+
     //get session value for node and determine subscription
    self.autorun(function(){
        let node = Session.get('node');
