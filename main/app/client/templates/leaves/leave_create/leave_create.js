@@ -41,6 +41,8 @@ Template.LeaveCreate.onCreated(function () {
 
 Template.LeaveCreate.onRendered(function () {
     let self = this;
+    self.$('select.dropdown').dropdown();
+
     //disable submit temporary fix
     $('#LeaveCreate').prop('disabled', true);
     let start = $("#startDate").val();
@@ -51,7 +53,7 @@ Template.LeaveCreate.onRendered(function () {
         let duration = end.diff(start, 'days');
         $("#duration").val(duration <= 0 ? 0 : duration)
     }
-    
+
     self.autorun(function() {
         if (!self.profile.get('duration')){
             let propertyType = self.$("#duration").val();
