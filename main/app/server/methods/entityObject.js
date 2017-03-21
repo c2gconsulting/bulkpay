@@ -54,11 +54,17 @@ Meteor.methods({
 
 
     },
-    "entityObject/update": function(entity){
-        existingelemscount = EntityObjects.find({parent:entity}).count();
-        neworder = (existingelemscount+1)*10;
-        EntityObjects.update({_id:entity},{$set:{parent:'Cell_Phones_and_Smartphones', order:neworder}}); //set all parameters
-        //{ "_id" : "LG", "order" : 60, "parent" : "Cell_Phones_and_Smartphones", "someadditionalattr" : "test" }
+    "entityObject/update": function(id, entity){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        //update can only be done by authorized user. so check permission
+        check(id, String);
+
+        //--
+        console.log("entity to update: " + JSON.stringify(entity))
+
+        EntityObjects.update({_id:id}, {$set:entity});
     },
     "entityObject/getNodeChildren": function(entity){
         if(!this.userId){
@@ -148,4 +154,3 @@ Meteor.methods({
 
 
 });
-

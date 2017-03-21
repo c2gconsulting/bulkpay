@@ -6,7 +6,7 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Add Currency</h3>
                     </div>
-                    
+
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -34,7 +34,7 @@
                                     <label class="control-label">Period Month</label>
                                     <select name="periodMonth" class="form-control dropdown" style="width: 100%">
                                         {{#each month}}
-                                            <option value="{{period}}">{{name}}</option>
+                                            <option value="{{period}}" {{selectedMonth this.period}}>{{name}}</option>
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->
@@ -45,7 +45,7 @@
                                     <label class="control-label">Period Year</label>
                                     <select name="periodYear" class="form-control dropdown" style="width: 100%">
                                         {{#each years}}
-                                            <option value="{{this}}">{{this}}</option>
+                                            <option value="{{this}}" {{selectedYear this}}>{{this}}</option>
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->

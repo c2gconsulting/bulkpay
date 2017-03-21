@@ -36,59 +36,10 @@ Template.Node.events({
         let selectedNode = Session.get('node');
         Modal.show('EntityCreate', {node: selectedNode, action: "create"});
     },
-    'click .deletenode': (e, tmpl) => {
-        e.preventDefault();
-        var selectedNode = Session.get('node');
-        swal({
-            title: "Are you sure?",
-            text: "This node will only be deleted if there are no active children",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        }, function(){
-            Meteor.call("entityObject/delete", selectedNode, function(err,res){
-                if(!err){
-                    console.log(res);
-                    Tracker.flush();
-                    swal("Deleted!", "Node deleted" , "success");
-                } else {
-                    console.log(err);
-                    swal("Deleted!", err , "error");
-                }
-            })
-
-        });
-    },
-    'click .editnode': (e, tmpl) => {
-        e.preventDefault();
-        let selectedNode = Session.get('node');
-        console.log(selectedNode);
-        Modal.show('EntityCreate', {node: selectedNode, action: "edit"});
-    },
-    'click .selectedNodeChildUnit': (e, tmpl) => {
-        e.preventDefault();
-        let selectedNodeElement = e.currentTarget;
-        let unitId = selectedNodeElement.getAttribute("name");
-        console.log(`Unit id: ${unitId}`)
-
-        Modal.show('BusinessUnitActivities', unitId);
-    },
-    'click .selectedNode': (e, tmpl) => {
-        e.preventDefault();
-        let selectedNodeElement = e.currentTarget;
-        let entityId = selectedNodeElement.getAttribute("name");
-
-        let nodeProp = EntityObjects.findOne({_id: entityId});
-        console.log("node properties: " + JSON.stringify(nodeProp));
-
-        swal(nodeProp.name, nodeProp.otype , "success");
-    }
 });
 
 /*****************************************************************************/
-/* Oneoff: Helpers */
+/* Node: Helpers */
 /*****************************************************************************/
 Template.Node.helpers({
     'node': () => {
@@ -167,4 +118,100 @@ Template.Node.onRendered(function () {
 });
 
 Template.Node.onDestroyed(function () {
+});
+
+//----------
+
+Template.MemberNode.events({
+
+  'click .deletenode': (e, tmpl) => {
+      e.preventDefault();
+      let selectedNodeElement = e.currentTarget;
+      let entityId = selectedNodeElement.getAttribute("name");
+      e.stopPropagation();
+
+      swal({
+          title: "Are you sure?",
+          text: "This node will only be deleted if there are no active children",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false
+      }, function(){
+          Meteor.call("entityObject/delete", entityId, function(err,res){
+              if(!err){
+                  console.log(res);
+                  Tracker.flush();
+                  swal("Deleted!", "Node deleted" , "success");
+              } else {
+                  console.log(err);
+                  swal("Deleted!", err , "error");
+              }
+          })
+
+      });
+  },
+  'click .editnode': (e, tmpl) => {
+      e.preventDefault();
+
+      let selectedNodeElement = e.currentTarget;
+      let entityId = selectedNodeElement.getAttribute("name");
+      e.stopPropagation();
+
+      let selectedNode = EntityObjects.findOne({"_id": entityId})
+      Modal.show('EntityEdit', {node: selectedNode});
+  },
+  'click .selectedNodeChildUnit': (e, tmpl) => {
+      e.preventDefault();
+      let selectedNodeElement = e.currentTarget;
+      let unitId = selectedNodeElement.getAttribute("name");
+      console.log(`Unit id: ${unitId}`)
+
+      Modal.show('BusinessUnitActivities', unitId);
+  },
+  'click .selectedLeafNode': (e, tmpl) => {
+      e.preventDefault();
+      let selectedNodeElement = e.currentTarget;
+      let entityId = selectedNodeElement.getAttribute("name");
+
+      let nodeProp = EntityObjects.findOne({_id: entityId});
+      console.log("node properties: " + JSON.stringify(nodeProp));
+
+      swal(nodeProp.name, nodeProp.otype , "success");
+  }
+});
+
+Template.MemberNode.helpers({
+  'isChildAUnit': (type) => {
+      return type === "Unit" ? true : false;
+  },
+  'icon': (type) => {
+      switch (type){
+          case "Unit":
+              return "fa-sitemap";
+          case "Position":
+              return "fa-star";
+          case "Location":
+              return "fa-map-marker";
+          case "Job":
+              return "fa-pie-chart";
+          case "Person":
+              return "fa-user"
+      };
+  },
+});
+
+Template.MemberNode.onCreated(function () {
+    var self = this;
+    console.log("Member node template data: " + JSON.stringify(Template.instance().data));
+    self.autorun(function(){
+
+    });
+});
+
+Template.MemberNode.onRendered(function () {
+});
+
+Template.MemberNode.onDestroyed(function () {
 });

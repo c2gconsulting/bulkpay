@@ -2,7 +2,7 @@
 /* Selectpicker: Event Handlers */
 /*****************************************************************************/
 Template.semanticselect.events({
-	
+
 });
 
 /*****************************************************************************/
@@ -18,7 +18,9 @@ Template.semanticselect.onCreated(function () {
 });
 
 Template.semanticselect.onRendered(function () {
-	self.$('select.dropdown').dropdown();
+	self.$('select.dropdown').dropdown({
+		forceSelection: false
+	});
 });
 
 Template.semanticselect.onDestroyed(function () {

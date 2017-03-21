@@ -113,7 +113,8 @@ Template.TaxReport.onCreated(function () {
 });
 
 Template.TaxReport.onRendered(function () {
-  //$('#example').DataTable();
+    //$('#example').DataTable();
+    self.$('select.dropdown').dropdown();
 });
 
 Template.TaxReport.onDestroyed(function () {
