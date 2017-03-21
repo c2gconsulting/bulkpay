@@ -31,11 +31,6 @@ Template.NetPayReport.events({
           swal('Error', 'Please select Period', 'error');
       }
    },
-   'click .Export': (e, tmpl) => {
-      let currentNetPayReportResults = tmpl.netPayReportResults.get();
-      if(currentNetPayReportResults) {
-
-   },
     'click .excel': (e, tmpl) => {
         event.preventDefault();
         const month = $('[name="paymentPeriod.month"]').val();
