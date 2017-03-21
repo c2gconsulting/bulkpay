@@ -1,10 +1,12 @@
 <template name="navigator">
     <div class="media profile-left">
-        <a class="pull-left profile-thumb" href="profile.html">
+        <a class="pull-left profile-thumb" href="/business/{{context}}/employee/{{currentUserId}}/profile">
             <img class="img-circle" src="/images/photos/avatar.jpg" alt="">
         </a>
         <div class="media-body">
-            <h4 class="media-heading">{{currentUser.profile.fullName}}</h4>
+            <a href="/business/{{context}}/employee/{{currentUserId}}/profile">
+                <h4 class="media-heading">{{currentUser.profile.fullName}}</h4>
+            </a>
             <small class="text-muted"> {{currentUserEmail}} </small>
         </div>
     </div><!-- media -->

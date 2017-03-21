@@ -132,6 +132,11 @@ Router.route('/business/:_id/employees', {
     controller: 'EmployeesController',
     where: 'client'
 });
+Router.route('/business/:_id/employee/:employeeId/profile', {
+    name: 'employee.profile',
+    controller: 'EmployeeProfileController',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/new', {
     name: 'employees.create',
