@@ -21,40 +21,65 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="container-fluid">
-                    <div class="col-lg-8">
                       <div class="row">
-                      </div>
-                    </div>
+                          <div class="col-md-6">
+                          <!-- <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm"> -->
+                              <!-- <div class="avatar">
+                                  {{#if images photo._id }}
+                                      {{#with images photo._id}}
+                                          <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
+                                      {{/with}}
+                                  {{ else }}
+                                      <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                                  {{/if}}
+                              </div> -->
+                          <!-- </div> -->
 
-                      <div class="row">
-                        <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm">
-                            <div class="avatar text-center">
-                                {{#if images photo._id }}
-                                    {{#with images photo._id}}
-                                        <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
-                                    {{/with}}
-                                {{ else }}
-                                    <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
-                                {{/if}}
-                            </div>
-                        </div>
+                          <!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"> -->
+                              <div class="panel panel-success-head widget-todo">
+                                  <div class="col-sm-6">
+                                      Full Name:
+                                      {{#if profile.fullName}}
+                                      <h3 class="name mt0 fs28">{{profile.fullName}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
 
-                        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                            <div class="panel panel-success-head widget-todo">
-                                <div class="col-sm-6">
-                                    <h3 class="name mt0 fs28">{{profile.fullName}}</h3>
-                                    {{emails.[0].address}}
-                                    <br/>
-                                    {{employeeProfile.employeeId}}
-                                    <br/>
-                                    {{employeeProfile.phone}}
-                                    <br/>
-                                    {{#if employeeProfile}}
-                                        <i class="fa fa-star"></i> {{positionName employeeProfile.employment.position}}
-                                    {{/if}}
-                                </div>
-                            </div>
-                        </div>
+                                      Email:
+                                      {{#if emails.[0].address}}
+                                      <h3 class="name mt0 fs28">{{emails.[0].address}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Employee ID:
+                                      {{#if employeeProfile.employeeId}}
+                                      <h3 class="name mt0 fs28">{{employeeProfile.employeeId}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Phone:
+                                      {{#if employeeProfile.phone}}
+                                      <h3 class="name mt0 fs28">{{employeeProfile.phone}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Position:
+                                      {{#if employeeProfile.employment.position}}
+                                          <h3 class="name mt0 fs28">{{positionName employeeProfile.employment.position}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                  </div>
+                              </div>
+                          <!-- </div> -->
+                          </div>
 
                           <div class="col-md-6">
                           {{> EmployeeProfileDetails currentEmployee=this}}
