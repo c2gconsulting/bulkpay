@@ -63,7 +63,7 @@ Template.payruns.events({
                 console.log(res);
                 if(res){
                     //call the export fo
-                    BulkpayExplorer.exportAllData(res, "PaymentHistoryReport");
+                    BulkpayExplorer.exportAllData(res, "Payment Report");
                     resetButton()
                 } else {
                     console.log(err);

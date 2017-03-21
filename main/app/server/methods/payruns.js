@@ -19,7 +19,6 @@ Meteor.methods({
                 // for every payment, push value if it exists or 0.00 into result
                 payments.forEach(p => {
                         const header = {code: p.code , reference: p.reference};
-                        console.log(header);
                         const index = _.findLastIndex(paytypes, header);
                         if(index === -1) {
                             paytypes.push(header);
@@ -39,9 +38,9 @@ Meteor.methods({
                     
                     //push employee name, employeeId and period
                     const employeePay = [];
-                    employeePay.push(employee.profile.fullName)
-                    employeePay.push(employee.employeeProfile.employeeId)
-                    employeePay.push(x.period)
+                    employeePay.push(employee.profile.fullName);
+                    employeePay.push(employee.employeeProfile.employeeId);
+                    employeePay.push(x.period);
 
                     paytypes.forEach(p => {
                         const payments = x.payment;
@@ -59,6 +58,44 @@ Meteor.methods({
             let exportData = {fields: export_header, data: data};
             return exportData   ;
     },
+
+    /* Get net monthly pay amount NMP
+
+     */
+    'ExportNetPayResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userid)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period}).fetch();
+            const netpay = result.map(x => {
+                const netPayIndex = _.findLastIndex(x.payment, {code: 'NMP'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
+                if(netPayIndex > -1) {
+                    const amountPC = x.payment[netPayIndex].amountPC;
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        return [
+                            employee.profile.fullName,
+                            employee.employeeProfile.payment.bank,
+                            employee.employeeProfile.payment.accountNumber,
+                            amountPC
+                        ];
+                    }
+                }
+            });
+            const header = [
+                "Full Name",
+                "Bank",
+                "Account Number",
+                "Amount"
+            ];
+            return {fields: header, data: netpay};
+        }
+    },
+
 
     /* Get net monthly pay amount NMP
 
@@ -88,10 +125,46 @@ Meteor.methods({
                     }
                 }
             });
-            console.log('as net pay', netpay);
             return netpay;
         }
     },
+
+    /* Export Tax payment
+     */
+    'exportTaxResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userid)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Tax'}).fetch();
+            const tax = result.map(x => {
+                const taxIndex = _.findLastIndex(x.payment, {reference: 'Tax'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
+                if(taxIndex > -1) {
+                    const amountLC = x.payment[taxIndex].amountLC;
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        return [
+                            employee.profile.fullName,
+                            employee.employeeProfile.state,
+                            employee.employeeProfile.payment.taxPayerId,
+                            amountLC
+                        ];
+                    }
+                }
+            });
+            const header = [
+                "Full Name",
+                "Resident State",
+                "Tax Payer ID",
+                "Amount"
+            ];
+            return {fields: header, data: tax};
+        }
+    },
+
 
     /* Get Tax pay
      */
@@ -121,6 +194,54 @@ Meteor.methods({
                 }
             });
             return tax;
+        }
+    },
+
+    'exportPensionResult': (businessId, period) => {
+        //get all payroll result for specified period if employee is authorized
+        check(period, String);
+        check(businessId, String);
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Pension'}).fetch();
+            const pension = result.map(x => {
+                const pensionsContribution = _.where(x.payment, {reference: 'Pension'}); //get all pension pay)
+                if(pensionsContribution.length) {
+                    const pensionAmount = {};
+                    let pensionDescription;
+                    pensionsContribution.forEach(x => {
+                        //pension is always suffixed with _EE or _ER
+                        const pensionLength = x.code.length;
+                        if (!pensionDescription)
+                            pensionDescription = x.description;
+                        const type = x.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
+                        if(type === '_EE')
+                            pensionAmount.employeeContribution  = x.amountPC;
+                        if(type === '_ER')
+                            pensionAmount.employerContribution = x.amountPC;
+                    });
+                    //get employee details
+                    let employee = Meteor.users.findOne({_id: x.employeeId});
+                    if(employee){
+                        return [
+                            employee.profile.fullName,
+                            employee.employeeProfile.payment.pensionmanager,
+                            employee.employeeProfile.payment.RSAPin,
+                            pensionAmount.employeeContribution,
+                            pensionAmount.employerContribution
+                        ]
+                    }
+                }
+            });
+            const header = [
+                "Full Name",
+                "Pension Fund Administrator",
+                "RSA PIN",
+                "Employee Contribution",
+                "Employer Contribution"
+            ];
+            return {fields: header, data: pension};
         }
     },
 
