@@ -32,7 +32,7 @@
                             <ul class="folder-list">
                                 {{#each children }}
                                     <li>
-                                        {{> MemberNode otypeData=otype currentNodeData=this}}
+                                        {{> MemberNode currentNodeData=this}}
                                         <!-- {{#if isChildAUnit otype}}
                                         <a class="selectedNodeChildUnit" name="{{_id}}" style="cursor: pointer;"><i class="fa {{icon otype}}"></i> {{name}}
                                             <span class="pull-right">
@@ -145,15 +145,15 @@
 </template>
 
 <template name="MemberNode">
-    {{#if isChildAUnit otypeData.otype}}
-    <a class="selectedNodeChildUnit" name="{{currentNodeData._id}}" style="cursor: pointer;"><i class="fa {{icon otypeData.otype}}"></i> {{currentNodeData.name}}
+    {{#if isChildAUnit currentNodeData.otype}}
+    <a class="selectedNodeChildUnit" name="{{currentNodeData._id}}" style="cursor: pointer;"><i class="fa {{icon currentNodeData.otype}}"></i> {{currentNodeData.name}}
         <span class="pull-right">
             <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
             <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>
         </span><!-- panel-btns -->
     </a>
     {{else}}
-    <a class="selectedLeafNode" name={{currentNodeData._id}}><i class="fa {{icon otypeData.otype}}"></i> {{currentNodeData.name}}
+    <a class="selectedLeafNode" name={{currentNodeData._id}}><i class="fa {{icon currentNodeData.otype}}"></i> {{currentNodeData.name}}
         <span class="pull-right">
             <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
             <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>

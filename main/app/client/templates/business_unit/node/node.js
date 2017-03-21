@@ -204,7 +204,7 @@ Template.MemberNode.helpers({
 
 Template.MemberNode.onCreated(function () {
     var self = this;
-    console.log("Member node template data: " + JSON.stringify(Template.instance().data));
+    //console.log("Member node template data: " + JSON.stringify(Template.instance().data));
     self.autorun(function(){
 
     });
