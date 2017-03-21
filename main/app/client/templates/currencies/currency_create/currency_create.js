@@ -53,6 +53,16 @@ Template.CurrencyCreate.helpers({
     },
     'years': () => {
         return Core.years();
+    },
+    selectedMonth: function (val) {
+        if(Template.instance().selectedMonth.get()) {
+            return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
+        }
+    },
+    selectedYear: function (val) {
+        if(Template.instance().selectedYear.get()) {
+            return Template.instance().selectedYear.get() === val ? selected="selected" : '';
+        }
     }
 });
 
@@ -60,17 +70,21 @@ Template.CurrencyCreate.helpers({
 /* CurrencyCreate: Lifecycle Hooks */
 /*****************************************************************************/
 Template.CurrencyCreate.onCreated(function () {
+    let self = this;
+
+    self.selectedMonth = new ReactiveVar();
+    self.selectedYear = new ReactiveVar();
+    //--
+    let theMoment = moment();
+    self.selectedMonth.set(theMoment.format('MM'))
+    self.selectedYear.set(theMoment.format('YYYY'))
 });
 
 Template.CurrencyCreate.onRendered(function () {
     $('select.dropdown').dropdown();
 
-    let theMoment = moment();
-    let currentMonth = theMoment.format('MM')
-    let currentYear = theMoment.format('YYYY')
-
-    $('[name="periodMonth"]').val(currentMonth);
-    $('[name="periodYear"]').val(currentYear);
+    // $('[name="periodMonth"]').val(currentMonth);
+    // $('[name="periodYear"]').val(currentYear);
 });
 
 Template.CurrencyCreate.onDestroyed(function () {
