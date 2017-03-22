@@ -17,9 +17,10 @@ Template.EmployeeProfile.helpers({
         return UserImages.findOne({_id: id});
     },
     positionName: (id)=> {
-        if(id)
-          return EntityObjects.findOne({_id: id}).name;
-        else {
+        if(id) {
+          let position = EntityObjects.findOne({_id: id});
+          return position.name;
+        } else {
           return "";
         }
     },
@@ -30,6 +31,8 @@ Template.EmployeeProfile.helpers({
 /*****************************************************************************/
 Template.EmployeeProfile.onCreated(function () {
     let self = this;
+    self.subscribe('getPositions', Session.get('context'))
+
     self.currentEmployee = new ReactiveVar();
     self.currentEmployee.set(Meteor.users.findOne({_id: Meteor.userId()}));
 
