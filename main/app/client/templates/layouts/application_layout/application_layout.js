@@ -4,13 +4,13 @@
 Template.ApplicationLayout.events({
 	'click [name="logout"]': function(e, tmpl) {
         console.log("you want to log out");
-	    Router.go('home');
-    	Meteor.logout(function(err) {
-            if (!err) {
-                Session.keys = {};
-            }
-        });
-    }, 
+	    	Meteor.logout(function(err) {
+			      if (!err) {
+			          Session.keys = {};
+					    	Router.go('home');
+			      }
+	      });
+    },
 	'click #sidebar-toggle': function(e, tmpl) {
         if ($('#sidebar-toggle').data('toggle')) {
             $('body').removeClass('sidebar-mini');
@@ -44,7 +44,7 @@ Template.ApplicationLayout.events({
             } else {
                 tmpl.$('.menu-sidebar-second').show();
                 tmpl.state.set('show-sub-menu', true);
-            }  
+            }
         }
     },
     'click [name="settings-sub-menu"]': function(e, tmpl) {
@@ -63,9 +63,9 @@ Template.ApplicationLayout.events({
             tmpl.state.set('show-sub-menu', false);
         }
     },
-    
+
     'click #view-profile': function (e, tmpl) {
-        
+
     }
 
 });
@@ -125,9 +125,9 @@ Template.ApplicationLayout.onCreated(function () {
         overlay: false
     };
     instance.firstConnection = new ReactiveVar(true);
-    
+
     instance.autorun(function () {
-       instance.subscribe("UserImages", Meteor.userId()) 
+       instance.subscribe("UserImages", Meteor.userId())
     });
 
     //get template params
@@ -199,5 +199,3 @@ Template.ApplicationLayout.onRendered(function () {
 
 Template.ApplicationLayout.onDestroyed(function () {
 });
-
-

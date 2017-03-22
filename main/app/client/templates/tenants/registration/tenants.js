@@ -89,7 +89,7 @@ Template.NewTenant.events({
                 if(result){
                     swal({
                         title: "Success",
-                        text: `Your business has been created a notification has been send to your root account mail address for confirmation ${result}`,
+                        text: `Your business has been created and a notification has been sent to your root account mail address for confirmation.`,
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"
