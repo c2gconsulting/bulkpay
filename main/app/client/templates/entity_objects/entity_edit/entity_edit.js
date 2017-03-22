@@ -133,6 +133,9 @@ Template.EntityEdit.onCreated(function () {
         if(self.currentEntityData.get().otype === "Position") {
            self.showProp.set(true);
            self.ccAssignment.set(false);
+        } else if(self.currentEntityData.get().otype === "Unit") {
+           self.showProp.set(false);
+           self.ccAssignment.set(true);
         } else {
           self.showProp.set(false);
         }
