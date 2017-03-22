@@ -47,7 +47,13 @@ Router.route('/', {
  template: 'Login'
  });*/
 
-Router.route('/reset-my-password', {
+Router.route('/send-reset-password-link', {
+    name: 'send.reset-passwordlink',
+    layoutTemplate: 'ExtLayout',
+    template: 'SendPasswordResetLink'
+});
+
+Router.route('/resetPassword/:token', {
     name: 'reset.password',
     layoutTemplate: 'ExtLayout',
     template: 'ResetMyPassword'

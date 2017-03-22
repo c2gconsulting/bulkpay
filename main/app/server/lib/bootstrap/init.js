@@ -95,6 +95,10 @@ _.extend(Core, {
     Accounts.config({
       sendVerificationEmail: true
     });
+
+    Accounts.urls.resetPassword = function(token) {
+      return Meteor.absoluteUrl('resetPassword/' + token);
+    };
   },
   buildRegExp: function(searchText) {
     // temporary, upgrade
@@ -113,7 +117,7 @@ _.extend(Core, {
       }
       return cursor;
     }
-    
+
   },
   getCurrentTenant: function (userId) {
     let cursor = this.getCurrentTenantCursor(userId);
@@ -179,7 +183,7 @@ _.extend(Core, {
     }
   },
   /*
-  * Get excluded promotions order types for 
+  * Get excluded promotions order types for
   * @param {String} userId - userId, defaults to Meteor.userId()
   * @return {Array} Array - excluded order types code
   **/
@@ -241,7 +245,7 @@ Match.OptionalOrNull = function (pattern) {
 
 Meteor.startup(function () {
   Core.initSettings();
-  Core.initAccount(); 
+  Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
 });
