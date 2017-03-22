@@ -16,19 +16,20 @@ Template.NetPayReport.events({
       const year = $('[name="paymentPeriod.year"]').val();
       if(month && year) {
           const period = month + year;
+
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
               console.log(res);
               if(res && res.length){
                   console.log('logging response as ', res);
-                  tmpl.dict.set('result', res);
+                  tmpl.netPayReportResults.set(res);
               } else {
                   swal('No result found', 'Payroll Result not found for period', 'error');
+                  tmpl.netPayReportResults.set(null);
               }
           });
       } else {
           swal('Error', 'Please select Period', 'error');
       }
-
    },
     'click .excel': (e, tmpl) => {
         event.preventDefault();
@@ -100,7 +101,7 @@ Template.NetPayReport.helpers({
         return Core.years();
     },
     'result': () => {
-        return Template.instance().dict.get('result');
+        return Template.instance().netPayReportResults.get();
     }
 });
 
@@ -109,8 +110,7 @@ Template.NetPayReport.helpers({
 /*****************************************************************************/
 Template.NetPayReport.onCreated(function () {
     let self = this;
-    self.dict = new ReactiveDict();
-
+    self.netPayReportResults = new ReactiveVar();
 });
 
 Template.NetPayReport.onRendered(function () {

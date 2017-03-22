@@ -1,0 +1,255 @@
+<template name="EmployeeProfile">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Employee Profile</li>
+                </ul>
+                <h4>Employee Profile</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    {{#each currentEmployee}}
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="container-fluid">
+                      <div class="row">
+                          <div class="col-md-6">
+                          <!-- <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm"> -->
+                              <!-- <div class="avatar">
+                                  {{#if images photo._id }}
+                                      {{#with images photo._id}}
+                                          <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
+                                      {{/with}}
+                                  {{ else }}
+                                      <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
+                                  {{/if}}
+                              </div> -->
+                          <!-- </div> -->
+
+                          <!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"> -->
+                              <div class="panel panel-success-head widget-todo">
+                                  <div class="col-sm-6">
+                                      Full Name:
+                                      {{#if profile.fullName}}
+                                      <h3 class="name mt0 fs28">{{profile.fullName}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Email:
+                                      {{#if emails.[0].address}}
+                                      <h3 class="name mt0 fs28">{{emails.[0].address}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Employee ID:
+                                      {{#if employeeProfile.employeeId}}
+                                      <h3 class="name mt0 fs28">{{employeeProfile.employeeId}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Phone:
+                                      {{#if employeeProfile.phone}}
+                                      <h3 class="name mt0 fs28">{{employeeProfile.phone}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                      <br/>
+
+                                      Position:
+                                      {{#if employeeProfile.employment.position}}
+                                          <h3 class="name mt0 fs28">{{positionName employeeProfile.employment.position}}</h3>
+                                      {{else}}
+                                          <h3 class="name mt0 fs28">----------</h3>
+                                      {{/if}}
+                                  </div>
+                              </div>
+                          <!-- </div> -->
+                          </div>
+
+                          <div class="col-md-6">
+                          {{> EmployeeProfileDetails currentEmployee=this}}
+                          </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- contentpanel -->
+    {{/each}}
+</template>
+
+<template name="EmployeeProfileDetails">
+    <div class="panel-group" id="accordion2">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo2">
+                        Next of kin
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo2" class="panel-collapse collapse in">
+                <div class="panel-body">
+                    <div class="media emplist">
+                        <div class="media-body">
+                            <b>Full name</b>:
+                            {{#if currentEmployee.employeeProfile.guarantor.fullName}}
+                                {{currentEmployee.employeeProfile.guarantor.fullName}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Email</b>:
+                            {{#if currentEmployee.employeeProfile.guarantor.email}}
+                                {{currentEmployee.employeeProfile.guarantor.email}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Phone</b>:
+                            {{#if currentEmployee.employeeProfile.guarantor.phone}}
+                                {{currentEmployee.employeeProfile.guarantor.phone}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Address</b>:
+                            {{#if currentEmployee.employeeProfile.guarantor.address}}
+                                {{currentEmployee.employeeProfile.guarantor.address}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- panel -->
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo3">
+                        Emergency contact data
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo3" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="media emplist">
+                        <div class="media-body">
+                            <b>Name</b>:
+                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].name}}
+                                {{currentEmployee.employeeProfile.emergencyContact.[0].name}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Email</b>:
+                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].email}}
+                                {{currentEmployee.employeeProfile.emergencyContact.[0].email}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Phone</b>:
+                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].phone}}
+                                {{currentEmployee.employeeProfile.emergencyContact.[0].phone}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Address</b>:
+                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].address}}
+                                {{currentEmployee.employeeProfile.emergencyContact.[0].address}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- panel -->
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo4">
+                        Payment data
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo4" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <div class="media emplist">
+                        <div class="media-body">
+                            <b>Bank</b>:
+                            {{#if currentEmployee.employeeProfile.payment.bank}}
+                                {{currentEmployee.employeeProfile.payment.bank}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Bank Account Number</b>:
+                            {{#if currentEmployee.employeeProfile.payment.accountNumber}}
+                                {{currentEmployee.employeeProfile.payment.accountNumber}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Bank Account Name</b>:
+                            {{#if currentEmployee.employeeProfile.payment.accountName}}
+                                {{currentEmployee.employeeProfile.payment.accountName}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>Payment method</b>:
+                            {{#if currentEmployee.employeeProfile.payment.paymentMethod}}
+                                {{currentEmployee.employeeProfile.payment.paymentMethod}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/><br/>
+
+                            <b>Pension Fund Manager</b>:
+                            {{#if currentEmployee.employeeProfile.payment.pensionmanager}}
+                                {{currentEmployee.employeeProfile.payment.pensionmanager}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br/>
+                            <b>RSA Number</b>:
+                            {{#if currentEmployee.employeeProfile.payment.RSAPin}}
+                                {{currentEmployee.employeeProfile.payment.RSAPin}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br />
+                            <b>Tax Payer ID</b>:
+                            {{#if currentEmployee.employeeProfile.payment.taxPayerId}}
+                                {{currentEmployee.employeeProfile.payment.taxPayerId}}
+                            {{else}}
+                                ----
+                            {{/if}}
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- panel -->
+    </div>
+</template>

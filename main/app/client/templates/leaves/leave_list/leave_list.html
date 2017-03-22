@@ -18,13 +18,17 @@
     <div class="contentpanel">
         <div class="row">
             <div class="col-sm-12">
-
-                <br>
-
-                <h3 class="xlg-title">All Leaves</h3>
+                <!-- <br>
+                <h3 class="xlg-title">All Leaves</h3> -->
 
                 {{#each leaves}}
                     {{> LeaveEntry }}
+                {{else}}
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <p>You have not requested any leave yet.</p>
+                    </div>
+                </div>
                 {{/each}}
 
             </div>

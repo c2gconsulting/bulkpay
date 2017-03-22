@@ -578,6 +578,7 @@ Meteor.methods({
             Core.Log.info(error);
         }
     },
+
     "accountCreate": function (user, sendEnrollmentEmail) {
         check(user, Object);
         check(sendEnrollmentEmail, Boolean);

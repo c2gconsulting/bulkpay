@@ -38,6 +38,15 @@
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
+
+                            {{#if unit}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="costCenter" class="control-label">Cost Center</label>
+                                        <input name="costCenter" type="text" id="costCenter" placeholder="Enter Cost Center" class="form-control" value="{{currentEntityData.properties.costCenter}}"/>
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                            {{/if}}
                         </div>
 
                         {{#if selectedPos}}
@@ -66,20 +75,11 @@
                                 </div><!-- col-sm-6 -->
                             </div>
                         {{/if}}
-                        {{#if unit}}
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="costCenter" class="control-label">Cost Center</label>
-                                        <input name="costCenter" type="text" id="costCenter" placeholder="Enter Cost Center" class="form-control" />
-                                    </div><!-- form-group -->
-                                </div><!-- col-sm-6 -->
-                            </div><!-- row -->
-                        {{/if}}
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5 {{disabled}}" id="createEntity">Update</button>
                         <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5 {{disabled}}" id="createEntity">Update</button>
+
                         <button type="reset" class="btn btn-danger pull-right" id="deleteEntity">Delete</button>
                     </div><!-- panel-footer -->
                 </div>
