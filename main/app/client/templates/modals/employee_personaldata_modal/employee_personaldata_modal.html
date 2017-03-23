@@ -75,9 +75,8 @@
                             <div class="">
                                 <label class="col-sm-4 control-label">Date of Birth</label>
                                 <div class="col-sm-8">
-                                    {{#datepicker formatDate employeeProfile.dateOfBirth}}
-                                        <input name="dateOfBirth" type="text" class="form-control datepicker" data-field="dateOfBirth"
-                                          value="{{formatDate employeeProfile.dateOfBirth}}"/>
+                                    {{#datepicker employeeProfile.dateOfBirth}}
+                                        <input name="dateOfBirth" type="text" class="form-control datepicker" data-field="dateOfBirth" />
                                     {{/datepicker}}
                                 </div>
                             </div>

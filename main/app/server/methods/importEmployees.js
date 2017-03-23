@@ -114,10 +114,6 @@ Meteor.methods({
           return newEmployeeDoc;
         }
 
-        let removeQuotedCommaIfExists = (word) => {
-
-        }
-
         validateCsvFile();
 
         for ( let i = 0; i < data.length; i++ ) {
@@ -135,7 +131,6 @@ Meteor.methods({
                   "employeeProfile.employeeId": employeeDocumentEmployeeId,
                   "businessIds": {"$in" : [businessId]}
                 });
-                console.log(`employeeDocumentEmployeeId: ${employeeDocumentEmployeeId}, doesEmployeeExist: ${doesEmployeeWithEmployeeIdOrEmailExist}`);
 
                 if (doesEmployeeWithEmployeeIdOrEmailExist){
                     skippedCount += 1
