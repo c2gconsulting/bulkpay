@@ -248,6 +248,7 @@ Meteor.methods({
               "employeeProfile.payment.accountName": user.employeeProfile.payment.accountName,
               "employeeProfile.payment.pensionmanager": user.employeeProfile.payment.pensionmanager,
               "employeeProfile.payment.RSAPin": user.employeeProfile.payment.RSAPin,
+              "employeeProfile.payment.taxPayerId": user.employeeProfile.payment.taxPayerId,
             }});
             return true
         } else {

@@ -21,7 +21,13 @@
       <div class="row">
           <div class="col-sm-4 col-md-3">
               <div class="text-center">
-                  <img src="images/photos/profile-big.jpg" class="img-circle img-offline img-responsive img-profile" alt="" />
+                  {{#if profile.photo}}
+                    <img src="{{profile.photo}}" id="profile-img" class="img-circle img-offline img-responsive img-profile" alt=""/>
+                  {{else}}
+                  <img src="/images/photos/avatar.jpg" id="profile-img" class="img-circle img-offline img-responsive img-profile" alt=""/>
+                  {{/if}}
+                  <!-- <img src="images/photos/profile-big.jpg" class="img-circle img-offline img-responsive img-profile" alt="" /> -->
+
                   <h4 class="profile-name mb5">{{profile.fullName}}</h4>
                   <div>
                       <!-- <i class="fa fa-map-marker"></i> -->
@@ -261,101 +267,15 @@
                                               <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
                                           </div>
                                           <!-- panel-btns -->
-                                          <h4 class="panel-title">Personnal Details</h4>
+                                          <h4 class="panel-title">Employment Details</h4>
                                       </div>
                                       <!-- panel-heading -->
                                       <div class="panel-body nopadding">
                                           <form class="form-horizontal form-bordered">
-
                                               <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Employee Type</label>
+                                                  <label class="col-sm-4 control-label">Position</label>
                                                   <div class="col-sm-4">
-                                                      <select id="select-employee-type" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Branch/Station</label>
-                                                  <div class="col-sm-4">
-                                                      <select id="select-station" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Department</label>
-                                                  <div class="col-sm-4">
-                                                      <select id="select-department" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Job Title</label>
-                                                  <div class="col-sm-4">
-                                                      <select id="select-job-title" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Job Level</label>
-                                                  <div class="col-sm-4">
-                                                      <select id="select-job-level" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Contract</label>
-                                                  <div class="col-sm-4">
-                                                      <select id="select-contract" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
+                                                      <input type="text" placeholder="" class="form-control" value="{{positionName employeeProfile.employment.position}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -364,9 +284,8 @@
 
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Hire Date</label>
-                                                  <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
-                                                      <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
-                                                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{formatDate employeeProfile.employment.hireDate}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -375,20 +294,8 @@
 
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Confirmation Date</label>
-                                                  <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
-                                                      <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
-                                                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                                                  </div>
                                                   <div class="col-sm-4">
-                                                      &nbsp;
-                                                  </div>
-                                              </div>
-
-                                              <div class="form-group">
-                                                  <label class="col-sm-4 control-label">Termination/Resignation Date</label>
-                                                  <div class="input-group col-sm-4" style="padding-left:10px;padding-right:10px">
-                                                      <input type="text" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
-                                                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                                      <input type="text" placeholder="" class="form-control" value="{{formatDate employeeProfile.employment.confirmationDate}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -411,7 +318,7 @@
                                               <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
                                           </div>
                                           <!-- panel-btns -->
-                                          <h4 class="panel-title">Personnal Details</h4>
+                                          <h4 class="panel-title">Payment Details</h4>
                                       </div>
                                       <!-- panel-heading -->
                                       <div class="panel-body nopadding">
@@ -420,12 +327,7 @@
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Payment Method</label>
                                                   <div class="col-sm-4">
-                                                      <select id="select-payment-method" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Bank Transfer</option>
-                                                          <option value="Married">Cheque</option>
-                                                          <option value="Divorced">Cash</option>
-                                                      </select>
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.paymentMethod}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -435,13 +337,7 @@
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Bank</label>
                                                   <div class="col-sm-4">
-                                                      <select id="select-bank" data-placeholder="Choose One" style="width:100%">
-                                                          <option value="">Choose One</option>
-                                                          <option value="Single">Single</option>
-                                                          <option value="Married">Married</option>
-                                                          <option value="Divorced">Divorced</option>
-                                                          <option value="Widowed">Widowed</option>
-                                                      </select>
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.bank}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -451,8 +347,7 @@
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Bank Account No.</label>
                                                   <div class="col-sm-4">
-                                                      <!--<input type="text" placeholder="" class="form-control" />-->
-                                                      <span class="btn btn-warning">Cancel Order</span>
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.accountNumber}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -462,7 +357,37 @@
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Bank Account Name</label>
                                                   <div class="col-sm-4">
-                                                      <input type="text" placeholder="" class="form-control" readonly="readonly" />
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.accountName}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Tax Payer ID</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.pensionmanager}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">RSA Number</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.RSAPin}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Tax Payer ID</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.taxPayerId}}" disabled />
                                                   </div>
                                                   <div class="col-sm-4">
                                                       &nbsp;
@@ -477,166 +402,4 @@
                   </div><!-- row -->
     </div><!-- contentpanel -->
     {{/each}}
-</template>
-
-<template name="EmployeeProfileDetails">
-    <div class="panel-group" id="accordion2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo2">
-                        Next of kin
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo2" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Full name</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.fullName}}
-                                {{currentEmployee.employeeProfile.guarantor.fullName}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Email</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.email}}
-                                {{currentEmployee.employeeProfile.guarantor.email}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Phone</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.phone}}
-                                {{currentEmployee.employeeProfile.guarantor.phone}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Address</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.address}}
-                                {{currentEmployee.employeeProfile.guarantor.address}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo3">
-                        Emergency contact data
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo3" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Name</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].name}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].name}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Email</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].email}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].email}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Phone</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].phone}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].phone}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Address</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].address}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].address}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo4">
-                        Payment data
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo4" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Bank</b>:
-                            {{#if currentEmployee.employeeProfile.payment.bank}}
-                                {{currentEmployee.employeeProfile.payment.bank}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Bank Account Number</b>:
-                            {{#if currentEmployee.employeeProfile.payment.accountNumber}}
-                                {{currentEmployee.employeeProfile.payment.accountNumber}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Bank Account Name</b>:
-                            {{#if currentEmployee.employeeProfile.payment.accountName}}
-                                {{currentEmployee.employeeProfile.payment.accountName}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Payment method</b>:
-                            {{#if currentEmployee.employeeProfile.payment.paymentMethod}}
-                                {{currentEmployee.employeeProfile.payment.paymentMethod}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/><br/>
-
-                            <b>Pension Fund Manager</b>:
-                            {{#if currentEmployee.employeeProfile.payment.pensionmanager}}
-                                {{currentEmployee.employeeProfile.payment.pensionmanager}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>RSA Number</b>:
-                            {{#if currentEmployee.employeeProfile.payment.RSAPin}}
-                                {{currentEmployee.employeeProfile.payment.RSAPin}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br />
-                            <b>Tax Payer ID</b>:
-                            {{#if currentEmployee.employeeProfile.payment.taxPayerId}}
-                                {{currentEmployee.employeeProfile.payment.taxPayerId}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-    </div>
 </template>
