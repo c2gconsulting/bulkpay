@@ -1,5 +1,10 @@
 Meteor.methods({
 
+    /*
+        Please note! This method does not handle employee photo, position, paygrade, paytypes.
+        It simply eases the burden of entering employee information into the system.
+    */
+
     "parseEmployeesUpload": function(data, businessId){
         check(data, Array);
         check(businessId, String);
