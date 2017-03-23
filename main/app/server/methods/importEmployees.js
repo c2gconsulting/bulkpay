@@ -62,11 +62,23 @@ Meteor.methods({
               let confirmationDate =  csvRow.EmploymentConfirmationDate;
 
               const details = {
-                  position: csvRow.PositionCode,
-                  paygrade: csvRow.PayGradeCode,
+                  position: null,
+                  paygrade: null,
                   paytypes: [],
-                  status: csvRow.Status,
-              }
+                  status: csvRow.Status
+              };
+              // if(csvRow.PositionCode) {
+              //     let positions = EntityObjects.find({otype: "Position"});
+              //     if(positions) {
+              //       positions.forEach((aPosition) => {
+              //
+              //       })
+              //     }
+              // }
+              // const details = {
+              //     position: csvRow.PositionCode,
+              //     paygrade: csvRow.PayGradeCode,
+              // }
               if(hireDate)
                   details.hireDate = new Date(hireDate);
               if(terminationDate)

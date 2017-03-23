@@ -32,7 +32,6 @@ Meteor.methods({
             item.period = period;
             item.businessId = businessId;
             //--
-
             let currencyContext = Core.Schemas.Currency;
             try {
                 currencyContext.validate(item);
