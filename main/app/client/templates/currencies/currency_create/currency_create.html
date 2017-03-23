@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label">Currency</label>
+                                    <label class="control-label">Currency <span class="asterisk">*</span></label>
                                     <select name="currencyCode" class="form-control dropdown" style="width: 100%">
                                         {{#each allCurrencies}}
                                             <option value="{{this}}">{{this}}</option>
@@ -22,7 +22,7 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label">Rate to Base Currency</label>
+                                    <label class="control-label">Rate to Base Currency <span class="asterisk">*</span></label>
                                     <input type="number" placeholder="0" name="rateToBaseCurrency" class="form-control" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
@@ -31,7 +31,7 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Period Month</label>
+                                    <label class="control-label">Period Month <span class="asterisk">*</span></label>
                                     <select name="periodMonth" class="form-control dropdown" style="width: 100%">
                                         {{#each month}}
                                             <option value="{{period}}" {{selectedMonth this.period}}>{{name}}</option>
@@ -42,7 +42,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Period Year</label>
+                                    <label class="control-label">Period Year <span class="asterisk">*</span></label>
                                     <select name="periodYear" class="form-control dropdown" style="width: 100%">
                                         {{#each years}}
                                             <option value="{{this}}" {{selectedYear this}}>{{this}}</option>
