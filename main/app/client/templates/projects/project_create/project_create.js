@@ -196,11 +196,9 @@ Template.ProjectCreate.onCreated(function () {
     //subscribe to positions and paygrades
     self.subscribe('getPositions', Session.get('context'));
 
-    //--
-    console.log("template instance data: " + JSON.stringify(Template.instance().data));
-
     self.projectDetails = new ReactiveVar();
-    self.projectDetails.set(Template.instance().data);
+    self.projectDetails.set(Template.instance().data || {});
+    // the {} is important because this template is used for both project create and edit
 
     //--
     self.editableProjectActivities = new ReactiveVar();
