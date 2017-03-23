@@ -15,14 +15,15 @@ Template.ImportEmployeesModal.events({
         } else {
             Template.instance().response.set('error', undefined);
         }
+        $('#employeesFileUpload').text('Uploading. Please wait ...')
         tmpl.$('#employeesFileUpload').attr('disabled', true);
         //--
-        try {
-            let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
-            l.start();
-        } catch(e) {
-            console.log(e);
-        }
+        // try {
+        //     let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
+        //     l.start();
+        // } catch(e) {
+        //     console.log(e);
+        // }
         if (file.type !== "text/csv") {
             try {
                 let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
@@ -37,15 +38,8 @@ Template.ImportEmployeesModal.events({
             header: true,
             complete( results, file ) {
                 Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), ( error, response ) => {
+                    $('#employeesFileUpload').text('Upload File')
                     tmpl.$('#employeesFileUpload').attr('disabled', false);
-                    try {
-                        let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
-                        l.stop();
-                        l.remove();
-                    } catch(e) {
-                        console.log(e);
-                    }
-                    //--
                     if ( error ) {
                         console.log(error.reason)
                         swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
