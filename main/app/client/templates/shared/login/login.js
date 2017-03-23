@@ -4,9 +4,9 @@
 Template.login.events({
 	'submit form':function(e) {
 		e.preventDefault();
-        console.log("you just clicked a submit button");
+    console.log("you just clicked a submit button");
 
-        let email = $('[name="username"]').val();
+    let email = $('[name="username"]').val();
 		let password = $('[name="password"]').val();
 
 		Meteor.loginWithPassword(email, password, function(err){
@@ -15,11 +15,15 @@ Template.login.events({
 				$('div #login_error').removeClass('hide');
 				$('div #login_error').html('Your email or password is incorrect');
 			} else {
-                var currentRoute = Router.current().route.getName();
-                if (currentRoute == "login") {
-                    Router.go("home");
-                }
-            }
+        var currentRoute = Router.current().route.getName();
+				console.log(`Log in successful. Current route: ${currentRoute}`)
+
+        if (currentRoute == "login") {
+            Router.go("home");
+        } else {
+					console.log(`Current route is not login`)
+				}
+      }
 		});
 	},
 	'click #reset-password-l': function(e, tmpl) {

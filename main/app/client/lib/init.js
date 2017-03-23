@@ -136,9 +136,24 @@ Tracker.autorun(function() {
  *  Init TDC client
  */
 
+ ActivityDetected = false;
+
 Meteor.startup(function () {
     // init the core
     Core.init();
+
+    Meteor.setInterval(function() {
+        if (Meteor.userId() && ActivityDetected) {
+            ActivityDetected = false;
+        } else {
+          Accounts.logout();
+          Router.go("home");
+        }
+    }, 30000);
+
+    $(document).on('mousemove click keydown', function() {
+       ActivityDetected = true;
+    });
 
     /*initialize the spinner
      Meteor.Spinner.options = {
