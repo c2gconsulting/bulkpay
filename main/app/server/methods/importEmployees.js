@@ -28,11 +28,11 @@ Meteor.methods({
           let guarantor = () => {
               return {
                   fullName: csvRow.GuarantorFullName,
-                  email: csvRow.GurantorEmail,
-                  phone: csvRow.GurantorPhone,
-                  address: csvRow.GurantorAddress,
-                  city: csvRow.GurantorCity,
-                  state: csvRow.GurantorState
+                  email: csvRow.GuarantorEmail,
+                  phone: csvRow.GuarantorPhone,
+                  address: csvRow.GuarantorAddress,
+                  city: csvRow.GuarantorCity,
+                  state: csvRow.GuarantorState
               }
           };
           function payment() {
@@ -111,11 +111,11 @@ Meteor.methods({
 
         for ( let i = 0; i < data.length; i++ ) {
             let item = data[i];
-            console.log(`An employee row: ${JSON.stringify(item)}`)
-
+            // console.log(`An employee row: ${JSON.stringify(item)}`)
             let errorItem = _.find(errors, function (e) {
                 return e.line === i
             });
+
             if (!errorItem) {
                 let employeeDocument = getEmployeeDocumentForInsert(item);
                 console.log(`Employee document: ${JSON.stringify(employeeDocument)}`)
@@ -128,12 +128,22 @@ Meteor.methods({
                 if (doesEmployeeWithEmployeeIdOrEmailExist){
                     skippedCount += 1
                 } else {
-                    // let newCurrencyId = Currencies.insert(item);
-                    // if (newCurrencyId){
-                    //     successCount += 1
-                    // } else {
-                    //     errorCount += 1
-                    // }
+                    let options = {};
+                    options.email = employeeDocument.email; // tempo
+                    options.firstname = employeeDocument.firstName;
+                    options.lastname =  employeeDocument.lastName;
+                    options.employee =  true;
+                    options.tenantId = Core.getTenantId(Meteor.userId());
+                    options.employeeProfile = employeeDocument.employeeProfile;
+                    options.businessIds = [employeeDocument.businessId];
+                    let accountId = Accounts.createUser(options);
+                    if(accountId){
+                        successCount += 1
+                        let roles = ["ess/all"];
+                        Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+                    } else {
+                        errorCount += 1
+                    }
                     successCount += 1
                 }
             }
