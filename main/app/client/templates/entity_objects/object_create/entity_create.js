@@ -63,6 +63,7 @@ Template.EntityCreate.events({
                         type: "success",
                         confirmButtonText: "OK"
                     });
+                    window.location.reload()
                 } else {
                     err = JSON.parse(err.details);
                     // add necessary handler on error
@@ -117,7 +118,7 @@ Template.EntityCreate.helpers({
         if(root) {
             return BusinessUnits.findOne().name;
         } else {
-            return EntityObjects.findOne().name;  
+            return EntityObjects.findOne().name;
         }
     },
     'checked': (prop) => {

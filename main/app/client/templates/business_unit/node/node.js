@@ -144,6 +144,7 @@ Template.MemberNode.events({
                   console.log(res);
                   Tracker.flush();
                   swal("Deleted!", "Node deleted" , "success");
+                  window.location.reload()
               } else {
                   console.log(err);
                   swal("Deleted!", err , "error");
