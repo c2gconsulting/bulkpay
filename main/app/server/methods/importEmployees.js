@@ -35,6 +35,16 @@ Meteor.methods({
                   state: csvRow.GuarantorState
               }
           };
+          let emergencyContact = () => {
+              return [{
+                  name: csvRow.EmergencyContactFullName,
+                  email: csvRow.EmergencyContactEmail,
+                  phone: csvRow.EmergencyContactPhone,
+                  address: csvRow.EmergencyContactAddress,
+                  city: csvRow.EmergencyContactCity,
+                  state: csvRow.EmergencyContactState
+              }];
+          }
           function payment() {
               return {
                   paymentMethod: csvRow.PaymentMethod,
@@ -65,17 +75,6 @@ Meteor.methods({
                   details.confirmationDate = new Date(confirmationDate);
               return details;
           };
-
-          let emergencyContact = () => {
-              return [{
-                  name: csvRow.EmergencyContactFullName,
-                  email: csvRow.EmergencyContactEmail,
-                  phone: csvRow.EmergencyContactPhone,
-                  address: csvRow.EmergencyContactAddress,
-                  city: csvRow.EmergencyContactCity,
-                  state: csvRow.EmergencyContactState
-              }];
-          }
 
           const employeeProfile = {
               employeeId: csvRow.EmployeeId,
@@ -111,19 +110,20 @@ Meteor.methods({
 
         for ( let i = 0; i < data.length; i++ ) {
             let item = data[i];
-            // console.log(`An employee row: ${JSON.stringify(item)}`)
             let errorItem = _.find(errors, function (e) {
                 return e.line === i
             });
 
-            if (!errorItem) {
+            if (!errorItem) {// If error exists in this row then ignore
                 let employeeDocument = getEmployeeDocumentForInsert(item);
                 console.log(`Employee document: ${JSON.stringify(employeeDocument)}`)
                 let employeeDocumentEmployeeId = employeeDocument.employeeProfile.employeeId;
 
                 let doesEmployeeWithEmployeeIdOrEmailExist = Meteor.users.findOne({
-                  $and: [{"employeeProfile.employeeId": employeeDocumentEmployeeId}, {"businessId": {"$in" : [businessId]}}]
+                  "employeeProfile.employeeId": employeeDocumentEmployeeId,
+                  "businessIds": {"$in" : [businessId]}
                 });
+                console.log(`employeeDocumentEmployeeId: ${employeeDocumentEmployeeId}, doesEmployeeExist: ${doesEmployeeWithEmployeeIdOrEmailExist}`);
 
                 if (doesEmployeeWithEmployeeIdOrEmailExist){
                     skippedCount += 1
@@ -144,10 +144,9 @@ Meteor.methods({
                     } else {
                         errorCount += 1
                     }
-                    successCount += 1
                 }
             }
         }
-        return {skipped: skippedCount, success: successCount, failed: errorCount}
+        return {skipped: skippedCount, success: successCount, failed: errorCount, errors: errors}
     }
 });

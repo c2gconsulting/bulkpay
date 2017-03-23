@@ -4,10 +4,10 @@
 import Ladda from 'ladda';
 
 Template.ImportEmployeesModal.events({
-    "click #upload": function (e, tmpl) {
+    "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
 
-        let  file = $("#fileupload")[0].files[0];
+        let file = $("#fileInput")[0].files[0];
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
             Template.instance().response.set('error', "No file to import");
@@ -15,17 +15,17 @@ Template.ImportEmployeesModal.events({
         } else {
             Template.instance().response.set('error', undefined);
         }
-        tmpl.$('#upload').attr('disabled', true);
+        tmpl.$('#employeesFileUpload').attr('disabled', true);
         //--
         try {
-            let l = Ladda.create(tmpl.$('#upload')[0]);
+            let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
             l.start();
         } catch(e) {
             console.log(e);
         }
         if (file.type !== "text/csv") {
             try {
-                let l = Ladda.create(tmpl.$('#upload')[0]);
+                let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
                 l.stop();
                 l.remove();
             } catch(e) {
@@ -36,11 +36,10 @@ Template.ImportEmployeesModal.events({
         Papa.parse( file, {
             header: true,
             complete( results, file ) {
-                console.log("About to upload to server!");
-
                 Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), ( error, response ) => {
+                    tmpl.$('#employeesFileUpload').attr('disabled', false);
                     try {
-                        let l = Ladda.create(tmpl.$('#fileupload')[0]);
+                        let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
                         l.stop();
                         l.remove();
                     } catch(e) {
@@ -49,6 +48,7 @@ Template.ImportEmployeesModal.events({
                     //--
                     if ( error ) {
                         console.log(error.reason)
+                        swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
                     } else {
                         Session.set("response", response)
                     }
@@ -58,9 +58,9 @@ Template.ImportEmployeesModal.events({
     },
     "click .uploadIcon": function (e, tmpl) {
         e.preventDefault();
-        tmpl.$("#fileupload").trigger('click');
+        tmpl.$("#fileInput").trigger('click');
     },
-    "change #fileupload": function (e) {
+    "change #fileInput": function (e) {
         let file =  e.target.files[0];
         if (file) {
             $(".file-info").text(file.name);
