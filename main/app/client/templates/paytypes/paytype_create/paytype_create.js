@@ -4,25 +4,44 @@
 import Ladda from 'ladda'
 Template.PaytypeCreate.events({
     'click #PayType': (e, tmpl) => {
-        event.preventDefault();
+        let payTypeCode = $('[name="code"]').val()
+        let payTypeTitle = $('[name="title"]').val()
+        let payTypeCurrency =  $('[name="currency"]').val()
+
+        if(payTypeCode.length < 1) {
+            swal("Validation error", `Please enter the code for this Paytype`, "error");
+            return
+        } else if(payTypeTitle.length < 1) {
+            swal("Validation error", `Please enter the title for this Paytype`, "error");
+            return
+        } else if(payTypeCurrency.length < 1) {
+            swal("Validation error", `Please choose the currency for this Paytype`, "error");
+            return
+        }
+        //--
+        e.preventDefault();
         let l = Ladda.create(tmpl.$('#PayType')[0]);
         l.start();
+
         const details = {
             businessId: BusinessUnits.findOne()._id,
-            code: $('[name="code"]').val(),
-            title: $('[name="title"]').val(),
+            code: payTypeCode,
+            title: payTypeTitle,
             type: $('[name="type"]').val(),
             derivative: $('[name="derivative"]').val(),
             frequency: $('[name="frequency"]').val(),
             taxable: returnBool($('[name="taxable"]').val()),
-            currency: $('[name="currency"]').val(),
+            currency: payTypeCurrency,
             status: $('[name="status"]').val(),
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
             isBase: $('[name="isBase"]').is(':checked') ? true : false,
             addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false
         };
+        console.log(`Pay type details for creation: ${JSON.stringify(details)}`)
+
         function returnBool(val){
-            if(val === "Yes") return true;
+            if(val === "Yes")
+                return true;
             return false;
         };
         if(tmpl.data){//edit action for updating paytype
@@ -51,14 +70,16 @@ Template.PaytypeCreate.events({
                         confirmButtonText: "OK"
                     });
                 } else {
-                    err = JSON.parse(err.details);
-                    // add necessary handler on error
-                    //use details from schema.key to locate html tag and error handler
-                    _.each(err, (obj) => {
-                        $('[name=' + obj.name +']').addClass('errorValidation');
-                        $('[name=' + obj.name +']').attr("placeholder", obj.name + ' ' + obj.type);
+                    console.log(`payttype create error: ${JSON.stringify(err)}`)
+                    swal("Validation error", err.message, "error");
 
-                    })
+                    // err = JSON.parse(err.details);
+                    // // add necessary handler on error
+                    // //use details from schema.key to locate html tag and error handler
+                    // _.each(err, (obj) => {
+                    //     $('[name=' + obj.name +']').addClass('errorValidation');
+                    //     $('[name=' + obj.name +']').attr("placeholder", obj.name + ' ' + obj.type);
+                    // })
                 }
             });
         }
