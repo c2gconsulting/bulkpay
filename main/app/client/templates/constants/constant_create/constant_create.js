@@ -39,7 +39,9 @@ Template.ConstantCreate.onCreated(function () {
 });
 
 Template.ConstantCreate.onRendered(function () {
-
+    $('div#constantCodeDiv label').append('<span class="asterisk important-input">*</span>')
+    $('div#constantTitleDiv label').append('<span class="asterisk important-input">*</span>')
+    $('div#constantValueDiv label').append('<span class="asterisk important-input">*</span>')
 });
 
 Template.ConstantCreate.onDestroyed(function () {
