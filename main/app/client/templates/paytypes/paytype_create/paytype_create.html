@@ -11,21 +11,21 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="pay-type-code" class="control-label">Code (alphanumeric) <span class="asterisk">*</span></label>
+                                    <label for="pay-type-code" class="control-label">Code (alphanumeric) <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="pay-type-code" class="form-control text-uppercase" placeholder="Unique e.g BC1" name="code" value="{{code}}" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="pay-type-title" class="control-label">Title <span class="asterisk">*</span></label>
+                                    <label for="pay-type-title" class="control-label">Title <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="pay-type-title" class="form-control" placeholder="Basic Salary" name="title" value="{{title}}" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Type <span class="asterisk">*</span></label>
+                                    <label class="control-label">Type <span class="asterisk important-input">*</span></label>
                                     <select  name="type" class="form-control dropdown" >
                                         <!--<option value="Wage" {{selected "type" "Wage"}}>Wage</option>-->
                                         <option value="Benefit" {{selected "type" "Benefit" }}>Benefit</option>
@@ -38,7 +38,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Derived <span class="asterisk">*</span></label>
+                                    <label class="control-label">Derived <span class="asterisk important-input">*</span></label>
                                     <select  name="derivative" class="form-control dropdown" >
                                         <option value="Fixed" {{selected "derivative" "Fixed"}}>Fixed</option>
                                         <option value="Formula" {{selected "derivative" "Formula"}}>Formula</option>
@@ -50,7 +50,7 @@
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Frequency <span class="asterisk">*</span></label>
+                                    <label class="control-label">Frequency <span class="asterisk important-input">*</span></label>
                                     <select  name="frequency" class="form-control dropdown" >
                                         <option value="Weekly" {{selected "frequency" "Weekly"}}>Weekly</option>
                                         <option value="Bi-Monthly" {{selected "frequency" "Bi-Monthly"}}>Bi-Monthly</option>
@@ -64,7 +64,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Taxable <span class="asterisk">*</span></label>
+                                    <label class="control-label">Taxable <span class="asterisk important-input">*</span></label>
                                     <select  name="taxable" class="form-control dropdown" >
                                         <option value="Yes" {{selected "taxable" true }}>Yes</option>
                                         <option value="No" {{selected "taxable" false }}>No</option>
@@ -74,7 +74,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Status <span class="asterisk">*</span></label>
+                                    <label class="control-label">Status <span class="asterisk important-input">*</span></label>
                                     <select  name="status" class="form-control dropdown" >
                                         <option value="Active" {{selected "status" "Active"}}>Active</option>
                                         <option value="Inactive" {{selected "status" "Inactive"}}>Inactive</option>
@@ -84,7 +84,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Editable per Employee <span class="asterisk">*</span></label>
+                                    <label class="control-label">Editable per Employee <span class="asterisk important-input">*</span></label>
                                     <select  name="editablePerEmployee" class="form-control dropdown" >
                                         <option value="Yes" {{selected "editablePerEmployee" true }} >Yes</option>
                                         <option value="No" {{selected "editablePerEmployee" false }} >No</option>
@@ -94,7 +94,7 @@
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label class="control-label">Payment Currency <span class="asterisk">*</span></label>
+                                    <label class="control-label">Payment Currency <span class="asterisk important-input">*</span></label>
                                     <select  name="currency" class="form-control dropdown" >
                                         <option value="" {{selected "currency" ""}}>Select Currency</option>
                                         {{#each currencies}}
