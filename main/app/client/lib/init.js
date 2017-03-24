@@ -149,7 +149,7 @@ Meteor.startup(function () {
           Accounts.logout();
           Router.go("home");
         }
-    }, 30000);
+    }, 300000);
 
     $(document).on('mousemove click keydown', function() {
        ActivityDetected = true;
