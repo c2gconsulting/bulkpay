@@ -37,7 +37,7 @@ Template.PaytypeCreate.events({
             isBase: $('[name="isBase"]').is(':checked') ? true : false,
             addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false
         };
-        console.log(`Pay type details for creation: ${JSON.stringify(details)}`)
+        //console.log(`Pay type details for creation: ${JSON.stringify(details)}`)
 
         function returnBool(val){
             if(val === "Yes")

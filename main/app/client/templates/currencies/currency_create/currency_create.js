@@ -5,19 +5,40 @@ import Ladda from 'ladda';
 
 Template.CurrencyCreate.events({
     'click #createCurrency': (e, tmpl) => {
-        event.preventDefault();
-        let l = Ladda.create(tmpl.$('#createCurrency')[0]);
-        l.start();
+        e.preventDefault();
         //--
         let currentTenantId = Session.get('context');
-        console.log(`Current tenantId: ${currentTenantId}`);
+
         let selectedMonth = $('[name="periodMonth"]').val();
         let selectedYear = $('[name="periodYear"]').val();
+        let currencyCode = $('[name="currencyCode"]').val()
+        let currencyRate = $('[name="rateToBaseCurrency"]').val()
+
+        if(currencyCode.length < 1) {
+            swal("Validation error", `Please choose the currency`, "error");
+            return
+        } else if(currencyRate.length < 1) {
+            swal("Validation error", `Please enter the exchange rate of the currency`, "error");
+            return
+        } else {
+            currencyRate = parseFloat(currencyRate)
+
+            if(selectedMonth.length < 1) {
+                swal("Validation error", `Please choose a month`, "error");
+                return
+            } else if(selectedYear.length < 1) {
+                swal("Validation error", `Please choose a year`, "error");
+                return
+            }
+        }
+        //--
+        let l = Ladda.create(tmpl.$('#createCurrency')[0]);
+        l.start();
 
         const newCurrencyDetails = {
             businessId: currentTenantId,
-            code: $('[name="currencyCode"]').val(),
-            rateToBaseCurrency: parseFloat($('[name="rateToBaseCurrency"]').val()),
+            code: currencyCode,
+            rateToBaseCurrency: currencyRate,
             period: `${selectedMonth}${selectedYear}`,
         };
         console.log(`new current details: ${JSON.stringify(newCurrencyDetails)}`)
@@ -35,7 +56,7 @@ Template.CurrencyCreate.events({
                     confirmButtonText: "OK"
                 });
             } else {
-                console.log('got to the error part');
+                swal("Validation error", err.message, "error");
             }
         });
     }

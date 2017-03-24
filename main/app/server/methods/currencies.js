@@ -16,9 +16,9 @@ Meteor.methods({
         }
         this.unblock();
 
-        let numberOfCurrencyWithSameCode = Currencies.find({code: currency.code}).count();
+        let numberOfCurrencyWithSameCode = Currencies.find({code: currency.code, period: currency.period}).count();
         if(numberOfCurrencyWithSameCode > 0) {
-            let errMsg = "Sorry, that currency can't be created because it is already exists.";
+            let errMsg = "Sorry, that currency can't be created because it already exists for that period.";
             throw new Meteor.Error(409, errMsg);
         } else {
             console.log("About to insert");
@@ -46,4 +46,3 @@ Meteor.methods({
         return result;
     }
 });
-
