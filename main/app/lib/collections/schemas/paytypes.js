@@ -40,7 +40,8 @@ Core.Schemas.PayType = new SimpleSchema({
     },
     reliefFromTax: {
         type: Boolean,
-        defaultValue: false
+        defaultValue: false,
+        optional: true
     },
     derivative: {
         type: String,

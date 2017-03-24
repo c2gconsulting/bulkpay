@@ -19,6 +19,7 @@ Template.PaytypeCreate.events({
             status: $('[name="status"]').val(),
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
             isBase: $('[name="isBase"]').is(':checked') ? true : false,
+            reliefFromTax: $('[name="reliefFromTax"]').is(':checked') ? true : false,
             addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false
         };
         function returnBool(val){

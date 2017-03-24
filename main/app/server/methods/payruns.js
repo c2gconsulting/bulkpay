@@ -579,11 +579,11 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         employeeResult.payment.push({id: pension._id, reference: 'Pension', amountLC: employerPenContrib, amountPC: employerPenContrib, code: pension.code + '_ER', description: pension.name + ' Employer', type: 'Others'});
 
                     }
-                   if(pensionLog)    //add pension calculation log
-                        log.push(pensionLog);
-                    //add employee to relief Bucket
-                    reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
-
+                   if(pensionLog) {   //add pension calculation log
+                       log.push(pensionLog);
+                       //add employee to relief Bucket
+                       reliefBucket += grossPension; //nagate employee Pension contribution and add to relief bucket
+                   }
                     //get tax;
                     const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
                     const {netTax, taxLog} = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
