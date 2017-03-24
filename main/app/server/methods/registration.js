@@ -55,15 +55,18 @@ Meteor.methods({
             try{
                 BusinessUnits.insert(bu);
                 //--
-                SSR.compileTemplate("newTenantWelcomeNotification", Assets.getText("emailTemplates/newTenantWelcomeNotification.html"));
+                let currentYear = moment().format('YYYY')
+
+                SSR.compileTemplate("newTenantWelcomeNotification2", Assets.getText("emailTemplates/newTenantWelcomeNotification2.html"));
                 Email.send({
                     to: user.email,
                     from: "bulkpay@c2gconsulting.com",
                     subject: "Welcome to BulkPay!",
-                    html: SSR.render("newTenantWelcomeNotification", {
+                    html: SSR.render("newTenantWelcomeNotification2", {
                         homepage: Meteor.absoluteUrl(),
                         tenant: tenant,
-                        user: user
+                        user: user,
+                        thisYear: currentYear
                     })
                 });
             } catch(e) {
