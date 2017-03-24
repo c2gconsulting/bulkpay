@@ -54,8 +54,20 @@ Meteor.methods({
         Partitioner.bindGroup(tenantId, function(){
             try{
                 BusinessUnits.insert(bu);
+                //--
+                SSR.compileTemplate("newTenantWelcomeNotification", Assets.getText("emailTemplates/newTenantWelcomeNotification.html"));
+                Email.send({
+                    to: user.email,
+                    from: "bulkpay@c2gconsulting.com",
+                    subject: "Welcome to BulkPay!",
+                    html: SSR.render("newTenantWelcomeNotification", {
+                        homepage: Meteor.absoluteUrl(),
+                        tenant: tenant,
+                        user: user
+                    })
+                });
             } catch(e) {
-                throw new Meteor.Error(401, e);
+                throw new Meteor.Error(401, e.message);
             }
         });
         return accountId;

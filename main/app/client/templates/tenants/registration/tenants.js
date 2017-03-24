@@ -89,13 +89,12 @@ Template.NewTenant.events({
                 if(result){
                     swal({
                         title: "Success",
-                        text: `Your business has been created and a notification has been sent to your root account mail address for confirmation.`,
+                        text: `Your business has been created and a notification has been sent to your root account mail address.`,
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"
                     });
                     Router.go('home');
-
                 } else {
                     swal({
                         title: "Oops!",
@@ -105,13 +104,10 @@ Template.NewTenant.events({
                         confirmButtonText: "OK"
                     });
                 }
-
             });
-
         } else {
             tmpl.$('#signup').removeAttr('disabled');
         }
-
     },
     'blur .form-email': function(e,tmpl){
         //validate email

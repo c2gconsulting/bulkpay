@@ -18,238 +18,388 @@
 
     {{#each currentEmployee}}
     <div class="contentpanel">
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="container-fluid">
-                      <div class="row">
-                          <div class="col-md-6">
-                          <!-- <div class="col-sm-1 pl0 ml0 hidden-md hidden-xs hidden-sm"> -->
-                              <!-- <div class="avatar">
-                                  {{#if images photo._id }}
-                                      {{#with images photo._id}}
-                                          <img src="{{url store='avatarsLarge' }}" class="img-circle" id="avatar-image" /><br/>
-                                      {{/with}}
-                                  {{ else }}
-                                      <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
-                                  {{/if}}
-                              </div> -->
-                          <!-- </div> -->
+      <div class="row">
+          <div class="col-sm-4 col-md-3">
+              <div class="text-center">
+                  {{#if profile.photo}}
+                    <img src="{{profile.photo}}" id="profile-img" class="img-circle img-offline img-responsive img-profile" alt=""/>
+                  {{else}}
+                  <img src="/images/photos/avatar.jpg" id="profile-img" class="img-circle img-offline img-responsive img-profile" alt=""/>
+                  {{/if}}
+                  <!-- <img src="images/photos/profile-big.jpg" class="img-circle img-offline img-responsive img-profile" alt="" /> -->
 
-                          <!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"> -->
-                              <div class="panel panel-success-head widget-todo">
-                                  <div class="col-sm-6">
-                                      Full Name:
-                                      {{#if profile.fullName}}
-                                      <h3 class="name mt0 fs28">{{profile.fullName}}</h3>
-                                      {{else}}
-                                          <h3 class="name mt0 fs28">----------</h3>
-                                      {{/if}}
-                                      <br/>
+                  <h4 class="profile-name mb5">{{profile.fullName}}</h4>
+                  <div>
+                      <!-- <i class="fa fa-map-marker"></i> -->
+                      {{#if employeeProfile.employment.position}}
+                          <i class="fa fa-star"></i> {{positionName employeeProfile.employment.position}}
+                      {{/if}}
+                  </div>
+                  <!-- <div><i class="fa fa-briefcase"></i> Total</div> -->
+                  <div class="mb20"></div>
+              </div>
+              <!-- text-center -->
+          </div>
+          <!-- col-sm-4 col-md-3 -->
 
-                                      Email:
-                                      {{#if emails.[0].address}}
-                                      <h3 class="name mt0 fs28">{{emails.[0].address}}</h3>
-                                      {{else}}
-                                          <h3 class="name mt0 fs28">----------</h3>
-                                      {{/if}}
-                                      <br/>
+                      <div class="col-sm-8 col-md-9">
 
-                                      Employee ID:
-                                      {{#if employeeProfile.employeeId}}
-                                      <h3 class="name mt0 fs28">{{employeeProfile.employeeId}}</h3>
-                                      {{else}}
-                                          <h3 class="name mt0 fs28">----------</h3>
-                                      {{/if}}
-                                      <br/>
+                          <!-- Nav tabs -->
+                          <ul class="nav nav-tabs nav-line">
+                              <li class="active"><a href="#activities" data-toggle="tab"><strong>Personal Details</strong></a></li>
+                              <li><a href="#followers" data-toggle="tab"><strong>Employment Details </strong></a></li>
+                              <li><a href="#following" data-toggle="tab"><strong>Payment Details</strong></a></li>
+                          </ul>
 
-                                      Phone:
-                                      {{#if employeeProfile.phone}}
-                                      <h3 class="name mt0 fs28">{{employeeProfile.phone}}</h3>
-                                      {{else}}
-                                          <h3 class="name mt0 fs28">----------</h3>
-                                      {{/if}}
-                                      <br/>
+                          <!-- Tab panes -->
+                          <div class="tab-content nopadding noborder">
+                              <div class="tab-pane active" id="activities">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <div class="panel-btns">
+                                              <a href="" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
+                                              <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
+                                          </div>
+                                          <!-- panel-btns -->
+                                          <h4 class="panel-title">Personnal Details</h4>
+                                      </div>
+                                      <!-- panel-heading -->
+                                      <div class="panel-body nopadding">
+                                          <form class="form-horizontal form-bordered">
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Employee ID</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.employeeId}}" disabled/>
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
 
-                                      Position:
-                                      {{#if employeeProfile.employment.position}}
-                                          <h3 class="name mt0 fs28">{{positionName employeeProfile.employment.position}}</h3>
-                                      {{else}}
-                                          <h3 class="name mt0 fs28">----------</h3>
-                                      {{/if}}
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">First Name</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{profile.firstname}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Last Name</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{profile.lastname}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Other Names</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{profile.othernames}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Date of Birth</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{formatDate employeeProfile.dateOfBirth}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Gender</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.gender}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Marital Status</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.maritalStatus}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Email</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{emails.[0].address}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Phone Number</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.phone}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Address</label>
+                                                  <div class="col-sm-4">
+                                                      <textarea class="form-control" rows="5" value="{{employeeProfile.address}}" disabled></textarea>
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">State</label>
+                                                  <div class="col-sm-4">
+                                                        <input type="text" placeholder="" class="form-control" value="{{employeeProfile.state}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <div class="col-sm-12">
+                                                      <h5>Next of Kin/Guarantor</h5></div>
+                                              </div>
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Full Name</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.guarantor.fullName}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Email</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.guarantor.email}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Phone Number</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.guarantor.phone}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Address</label>
+                                                  <div class="col-sm-4">
+                                                      <textarea class="form-control" rows="5" value="{{employeeProfile.guarantor.address}}" disabled></textarea>
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">City</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.guarantor.city}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">State</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.guarantor.state}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                          </form>
+                                      </div>
+
+                                      <!-- panel-body -->
                                   </div>
+                                  <!-- panel -->
+
                               </div>
-                          <!-- </div> -->
-                          </div>
+                              <!-- tab-pane -->
 
-                          <div class="col-md-6">
-                          {{> EmployeeProfileDetails currentEmployee=this}}
-                          </div>
-                      </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- contentpanel -->
+                              <div class="tab-pane" id="followers">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <div class="panel-btns">
+                                              <a href="" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
+                                              <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
+                                          </div>
+                                          <!-- panel-btns -->
+                                          <h4 class="panel-title">Employment Details</h4>
+                                      </div>
+                                      <!-- panel-heading -->
+                                      <div class="panel-body nopadding">
+                                          <form class="form-horizontal form-bordered">
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Position</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{positionName employeeProfile.employment.position}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Hire Date</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{formatDate employeeProfile.employment.hireDate}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Confirmation Date</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{formatDate employeeProfile.employment.confirmationDate}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+                                          </form>
+                                      </div>
+
+                                      <!-- panel-body -->
+                                  </div>
+                                  <!-- panel -->
+                              </div>
+                              <!-- tab-pane -->
+
+                              <div class="tab-pane" id="following">
+                                  <div class="panel panel-default">
+                                      <div class="panel-heading">
+                                          <div class="panel-btns">
+                                              <a href="" class="panel-minimize tooltips" data-toggle="tooltip" title="Minimize Panel"><i class="fa fa-minus"></i></a>
+                                              <a href="" class="panel-close tooltips" data-toggle="tooltip" title="Close Panel"><i class="fa fa-times"></i></a>
+                                          </div>
+                                          <!-- panel-btns -->
+                                          <h4 class="panel-title">Payment Details</h4>
+                                      </div>
+                                      <!-- panel-heading -->
+                                      <div class="panel-body nopadding">
+                                          <form class="form-horizontal form-bordered">
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Payment Method</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.paymentMethod}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Bank</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.bank}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Bank Account No.</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.accountNumber}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Bank Account Name</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.accountName}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Tax Payer ID</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.pensionmanager}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">RSA Number</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.RSAPin}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+
+                                              <div class="form-group">
+                                                  <label class="col-sm-4 control-label">Tax Payer ID</label>
+                                                  <div class="col-sm-4">
+                                                      <input type="text" placeholder="" class="form-control" value="{{employeeProfile.payment.taxPayerId}}" disabled />
+                                                  </div>
+                                                  <div class="col-sm-4">
+                                                      &nbsp;
+                                                  </div>
+                                              </div>
+                                          </form>
+                                      </div><!-- panel-body -->
+                                  </div><!-- panel -->
+                              </div><!-- tab-pane -->
+                          </div><!-- tab-content -->
+                      </div><!-- col-sm-9 -->
+                  </div><!-- row -->
+    </div><!-- contentpanel -->
     {{/each}}
-</template>
-
-<template name="EmployeeProfileDetails">
-    <div class="panel-group" id="accordion2">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo2">
-                        Next of kin
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo2" class="panel-collapse collapse in">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Full name</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.fullName}}
-                                {{currentEmployee.employeeProfile.guarantor.fullName}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Email</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.email}}
-                                {{currentEmployee.employeeProfile.guarantor.email}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Phone</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.phone}}
-                                {{currentEmployee.employeeProfile.guarantor.phone}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Address</b>:
-                            {{#if currentEmployee.employeeProfile.guarantor.address}}
-                                {{currentEmployee.employeeProfile.guarantor.address}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo3">
-                        Emergency contact data
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo3" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Name</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].name}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].name}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Email</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].email}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].email}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Phone</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].phone}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].phone}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Address</b>:
-                            {{#if currentEmployee.employeeProfile.emergencyContact.[0].address}}
-                                {{currentEmployee.employeeProfile.emergencyContact.[0].address}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo4">
-                        Payment data
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseTwo4" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <div class="media emplist">
-                        <div class="media-body">
-                            <b>Bank</b>:
-                            {{#if currentEmployee.employeeProfile.payment.bank}}
-                                {{currentEmployee.employeeProfile.payment.bank}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Bank Account Number</b>:
-                            {{#if currentEmployee.employeeProfile.payment.accountNumber}}
-                                {{currentEmployee.employeeProfile.payment.accountNumber}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Bank Account Name</b>:
-                            {{#if currentEmployee.employeeProfile.payment.accountName}}
-                                {{currentEmployee.employeeProfile.payment.accountName}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>Payment method</b>:
-                            {{#if currentEmployee.employeeProfile.payment.paymentMethod}}
-                                {{currentEmployee.employeeProfile.payment.paymentMethod}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/><br/>
-
-                            <b>Pension Fund Manager</b>:
-                            {{#if currentEmployee.employeeProfile.payment.pensionmanager}}
-                                {{currentEmployee.employeeProfile.payment.pensionmanager}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br/>
-                            <b>RSA Number</b>:
-                            {{#if currentEmployee.employeeProfile.payment.RSAPin}}
-                                {{currentEmployee.employeeProfile.payment.RSAPin}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br />
-                            <b>Tax Payer ID</b>:
-                            {{#if currentEmployee.employeeProfile.payment.taxPayerId}}
-                                {{currentEmployee.employeeProfile.payment.taxPayerId}}
-                            {{else}}
-                                ----
-                            {{/if}}
-                            <br />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- panel -->
-    </div>
 </template>

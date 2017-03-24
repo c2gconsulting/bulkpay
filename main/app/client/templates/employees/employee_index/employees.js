@@ -14,6 +14,10 @@ Template.Employees.events({
         e.preventDefault();
         Router.go('employees.create', tmpl.data);
     },
+    'click #uploadEmployees': function(e){
+        e.preventDefault();
+        Modal.show('ImportEmployeesModal');
+    },
     'click .anEmployee': (e, tmpl) => {
         let employeeRowElem = e.currentTarget;
         let employeeIdToEdit = employeeRowElem.getAttribute("name");

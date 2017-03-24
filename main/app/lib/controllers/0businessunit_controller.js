@@ -41,6 +41,8 @@ BusinessUnitController = ApplicationController.extend({
         this.next();
     },
     onBeforeAction: function () {
+        // console.log(`Inside businessunit controller onBeforeAction: ${this.params._id}`);
+
         if(this.params._id){
             let bu = BusinessUnits.findOne({_id: this.params._id});
             if (bu){
