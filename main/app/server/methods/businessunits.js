@@ -43,7 +43,19 @@ Meteor.methods({
         // check if user has permission to delete and all dependent objects are cleared
         BusinessUnits.remove({_id: id});
         return true;
+    },
+    "businessunit/getEmployeeNumber": function(businessUnitId) {
+      console.log(`Inside getEmployeeNumber server method`)
+
+      if(!this.userId){
+          throw new Meteor.Error(401, "Unauthorized");
+      }
+      if(BusinessUnits.findOne({_id: businessUnitId})){
+        let employeeCount = Meteor.users.find({businessIds: {$in: [businessUnitId]}}).count();
+        // console.log(`Employee count: ${employeeCount}`)
+
+        return employeeCount
+      } else
+        throw new Meteor.Error(404, "Business does not exist");
     }
-
 });
-

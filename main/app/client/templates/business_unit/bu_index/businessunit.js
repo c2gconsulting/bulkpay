@@ -381,7 +381,11 @@ Template.singleBu.helpers({
             return bu.name;
         }
         return null;
-
+    },
+    'businessUnitEmployeesCount': function() {
+        //console.log(`Inside businessUnitEmployeesCount: ${businessUnitId}`)
+        return Template.instance().employeesCount.get()
+        //return Meteor.users.find({businessIds: businessUnitId}).count();
     }
 });
 Template.singleBu.events({
@@ -393,4 +397,37 @@ Template.singleBu.events({
 
 
     }
+});
+
+
+/*****************************************************************************/
+/* singleBu: Lifecycle Hooks */
+/*****************************************************************************/
+Template.singleBu.onCreated(function () {
+    let self = this;
+    //console.log(`Inside singleBu onCreated. biz unit id: ${self.data.data._id}`)
+    self.employeesCount = new ReactiveVar();
+    self.employeesCount.set("")
+
+    Meteor.call('businessunit/getEmployeeNumber', self.data.data._id, (err, res) => {
+        console.log("REs: " + res);
+        console.log(`Err: ${JSON.stringify(err)}`)
+        if(!err)
+            self.employeesCount.set(res)
+    })
+
+    // self.autorun(() => {
+    //     if(employeesSubscription.ready()) {
+    //         let employeesCount = Meteor.users.find({businessIds: {$in: [self.data.data._id]}}).count()
+    //         console.log(`Inside employeesSubscription ready. employeesCount: ${employeesCount}`)
+    //
+    //         self.employeesCount.set(employeesCount)
+    //     }
+    // })
+});
+
+Template.singleBu.onRendered(function () {
+});
+
+Template.singleBu.onDestroyed(function () {
 });
