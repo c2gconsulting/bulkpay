@@ -153,6 +153,8 @@ Meteor.methods({
                         successCount += 1
                         let roles = ["ess/all"];
                         Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+
+                        Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
                     } else {
                         errorCount += 1
                     }

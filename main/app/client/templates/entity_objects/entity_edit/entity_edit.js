@@ -28,7 +28,7 @@ Template.EntityEdit.events({
             if(err){
                 swal("Update Failed", `Cannot Update object ${name}`, "error");
             } else {
-                swal("Successful Update!", `Succesffully updated Node Object ${name}`, "success");
+                swal("Successful Update!", `Successfully updated Node Object ${name}`, "success");
                 Modal.hide("EntityEdit");
             }
         });
