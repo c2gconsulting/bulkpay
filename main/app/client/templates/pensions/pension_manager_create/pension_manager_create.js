@@ -10,11 +10,12 @@ Template.PensionManagerCreate.events({
     let pensionManagerName = $('[name=pension-manager-name]').val();
 
     if (!pensionManagerCode || pensionManagerCode.trim().length === 0) {
-      Session.set('errorMessage', "Please enter the pension manager code");
+      Template.instance().errorMessage.set("Please enter the pension manager code");
     } else if(!pensionManagerName || pensionManagerName.trim().length === 0) {
-        Session.set('errorMessage', "Please enter the pension manager name");
+        Template.instance().errorMessage.set("Please enter the pension manager name");
     } else {
-      Session.set('errorMessage', null);
+      Template.instance().errorMessage.set(null);
+
       let newPensionManager = {
         businessId: Session.get('context'),
         code : pensionManagerCode,
@@ -44,7 +45,7 @@ Template.PensionManagerCreate.events({
 /*****************************************************************************/
 Template.PensionManagerCreate.helpers({
   'errorMessage': function() {
-    return Session.get('errorMessage');
+    return Template.instance().errorMessage.get()
   }
 });
 
@@ -52,6 +53,10 @@ Template.PensionManagerCreate.helpers({
 /* PensionManagerCreate: Lifecycle Hooks */
 /*****************************************************************************/
 Template.PensionManagerCreate.onCreated(function () {
+  let self = this;
+
+  self.errorMessage = new ReactiveVar();
+  self.errorMessage.set(null)
 });
 
 Template.PensionManagerCreate.onRendered(function () {
