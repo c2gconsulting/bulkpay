@@ -45,8 +45,6 @@ Meteor.methods({
         return true;
     },
     "businessunit/getEmployeeNumber": function(businessUnitId) {
-      console.log(`Inside getEmployeeNumber server method`)
-
       if(!this.userId){
           throw new Meteor.Error(401, "Unauthorized");
       }
