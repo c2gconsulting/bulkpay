@@ -10,20 +10,11 @@ Template.ImportEmployeesModal.events({
         let file = $("#fileInput")[0].files[0];
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
-            Template.instance().response.set('error', "No file to import");
             return
-        } else {
-            Template.instance().response.set('error', undefined);
         }
         $('#employeesFileUpload').text('Uploading. Please wait ...')
         tmpl.$('#employeesFileUpload').attr('disabled', true);
         //--
-        // try {
-        //     let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
-        //     l.start();
-        // } catch(e) {
-        //     console.log(e);
-        // }
         if (file.type !== "text/csv") {
             try {
                 let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
@@ -44,7 +35,7 @@ Template.ImportEmployeesModal.events({
                         console.log(error.reason)
                         swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
                     } else {
-                        Session.set("response", response)
+                        tmpl.response.set('response', response);    // For some weird reason Template.instance() doesn't work
                     }
                 });
             }
@@ -59,13 +50,27 @@ Template.ImportEmployeesModal.events({
         if (file) {
             $(".file-info").text(file.name);
             if (file.type !== "text/csv") {
-                Template.instance().response.set('error', "Invalid file type selected. Only csv files allowed");
-            } else {
-                Template.instance().response.set('error', undefined);
+                swal('Invalid file', "Only csv files allowed", 'error');
             }
         } else {
             $(".file-info").text("No file chosen")
         }
+    },
+    'click #recordsWithError': function(e, tmpl) {
+        e.preventDefault()
+
+        let fields = ['ErrorLine', 'FirstName','LastName','OtherNames','Email','EmployeeId','Address','DateOfBirth',
+          'Gender','MaritalStatus','Phone','State','GuarantorFullName','GuarantorEmail','GuarantorPhone',
+          'GuarantorAddress','GuarantorCity','GuarantorState','EmploymentHireDate',
+          'EmploymentConfirmationDate','EmploymentTerminationDate','Status',
+          'EmergencyContactFullName','EmergencyContactEmail','EmergencyContactPhone',
+          'EmergencyContactAddress','EmergencyContactCity','EmergencyContactState','PaymentMethod',
+          'Bank','AccountNumber','AccountName','Pensionmanager','RSANumber','TaxPayerId']
+
+        let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
+        let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
+
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "Employee records with error");
     }
 });
 
@@ -74,10 +79,20 @@ Template.ImportEmployeesModal.events({
 /*****************************************************************************/
 Template.ImportEmployeesModal.helpers({
     'response': () => {
-        return Session.get("response")
+        return Template.instance().response.get('response');
     },
     'error': () => {
-        return Template.instance().response.get('error');
+        let uploadResponse = Template.instance().response.get('response');
+        if(uploadResponse) {
+            let skippedCount = uploadResponse.skippedCount
+            let errorCount = uploadResponse.failed
+
+            if((skippedCount + errorCount) > 0) {
+                return true
+            }
+        } else {
+
+        }
     }
 });
 
@@ -87,7 +102,6 @@ Template.ImportEmployeesModal.helpers({
 Template.ImportEmployeesModal.onCreated(function () {
     let self = this;
     self.response = new ReactiveDict();
-    Session.set("response", undefined);
 });
 
 Template.ImportEmployeesModal.onRendered(function () {

@@ -58,6 +58,7 @@
                       </div>
                     </div>
 
+                  {{#if Template.subscriptionsReady}}
                       <div class="row">
                           <div class="col-lg-8 employeesList">
                           {{#if isSearchView}}
@@ -72,9 +73,16 @@
                           </div>
 
                           <div class="col-lg-4">
+                          {{#if doEmployeesExist}}
                           {{> EmployeeSelectedEntry}}
+                          {{/if}}
                           </div>
                       </div>
+                    {{else}}
+                        <div class="col-xs-12">
+                            <div class="loading">{{> spinner}}</div>
+                        </div>
+                    {{/if}}
                     </div>
                 </div>
             </div>

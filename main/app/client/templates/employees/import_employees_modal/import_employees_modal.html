@@ -16,6 +16,7 @@
                                     <span class="file-info">No file choosen</span>
                                 </div>
                                 <p class="download_instruction">Download a <a href="/imports/employees.csv" target="_parent" >sample CSV template</a> to see an example of the format required.</p>
+                                <p class="download_instruction">Please DO NOT modify the names of the columns in the template</p>
                             </div>
 
                             <div class="col-sm-6">
@@ -23,7 +24,14 @@
                                     <div class="alert alert-success text-center">
                                         <p>{{response.success}} Employee(s) records imported</p>
                                         <p>{{response.failed}} Employee(s) records failed to import</p>
-                                        <p>{{response.skipped}} Employee(s) records skipped</p>
+                                        <p>{{response.skippedCount}} Employee(s) records skipped(Duplicate email)</p>
+
+                                        {{#if error}}
+                                            <br/>
+                                            <button class="btn btn-primary mr5 ladda-button" id="recordsWithError">Download Errors file</button>
+                                        {{else}}
+
+                                        {{/if}}
                                     </div>
                                 {{/if}}
                             </div>

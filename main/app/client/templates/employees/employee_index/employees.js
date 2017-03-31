@@ -47,6 +47,9 @@ Template.Employees.helpers({
     'employees': function(){
         return Meteor.users.find({"employee": true});
     },
+    'doEmployeesExist': function() {
+        return Meteor.users.find({employee: true}).count() > 0 ? true : false;
+    },
     getEmployeeSearchResults: function() {
       return EmployeesSearch.getData({
         sort: {isoScore: -1}

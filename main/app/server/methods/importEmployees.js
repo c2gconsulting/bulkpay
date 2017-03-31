@@ -9,25 +9,26 @@ Meteor.methods({
         check(data, Array);
         check(businessId, String);
 
-        let errorCount = 0;
         let successCount = 0;
+        let skipped = [];
         let skippedCount = 0;
+        let errorCount = 0;
         let errors = [];
-
+        //--
         _.each(data, function (d, index) {
             if (Object.keys(d).length === 1){
                 data.splice(index, 1);
             }
         });
 
-        let validateCsvFile = () => {
-            for (let i = 0;i < data.length; i++) {
-                let item   = data[i];
-                item.businessId = businessId;
-                // errors.push({line: i, error: e});
-                // errorCount += 1
-            }
-        }
+        // let validateCsvFile = () => {
+        //     for (let i = 0; i < data.length; i++) {
+        //         let item   = data[i];
+        //         item.businessId = businessId;
+        //         errors.push({line: (i + 1), error: e, rowData: item});
+        //         // errorCount += 1
+        //     }
+        // }
 
         let getEmployeeDocumentForInsert = (csvRow) => {
           let guarantor = () => {
@@ -72,18 +73,6 @@ Meteor.methods({
                   paytypes: [],
                   status: csvRow.Status
               };
-              // if(csvRow.PositionCode) {
-              //     let positions = EntityObjects.find({otype: "Position"});
-              //     if(positions) {
-              //       positions.forEach((aPosition) => {
-              //
-              //       })
-              //     }
-              // }
-              // const details = {
-              //     position: csvRow.PositionCode,
-              //     paygrade: csvRow.PayGradeCode,
-              // }
               if(hireDate)
                   details.hireDate = new Date(hireDate);
               if(terminationDate)
@@ -119,27 +108,32 @@ Meteor.methods({
           return newEmployeeDoc;
         }
 
-        validateCsvFile();
-
-        for ( let i = 0; i < data.length; i++ ) {
+        for (let i = 0; i < data.length; i++ ) {
             let item = data[i];
-            let errorItem = _.find(errors, function (e) {
-                return e.line === i
+            // let errorItem = _.find(errors, function (e) {
+            //     return e.line === i
+            // });
+            item.businessId = businessId;
+            let employeeDocument = getEmployeeDocumentForInsert(item);
+            //console.log(`Employee document: ${JSON.stringify(employeeDocument)}`)
+            let employeeDocumentEmployeeId = employeeDocument.employeeProfile.employeeId;
+
+            // let doesEmployeeWithEmployeeIdOrEmailExist = Meteor.users.findOne({
+            //   "employeeProfile.employeeId": employeeDocumentEmployeeId,
+            //   "businessIds": {"$in" : [businessId]}
+            // });
+            let doesEmployeeWithEmailExist = Meteor.users.findOne({
+              "emails": {$elemMatch: {address: employeeDocument.email}},
+              "businessIds": {"$in" : [businessId]}
             });
 
-            if (!errorItem) {// If error exists in this row then ignore
-                let employeeDocument = getEmployeeDocumentForInsert(item);
-                console.log(`Employee document: ${JSON.stringify(employeeDocument)}`)
-                let employeeDocumentEmployeeId = employeeDocument.employeeProfile.employeeId;
-
-                let doesEmployeeWithEmployeeIdOrEmailExist = Meteor.users.findOne({
-                  "employeeProfile.employeeId": employeeDocumentEmployeeId,
-                  "businessIds": {"$in" : [businessId]}
-                });
-
-                if (doesEmployeeWithEmployeeIdOrEmailExist){
-                    skippedCount += 1
-                } else {
+            if (doesEmployeeWithEmailExist){
+                console.log(`Duplicate email employee skipped`)
+                item.ErrorLine = (i + 1)
+                skipped.push(item);
+                skippedCount += 1
+            } else {
+                try {
                     let options = {};
                     options.email = employeeDocument.email; // tempo
                     options.firstname = employeeDocument.firstName;
@@ -158,9 +152,14 @@ Meteor.methods({
                     } else {
                         errorCount += 1
                     }
+                } catch(dbException) {
+                    item.ErrorLine = (i + 1)
+                    errors.push(item);
+                    errorCount += 1
                 }
             }
         }
-        return {skipped: skippedCount, success: successCount, failed: errorCount, errors: errors}
+        console.log(`Employees upload complete!`)
+        return {skippedCount: skippedCount, skipped: skipped, success: successCount, failed: errorCount, errors: errors}
     }
 });
