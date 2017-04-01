@@ -132,6 +132,7 @@ Meteor.methods({
             if (doesEmployeeWithEmailExist){
                 console.log(`Duplicate email employee skipped`)
                 item.ErrorLine = (i + 1)
+                item.Error = "An employee record already has the same email address";
                 skipped.push(item);
                 skippedCount += 1
             } else {
@@ -152,10 +153,14 @@ Meteor.methods({
 
                         //Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
                     } else {
+                        item.ErrorLine = (i + 1)
+                        item.Error = "Could not create new employee record - Reason unknown";
+                        errors.push(item);
                         errorCount += 1
                     }
                 } catch(dbException) {
                     item.ErrorLine = (i + 1)
+                    item.Error = dbException.message;
                     errors.push(item);
                     errorCount += 1
                 }

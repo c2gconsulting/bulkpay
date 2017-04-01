@@ -8,14 +8,13 @@ Template.ImportEmployeesModal.events({
         e.preventDefault();
 
         let file = $("#fileInput")[0].files[0];
-        console.log(`File type: ${file.type}`)
-        let fileExtension = file.name.split('.').pop()
-        console.log(`File extension: ${fileExtension}`)
-
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
             return
         }
+        console.log(`File type: ${file.type}`)
+        let fileExtension = file.name.split('.').pop()
+        console.log(`File extension: ${fileExtension}`)
         //--
 
         if (file.type !== "text/csv") {
@@ -70,7 +69,7 @@ Template.ImportEmployeesModal.events({
     'click #recordsWithError': function(e, tmpl) {
         e.preventDefault()
 
-        let fields = ['ErrorLine', 'FirstName','LastName','OtherNames','Email','EmployeeId','Address','DateOfBirth',
+        let fields = ['ErrorLine', 'Error', 'FirstName','LastName','OtherNames','Email','EmployeeId','Address','DateOfBirth',
           'Gender','MaritalStatus','Phone','State','GuarantorFullName','GuarantorEmail','GuarantorPhone',
           'GuarantorAddress','GuarantorCity','GuarantorState','EmploymentHireDate',
           'EmploymentConfirmationDate','EmploymentTerminationDate','Status',
