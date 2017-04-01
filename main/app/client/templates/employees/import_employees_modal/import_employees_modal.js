@@ -8,24 +8,20 @@ Template.ImportEmployeesModal.events({
         e.preventDefault();
 
         let file = $("#fileInput")[0].files[0];
+        console.log(`File type: ${file.type}`)
+
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
             return
         }
-        $('#employeesFileUpload').text('Uploading. Please wait ...')
-        tmpl.$('#employeesFileUpload').attr('disabled', true);
         //--
+
         if (file.type !== "text/csv") {
-            try {
-                let l = Ladda.create(tmpl.$('#employeesFileUpload')[0]);
-                l.stop();
-                l.remove();
-            } catch(e) {
-                console.log(e);
-            }
+            swal('Invalid file', "Only csv files allowed", 'error');
             return
         }
-
+        $('#employeesFileUpload').text('Uploading. Please wait ...')
+        tmpl.$('#employeesFileUpload').attr('disabled', true);
         tmpl.isUploading.set(true)
 
         Papa.parse( file, {
@@ -54,6 +50,8 @@ Template.ImportEmployeesModal.events({
         let file =  e.target.files[0];
         if (file) {
             $(".file-info").text(file.name);
+            console.log(`File type: ${file.type}`)
+
             if (file.type !== "text/csv") {
                 swal('Invalid file', "Only csv files allowed", 'error');
             }
