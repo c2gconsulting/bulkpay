@@ -9,6 +9,8 @@ Meteor.methods({
         check(data, Array);
         check(businessId, String);
 
+        this.unblock()
+
         let successCount = 0;
         let skipped = [];
         let skippedCount = 0;
@@ -148,7 +150,7 @@ Meteor.methods({
                         let roles = ["ess/all"];
                         Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
 
-                        Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
+                        //Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
                     } else {
                         errorCount += 1
                     }

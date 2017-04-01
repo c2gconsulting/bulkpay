@@ -39,3 +39,13 @@
 .download_instruction {
     margin-top: 10px;
 }
+
+.Aligner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Aligner-item {
+  max-width: 50%;
+}

@@ -25,12 +25,17 @@ Template.ImportEmployeesModal.events({
             }
             return
         }
+
+        tmpl.isUploading.set(true)
+
         Papa.parse( file, {
             header: true,
             complete( results, file ) {
                 Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), ( error, response ) => {
                     $('#employeesFileUpload').text('Upload File')
                     tmpl.$('#employeesFileUpload').attr('disabled', false);
+                    tmpl.isUploading.set(false)
+
                     if ( error ) {
                         console.log(error.reason)
                         swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
@@ -93,6 +98,9 @@ Template.ImportEmployeesModal.helpers({
         } else {
 
         }
+    },
+    'isUploading': () => {
+        return Template.instance().isUploading.get()
     }
 });
 
@@ -100,8 +108,11 @@ Template.ImportEmployeesModal.helpers({
 /* ImportEmployeesModal: Lifecycle Hooks */
 /*****************************************************************************/
 Template.ImportEmployeesModal.onCreated(function () {
-    let self = this;
-    self.response = new ReactiveDict();
+    let self = this
+    self.response = new ReactiveDict()
+
+    self.isUploading = new ReactiveVar()
+    self.isUploading.set(false)
 });
 
 Template.ImportEmployeesModal.onRendered(function () {

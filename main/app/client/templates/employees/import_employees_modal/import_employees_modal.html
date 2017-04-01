@@ -20,19 +20,23 @@
                             </div>
 
                             <div class="col-sm-6">
-                                {{#if response}}
-                                    <div class="alert alert-success text-center">
-                                        <p>{{response.success}} Employee(s) records imported</p>
-                                        <p>{{response.failed}} Employee(s) records failed to import</p>
-                                        <p>{{response.skippedCount}} Employee(s) records skipped(Duplicate email)</p>
+                                {{#if isUploading}}
+                                    <!-- <div class="align-middle">{{> spinner}}</div> -->
+                                {{else}}
+                                    {{#if response}}
+                                        <div class="alert alert-success text-center">
+                                            <p>{{response.success}} Employee(s) records imported</p>
+                                            <p>{{response.failed}} Employee(s) records failed to import</p>
+                                            <p>{{response.skippedCount}} Employee(s) records skipped(Duplicate email)</p>
 
-                                        {{#if error}}
-                                            <br/>
-                                            <button class="btn btn-primary mr5 ladda-button" id="recordsWithError">Download Errors file</button>
-                                        {{else}}
+                                            {{#if error}}
+                                                <br/>
+                                                <button class="btn btn-primary mr5 ladda-button" id="recordsWithError">Download Errors file</button>
+                                            {{else}}
 
-                                        {{/if}}
-                                    </div>
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
                                 {{/if}}
                             </div>
                         </div>
