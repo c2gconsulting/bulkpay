@@ -19,10 +19,10 @@ Template.ImportEmployeesModal.events({
         //--
 
         if (file.type !== "text/csv") {
-            if(fileExtension !== 'csv') {
+            if(fileExtension !== 'csv') {// This is important because on Windows OS, the file.type won't be 'text/csv'
                 swal('Invalid file', "Only csv files allowed", 'error');
+                return
             }
-            return
         }
         $('#employeesFileUpload').text('Uploading. Please wait ...')
         tmpl.$('#employeesFileUpload').attr('disabled', true);
@@ -59,7 +59,7 @@ Template.ImportEmployeesModal.events({
             console.log(`File extension: ${fileExtension}`)
 
             if (file.type !== "text/csv") {
-                if(fileExtension !== 'csv') {
+                if(fileExtension !== 'csv') {// This is important because on Windows OS, the file.type won't be 'text/csv'
                     swal('Invalid file', "Only csv files allowed", 'error');
                 }
             }
