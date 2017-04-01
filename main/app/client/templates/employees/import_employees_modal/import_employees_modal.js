@@ -9,6 +9,8 @@ Template.ImportEmployeesModal.events({
 
         let file = $("#fileInput")[0].files[0];
         console.log(`File type: ${file.type}`)
+        let fileExtension = file.name.split('.').pop()
+        console.log(`File extension: ${fileExtension}`)
 
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
@@ -17,14 +19,16 @@ Template.ImportEmployeesModal.events({
         //--
 
         if (file.type !== "text/csv") {
-            swal('Invalid file', "Only csv files allowed", 'error');
+            if(fileExtension !== 'csv') {
+                swal('Invalid file', "Only csv files allowed", 'error');
+            }
             return
         }
         $('#employeesFileUpload').text('Uploading. Please wait ...')
         tmpl.$('#employeesFileUpload').attr('disabled', true);
         tmpl.isUploading.set(true)
 
-        Papa.parse( file, {
+        Papa.parse(file, {
             header: true,
             complete( results, file ) {
                 Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), ( error, response ) => {
@@ -51,9 +55,13 @@ Template.ImportEmployeesModal.events({
         if (file) {
             $(".file-info").text(file.name);
             console.log(`File type: ${file.type}`)
+            let fileExtension = file.name.split('.').pop()
+            console.log(`File extension: ${fileExtension}`)
 
             if (file.type !== "text/csv") {
-                swal('Invalid file', "Only csv files allowed", 'error');
+                if(fileExtension !== 'csv') {
+                    swal('Invalid file', "Only csv files allowed", 'error');
+                }
             }
         } else {
             $(".file-info").text("No file chosen")
