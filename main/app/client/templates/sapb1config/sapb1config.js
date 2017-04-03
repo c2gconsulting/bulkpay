@@ -5,7 +5,35 @@
 Template.sapb1config.events({
     'click #testConnection': (e,tmpl) => {
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
-        
+        var sapServerIpAddress = $('#sapServerIpAddress').val();
+        var sapServerPort = $('#sapServerPort').val();
+        var sapServerDatabaseName = $('#sapServerDatabaseName').val();
+
+        if(sapServerIpAddress.length < 1) {
+            swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
+            return
+        } else if(sapServerPort.length < 1) {
+            swal("Validation error", `Please enter the Port of BULKPay's integration service running on your SAP BusinessOne server`, "error");
+            return
+        } else if(sapServerDatabaseName.length < 1) {
+            swal("Validation error", `Please enter the Database name of your company on your SAP BusinessOne server`, "error");
+            return
+        }
+        //--
+        let sapConfig = {
+            ipAddress : sapServerIpAddress,
+            port : sapServerPort,
+            databaseName : sapServerDatabaseName
+        }
+
+        let businessUnitId = Session.get('context')
+        Meteor.call('sapB1integration/testConnectionToWindowsService', businessUnitId, sapConfig, (err, res) => {
+            if (!err){
+                console.log(`Test connection response: ${JSON.stringify(res)}`)
+            } else {
+                swal("Server error", `Please try again at a later time`, "error");
+            }
+        });
     }
 });
 

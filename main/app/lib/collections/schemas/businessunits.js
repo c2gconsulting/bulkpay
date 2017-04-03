@@ -1,4 +1,16 @@
 
+Core.Schemas.SapConfig = new SimpleSchema({
+    ipAddress : {
+        type: String
+    },
+    port: {
+        type: String
+    },
+    databaseName: {
+        type: String
+    }
+});
+
 /**
  * Order Types Schema
  */
@@ -30,8 +42,8 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         defaultValue: 'Active',
         optional: true
     },
-    sapServerIpAddress: {
-        type: String,
+    sapConfig: {
+        type: Core.Schemas.SapConfig,
         optional: true
     },
     default: {
