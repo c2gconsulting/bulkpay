@@ -17,7 +17,8 @@ Core.Schemas.PayGroup = new SimpleSchema({
         type: String
     },
     tax: {
-        type: String
+        type: String,
+        optional: true
     },
     pension: {
         type: String,
