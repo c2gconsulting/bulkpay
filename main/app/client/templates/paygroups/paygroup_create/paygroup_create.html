@@ -10,22 +10,22 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="pay-group-code" class="control-label">Code (alphanumeric)</label>
+                                    <label for="pay-group-code" class="control-label">Code (alphanumeric) <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="pay-group-code" class="form-control" placeholder="SNR-MAN" name="code" value="{{code}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="pay-group-name" class="control-label">Name</label>
+                                    <label for="pay-group-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="pay-group-name" class="form-control" placeholder="Senior Managers Pay Group" name="name" value="{{name}}"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="pay-group-name" class="control-label">Tax Rule</label>
-                                    <select name="tax" style="width: 100%" class="form-control dropdown" >
+                                    <label for="pay-group-name" class="control-label">Tax Rule <span class="asterisk important-input">*</span></label>
+                                    <select name="tax" style="width: 100%" class="form-control dropdown">
                                         {{#each taxList}}
                                             <option value="{{_id}}" {{selected "tax" nil}}>{{code}}</option>
                                         {{/each}}

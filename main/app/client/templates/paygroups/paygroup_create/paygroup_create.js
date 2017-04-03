@@ -6,6 +6,21 @@ import Ladda from "ladda";
 Template.PaygroupCreate.events({
     'click #PayGroupButton': (e, tmpl) => {
         event.preventDefault();
+        let payGroupCode = $('[name="code"]').val()
+        let payGroupName = $('[name="name"]').val()
+        let payGroupTax =  $('[name="tax"]').val()
+
+        if(payGroupCode.length < 1) {
+            swal("Validation error", `Please enter the code for this paygroup`, "error");
+            return
+        } else if(payGroupName.length < 1) {
+            swal("Validation error", `Please enter the name for this paygroup`, "error");
+            return
+        } else if(payGroupTax.length < 1) {
+            swal("Validation error", `Please choose a tax rule for this paygroup`, "error");
+            return
+        }
+
         let l = Ladda.create(tmpl.$('#PayGroupButton')[0]);
         l.start();
         const details = {
