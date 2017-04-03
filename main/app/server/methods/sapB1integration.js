@@ -29,11 +29,11 @@ Meteor.methods({
         let postData = JSON.stringify(payRunResult)
         postData = "=" + postData;       // A quirk of the C# REST API on the windows service
 
-        // HTTP.call('POST', `${sapServerIpAddress}:9080/api/payrun`, {data: postData}, () => (error, result) {
-        //     if (!error) {
-        //         console.log(`Payrun batch result: \n${JSON.stringify(result)}`)
-        //
-        //     }
-        // });
+        HTTP.call('POST', `${sapServerIpAddress}:9080/api/payrun`, {data: postData}, (error, result) => {
+            if (!error) {
+                console.log(`Payrun batch result: \n${JSON.stringify(result)}`)
+
+            }
+        });
     }
 });
