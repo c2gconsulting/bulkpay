@@ -68,6 +68,7 @@ Router.route('/business/:_id', {
 Router.route('/business/:_id/payslip', {
     name: 'payslip',
     controller: 'PayslipController',
+    action: 'showSelfPaySlips',
     where: 'client'
 });
 

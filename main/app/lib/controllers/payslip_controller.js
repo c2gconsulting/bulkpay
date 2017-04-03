@@ -63,8 +63,12 @@ PayslipController = BusinessUnitController.extend({
     // regions automatically.
     // Example:
     //  action: 'myActionFunction'
-    home: function(){
-        this.render("payslip");
+    // home: function(){
+    //     this.render("payslip");
+    // },
+
+    showSelfPaySlips: function() {
+        this.render("selfpayslips");
     },
 
     onAfterAction: function () {
