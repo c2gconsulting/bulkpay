@@ -120,7 +120,7 @@ Template.payruns.onCreated(function () {
     self.currentPayrunPeriod.set(null);
 
     self.errorMsg = new ReactiveVar();
-    self.errorMsg.set("No Payrun available");
+    //self.errorMsg.set("No Payrun available");
 
     self.autorun(() => {
       let employeeIds = Template.instance().currentPayrunEmployeeIds.get();
