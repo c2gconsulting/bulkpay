@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { HTTP } from 'meteor/http'
 
 /**
  *  SAP B1 Integration Methods
@@ -11,7 +12,8 @@ Meteor.methods({
         let userId = Meteor.userId();
         this.unblock()
 
-        Meteor.http.call("GET", `${sapServerIpAddress}:9080/api/payrun`);
+        let connectionStatusResponse = Meteor.http.call("GET", `${sapServerIpAddress}:9080/api/payrun`);
+        return connectionStatusResponse
     },
     'sapB1integration/postPayrunResults': (payRunResult, periodMonth, periodYear, sapServerIpAddress) => {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
@@ -25,8 +27,13 @@ Meteor.methods({
         // }
         //--
         let postData = JSON.stringify(payRunResult)
-        postData = "=" + postData       // A quirk of the C# REST API on the windows service
+        postData = "=" + postData;       // A quirk of the C# REST API on the windows service
 
-        Meteor.http.call("POST", `${sapServerIpAddress}:9080/api/payrun`, postData);
+        // HTTP.call('POST', `${sapServerIpAddress}:9080/api/payrun`, {data: postData}, () => (error, result) {
+        //     if (!error) {
+        //         console.log(`Payrun batch result: \n${JSON.stringify(result)}`)
+        //
+        //     }
+        // });
     }
 });

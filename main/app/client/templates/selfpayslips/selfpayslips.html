@@ -24,8 +24,8 @@
                         <table class="table table-primary mb60 table-hover">
                             <thead>
                             <tr>
-                                <th>#</th>
                                 <th>Period</th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -52,7 +52,9 @@
 
 <template name="singlePaySlipResult">
   <tr class="pointer anEmployeePayResult">
-      <td>{{index}}</td>
       <td>{{getPeriodText data.period}}</td>
+      <td class="text-right">
+          <button class="btn btn-primary payButton" id="viewPaySlip">View</button>
+      </td>
   </tr>
 </template>

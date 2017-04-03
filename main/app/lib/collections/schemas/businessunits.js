@@ -30,6 +30,10 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         defaultValue: 'Active',
         optional: true
     },
+    sapServerIpAddress: {
+        type: String,
+        optional: true
+    },
     default: {
         type: Boolean,
         optional: true,

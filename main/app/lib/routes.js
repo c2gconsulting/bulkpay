@@ -206,6 +206,13 @@ Router.route('/business/:_id/payrun/new', {
   where: 'client'
 });
 
+Router.route('/business/:_id/sap/config', {
+  name: 'sap.config',
+  controller: 'SAPConfigController',
+  where: 'client',
+  action: 'showConfig'
+});
+
 Router.route('/business/:_id/payruns', {
   name: 'payruns',
   controller: 'PayrunController',
