@@ -35,7 +35,7 @@ Meteor.methods({
                 //get personnel details first
                 let employee = Meteor.users.findOne({_id: x.employeeId});
                 if (employee) {
-                    
+
                     //push employee name, employeeId and period
                     const employeePay = [];
                     employeePay.push(employee.profile.fullName);
@@ -843,6 +843,3 @@ function PaytypeException(message, paytype) {
     this.name = 'PaytypeEvaluationException';
     this.paytype = paytype;
 }
-
-
-
