@@ -17,7 +17,7 @@ Meteor.methods({
           let connectionUrl = `http://${sapConfig.ipAddress}:19080/api/connectiontest`
 
           try {
-              HTTP.call('POST', connectionUrl, {ipAddress: ${sapConfig.ipAddress}}, (error, result) => {
+              HTTP.call('POST', connectionUrl, {ipAddress: sapConfig.ipAddress}, (error, result) => {
                   if (!error) {
                     console.log(`conn status: ${result}`)
 
