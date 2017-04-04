@@ -12,9 +12,6 @@ Template.sapb1config.events({
         if(sapServerIpAddress.length < 1) {
             swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
             return
-        } else if(sapServerPort.length < 1) {
-            swal("Validation error", `Please enter the Port of BULKPay's integration service running on your SAP BusinessOne server`, "error");
-            return
         } else if(sapServerDatabaseName.length < 1) {
             swal("Validation error", `Please enter the Database name of your company on your SAP BusinessOne server`, "error");
             return
@@ -22,7 +19,6 @@ Template.sapb1config.events({
         //--
         let sapConfig = {
             ipAddress : sapServerIpAddress,
-            port : sapServerPort,
             databaseName : sapServerDatabaseName
         }
 

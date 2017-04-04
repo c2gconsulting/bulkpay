@@ -3,9 +3,6 @@ Core.Schemas.SapConfig = new SimpleSchema({
     ipAddress : {
         type: String
     },
-    port: {
-        type: String
-    },
     databaseName: {
         type: String
     }

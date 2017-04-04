@@ -13,20 +13,20 @@ Meteor.methods({
         //--
         if(sapConfig) {
           console.log(`Business unit id: ${businessUnitId} sap-server-ip: ${sapConfig.sapServerIpAddress}`)
-          let connectionUrl = `http://${sapConfig.sapServerIpAddress}:${sapConfig.sapServerPort}/api/payrun?dbName:${sapConfig.databaseName}`
+          let connectionUrl = `http://${sapConfig.sapServerIpAddress}:19080/api/payrun?dbName:${sapConfig.databaseName}`
 
           try {
               let connectionStatusResponse = Meteor.http.call("GET", connectionUrl);
               if(connectionStatusResponse && connectionStatusResponse.isSuccessful === true) {
-                  BusinessUnits.update(businessUnitId, {$set: {sapServerIpAddress: sapServerIpAddress}})
+                  BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
               }
               return connectionStatusResponse;
           } catch(e) {
               console.log(`Error in testing connection${e.messagee}`)
-              return {isSuccessful: false, Message: "An error occurred in testing connection. Please be sure of the details."}
+              return {isSuccessful: false, message: "An error occurred in testing connection. Please be sure of the details."}
           }
         } else {
-            return {isSuccessful: false, Message: "SAP Config empty"}
+            return {isSuccessful: false, message: "SAP Config empty"}
         }
     },
     'sapB1integration/postPayrunResults': (payRunResult, periodMonth, periodYear, sapServerIpAddress) => {
@@ -39,7 +39,7 @@ Meteor.methods({
         postData = "=" + postData;       // A quirk of the C# REST API on the windows service
 
         try {
-            HTTP.call('POST', `http://${sapServerIpAddress}:9080/api/payrun`, {data: postData}, (error, result) => {
+            HTTP.call('POST', `http://${sapServerIpAddress}:19080/api/payrun`, {data: postData}, (error, result) => {
                 if (!error) {
                     console.log(`Payrun batch result: \n${JSON.stringify(result)}`)
 
