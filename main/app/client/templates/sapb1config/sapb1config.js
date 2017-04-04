@@ -6,20 +6,16 @@ Template.sapb1config.events({
     'click #testConnection': (e,tmpl) => {
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         var sapServerIpAddress = $('#sapServerIpAddress').val();
-        var sapServerPort = $('#sapServerPort').val();
-        var sapServerDatabaseName = $('#sapServerDatabaseName').val();
+        // var sapServerPort = $('#sapServerPort').val();
+        // var sapServerDatabaseName = $('#sapServerDatabaseName').val();
 
         if(sapServerIpAddress.length < 1) {
             swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
             return
-        } else if(sapServerDatabaseName.length < 1) {
-            swal("Validation error", `Please enter the Database name of your company on your SAP BusinessOne server`, "error");
-            return
         }
         //--
         let sapConfig = {
-            ipAddress : sapServerIpAddress,
-            databaseName : sapServerDatabaseName
+            ipAddress : sapServerIpAddress
         }
 
         let businessUnitId = Session.get('context')

@@ -39,6 +39,7 @@
                 <li class="{{active "taxes"}}"><a href="{{pathFor 'taxes'}}">Taxes</a></li>
                 <li class="{{active "paygroups"}}"><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
                 <li class="{{active "paygrades"}}"><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
+                <li class="{{active "sap.config"}}"><a href="{{pathFor route='sap.config'}}">SAP B1 Config</a></li>
             </ul>
         </li>
     {{/if}}
@@ -57,8 +58,7 @@
         <li class="parent"><a href=""><i class="fa fa-refresh"></i> <span>Pay Runs</span></a>
             <ul class="children">
                 <li class="{{active "payrun.new"}}"><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
-                <li class="{{active "sap.config"}}"><a href="{{pathFor route='sap.config'}}">SAP B1 Config</a></li>
-                
+
                 <li class="{{active "additional.pay"}}"><a href="{{pathFor route='additional.pay'}}">Additional Payment/ Deduction</a></li>
                 <!--<li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>-->
                 <li class="{{active "payruns"}}"><a href="{{pathFor route='payruns'}}">Pay Results</a></li>

@@ -2,9 +2,6 @@
 Core.Schemas.SapConfig = new SimpleSchema({
     ipAddress : {
         type: String
-    },
-    databaseName: {
-        type: String
     }
 });
 

@@ -12,15 +12,24 @@ Meteor.methods({
         let userId = Meteor.userId();
         //--
         if(sapConfig) {
-          console.log(`Business unit id: ${businessUnitId} sap-server-ip: ${sapConfig.sapServerIpAddress}`)
-          let connectionUrl = `http://${sapConfig.sapServerIpAddress}:19080/api/payrun?dbName:${sapConfig.databaseName}`
+          console.log(`Business unit id: ${businessUnitId} sap-server-ip: ${sapConfig.ipAddress}`)
+          //let connectionUrl = `http://${sapConfig.ipAddress}:19080/api/connectiontest/${sapConfig.databaseName}`
+          let connectionUrl = `http://${sapConfig.ipAddress}:19080/api/connectiontest`
 
           try {
-              let connectionStatusResponse = Meteor.http.call("GET", connectionUrl);
-              if(connectionStatusResponse && connectionStatusResponse.isSuccessful === true) {
-                  BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
-              }
-              return connectionStatusResponse;
+              HTTP.call('POST', connectionUrl, {ipAddress: ${sapConfig.ipAddress}}, (error, result) => {
+                  if (!error) {
+                    console.log(`conn status: ${result}`)
+
+                    let connectionStatus = JSON.parse(result)
+                    if(connectionStatus && connectionStatus.isSuccessful === true) {
+                        BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
+                    }
+                    return result;
+                  } else {
+                    return error;
+                  }
+              });
           } catch(e) {
               console.log(`Error in testing connection${e.messagee}`)
               return {isSuccessful: false, message: "An error occurred in testing connection. Please be sure of the details."}
@@ -47,7 +56,7 @@ Meteor.methods({
             });
         } catch(e) {
             console.log(`Error in testing connection${e.messagee}`)
-            return {isSuccessful: false, Message: "An error occurred in testing connection. Please be sure of the details."}
+            return {isSuccessful: false, message: "An error occurred in testing connection. Please be sure of the details."}
         }
     }
 });
