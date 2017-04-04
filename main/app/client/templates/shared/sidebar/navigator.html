@@ -39,6 +39,12 @@
                 <li class="{{active "taxes"}}"><a href="{{pathFor 'taxes'}}">Taxes</a></li>
                 <li class="{{active "paygroups"}}"><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
                 <li class="{{active "paygrades"}}"><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
+            </ul>
+        </li>
+    {{/if}}
+    {{#if hasPayrollAccess}}
+        <li class="parent"><a href=""><i class="fa fa-cog"></i> <span>Setup</span></a>
+            <ul class="children">
                 <li class="{{active "sap.config"}}"><a href="{{pathFor route='sap.config'}}">SAP B1 Config</a></li>
             </ul>
         </li>
