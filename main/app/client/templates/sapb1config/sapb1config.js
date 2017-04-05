@@ -41,7 +41,9 @@ Template.SapB1Config.events({
 /* SapB1Config: Helpers */
 /*****************************************************************************/
 Template.SapB1Config.helpers({
-
+    "paytype": (type) => {
+        return Template.instance().paytypes.get();
+    },
 });
 
 /*****************************************************************************/
@@ -50,7 +52,18 @@ Template.SapB1Config.helpers({
 Template.SapB1Config.onCreated(function () {
     let self = this;
 
+    let context = Session.get('context');
+    self.dict = new ReactiveDict();
+    self.subscribe("PayTypes", context);
+
     self.errorMsg = new ReactiveVar();
+    self.paytypes = new ReactiveVar();
+
+    self.autorun(function(){
+        if (Template.instance().subscriptionsReady()){
+            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch());
+        }
+    });
 });
 
 Template.SapB1Config.onRendered(function () {

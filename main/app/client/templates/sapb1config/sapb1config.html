@@ -24,10 +24,10 @@
                         <!-- PROGRESS WIZARD -->
                         <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
-                                <li><a href="#new-tab1-2" data-toggle="tab" id="step1"><strong>Step 1:</strong> Company</a></li>
-                                <li><a href="#new-tab2-2" data-toggle="tab"><strong>Step 2:</strong> Units</a></li>
-                                <li><a href="#new-tab3-2" data-toggle="tab"><strong>Step 3:</strong> Projects</a></li>
-                                <li><a href="#new-tab4-2" data-toggle="tab"><strong>Step 4:</strong> PayTypes </a></li>
+                                <li><a href="#new-tab1-2" data-toggle="tab" id="step1"><strong></strong> Company</a></li>
+                                <li><a href="#new-tab2-2" data-toggle="tab"><strong></strong> Units</a></li>
+                                <li><a href="#new-tab3-2" data-toggle="tab"><strong></strong> Projects</a></li>
+                                <li><a href="#new-tab4-2" data-toggle="tab"><strong></strong> PayTypes </a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -36,61 +36,49 @@
 
                             <div class="tab-content">
                                 <div class="tab-pane" id="new-tab1-2">
-                                    <div class="row">
+                                    <div class="form-group">
                                         <div class="col-md-12 text-center">
                                             <p>
                                                 <b>Please ensure that BULKPay is allowed to make requests to your SAP BusinessOne server.</b>
                                             </p>
                                         </div>
-                                        <div class="col-md-12 text-center">
-                                            <p class="text-danger"></p>
-                                        </div>
 
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-2"></div>
-                                                <div class="col-md-8">
-                                                    <div class="panel panel-default">
-                                                        <div class="panel-heading">
-                                                            <div class="row">
-                                                                <div class="col-md-3 text-right"><b>IP Address :</b></div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <input type="text" class="form-control" id="sapServerIpAddress"
-                                                                               placeholder="Example: www.yourdomain.com or 172.2.2.1"
-                                                                               title="Example: www.yourdomain.com or 172.2.2.1" />
-                                                                    </div><!-- form-group -->
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-3 text-right"><b>Protocol</b></div>
-                                                                <div class="col-sm-2">
-                                                                    <div class="form-group">
-                                                                        <select name="protocol" class="form-control dropdown" style="width: 100%">
-                                                                            <option value="http" selected>http</option>
-                                                                            <option value="https">https</option>
-                                                                        </select>
-                                                                    </div><!-- form-group -->
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-3 text-right"><b>Company Database Name :</b></div>
-                                                                <div class="col-md-3">
-                                                                    <div class="form-group">
-                                                                        <input type="text" class="form-control" id="sapServerCompanyDatabaseName" />
-                                                                    </div><!-- form-group -->
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-3">&nbsp;</div>
-                                                                <div col-md-9>
-                                                                    <button class="btn btn-primary payButton" id="testConnection">Test Connection</button>
-                                                                </div>
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Company Database Code :</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServerCompanyDatabaseName" />
                                                             </div>
                                                         </div>
-                                                    </div><!-- panel -->
-                                                </div>
-                                                <div class="col-md-2"></div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>IP Address :</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServerIpAddress"
+                                                                       placeholder="Example: www.yourdomain.com or 172.2.2.1"
+                                                                       title="Example: www.yourdomain.com or 172.2.2.1" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Protocol</b></div>
+                                                            <div class="col-md-3">
+                                                                <select name="protocol" class="dropdown">
+                                                                    <option value="http" selected>http</option>
+                                                                    <option value="https">https</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div col-md-9>
+                                                                <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- panel -->
                                             </div>
                                         </div>
                                     </div>
@@ -107,9 +95,38 @@
 
 
                                 <div class="tab-pane" id="new-tab4-2">
-
+                                    <div class="form-group">
+                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>PayType Code</th>
+                                                    <th>Debit Account Code</th>
+                                                    <th>Credit Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="new-data-body">
+                                                    {{#each paytype}}
+                                                    <tr class="item" style="cursor: move;">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{title}}</td>
+                                                        <td>{{code}}</td>
+                                                        <td>
+                                                            <input type="text" class="form-control calc" value=""/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" class="form-control calc" value=""/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
                                 </div><!-- tab-pane -->
-
                             </div><!-- tab-content -->
 
                             <ul class="list-unstyled wizard">
