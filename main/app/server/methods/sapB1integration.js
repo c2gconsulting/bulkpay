@@ -20,20 +20,16 @@ Meteor.methods({
           let errorResponse = null
           try {
               let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-              console.log(`connectionTestResponse: ${JSON.stringify(connectionTestResponse)}`)
-              let actuaServerResponse = connectionTestResponse.content
 
-              if(actuaServerResponse) {
-                  actuaServerResponse = JSON.parse(actuaServerResponse)
-                  if(actuaServerResponse.status === true) {
-                      BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
-                  } else {
-                      console.log(`Apparently the connection test response status is NOT true`)
-                  }
-                  return actuaServerResponse
+              let actualServerResponse = connectionTestResponse.data.replace(/\//g, "")
+              actuaServerResponse = JSON.parse(actualServerResponse)
+
+              if(actualServerResponse.status === true) {
+                  BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
               } else {
-                  return '{"status": false, "message": `The SAP integration service did NOT responsd`}'
+                  console.log(`Apparently the connection test response status is NOT true`)
               }
+              return actualServerResponse.replace(/\//g, "")
           } catch(e) {
               console.log(`Error in testing connection! ${e.messagee}`)
               errorResponse = '{"status": false, "message": "An error occurred in testing connection. Please be sure of the details."}'
