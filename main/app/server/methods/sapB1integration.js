@@ -25,7 +25,7 @@ Meteor.methods({
               actuaServerResponse = JSON.parse(actualServerResponse)
 
               if(actualServerResponse.status === true) {
-                  BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
+                  // BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
               } else {
                   console.log(`Apparently the connection test response status is NOT true`)
               }

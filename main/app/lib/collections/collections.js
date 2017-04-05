@@ -98,6 +98,13 @@ Businesses.attachSchema(Core.Schemas.Business);
 /**
  * Core Collections BusinessUnits
  */
+SapBusinessUnitConfigs = new Mongo.Collection("sapbusinessunitconfigs");
+Partitioner.partitionCollection(SapBusinessUnitConfigs);
+SapBusinessUnitConfigs.attachSchema(Core.Schemas.SapBusinessUnitConfig);
+
+/**
+ * Core Collections BusinessUnits
+ */
 BusinessUnits = new Mongo.Collection("businessunits");
 Partitioner.partitionCollection(BusinessUnits);
 BusinessUnits.attachSchema(Core.Schemas.BusinessUnit);

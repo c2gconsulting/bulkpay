@@ -1,18 +1,6 @@
 
-Core.Schemas.SapConfig = new SimpleSchema({
-    ipAddress : {
-        type: String
-    },
-    protocol: {
-        type: String
-    },
-    companyDatabaseName : {
-        type: String
-    }
-});
-
 /**
- * Order Types Schema
+ * BusinessUnit Schema
  */
 Core.Schemas.BusinessUnit = new SimpleSchema({
     _id: {
@@ -40,10 +28,6 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Active',
-        optional: true
-    },
-    sapConfig: {
-        type: Core.Schemas.SapConfig,
         optional: true
     },
     default: {

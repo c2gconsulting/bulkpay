@@ -49,7 +49,7 @@ SAPConfigController = BusinessUnitController.extend({
   //   this.render();
   // },
   showConfig: function() {
-    this.render('sapb1config')
+    this.render('SapB1Config')
   },
   onAfterAction: function () {
   },
