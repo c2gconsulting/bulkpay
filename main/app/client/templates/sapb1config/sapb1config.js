@@ -41,6 +41,9 @@ Template.SapB1Config.events({
 /* SapB1Config: Helpers */
 /*****************************************************************************/
 Template.SapB1Config.helpers({
+    'costCenters': function () {
+        return Template.instance().units.get()
+    },
     "paytype": (type) => {
         return Template.instance().paytypes.get();
     },
@@ -54,14 +57,21 @@ Template.SapB1Config.onCreated(function () {
 
     let context = Session.get('context');
     self.dict = new ReactiveDict();
+
+    self.subscribe('getCostElement', Session.get('context'));
     self.subscribe("PayTypes", context);
 
     self.errorMsg = new ReactiveVar();
+    self.units = new ReactiveVar();
     self.paytypes = new ReactiveVar();
 
-    self.autorun(function(){
+    self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
-            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch());
+            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
+                return {label: x.name, value: x._id};
+            }));
+
+            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch())
         }
     });
 });

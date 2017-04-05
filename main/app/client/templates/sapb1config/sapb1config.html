@@ -86,7 +86,31 @@
                                 </div><!-- tab-pane -->
 
                                 <div class="tab-pane" id="new-tab2-2">
-
+                                    <div class="form-group">
+                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Unit</th>
+                                                    <th>G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="new-data-body">
+                                                {{#each costCenters}}
+                                                    <tr class="item" style="cursor: move;" id="{{id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{label}}</td>
+                                                        <td>
+                                                            <input type="text" class="form-control calc" value=""/>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
                                 <div class="tab-pane" id="new-tab4-3">
@@ -104,8 +128,8 @@
                                                     <th>S/N</th>
                                                     <th>PayType</th>
                                                     <th>PayType Code</th>
-                                                    <th>Debit Account Code</th>
-                                                    <th>Credit Account Code</th>
+                                                    <th>G/L Debit Account Code</th>
+                                                    <th>G/L Credit Account Code</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="new-data-body">
