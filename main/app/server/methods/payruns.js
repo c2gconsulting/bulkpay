@@ -349,7 +349,7 @@ Meteor.methods({
         }
 
         //just return something for now .... testing
-        return {payObj};
+        return {payObj, runtype};
     }
 
 });

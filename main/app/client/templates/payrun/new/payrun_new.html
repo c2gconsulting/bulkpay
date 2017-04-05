@@ -158,10 +158,13 @@
                                 <div class="col-md-12">
                                     <h5 class="lg-title mb5">List of Processed Employees</h5>
                                     <p class="mb20">Tha table below shows a list of processed employees You can View the Log or payslip of any given employee.</p>
+
                                     {{#if processingError}}
                                     <div class="alert alert-danger">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                        <strong>Payment Processing Error!</strong> Please note <a href="" class="alert-link">Payroll Result not saved</a> There are processing Errors for some Employees, Please Correct and rerun.
+                                        <strong>Payment Processing Error!</strong>
+                                        Please note <a href="" class="alert-link">Payroll Results were not saved.</a>
+                                        There are processing Errors for some employees, Please Correct and rerun.
                                     </div>
                                     {{else}}
                                         <div class="alert alert-success">
@@ -188,6 +191,12 @@
                                             </tbody>
                                         </table>
                                     </div><!-- table-responsive -->
+
+                                    {{#if shouldShowPostToSapButton}}
+                                    <div class="pull-right">
+                                        <button class="btn btn-primary btn-large" id="postToSap">Post to SAP</button>
+                                    </div>
+                                    {{/if}}
                                 </div>
                             </div>
                         {{/if}}
