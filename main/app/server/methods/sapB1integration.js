@@ -17,24 +17,31 @@ Meteor.methods({
 
           let postData = JSON.stringify({companyDatabaseName: sapConfig.companyDatabaseName})
           let requestHeaders = {'Content-Type': 'application/json'}
-
+          let errorResponse = null
           try {
               let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-              if(connectionTestResponse) {
-                  console.log(`connectionTestResponse: ${JSON.stringify(connectionTestResponse)}`)
-                  if(connectionTestResponse.content && connectionTestResponse.content.status === true) {
+              console.log(`connectionTestResponse: ${JSON.stringify(connectionTestResponse)}`)
+              let actuaServerResponse = connectionTestResponse.content
+
+              if(actuaServerResponse) {
+                  actuaServerResponse = JSON.parse(actuaServerResponse)
+                  if(actuaServerResponse.status === true) {
                       BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
+                  } else {
+                      console.log(`Apparently the connection test response status is NOT true`)
                   }
-                  return connectionTestResponse.content;
+                  return actuaServerResponse
               } else {
-                  return {status: false, message: `Error in testing connection`}
+                  return '{"status": false, "message": `The SAP integration service did NOT responsd`}'
               }
           } catch(e) {
               console.log(`Error in testing connection! ${e.messagee}`)
-              return {status: false, message: "An error occurred in testing connection. Please be sure of the details."}
+              errorResponse = '{"status": false, "message": "An error occurred in testing connection. Please be sure of the details."}'
           }
+          if(errorResponse)
+              return errorResponse;
         } else {
-            return {status: false, message: "SAP Config empty"}
+            return '{"status": false, "message": "SAP Config empty"}'
         }
     },
     'sapB1integration/postPayrunResults': (payRunResult, period, sapServerIpAddress) => {
