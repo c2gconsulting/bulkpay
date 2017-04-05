@@ -99,7 +99,7 @@
                                                 </thead>
                                                 <tbody id="new-data-body">
                                                 {{#each costCenters}}
-                                                    <tr class="item" style="cursor: move;" id="{{id}}">
+                                                    <tr class="item" style="cursor: move;" id="{{value}}">
                                                         <td>{{@index}}</td>
                                                         <td>{{label}}</td>
                                                         <td>
@@ -113,16 +113,38 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
-                                <div class="tab-pane" id="new-tab4-3">
-
+                                <div class="tab-pane" id="new-tab3-2">
+                                    <div class="form-group">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Project</th>
+                                                    <th>G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="new-data-body">
+                                                {{#each projects}}
+                                                    <tr class="item" style="cursor: move;" id="{{value}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{label}}</td>
+                                                        <td>
+                                                            <input type="text" class="form-control calc" value=""/>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
 
                                 <div class="tab-pane" id="new-tab4-2">
                                     <div class="form-group">
-                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
                                         <div class="table-responsive">
-                                            <table class="table table-hover" id="derivativeTable">
+                                            <table class="table table-hover">
                                                 <thead>
                                                 <tr>
                                                     <th>S/N</th>

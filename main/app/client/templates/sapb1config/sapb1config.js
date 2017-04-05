@@ -44,6 +44,14 @@ Template.SapB1Config.helpers({
     'costCenters': function () {
         return Template.instance().units.get()
     },
+    'projects': function () {
+        let allProjects = Projects.find().fetch().map(x => {
+                return {label: x.name, value: x._id};
+        });
+        console.log(`projects: ${JSON.stringify(allProjects)}`)
+
+        return allProjects;
+    },
     "paytype": (type) => {
         return Template.instance().paytypes.get();
     },
@@ -55,18 +63,25 @@ Template.SapB1Config.helpers({
 Template.SapB1Config.onCreated(function () {
     let self = this;
 
-    let context = Session.get('context');
-    self.dict = new ReactiveDict();
+    let businessUnitId = Session.get('context');
 
-    self.subscribe('getCostElement', Session.get('context'));
-    self.subscribe("PayTypes", context);
+    self.subscribe('SapBusinessUnitConfigs', businessUnitId);
+    self.subscribe('getCostElement', businessUnitId);
+    self.subscribe("PayTypes", businessUnitId);
+    self.subscribe('employeeprojects', businessUnitId);
 
-    self.errorMsg = new ReactiveVar();
-    self.units = new ReactiveVar();
-    self.paytypes = new ReactiveVar();
+    //self.errorMsg = new ReactiveVar();
+    self.sapBusinessUnitConfig = new ReactiveVar()
+    self.units = new ReactiveVar()
+    self.paytypes = new ReactiveVar()
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
+            let sapBizUnitConfig = SapBusinessUnitConfigs.find().fetch()
+            if(sapBizUnitConfig) {
+                self.sapBusinessUnitConfig.set(sapBizUnitConfig)
+            }
+
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
                 return {label: x.name, value: x._id};
             }));
@@ -106,8 +121,6 @@ Template.SapB1Config.onRendered(function () {
         onTabClick: function (tab, navigation, index) {
             return true;
         }
-
-
     });
 });
 

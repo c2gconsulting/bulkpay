@@ -96,7 +96,7 @@ Partitioner.partitionCollection(Businesses, {index: {userId: 1}});
 Businesses.attachSchema(Core.Schemas.Business);
 
 /**
- * Core Collections BusinessUnits
+ * Core Collections SapBusinessUnitConfigs
  */
 SapBusinessUnitConfigs = new Mongo.Collection("sapbusinessunitconfigs");
 Partitioner.partitionCollection(SapBusinessUnitConfigs);
