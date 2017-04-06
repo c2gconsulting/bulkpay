@@ -147,9 +147,13 @@ Meteor.methods({
 
     },
     'getPositionName': function(id){
-        const name = EntityObjects.findOne({_id: id}).name;
-        console.log(`position name for ${id} is `, name);
-        return name;
+        let entityObj = EntityObjects.findOne({_id: id})
+        if(entityObj) {
+            const name = entityObj.name;
+            console.log(`position name for ${id} is `, name);
+            return name;
+        }
+        return ""
     }
 
 

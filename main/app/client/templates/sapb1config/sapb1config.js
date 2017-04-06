@@ -24,16 +24,68 @@ Template.SapB1Config.events({
         let businessUnitId = Session.get('context')
         Meteor.call('sapB1integration/testConnection', businessUnitId, sapConfig, (err, res) => {
             if (!err){
-            console.log(`Test connection response: ${res}`)
-            let responseAsObj = JSON.parse(res)
-            console.log(responseAsObj)
+                console.log(`Test connection response: ${res}`)
+                let responseAsObj = JSON.parse(res)
+                console.log(responseAsObj)
 
-            let dialogType = (responseAsObj.status === true) ? "success" : "error"
-            swal("Connection Status", responseAsObj.message, dialogType);
-        } else {
-            swal("Server error", `Please try again at a later time`, "error");
-        }
+                let dialogType = (responseAsObj.status === true) ? "success" : "error"
+                swal("Connection Status", responseAsObj.message, dialogType);
+            } else {
+                swal("Server error", `Please try again at a later time`, "error");
+            }
         });
+    },
+    'blur #tab2-data-body tr input': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let unitId = domElem.getAttribute('id')
+        let unitGlAccountCode = domElem.value
+
+        //Template.instance().units(unitId, unitGlAccountCode);
+    },
+    'blur #tab3-data-body tr input': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let projectId = domElem.getAttribute('id')
+        let projectGlAccountCode = domElem.value
+
+        //Template.instance().projects(projectId, projectGlAccountCode);
+    },
+    'blur #tab4-data-body tr input[name=payTypeCreditGlAccountCode]': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let payTypeGlAccountCode = domElem.value
+
+        let domElemAsJqueryElem = $(domElem)
+        let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
+        console.log(`PayType id: ${payTypeId}`)
+
+        // let payTypeGlAccountCodes = Template.instance().paytypes.get(payTypeId) || {}
+        // payTypeGlAccountCodes.creditGlAccountCode = payTypeGlAccountCode
+
+        //Template.instance().paytypes.set(payTypeId, payTypeGlAccountCodes);
+    },
+    'blur #tab4-data-body tr input[name=payTypeDebitGlAccountCode]': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let payTypeGlAccountCode = domElem.value
+
+        let domElemAsJqueryElem = $(domElem)
+        let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
+        console.log(`PayType id: ${payTypeId}`)
+
+        // let payTypeGlAccountCodes = Template.instance().paytypes.get(payTypeId) || {}
+        // payTypeGlAccountCodes.debitGlAccountCode = payTypeGlAccountCode
+
+        //Template.instance().paytypes.set(payTypeId, payTypeGlAccountCodes);
+    },
+    'click #saveUnitsGlAccounts': (e, tmpl) => {
+        console.log(`units gl account button clicked`)
+
+    },
+    'click #saveProjectsGlAccounts': (e, tmpl) => {
+        console.log(`projects gl account button clicked`)
+
+    },
+    'click #savePayTypesGlAccounts': (e, tmpl) => {
+        console.log(`paytypes gl account button clicked`)
+
     }
 });
 
@@ -52,7 +104,7 @@ Template.SapB1Config.helpers({
 
         return allProjects;
     },
-    "paytype": (type) => {
+    "paytype": () => {
         return Template.instance().paytypes.get();
     },
 });
@@ -73,6 +125,7 @@ Template.SapB1Config.onCreated(function () {
     //self.errorMsg = new ReactiveVar();
     self.sapBusinessUnitConfig = new ReactiveVar()
     self.units = new ReactiveVar()
+    self.projects = new ReactiveVar()
     self.paytypes = new ReactiveVar()
 
     self.autorun(function() {
@@ -81,6 +134,13 @@ Template.SapB1Config.onCreated(function () {
             if(sapBizUnitConfig) {
                 self.sapBusinessUnitConfig.set(sapBizUnitConfig)
             }
+
+            // self.data.payTypes.forEach(x=>{
+            //     let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+            //     delete ptype.paytype;
+            //     _.extend(x, ptype);
+            //     return x;
+            // });
 
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
                 return {label: x.name, value: x._id};

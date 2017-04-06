@@ -40,6 +40,25 @@ Meteor.methods({
             return '{"status": false, "message": "SAP Config empty"}'
         }
     },
+    "sapB1integration/updateUnitsGlAccounts": function(businessUnitId, unitGlAccountsArray){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        //update can only be done by authorized user. so check permission
+        check(id, String);
+
+        //--
+        if(unitGlAccountsArray && unitGlAccountsArray.length > 0) {
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            if(businessUnitSapConfig) {
+                SapBusinessUnitConfigs.update({_id : businessUnitSapConfig._id}, {$set : {units: unitGlAccountsArray}});
+            } else {
+                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, units: unitGlAccountsArray})
+            }
+        } else {
+            throw new Meteor.Error(404, "Empty GL accounts data for units");
+        }
+    },
     'sapB1integration/postPayrunResults': (payRunResult, period, sapServerIpAddress) => {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
