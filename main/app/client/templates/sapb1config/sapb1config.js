@@ -7,7 +7,8 @@ Template.SapB1Config.events({
     'click #testConnection': (e,tmpl) => {
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         var sapServerIpAddress = $('#sapServerIpAddress').val();
-        var sapServerCompanyDatabaseName = $('#sapServerCompanyDatabaseName').val();
+        var sapCompanyDatabaseName = $('#sapServerCompanyDatabaseName').val();
+        var protocol = $('#protocol').val();
 
         if(sapServerIpAddress.length < 1) {
             swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
@@ -19,7 +20,8 @@ Template.SapB1Config.events({
         //--
         let sapConfig = {
             ipAddress : sapServerIpAddress,
-            companyDatabaseName : sapServerCompanyDatabaseName
+            sapCompanyDatabaseName : sapCompanyDatabaseName,
+            protocol : protocol
         }
 
         let businessUnitId = Session.get('context')

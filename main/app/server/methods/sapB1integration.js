@@ -15,27 +15,34 @@ Meteor.methods({
           console.log(`Business unit id: ${businessUnitId} sap-server-ip: ${sapConfig.ipAddress}`)
           let connectionUrl = `http://${sapConfig.ipAddress}:19080/api/connectiontest`
 
-          let postData = JSON.stringify({companyDatabaseName: sapConfig.companyDatabaseName})
+          let postData = JSON.stringify({companyDatabaseName: sapConfig.sapCompanyDatabaseName})
           let requestHeaders = {'Content-Type': 'application/json'}
           let errorResponse = null
           try {
               let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-
               let actualServerResponse = connectionTestResponse.data.replace(/\//g, "")
-              actuaServerResponse = JSON.parse(actualServerResponse)
 
-              if(actualServerResponse.status === true) {
-                  // BusinessUnits.update(businessUnitId, {$set: {sapConfig: sapConfig}})
-              } else {
-                  console.log(`Apparently the connection test response status is NOT true`)
+              let serverResponseObj = JSON.parse(actualServerResponse)
+
+              if(serverResponseObj.status === true) {
+                  let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+                  if(businessUnitSapConfig) {
+                      SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : sapConfig});
+                  } else {
+                      SapBusinessUnitConfigs.insert({
+                          businessUnitId: businessUnitId,
+                          ipAddress: sapConfig.ipAddress,
+                          sapCompanyDatabaseName : sapConfig.sapCompanyDatabaseName,
+                          protocol: sapConfig.protocol
+                      })
+                  }
               }
               return actualServerResponse.replace(/\//g, "")
           } catch(e) {
-              console.log(`Error in testing connection! ${e.messagee}`)
+              console.log(`Error in testing connection! ${e.message}`)
               errorResponse = '{"status": false, "message": "An error occurred in testing connection. Please be sure of the details."}'
           }
-          if(errorResponse)
-              return errorResponse;
+          return errorResponse;
         } else {
             return '{"status": false, "message": "SAP Config empty"}'
         }
