@@ -40,21 +40,42 @@ Meteor.methods({
             return '{"status": false, "message": "SAP Config empty"}'
         }
     },
-    "sapB1integration/updateUnitsGlAccounts": function(businessUnitId, unitGlAccountsArray){
+    "sapB1integration/updateUnitCostCenters": function(businessUnitId, unitCostCenterCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
         //update can only be done by authorized user. so check permission
-        check(id, String);
+        check(businessUnitId, String);
 
         //--
-        if(unitGlAccountsArray && unitGlAccountsArray.length > 0) {
+        if(unitCostCenterCodesArray && unitCostCenterCodesArray.length > 0) {
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
             if(businessUnitSapConfig) {
-                SapBusinessUnitConfigs.update({_id : businessUnitSapConfig._id}, {$set : {units: unitGlAccountsArray}});
+                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {units: unitCostCenterCodesArray}});
             } else {
-                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, units: unitGlAccountsArray})
+                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, units: unitCostCenterCodesArray})
             }
+            return true;
+        } else {
+            throw new Meteor.Error(404, "Empty GL accounts data for units");
+        }
+    },
+    "sapB1integration/updateProjectCodes": function(businessUnitId, projectCodesArray){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        //update can only be done by authorized user. so check permission
+        check(businessUnitId, String);
+
+        //--
+        if(projectCodesArray && projectCodesArray.length > 0) {
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            if(businessUnitSapConfig) {
+                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {projects: projectCodesArray}});
+            } else {
+                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, projects: projectCodesArray})
+            }
+            return true;
         } else {
             throw new Meteor.Error(404, "Empty GL accounts data for units");
         }

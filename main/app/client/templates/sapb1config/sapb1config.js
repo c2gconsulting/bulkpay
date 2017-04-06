@@ -38,16 +38,30 @@ Template.SapB1Config.events({
     'blur #tab2-data-body tr input': (e, tmpl) => {
         let domElem = e.currentTarget;
         let unitId = domElem.getAttribute('id')
-        let unitGlAccountCode = domElem.value
+        let unitGlAccountCode = domElem.value || ""
+        console.log(`unitGlAccountCode: ${unitGlAccountCode}`)
 
-        //Template.instance().units(unitId, unitGlAccountCode);
+        let units = Template.instance().units.get()
+
+        let currentUnit = _.find(units, function (o) {
+            return o.unitId === unitId;
+        })
+        currentUnit.costCenterCode = unitGlAccountCode
+
+        Template.instance().units.set(units);
     },
     'blur #tab3-data-body tr input': (e, tmpl) => {
         let domElem = e.currentTarget;
         let projectId = domElem.getAttribute('id')
-        let projectGlAccountCode = domElem.value
+        let projectCode = domElem.value
 
-        //Template.instance().projects(projectId, projectGlAccountCode);
+        let projects = Template.instance().projects.get()
+
+        let currentProject = _.find(projects, function (o) {
+            return o.projectId === projectId;
+        })
+        currentProject.projectCode = projectCode
+        Template.instance().projects.set(projects);
     },
     'blur #tab4-data-body tr input[name=payTypeCreditGlAccountCode]': (e, tmpl) => {
         let domElem = e.currentTarget;
@@ -75,13 +89,36 @@ Template.SapB1Config.events({
 
         //Template.instance().paytypes.set(payTypeId, payTypeGlAccountCodes);
     },
-    'click #saveUnitsGlAccounts': (e, tmpl) => {
+    'click #saveSapCostCenterCodes': (e, tmpl) => {
         console.log(`units gl account button clicked`)
+        let businessUnitId = Session.get('context')
 
+        let theUnits = Template.instance().units.get()
+        console.log(`The units: ${JSON.stringify(theUnits)}`)
+
+        Meteor.call("sapB1integration/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
+            if(res) {
+                console.log(JSON.stringify(res));
+                swal('Success', 'Cost center codes were successfully updated', 'success')
+            } else{
+                console.log(err);
+            }
+        })
     },
-    'click #saveProjectsGlAccounts': (e, tmpl) => {
-        console.log(`projects gl account button clicked`)
+    'click #saveSapProjectCodes': (e, tmpl) => {
+        let businessUnitId = Session.get('context')
 
+        let theProjects = Template.instance().projects.get()
+        console.log(`The projects: ${JSON.stringify(theProjects)}`)
+
+        Meteor.call("sapB1integration/updateProjectCodes", businessUnitId, theProjects, (err, res) => {
+            if(res) {
+                console.log(JSON.stringify(res));
+                swal('Success', 'Project codes were successfully updated', 'success')
+            } else{
+                console.log(err);
+            }
+        })
     },
     'click #savePayTypesGlAccounts': (e, tmpl) => {
         console.log(`paytypes gl account button clicked`)
@@ -94,19 +131,18 @@ Template.SapB1Config.events({
 /*****************************************************************************/
 Template.SapB1Config.helpers({
     'costCenters': function () {
-        return Template.instance().units.get()
+        return EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
+            return {label: x.name, value: x._id};
+        })
     },
     'projects': function () {
-        let allProjects = Projects.find().fetch().map(x => {
-                return {label: x.name, value: x._id};
-        });
-        console.log(`projects: ${JSON.stringify(allProjects)}`)
-
-        return allProjects;
+        return Projects.find().fetch().map(x => {
+            return {label: x.name, value: x._id};
+        })
     },
     "paytype": () => {
-        return Template.instance().paytypes.get();
-    },
+        return PayTypes.find({'status': 'Active'}).fetch()
+    }
 });
 
 /*****************************************************************************/
@@ -143,7 +179,11 @@ Template.SapB1Config.onCreated(function () {
             // });
 
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
-                return {label: x.name, value: x._id};
+                return {unitId: x._id, costCenterCode: ""};
+            }));
+
+            self.projects.set(Projects.find().fetch().map(x => {
+                return {projectId: x._id, projectCode: ""};
             }));
 
             self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch())

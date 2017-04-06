@@ -4,16 +4,18 @@ Core.Schemas.SapUnitConfig = new SimpleSchema({
     unitId : {
         type: String
     },
-    costCenterAccountCode : {
-        type: String
+    costCenterCode : {
+        type: String,
+        optional: true
     }
 });
 Core.Schemas.SapProjectConfig = new SimpleSchema({
     projectId : {
         type: String
     },
-    projectAccountCode : {
-        type: String
+    projectCode : {
+        type: String,
+        optional: true
     }
 });
 Core.Schemas.SapPayTypeConfig = new SimpleSchema({
@@ -21,10 +23,12 @@ Core.Schemas.SapPayTypeConfig = new SimpleSchema({
         type: String
     },
     payTypeDebitAccountCode : {
-        type: String
+        type: String,
+        optional: true
     },
     payTypeCreditAccountCode : {
-        type: String
+        type: String,
+        optional: true
     }
 });
 
@@ -39,17 +43,17 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
     businessUnitId: {
         type: String
     },
-    sapCompanyCode : {
-        type: String
+    sapCompanyDatabaseName : {
+        type: String,
+        optional: true
     },
     ipAddress : {
-        type: String
+        type: String,
+        optional: true
     },
     protocol: {
-        type: String
-    },
-    companyDatabaseName : {
-        type: String
+        type: String,
+        optional: true
     },
     units: {
         type: [Core.Schemas.SapUnitConfig],
@@ -60,7 +64,8 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
         optional: true
     },
     payTypes: {
-        type: [Core.Schemas.SapPayTypeConfig]
+        type: [Core.Schemas.SapPayTypeConfig],
+        optional: true
     },
     createdAt: {
         type: Date,
