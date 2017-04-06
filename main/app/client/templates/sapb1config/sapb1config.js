@@ -1,6 +1,7 @@
 /*****************************************************************************/
 /* SapB1Config: Event Handlers */
 /*****************************************************************************/
+import _ from 'underscore';
 
 Template.SapB1Config.events({
     'click #testConnection': (e,tmpl) => {
@@ -131,14 +132,47 @@ Template.SapB1Config.events({
 /*****************************************************************************/
 Template.SapB1Config.helpers({
     'costCenters': function () {
-        return EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
-            return {label: x.name, value: x._id};
-        })
+        let allUnits = EntityObjects.find({otype: 'Unit'}).fetch()
+        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
+
+        if(sapBusinessUnitConfig) {
+            return allUnits.map(unit => {
+                let currentUnit = _.find(sapBusinessUnitConfig.units, function (o) {
+                    return o.unitId === unit._id;
+                })
+                if(currentUnit) {
+                    return {label: unit.name, value: unit._id, costCenterCode: currentUnit.costCenterCode};
+                } else {
+                    return {label: unit.name, value: unit._id};
+                }
+            });
+        } else {
+            return allUnits.map(x => {
+                return {label: x.name, value: x._id};
+            })
+        }
     },
     'projects': function () {
-        return Projects.find().fetch().map(x => {
-            return {label: x.name, value: x._id};
-        })
+        let allProjects = Projects.find().fetch()
+
+        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
+
+        if(sapBusinessUnitConfig) {
+            return allProjects.map(project => {
+                let currentProject = _.find(sapBusinessUnitConfig.projects, function (o) {
+                    return o.projectId === project._id;
+                })
+                if(currentProject) {
+                    return {label: project.name, value: project._id, projectCode: currentProject.projectCode};
+                } else {
+                    return {label: project.name, value: project._id};
+                }
+            });
+        } else {
+            return allProjects.map(x => {
+                return {label: x.name, value: x._id};
+            })
+        }
     },
     "paytype": () => {
         return PayTypes.find({'status': 'Active'}).fetch()
@@ -166,17 +200,10 @@ Template.SapB1Config.onCreated(function () {
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
-            let sapBizUnitConfig = SapBusinessUnitConfigs.find().fetch()
+            let sapBizUnitConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId})
             if(sapBizUnitConfig) {
                 self.sapBusinessUnitConfig.set(sapBizUnitConfig)
             }
-
-            // self.data.payTypes.forEach(x=>{
-            //     let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-            //     delete ptype.paytype;
-            //     _.extend(x, ptype);
-            //     return x;
-            // });
 
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
                 return {unitId: x._id, costCenterCode: ""};
