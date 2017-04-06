@@ -51,7 +51,8 @@
                                                         <div class="row">
                                                             <div class="col-md-4 text-right"><b>Company Database Code :</b></div>
                                                             <div class="col-md-3">
-                                                                <input type="text" class="form-control" id="sapServerCompanyDatabaseName" />
+                                                                <input type="text" class="form-control" id="sapServerCompanyDatabaseName"
+                                                                    value="{{companyConnectionInfo.sapCompanyDatabaseName}}"/>
                                                             </div>
                                                         </div>
 
@@ -60,7 +61,8 @@
                                                             <div class="col-md-3">
                                                                 <input type="text" class="form-control" id="sapServerIpAddress"
                                                                        placeholder="Example: www.yourdomain.com or 172.2.2.1"
-                                                                       title="Example: www.yourdomain.com or 172.2.2.1" />
+                                                                       title="Example: www.yourdomain.com or 172.2.2.1"
+                                                                        value="{{companyConnectionInfo.ipAddress}}"/>
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -164,7 +166,6 @@
                                                 <tr>
                                                     <th>S/N</th>
                                                     <th>PayType</th>
-                                                    <th>PayType Code</th>
                                                     <th>Credit G/L Account Code</th>
                                                     <th>Debit G/L Account Code</th>
                                                 </tr>
@@ -174,12 +175,13 @@
                                                     <tr class="item" style="cursor: move;" id="{{_id}}">
                                                         <td>{{@index}}</td>
                                                         <td>{{title}}</td>
-                                                        <td>{{code}}</td>
                                                         <td>
-                                                            <input type="text" name="payTypeCreditGlAccountCode" class="form-control calc" value=""/>
+                                                            <input type="text" name="payTypeCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}"/>
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="payTypeDebitGlAccountCode" class="form-control calc" value=""/>
+                                                            <input type="text" name="payTypeDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeDebitAccountCode}}"/>
                                                         </td>
                                                     </tr>
                                                     {{/each}}

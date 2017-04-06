@@ -64,7 +64,7 @@ Meteor.methods({
             }
             return true;
         } else {
-            throw new Meteor.Error(404, "Empty GL accounts data for units");
+            throw new Meteor.Error(404, "Empty cost centers data for units");
         }
     },
     "sapB1integration/updateProjectCodes": function(businessUnitId, projectCodesArray){
@@ -84,7 +84,27 @@ Meteor.methods({
             }
             return true;
         } else {
-            throw new Meteor.Error(404, "Empty GL accounts data for units");
+            throw new Meteor.Error(404, "Empty project codes data");
+        }
+    },
+    "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        //update can only be done by authorized user. so check permission
+        check(businessUnitId, String);
+
+        //--
+        if(payTypesGLAccountCodesArray && payTypesGLAccountCodesArray.length > 0) {
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            if(businessUnitSapConfig) {
+                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {payTypes: payTypesGLAccountCodesArray}});
+            } else {
+                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, payTypes: payTypesGLAccountCodesArray})
+            }
+            return true;
+        } else {
+            throw new Meteor.Error(404, "Empty GL accounts data for pay types");
         }
     },
     'sapB1integration/postPayrunResults': (payRunResult, period, sapServerIpAddress) => {

@@ -72,12 +72,13 @@ Template.SapB1Config.events({
 
         let domElemAsJqueryElem = $(domElem)
         let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
-        console.log(`PayType id: ${payTypeId}`)
 
-        // let payTypeGlAccountCodes = Template.instance().paytypes.get(payTypeId) || {}
-        // payTypeGlAccountCodes.creditGlAccountCode = payTypeGlAccountCode
-
-        //Template.instance().paytypes.set(payTypeId, payTypeGlAccountCodes);
+        let payTypes = Template.instance().paytypes.get() || []
+        let currentPayType = _.find(payTypes, function (o) {
+            return o.payTypeId === payTypeId;
+        })
+        currentPayType.payTypeCreditAccountCode = payTypeGlAccountCode
+        Template.instance().paytypes.set(payTypes);
     },
     'blur #tab4-data-body tr input[name=payTypeDebitGlAccountCode]': (e, tmpl) => {
         let domElem = e.currentTarget;
@@ -85,12 +86,14 @@ Template.SapB1Config.events({
 
         let domElemAsJqueryElem = $(domElem)
         let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
-        console.log(`PayType id: ${payTypeId}`)
 
-        // let payTypeGlAccountCodes = Template.instance().paytypes.get(payTypeId) || {}
-        // payTypeGlAccountCodes.debitGlAccountCode = payTypeGlAccountCode
+        let payTypes = Template.instance().paytypes.get() || []
 
-        //Template.instance().paytypes.set(payTypeId, payTypeGlAccountCodes);
+        let currentPayType = _.find(payTypes, function (o) {
+            return o.payTypeId === payTypeId;
+        })
+        currentPayType.payTypeDebitAccountCode = payTypeGlAccountCode
+        Template.instance().paytypes.set(payTypes);
     },
     'click #saveSapCostCenterCodes': (e, tmpl) => {
         console.log(`units gl account button clicked`)
@@ -125,7 +128,19 @@ Template.SapB1Config.events({
     },
     'click #savePayTypesGlAccounts': (e, tmpl) => {
         console.log(`paytypes gl account button clicked`)
+        let businessUnitId = Session.get('context')
 
+        let thePayTypes = Template.instance().paytypes.get()
+        console.log(`The thePayTypes: ${JSON.stringify(thePayTypes)}`)
+
+        Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, (err, res) => {
+            if(res) {
+                console.log(JSON.stringify(res));
+                swal('Success', 'Pay type account codes were successfully updated', 'success')
+            } else{
+                console.log(err);
+            }
+        })
     }
 });
 
@@ -133,6 +148,17 @@ Template.SapB1Config.events({
 /* SapB1Config: Helpers */
 /*****************************************************************************/
 Template.SapB1Config.helpers({
+    'companyConnectionInfo': function() {
+        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
+        if(sapBusinessUnitConfig) {
+            return {
+                sapCompanyDatabaseName : sapBusinessUnitConfig.sapCompanyDatabaseName,
+                ipAddress : sapBusinessUnitConfig.ipAddress,
+                protocol : sapBusinessUnitConfig.protocol
+            }
+        }
+        return null
+    },
     'costCenters': function () {
         let allUnits = EntityObjects.find({otype: 'Unit'}).fetch()
         let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
@@ -177,7 +203,25 @@ Template.SapB1Config.helpers({
         }
     },
     "paytype": () => {
-        return PayTypes.find({'status': 'Active'}).fetch()
+        //return PayTypes.find({'status': 'Active'}).fetch()
+        let allPayTypes = PayTypes.find({'status': 'Active'}).fetch()
+
+        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
+        if(sapBusinessUnitConfig) {
+            return allPayTypes.map(payType => {
+                let currentPayType = _.find(sapBusinessUnitConfig.payTypes, function (o) {
+                    return o.payTypeId === payType._id;
+                })
+                if(currentPayType) {
+                    _.extend(payType, currentPayType)
+                } else {
+                    _.extend(payType, {payTypeId: payType._id})
+                }
+                return payType
+            });
+        } else {
+            return allPayTypes
+        }
     }
 });
 
@@ -215,7 +259,9 @@ Template.SapB1Config.onCreated(function () {
                 return {projectId: x._id, projectCode: ""};
             }));
 
-            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch())
+            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch().map(x => {
+                return {payTypeId: x._id, payTypeDebitAccountCode: "", payTypeCreditAccountCode: ""};
+            }));
         }
     });
 });
