@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/* Payments: Event Handlers */
+/* PayrunNew: Event Handlers */
 /*****************************************************************************/
 Template.PayrunNew.events({
     'click #startProcessing': (e,tmpl) => {
@@ -71,39 +71,11 @@ Template.PayrunNew.events({
     },
     'hover .table tbody tr': (e,tmpl) => {
         console.log('hover called');
-    },
-    'click #postToSap': (e,tmpl) => {
-        const payresult = Template.instance().dict.get('payResult');
-        if(payresult) {
-            let numberOfErrors = payresult.payObj.error.length;
-
-            if(numberOfErrors > 0) {
-                swal('Payrun error', "Your Payrun has some processing errors", "error")
-            } else {
-                swal({
-                        title: "Are you sure?",
-                        text: "This operation cannot be reversed!",
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#DD6B55",
-                        confirmButtonText: "Yes, post the payrun results!",
-                        closeOnConfirm: false
-                    },
-                    function(){
-                        console.log("Payrun Post to SAP confirmed")
-                        Modal.show('TestSapConfigModal')
-                    }
-                );
-            }
-        } else {
-            swal('Error', "You haven't done a Payrun", "error")
-            //Modal.show('TestSapConfigModal')
-        }
     }
 });
 
 /*****************************************************************************/
-/* Payments: Helpers */
+/* PayrunNew: Helpers */
 /*****************************************************************************/
 Template.PayrunNew.helpers({
     'month': function(){
@@ -144,15 +116,6 @@ Template.PayrunNew.helpers({
     'processingError': () => {
         const payresult = Template.instance().dict.get('payResult');
         return payresult.payObj.error.length;
-    },
-    'shouldShowPostToSapButton': () => {
-        const payresult = Template.instance().dict.get('payResult');
-        if(payresult) {
-            const numErrors = payresult.payObj.error.length;
-            return numErrors == 0;
-        } else {
-            return false;
-        }
     }
 });
 

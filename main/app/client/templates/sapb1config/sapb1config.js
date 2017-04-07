@@ -13,7 +13,7 @@ Template.SapB1Config.events({
         if(sapServerIpAddress.length < 1) {
             swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
             return
-        } else if(sapServerCompanyDatabaseName.length < 1) {
+        } else if(sapCompanyDatabaseName.length < 1) {
             swal("Validation error", `Please enter the database name of your company on your SAP BusinessOne server`, "error");
             return
         }

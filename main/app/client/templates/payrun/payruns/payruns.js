@@ -65,7 +65,53 @@ Template.payruns.events({
         } else {
             swal('Error', 'Please select Period', 'error');
         }
+    },
+    'click #postToSap': (e,tmpl) => {
+        let currentPayrun = Template.instance().currentPayrun.get();
 
+        if(currentPayrun) {
+            swal({
+                    title: "Are you sure?",text: "This operation cannot be reversed!", type: "warning",
+                    showCancelButton: true, confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, post the payrun results!", closeOnConfirm: true
+                },
+                function(){
+                    console.log("Payrun Post to SAP confirmed")
+                    tmpl.$('#postToSap').text('Preparing ... ');
+                    tmpl.$('#postToSap').attr('disabled', true);
+                    try {
+                        let l = Ladda.create(tmpl.$('#postToSap')[0]);
+                        l.start();
+                    } catch(e) {
+                        console.log(e);
+                    }
+                    //--
+                    let resetButton = function() {
+                        // End button animation
+                        try {
+                            let l = Ladda.create(tmpl.$('#postToSap')[0]);
+                            l.stop();
+                            l.remove();
+                        } catch(e) {
+                            console.log(e);
+                        }
+
+                        tmpl.$('#postToSap').text('Post results to SAP');
+                        tmpl.$('#postToSap').removeAttr('disabled');
+                    };
+                    //--
+                    let month = $('[name="paymentPeriod.month"]').val()
+                    let year = $('[name="paymentPeriod.year"]').val()
+                    let period = `122017`
+                    console.log(`Period for sap posting: ${period}`)
+
+                    Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
+                        resetButton()
+                        console.log(`res: ${JSON.stringify(res)}`)
+                    })
+                }
+            );
+        }
     }
 });
 
