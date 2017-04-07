@@ -9,12 +9,11 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     //Be patient. The main processing happens after this function definition
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
         unitsBulkSum[unitId] = {}
-        unitsBulkSum[unitId]['costCenterCode'] = costCenterCode
+        unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
         unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.map(aPayment => {
             let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
                 return aPayType.payTypeId === aPayment.id;
             })
-            console.log(`sapPayTypeDetails: ${JSON.stringify(sapPayTypeDetails)}`)
             //--
             let payTypeDebitAccountCode = ""
             if(sapPayTypeDetails && sapPayTypeDetails.payTypeDebitAccountCode) {
