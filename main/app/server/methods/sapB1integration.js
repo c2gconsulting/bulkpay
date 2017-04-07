@@ -107,23 +107,23 @@ Meteor.methods({
             throw new Meteor.Error(404, "Empty GL accounts data for pay types");
         }
     },
-    'sapB1integration/postPayrunResults': (payRunResult, period, sapServerIpAddress) => {
+    'sapB1integration/postPayrunResults': (period, sapServerIpAddress) => {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         let userId = Meteor.userId();
+
+        let payRunResult = []
 
         let connectionUrl = `http://${sapServerIpAddress}:19080/api/payrun`
         let postData = JSON.stringify({period: period, data: payRunResult})
         let requestHeaders = {'Content-Type': 'application/json'}
 
         try {
-            HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders}, (error, result) => {
-                if (!error) {
-                    console.log(`Payrun batch result: \n${JSON.stringify(result)}`)
 
-                }
-            });
+            let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
+            let actualServerResponse = connectionTestResponse.data.replace(/\//g, "")
+
         } catch(e) {
             console.log(`Error in posting payrun results to SAP! ${e.messagee}`)
             return {isSuccessful: false, message: "Error in posting payrun results to SAP"}

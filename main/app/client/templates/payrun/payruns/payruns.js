@@ -10,20 +10,12 @@ Template.payruns.events({
         l.start();
     },
     'click #get-employee-payresults': (e, tmpl) => {
-        let selectedEmployeeId = $('[name="employees"]').val();
         let paymentPeriodMonth = $('[name="paymentPeriodMonth"]').val();
         let paymentPeriodYear = $('[name="paymentPeriodYear"]').val();
-        let selectedEmployeeIds = Core.returnSelection($('[name="employees"]'))
 
-        if(selectedEmployeeId && selectedEmployeeIds.length > 0) {
-            let period = paymentPeriodMonth + paymentPeriodYear;
+        let period = paymentPeriodMonth + paymentPeriodYear;
 
-            Template.instance().currentPayrunEmployeeIds.set(selectedEmployeeIds);
-            Template.instance().currentPayrunPeriod.set(period);
-        } else {
-            Template.instance().currentPayrun.set(null);
-            Template.instance().errorMsg.set("Please select an employee");
-        }
+        Template.instance().currentPayrunPeriod.set(period);
     },
     'click .excel': (e, tmpl) => {
         e.preventDefault();
@@ -81,9 +73,6 @@ Template.payruns.events({
 /* payruns: Helpers */
 /*****************************************************************************/
 Template.payruns.helpers({
-    'employees': function(){
-        return Meteor.users.find({"employee": true});
-    },
     'month': function(){
         return Core.months()
     },
@@ -113,9 +102,6 @@ Template.payruns.onCreated(function () {
     self.currentPayrun = new ReactiveVar();
     self.currentPayrun.set(false);
 
-    self.currentPayrunEmployeeIds = new ReactiveVar();
-    self.currentPayrunEmployeeIds.set(null);
-
     self.currentPayrunPeriod = new ReactiveVar();
     self.currentPayrunPeriod.set(null);
 
@@ -123,14 +109,12 @@ Template.payruns.onCreated(function () {
     //self.errorMsg.set("No Payrun available");
 
     self.autorun(() => {
-      let employeeIds = Template.instance().currentPayrunEmployeeIds.get();
-      let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
+        let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
 
-      if(employeeIds && employeeIds.length > 0) {
-        self.subscribe("Payruns", employeeIds, currentPayrunPeriod);
+        self.subscribe("Payruns", currentPayrunPeriod);
 
         if (self.subscriptionsReady()) {
-          let payRun = Payruns.find({employeeId: {$in: employeeIds}, period: currentPayrunPeriod});
+          let payRun = Payruns.find({period: currentPayrunPeriod});
 
           if(payRun && payRun.count() > 0)
             Template.instance().currentPayrun.set(payRun);
@@ -138,8 +122,7 @@ Template.payruns.onCreated(function () {
             Template.instance().currentPayrun.set(null);
             Template.instance().errorMsg.set("No Payrun available for that time period");
         }
-      }
-  });
+    });
 });
 
 Template.payruns.onRendered(function () {
