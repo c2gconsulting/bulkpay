@@ -160,68 +160,13 @@ Template.SapB1Config.helpers({
         return null
     },
     'costCenters': function () {
-        let allUnits = EntityObjects.find({otype: 'Unit'}).fetch()
-        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
-
-        if(sapBusinessUnitConfig) {
-            return allUnits.map(unit => {
-                let currentUnit = _.find(sapBusinessUnitConfig.units, function (o) {
-                    return o.unitId === unit._id;
-                })
-                if(currentUnit) {
-                    return {label: unit.name, value: unit._id, costCenterCode: currentUnit.costCenterCode};
-                } else {
-                    return {label: unit.name, value: unit._id};
-                }
-            });
-        } else {
-            return allUnits.map(x => {
-                return {label: x.name, value: x._id};
-            })
-        }
+        return Template.instance().units.get()
     },
     'projects': function () {
-        let allProjects = Projects.find().fetch()
-
-        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
-
-        if(sapBusinessUnitConfig) {
-            return allProjects.map(project => {
-                let currentProject = _.find(sapBusinessUnitConfig.projects, function (o) {
-                    return o.projectId === project._id;
-                })
-                if(currentProject) {
-                    return {label: project.name, value: project._id, projectCode: currentProject.projectCode};
-                } else {
-                    return {label: project.name, value: project._id};
-                }
-            });
-        } else {
-            return allProjects.map(x => {
-                return {label: x.name, value: x._id};
-            })
-        }
+        return Template.instance().projects.get()
     },
     "paytype": () => {
-        //return PayTypes.find({'status': 'Active'}).fetch()
-        let allPayTypes = PayTypes.find({'status': 'Active'}).fetch()
-
-        let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
-        if(sapBusinessUnitConfig) {
-            return allPayTypes.map(payType => {
-                let currentPayType = _.find(sapBusinessUnitConfig.payTypes, function (o) {
-                    return o.payTypeId === payType._id;
-                })
-                if(currentPayType) {
-                    _.extend(payType, currentPayType)
-                } else {
-                    _.extend(payType, {payTypeId: payType._id})
-                }
-                return payType
-            });
-        } else {
-            return allPayTypes
-        }
+        return Template.instance().paytypes.get()
     }
 });
 
@@ -238,7 +183,6 @@ Template.SapB1Config.onCreated(function () {
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('employeeprojects', businessUnitId);
 
-    //self.errorMsg = new ReactiveVar();
     self.sapBusinessUnitConfig = new ReactiveVar()
     self.units = new ReactiveVar()
     self.projects = new ReactiveVar()
@@ -247,20 +191,42 @@ Template.SapB1Config.onCreated(function () {
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
             let sapBizUnitConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId})
-            if(sapBizUnitConfig) {
-                self.sapBusinessUnitConfig.set(sapBizUnitConfig)
-            }
+            self.sapBusinessUnitConfig.set(sapBizUnitConfig)
 
-            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(x => {
-                return {unitId: x._id, costCenterCode: ""};
+            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(unit => {
+                if(sapBizUnitConfig) {
+                    let currentUnit = _.find(sapBizUnitConfig.units, function (oldUnit) {
+                        return oldUnit.unitId === unit._id;
+                    })
+                    if(currentUnit) {
+                        _.extend(unit, currentUnit)
+                    }
+                }
+                return unit
             }));
 
-            self.projects.set(Projects.find().fetch().map(x => {
-                return {projectId: x._id, projectCode: ""};
+            self.projects.set(Projects.find().fetch().map(project => {
+                if(sapBizUnitConfig) {
+                    let currentProject = _.find(sapBizUnitConfig.projects, function (oldProject) {
+                        return oldProject.projectId === project._id;
+                    })
+                    if(currentProject) {
+                        _.extend(project, currentProject)
+                    }
+                }
+                return project
             }));
 
-            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch().map(x => {
-                return {payTypeId: x._id, payTypeDebitAccountCode: "", payTypeCreditAccountCode: ""};
+            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch().map(payType => {
+                if(sapBizUnitConfig) {
+                    let currentPayType = _.find(sapBizUnitConfig.payTypes, function (oldPayType) {
+                        return oldPayType.payTypeId === payType._id;
+                    })
+                    if(currentPayType) {
+                        _.extend(payType, currentPayType)
+                    }
+                }
+                return payType
             }));
         }
     });

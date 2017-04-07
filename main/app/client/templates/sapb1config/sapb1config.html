@@ -108,9 +108,9 @@
                                                 {{#each costCenters}}
                                                     <tr class="item" style="cursor: move;">
                                                         <td>{{@index}}</td>
-                                                        <td>{{label}}</td>
+                                                        <td>{{name}}</td>
                                                         <td>
-                                                            <input type="text" id="{{value}}" class="form-control calc" value="{{costCenterCode}}"/>
+                                                            <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
@@ -140,9 +140,9 @@
                                                 {{#each projects}}
                                                     <tr class="item" style="cursor: move;">
                                                         <td>{{@index}}</td>
-                                                        <td>{{label}}</td>
+                                                        <td>{{name}}</td>
                                                         <td>
-                                                            <input type="text" id="{{value}}" class="form-control calc" value="{{projectCode}}"/>
+                                                            <input type="text" id="{{_id}}" class="form-control calc" value="{{projectCode}}"/>
                                                         </td>
                                                     </tr>
                                                 {{/each}}
