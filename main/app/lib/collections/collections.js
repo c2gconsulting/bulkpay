@@ -217,6 +217,13 @@ Partitioner.partitionCollection(Payruns);
 Payruns.attachSchema(Core.Schemas.Payrun);
 
 /**
+ * Core Collections PostedPayrunResults
+ */
+PostedPayrunResults = new Mongo.Collection("postedpayrunresults");
+Partitioner.partitionCollection(PostedPayrunResults);
+PostedPayrunResults.attachSchema(Core.Schemas.PostedPayrunResult);
+
+/**
  * Core Collections Pensions
  */
 Pensions = new Mongo.Collection("pensions");

@@ -24,12 +24,17 @@ Template.SapB1Config.events({
             protocol : protocol
         }
 
+        tmpl.$('#testConnection').text('Connecting ... ');
+        tmpl.$('#testConnection').attr('disabled', true);
+        //--
         let businessUnitId = Session.get('context')
         Meteor.call('sapB1integration/testConnection', businessUnitId, sapConfig, (err, res) => {
+            tmpl.$('#testConnection').text('Test Connection');
+            tmpl.$('#testConnection').removeAttr('disabled');
+
             if (!err){
                 console.log(`Test connection response: ${res}`)
                 let responseAsObj = JSON.parse(res)
-                console.log(responseAsObj)
 
                 let dialogType = (responseAsObj.status === true) ? "success" : "error"
                 swal("Connection Status", responseAsObj.message, dialogType);

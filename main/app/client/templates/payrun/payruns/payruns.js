@@ -79,23 +79,8 @@ Template.payruns.events({
                     console.log("Payrun Post to SAP confirmed")
                     tmpl.$('#postToSap').text('Preparing ... ');
                     tmpl.$('#postToSap').attr('disabled', true);
-                    try {
-                        let l = Ladda.create(tmpl.$('#postToSap')[0]);
-                        l.start();
-                    } catch(e) {
-                        console.log(e);
-                    }
                     //--
                     let resetButton = function() {
-                        // End button animation
-                        try {
-                            let l = Ladda.create(tmpl.$('#postToSap')[0]);
-                            l.stop();
-                            l.remove();
-                        } catch(e) {
-                            console.log(e);
-                        }
-
                         tmpl.$('#postToSap').text('Post results to SAP');
                         tmpl.$('#postToSap').removeAttr('disabled');
                     };
@@ -108,6 +93,14 @@ Template.payruns.events({
                     Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
                         resetButton()
                         console.log(`res: ${JSON.stringify(res)}`)
+                        if (!err){
+                            let responseAsObj = JSON.parse(res)
+
+                            let dialogType = (responseAsObj.status === true) ? "success" : "error"
+                            swal("Payrun Post Status", responseAsObj.message, dialogType);
+                        } else {
+                            swal("Server error", `Please try again at a later time`, "error");
+                        }
                     })
                 }
             );

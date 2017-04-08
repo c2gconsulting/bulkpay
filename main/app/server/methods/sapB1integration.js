@@ -26,6 +26,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
             return {
                 payTypeId : aPayment.id,
                 amountLC : aPayment.amountLC,
+                description : aPayment.description,
                 payTypeDebitAccountCode: payTypeDebitAccountCode,
                 payTypeCreditAccountCode: payTypeCreditAccountCode
             }
@@ -37,29 +38,31 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         let employeeId = aPayrunResult.employeeId
 
         let employee = Meteor.users.findOne({_id: employeeId})
-        let employeePositionId = employee.employeeProfile.employment.position
-        let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
+        if(employee) {
+            let employeePositionId = employee.employeeProfile.employment.position
+            let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
 
-        if(position && position.parentId) {
-            let unitId = position.parentId
+            if(position && position.parentId) {
+                let unitId = position.parentId
 
-            let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                return aUnit.unitId === unitId;
-            })
-            if(sapUnitCostCenterDetails) {
-                let unitToWorkWith = unitsBulkSum[unitId]
-                if(unitToWorkWith) {
-                    aPayrunResult.payment.forEach(aPayment => {
-                        let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
-                            return aUnitPayment.payTypeId === aPayment.id
+                let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
+                    return aUnit.unitId === unitId;
+                })
+                if(sapUnitCostCenterDetails) {
+                    let unitToWorkWith = unitsBulkSum[unitId]
+                    if(unitToWorkWith) {
+                        aPayrunResult.payment.forEach(aPayment => {
+                            let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
+                                return aUnitPayment.payTypeId === aPayment.id
+                            })
+                            if(paymentToAccumulate) {
+                                paymentToAccumulate.amountLC += aPayment.amountLC
+                            }
                         })
-                        if(paymentToAccumulate) {
-                            paymentToAccumulate.amountLC += aPayment.amountLC
-                        }
-                    })
-                } else {
-                    // This function call adds an object to unitsBulkSum object
-                    initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                    } else {
+                        // This function call adds an object to unitsBulkSum object
+                        initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                    }
                 }
             }
         }
@@ -77,10 +80,12 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
  *  SAP B1 Integration Methods
  */
 Meteor.methods({
-    'sapB1integration/testConnection': (businessUnitId, sapConfig) => {
+    'sapB1integration/testConnection': function (businessUnitId, sapConfig) {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
+        this.unblock()
+
         let userId = Meteor.userId();
         //--
         if(sapConfig) {
@@ -125,6 +130,7 @@ Meteor.methods({
         }
         //update can only be done by authorized user. so check permission
         check(businessUnitId, String);
+        this.unblock()
 
         //--
         if(unitCostCenterCodesArray && unitCostCenterCodesArray.length > 0) {
@@ -179,10 +185,11 @@ Meteor.methods({
             throw new Meteor.Error(404, "Empty GL accounts data for pay types");
         }
     },
-    'sapB1integration/postPayrunResults': (businessUnitId, period) => {
+    'sapB1integration/postPayrunResults': function (businessUnitId, period) {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
+        this.unblock()
 
         let errorResponse = null
         try {
@@ -195,7 +202,11 @@ Meteor.methods({
                 //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
 
                 let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
-                let postData = JSON.stringify({period: period, data: unitsBulkSumsForSap})
+                let postData = JSON.stringify({
+                    period: period,
+                    sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
+                    data: unitsBulkSumsForSap
+                })
                 let requestHeaders = {'Content-Type': 'application/json'}
 
                 let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
@@ -204,6 +215,7 @@ Meteor.methods({
                 let serverResponseObj = JSON.parse(actualServerResponse)
 
                 if(serverResponseObj.status === true) {
+                    //PostedPayrunResults.insert({businessUnitId: businessUnitId, period: period})
                     console.log(`Payrun post to SAP was successful`)
                 }
                 return actualServerResponse.replace(/\//g, "")
