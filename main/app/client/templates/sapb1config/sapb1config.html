@@ -49,31 +49,85 @@
                                                 <div class="panel panel-default">
                                                     <div class="panel-heading">
                                                         <div class="row">
-                                                            <div class="col-md-4 text-right"><b>Company Database Code :</b></div>
-                                                            <div class="col-md-3">
-                                                                <input type="text" class="form-control" id="sapServerCompanyDatabaseName"
-                                                                    value="{{companyConnectionInfo.sapCompanyDatabaseName}}"/>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-md-4 text-right"><b>IP Address :</b></div>
+                                                            <div class="col-md-4 text-right"><b>IP Address</b></div>
                                                             <div class="col-md-3">
                                                                 <input type="text" class="form-control" id="sapServerIpAddress"
                                                                        placeholder="Example: www.yourdomain.com or 172.2.2.1"
                                                                        title="Example: www.yourdomain.com or 172.2.2.1"
-                                                                        value="{{companyConnectionInfo.ipAddress}}"/>
+                                                                       value="{{companyConnectionInfo.ipAddress}}"/>
                                                             </div>
                                                         </div>
+
                                                         <div class="row">
-                                                            <div class="col-md-4 text-right"><b>Protocol</b></div>
-                                                            <div class="col-md-3">
-                                                                <select name="protocol" class="dropdown" id="protocol">
-                                                                    <option value="http" selected>http</option>
-                                                                    <option value="https">https</option>
-                                                                </select>
+                                                            <div class="col-md-4 text-right" for-name="protocol"><b>Protocol</b></div>
+                                                            <div class="col-sm-4">
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="http" checked="checked"/>http
+                                                                </label>
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="https" />https
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div>
+                                                                </div>
                                                             </div>
                                                         </div>
+
+                                                        <div class="row"><br/></div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>SAP Username</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServerIpAddress"
+                                                                       placeholder="SAP User password"
+                                                                       title=""
+                                                                       value="{{companyConnectionInfo.sapUsername}}"/>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>SAP User password</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="password" class="form-control" id="sapUserPassword"
+                                                                       placeholder="SAP User password"
+                                                                       title=""
+                                                                       value="{{companyConnectionInfo.sapUserPassword}}"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row"><br/></div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Company Database Name</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServerCompanyDatabaseName"
+                                                                       value="{{companyConnectionInfo.sapCompanyDatabaseName}}"/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>SAP Database Username</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServerIpAddress"
+                                                                       placeholder="SAP Database username"
+                                                                       title=""
+                                                                       value="{{companyConnectionInfo.sapDatabaseUsername}}"/>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>SAP Database password</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="password" class="form-control" id="sapUserPassword"
+                                                                       placeholder="SAP Database password"
+                                                                       title=""
+                                                                       value="{{companyConnectionInfo.sapDatabasePassword}}"/>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row">
                                                             <div col-md-9>
                                                                 <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
