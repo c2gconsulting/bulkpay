@@ -3,8 +3,17 @@ import { HTTP } from 'meteor/http'
 
 
 let SapIntegration = {}
+
+/**
+ * Goes through all employee payrun results for the period and accumulates a bulksum for each paytype
+ *
+ * @param {Object} businessUnitSapConfig - the SAP config for the business
+ * @param {Array} payRunResults -
+ * @return {Object, Array} Bulksum, Array of employees that contribute to bulksum
+ */
 SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResults) => {
     let unitsBulkSum = {}
+    let arrayOfEmployees = []
 
     //Be patient. The main processing happens after this function definition
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
@@ -37,41 +46,50 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     payRunResults.forEach((aPayrunResult) => {
         let employeeId = aPayrunResult.employeeId
 
-        let employee = Meteor.users.findOne({_id: employeeId})
+        let employee = Meteor.users.findOne({
+            _id: employeeId,
+            $or: [{isPostedToSAP: {$exists: false}}, {isPostedToSAP: {$eq: null}}, {isPostedToSAP: {$eq: false}}]
+        })
+
         if(employee) {
             let employeePositionId = employee.employeeProfile.employment.position
             let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
 
-            if(position && position.parentId) {
-                let unitId = position.parentId
+            try {
+                if(position && position.parentId) {
+                    let unitId = position.parentId
 
-                let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                    return aUnit.unitId === unitId;
-                })
-                if(sapUnitCostCenterDetails) {
-                    let unitToWorkWith = unitsBulkSum[unitId]
-                    if(unitToWorkWith) {
-                        aPayrunResult.payment.forEach(aPayment => {
-                            let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
-                                return aUnitPayment.payTypeId === aPayment.id
+                    let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
+                        return aUnit.unitId === unitId;
+                    })
+                    if(sapUnitCostCenterDetails) {
+                        let unitToWorkWith = unitsBulkSum[unitId]
+                        if(unitToWorkWith) {
+                            aPayrunResult.payment.forEach(aPayment => {
+                                let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
+                                    return aUnitPayment.payTypeId === aPayment.id
+                                })
+                                if(paymentToAccumulate) {
+                                    paymentToAccumulate.amountLC += aPayment.amountLC
+                                }
                             })
-                            if(paymentToAccumulate) {
-                                paymentToAccumulate.amountLC += aPayment.amountLC
-                            }
-                        })
-                    } else {
-                        // This function call adds an object to unitsBulkSum object
-                        initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                        } else {
+                            // This function call adds an object to unitsBulkSum object
+                            initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                        }
+                        arrayOfEmployees.push(employeeId)
                     }
                 }
+            } catch(ex) {
+                console.log(`processPayrunResultsForSap error: ${ex.message}`)
             }
         }
     })
     let getUnitForPosition = (unit) => {
 
     }
-
-    return unitsBulkSum
+    console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
+    return {unitsBulkSum, employees: arrayOfEmployees}
 }
 
 
@@ -205,7 +223,7 @@ Meteor.methods({
                 let postData = JSON.stringify({
                     period: period,
                     sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
-                    data: unitsBulkSumsForSap
+                    data: unitsBulkSumsForSap.unitsBulkSum
                 })
                 let requestHeaders = {'Content-Type': 'application/json'}
 
@@ -215,10 +233,29 @@ Meteor.methods({
                 let serverResponseObj = JSON.parse(actualServerResponse)
 
                 if(serverResponseObj.status === true) {
-                    //PostedPayrunResults.insert({businessUnitId: businessUnitId, period: period})
+                    // Payruns.update({
+                    //     businessId: businessUnitId,
+                    //     period: period,
+                    //     employeeId: {$in: unitsBulkSumsForSap.employees}
+                    // }, {$set: {isPostedToSAP: true}})
+
+                    unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
+                        let payrunDoc = Payruns.findOne({
+                            businessId: businessUnitId,
+                            period: period,
+                            employeeId: anEmployeeId
+                        })
+                        if(payrunDoc) {
+                           console.log(`payrunDoc: ${payrunDoc._id}`)
+                           Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
+                        } else {
+                            console.log(`Could not find payrunDoc`)
+                        }
+                    })
                     console.log(`Payrun post to SAP was successful`)
                 }
                 return actualServerResponse.replace(/\//g, "")
+                //return JSON.stringify({status: true, message: "Post to SAP all good"})
             } else {
                 return JSON.stringify({
                     "status": false,

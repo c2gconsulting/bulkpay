@@ -50,6 +50,10 @@ Core.Schemas.Payrun = new SimpleSchema({
         period: {
           type: String
         },
+        isPostedToSAP: {
+            type: Boolean,
+            optional: true
+        },
       createdAt: {
         type: Date,
         autoValue: function () {

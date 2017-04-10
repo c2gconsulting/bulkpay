@@ -75,6 +75,7 @@
                                 <th>#</th>
                                 <th>Employee Id</th>
                                 <th>Employee Full Name</th>
+                                <th>Posted to SAP</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -108,5 +109,12 @@
       <td>{{index}}</td>
       <td>{{getEmployeeRealId data.employeeId}}</td>
       <td>{{getEmployeeFullName data.employeeId}}</td>
+      <td class="table-action-hide">
+          {{#unless data.isPostedToSAP}}
+              <i class="fa   fa-times-circle-o"></i>
+          {{else}}
+              <i class="fa  fa-check-square-o"></i>
+          {{/unless}}
+      </td>
   </tr>
 </template>

@@ -99,7 +99,12 @@ Template.payruns.events({
                             let dialogType = (responseAsObj.status === true) ? "success" : "error"
                             swal("Payrun Post Status", responseAsObj.message, dialogType);
                         } else {
-                            swal("Server error", `Please try again at a later time`, "error");
+                            if(res) {
+                                let responseAsObj = JSON.parse(res)
+                                swal("Payrun Post Status", responseAsObj.message, "error");
+                            } else {
+                                swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                            }
                         }
                     })
                 }
