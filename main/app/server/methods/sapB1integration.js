@@ -112,9 +112,9 @@ Meteor.methods({
         //--
         if(sapConfig) {
           console.log(`Business unit id: ${businessUnitId} sap-server-ip: ${sapConfig.ipAddress}`)
-          let connectionUrl = `http://${sapConfig.ipAddress}:19080/api/connectiontest`
+          let connectionUrl = `${sapConfig.protocol}://${sapConfig.ipAddress}:19080/api/connectiontest`
 
-          let postData = JSON.stringify({companyDatabaseName: sapConfig.sapCompanyDatabaseName})
+          let postData = JSON.stringify(sapConfig)
           let requestHeaders = {'Content-Type': 'application/json'}
           let errorResponse = null
           try {
@@ -128,12 +128,8 @@ Meteor.methods({
                   if(businessUnitSapConfig) {
                       SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : sapConfig});
                   } else {
-                      SapBusinessUnitConfigs.insert({
-                          businessUnitId: businessUnitId,
-                          ipAddress: sapConfig.ipAddress,
-                          sapCompanyDatabaseName : sapConfig.sapCompanyDatabaseName,
-                          protocol: sapConfig.protocol
-                      })
+                      sapConfig.businessUnitId = businessUnitId
+                      SapBusinessUnitConfigs.insert(sapConfig)
                   }
               }
               return actualServerResponse.replace(/\//g, "")

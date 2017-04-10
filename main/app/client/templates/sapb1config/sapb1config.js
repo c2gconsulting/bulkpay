@@ -7,21 +7,51 @@ Template.SapB1Config.events({
     'click #testConnection': (e,tmpl) => {
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         var sapServerIpAddress = $('#sapServerIpAddress').val();
+        var protocol = $("[name='protocol']:checked").val();
+        console.log(`Protocol: ${protocol}`)
+
+        var sapServername = $('#sapServername').val();
+        var sapUsername = $('#sapUsername').val();
+        var sapUserPassword = $('#sapUserPassword').val();
+
         var sapCompanyDatabaseName = $('#sapServerCompanyDatabaseName').val();
-        var protocol = $('#protocol').val();
+        var sapDatabaseUsername = $('#sapDatabaseUsername').val();
+        var sapDatabasePassword = $('#sapDatabasePassword').val();
+
 
         if(sapServerIpAddress.length < 1) {
             swal("Validation error", `Please enter the I.P address of your SAP BusinessOne server`, "error");
             return
+        } else if(sapServername.length < 1) {
+            swal("Validation error", `Please enter the computer name of your SAP BusinessOne server`, "error");
+            return
+        } else if(sapUsername.length < 1) {
+            swal("Validation error", `Please enter the SAP BusinessOne username`, "error");
+            return
+        } else if(sapUserPassword.length < 1) {
+            swal("Validation error", `Please enter the SAP BusinessOne user password`, "error");
+            return
         } else if(sapCompanyDatabaseName.length < 1) {
             swal("Validation error", `Please enter the database name of your company on your SAP BusinessOne server`, "error");
+            return
+        } else if(sapDatabaseUsername.length < 1) {
+            swal("Validation error", `Please enter the database username`, "error");
+            return
+        } else if(sapDatabasePassword.length < 1) {
+            swal("Validation error", `Please enter the database password`, "error");
             return
         }
         //--
         let sapConfig = {
             ipAddress : sapServerIpAddress,
+            protocol : protocol,
+
+            sapServername : sapServername,
+            sapUsername : sapUsername,
+            sapUserPassword : sapUserPassword,
             sapCompanyDatabaseName : sapCompanyDatabaseName,
-            protocol : protocol
+            sapDatabaseUsername : sapDatabaseUsername,
+            sapDatabasePassword : sapDatabasePassword,
         }
 
         tmpl.$('#testConnection').text('Connecting ... ');
@@ -155,14 +185,7 @@ Template.SapB1Config.events({
 Template.SapB1Config.helpers({
     'companyConnectionInfo': function() {
         let sapBusinessUnitConfig = Template.instance().sapBusinessUnitConfig.get()
-        if(sapBusinessUnitConfig) {
-            return {
-                sapCompanyDatabaseName : sapBusinessUnitConfig.sapCompanyDatabaseName,
-                ipAddress : sapBusinessUnitConfig.ipAddress,
-                protocol : sapBusinessUnitConfig.protocol
-            }
-        }
-        return null
+        return sapBusinessUnitConfig
     },
     'costCenters': function () {
         return Template.instance().units.get()

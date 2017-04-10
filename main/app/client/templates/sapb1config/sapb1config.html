@@ -75,12 +75,21 @@
                                                         </div>
 
                                                         <div class="row"><br/></div>
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>SAP Server name</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="sapServername"
+                                                                       placeholder="SAP Server name"
+                                                                       title=""
+                                                                       value="{{companyConnectionInfo.sapServername}}"/>
+                                                            </div>
+                                                        </div>
 
                                                         <div class="row">
                                                             <div class="col-md-4 text-right"><b>SAP Username</b></div>
                                                             <div class="col-md-3">
-                                                                <input type="text" class="form-control" id="sapServerIpAddress"
-                                                                       placeholder="SAP User password"
+                                                                <input type="text" class="form-control" id="sapUsername"
+                                                                       placeholder="SAP Username"
                                                                        title=""
                                                                        value="{{companyConnectionInfo.sapUsername}}"/>
                                                             </div>
@@ -110,7 +119,7 @@
                                                         <div class="row">
                                                             <div class="col-md-4 text-right"><b>SAP Database Username</b></div>
                                                             <div class="col-md-3">
-                                                                <input type="text" class="form-control" id="sapServerIpAddress"
+                                                                <input type="text" class="form-control" id="sapDatabaseUsername"
                                                                        placeholder="SAP Database username"
                                                                        title=""
                                                                        value="{{companyConnectionInfo.sapDatabaseUsername}}"/>
@@ -121,7 +130,7 @@
                                                         <div class="row">
                                                             <div class="col-md-4 text-right"><b>SAP Database password</b></div>
                                                             <div class="col-md-3">
-                                                                <input type="password" class="form-control" id="sapUserPassword"
+                                                                <input type="password" class="form-control" id="sapDatabasePassword"
                                                                        placeholder="SAP Database password"
                                                                        title=""
                                                                        value="{{companyConnectionInfo.sapDatabasePassword}}"/>

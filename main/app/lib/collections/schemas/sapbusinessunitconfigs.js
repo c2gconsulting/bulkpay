@@ -43,10 +43,6 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
     businessUnitId: {
         type: String
     },
-    sapCompanyDatabaseName : {
-        type: String,
-        optional: true
-    },
     ipAddress : {
         type: String,
         optional: true
@@ -55,6 +51,32 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
         type: String,
         optional: true
     },
+    sapServername : {
+        type: String,
+        optional: true
+    },
+    sapUsername : {
+        type: String,
+        optional: true
+    },
+    sapUserPassword : {
+        type: String,
+        optional: true
+    },
+
+    sapCompanyDatabaseName : {
+        type: String,
+        optional: true
+    },
+    sapDatabaseUsername : {
+        type: String,
+        optional: true
+    },
+    sapDatabasePassword : {
+        type: String,
+        optional: true
+    },
+
     units: {
         type: [Core.Schemas.SapUnitConfig],
         optional: true

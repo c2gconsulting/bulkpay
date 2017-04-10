@@ -85,9 +85,9 @@ Template.payruns.events({
                         tmpl.$('#postToSap').removeAttr('disabled');
                     };
                     //--
-                    let month = $('[name="paymentPeriod.month"]').val()
-                    let year = $('[name="paymentPeriod.year"]').val()
-                    let period = `122017`
+                    const month = $('[name="paymentPeriodMonth"]').val();
+                    const year = $('[name="paymentPeriodYear"]').val();
+                    let period = `${month}${year}`
                     console.log(`Period for sap posting: ${period}`)
 
                     Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
