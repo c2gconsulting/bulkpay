@@ -77,7 +77,7 @@ Template.payruns.events({
                 },
                 function(){
                     console.log("Payrun Post to SAP confirmed")
-                    tmpl.$('#postToSap').text('Preparing ... ');
+                    tmpl.$('#postToSap').text('Please wait ... ');
                     tmpl.$('#postToSap').attr('disabled', true);
                     //--
                     let resetButton = function() {

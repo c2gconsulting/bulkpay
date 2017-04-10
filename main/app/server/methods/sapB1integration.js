@@ -45,10 +45,14 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     //--Main processing happens here
     payRunResults.forEach((aPayrunResult) => {
         let employeeId = aPayrunResult.employeeId
+        let isPostedToSAP = aPayrunResult.isPostedToSAP
+        if(!isPostedToSAP || isPostedToSAP === false) {
 
+        } else {
+            return
+        }
         let employee = Meteor.users.findOne({
             _id: employeeId,
-            $or: [{isPostedToSAP: {$exists: false}}, {isPostedToSAP: {$eq: null}}, {isPostedToSAP: {$eq: false}}]
         })
 
         if(employee) {
@@ -219,43 +223,46 @@ Meteor.methods({
                 let unitsBulkSumsForSap = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
                 //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
 
-                let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
-                let postData = JSON.stringify({
-                    period: period,
-                    sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
-                    data: unitsBulkSumsForSap.unitsBulkSum
-                })
-                let requestHeaders = {'Content-Type': 'application/json'}
-
-                let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-                let actualServerResponse = serverRes.data.replace(/\//g, "")
-
-                let serverResponseObj = JSON.parse(actualServerResponse)
-
-                if(serverResponseObj.status === true) {
-                    // Payruns.update({
-                    //     businessId: businessUnitId,
-                    //     period: period,
-                    //     employeeId: {$in: unitsBulkSumsForSap.employees}
-                    // }, {$set: {isPostedToSAP: true}})
-
-                    unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
-                        let payrunDoc = Payruns.findOne({
-                            businessId: businessUnitId,
-                            period: period,
-                            employeeId: anEmployeeId
-                        })
-                        if(payrunDoc) {
-                           console.log(`payrunDoc: ${payrunDoc._id}`)
-                           Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
-                        } else {
-                            console.log(`Could not find payrunDoc`)
-                        }
+                if(unitsBulkSumsForSap.employees.length > 0) {
+                    let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
+                    let postData = JSON.stringify({
+                        period: period,
+                        sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
+                        data: unitsBulkSumsForSap.unitsBulkSum
                     })
-                    console.log(`Payrun post to SAP was successful`)
+                    let requestHeaders = {'Content-Type': 'application/json'}
+
+                    let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
+                    let actualServerResponse = serverRes.data.replace(/\//g, "")
+
+                    let serverResponseObj = JSON.parse(actualServerResponse)
+
+                    if(serverResponseObj.status === true) {
+                        // Payruns.update({
+                        //     businessId: businessUnitId,
+                        //     period: period,
+                        //     employeeId: {$in: unitsBulkSumsForSap.employees}
+                        // }, {$set: {isPostedToSAP: true}})
+
+                        unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
+                            let payrunDoc = Payruns.findOne({
+                                businessId: businessUnitId,
+                                period: period,
+                                employeeId: anEmployeeId
+                            })
+                            if(payrunDoc) {
+                               console.log(`payrunDoc: ${payrunDoc._id}`)
+                               Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
+                            } else {
+                                console.log(`Could not find payrunDoc`)
+                            }
+                        })
+                        console.log(`Payrun post to SAP was successful`)
+                    }
+                    return actualServerResponse.replace(/\//g, "")
+                } else {
+                    return JSON.stringify({status: false, message: "There are no employee payments to post to SAP"})
                 }
-                return actualServerResponse.replace(/\//g, "")
-                //return JSON.stringify({status: true, message: "Post to SAP all good"})
             } else {
                 return JSON.stringify({
                     "status": false,
