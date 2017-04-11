@@ -22,35 +22,39 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         console.log(`aPayrunResult.payment: ${aPayrunResult.payment.length}`)
         console.log(`businessUnitSapConfig.payTypes: ${businessUnitSapConfig.payTypes.length}`)
 
-        unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.map(aPayment => {
-            let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
-                return aPayType.payTypeId === aPayment.id;
-            })
-            //--
-            let payTypeDebitAccountCode = ""
-            let payTypeCreditAccountCode = ""
-            if(sapPayTypeDetails) {
-                if(sapPayTypeDetails.payTypeDebitAccountCode) {
-                    payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
+        let unitBulkSumPayments = []
+        unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.forEach(aPayment => {
+            if(aPayment && aPayment.reference === 'Paytype') {
+                let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
+                    return aPayType.payTypeId === aPayment.id;
+                })
+                //--
+                let payTypeDebitAccountCode = ""
+                let payTypeCreditAccountCode = ""
+                if (sapPayTypeDetails) {
+                    if (sapPayTypeDetails.payTypeDebitAccountCode) {
+                        payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
+                    } else {
+                        console.log(`sapPayTypeDetails.payTypeDebitAccountCode is NULL`)
+                    }
+                    if (sapPayTypeDetails.payTypeCreditAccountCode) {
+                        payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
+                    } else {
+                        console.log(`sapPayTypeDetails.payTypeCreditAccountCode is NULL`)
+                    }
                 } else {
-                    console.log(`sapPayTypeDetails.payTypeDebitAccountCode is NULL`)
+                    console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
                 }
-                if(sapPayTypeDetails.payTypeCreditAccountCode) {
-                    payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
-                } else {
-                    console.log(`sapPayTypeDetails.payTypeCreditAccountCode is NULL`)
-                }
-            } else {
-                console.log(`sapPayTypeDetails is null. aPayment: ${aPayment.id}`)
-            }
-            return {
-                payTypeId : aPayment.id,
-                amountLC : aPayment.amountLC,
-                description : aPayment.description,
-                payTypeDebitAccountCode: payTypeDebitAccountCode,
-                payTypeCreditAccountCode: payTypeCreditAccountCode
+                unitBulkSumPayments.push({
+                    payTypeId: aPayment.id,
+                    amountLC: aPayment.amountLC,
+                    description: aPayment.description,
+                    payTypeDebitAccountCode: payTypeDebitAccountCode,
+                    payTypeCreditAccountCode: payTypeCreditAccountCode
+                })
             }
         })
+        unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
     }
 
     //--Main processing happens here
