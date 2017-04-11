@@ -176,7 +176,7 @@ Template.PaygradeCreate.helpers({
     'action': () => {
         data = Template.instance().data;
         if(data){
-            return `PAYGROUP - ${data.code} (${data.description})`
+            return `PAYGRADE - ${data.code} (${data.description})`
         } else {
             return 'New Pay Grade'
         }

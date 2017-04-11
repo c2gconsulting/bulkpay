@@ -18,6 +18,10 @@ Template.Employees.events({
         e.preventDefault();
         Modal.show('ImportEmployeesModal');
     },
+    'click #assignEmployeePositions': function(e){
+        e.preventDefault();
+        Modal.show('ImportEmployeePositionsModal');
+    },
     'click .anEmployee': (e, tmpl) => {
         let employeeRowElem = e.currentTarget;
         let employeeIdToEdit = employeeRowElem.getAttribute("name");

@@ -1,9 +1,26 @@
 /*****************************************************************************/
-/* ImportEmployeesModal: Event Handlers */
+/* ImportEmployeePositionsModal: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
 
-Template.ImportEmployeesModal.events({
+Template.ImportEmployeePositionsModal.events({
+    'click #downloadSampleCsv': function(e, tmpl) {
+        e.preventDefault()
+        console.log(`Inside downloadSampleCsv`)
+        let allEmployees = Meteor.users.find({"employee": true}).fetch();
+
+        let dataForSampleCsv = allEmployees.map(anEmployee => {
+            return {
+                EmployeeUniqueId: anEmployee._id,
+                EmployeeFullName: anEmployee.profile.fullName,
+                PositionUniqueId: ""
+            }
+        })
+
+        let fields = ['EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
+
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "Employee Position records with error");
+    },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
 
@@ -30,7 +47,7 @@ Template.ImportEmployeesModal.events({
         Papa.parse(file, {
             header: true,
             complete( results, file ) {
-                Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), ( error, response ) => {
+                Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), function ( error, response ) {
                     $('#employeesFileUpload').text('Upload File')
                     tmpl.$('#employeesFileUpload').attr('disabled', false);
                     tmpl.isUploading.set(false)
@@ -39,7 +56,7 @@ Template.ImportEmployeesModal.events({
                         console.log(error.reason)
                         swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
                     } else {
-                        tmpl.response.set('response', response);    // For some weird reason Template.instance() doesn't work
+                        tmpl.response.set('response', response);
                     }
                 });
             }
@@ -69,25 +86,19 @@ Template.ImportEmployeesModal.events({
     'click #recordsWithError': function(e, tmpl) {
         e.preventDefault()
 
-        let fields = ['ErrorLine', 'Error', 'FirstName','LastName','OtherNames','Email','EmployeeId','Address','DateOfBirth',
-          'Gender','MaritalStatus','Phone','State','GuarantorFullName','GuarantorEmail','GuarantorPhone',
-          'GuarantorAddress','GuarantorCity','GuarantorState','EmploymentHireDate',
-          'EmploymentConfirmationDate','EmploymentTerminationDate','Status',
-          'EmergencyContactFullName','EmergencyContactEmail','EmergencyContactPhone',
-          'EmergencyContactAddress','EmergencyContactCity','EmergencyContactState','PaymentMethod',
-          'Bank','AccountNumber','AccountName','Pensionmanager','RSANumber','TaxPayerId']
+        let fields = ['ErrorLine', 'Error', 'EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
 
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "Employee records with error");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "Employee Position records with error");
     }
 });
 
 /*****************************************************************************/
-/* ImportEmployeesModal: Helpers */
+/* ImportEmployeePositionsModal: Helpers */
 /*****************************************************************************/
-Template.ImportEmployeesModal.helpers({
+Template.ImportEmployeePositionsModal.helpers({
     'response': () => {
         return Template.instance().response.get('response');
     },
@@ -110,20 +121,22 @@ Template.ImportEmployeesModal.helpers({
 });
 
 /*****************************************************************************/
-/* ImportEmployeesModal: Lifecycle Hooks */
+/* ImportEmployeePositionsModal: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ImportEmployeesModal.onCreated(function () {
+Template.ImportEmployeePositionsModal.onCreated(function () {
     let self = this
+    self.subscribe("allEmployees", Session.get('context'));
+
     self.response = new ReactiveDict()
 
     self.isUploading = new ReactiveVar()
     self.isUploading.set(false)
 });
 
-Template.ImportEmployeesModal.onRendered(function () {
+Template.ImportEmployeePositionsModal.onRendered(function () {
     $('select.dropdown').dropdown();
 });
 
-Template.ImportEmployeesModal.onDestroyed(function () {
-    Modal.hide('ImportEmployeesModal')
+Template.ImportEmployeePositionsModal.onDestroyed(function () {
+    Modal.hide('ImportEmployeePositionsModal')
 });

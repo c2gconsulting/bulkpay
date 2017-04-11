@@ -45,7 +45,7 @@
                                             <div class="col-sm-8">
                                                 {{#semanticselect}}
                                                     <select name="positions" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
-                                                        <option value="">Select Pay Type</option>
+                                                        <option value="">Select Position</option>
                                                         {{#each positions}}
                                                             <option value="{{_id}}" {{selectedObj "positions"}}>{{name}}</option>
                                                         {{/each}}
@@ -59,7 +59,7 @@
                                             <div class="col-sm-8">
                                                 {{#semanticselect}}
                                                     <select name="paygroups" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
-                                                        <option value="">Select Pay Type</option>
+                                                        <option value="">Select PayGroup</option>
                                                         {{#each paygroup}}
                                                             <option value="{{_id}}" {{selectedObj "payGroups"}}>{{name}}</option>
                                                         {{/each}}
