@@ -8,9 +8,12 @@ Template.EntityCreate.events({
         event.preventDefault();
         let l = Ladda.create(tmpl.$('#createEntity')[0]);
         l.start();
+        let nameOfEntity = $('[name="name"]').val()
+        console.log(`Name of entity: ${JSON.stringify(nameOfEntity)}`)
+
         const details = {
             businessId: BusinessUnits.findOne()._id,
-            name: $('[name="name"]').val(),
+            name: nameOfEntity,
             parentId: getParent($('[name="level"]:checked').val()),
             otype: $('[name="otype"]').val(),
             status: $('[name="status"]').val(),
@@ -167,6 +170,8 @@ Template.EntityCreate.onRendered(function () {
     //init dropdown
     $('select.dropdown').dropdown();
     console.log('template data is ', Template.instance().data);
+
+    $('#new-entity-name').tokenfield()
 });
 
 Template.EntityCreate.onDestroyed(function () {

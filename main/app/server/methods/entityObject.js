@@ -23,7 +23,29 @@ Meteor.methods({
 
         let existingelemscount = EntityObjects.find({parentId:obj.parentId}).count();
         let order = (existingelemscount+1)*10;
-        EntityObjects.insert({parentId:obj.parentId, name:obj.name, otype:obj.otype, businessId: obj.businessId, order: order,properties:obj.properties});
+
+        if(obj.name.indexOf(',') !== -1) {
+            let entityNamesInName = obj.name.split(',')
+            entityNamesInName.forEach(anEntityName => {
+                //console.log(`Entity name: ${anEntityName}`)
+                if(anEntityName.length > 0) {
+                    EntityObjects.insert({
+                        parentId:obj.parentId,
+                        name: anEntityName,
+                        otype:obj.otype, businessId: obj.businessId,
+                        order: order,properties:obj.properties
+                    });
+                }
+            })
+        } else {
+            EntityObjects.insert({
+                parentId:obj.parentId,
+                name:obj.name,
+                otype:obj.otype, businessId: obj.businessId,
+                order: order,properties:obj.properties
+            });
+        }
+
         //{ "_id" : "LG", "parent" : "Electronics", "someadditionalattr" : "test", "order" : 40 }
         return true;
     },
