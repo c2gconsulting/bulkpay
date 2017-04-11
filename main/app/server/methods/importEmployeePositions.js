@@ -17,28 +17,49 @@ Meteor.methods({
             }
         });
 
-        for (let i = 0; i < data.length; i++) {
+        let dataLength = data.length;
+        for (let i = 0; i < dataLength; i++) {
             let item = data[i];
-            item.businessId = businessId;
-            //console.log(`Employee document: ${JSON.stringify(employeeDocument)}`)
+            let employeeId = item.EmployeeUniqueId;
+            let positionId = item.PositionUniqueId;
 
-            let doesPositionExist = EntityObjects.findOne({});
+            if(employeeId && employeeId.trim().length > 0) {
+                let employee = Meteor.users.findOne({_id: employeeId})
+                if(employee) {
+                    let positionId = item.PositionUniqueId;
+                    if(positionId) {
+                        let doesPositionExist = EntityObjects.findOne({_id: positionId, otype: 'Position'});
 
-            if (doesPositionExist){
-                console.log(`Position id does not exist`)
-                item.ErrorLine = (i + 1)
-                item.Error = "That position id does not exist"
-                skipped.push(item);
-                skippedCount += 1
-            } else {
-                try {
-
-                    successCount += 1
-                } catch(dbException) {
+                        if (doesPositionExist) {
+                            try {
+                                Meteor.users.update(employee._id, {$set: {'employeeProfile.employment.position': positionId}})
+                                successCount += 1
+                            } catch (dbException) {
+                                item.ErrorLine = (i + 1)
+                                item.Error = dbException.message;
+                                errors.push(item);
+                                errorCount += 1
+                            }
+                        } else {
+                            console.log(`Position id does not exist`)
+                            item.ErrorLine = (i + 1)
+                            item.Error = "That position id does not exist"
+                            skipped.push(item);
+                            skippedCount += 1
+                        }
+                    } else {
+                        console.log(`Position id empty`)
+                        item.ErrorLine = (i + 1)
+                        item.Error = "Position id was not specified"
+                        skipped.push(item);
+                        skippedCount += 1
+                    }
+                } else {
+                    console.log(`Employee id empty`)
                     item.ErrorLine = (i + 1)
-                    item.Error = dbException.message;
-                    errors.push(item);
-                    errorCount += 1
+                    item.Error = "Employee id was not specified"
+                    skipped.push(item);
+                    skippedCount += 1
                 }
             }
         }

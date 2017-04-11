@@ -47,7 +47,7 @@ Template.ImportEmployeePositionsModal.events({
         Papa.parse(file, {
             header: true,
             complete( results, file ) {
-                Meteor.call('parseEmployeesUpload', results.data, Session.get('context'), function ( error, response ) {
+                Meteor.call('parseEmployeePositionsUpload', results.data, Session.get('context'), function ( error, response ) {
                     $('#employeesFileUpload').text('Upload File')
                     tmpl.$('#employeesFileUpload').attr('disabled', false);
                     tmpl.isUploading.set(false)
