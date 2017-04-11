@@ -70,45 +70,36 @@ Template.payruns.events({
         let currentPayrun = Template.instance().currentPayrun.get();
 
         if(currentPayrun) {
-            swal({
-                    title: "Are you sure?",text: "This operation cannot be reversed!", type: "warning",
-                    showCancelButton: true, confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Yes, post the payrun results!", closeOnConfirm: true
-                },
-                function(){
-                    console.log("Payrun Post to SAP confirmed")
-                    tmpl.$('#postToSap').text('Please wait ... ');
-                    tmpl.$('#postToSap').attr('disabled', true);
-                    //--
-                    let resetButton = function() {
-                        tmpl.$('#postToSap').text('Post results to SAP');
-                        tmpl.$('#postToSap').removeAttr('disabled');
-                    };
-                    //--
-                    const month = $('[name="paymentPeriodMonth"]').val();
-                    const year = $('[name="paymentPeriodYear"]').val();
-                    let period = `${month}${year}`
-                    console.log(`Period for sap posting: ${period}`)
+            tmpl.$('#postToSap').text('Please wait ... ');
+            tmpl.$('#postToSap').attr('disabled', true);
+            //--
+            let resetButton = function() {
+                tmpl.$('#postToSap').text('Post results to SAP');
+                tmpl.$('#postToSap').removeAttr('disabled');
+            };
+            //--
+            const month = $('[name="paymentPeriodMonth"]').val();
+            const year = $('[name="paymentPeriodYear"]').val();
+            let period = `${month}${year}`
+            console.log(`Period for sap posting: ${period}`)
 
-                    Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
-                        resetButton()
-                        console.log(`res: ${JSON.stringify(res)}`)
-                        if (!err){
-                            let responseAsObj = JSON.parse(res)
-
-                            let dialogType = (responseAsObj.status === true) ? "success" : "error"
-                            swal("Payrun Post Status", responseAsObj.message, dialogType);
-                        } else {
-                            if(res) {
-                                let responseAsObj = JSON.parse(res)
-                                swal("Payrun Post Status", responseAsObj.message, "error");
-                            } else {
-                                swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
-                            }
-                        }
-                    })
+            Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
+                resetButton()
+                console.log(`res: ${res}`)
+                if (!err) {
+                    let responseAsObj = JSON.parse(res)
+                    let dialogType = (responseAsObj["status"] === true) ? "success" : "error"
+                    swal("Payrun Post Status", responseAsObj["message"], dialogType);
+                } else {
+                    console.log(`CCC`)
+                    if(res) {
+                        let responseAsObj = JSON.parse(res)
+                        swal("Payrun Post Status", responseAsObj["message"], "error");
+                    } else {
+                        swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                    }
                 }
-            );
+            })
         }
     }
 });

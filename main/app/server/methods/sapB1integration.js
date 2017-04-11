@@ -96,6 +96,21 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     return {unitsBulkSum, employees: arrayOfEmployees}
 }
 
+SapIntegration.doAllPaytypesHaveGlAccounts = businessUnitSapConfig => {
+    let result = true
+
+    if(businessUnitSapConfig.payTypes && businessUnitSapConfig.payTypes.length > 0) {
+        businessUnitSapConfig.payTypes.forEach(aPayType => {
+            if(aPayType.payTypeDebitAccountCode && aPayType.payTypeDebitAccountCode.length > 0
+                && aPayType.payTypeCreditAccountCode && aPayType.payTypeCreditAccountCode.length > 0) {
+            } else {
+                result = false
+                return
+            }
+        })
+    }
+    return result
+}
 
 
 /**
@@ -216,48 +231,56 @@ Meteor.methods({
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId})
 
             if(businessUnitSapConfig) {
-                let unitsBulkSumsForSap = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-                //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
+                let payTypesOkAndReadyToGo = SapIntegration.doAllPaytypesHaveGlAccounts(businessUnitSapConfig)
+                if(payTypesOkAndReadyToGo) {
+                    let unitsBulkSumsForSap = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
+                    //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
 
-                if(unitsBulkSumsForSap.employees.length > 0) {
-                    let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
-                    let postData = JSON.stringify({
-                        period: period,
-                        sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
-                        data: unitsBulkSumsForSap.unitsBulkSum
-                    })
-                    let requestHeaders = {'Content-Type': 'application/json'}
+                    if(unitsBulkSumsForSap.employees.length > 0) {
+                        let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
+                        let postData = JSON.stringify({
+                            period: period,
 
-                    let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-                    let actualServerResponse = serverRes.data.replace(/\//g, "")
+                            sapServername: businessUnitSapConfig.sapServername,
+                            sapUsername: businessUnitSapConfig.sapUsername,
+                            sapUserPassword: businessUnitSapConfig.sapUserPassword,
+                            sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
+                            sapDatabaseUsername: businessUnitSapConfig.sapDatabaseUsername,
+                            sapDatabasePassword: businessUnitSapConfig.sapDatabasePassword,
 
-                    let serverResponseObj = JSON.parse(actualServerResponse)
-
-                    if(serverResponseObj.status === true) {
-                        // Payruns.update({
-                        //     businessId: businessUnitId,
-                        //     period: period,
-                        //     employeeId: {$in: unitsBulkSumsForSap.employees}
-                        // }, {$set: {isPostedToSAP: true}})
-
-                        unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
-                            let payrunDoc = Payruns.findOne({
-                                businessId: businessUnitId,
-                                period: period,
-                                employeeId: anEmployeeId
-                            })
-                            if(payrunDoc) {
-                               console.log(`payrunDoc: ${payrunDoc._id}`)
-                               Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
-                            } else {
-                                console.log(`Could not find payrunDoc`)
-                            }
+                            data: unitsBulkSumsForSap.unitsBulkSum
                         })
-                        console.log(`Payrun post to SAP was successful`)
+                        let requestHeaders = {'Content-Type': 'application/json'}
+
+                        let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
+                        let actualServerResponse = serverRes.data.replace(/\//g, "")
+
+                        let serverResponseObj = JSON.parse(actualServerResponse)
+
+                        if(serverResponseObj.status === true) {
+                            unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
+                                let payrunDoc = Payruns.findOne({
+                                    businessId: businessUnitId,
+                                    period: period,
+                                    employeeId: anEmployeeId
+                                })
+                                if(payrunDoc) {
+                                   Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
+                                } else {
+                                    console.log(`Could not find payrunDoc`)
+                                }
+                            })
+                            console.log(`Payrun post to SAP was successful`)
+                        }
+                        return actualServerResponse.replace(/\//g, "")
+                    } else {
+                        return JSON.stringify({"status": false, "message": "There are no employee payments to post to SAP"})
                     }
-                    return actualServerResponse.replace(/\//g, "")
                 } else {
-                    return JSON.stringify({status: false, message: "There are no employee payments to post to SAP"})
+                    return JSON.stringify({
+                        "status": false,
+                        "message": "Please set the G/L accounts for all paytypes on the SAP Integration setup page"
+                    })
                 }
             } else {
                 return JSON.stringify({
