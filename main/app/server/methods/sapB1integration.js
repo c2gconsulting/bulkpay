@@ -4,6 +4,23 @@ import { HTTP } from 'meteor/http'
 
 let SapIntegration = {}
 
+
+SapIntegration.doAllPaytypesHaveGlAccounts = businessUnitSapConfig => {
+    let result = true
+
+    if(businessUnitSapConfig.payTypes && businessUnitSapConfig.payTypes.length > 0) {
+        businessUnitSapConfig.payTypes.forEach(aPayType => {
+            if(aPayType.payTypeDebitAccountCode && aPayType.payTypeDebitAccountCode.length > 0
+                && aPayType.payTypeCreditAccountCode && aPayType.payTypeCreditAccountCode.length > 0) {
+            } else {
+                result = false
+                return
+            }
+        })
+    }
+    return result
+}
+
 /**
  * Goes through all employee payrun results for the period and accumulates a bulksum for each paytype
  *
@@ -19,12 +36,10 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
         unitsBulkSum[unitId] = {}
         unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
-        console.log(`aPayrunResult.payment: ${aPayrunResult.payment.length}`)
-        console.log(`businessUnitSapConfig.payTypes: ${businessUnitSapConfig.payTypes.length}`)
 
         let unitBulkSumPayments = []
         unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.forEach(aPayment => {
-            if(aPayment && aPayment.reference === 'Paytype') {
+            if(aPayment && aPayment.id) {
                 let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
                     return aPayType.payTypeId === aPayment.id;
                 })
@@ -42,89 +57,96 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     } else {
                         console.log(`sapPayTypeDetails.payTypeCreditAccountCode is NULL`)
                     }
+
+                    unitBulkSumPayments.push({
+                        payTypeId: aPayment.id,
+                        amountLC: aPayment.amountLC,
+                        description: aPayment.description,
+                        payTypeDebitAccountCode: payTypeDebitAccountCode,
+                        payTypeCreditAccountCode: payTypeCreditAccountCode
+                    })
                 } else {
                     console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
                 }
-                unitBulkSumPayments.push({
-                    payTypeId: aPayment.id,
-                    amountLC: aPayment.amountLC,
-                    description: aPayment.description,
-                    payTypeDebitAccountCode: payTypeDebitAccountCode,
-                    payTypeCreditAccountCode: payTypeCreditAccountCode
-                })
             }
         })
         unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
     }
 
+    let getUnitForPosition = (entity) => {
+        let possibleUnitId = entity.parentId
+        if(possibleUnitId) {
+            let possibleUnit = EntityObjects.findOne({_id: possibleUnitId})
+            if(possibleUnit) {
+                if(possibleUnit.otype === 'Unit') {
+                    return possibleUnit._id
+                } else {
+                    return getUnitForPosition(possibleUnit)
+                }
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
+
     //--Main processing happens here
     payRunResults.forEach((aPayrunResult) => {
-        let employeeId = aPayrunResult.employeeId
         let isPostedToSAP = aPayrunResult.isPostedToSAP
-        if(!isPostedToSAP || isPostedToSAP === false) {
-
-        } else {
+        if(isPostedToSAP && isPostedToSAP === true) {
+            console.log(`isPostedToSAP is true`)
             return
         }
-        let employee = Meteor.users.findOne({
-            _id: employeeId,
-        })
+        let employeeId = aPayrunResult.employeeId
+        let employee = Meteor.users.findOne({_id: employeeId})
 
         if(employee) {
             let employeePositionId = employee.employeeProfile.employment.position
             let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
 
             try {
-                if(position && position.parentId) {
-                    let unitId = position.parentId
+                if(position) {
+                    let unitId = getUnitForPosition(position)
 
-                    let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                        return aUnit.unitId === unitId;
-                    })
-                    if(sapUnitCostCenterDetails) {
-                        let unitToWorkWith = unitsBulkSum[unitId]
-                        if(unitToWorkWith) {
-                            aPayrunResult.payment.forEach(aPayment => {
-                                let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
-                                    return aUnitPayment.payTypeId === aPayment.id
+                    if(unitId) {
+                        let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
+                            return aUnit.unitId === unitId;
+                        })
+                        if(sapUnitCostCenterDetails) {
+                            let unitToWorkWith = unitsBulkSum[unitId]
+                            if(unitToWorkWith) {
+                                aPayrunResult.payment.forEach(aPayment => {
+                                    let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
+                                        return aUnitPayment.payTypeId === aPayment.id
+                                    })
+                                    if(paymentToAccumulate) {
+                                        paymentToAccumulate.amountLC += aPayment.amountLC
+                                    }
                                 })
-                                if(paymentToAccumulate) {
-                                    paymentToAccumulate.amountLC += aPayment.amountLC
-                                }
-                            })
+                            } else {
+                                // This function call adds an object to unitsBulkSum object
+                                initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                            }
+                            arrayOfEmployees.push(employeeId)
                         } else {
-                            // This function call adds an object to unitsBulkSum object
-                            initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                            console.log(`sapUnitCostCenterDetails is NULL`)
                         }
-                        arrayOfEmployees.push(employeeId)
+                    } else {
+                        console.log(`Could not find unit for position: ${employeePositionId}`)
                     }
+                } else {
+                    console.log(`Position could not be found: ${employeePositionId}`)
                 }
             } catch(ex) {
                 console.log(`processPayrunResultsForSap error: ${ex.message}`)
             }
+        } else {
+            console.log(`employee data could not be found`)
         }
     })
-    let getUnitForPosition = (unit) => {
-
-    }
     console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
     return {unitsBulkSum, employees: arrayOfEmployees}
-}
-
-SapIntegration.doAllPaytypesHaveGlAccounts = businessUnitSapConfig => {
-    let result = true
-
-    if(businessUnitSapConfig.payTypes && businessUnitSapConfig.payTypes.length > 0) {
-        businessUnitSapConfig.payTypes.forEach(aPayType => {
-            if(aPayType.payTypeDebitAccountCode && aPayType.payTypeDebitAccountCode.length > 0
-                && aPayType.payTypeCreditAccountCode && aPayType.payTypeCreditAccountCode.length > 0) {
-            } else {
-                result = false
-                return
-            }
-        })
-    }
-    return result
 }
 
 
