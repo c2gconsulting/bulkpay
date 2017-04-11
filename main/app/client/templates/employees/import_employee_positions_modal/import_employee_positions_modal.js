@@ -19,7 +19,23 @@ Template.ImportEmployeePositionsModal.events({
 
         let fields = ['EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
 
-        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "Employee Position records with error");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePositionAssignmentSample");
+    },
+    'click #downloadCsvWithAllPositions': function(e, tmpl) {
+        e.preventDefault()
+        console.log(`Inside downloadSampleCsv`)
+        let allPositions = EntityObjects.find({'otype': 'Position'}).fetch();
+
+        let dataForAllPositionsCsv = allPositions.map(aPosition => {
+            return {
+                PositionUniqueId: aPosition._id,
+                PositionName: aPosition.name
+            }
+        })
+
+        let fields = ['PositionUniqueId', 'PositionName']
+
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPositionsCsv}, "AllPositionsImCompany");
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -91,7 +107,7 @@ Template.ImportEmployeePositionsModal.events({
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "Employee Position records with error");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeePositionRecordsWithError");
     }
 });
 
@@ -126,6 +142,7 @@ Template.ImportEmployeePositionsModal.helpers({
 Template.ImportEmployeePositionsModal.onCreated(function () {
     let self = this
     self.subscribe("allEmployees", Session.get('context'));
+    self.subscribe("getPositions", Session.get('context'));
 
     self.response = new ReactiveDict()
 
