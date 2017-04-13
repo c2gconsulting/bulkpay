@@ -5,11 +5,18 @@
 import Ladda from 'ladda'
 Template.EntityCreate.events({
     'click #createEntity': (e, tmpl) => {
-        event.preventDefault();
-        let l = Ladda.create(tmpl.$('#createEntity')[0]);
-        l.start();
-        let nameOfEntity = $('[name="name"]').val()
+        e.preventDefault();
+        let entityNameElem = $('[name="name"]')
+        let entityNameParentElem = entityNameElem.parent()
+        let tokenFieldShadowInput = entityNameParentElem.find('.token-input').val()
+
+        let nameOfEntity = tokenFieldShadowInput || entityNameElem.val();
         console.log(`Name of entity: ${JSON.stringify(nameOfEntity)}`)
+
+        if(nameOfEntity.length < 1) {
+            swal("Validation error", `Entity name should not be empty`, "error");
+            return
+        }
 
         const details = {
             businessId: BusinessUnits.findOne()._id,
@@ -41,6 +48,10 @@ Template.EntityCreate.events({
             prop.costCenter = $('[name="costCenter"]').val();
             return prop;
         };
+
+        let l = Ladda.create(tmpl.$('#createEntity')[0]);
+        l.start();
+
         if(tmpl.data.edit === "true"){//edit action for updating paytype
             const ptId = tmpl.data._id;
             const code = tmpl.data.code;
