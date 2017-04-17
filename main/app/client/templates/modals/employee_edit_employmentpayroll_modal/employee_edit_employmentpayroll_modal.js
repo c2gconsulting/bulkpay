@@ -232,6 +232,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
+  console.log(`Selected employee: ${JSON.stringify(selectedEmployee)}`)
   //--
   self.selectedPosition = new ReactiveVar();
   self.selectedPosition.set(selectedEmployee.employeeProfile.employment.position);
