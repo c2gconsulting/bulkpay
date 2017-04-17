@@ -205,6 +205,7 @@ Meteor.methods({
         if (account){
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.position": user.employeeProfile.employment.position,
+                "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
               "employeeProfile.employment.hireDate": user.employeeProfile.employment.hireDate,
               "employeeProfile.employment.confirmationDate": user.employeeProfile.employment.confirmationDate,
               "employeeProfile.employment.status": user.employeeProfile.employment.status,
