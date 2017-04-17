@@ -18,6 +18,9 @@ Template.Payslip.helpers({
     'businessUnitName': function() {
         return Template.instance().businessUnitName.get()
     },
+    'payrunPeriod': function() {
+        return Template.instance().payrunPeriod.get()
+    },
     'currency': () => {
         return Core.getTenantBaseCurrency().iso;
 
@@ -35,9 +38,23 @@ Template.Payslip.onCreated(function () {
 
     self.businessUnitName = new ReactiveVar()
 
+    self.payrunPeriod = new ReactiveVar();
+
+
     let businessUnitId = Session.get('context')
 
     let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+
+    let months = {
+        '01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May',
+        '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October',
+        '11': 'November', '12': 'December'
+    }
+    let payrunPeriod = Session.get('currentPayrunPeriod')
+
+    if(payrunPeriod.month) {
+        self.payrunPeriod.set(`${months[payrunPeriod.month]} ${payrunPeriod.year}`)
+    }
 
     self.autorun(function(){
         if(businessUnitSubscription.ready()) {

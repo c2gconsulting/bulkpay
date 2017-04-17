@@ -34,7 +34,9 @@ Template.PayrunNew.events({
         if (params.employees.length > 0 || params.paygrades.length > 0){
             Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
                 if(res){
-                    console.log(JSON.stringify(res));
+                    //console.log(`Payrun results: ${JSON.stringify(res)}`);
+                    Session.set('currentPayrunPeriod', res.period);
+
                     //set result as reactive dict payResult
                     tmpl.dict.set("payResult", res);
                 } else{
