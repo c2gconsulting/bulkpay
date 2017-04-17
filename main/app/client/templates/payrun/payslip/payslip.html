@@ -9,20 +9,25 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-6">
-                                <img src="/img/payslip/dtologo.png" class="img-responsive mb10" alt="" />
+                                <!--<img src="/img/payslip/dtologo.png" class="img-responsive mb10" alt="" />-->
+                                <strong id="businessUnitName">{{businessUnitName}}</strong>
+                                <br/><br/>
+
                                 <address>
-                                    <strong>Zenith Bank PlC</strong><br>
-                                    No 3 Freeedom way Bay Atlantic building <br>
+                                    <strong>BANK: {{bank}}</strong><br>
                                 </address>
                                 <h4>
-                                    <abbr title="Account No:">ACC:</abbr> 0001112233
+                                    <abbr title="Account No:">ACC: </abbr>{{accountNumber}}
                                 </h4>
-
                             </div><!-- col-sm-6 -->
 
                             <div class="col-sm-6 text-right">
+                                <!--<h5 class="subtitle mb10">Employee No.</h5>-->
+                                <!--<h4 class="text-primary">{{employee.employeeId}}</h4>-->
                                 <h5 class="subtitle mb10">Employee No.</h5>
-                                <h4 class="text-primary">{{employee.employeeId}}</h4>
+                                <address>
+                                    <strong>{{employee.employeeId}}</strong><br>
+                                </address>
 
                                 <h5 class="subtitle mb10">Name</h5>
                                 <address>

@@ -349,7 +349,7 @@ Meteor.methods({
         }
 
         //just return something for now .... testing
-        return {payObj, runtype};
+        return {payObj, runtype, period};
     }
 
 });
@@ -821,6 +821,8 @@ function getDetailsInPayslip(employee){
     let details = {};
     details.employeeId = employee.employeeProfile.employeeId;
     details.fullname = employee.profile.fullName;
+    details.accountNumber = employee.employeeProfile.payment.accountNumber || "";
+    details.bank = employee.employeeProfile.payment.bank || "";
     // add other details
 
     return details;
