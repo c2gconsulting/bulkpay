@@ -122,7 +122,14 @@ if (Meteor.isServer) {
     }
   });
 
-
+    BusinessUnitLogoImages = new FS.Collection("BusinessUnitLogoImages", {
+      stores: [avatarStoreSmall, avatarStoreLarge],
+      filter: {
+          allow: {
+              extensions: ALLOWED_IMAGE_EXT
+          }
+      }
+  });
 }
 
 // On the client just create a generic FS Store as don't have
@@ -153,6 +160,18 @@ if (Meteor.isClient) {
         console.log(message);
       }
     }
+  });
+
+  BusinessUnitLogoImages = new FS.Collection("BusinessUnitLogoImages", {
+      stores: [attachmentStore, avatarStoreLarge, avatarStoreSmall],
+      filter: {
+          allow: {
+              extensions: ALLOWED_IMAGE_EXT
+          },
+          onInvalid: function(message) {
+              console.log(message);
+          }
+      }
   });
 }
 
@@ -185,4 +204,19 @@ UserImages.allow({
   download: function(){
     return true;
   }
+});
+
+BusinessUnitLogoImages.allow({
+    insert: function(user){
+        return true;
+    },
+    update: function(){
+        return true;
+    },
+    remove: function(){
+        return true;
+    },
+    download: function(){
+        return true;
+    }
 });

@@ -25,6 +25,7 @@
     {{#if hasAdminAccess}}
         <li class="parent"><a href=""><i class="fa fa-university"></i> <span>Company</span></a>
             <ul class="children">
+                <li class="{{active "bu.profile"}}"><a href="{{pathFor 'bu.profile'}}">Profile</a></li>
                 <li class="{{active "bu.details"}}"><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
             </ul>
         </li>

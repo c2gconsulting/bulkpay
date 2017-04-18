@@ -78,6 +78,12 @@ Router.route('/business/:_id/orgchart', {
     where: 'client'
 
 });
+Router.route('/business/:_id/profile', {
+    name: 'bu.profile',
+    controller: 'BusinessUnitProfileController',
+    where: 'client'
+
+});
 
 Router.route('/business/:_id/paygroups', {
     name: 'paygroups',
