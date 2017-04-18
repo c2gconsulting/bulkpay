@@ -67,12 +67,14 @@ Meteor.methods({
         } else
             throw new Meteor.Error(404, "Business does not exist");
     },
-    "businessunit/updateLogoImage": function(businessUnitId, logoUrl) {
+    "businessunit/updateLogoImage": function(businessUnitId, logoObj) {
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
+        console.log(`Inside updateLogoImage server method: ${JSON.stringify(logoObj)}`)
+
         if(BusinessUnits.findOne({_id: businessUnitId})){
-            BusinessUnits.update(businessUnitId, {$set: {'logo': logoUrl}})
+            BusinessUnits.update(businessUnitId, {$set: {'logo': logoObj}})
 
             return true
         } else

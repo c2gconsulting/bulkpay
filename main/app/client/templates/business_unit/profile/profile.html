@@ -20,36 +20,43 @@
             <div class="panel-body nopadding">
                 <form class="form-horizontal form-bordered">
                     <div class="row">
-                        <div class="col-md-2">
-                            <div class="text-center">
-                                <img src="/images/game_logo_default_fix.png" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
-                                <br><br>
-                                <span class="btn btn-primary btn-file">
-                                    Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />
-                                </span><br>
-                                <span id="filename"></span>
-                            </div>
-                            <!-- text-center -->
-                        </div>
-
-                        <div class="col-md-5 col-md-offset-1">
-                            <div class="">
-                                <label for="companyName" class="col-sm-4 control-label">Company Name</label>
-                                <div class="col-sm-8">
-                                    <input name="companyName" type="text" placeholder="" class="form-control"
-                                           value="{{businessUnitName}}"/>
+                        {{#with businessUnit}}
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    {{#if this.logo}}
+                                        <img src="{{this.logo.url}}" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
+                                    {{else}}
+                                        <img src="/images/game_logo_default_fix.png" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
+                                    {{/if}}
+                                    <br><br>
+                                    <!--<span class="btn btn-primary btn-file">-->
+                                        <!--Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />-->
+                                    <!--</span>-->
+                                    <br>
+                                    <span id="filename"></span>
                                 </div>
-                            </div>
-                            <div class="">
-                                <label for="companyLocation" class="col-sm-4 control-label">Company Location</label>
-                                <div class="col-sm-8">
-                                    <input name="companyLocation" type="text" placeholder="" class="form-control"
-                                           value="{{businessUnitLocation}}"/>
-                                </div>
+                                <!-- text-center -->
                             </div>
 
-                            <button class="btn btn-primary mr5 ladda-button pull-right" id="update">Update</button>
-                        </div>
+                            <div class="col-md-5 col-md-offset-1">
+                                <div class="">
+                                    <label for="companyName" class="col-sm-4 control-label">Company Name</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyName" type="text" placeholder="" class="form-control"
+                                               value="{{name}}"/>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <label for="companyLocation" class="col-sm-4 control-label">Company Location</label>
+                                    <div class="col-sm-8">
+                                        <input name="companyLocation" type="text" placeholder="" class="form-control"
+                                               value="{{location}}"/>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary mr5 ladda-button pull-right" id="update">Update</button>
+                            </div>
+                        {{/with}}
                     </div>
                 </form>
             </div>

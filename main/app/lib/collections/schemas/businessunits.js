@@ -35,6 +35,10 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         optional: true,
         defaultValue: false
     },
+    logo: {
+        type: String,
+        optional: true
+    },
 
     createdAt: {
         type: Date,

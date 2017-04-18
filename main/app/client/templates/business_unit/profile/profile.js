@@ -11,16 +11,29 @@ Template.BuProfile.events({
             reader.onload = function (e) {
                 $('#profile-img').attr('src', e.target.result)
             };
-
             reader.readAsDataURL(e.target.files[0]);
 
-            let upload = () => {
-                if ($('#uploadBtn')[0].files[0])
-                    return UserImages.insert($('#uploadBtn')[0].files[0]);
-            }
-
-            //upload = BusinessUnitLogoImages.insert(e.target.files[0]);
+            let upload = BusinessUnitLogoImages.insert(e.target.files[0]);
+            console.log(`Upload result: ${JSON.stringify(upload)}`)
             //$('#filename').html(e.target.files[0].name);
+
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('businessunit/updateLogoImage', businessUnitId, upload, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Success",
+                        text: `Company logo update was successful!`,
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    console.log(err);
+                }
+            });
+        } else {
+            console.log(`No file selected`)
         }
     },
     'click #update': function(e, tmp) {
@@ -52,11 +65,8 @@ Template.BuProfile.events({
 /* BuProfile: Helpers */
 /*****************************************************************************/
 Template.BuProfile.helpers({
-    'businessUnitName': function() {
-        return Template.instance().businessUnit.get().name
-    },
-    'businessUnitLocation': function() {
-        return Template.instance().businessUnit.get().location
+    'businessUnit': function() {
+        return Template.instance().businessUnit.get()
     }
 });
 
@@ -71,7 +81,7 @@ Template.BuProfile.onCreated(function(){
     self.autorun(function(){
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-            //console.log(`Business unit: ${JSON.stringify(businessUnit)}`)
+            console.log(`Business unit: ${JSON.stringify(businessUnit)}`)
 
             self.businessUnit.set(businessUnit)
         }
