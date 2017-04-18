@@ -187,8 +187,6 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       let thePayGrades = PayGrades.find();
       if(thePayGrades.count() == 1) {
         Template.instance().selectedGrade.set(thePayGrades.fetch()[0]._id);
-      } else {
-        Template.instance().selectedGrade.set(null);
       }
       return thePayGrades;
   },
@@ -239,12 +237,14 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   self.selectedGrade = new ReactiveVar();
   self.selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
+
   self.assignedTypes = new ReactiveVar();
 
   self.subscribe("getPositions", Session.get('context'));
   self.subscribe("getbuconstants", Session.get('context'));
 
   self.changePayTypesForSelectedPayGrade = (selectedGrade) => {
+
     let grade = PayGrades.findOne({_id: selectedGrade});
     if (grade){
         let paytypes = null;
@@ -290,12 +290,19 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   self.autorun(function(){
       let position = Template.instance().selectedPosition.get();
-      if(position)
-          self.subscribe("assignedGrades", position);
+      if(position) {
+        self.subscribe("assignedGrades", position);
 
-      let selectedGrade = Template.instance().selectedGrade.get();
-      if(selectedGrade){
-        self.changePayTypesForSelectedPayGrade(selectedGrade);
+        let selectedGrade = Template.instance().selectedGrade.get();
+
+        if(selectedGrade) {
+          let payGradeSubscription = self.subscribe("paygrade", selectedGrade);
+
+          if(payGradeSubscription.ready()) {
+            self.changePayTypesForSelectedPayGrade(selectedGrade);
+          } else {
+          }
+        }
       }
   });
 });
@@ -307,11 +314,12 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
   $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
 
-  //--
   $('select.dropdown').dropdown();
+
   let self = this;
   let rules = new ruleJS('calc');
   rules.init();
+
   self.autorun(function(){
       //rerun computation if assigned value changes
       let assigned = self.assignedTypes.get();
