@@ -23,6 +23,28 @@ Template.BuProfile.events({
             //$('#filename').html(e.target.files[0].name);
         }
     },
+    'click #update': function(e, tmp) {
+        e.preventDefault()
+
+        let companyName = $('input[name="companyName"]').val();
+        let companyLocation = $('input[name="companyLocation"]').val();
+
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('businessunit/updateNameAndLocation', businessUnitId, companyName, companyLocation, (err, res) => {
+            if (res){
+                swal({
+                    title: "Success",
+                    text: `Company profile update was successful!`,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                console.log(err);
+            }
+        });
+    }
 });
 
 

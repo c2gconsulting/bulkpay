@@ -55,5 +55,27 @@ Meteor.methods({
         return employeeCount
       } else
         throw new Meteor.Error(404, "Business does not exist");
+    },
+    "businessunit/updateNameAndLocation": function(businessUnitId, name, location) {
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        if(BusinessUnits.findOne({_id: businessUnitId})){
+            BusinessUnits.update(businessUnitId, {$set: {'name': name, 'location': location}})
+
+            return true
+        } else
+            throw new Meteor.Error(404, "Business does not exist");
+    },
+    "businessunit/updateLogoImage": function(businessUnitId, logoUrl) {
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        if(BusinessUnits.findOne({_id: businessUnitId})){
+            BusinessUnits.update(businessUnitId, {$set: {'logo': logoUrl}})
+
+            return true
+        } else
+            throw new Meteor.Error(404, "Business does not exist");
     }
 });
