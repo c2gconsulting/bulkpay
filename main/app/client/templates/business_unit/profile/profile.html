@@ -20,6 +20,7 @@
             <div class="panel-body nopadding">
                 <form class="form-horizontal form-bordered">
                     <div class="row">
+                    {{#if Template.subscriptionsReady}}
                         {{#with businessUnit}}
                             <div class="col-md-2">
                                 <div class="text-center">
@@ -57,6 +58,11 @@
                                 <button class="btn btn-primary mr5 ladda-button pull-right" id="update">Update</button>
                             </div>
                         {{/with}}
+                    {{else}}
+                        <div class="col-xs-12">
+                            <div class="loading">{{> spinner}}</div>
+                        </div>
+                    {{/if}}
                     </div>
                 </form>
             </div>

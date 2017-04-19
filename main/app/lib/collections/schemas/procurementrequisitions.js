@@ -7,6 +7,9 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
         type: String,
         optional: true
     },
+    businessUnitId: {
+        type: String
+    },
     description: {
         type: String,
         optional: true,

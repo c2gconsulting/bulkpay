@@ -328,6 +328,14 @@ Partitioner.partitionCollection(Times);
 Times.attachSchema(Core.Schemas.Time);
 
 
+/**
+ * Core Collections ProcurementRequisitions
+ */
+ProcurementRequisitions = new Mongo.Collection("procurementrequisitions");
+Partitioner.partitionCollection(ProcurementRequisitions);
+ProcurementRequisitions.attachSchema(Core.Schemas.ProcurementRequisition);
+
+
 LeaveTypes.allow({
     insert: function(userId, doc) {
         // only allow updating if you are logged in
