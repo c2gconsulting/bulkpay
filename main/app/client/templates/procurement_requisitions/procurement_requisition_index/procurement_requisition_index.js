@@ -27,6 +27,12 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
     let businessUnitId = Session.get('context');
     console.log(`businessUnit: ${businessUnitId}`)
 
+    self.subscribe('ProcurementRequisitionsICreated', businessUnitId)
+    self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
+
+    self.autorun(function() {
+
+    })
 });
 
 Template.ProcurementRequisitionIndex.onRendered(function () {

@@ -1,5 +1,4 @@
 
-
 /*****************************************************************************/
 /* ProcurementRequisitionCreate: Event Handlers */
 /*****************************************************************************/
@@ -35,9 +34,10 @@ Template.ProcurementRequisitionCreate.events({
             requisitionDoc.requisitionReason = requisitionReason
         }
 
-        Meteor.call('ProcurementRequisition/createDraft', Session.get('context'), requisitionDoc, function(err, res) {
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, function(err, res) {
             if(!err) {
-                console.log(`Res: ${JSON.stringify(res)}`)
                 swal('Success', 'Requisition Draft saved', 'success')
             } else {
                 console.log(`Err: ${JSON.stringify(err)}`)

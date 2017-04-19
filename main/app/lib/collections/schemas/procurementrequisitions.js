@@ -33,7 +33,7 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
     createdBy: {
         type: String
     },
-    supervisorId: {
+    supervisorPositionId: {
         type: String,
         optional: true
     },
