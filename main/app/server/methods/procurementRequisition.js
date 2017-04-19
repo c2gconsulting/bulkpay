@@ -5,7 +5,7 @@ import _ from 'underscore';
  *  Procurement Requisition Methods
  */
 Meteor.methods({
-    "ProcurementRequisition/create": function(businessUnitId, procurementRequisitionDoc){
+    "ProcurementRequisition/createDraft": function(businessUnitId, procurementRequisitionDoc){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -13,8 +13,22 @@ Meteor.methods({
         check(businessUnitId, String);
         this.unblock()
 
-        //--
-        ProcurementRequisitions.insert(procurementRequisitionDoc)
-        return true;
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+        console.log(`userPositionId: ${userPositionId}`)
+
+        let userPosition = EntityObjects.findOne(_id: userPositionId, otype: 'Position')
+        if(userPosition.properties) {
+            let supervisorId = userPosition.properties.supervisor
+            console.log(`SupervisorId: ${supervisorId}`)
+
+            procurementRequisitionDoc.createdBy = Meteor.userId()
+            procurementRequisitionDoc.status = 'Draft'
+            procurementRequisitionDoc.businessUnitId = businessUnitId
+            procurementRequisitionDoc.supervisorId = supervisorId
+
+            ProcurementRequisitions.insert(procurementRequisitionDoc)
+            return true
+        }
+        throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     }
 });

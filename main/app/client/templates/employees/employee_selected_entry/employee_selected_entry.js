@@ -120,6 +120,15 @@ Template.EmployeeSelectedEntry.helpers({
     console.log("canManagePayroll: " + canManagePayroll);
 
     return canManagePayroll;
+  },
+  hasProcurementRequisitionApproveAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      console.log("selected employee id: " + selectedEmployee._id);
+
+      let canManagePayroll = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
+      console.log("canApproveProcurementApprove: " + canManagePayroll);
+
+      return canManagePayroll;
   }
 });
 
@@ -140,6 +149,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManageTime = $("[name=timeManage]").val();
         let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
         let shouldManagePayroll = $("[name=payrollManage]").val();
+        let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
 
         let arrayOfRoles = [];
         if(shouldManageEmployeeData === "true") {
@@ -162,6 +172,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldManagePayroll === "true") {
           arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)
+        }
+        if(shouldApproveProcurementRequisition === "true") {
+            arrayOfRoles.push(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE)
         }
         if(Core.hasRoleManageAccess(Meteor.userId())) {
           let shouldHaveRoleManageAccess = $("[name=roleManage]").val();

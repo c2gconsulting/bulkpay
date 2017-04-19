@@ -217,6 +217,9 @@ _.extend(Core, {
     hasPayrollAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PAYROLL_MANAGE, userId);
     },
+    hasProcurementRequisitionApproveAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },
