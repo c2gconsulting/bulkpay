@@ -163,6 +163,7 @@ Router.route('/business/:_id/employee/time', {
     action: 'time',
     where: 'client'
 });
+
 Router.route('/business/:_id/projects', {
     name: 'project.list',
     controller: 'EmployeesController',
@@ -236,6 +237,13 @@ Router.route('/business/:_id/employee/leaves', {
     controller: 'EmployeesController',
     where: 'client'
 });
+Router.route('/business/:_id/employee/procurementrequisitions', {
+    name: 'procurementrequisition.list',
+    controller: 'ProcurementRequisitionController',
+    action: 'showProcurementRequisitionsList',
+    where: 'client'
+});
+
 
 
 Router.route('/business/:_id/reports/netpay', {

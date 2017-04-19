@@ -141,7 +141,7 @@ Template.SapB1Config.events({
             if(res) {
                 console.log(JSON.stringify(res));
                 swal('Success', 'Cost center codes were successfully updated', 'success')
-            } else{
+            } else {
                 console.log(err);
             }
         })
