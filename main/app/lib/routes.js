@@ -243,7 +243,12 @@ Router.route('/business/:_id/employee/procurementrequisitions', {
     action: 'showProcurementRequisitionsList',
     where: 'client'
 });
-
+Router.route('/business/:_id/employee/procurementrequisitions/approvalslist', {
+    name: 'procurementrequisition.approvalList',
+    controller: 'ProcurementRequisitionApprovalListController',
+    action: 'showProcurementRequisitionApprovalList',
+    where: 'client'
+});
 
 
 Router.route('/business/:_id/reports/netpay', {

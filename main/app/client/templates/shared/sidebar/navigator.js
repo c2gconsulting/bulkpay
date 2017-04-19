@@ -8,6 +8,12 @@ Template.navigator.helpers({
     },
     'currentUserId': function() {
         return Meteor.userId();
+    },
+    hasProcurementRequisitionApproveAccess: () => {
+        let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
+        console.log("canApproveProcurementApprove: " + canApproveProcurement);
+
+        return canApproveProcurement;
     }
 });
 

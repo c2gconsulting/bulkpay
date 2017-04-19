@@ -125,10 +125,10 @@ Template.EmployeeSelectedEntry.helpers({
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
       console.log("selected employee id: " + selectedEmployee._id);
 
-      let canManagePayroll = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
-      console.log("canApproveProcurementApprove: " + canManagePayroll);
+      let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
+      console.log("canApproveProcurementApprove: " + canApproveProcurement);
 
-      return canManagePayroll;
+      return canApproveProcurement;
   }
 });
 
