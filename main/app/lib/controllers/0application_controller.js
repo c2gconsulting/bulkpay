@@ -38,6 +38,9 @@ ApplicationController = RouteController.extend({
     // You can provide any of the hook options
 
     onRun: function () {
+        //set session context for side bar nav using session store ..
+        Session.set('context', this.params._id);
+
         this.next();
     },
     onRerun: function () {
@@ -56,8 +59,6 @@ ApplicationController = RouteController.extend({
             this.layout('ApplicationLayout');
             this.next();
         }
-        //set session context for side bar nav using session store ..
-        Session.set('context', this.params._id);
     },
 
     // The same thing as providing a function as the second parameter. You can

@@ -11,12 +11,12 @@ Core.publish("ProcurementRequisitionsICreated", function (businessUnitId) {
 Core.publish("ProcurementRequisitionsToApprove", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
-
     if(!user.employeeProfile || !user.employeeProfile.employment) {
         return Meteor.Error(401, "Unauthorized! You can't approve a procurement requisition");
     }
 
     let userPositionId = user.employeeProfile.employment.position
+    console.log(`userpositionid: ${userPositionId}`)
 
     if (Core.hasProcurementRequisitionApproveAccess(this.userId)) {
         return ProcurementRequisitions.find({

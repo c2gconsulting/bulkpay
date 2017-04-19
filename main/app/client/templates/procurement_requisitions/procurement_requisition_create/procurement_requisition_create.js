@@ -38,7 +38,11 @@ Template.ProcurementRequisitionCreate.events({
 
         Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, function(err, res) {
             if(!err) {
-                swal('Success', 'Requisition Draft saved', 'success')
+                swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                    confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                }, () => {
+                    Modal.hide()
+                })
             } else {
                 console.log(`Err: ${JSON.stringify(err)}`)
             }
