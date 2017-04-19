@@ -4,7 +4,11 @@
 import _ from 'underscore';
 
 Template.ProcurementRequisitionIndex.events({
+    'click #createProcurementRequisition': function(e, tmpl) {
+        e.preventDefault()
 
+        Modal.show('ProcurementRequisitionCreate')
+    }
 });
 
 /*****************************************************************************/
