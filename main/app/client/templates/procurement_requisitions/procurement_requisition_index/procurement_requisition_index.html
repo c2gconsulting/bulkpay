@@ -50,6 +50,28 @@
                                     </table>
                                 {{/if}}
                             </div><!-- panel -->
+
+                            <div class="row">
+                                <div class="row">
+                                    <div class="pull-right">
+                                        <ul class="pagination pagination-split pagination-sm pagination-contact">
+                                            <li class="disabled">
+                                                <a href="#"><i class="fa fa-angle-left"></i></a>
+                                            </li>
+                                            {{#each (repeat numberOfPages)}}
+                                                {{#if condition currentPage 'eq' this}}
+                                                <li class="active"><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                                {{else}}
+                                                <li><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                                {{/if}}
+                                            {{/each}}
+                                            <li>
+                                                <a href="#"><i class="fa fa-angle-right"></i></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div><!-- row -->
