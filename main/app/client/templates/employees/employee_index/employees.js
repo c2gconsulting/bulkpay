@@ -86,7 +86,7 @@ Template.Employees.helpers({
         var remainder = totalNum % limit;
         if (remainder > 0)
             result += 2;
-        return result;
+        return (result > 10) ? 10 : result;
     },
     'currentPage': function() {
         return Template.instance().currentPage.get()
