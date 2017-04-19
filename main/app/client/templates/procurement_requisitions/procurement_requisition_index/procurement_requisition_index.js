@@ -51,7 +51,11 @@ Template.ProcurementRequisitionIndex.helpers({
         let totalNum = ProcurementRequisitions.find({createdBy: Meteor.userId()}).count()
         console.log(`totalNum: ${totalNum}`)
 
-        return Math.ceil(limit, totalNum)
+        let result = Math.floor(totalNum/limit)
+        var remainder = totalNum % limit;
+        if (remainder > 0)
+            result += 2;
+        return result;
     },
     'currentPage': function() {
         return Template.instance().currentPage.get()
@@ -65,7 +69,7 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
-    self.NUMBER_PER_PAGE = new ReactiveVar(3);
+    self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     self.procurementsICreated = new ReactiveVar()
@@ -98,20 +102,7 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
         if(procurementsCreatedSub.ready()) {
             self.procurementsICreated.set(self.getProcurementsICreated(0))
         }
-        //--
-        // if(procurementsToApproveSub.ready()) {
-        //     console.log(`ProcurementsSub is ready`)
-        //     let currentUser = Meteor.user()
-        //     if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-        //         let currentUserPosition = currentUser.employeeProfile.employment.position
-        //
-        //         let procurementsToApprove = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).fetch();
-        //         console.log(`procurementsToApprove: ${JSON.stringify(procurementsToApprove)}`)
-        //         self.procurementsToApprove.set(procurementsToApprove)
-        //     }
-        // }
     })
-
 });
 
 Template.ProcurementRequisitionIndex.onRendered(function () {

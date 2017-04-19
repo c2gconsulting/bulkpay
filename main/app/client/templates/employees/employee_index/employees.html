@@ -46,17 +46,19 @@
                     <div class="col-lg-8">
                       <div class="row">
                         <h3 class="xlg-title">All Employees</h3>
-                        <!-- <div class="pull-right">
+                        <div class="pull-right">
+                            {{#unless isSearchView}}
                             <ul class="pagination pagination-split pagination-sm pagination-contact">
-                                <li class="disabled"><a href="#"><i class="fa fa-angle-left"></i></a></li>
-                                <li class="active"><a href="#">1</a></li>
-                                <li><a href="#">2</a></li>
-                                <li><a href="#">3</a></li>
-                                <li><a href="#">4</a></li>
-                                <li><a href="#">5</a></li>
-                                <li><a href="#"><i class="fa fa-angle-right"></i></a></li>
+                                {{#each (repeat numberOfPages)}}
+                                    {{#if condition currentPage 'eq' this}}
+                                        <li class="active"><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{else}}
+                                        <li><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{/if}}
+                                {{/each}}
                             </ul>
-                        </div> -->
+                            {{/unless}}
+                        </div>
                       </div>
                     </div>
 

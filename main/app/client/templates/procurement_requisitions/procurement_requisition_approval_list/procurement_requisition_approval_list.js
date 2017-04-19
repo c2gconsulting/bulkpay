@@ -53,10 +53,13 @@ Template.ProcurementRequisitionApprovalList.helpers({
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
             let totalNum = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).count();
-
             console.log(`totalNum: ${totalNum}`)
 
-            return Math.ceil(limit, totalNum)
+            let result = Math.floor(totalNum/limit)
+            var remainder = totalNum % limit;
+            if (remainder > 0)
+                result += 2;
+            return result;
         }
         return 0;
     },
@@ -72,7 +75,7 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
-    self.NUMBER_PER_PAGE = new ReactiveVar(3);
+    self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     self.procurementsToApprove = new ReactiveVar()
