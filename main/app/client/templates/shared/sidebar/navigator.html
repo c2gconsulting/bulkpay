@@ -79,7 +79,9 @@
             <li class="{{active "leave.list"}}"><a href="{{pathFor 'leave.list'}}">Request Leave </a></li>
             <li class="{{active "procurementrequisition.list"}}"><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
 
+            {{#if hasProcurementRequisitionApproveAccess}}
             <li class="{{active "procurementrequisition.approvalList"}}"><a href="{{pathFor 'procurementrequisition.approvalList'}}">Requisitions Approval</a></li>
+            {{/if}}
 
             <li class="{{active "payslip"}}"><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         </ul>

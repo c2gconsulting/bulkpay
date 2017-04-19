@@ -8,7 +8,10 @@ Template.navigator.helpers({
     },
     'currentUserId': function() {
         return Meteor.userId();
-    },
+    }
+});
+
+Template.navlist.helpers({
     hasProcurementRequisitionApproveAccess: () => {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
         console.log("canApproveProcurementApprove: " + canApproveProcurement);
