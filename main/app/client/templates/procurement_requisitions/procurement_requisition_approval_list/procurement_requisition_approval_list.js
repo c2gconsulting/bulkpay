@@ -9,6 +9,18 @@ Template.ProcurementRequisitionApprovalList.events({
 
         Modal.show('ProcurementRequisitionCreate')
     },
+    'click .requisitionRow': function(e, tmpl) {
+        e.preventDefault()
+        let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
+        console.log(`RequisitionId: ${requisitionId}`)
+
+        let invokeReason = {}
+        invokeReason.requisitionId = requisitionId
+        invokeReason.reason = 'approve'
+        invokeReason.approverId = Meteor.userId()
+
+        Modal.show('ProcurementRequisitionDetail', invokeReason)
+    },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
         console.log(`pageNum: ${pageNum}`)
@@ -94,7 +106,7 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}, options);
+            return ProcurementRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
         }
         return null
     }
@@ -112,8 +124,6 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
             let currentUser = Meteor.user()
             if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
                 let currentUserPosition = currentUser.employeeProfile.employment.position
-
-                let procurementsToApprove = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).fetch();
                 self.procurementsToApprove.set(self.getProcurementsToApprove(0))
             }
         }

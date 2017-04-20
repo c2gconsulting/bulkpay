@@ -30,7 +30,7 @@ Meteor.methods({
             procurementRequisitionDoc.businessUnitId = businessUnitId
             procurementRequisitionDoc.supervisorPositionId = supervisorPositionId
             if(docId) {
-                ProcurementRequisitions.update(docId, procurementRequisitionDoc)
+                ProcurementRequisitions.update(docId, {$set: procurementRequisitionDoc})
             } else{
                 ProcurementRequisitions.insert(procurementRequisitionDoc)
             }
@@ -38,7 +38,7 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     },
-    "ProcurementRequisition/create": function(businessUnitId, procurementRequisitionDoc){
+    "ProcurementRequisition/create": function(businessUnitId, procurementRequisitionDoc, docId){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -59,11 +59,15 @@ Meteor.methods({
             console.log(`supervisorPositionId: ${supervisorPositionId}`)
 
             procurementRequisitionDoc.createdBy = Meteor.userId()
-            procurementRequisitionDoc.status = 'Draft'
             procurementRequisitionDoc.businessUnitId = businessUnitId
             procurementRequisitionDoc.supervisorPositionId = supervisorPositionId
 
-            ProcurementRequisitions.insert(procurementRequisitionDoc)
+            if(docId) {
+                procurementRequisitionDoc.status = 'Pending'
+                ProcurementRequisitions.update(docId, {$set: procurementRequisitionDoc})
+            } else {
+                ProcurementRequisitions.insert(procurementRequisitionDoc)
+            }
             return true
         }
         throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");

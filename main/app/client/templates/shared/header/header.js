@@ -20,7 +20,6 @@ Template.header.onCreated(function() {
                     supervisorPositionId: currentUserPosition,
                     status: 'Pending'
                 }).fetch();
-                console.log(`procurementsToApprove: ${JSON.stringify(procurementsToApprove)}`)
                 self.procurementsToApprove.set(procurementsToApprove)
             }
         }

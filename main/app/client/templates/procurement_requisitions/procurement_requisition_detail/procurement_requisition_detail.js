@@ -16,13 +16,76 @@ import _ from 'underscore';
 
 
 Template.ProcurementRequisitionDetail.events({
-    'click #new-requisition-save-draft': function(e, tmpl) {
+    'click #requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let description = $("input[name=description]").val()
+            let dateRequired = $("input[name=dateRequired]").val()
+            let requisitionReason = $("input[name=requisitionReason]").val()
 
+            if(description && description.length > 0) {
+                let requisitionDoc = {}
+                requisitionDoc.description = description
+                if(dateRequired && dateRequired.length > 0)
+                    requisitionDoc.dateRequired = new Date(dateRequired)
+                else
+                    requisitionDoc.dateRequired = null
+                requisitionDoc.requisitionReason = requisitionReason
+
+                let businessUnitId = Session.get('context')
+
+                Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            } else {
+                swal('Validation error', "Please fill a description", 'error')
+            }
+        }
     },
-    'click #new-requisition-create': function(e, tmpl) {
+    'click #requisition-create': function(e, tmpl) {
         e.preventDefault()
 
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let description = $("input[name=description]").val()
+            let dateRequired = $("input[name=dateRequired]").val()
+            let requisitionReason = $("input[name=requisitionReason]").val()
+
+            let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
+            if(validation === true) {
+                let requisitionDoc = {}
+
+                requisitionDoc.description = description
+                requisitionDoc.dateRequired = new Date(dateRequired)
+                requisitionDoc.requisitionReason = requisitionReason
+
+                let businessUnitId = Session.get('context')
+
+                Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        // console.log(`Err: ${JSON.stringify(err)}`)
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            } else {
+                swal('Validation error', validation, 'error')
+            }
+        }
     }
 });
 
@@ -75,6 +138,22 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
             self.procurementDetails.set(procurementDetails)
         }
     })
+
+    self.areInputsValid = function(description, dateRequired, requisitionReason) {
+        let errMsg = null
+        if(!description || description.length < 1) {
+            errMsg = "Please fill description"
+            return errMsg
+        }
+        if(!dateRequired || dateRequired.length < 1) {
+            errMsg = "Please fill date required"
+            return errMsg
+        }
+        if(!requisitionReason || requisitionReason.length < 1) {
+            errMsg = "Please fill requisition reason"
+        }
+        return true
+    }
 });
 
 Template.ProcurementRequisitionDetail.onRendered(function () {
