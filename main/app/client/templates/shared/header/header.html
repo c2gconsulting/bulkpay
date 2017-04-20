@@ -52,7 +52,7 @@
                 <h5>Procurement requisitions to approve</h5>
                 <ul class="media-list dropdown-list">
                     {{#each procurementsToApprove}}
-                    <li class="media">
+                    <li data-RequisitionId="{{_id}}" class="media pointer requisitionRow">
                         <!--<span class="badge badge-success">New</span>-->
                         <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
                         <div class="pageicon pull-left" style="padding: 9px;">
@@ -60,7 +60,7 @@
                         </div>
                         <div class="media-body">
                             <strong>{{this.description}}</strong>
-                            <!--<p>Hi! How are you?...</p>-->
+                            <p><i>{{trimString this.requisitionReason 0 30}} ... </i></p>
                             <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
                         </div>
                     </li>
