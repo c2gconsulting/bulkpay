@@ -28,7 +28,7 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
     },
     status: {
         type: String,
-        defaultValue: 'Draft'     //Draft or Pending or Treated
+        defaultValue: 'Draft'     //Draft or Pending or Treated or Rejected
     },
     createdBy: {
         type: String

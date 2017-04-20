@@ -81,7 +81,7 @@ Template.header.onCreated(function() {
         if(procurementsCreatedThatApprovedSub.ready()) {
             self.procurementsICreatedThatApproved.set(ProcurementRequisitions.find({
                 createdBy: Meteor.userId(),
-                status: 'Treated',
+                $or: [{status: 'Treated'}, {status: 'Rejected'}],
                 creatorIsAwareOfApproval: {$ne: true}
             }))
         }

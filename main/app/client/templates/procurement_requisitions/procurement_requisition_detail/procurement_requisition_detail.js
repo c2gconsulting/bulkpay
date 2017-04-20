@@ -106,6 +106,25 @@ Template.ProcurementRequisitionDetail.events({
             })
         }
     },
+    'click #requisition-reject': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('ProcurementRequisition/reject', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Requisition rejected", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    }
 });
 
 
