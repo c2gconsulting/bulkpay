@@ -40,11 +40,11 @@
                 <!--</div>&lt;!&ndash; dropdown-menu &ndash;&gt;-->
             <!--</div>&lt;!&ndash; btn-group &ndash;&gt;-->
 
-        {{#if procurementsToApprove}}
+        {{#if condition procurementsToApprove.count '>' 0}}
         <div class="btn-group btn-group-list btn-group-messages">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-envelope-o"></i>
-                <span class="badge">{{procurementsToApprove.length}}</span>
+                <span class="badge">{{procurementsToApprove.count}}</span>
             </button>
 
             <div class="dropdown-menu pull-right">
@@ -71,8 +71,38 @@
                 <!--</div>-->
             </div><!-- dropdown-menu -->
         </div><!-- btn-group -->
-        {{else}}
+        {{/if}}
 
+        {{#if condition procurementsICreatedThatApproved.count '>' 0}}
+            <div class="btn-group btn-group-list btn-group-messages">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-envelope-o"></i>
+                    <span class="badge">{{procurementsICreatedThatApproved.count}}</span>
+                </button>
+
+                <div class="dropdown-menu pull-right">
+                    <!--<a href="" class="link-right"><i class="fa fa-plus"></i></a>-->
+                    <h5>Procurement requisitions that were approved</h5>
+                    <ul class="media-list dropdown-list">
+                        {{#each procurementsICreatedThatApproved}}
+                            <li data-RequisitionId="{{_id}}" class="media pointer requisitionRow">
+                                <span data-RequisitionId="{{_id}}" class="badge badge-success requisitionApprovalSeen">Seen</span>
+                                <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
+                                <div class="pageicon pull-left" style="padding: 9px;">
+                                    <i class="fa fa-fax"></i>
+                                </div>
+                                <div class="media-body">
+                                    <strong>{{this.description}}</strong>
+                                    <p><i>{{trimString this.requisitionReason 0 30}} ... </i></p>
+                                </div>
+                            </li>
+                        {{/each}}
+                    </ul>
+                    <!--<div class="dropdown-footer text-center">-->
+                    <!--<a href="" class="link">See All Messages</a>-->
+                    <!--</div>-->
+                </div><!-- dropdown-menu -->
+            </div><!-- btn-group -->
         {{/if}}
 
             <div class="btn-group btn-group-option">

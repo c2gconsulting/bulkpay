@@ -12,6 +12,21 @@ Template.header.events({
         invokeReason.approverId = Meteor.userId()
 
         Modal.show('ProcurementRequisitionDetail', invokeReason)
+    },
+    'click .requisitionApprovalSeen': function(e, tmpl) {
+        e.preventDefault()
+        e.stopPropagation()
+
+        let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
+        console.log(`RequisitionId: ${requisitionId}`)
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('ProcurementRequisition/markApprovalAsSeen', businessUnitId, requisitionId, function(err, res) {
+            if(!err) {
+            } else {
+                swal('Validation error', err.message, 'error')
+            }
+        })
     }
 });
 
@@ -28,6 +43,9 @@ Template.header.helpers({
     'procurementsToApprove': function() {
         return Template.instance().procurementsToApprove.get()
     },
+    'procurementsICreatedThatApproved': function() {
+        return Template.instance().procurementsICreatedThatApproved.get()
+    },
     'currentUserId': function() {
         return Meteor.userId();
     }
@@ -39,8 +57,10 @@ Template.header.onCreated(function() {
     let businessUnitId = Session.get('context')
 
     self.procurementsToApprove = new ReactiveVar()
+    self.procurementsICreatedThatApproved = new ReactiveVar()
 
     let procurementsSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
+    let procurementsCreatedThatApprovedSub = self.subscribe('ProcurementRequisitionsICreated', businessUnitId)
 
     self.autorun(function() {
         if(procurementsSub.ready()) {
@@ -54,9 +74,16 @@ Template.header.onCreated(function() {
                 let procurementsToApprove = ProcurementRequisitions.find({
                     supervisorPositionId: currentUserPosition,
                     status: 'Pending'
-                }).fetch();
+                })
                 self.procurementsToApprove.set(procurementsToApprove)
             }
+        }
+        if(procurementsCreatedThatApprovedSub.ready()) {
+            self.procurementsICreatedThatApproved.set(ProcurementRequisitions.find({
+                createdBy: Meteor.userId(),
+                status: 'Treated',
+                creatorIsAwareOfApproval: {$ne: true}
+            }))
         }
     })
 })

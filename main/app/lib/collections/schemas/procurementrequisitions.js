@@ -33,6 +33,10 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
     createdBy: {
         type: String
     },
+    creatorIsAwareOfApproval: {
+        type: Boolean,
+        optional: true
+    },
     supervisorPositionId: {
         type: String,
         optional: true
