@@ -125,6 +125,10 @@ Template.ProcurementRequisitionDetail.helpers({
     },
     'isInApproveMode': function() {
         return Template.instance().isInApproveMode.get()
+    },
+    'getUnitName': function(unitId) {
+        if(unitId)
+            return EntityObjects.findOne({_id: unitId}).name
     }
 });
 
@@ -155,6 +159,10 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
             console.log(`procurement subscription ready `)
             let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
+
+            if(procurementDetails.unitId) {
+                self.subscribe('getEntity', procurementDetails.unitId)
+            }
         }
     })
 
