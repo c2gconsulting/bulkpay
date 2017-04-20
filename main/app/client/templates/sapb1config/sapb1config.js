@@ -112,6 +112,16 @@ Template.SapB1Config.events({
         let currentPayType = _.find(payTypes, function (o) {
             return o.payTypeId === payTypeId;
         })
+        if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            swal('Validation error', 'G/L account code should not have hypen characters', 'error')
+            return
+        } else {
+            var isnum = /^\d+$/.test(payTypeGlAccountCode);
+            if(!isnum) {
+                swal('Validation error', 'G/L account code should be a pure number', 'error')
+                return
+            }
+        }
         currentPayType.payTypeCreditAccountCode = payTypeGlAccountCode
         Template.instance().paytypes.set(payTypes);
     },
@@ -127,6 +137,16 @@ Template.SapB1Config.events({
         let currentPayType = _.find(payTypes, function (o) {
             return o.payTypeId === payTypeId;
         })
+        if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            swal('Validation error', 'G/L account code should not have hypen characters', 'error')
+            return
+        } else {
+            var isnum = /^\d+$/.test(payTypeGlAccountCode);
+            if(!isnum) {
+                swal('Validation error', 'G/L account code should be a pure number', 'error')
+                return
+            }
+        }
         currentPayType.payTypeDebitAccountCode = payTypeGlAccountCode
         Template.instance().paytypes.set(payTypes);
     },
