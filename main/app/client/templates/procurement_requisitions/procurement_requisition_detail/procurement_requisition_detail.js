@@ -22,7 +22,7 @@ Template.ProcurementRequisitionDetail.events({
         if(procurementDetails) {
             let description = $("input[name=description]").val()
             let dateRequired = $("input[name=dateRequired]").val()
-            let requisitionReason = $("input[name=requisitionReason]").val()
+            let requisitionReason = $("textarea[name=requisitionReason]").val()
 
             if(description && description.length > 0) {
                 let requisitionDoc = {}
@@ -58,7 +58,7 @@ Template.ProcurementRequisitionDetail.events({
         if(procurementDetails) {
             let description = $("input[name=description]").val()
             let dateRequired = $("input[name=dateRequired]").val()
-            let requisitionReason = $("input[name=requisitionReason]").val()
+            let requisitionReason = $("textarea[name=requisitionReason]").val()
 
             let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
             if(validation === true) {
@@ -151,6 +151,7 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         }
         if(!requisitionReason || requisitionReason.length < 1) {
             errMsg = "Please fill requisition reason"
+            return errMsg
         }
         return true
     }

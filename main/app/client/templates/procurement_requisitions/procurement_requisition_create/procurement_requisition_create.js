@@ -14,7 +14,7 @@ Template.ProcurementRequisitionCreate.events({
         e.preventDefault()
         let description = $("input[name=description]").val()
         let dateRequired = $("input[name=dateRequired]").val()
-        let requisitionReason = $("input[name=requisitionReason]").val()
+        let requisitionReason = $("textarea[name=requisitionReason]").val()
 
         if(description && description.length > 0) {
             let requisitionDoc = {}
@@ -24,6 +24,11 @@ Template.ProcurementRequisitionCreate.events({
             else
                 requisitionDoc.dateRequired = null
             requisitionDoc.requisitionReason = requisitionReason
+
+            let currentUserUnitId = Template.instance().unitId.get()
+            if(currentUserUnitId) {
+                requisitionDoc.unitId = currentUserUnitId
+            }
 
             let businessUnitId = Session.get('context')
 
@@ -46,7 +51,7 @@ Template.ProcurementRequisitionCreate.events({
         e.preventDefault()
         let description = $("input[name=description]").val()
         let dateRequired = $("input[name=dateRequired]").val()
-        let requisitionReason = $("input[name=requisitionReason]").val()
+        let requisitionReason = $("textarea[name=requisitionReason]").val()
 
         let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
         if(validation === true) {
@@ -56,6 +61,10 @@ Template.ProcurementRequisitionCreate.events({
             requisitionDoc.dateRequired = new Date(dateRequired)
             requisitionDoc.requisitionReason = requisitionReason
 
+            let currentUserUnitId = Template.instance().unitId.get()
+            if(currentUserUnitId) {
+                requisitionDoc.unitId = currentUserUnitId
+            }
             let businessUnitId = Session.get('context')
 
             Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, function(err, res) {
@@ -80,7 +89,13 @@ Template.ProcurementRequisitionCreate.events({
 /* ProcurementRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.ProcurementRequisitionCreate.helpers({
+    'getCurrentUserUnitName': function() {
+        let unitId = Template.instance().unitId.get()
+        console.log(`Unit id: ${unitId}`)
 
+        if(unitId)
+            return EntityObjects.findOne({_id: unitId}).name
+    }
 });
 
 /*****************************************************************************/
@@ -91,6 +106,24 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
 
     let businessUnitId = Session.get('context');
     console.log(`businessUnit: ${businessUnitId}`)
+
+    self.unitId = new ReactiveVar()
+
+    let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
+
+    self.autorun(function(){
+        if(unitsSubscription.ready()){
+            let employeeProfile = Meteor.user().employeeProfile
+            if(employeeProfile) {
+                let userPositionId = employeeProfile.employment.position
+                let positionSubscription = self.subscribe('getEntity', userPositionId)
+                if(positionSubscription.ready()){
+                    let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
+                    self.unitId.set(userPosition.parentId)
+                }
+            }
+        }
+    })
 
     self.areInputsValid = function(description, dateRequired, requisitionReason) {
         let errMsg = null
@@ -104,6 +137,7 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
         }
         if(!requisitionReason || requisitionReason.length < 1) {
             errMsg = "Please fill requisition reason"
+            return errMsg
         }
         return true
     }

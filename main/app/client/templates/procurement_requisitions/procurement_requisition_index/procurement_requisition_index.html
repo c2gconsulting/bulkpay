@@ -41,7 +41,7 @@
                                     {{#each procurementsICreated}}
                                         <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                             <td>{{description}}</td>
-                                            <td>{{unitId}}</td>
+                                            <td>{{getUnitName unitId}}</td>
                                             <td>{{formatDate dateRequired}}</td>
                                             <td>{{status}}</td>
                                         </tr>

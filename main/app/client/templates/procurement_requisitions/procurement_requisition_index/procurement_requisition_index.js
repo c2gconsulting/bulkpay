@@ -71,6 +71,10 @@ Template.ProcurementRequisitionIndex.helpers({
     },
     'currentPage': function() {
         return Template.instance().currentPage.get()
+    },
+    'getUnitName': function(unitId) {
+        if(unitId)
+            return EntityObjects.findOne({_id: unitId}).name
     }
 });
 
@@ -87,9 +91,6 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
     self.procurementsICreated = new ReactiveVar()
     self.procurementsToApprove = new ReactiveVar()
 
-    // let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
-
-
     self.getProcurementsICreated = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
@@ -102,6 +103,8 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
 
         return ProcurementRequisitions.find({createdBy: Meteor.userId()}, options);
     }
+
+    self.subscribe('getCostElement', businessUnitId)
 
     self.autorun(function() {
         let limit = self.NUMBER_PER_PAGE.get();
