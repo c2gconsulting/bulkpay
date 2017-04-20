@@ -12,52 +12,66 @@ Template.ProcurementRequisitionCreate.events({
     },
     'click #new-requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
-        console.log('Inside new-requisition-save-draft')
-
-        let requisitionDoc = {}
-
         let description = $("input[name=description]").val()
         let dateRequired = $("input[name=dateRequired]").val()
         let requisitionReason = $("input[name=requisitionReason]").val()
 
         if(description && description.length > 0) {
-            console.log(`description: ${description}`)
+            let requisitionDoc = {}
             requisitionDoc.description = description
-        }
-        if(dateRequired && dateRequired.length > 0) {
-            let dateRequiredAsDateObj = new Date(dateRequired)
-            // console.log(`Date required: ${dateRequiredAsDateObj.toString()}`)
-            requisitionDoc.dateRequired = dateRequired
-        }
-        if(requisitionReason && requisitionReason.length > 0) {
-            console.log(`requisitionReason: ${requisitionReason}`)
+            if(dateRequired && dateRequired.length > 0)
+                requisitionDoc.dateRequired = new Date(dateRequired)
+            else
+                requisitionDoc.dateRequired = null
             requisitionDoc.requisitionReason = requisitionReason
+
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        } else {
+            swal('Validation error', "Please fill a description", 'error')
         }
-
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, function(err, res) {
-            if(!err) {
-                swal({title: "Success", text: "Requisition Draft saved", type: "success",
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                }, () => {
-                    Modal.hide()
-                })
-            } else {
-                console.log(`Err: ${JSON.stringify(err)}`)
-            }
-        })
     },
     'click #new-requisition-create': function(e, tmpl) {
         e.preventDefault()
-        console.log('Inside new-requisition-create')
+        let description = $("input[name=description]").val()
+        let dateRequired = $("input[name=dateRequired]").val()
+        let requisitionReason = $("input[name=requisitionReason]").val()
 
-        let dateRequired= $("input[name=dateRequired]").val()
-        if(dateRequired && dateRequired.length > 0) {
-            let dateRequiredAsDateObj = new Date(dateRequired)
-            console.log(`Date required: ${dateRequiredAsDateObj.toString()}`)
+        let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
+        if(validation === true) {
+            let requisitionDoc = {}
+
+            requisitionDoc.description = description
+            requisitionDoc.dateRequired = new Date(dateRequired)
+            requisitionDoc.requisitionReason = requisitionReason
+
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    // console.log(`Err: ${JSON.stringify(err)}`)
+                    swal('Validation error', err.message, 'error')
+                }
+            })
         } else {
-            swal('Validation error', 'Date field should not be empty', 'error')
+            swal('Validation error', validation, 'error')
         }
     }
 });
@@ -78,6 +92,21 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
     let businessUnitId = Session.get('context');
     console.log(`businessUnit: ${businessUnitId}`)
 
+    self.areInputsValid = function(description, dateRequired, requisitionReason) {
+        let errMsg = null
+        if(!description || description.length < 1) {
+            errMsg = "Please fill description"
+            return errMsg
+        }
+        if(!dateRequired || dateRequired.length < 1) {
+            errMsg = "Please fill date required"
+            return errMsg
+        }
+        if(!requisitionReason || requisitionReason.length < 1) {
+            errMsg = "Please fill requisition reason"
+        }
+        return true
+    }
 });
 
 Template.ProcurementRequisitionCreate.onRendered(function () {

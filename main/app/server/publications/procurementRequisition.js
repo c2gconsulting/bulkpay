@@ -8,6 +8,11 @@ Core.publish("ProcurementRequisitionsICreated", function (businessUnitId) {
     return ProcurementRequisitions.find({businessUnitId: businessUnitId, createdBy: this.userId});
 });
 
+Core.publish("ProcurementRequisition", function (requisitionId) {
+    return ProcurementRequisitions.find({_id: requisitionId});
+});
+
+
 Core.publish("ProcurementRequisitionsToApprove", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
@@ -16,7 +21,6 @@ Core.publish("ProcurementRequisitionsToApprove", function (businessUnitId) {
     }
 
     let userPositionId = user.employeeProfile.employment.position
-    console.log(`userpositionid: ${userPositionId}`)
 
     if (Core.hasProcurementRequisitionApproveAccess(this.userId)) {
         return ProcurementRequisitions.find({
