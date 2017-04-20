@@ -72,7 +72,7 @@ Template.ProcurementRequisitionDetail.events({
 
                 Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
-                        swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                        swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                         }, () => {
                             Modal.hide()
@@ -86,7 +86,26 @@ Template.ProcurementRequisitionDetail.events({
                 swal('Validation error', validation, 'error')
             }
         }
-    }
+    },
+    'click #requisition-approve': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Requisition treated", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    },
 });
 
 
@@ -105,7 +124,7 @@ Template.ProcurementRequisitionDetail.helpers({
         return Template.instance().isInEditMode.get()
     },
     'isInApproveMode': function() {
-        return Template.instance().isApproveMode.get()
+        return Template.instance().isInApproveMode.get()
     }
 });
 

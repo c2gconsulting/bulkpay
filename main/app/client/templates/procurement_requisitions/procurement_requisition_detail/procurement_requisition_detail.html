@@ -5,14 +5,23 @@
                 <div class="panel panel-default">
                     {{#with procurementDetails}}
                     <div class="panel-heading">
-                        <h3 class="panel-title">Procurement Requisition</h3>
+                        <h3 class="panel-title">Procurement Requisition
+                            {{#if isInApproveMode}}
+                                Approval
+                            {{/if}}
+                        </h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="description">Description</label>
-                                <input name="description" type="text" placeholder="Description" class="form-control"
-                                    value="{{this.description}}"/>
+                                {{#if isInEditMode}}
+                                    <input name="description" type="text" placeholder="Description" class="form-control"
+                                        value="{{this.description}}"/>
+                                {{else}}
+                                    <input name="description" type="text" placeholder="Description" class="form-control"
+                                           value="{{this.description}}" disabled />
+                                {{/if}}
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
                         <br/>
@@ -27,9 +36,15 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="dateRequired">Date required</label>
-                                {{#datepicker dateRequired}}
-                                    <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" />
-                                {{/datepicker}}
+                                {{#if isInEditMode}}
+                                    {{#datepicker dateRequired}}
+                                        <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" />
+                                    {{/datepicker}}
+                                {{else}}
+                                    {{#datepicker dateRequired}}
+                                        <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" disabled/>
+                                    {{/datepicker}}
+                                {{/if}}
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
                         <br/>
@@ -37,8 +52,13 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="requisitionReason">Requisition reason</label>
-                                <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
-                                          value="{{this.requisitionReason}}"></textarea>
+                                {{#if isInEditMode}}
+                                    <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
+                                              value="{{this.requisitionReason}}"></textarea>
+                                {{else}}
+                                    <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
+                                              value="{{this.requisitionReason}}" disabled></textarea>
+                                {{/if}}
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
 

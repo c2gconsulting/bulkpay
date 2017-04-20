@@ -77,6 +77,10 @@ Template.ProcurementRequisitionApprovalList.helpers({
     },
     'currentPage': function() {
         return Template.instance().currentPage.get()
+    },
+    'getUnitName': function(unitId) {
+        if(unitId)
+            return EntityObjects.findOne({_id: unitId}).name
     }
 });
 
@@ -110,6 +114,8 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         }
         return null
     }
+
+    self.subscribe('getCostElement', businessUnitId)
 
     self.autorun(function() {
         let limit = self.NUMBER_PER_PAGE.get();

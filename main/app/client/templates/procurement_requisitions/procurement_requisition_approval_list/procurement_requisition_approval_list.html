@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1">
-                            {{#if procurementsICreated}}
+                            {{#if condition procurementsICreated.count '>' 0}}
                             <div class="panel panel-default">
                                 <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                     <thead>
@@ -37,7 +37,7 @@
                                     {{#each procurementsICreated}}
                                         <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                             <td>{{description}}</td>
-                                            <td>{{unitId}}</td>
+                                            <td>{{getUnitName unitId}}</td>
                                             <td>{{formatDate dateRequired}}</td>
                                             <td>{{status}}</td>
                                         </tr>
@@ -50,9 +50,6 @@
                                 <div class="row">
                                     <div class="pull-right">
                                         <ul class="pagination pagination-split pagination-sm pagination-contact">
-                                            <li class="disabled">
-                                                <a href="#"><i class="fa fa-angle-left"></i></a>
-                                            </li>
                                             {{#each (repeat numberOfPages)}}
                                                 {{#if condition currentPage 'eq' this}}
                                                 <li class="active"><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
@@ -60,13 +57,14 @@
                                                 <li><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
                                                 {{/if}}
                                             {{/each}}
-                                            <li>
-                                                <a href="#"><i class="fa fa-angle-right"></i></a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
+                            {{else}}
+                                <div class="alert alert-danger text-center">
+                                    <p>No procurement requisitions to approve</p>
+                                </div>
                             {{/if}}
                         </div>
                     </div>
