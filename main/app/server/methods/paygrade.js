@@ -44,8 +44,41 @@ Meteor.methods({
             _id: id
         };
         const result = PayGrades.update(selector, {$set: details} );
+
+        //--We need to update employee paytypes in case new paytypes were added to the paygrade
+        let paygradePaytypes = details.payTypes
+        let employeesWithPayGrade = Meteor.users.find({'employeeProfile.employment.paygrade': id}).fetch()
+        let numberOfEmployeesWithPayGrade = employeesWithPayGrade.length
+        //console.log(`numberOfEmployeesWithPayGrade: ${numberOfEmployeesWithPayGrade}`)
+
+        employeesWithPayGrade.forEach(anEmployee => {
+            console.log(`employee id: ${anEmployee._id}`)
+            let employeePaytypes = anEmployee.employeeProfile.employment.paytypes
+            let newPayTypesToInsert = []
+
+            paygradePaytypes.forEach(function(aPayGradePayType) {
+                let didFindPayType = false
+                let numOfEmployeePayTypes = employeePaytypes.length
+                for(let i = 0; i < numOfEmployeePayTypes; i++) {
+                    let anEmployeePayType = employeePaytypes[i]
+                    if(anEmployeePayType.paytype === aPayGradePayType.paytype) {
+                        didFindPayType = true
+                        break;
+                    }
+                }
+                if(!didFindPayType) {
+                    delete aPayGradePayType.displayInPayslip
+                    newPayTypesToInsert.push(aPayGradePayType);
+                }
+            })
+            console.log(`newPayTypesToInsert: ${newPayTypesToInsert.length}`)
+            if(newPayTypesToInsert.length > 0) {
+                const result = Meteor.users.update(anEmployee._id,
+                    { $push: { 'employeeProfile.employment.paytypes': { $each: newPayTypesToInsert} }}
+                );
+            }
+        })
         return result;
     }
-
 });
 
