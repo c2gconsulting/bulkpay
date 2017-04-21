@@ -8,7 +8,6 @@ Template.ImportEmployeePositionsModal.events({
         e.preventDefault()
         console.log(`Inside downloadSampleCsv`)
         let allEmployees = Meteor.users.find({"employee": true}).fetch();
-
         let dataForSampleCsv = allEmployees.map(anEmployee => {
             return {
                 EmployeeUniqueId: anEmployee._id,
@@ -26,14 +25,33 @@ Template.ImportEmployeePositionsModal.events({
         console.log(`Inside downloadSampleCsv`)
         let allPositions = EntityObjects.find({'otype': 'Position'}).fetch();
 
+        let getPositionParentsText = (position) => {// We need parents 2 levels up
+            let parentsText = ''
+            if(position.parentId) {
+                let possibleParent = EntityObjects.findOne({_id: position.parentId})
+                if(possibleParent) {
+                    parentsText += possibleParent.name
+
+                    if(possibleParent.parentId) {
+                        let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
+                        if(possibleParent2) {
+                            parentsText += ' >> ' + possibleParent2.name
+                            return parentsText
+                        } return ''
+                    } else return ''
+                } else return ''
+            } else return ''
+        }
+
         let dataForAllPositionsCsv = allPositions.map(aPosition => {
             return {
                 PositionUniqueId: aPosition._id,
-                PositionName: aPosition.name
+                PositionName: aPosition.name,
+                Parents: getPositionParentsText(aPosition)
             }
         })
 
-        let fields = ['PositionUniqueId', 'PositionName']
+        let fields = ['PositionUniqueId', 'PositionName', 'Parents']
 
         BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPositionsCsv}, "AllPositionsImCompany");
     },
@@ -143,6 +161,7 @@ Template.ImportEmployeePositionsModal.onCreated(function () {
     let self = this
     self.subscribe("allEmployees", Session.get('context'));
     self.subscribe("getPositions", Session.get('context'));
+    self.subscribe("getCostElement", Session.get('context'));
 
     self.response = new ReactiveDict()
 
