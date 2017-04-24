@@ -141,14 +141,14 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
 
     let deltaTekConfig = {
-        businessUnitId : deltaTexBusinessUnitId,
+        businessId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
         isProcurementRequisitionActive : false,
         isActive: true
     }
     let daarConfig = {
-        businessUnitId : daarBusinessUnitId,
+        businessId : daarBusinessUnitId,
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades',
         isProcurementRequisitionActive : true,
@@ -159,7 +159,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         let deltaTekBusinessUnit = BusinessUnits.findOne({_id: deltaTexBusinessUnitId})
         if(deltaTekBusinessUnit) {
             deltaTekConfig._groupId = deltaTekBusinessUnit._groupId
-            let deltaTekBizConfig = BusinessUnitCustomConfigs.findOne({businessUnitId: deltaTexBusinessUnitId})
+            let deltaTekBizConfig = BusinessUnitCustomConfigs.findOne({businessId: deltaTexBusinessUnitId})
             if(deltaTekBizConfig) {
                 BusinessUnitCustomConfigs.update(deltaTekBizConfig._id, {$set: deltaTekConfig})
             } else {
@@ -170,7 +170,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         let daarBusinessUnit = BusinessUnits.findOne({_id: daarBusinessUnitId})
         if(daarBusinessUnit) {
             daarConfig._groupId = daarBusinessUnit._groupId
-            let daarBizConfig = BusinessUnitCustomConfigs.findOne({businessUnitId: daarBusinessUnitId})
+            let daarBizConfig = BusinessUnitCustomConfigs.findOne({businessId: daarBusinessUnitId})
             if(daarBizConfig) {
                 BusinessUnitCustomConfigs.update(daarBizConfig._id, {$set: daarConfig})
             } else {

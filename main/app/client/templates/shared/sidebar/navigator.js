@@ -55,7 +55,7 @@ Template.navlist.onCreated(function () {
 
     self.autorun(function(){
         if(customConfigSub.ready()) {
-            self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessUnitId: businessUnitId}))
+            self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
             console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
         }
     })

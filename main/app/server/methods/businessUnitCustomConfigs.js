@@ -8,6 +8,6 @@ Meteor.methods({
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
-        return BusinessUnitCustomConfigs.findOne({businessUnitId: businessUnitId});
+        return BusinessUnitCustomConfigs.findOne({businessId: businessUnitId});
     }
 })

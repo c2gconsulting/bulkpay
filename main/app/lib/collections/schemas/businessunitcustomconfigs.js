@@ -9,7 +9,7 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     _id: {
         type: String
     },
-    businessUnitId: {
+    businessId: {
         type: String
     },
     payGradeLabel: {

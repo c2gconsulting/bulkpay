@@ -9,9 +9,10 @@
 Core.publish("BusinessUnitCustomConfig", function (businessUnitId, tenantId) {
     let user = this.userId;
     if (user) {
-        let bizCustomConfig = BusinessUnitCustomConfigs.find({businessUnitId: businessUnitId})
-        // console.log(`businessUnitId: ${businessUnitId}, tenantId: ${tenantId}, bizCustomConfig: ${JSON.stringify(bizCustomConfig)}`)
-
+        let bizCustomConfig = BusinessUnitCustomConfigs.find({
+          businessId: businessUnitId,
+          _groupId: tenantId
+        })
         return bizCustomConfig
     } else {
         return Meteor.Error(401, "Unauthorized");
