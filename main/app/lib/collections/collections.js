@@ -99,7 +99,7 @@ Businesses.attachSchema(Core.Schemas.Business);
  * Core Collections BusinessUnitCustomConfigs
  */
 BusinessUnitCustomConfigs = new Mongo.Collection("businessunitcustomconfigs");
-Partitioner.partitionCollection(BusinessUnitCustomConfigs);
+// Partitioner.partitionCollection(BusinessUnitCustomConfigs);
 BusinessUnitCustomConfigs.attachSchema(Core.Schemas.BusinessUnitCustomConfig);
 
 /**

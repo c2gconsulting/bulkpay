@@ -138,17 +138,19 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     console.log(`[fixtures.js] ... Inside 'CoreRegistry.setBusinessCustomConfigs' function`)
 
     let deltaTexBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
-    let daarBusinessUnitId = ""
+    let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
 
     let deltaTekConfig = {
         businessUnitId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
+        payGradeLabelPlural : 'Pay Categories',
         isProcurementRequisitionActive : false,
         isActive: true
     }
     let daarConfig = {
         businessUnitId : daarBusinessUnitId,
         payGradeLabel : 'Pay Grade',
+        payGradeLabelPlural : 'Pay Grades',
         isProcurementRequisitionActive : true,
         isActive: true
     }
@@ -156,22 +158,22 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     Partitioner.directOperation(function() {
         let deltaTekBusinessUnit = BusinessUnits.findOne({_id: deltaTexBusinessUnitId})
         if(deltaTekBusinessUnit) {
-            if(BusinessUnitCustomConfigs.findOne({businessUnitId: deltaTexBusinessUnitId})) {
-                BusinessUnitCustomConfigs.update(deltaTexBusinessUnitId, {$set: deltaTekConfig})
+            deltaTekConfig._groupId = deltaTekBusinessUnit._groupId
+            let deltaTekBizConfig = BusinessUnitCustomConfigs.findOne({businessUnitId: deltaTexBusinessUnitId})
+            if(deltaTekBizConfig) {
+                BusinessUnitCustomConfigs.update(deltaTekBizConfig._id, {$set: deltaTekConfig})
             } else {
-                //let newConfigId = Random.id()
-                //deltaTekConfig._id = newConfigId
                 BusinessUnitCustomConfigs.insert(deltaTekConfig)
             }
         }
         //--
         let daarBusinessUnit = BusinessUnits.findOne({_id: daarBusinessUnitId})
         if(daarBusinessUnit) {
-            if(BusinessUnitCustomConfigs.findOne({businessUnitId: daarBusinessUnitId})) {
-                BusinessUnitCustomConfigs.update(daarBusinessUnitId, {$set: daarConfig})
+            daarConfig._groupId = daarBusinessUnit._groupId
+            let daarBizConfig = BusinessUnitCustomConfigs.findOne({businessUnitId: daarBusinessUnitId})
+            if(daarBizConfig) {
+                BusinessUnitCustomConfigs.update(daarBizConfig._id, {$set: daarConfig})
             } else {
-                //let newConfigId = Random.id()
-                //daarConfig._id = newConfigId
                 BusinessUnitCustomConfigs.insert(daarConfig)
             }
         }

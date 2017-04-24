@@ -8,6 +8,11 @@ Template.BusinessUnit.events({
     }
 });
 
+Template.registerHelper('trimString', function(passedString, startstring, endstring) {
+    var theString = passedString.substring( startstring, endstring );
+    return new Handlebars.SafeString(theString)
+});
+
 Template.BusinessUnit.helpers({
     'bus': function(){
         return BusinessUnits.find();

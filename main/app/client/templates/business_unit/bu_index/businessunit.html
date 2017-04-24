@@ -21,6 +21,7 @@
         <div class="row row-stat">
             {{#if Template.subscriptionsReady}}
                 {{#if hasAdminAccess}}
+                    {{!--
                     <div class="col-md-4">
                         <div class="panel panel-success-alt noborder">
                             <div class="panel-heading noborder">
@@ -47,6 +48,7 @@
                             </div><!-- panel-body -->
                         </div><!-- panel -->
                     </div>
+                    --}}
                 {{/if}}
                 {{#if condition bus.size 'eq' 0 }}
                     <div class="col-md-12">
@@ -70,6 +72,7 @@
 
             </div>
         </div>
+        {{!--
         {{#if hasAdminAccess}}
             <div class="alert alert-info">
                 <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
@@ -161,6 +164,7 @@
                 <strong>Select Company!</strong> You could be assigned to different companies<a class="alert-link" href=""> Choose among the list above. </a>.
             </div>
         {{/if}}
+        --}}
 
     </div><!-- contentpanel -->
 
@@ -178,7 +182,7 @@
                 <div class="panel-icon"><i class="fa fa-home"></i></div>
                 <div class="media-body">
                     <h5 class="md-title nomargin"> Company </h5>
-                    <h1 class="mt5">{{data.name}}</h1>
+                    <h1 class="mt5">{{trimString data.name 0 18}}</h1>
                 </div><!-- media-body -->
                 <hr>
                 <div class="clearfix mt20">

@@ -15,11 +15,17 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     payGradeLabel: {
         type: String
     },
+    payGradeLabelPlural: {
+        type: String
+    },
     isProcurementRequisitionActive: {
         type: Boolean
     },
     isActive: {
         type: Boolean
+    },
+    _groupId: {
+        type: String
     },
     createdAt: {
         type: Date,

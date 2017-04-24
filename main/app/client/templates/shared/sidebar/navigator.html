@@ -39,7 +39,7 @@
                 <li class="{{active "pensions"}}"><a href="{{pathFor 'pensions'}}">Pensions</a></li>
                 <li class="{{active "taxes"}}"><a href="{{pathFor 'taxes'}}">Taxes</a></li>
                 <li class="{{active "paygroups"}}"><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
-                <li class="{{active "paygrades"}}"><a href="{{pathFor 'paygrades'}}">Pay Grades</a></li>
+                <li class="{{active "paygrades"}}"><a href="{{pathFor 'paygrades'}}">{{payGradeLabelPlural}}</a></li>
             </ul>
         </li>
     {{/if}}
@@ -76,11 +76,14 @@
     <li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Self Service</span></a>
         <ul class="children">
             <li class="{{active "employee.time"}}"><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
-            <li class="{{active "leave.list"}}"><a href="{{pathFor 'leave.list'}}">Request Leave </a></li>
-            <li class="{{active "procurementrequisition.list"}}"><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
+            <li class="{{active "leave.list"}}"><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
 
-            {{#if hasProcurementRequisitionApproveAccess}}
-            <li class="{{active "procurementrequisition.approvalList"}}"><a href="{{pathFor 'procurementrequisition.approvalList'}}">Requisitions Approval</a></li>
+            {{#if isProcurementRequisitionActive}}
+                <li class="{{active "procurementrequisition.list"}}"><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
+
+                {{#if hasProcurementRequisitionApproveAccess}}
+                <li class="{{active "procurementrequisition.approvalList"}}"><a href="{{pathFor 'procurementrequisition.approvalList'}}">Requisitions Approval</a></li>
+                {{/if}}
             {{/if}}
 
             <li class="{{active "payslip"}}"><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>

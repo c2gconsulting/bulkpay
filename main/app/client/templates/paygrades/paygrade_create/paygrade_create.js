@@ -197,6 +197,7 @@ Template.PaygradeCreate.onCreated(function () {
     self.subscribe("getPositions", context);
     self.subscribe("payGroups", context);
     self.subscribe("getbuconstants", context);
+
     if(self.data){
         //populate and map paytypes
         self.autorun(function(){
