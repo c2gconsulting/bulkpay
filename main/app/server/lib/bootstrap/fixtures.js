@@ -133,6 +133,51 @@ CoreRegistry.createDefaultSelfServiceUser = function () {
     Roles.setUserRoles(accountId, _.uniq(defaultTimeRoles), Roles.GLOBAL_GROUP);
 };
 
+
+CoreRegistry.setBusinessCustomConfigs = function () {
+    console.log(`[fixtures.js] ... Inside 'CoreRegistry.setBusinessCustomConfigs' function`)
+
+    let deltaTexBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
+    let daarBusinessUnitId = ""
+
+    let deltaTekConfig = {
+        businessUnitId : deltaTexBusinessUnitId,
+        payGradeLabel : 'Pay Category',
+        isProcurementRequisitionActive : false,
+        isActive: true
+    }
+    let daarConfig = {
+        businessUnitId : daarBusinessUnitId,
+        payGradeLabel : 'Pay Grade',
+        isProcurementRequisitionActive : true,
+        isActive: true
+    }
+
+    Partitioner.directOperation(function() {
+        let deltaTekBusinessUnit = BusinessUnits.findOne({_id: deltaTexBusinessUnitId})
+        if(deltaTekBusinessUnit) {
+            if(BusinessUnitCustomConfigs.findOne({businessUnitId: deltaTexBusinessUnitId})) {
+                BusinessUnitCustomConfigs.update(deltaTexBusinessUnitId, {$set: deltaTekConfig})
+            } else {
+                //let newConfigId = Random.id()
+                //deltaTekConfig._id = newConfigId
+                BusinessUnitCustomConfigs.insert(deltaTekConfig)
+            }
+        }
+        //--
+        let daarBusinessUnit = BusinessUnits.findOne({_id: daarBusinessUnitId})
+        if(daarBusinessUnit) {
+            if(BusinessUnitCustomConfigs.findOne({businessUnitId: daarBusinessUnitId})) {
+                BusinessUnitCustomConfigs.update(daarBusinessUnitId, {$set: daarConfig})
+            } else {
+                //let newConfigId = Random.id()
+                //daarConfig._id = newConfigId
+                BusinessUnitCustomConfigs.insert(daarConfig)
+            }
+        }
+    })
+}
+
 /*
  * load core initialisation data
  */
@@ -157,6 +202,7 @@ CoreRegistry.initData = function () {
             _.each(allTenants, function(tenant) {
               Loader.loadPartitionData(DocumentNumbers, tenant._id);
             });
+            CoreRegistry.setBusinessCustomConfigs();
 
             // load sample data for key collections
 

@@ -37,7 +37,7 @@ Template.PaygradeCreate.events({
                 if(err){
                     swal("Update Failed", `Cannot Update Pay Grade ${code}`, "error");
                 } else {
-                    swal("Successful Update!", `Succesffully update Pay Grade ${code}`, "success");
+                    swal("Success!", `Successfully updated Pay Grade ${code}`, "success");
                     Modal.hide("PaygradeCreate");
                 }
             });
