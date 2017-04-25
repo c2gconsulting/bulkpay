@@ -105,6 +105,7 @@ Meteor.methods({
         let account =  Meteor.users.findOne(userId);
         if (account){
             Meteor.users.update({_id: account._id}, {$set: {
+                "employeeProfile.employeeId": user.employeeProfile.employeeId,
                 "emails.0.address": user.emails[0].address,
                 "profile.fullName": user.profile.fullName,
                 "profile.firstname": user.profile.firstname,
@@ -131,6 +132,7 @@ Meteor.methods({
         let account =  Meteor.users.findOne(userId);
         if (account){
             Meteor.users.update({_id: account._id}, {$set: {
+                "employeeProfile.employeeId": user.employeeProfile.employeeId,
                 "emails.0.address": user.emails[0].address,
                 "profile.fullName": user.profile.fullName,
                 "profile.firstname": user.profile.firstname,

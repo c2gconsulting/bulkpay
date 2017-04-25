@@ -42,6 +42,17 @@ Template.EmployeePersonalDataModal.events({
             //$('#filename').html(e.target.files[0].name);
         }
     },
+    'blur [name=employeeId]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.employeeId = value;
+
+        console.log("user employeeId changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
     'blur [name=firstName]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;

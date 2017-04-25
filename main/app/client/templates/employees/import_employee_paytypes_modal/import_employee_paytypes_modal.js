@@ -10,7 +10,7 @@ Template.ImportEmployeePaytypesModal.events({
 
         let payTypes = PayTypes.find().fetch();
         payTypes.forEach(aPayType => {
-            fields.push(aPayType.title + "(" + aPayType._id + ")")
+            fields.push(aPayType.title + "-" + aPayType._id)
         })
 
         let allEmployees = Meteor.users.find({"employee": true}).fetch();
@@ -21,7 +21,7 @@ Template.ImportEmployeePaytypesModal.events({
                 PaygradeUniqueId: ""
             }
         })
-        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePositionAssignmentSample");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePaytypesAssignmentSample");
     },
     'click #downloadCsvWithAllPaygrades': function(e, tmpl) {
         e.preventDefault()
@@ -68,27 +68,27 @@ Template.ImportEmployeePaytypesModal.events({
                 return
             }
         }
-        // $('#employeesFileUpload').text('Uploading. Please wait ...')
-        // tmpl.$('#employeesFileUpload').attr('disabled', true);
-        // tmpl.isUploading.set(true)
-        //
-        // Papa.parse(file, {
-        //     header: true,
-        //     complete( results, file ) {
-        //         Meteor.call('parseEmployeePositionsUpload', results.data, Session.get('context'), function ( error, response ) {
-        //             $('#employeesFileUpload').text('Upload File')
-        //             tmpl.$('#employeesFileUpload').attr('disabled', false);
-        //             tmpl.isUploading.set(false)
-        //
-        //             if ( error ) {
-        //                 console.log(error.reason)
-        //                 swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
-        //             } else {
-        //                 tmpl.response.set('response', response);
-        //             }
-        //         });
-        //     }
-        // });
+        $('#employeesFileUpload').text('Uploading. Please wait ...')
+        tmpl.$('#employeesFileUpload').attr('disabled', true);
+        tmpl.isUploading.set(true)
+
+        Papa.parse(file, {
+            header: true,
+            complete( results, file ) {
+                Meteor.call('parseEmployeePaytypesUpload', results.data, Session.get('context'), function ( error, response ) {
+                    $('#employeesFileUpload').text('Upload File')
+                    tmpl.$('#employeesFileUpload').attr('disabled', false);
+                    tmpl.isUploading.set(false)
+
+                    if ( error ) {
+                        console.log(error.reason)
+                        swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
+                    } else {
+                        tmpl.response.set('response', response);
+                    }
+                });
+            }
+        });
     },
     "click .uploadIcon": function (e, tmpl) {
         e.preventDefault();
