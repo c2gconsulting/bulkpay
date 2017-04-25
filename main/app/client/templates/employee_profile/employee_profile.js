@@ -29,6 +29,22 @@ Template.EmployeeProfile.helpers({
           return "";
         }
     },
+    supervisorName: (positionId) => {
+        if(positionId) {
+            let position = EntityObjects.findOne({_id: positionId});
+
+            if(position.properties && position.properties.supervisor) {
+                let supervisorId = position.properties.supervisor
+                let supervisorPosition = EntityObjects.findOne({_id: supervisorId});
+                if(supervisorPosition) {
+                   return supervisorPosition.name
+                }
+            }
+            return "";
+        } else {
+            return "";
+        }
+    }
 });
 
 /*****************************************************************************/

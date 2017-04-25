@@ -40,29 +40,29 @@ Router.route('/', {
     where: 'client'
 });
 
-// Router.route('/sendOneOffEnrollmentEmails', function() {
-//     console.log('routes.js file ... inside sendOneOffEnrollmentEmails')
-//
-//     let users =  Meteor.users.find({"businessIds": {"$in" : ["udrayHAGvXXDgzzGf"]}}).fetch();
-//     console.log(`Num users: ${users.length}`)
-//     let successfulEmailsSent = 0
-//
-//     for (let aUser of users) {
-//         try {
-//             console.log(`aUser id: ${aUser._id} ... Email: ${aUser.emails[0].address}`)
-//             Accounts.sendEnrollmentEmail(aUser._id, aUser.emails[0].address);
-//
-//             successfulEmailsSent += 1
-//             console.log(`Email sent successfully`)
-//         } catch(e) {
-//            console.log(`Exception : ${e.message}`)
-//         }
-//     }
-//     console.log(`successfulEmailsSent: ${successfulEmailsSent}`)
-//
-//     this.response.write("All emails sent")
-//     this.response.end()
-// }, {where: 'server'});
+Router.route('/sendOneOffEnrollmentEmails', function() {
+    console.log('routes.js file ... inside sendOneOffEnrollmentEmails')
+
+    let users =  Meteor.users.find({"businessIds": {"$in" : ["udrayHAGvXXDgzzGf"]}}).fetch();
+    console.log(`Num users: ${users.length}`)
+    let successfulEmailsSent = 0
+
+    for (let aUser of users) {
+        try {
+            console.log(`aUser id: ${aUser._id} ... Email: ${aUser.emails[0].address}`)
+            Accounts.sendEnrollmentEmail(aUser._id, aUser.emails[0].address);
+
+            successfulEmailsSent += 1
+            console.log(`Email sent successfully`)
+        } catch(e) {
+           console.log(`Exception : ${e.message}`)
+        }
+    }
+    console.log(`successfulEmailsSent: ${successfulEmailsSent}`)
+
+    this.response.write("All emails sent")
+    this.response.end()
+}, {where: 'server'});
 
 /*
  Router.route('/login', {
