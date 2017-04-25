@@ -1,59 +1,53 @@
 /*****************************************************************************/
-/* ImportEmployeePositionsModal: Event Handlers */
+/* ImportEmployeePaytypesModal: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
 
-Template.ImportEmployeePositionsModal.events({
+Template.ImportEmployeePaytypesModal.events({
     'click #downloadSampleCsv': function(e, tmpl) {
         e.preventDefault()
-        console.log(`Inside downloadSampleCsv`)
+        let fields = ['EmployeeUniqueId','EmployeeFullName', 'PaygradeUniqueId']
+
+        let payTypes = PayTypes.find().fetch();
+        payTypes.forEach(aPayType => {
+            fields.push(aPayType.title + "(" + aPayType._id + ")")
+        })
+
         let allEmployees = Meteor.users.find({"employee": true}).fetch();
         let dataForSampleCsv = allEmployees.map(anEmployee => {
             return {
                 EmployeeUniqueId: anEmployee._id,
                 EmployeeFullName: anEmployee.profile.fullName,
-                PositionUniqueId: ""
+                PaygradeUniqueId: ""
             }
         })
-
-        let fields = ['EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
-
         BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePositionAssignmentSample");
     },
-    'click #downloadCsvWithAllPositions': function(e, tmpl) {
+    'click #downloadCsvWithAllPaygrades': function(e, tmpl) {
         e.preventDefault()
-        console.log(`Inside downloadSampleCsv`)
-        let allPositions = EntityObjects.find({'otype': 'Position'}).fetch();
+        let fields = ['PaygradeName', 'PaygradeUniqueId']
 
-        let getPositionParentsText = (position) => {// We need parents 2 levels up
-            let parentsText = ''
-            if(position.parentId) {
-                let possibleParent = EntityObjects.findOne({_id: position.parentId})
-                if(possibleParent) {
-                    parentsText += possibleParent.name
-
-                    if(possibleParent.parentId) {
-                        let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
-                        if(possibleParent2) {
-                            parentsText += ' >> ' + possibleParent2.name
-                            return parentsText
-                        } return ''
-                    } else return ''
-                } else return ''
-            } else return ''
-        }
-
-        let dataForAllPositionsCsv = allPositions.map(aPosition => {
+        let payGrades = PayGrades.find().fetch();
+        let dataForAllPaygradesCsv = payGrades.map(aPayGrade => {
             return {
-                PositionUniqueId: aPosition._id,
-                PositionName: aPosition.name,
-                Parents: getPositionParentsText(aPosition)
+                PaygradeName: aPayGrade.description,
+                PaygradeUniqueId: aPayGrade._id
             }
         })
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPaygradesCsv}, "AllPaygradesInCompany");
+    },
+    'click #downloadCsvWithAllPaytypes': function(e, tmpl) {
+        e.preventDefault()
+        let fields = ['PaytypeName', 'PaytypeUniqueId']
 
-        let fields = ['PositionUniqueId', 'PositionName', 'Parents']
-
-        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPositionsCsv}, "AllPositionsInCompany");
+        let payTypes = PayTypes.find().fetch();
+        let dataForAllPaytypesCsv = payTypes.map(aPayType => {
+            return {
+                PaytypeName: aPayType.title,
+                PaytypeUniqueId: aPayType._id
+            }
+        })
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPaytypesCsv}, "AllPaytypesInCompany");
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -74,27 +68,27 @@ Template.ImportEmployeePositionsModal.events({
                 return
             }
         }
-        $('#employeesFileUpload').text('Uploading. Please wait ...')
-        tmpl.$('#employeesFileUpload').attr('disabled', true);
-        tmpl.isUploading.set(true)
-
-        Papa.parse(file, {
-            header: true,
-            complete( results, file ) {
-                Meteor.call('parseEmployeePositionsUpload', results.data, Session.get('context'), function ( error, response ) {
-                    $('#employeesFileUpload').text('Upload File')
-                    tmpl.$('#employeesFileUpload').attr('disabled', false);
-                    tmpl.isUploading.set(false)
-
-                    if ( error ) {
-                        console.log(error.reason)
-                        swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
-                    } else {
-                        tmpl.response.set('response', response);
-                    }
-                });
-            }
-        });
+        // $('#employeesFileUpload').text('Uploading. Please wait ...')
+        // tmpl.$('#employeesFileUpload').attr('disabled', true);
+        // tmpl.isUploading.set(true)
+        //
+        // Papa.parse(file, {
+        //     header: true,
+        //     complete( results, file ) {
+        //         Meteor.call('parseEmployeePositionsUpload', results.data, Session.get('context'), function ( error, response ) {
+        //             $('#employeesFileUpload').text('Upload File')
+        //             tmpl.$('#employeesFileUpload').attr('disabled', false);
+        //             tmpl.isUploading.set(false)
+        //
+        //             if ( error ) {
+        //                 console.log(error.reason)
+        //                 swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
+        //             } else {
+        //                 tmpl.response.set('response', response);
+        //             }
+        //         });
+        //     }
+        // });
     },
     "click .uploadIcon": function (e, tmpl) {
         e.preventDefault();
@@ -119,20 +113,19 @@ Template.ImportEmployeePositionsModal.events({
     },
     'click #recordsWithError': function(e, tmpl) {
         e.preventDefault()
-
-        let fields = ['ErrorLine', 'Error', 'EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
+        let fields = ['ErrorLine', 'Error', 'EmployeeUniqueId','EmployeeFullName']
 
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeePositionRecordsWithError");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeeRecordsWithError");
     }
 });
 
 /*****************************************************************************/
-/* ImportEmployeePositionsModal: Helpers */
+/* ImportEmployeePaytypesModal: Helpers */
 /*****************************************************************************/
-Template.ImportEmployeePositionsModal.helpers({
+Template.ImportEmployeePaytypesModal.helpers({
     'response': () => {
         return Template.instance().response.get('response');
     },
@@ -155,13 +148,13 @@ Template.ImportEmployeePositionsModal.helpers({
 });
 
 /*****************************************************************************/
-/* ImportEmployeePositionsModal: Lifecycle Hooks */
+/* ImportEmployeePaytypesModal: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ImportEmployeePositionsModal.onCreated(function () {
+Template.ImportEmployeePaytypesModal.onCreated(function () {
     let self = this
     self.subscribe("allEmployees", Session.get('context'));
-    self.subscribe("getPositions", Session.get('context'));
-    self.subscribe("getCostElement", Session.get('context'));
+    self.subscribe("paygrades", Session.get('context'));
+    self.subscribe("PayTypes", Session.get('context'));
 
     self.response = new ReactiveDict()
 
@@ -169,10 +162,10 @@ Template.ImportEmployeePositionsModal.onCreated(function () {
     self.isUploading.set(false)
 });
 
-Template.ImportEmployeePositionsModal.onRendered(function () {
+Template.ImportEmployeePaytypesModal.onRendered(function () {
     $('select.dropdown').dropdown();
 });
 
-Template.ImportEmployeePositionsModal.onDestroyed(function () {
+Template.ImportEmployeePaytypesModal.onDestroyed(function () {
     Modal.hide('ImportEmployeePositionsModal')
 });

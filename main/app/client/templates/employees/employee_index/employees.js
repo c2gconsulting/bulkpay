@@ -22,6 +22,10 @@ Template.Employees.events({
         e.preventDefault();
         Modal.show('ImportEmployeePositionsModal');
     },
+    'click #assignEmployeePaytypes': function(e) {
+        e.preventDefault();
+        Modal.show('ImportEmployeePaytypesModal');
+    },
     'click .anEmployee': (e, tmpl) => {
         let employeeRowElem = e.currentTarget;
         let employeeIdToEdit = employeeRowElem.getAttribute("name");

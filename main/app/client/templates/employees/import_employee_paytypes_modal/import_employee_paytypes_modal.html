@@ -1,10 +1,10 @@
-<template name="ImportEmployeePositionsModal">
+<template name="ImportEmployeePaytypesModal">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Employee Positions Import</h3>
+                        <h3 class="panel-title">Employee Paytypes Import</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -18,7 +18,8 @@
                                 <p class="download_instruction">Download a <a href="" id="downloadSampleCsv" target="_parent" >sample CSV template</a> to see an example of the format required.</p>
                                 <p class="download_instruction">Please DO NOT modify the names of the columns in the template</p>
 
-                                <p class="download_instruction">Download a <a href="" id="downloadCsvWithAllPositions" target="_parent" >CSV with ALL PositionUniqueId</a>s</p>
+                                <p class="download_instruction">Download a <a href="" id="downloadCsvWithAllPaygrades" target="_parent" >CSV with ALL PaygradeUniqueId</a>s</p>
+                                <p class="download_instruction">Download a <a href="" id="downloadCsvWithAllPaytypes" target="_parent" >CSV with ALL PaytypeUniqueId</a>s</p>
                             </div>
 
                             <div class="col-sm-6">
@@ -27,9 +28,9 @@
                                 {{else}}
                                     {{#if response}}
                                         <div class="alert alert-success text-center">
-                                            <p>{{response.success}} Employee Position assignments imported</p>
-                                            <p>{{response.failed}} Employee Position assignments failed to import</p>
-                                            <p>{{response.skippedCount}} Employee Position assignments skipped</p>
+                                            <p>{{response.success}} Employee Paytypes assignments imported</p>
+                                            <p>{{response.failed}} Employee Paytypes assignments failed to import</p>
+                                            <p>{{response.skippedCount}} Employee Paytypes assignments skipped</p>
 
                                             {{#if error}}
                                                 <br/>
