@@ -7,7 +7,7 @@ Router.configure({
     loadingTemplate: "Loading",
 
     onRun: function () {
-        $(window).scrollTop(0);
+        //$(window).scrollTop(0);
         //Core.clearActionView();
         this.next();
     }
@@ -40,6 +40,27 @@ Router.route('/', {
     where: 'client'
 });
 
+Router.route('/sendOneOffEnrollmentEmails', function() {
+    console.log('routes.js file ... inside sendOneOffEnrollmentEmails')
+
+    let users =  Meteor.users.find({"businessIds": {"$in" : ["udrayHAGvXXDgzzGf"]}}).fetch();
+    console.log(`Num users: ${users.length}`)
+
+    for (let aUser of users) {
+        try {
+            Accounts.sendEnrollmentEmail(aUser._id, aUser.emails[0].address);
+            console.log(`aUser id: ${aUser._id} ... Email: ${aUser.emails[0].address}`)
+            console.log(`process env mail url: ${process.env.MAIL_URL}`)
+            console.log(`called once ... then break`)
+            break
+        } catch(e) {
+           console.log(`Exception : ${e.message}`)
+           break
+        }
+    }
+    this.response.write("All done")
+    this.response.end()
+}, {where: 'server'});
 /*
  Router.route('/login', {
  name: 'login',
