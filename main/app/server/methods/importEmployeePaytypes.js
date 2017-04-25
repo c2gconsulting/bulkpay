@@ -15,12 +15,36 @@ Meteor.methods({
                 data.splice(index, 1);
             }
         });
-        let dataLength = data.length;
 
-        let processPaytypesForEmployees = function() {
+        let processPaytypesForEmployees = function(employee, item) {
+            Object.keys(item).forEach(anItemProperty => {
+                console.log(`anItemProperty: ${anItemProperty}`)
+                if(anItemProperty !== 'EmployeeUniqueId' && anItemProperty !== 'PaygradeUniqueId') {
+                    let payTypeHyphenSeparatorIndex = anItemProperty.indexOf('-')
+                    if(payTypeHyphenSeparatorIndex > 0) {
+                        let payTypeId = anItemProperty.substring(payTypeHyphenSeparatorIndex + 1)
+                        console.log(`payTypeId: ${payTypeId}`)
 
+                        let doesPayTypeExist = PayTypes.findOne({_id: payTypeId});
+                        if (!doesPayTypeExist) {
+                            console.log(`PayType id does not exist`)
+                            item.ErrorLine = (i + 1)
+                            item.Error = "That PayType id does not exist"
+                            skipped.push(item);
+                            skippedCount += 1
+                        } else {
+                            let payTypeToInsert = {paytype: payTypeId, value: item[anItemProperty]}
+                            Meteor.users.update(employee._id, {
+                                $push: {'employeeProfile.employment.paytypes': payTypeToInsert}
+                            })
+                            successCount += 1
+                        }
+                    }
+                }
+            })
         }
-
+        //-- ----------
+        let dataLength = data.length;
         for (let i = 0; i < dataLength; i++) {
             let item = data[i];
             let employeeId = item.EmployeeUniqueId;
@@ -44,6 +68,7 @@ Meteor.methods({
                     item.Error = "Paygrade id was not specified"
                     skipped.push(item);
                     skippedCount += 1
+                    continue
                 }
                 //--
                 let doesPaygradeExist = PayGrades.findOne({_id: paygradeId});
@@ -57,20 +82,7 @@ Meteor.methods({
                 }
                 try {
                     Meteor.users.update(employee._id, {$set: {'employeeProfile.employment.paygrade': paygradeId}})
-                    item.forEach(anItemProperty => {
-                        if(anItemProperty !== 'EmployeeUniqueId' && anItemProperty !== 'PaygradeUniqueId') {
-                            let payTypeHyphenSeparatorIndex = anItemProperty.indexOf('-')
-                            if(payTypeHyphenSeparatorIndex > 0) {
-                                let payTypeId = anItemProperty.subString(payTypeHyphenSeparatorIndex)
-                                console.log(`payTypeId: ${payTypeHyphenSeparatorIndex}`)
-
-
-                                successCount += 1
-                            } else {
-
-                            }
-                        }
-                    })
+                    // processPaytypesForEmployees(employee, item)
                 } catch (dbException) {
                     item.ErrorLine = (i + 1)
                     item.Error = dbException.message;
