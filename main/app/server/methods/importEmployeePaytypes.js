@@ -1,3 +1,9 @@
+import _ from 'underscore';
+
+/**
+ *  EmployeePaytypesUpload Methods
+ */
+
 Meteor.methods({
     "parseEmployeePaytypesUpload": function(data, businessId){
         check(data, Array);
@@ -16,32 +22,28 @@ Meteor.methods({
             }
         });
 
-        let processPaytypesForEmployees = function(employee, item) {
+        let processPaytypesForEmployees = function(employee, item, employeeNewPaygrade) {
+            let userPaytypes = []
             Object.keys(item).forEach(anItemProperty => {
-                console.log(`anItemProperty: ${anItemProperty}`)
-                if(anItemProperty !== 'EmployeeUniqueId' && anItemProperty !== 'PaygradeUniqueId') {
+                if(anItemProperty !== 'EmployeeUniqueId' && anItemProperty !== 'PaygradeUniqueId'
+                    && anItemProperty !== 'EmployeeFullName') {
                     let payTypeHyphenSeparatorIndex = anItemProperty.indexOf('-')
                     if(payTypeHyphenSeparatorIndex > 0) {
                         let payTypeId = anItemProperty.substring(payTypeHyphenSeparatorIndex + 1)
-                        console.log(`payTypeId: ${payTypeId}`)
 
-                        let doesPayTypeExist = PayTypes.findOne({_id: payTypeId});
-                        if (!doesPayTypeExist) {
-                            console.log(`PayType id does not exist`)
-                            item.ErrorLine = (i + 1)
-                            item.Error = "That PayType id does not exist"
-                            skipped.push(item);
-                            skippedCount += 1
-                        } else {
-                            let payTypeToInsert = {paytype: payTypeId, value: item[anItemProperty]}
-                            Meteor.users.update(employee._id, {
-                                $push: {'employeeProfile.employment.paytypes': payTypeToInsert}
-                            })
-                            successCount += 1
+                        let isPayTypeAllowed = _.find(employeeNewPaygrade.payTypes, function(aPayType) {
+                            return aPayType.paytype === payTypeId
+                        })
+                        if (isPayTypeAllowed) {
+                            userPaytypes.push({paytype: payTypeId, value: item[anItemProperty]})
                         }
                     }
                 }
             })
+            Meteor.users.update(employee._id, {
+                $set: {'employeeProfile.employment.paytypes': userPaytypes}
+            })
+            successCount += 1
         }
         //-- ----------
         let dataLength = data.length;
@@ -51,7 +53,6 @@ Meteor.methods({
             let paygradeId = item.PaygradeUniqueId;
 
             if(!employeeId || employeeId.trim().length < 1) {
-                console.log(`Employee id empty`)
                 item.ErrorLine = (i + 1)
                 item.Error = "Employee id was not specified"
                 skipped.push(item);
@@ -63,7 +64,6 @@ Meteor.methods({
             if(employee) {
                 let paygradeId = item.PaygradeUniqueId;
                 if(!paygradeId) {
-                    console.log(`Paygrade id empty`)
                     item.ErrorLine = (i + 1)
                     item.Error = "Paygrade id was not specified"
                     skipped.push(item);
@@ -71,9 +71,8 @@ Meteor.methods({
                     continue
                 }
                 //--
-                let doesPaygradeExist = PayGrades.findOne({_id: paygradeId});
-                if (!doesPaygradeExist) {
-                    console.log(`Paygrade id does not exist`)
+                let employeeNewPaygrade = PayGrades.findOne({_id: paygradeId});
+                if (!employeeNewPaygrade) {
                     item.ErrorLine = (i + 1)
                     item.Error = "That paygrade id does not exist"
                     skipped.push(item);
@@ -82,7 +81,7 @@ Meteor.methods({
                 }
                 try {
                     Meteor.users.update(employee._id, {$set: {'employeeProfile.employment.paygrade': paygradeId}})
-                    // processPaytypesForEmployees(employee, item)
+                    processPaytypesForEmployees(employee, item, employeeNewPaygrade)
                 } catch (dbException) {
                     item.ErrorLine = (i + 1)
                     item.Error = dbException.message;
