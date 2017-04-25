@@ -137,7 +137,7 @@ CoreRegistry.createDefaultSelfServiceUser = function () {
 CoreRegistry.setBusinessCustomConfigs = function () {
     console.log(`[fixtures.js] ... Inside 'CoreRegistry.setBusinessCustomConfigs' function`)
 
-    let deltaTexBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
+    let deltaTexBusinessUnitId = "udrayHAGvXXDgzzGf"
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
 
     let deltaTekConfig = {

@@ -60,13 +60,9 @@ Template.Log.onRendered(function () {
         //build log data into tree structure.
     });
 
-
-    $(function() {
-        $('#log').tree({
-            data: tree
-        });
+    $('#log').tree({
+        data: tree
     });
-
 });
 
 Template.Log.onDestroyed(function () {
