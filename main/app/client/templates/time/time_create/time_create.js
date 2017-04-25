@@ -14,6 +14,8 @@ Template.TimeCreate.events({
     'change [name="costCenter"]': (e,tmpl) => {
         let center = $(e.target).val();
         tmpl.costCenter.set(center);
+
+        console.log(`costCenter change: ${center}`)
     }
 });
 
@@ -73,6 +75,7 @@ Template.TimeCreate.helpers({
                 value: x._id
             };
         })
+        console.log(`activitiesForDisplay: ${JSON.stringify(activitiesForDisplay)}`)
         return activitiesForDisplay;
     }
 });
@@ -90,15 +93,16 @@ Template.TimeCreate.onCreated(function () {
 
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
+    self.subscribe('AllActivities', Session.get('context'));
 
     //--
     self.autorun(function(){
-        if(self.project.get()) {
-            self.subscribe('activities', "project", self.project.get());
-        }
-        if(self.costCenter.get()) {
-            self.subscribe('activities', "unit", self.costCenter.get());
-        }
+        // if(self.project.get()) {
+        //     self.subscribe('activities', "project", self.project.get());
+        // }
+        // if(self.costCenter.get()) {
+        //     self.subscribe('activities', "unit", self.costCenter.get());
+        // }
     });
 });
 
@@ -145,7 +149,7 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                
+
                 let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
                 $("#duration").val(hoursToTwoDecimals);
                 if (hours <= 12){
@@ -165,7 +169,7 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                
+
                 let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
                 $("#duration").val(hoursToTwoDecimals);
                 if (hours >= 1 && hours <= 12){
@@ -186,7 +190,7 @@ Template.TimeCreate.onRendered(function () {
                 let hours = duration.asHours();
                 if (breakflag)
                     hours -= 1;
-                
+
                 let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
                 $("#duration").val(hoursToTwoDecimalshours);
                 if (hours >= 1 && hours <= 12){

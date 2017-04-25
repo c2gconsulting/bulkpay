@@ -8,3 +8,7 @@ Core.publish("activities", function (type, projectOrUnitId) {
 
     return Activities.find({type: type, unitOrProjectId: projectOrUnitId});
 });
+
+Core.publish("AllActivities", function (businessId) {
+    return Activities.find({businessId: businessId});
+});

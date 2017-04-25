@@ -33,7 +33,8 @@ Core.Schemas.Time = new SimpleSchema({
         }
     },
     project: {
-        type: String
+        type: String,
+        optional: true
     },
     activity:{
         type: String
