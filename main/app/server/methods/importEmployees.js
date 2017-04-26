@@ -151,7 +151,7 @@ Meteor.methods({
                         let roles = ["ess/all"];
                         Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
 
-                        //Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
+                        Accounts.sendEnrollmentEmail(accountId, employeeDocument.email);
                     } else {
                         item.ErrorLine = (i + 1)
                         item.Error = "Could not create new employee record - Reason unknown";

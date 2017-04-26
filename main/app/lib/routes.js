@@ -47,13 +47,20 @@ Router.route('/sendOneOffEnrollmentEmails', function() {
     console.log(`Num users: ${users.length}`)
     let successfulEmailsSent = 0
 
+    let userEmailsToSendTo = ["damola.oni@deltatekoffshore.com", "mofoluwaso.sonaiya@deltatekoffshore.com",
+      "bolanle.olatunde@deltatekoffshore.com", "oluwunmi.olatunbosun@deltatekoffshore.com",
+      "obianuju.akwunwa@deltatekoffshore.com", "folarin.adanikin@deltatekoffshore.com",
+      "roy.abdallah@deltatekoffshore.com"]
+
     for (let aUser of users) {
         try {
-            console.log(`aUser id: ${aUser._id} ... Email: ${aUser.emails[0].address}`)
-            Accounts.sendEnrollmentEmail(aUser._id, aUser.emails[0].address);
+            if(userEmailsToSendTo.indexOf(aUser.emails[0].address) > -1) {
+              console.log(`aUser id: ${aUser._id} ... Email: ${aUser.emails[0].address}`)
+              Accounts.sendEnrollmentEmail(aUser._id, aUser.emails[0].address);
 
-            successfulEmailsSent += 1
-            console.log(`Email sent successfully`)
+              successfulEmailsSent += 1
+              console.log(`Email sent successfully`)
+            }
         } catch(e) {
            console.log(`Exception : ${e.message}`)
         }
