@@ -47,10 +47,7 @@ Router.route('/sendOneOffEnrollmentEmails', function() {
     console.log(`Num users: ${users.length}`)
     let successfulEmailsSent = 0
 
-    let userEmailsToSendTo = ["damola.oni@deltatekoffshore.com", "mofoluwaso.sonaiya@deltatekoffshore.com",
-      "bolanle.olatunde@deltatekoffshore.com", "oluwunmi.olatunbosun@deltatekoffshore.com",
-      "obianuju.akwunwa@deltatekoffshore.com", "folarin.adanikin@deltatekoffshore.com",
-      "roy.abdallah@deltatekoffshore.com"]
+    let userEmailsToSendTo = ["roy.abdallah@deltatekoffshore.com"]
 
     for (let aUser of users) {
         try {
