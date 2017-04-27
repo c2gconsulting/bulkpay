@@ -20,7 +20,7 @@ Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
                     })
                 }
                 //--
-                let payTypeTotal = _.find(payTypesTotal, function(aPayType) {
+                let payTypeTotal = _.find(payTypesTotal, function(aPayType, aPayTypeTotalIndex) {
                     return aPayType.id && (aPayType.id === anEmployeePayType.id)
                 })
                 if(payTypeTotal) {
@@ -32,7 +32,6 @@ Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
                     })
                 }
             } else {
-                //console.log(`Had to skip this payment: ${JSON.stringify(anEmployeePayType)}`)
                 if(anEmployeePayType.code === 'NMP') {
                     let payTypeTotal = _.find(payTypesTotal, function(aPayType) {
                         return aPayType.code === 'NMP'
@@ -72,16 +71,17 @@ Utils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
             })
             if(doesPayTypeExist) {
                 aRowOfPayTypeValues.push(doesPayTypeExist.amountLC)
+            } else if(aPaytypeHeader === 'Net Pay') {
+                let netPay = _.find(anEmployeeData.payment, function(aPayType) {
+                    return (aPayType.code === 'NMP')
+                })
+                if(netPay) {
+                    aRowOfPayTypeValues.push(netPay.amountLC)
+                } else {
+                    //console.log(`Employee payrun result doesn't have netpay. How can.`)
+                }
             } else {
                 aRowOfPayTypeValues.push("----")
-            }
-            //--
-            if(aPaytypeHeader === 'Net Pay') {
-                let netPay = _.find(anEmployeeData.payment, function(aPayType) {
-                    return !aPayType.id && (aPaytypeHeader.code === 'NMP')
-                })
-                if(netPay)
-                    aRowOfPayTypeValues.push(netPay.amountLC)
             }
         })
         payTypeValues.push(aRowOfPayTypeValues)
@@ -110,8 +110,12 @@ Meteor.methods({
                 let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
                     return aHeader.description || aHeader
                 })
-
+                //--
                 let reportData = Utils.getPayTypeValues(payRunResults, payTypeHeadersAndTotal.payTypeHeaders)
+
+                reportData.push(payTypeHeadersAndTotal.payTypesTotal.map(aColumnToTotals => {
+                    return (aColumnToTotals.total || aColumnToTotals)
+                }))
 
                 return {fields: formattedHeader, data: reportData};
             } else {
