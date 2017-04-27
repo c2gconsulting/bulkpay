@@ -16,7 +16,8 @@ Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
                 if(!doesPayTypeHeaderExist) {
                     payTypeHeaders.push({
                         id: anEmployeePayType.id,
-                        description: anEmployeePayType.description + `-${anEmployeePayType.id}`
+                        // description: anEmployeePayType.description + `-${anEmployeePayType.id}`
+                        description: anEmployeePayType.description
                     })
                 }
                 //--
@@ -34,7 +35,7 @@ Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
             } else {
                 if(anEmployeePayType.code === 'NMP') {
                     let payTypeTotal = _.find(payTypesTotal, function(aPayType) {
-                        return aPayType.code === 'NMP'
+                        return aPayType.id === 'NMP'
                     })
                     if(payTypeTotal) {
                         payTypeTotal.total = payTypeTotal.total + anEmployeePayType.amountLC
@@ -102,7 +103,9 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             const payRunResults =  Payruns.find({businessId: businessId, period: period}).fetch();
-            if(payRunResults){
+            console.log(`payRunResults: ${JSON.stringify(payRunResults)}`)
+
+            if(payRunResults && payRunResults.length > 0){
                 //console.log(`Result: ${JSON.stringify(payRunResults)}`)
                 let payTypeHeadersAndTotal = Utils.getPayTypeHeadersAndTotal(payRunResults) // paytypeId -> {total -> (value) }
                 //console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
@@ -119,7 +122,7 @@ Meteor.methods({
 
                 return {fields: formattedHeader, data: reportData};
             } else {
-                return []
+                return null
             }
         }
     }

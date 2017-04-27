@@ -32,10 +32,10 @@ Template.ComprehensiveReport.events({
             };
             //--
             const period = month + year;
-            Meteor.call('reports/getComprehensivePayResult', Session.get('context'), period, function(err, res){
+            Meteor.call('reports/getComprehensivePayResult', Session.get('context'), period, function(err, res) {
+                resetButton()
                 if(res){
                     BulkpayExplorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
-                    resetButton()
                 } else {
                     console.log(err);
                     swal('No result found', 'Payroll Result not found for period', 'error');
