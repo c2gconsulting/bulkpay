@@ -7,6 +7,8 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">{{#if data}} Update Project{{else}}Create New Project {{/if}}</h3>
                         </div>
+                        {{> afQuickField name='businessId' value=businessIdHelper type='hidden'}}
+
                         <div class="panel-body">
 
                             <div class="row">

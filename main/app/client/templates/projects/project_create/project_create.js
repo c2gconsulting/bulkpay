@@ -155,6 +155,9 @@ Template.ProjectCreate.helpers({
             return "update";
         return "insert";
     },
+    'businessIdHelper': () => {
+        return Session.get('context')
+    },
     'formType': () => {
         if(Template.instance().data)
             return "projectForm";

@@ -1,6 +1,6 @@
 
 /**
- * Leave Types Schema
+ * Projects Schema
  */
 Core.Schemas.Project = new SimpleSchema({
     _id: {
@@ -21,10 +21,7 @@ Core.Schemas.Project = new SimpleSchema({
         optional: true
     },
     businessId: {
-        type: String,
-        autoValue: function () {
-            return BusinessUnits.findOne()._id
-        }
+        type: String
     },
     'activities': {
         type: [Object],
