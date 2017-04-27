@@ -1,0 +1,81 @@
+<template name="ComprehensiveReport">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-credit-card"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{business.name}}</li>
+                    <li>Reports</li>
+                </ul>
+                <h4>Reports</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+
+        <div class="row">
+            <div class="col-md-12" ng-if="preSelect">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="panel-btns"></div><!-- panel-btns -->
+                        <h4 class="panel-title">Comprehensive Report</h4>
+                    </div><!-- panel-heading -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-10 col-md-offset-1">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <div class="row">
+                                                    <div class="col-md-3 text-right">
+                                                        <b>Period</b>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
+                                                                <option value="">Select Period</option>
+                                                                {{#each month}}
+                                                                    <option value="{{period}}">{{name}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div><!-- form-group -->
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
+                                                                <option value="">Select Year</option>
+                                                                {{#each year}}
+                                                                    <option value="{{this}}">{{this}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div><!-- form-group -->
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <!-- <button class="btn btn-success getResult"><i class="fa fa-bar-chart-o"></i> View</button> -->
+                                                        <button class="btn btn-primary excel"> <i class="fa fa-file-excel-o"></i> Download </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- panel -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="spinner">
+                        </div>
+                    </div>
+                </div><!-- panel -->
+            </div>
+        </div>
+    </div>
+</template>

@@ -30,7 +30,7 @@ Meteor.methods({
                     let payTypeHyphenSeparatorIndex = anItemProperty.indexOf('-')
                     if(payTypeHyphenSeparatorIndex > 0) {
                         let payTypeId = anItemProperty.substring(payTypeHyphenSeparatorIndex + 1)
-
+                        
                         let isPayTypeAllowed = _.find(employeeNewPaygrade.payTypes, function(aPayType) {
                             return aPayType.paytype === payTypeId
                         })

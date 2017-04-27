@@ -299,3 +299,10 @@ Router.route('/business/:_id/reports/pension', {
     action: 'pension',
     where: 'client'
 });
+
+Router.route('/business/:_id/reports/comprehensive', {
+    name: 'reports.comprehensive',
+    controller: 'ReportsController',
+    action: 'comprehensive',
+    where: 'client'
+});
