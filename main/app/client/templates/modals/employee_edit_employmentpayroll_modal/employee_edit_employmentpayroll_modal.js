@@ -251,21 +251,36 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
         let paytypeIds = grade.payTypes.map(x => {
             return x.paytype;
         });
+
         // The name of this subscription is confusing fpr what it actually does.
         // It actually makes it possible to 'find' paytypes
         self.subscribe("getpositionGrades", paytypeIds);
+        //--
 
         let selectedEmployee = Session.get('employeesList_selectedEmployee')
 
         if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
           paytypes = selectedEmployee.employeeProfile.employment.paytypes;
 
-          paytypes.forEach(x => {
+          let paytypesFromPayGrade = grade.payTypes.map(x => {
+              return x;
+          });
+
+          paytypes = paytypes.map(x => {
             //console.log("a paytype : " + JSON.stringify(x));
             let pt = PayTypes.findOne({_id: x.paytype});
             //console.log("paytype from db : " + JSON.stringify(pt));
             if(pt) {
-              pt.inputed = x.value;
+              if(x.value) {
+                  pt.inputed = x.value;
+              } else {
+                  let foundPayType = _.find(paytypesFromPayGrade, function(aPatype) {
+                      return (aPatype.paytype === x.paytype)
+                  })
+                  if(foundPayType) {
+                      x.value = foundPayType.value
+                  }
+              }
               _.extend(x, pt);
               return x;
             }
@@ -323,6 +338,7 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
   self.autorun(function(){
       //rerun computation if assigned value changes
       let assigned = self.assignedTypes.get();
+
       let input = $('input[type=text]');
       if(assigned){
           assigned.forEach((x,index) => {
