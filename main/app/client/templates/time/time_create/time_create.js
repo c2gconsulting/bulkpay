@@ -152,8 +152,10 @@ Template.TimeCreate.onRendered(function () {
 
                 let hoursToTwoDecimals = parseFloat(hours).toFixed(2);
                 $("#duration").val(hoursToTwoDecimals);
-                if (hours <= 12){
+                if (hours >= 1 && hours <= 12){
                     $('#TimeCreate').prop('disabled', false);
+                } else {
+                  $('#TimeCreate').prop('disabled', true);
                 }
             }
         });
@@ -174,6 +176,8 @@ Template.TimeCreate.onRendered(function () {
                 $("#duration").val(hoursToTwoDecimals);
                 if (hours >= 1 && hours <= 12){
                     $('#TimeCreate').prop('disabled', false);
+                } else {
+                  $('#TimeCreate').prop('disabled', true);
                 }
             }
         });
