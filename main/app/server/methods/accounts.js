@@ -331,6 +331,29 @@ Meteor.methods({
         return true
     },
 
+    "accounts/sendNewUserEmail": function(businessId, userId) {
+        let user = Meteor.users.findOne({
+            _id: userId,
+            businessIds: {"$in" : [businessId]}
+        })
+
+        if(user) {
+            let userEmail = user.emails[0].address
+            if(userEmail) {
+                try {
+                    Accounts.sendEnrollmentEmail(userId, userEmail);
+                    return "Email sent successfully if valid"
+                } catch(e) {
+                   throw new Meteor.Error(500, e.message);
+                }
+            } else {
+                throw new Meteor.Error(404, 'User does not have an email address');
+            }
+        } else {
+            throw new Meteor.Error(404, 'User does not exist for company');
+        }
+    },
+
     /*
      * invite new admin users
      * (not consumers) to secure access in the dashboard

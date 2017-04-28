@@ -29,6 +29,30 @@ Template.EmployeePersonalDataModal.events({
           }
       });
     },
+    'click #sendEnrollmentEmail': function(e, tmpl) {
+        let user = Template.instance().getEditUser();
+
+        $('#sendEnrollmentEmail').text('Sending. Please wait ...')
+        tmpl.$('#sendEnrollmentEmail').attr('disabled', true);
+
+        Meteor.call('accounts/sendNewUserEmail', Session.get('context'), user._id, (err, res) => {
+            $('#sendEnrollmentEmail').text('Send Enrollment Email')
+            tmpl.$('#sendEnrollmentEmail').attr('disabled', false);
+
+            if (res){
+                swal({
+                    title: "Success",
+                    text: res,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                console.log(err);
+                swal('Error', err.message, 'error')
+            }
+        });
+    },
     'change #uploadBtn': function(e){
         if (e.target.files && e.target.files[0]) {
             let reader = new FileReader();
