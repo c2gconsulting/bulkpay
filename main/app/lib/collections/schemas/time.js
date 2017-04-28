@@ -37,7 +37,21 @@ Core.Schemas.Time = new SimpleSchema({
         optional: true
     },
     activity:{
-        type: String
+        type: String,
+        custom: function () {
+            let employeeId = this.siblingField("employeeId").value;
+            let startTime = this.siblingField("startTime").value;
+            let endTime = this.siblingField("endTime").value;
+
+            return Times.find({
+                activity: this.value,
+                employeeId: employeeId,
+                startTime: {
+                    $gte: startTime,
+                    $lt: endTime
+                }
+            }).count() > 0 ? "duplicateActivityOnSameDayNotAllowed" : true
+        }
     },
     costCenter: {
         type: String,
@@ -120,4 +134,8 @@ Core.Schemas.Time = new SimpleSchema({
         denyUpdate: true
     }
 
+});
+
+SimpleSchema.messages({
+    "duplicateActivityOnSameDayNotAllowed": "You cannot record time for same activity twice in one day",
 });
