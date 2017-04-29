@@ -35,7 +35,7 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         optional: true,
         defaultValue: false
     },
-    logo: {
+    logoId: {
         type: String,
         optional: true
     },

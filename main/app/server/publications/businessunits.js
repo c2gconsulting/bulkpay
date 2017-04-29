@@ -29,3 +29,7 @@ Core.publish("BusinessUnit", function (id) {
     //    return this.ready();
     //}
 });
+
+Core.publish("BusinessUnitLogoImage", function (id) {
+    return BusinessUnitLogoImages.find({_id: id})
+});

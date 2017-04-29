@@ -67,6 +67,13 @@ Template.BuProfile.events({
 Template.BuProfile.helpers({
     'businessUnit': function() {
         return Template.instance().businessUnit.get()
+    },
+    'getBusinessUnitLogo': function(){
+        let businessUnitImageId = Template.instance().businessUnit.get().logoId
+        if(businessUnitImageId) {
+            let businessUnitLogo = BusinessUnitLogoImages.findOne({_id: businessUnitImageId})
+            return businessUnitLogo
+        }
     }
 });
 
@@ -82,8 +89,11 @@ Template.BuProfile.onCreated(function(){
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             console.log(`Business unit: ${JSON.stringify(businessUnit)}`)
-
             self.businessUnit.set(businessUnit)
+
+            if(businessUnit.logoId) {
+                self.subscribe("BusinessUnitLogoImage", businessUnit.logoId)
+            }
         }
     })
 });

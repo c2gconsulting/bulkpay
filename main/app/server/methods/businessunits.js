@@ -74,7 +74,7 @@ Meteor.methods({
         console.log(`Inside updateLogoImage server method: ${JSON.stringify(logoObj)}`)
 
         if(BusinessUnits.findOne({_id: businessUnitId})){
-            BusinessUnits.update(businessUnitId, {$set: {'logo': logoObj}})
+            BusinessUnits.update(businessUnitId, {$set: {'logoId': logoObj._id}})
 
             return true
         } else

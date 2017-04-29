@@ -24,19 +24,19 @@
                         {{#with businessUnit}}
                             <div class="col-md-2">
                                 <div class="text-center">
-                                    {{#if this.logo}}
-                                        <img src="{{this.logo.url}}" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
+                                    {{#if getBusinessUnitLogo}}
+                                        <img src="{{getBusinessUnitLogo.url store='avatarsLarge'}}" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
                                     {{else}}
                                         <img src="/images/game_logo_default_fix.png" id="profile-img" class="img-thumbnail img-offline img-responsive img-profile" alt=""/>
                                     {{/if}}
+
                                     <br><br>
-                                    <!--<span class="btn btn-primary btn-file">-->
-                                        <!--Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />-->
-                                    <!--</span>-->
+                                    <span class="btn btn-primary btn-file">
+                                        Select Image <input id="uploadBtn" class="center-block" type="file" accept="'image/*'" />
+                                    </span>
                                     <br>
                                     <span id="filename"></span>
                                 </div>
-                                <!-- text-center -->
                             </div>
 
                             <div class="col-md-5 col-md-offset-1">
