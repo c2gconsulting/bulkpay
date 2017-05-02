@@ -8,6 +8,15 @@ Core.publish("ProcurementRequisitionsICreated", function (businessUnitId) {
     return ProcurementRequisitions.find({businessUnitId: businessUnitId, createdBy: this.userId});
 });
 
+Core.publish("ProcurementRequisitionsStatusNotSeen", function (businessUnitId) {
+    let user = this.userId;
+    return ProcurementRequisitions.find({
+        businessUnitId: businessUnitId,
+        createdBy: this.userId,
+        isStatusSeenByCreator: false
+    });
+});
+
 Core.publish("ProcurementRequisition", function (requisitionId) {
     return ProcurementRequisitions.find({_id: requisitionId});
 });

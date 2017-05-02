@@ -14,7 +14,7 @@ Template.navigator.helpers({
 Template.navlist.helpers({
     hasProcurementRequisitionApproveAccess: () => {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
-        console.log("canApproveProcurementApprove: " + canApproveProcurement);
+        console.log("[navigator.js] canApproveProcurementApprove: " + canApproveProcurement);
 
         return canApproveProcurement;
     },
@@ -56,7 +56,7 @@ Template.navlist.onCreated(function () {
     self.autorun(function(){
         if(customConfigSub.ready()) {
             self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
-            console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
+            // console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
         }
     })
 });

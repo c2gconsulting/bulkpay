@@ -1,7 +1,7 @@
 
 
 Template.header.events({
-    'click .requisitionRow': function(e, tmpl) {
+    'click .requisitionRowForApproval': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
         console.log(`RequisitionId: ${requisitionId}`)
@@ -9,6 +9,18 @@ Template.header.events({
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
         invokeReason.reason = 'approve'
+        invokeReason.approverId = Meteor.userId()
+
+        Modal.show('ProcurementRequisitionDetail', invokeReason)
+    },
+    'click .requisitionRowForEdit': function(e, tmpl) {
+        e.preventDefault()
+        let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
+        console.log(`RequisitionId: ${requisitionId}`)
+
+        let invokeReason = {}
+        invokeReason.requisitionId = requisitionId
+        invokeReason.reason = 'edit'
         invokeReason.approverId = Meteor.userId()
 
         Modal.show('ProcurementRequisitionDetail', invokeReason)
@@ -21,9 +33,8 @@ Template.header.events({
         console.log(`RequisitionId: ${requisitionId}`)
         let businessUnitId = Session.get('context')
 
-        Meteor.call('ProcurementRequisition/markApprovalAsSeen', businessUnitId, requisitionId, function(err, res) {
-            if(!err) {
-            } else {
+        Meteor.call('ProcurementRequisition/markAsSeen', businessUnitId, requisitionId, function(err, res) {
+            if(err) {
                 swal('Validation error', err.message, 'error')
             }
         })
@@ -43,8 +54,8 @@ Template.header.helpers({
     'procurementsToApprove': function() {
         return Template.instance().procurementsToApprove.get()
     },
-    'procurementsICreatedThatApproved': function() {
-        return Template.instance().procurementsICreatedThatApproved.get()
+    'procurementsStatusNotSeen': function() {
+        return Template.instance().procurementsStatusNotSeen.get()
     },
     'currentUserId': function() {
         return Meteor.userId();
@@ -52,18 +63,21 @@ Template.header.helpers({
 });
 
 Template.header.onCreated(function() {
+    console.log(`[header.js] inside onCreated`)
     let self = this
 
-    let businessUnitId = Session.get('context')
-
     self.procurementsToApprove = new ReactiveVar()
-    self.procurementsICreatedThatApproved = new ReactiveVar()
-
-    let procurementsSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
-    let procurementsCreatedThatApprovedSub = self.subscribe('ProcurementRequisitionsICreated', businessUnitId)
+    self.procurementsStatusNotSeen = new ReactiveVar()
 
     self.autorun(function() {
-        if(procurementsSub.ready()) {
+        let businessUnitId = Session.get('context')
+        console.log(`[Header.js] current businessUnitId: ${businessUnitId}`)
+        console.log(`[Header.js] current user id: ${Meteor.userId()}`)
+
+        let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
+        let procurementsStatusNotSeenSub = self.subscribe('ProcurementRequisitionsStatusNotSeen', businessUnitId)
+
+        if(procurementsToApproveSub.ready()) {
             console.log(`ProcurementsSub is ready`)
 
             let currentUser = Meteor.user()
@@ -74,16 +88,17 @@ Template.header.onCreated(function() {
                 let procurementsToApprove = ProcurementRequisitions.find({
                     supervisorPositionId: currentUserPosition,
                     status: 'Pending'
-                })
+                }).fetch()
+                console.log(`[header.js] procurementsToApprove: ${JSON.stringify(procurementsToApprove)}`)
                 self.procurementsToApprove.set(procurementsToApprove)
             }
         }
-        if(procurementsCreatedThatApprovedSub.ready()) {
-            self.procurementsICreatedThatApproved.set(ProcurementRequisitions.find({
+        if(procurementsStatusNotSeenSub.ready()) {
+            self.procurementsStatusNotSeen.set(ProcurementRequisitions.find({
                 createdBy: Meteor.userId(),
                 $or: [{status: 'Treated'}, {status: 'Rejected'}],
-                creatorIsAwareOfApproval: {$ne: true}
-            }))
+                isStatusSeenByCreator: {$ne: true}
+            }).fetch())
         }
     })
 })
@@ -91,4 +106,3 @@ Template.header.onCreated(function() {
 Template.header.onRendered(function () {
 
 });
-

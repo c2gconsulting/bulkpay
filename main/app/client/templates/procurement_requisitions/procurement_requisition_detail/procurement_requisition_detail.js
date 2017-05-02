@@ -178,7 +178,7 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
             console.log(`procurement subscription ready `)
             let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
-
+            
             if(procurementDetails.unitId) {
                 self.subscribe('getEntity', procurementDetails.unitId)
             }

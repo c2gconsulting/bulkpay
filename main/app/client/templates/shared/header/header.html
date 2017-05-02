@@ -40,11 +40,11 @@
                 <!--</div>&lt;!&ndash; dropdown-menu &ndash;&gt;-->
             <!--</div>&lt;!&ndash; btn-group &ndash;&gt;-->
 
-        {{#if condition procurementsToApprove.count '>' 0}}
+        {{#if condition procurementsToApprove.length '>' 0}}
         <div class="btn-group btn-group-list btn-group-messages">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-envelope-o"></i>
-                <span class="badge">{{procurementsToApprove.count}}</span>
+                <span class="badge">{{procurementsToApprove.length}}</span>
             </button>
 
             <div class="dropdown-menu pull-right">
@@ -52,7 +52,7 @@
                 <h5>Procurement requisitions to approve</h5>
                 <ul class="media-list dropdown-list">
                     {{#each procurementsToApprove}}
-                    <li data-RequisitionId="{{_id}}" class="media pointer requisitionRow">
+                    <li data-RequisitionId="{{_id}}" class="media pointer requisitionRowForApproval">
                         <!--<span class="badge badge-success">New</span>-->
                         <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
                         <div class="pageicon pull-left" style="padding: 9px;">
@@ -73,26 +73,26 @@
         </div><!-- btn-group -->
         {{/if}}
 
-        {{#if condition procurementsICreatedThatApproved.count '>' 0}}
+        {{#if condition procurementsStatusNotSeen.length '>' 0}}
             <div class="btn-group btn-group-list btn-group-messages">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-envelope-o"></i>
-                    <span class="badge">{{procurementsICreatedThatApproved.count}}</span>
+                    <span class="badge">{{procurementsStatusNotSeen.length}}</span>
                 </button>
 
                 <div class="dropdown-menu pull-right">
                     <!--<a href="" class="link-right"><i class="fa fa-plus"></i></a>-->
-                    <h5>Procurement requisitions that were approved</h5>
+                    <h5>Approved or rejected Procurement requisitions</h5>
                     <ul class="media-list dropdown-list">
-                        {{#each procurementsICreatedThatApproved}}
-                            <li data-RequisitionId="{{_id}}" class="media pointer requisitionRow">
+                        {{#each procurementsStatusNotSeen}}
+                            <li data-RequisitionId="{{_id}}" class="media pointer requisitionRowForEdit">
                                 <span data-RequisitionId="{{_id}}" class="badge badge-success requisitionApprovalSeen">Seen</span>
                                 <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
                                 <div class="pageicon pull-left" style="padding: 9px;">
                                     <i class="fa fa-fax"></i>
                                 </div>
                                 <div class="media-body">
-                                    <strong>{{this.description}}</strong>
+                                    <strong>{{trimString this.description 0 30}} ({{this.status}})</strong>
                                     <p><i>{{trimString this.requisitionReason 0 30}} ... </i></p>
                                 </div>
                             </li>

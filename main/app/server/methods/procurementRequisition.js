@@ -118,7 +118,7 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     },
-    "ProcurementRequisition/markApprovalAsSeen": function(businessUnitId, docId){
+    "ProcurementRequisition/markAsSeen": function(businessUnitId, docId){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -127,7 +127,7 @@ Meteor.methods({
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
         if(procurementRequisitionDoc.createdBy === Meteor.userId()) {
-            ProcurementRequisitions.update(docId, {$set: {creatorIsAwareOfApproval: true}})
+            ProcurementRequisitions.update(docId, {$set: {isStatusSeenByCreator: true}})
             return true;
         } else {
             throw new Meteor.Error(401, "Unauthorized. You didn't create that requisition")

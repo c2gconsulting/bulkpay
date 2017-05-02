@@ -144,7 +144,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         businessId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
-        isProcurementRequisitionActive : false,
+        isProcurementRequisitionActive : true,
         isActive: true
     }
     let daarConfig = {
