@@ -4,22 +4,6 @@ import { HTTP } from 'meteor/http'
 
 let SapIntegration = {}
 
-SapIntegration.doAllPaytypesHaveGlAccounts = businessUnitSapConfig => {
-    let result = true
-
-    if(businessUnitSapConfig.payTypes && businessUnitSapConfig.payTypes.length > 0) {
-        businessUnitSapConfig.payTypes.forEach(aPayType => {
-            if(aPayType.payTypeDebitAccountCode && aPayType.payTypeDebitAccountCode.length > 0
-                && aPayType.payTypeCreditAccountCode && aPayType.payTypeCreditAccountCode.length > 0) {
-            } else {
-                result = false
-                return
-            }
-        })
-    }
-    return result
-}
-
 /**
  * Goes through all employee payrun results for the period and accumulates a bulksum for each paytype
  *
@@ -30,6 +14,8 @@ SapIntegration.doAllPaytypesHaveGlAccounts = businessUnitSapConfig => {
 SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResults) => {
     let unitsBulkSum = {}
     let arrayOfEmployees = []
+    let status = true
+    let errors = []
 
     //Be patient. The main processing happens after this function definition
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
@@ -80,7 +66,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
             let possibleUnit = EntityObjects.findOne({_id: possibleUnitId})
             if(possibleUnit) {
                 if(possibleUnit.otype === 'Unit') {
-                    return possibleUnit._id
+                    return possibleUnit
                 } else {
                     return getUnitForPosition(possibleUnit)
                 }
@@ -93,7 +79,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     }
 
     //--Main processing happens here
-    payRunResults.forEach((aPayrunResult) => {
+    for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
         if(isPostedToSAP && isPostedToSAP === true) {
             console.log(`isPostedToSAP is true`)
@@ -104,6 +90,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
 
         if(!employee) {
             console.log(`employee data could not be found`)
+            status = false
+            error.push(`An employee record for payrun could not be found`)
         }
         let employeePositionId = employee.employeeProfile.employment.position
         let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
@@ -111,39 +99,56 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         try {
             if(!position) {
                 console.log(`Position could not be found: ${employeePositionId}`)
-            }
-            let unitId = getUnitForPosition(position)
-            if(!unitId) {
-                console.log(`Could not find unit for position: ${employeePositionId}`)
-            }
-            let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                return aUnit.unitId === unitId;
-            })
-            if(!sapUnitCostCenterDetails) {
-                console.log(`sapUnitCostCenterDetails is NULL`)
-            }
-            //--
-            let unitToWorkWith = unitsBulkSum[unitId]
-            if(unitToWorkWith) {
-                aPayrunResult.payment.forEach(aPayment => {
-                    let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
-                        return aUnitPayment.payTypeId === aPayment.id
-                    })
-                    if(paymentToAccumulate) {
-                        paymentToAccumulate.amountLC += aPayment.amountLC
-                    }
-                })
+                status = false
+                error.push(`Employee: ${employee.profile.fullName} does not have a position`)
             } else {
-                // This function call adds an object to unitsBulkSum object
-                initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                let unit = getUnitForPosition(position)
+                if(!unit) {
+                    console.log(`Could not find unit for position: ${employeePositionId}`)
+                    status = false
+                    errors.push(`Employee: ${employee.profile.fullName} does not have a unit`)
+                } else {
+                    let unitId = unit._id
+                    let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
+                        return aUnit.unitId === unitId;
+                    })
+                    if(sapUnitCostCenterDetails) {
+                        let unitToWorkWith = unitsBulkSum[unitId]
+                        if(unitToWorkWith) {
+                            aPayrunResult.payment.forEach(aPayment => {
+                                let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
+                                    return aUnitPayment.payTypeId === aPayment.id
+                                })
+                                if(paymentToAccumulate) {
+                                    paymentToAccumulate.amountLC += aPayment.amountLC
+                                }
+                            })
+                            arrayOfEmployees.push(employeeId)
+                        } else {
+                            if(sapUnitCostCenterDetails.costCenterCode && sapUnitCostCenterDetails.costCenterCode.length > 0) {
+                                initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                                arrayOfEmployees.push(employeeId)
+                            } else {
+                                status = false
+                                errors.push(`Unit: ${unit.name} does not have cost center`)
+                            }
+                        }
+                    }
+                }
             }
-            arrayOfEmployees.push(employeeId)
         } catch(ex) {
             console.log(`processPayrunResultsForSap error: ${ex.message}`)
+            status = false
+            errors.push(`${ex.message}`)
         }
-    })
-    console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
-    return {unitsBulkSum, employees: arrayOfEmployees}
+    }
+
+    //console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
+    if(status) {
+        return {status, unitsBulkSum, employees: arrayOfEmployees}
+    } else {
+        return {status, errors}
+    }
 }
 
 
@@ -261,56 +266,52 @@ Meteor.methods({
                     "message": "Your company's sap integration setup has not been done"
                 })
             }
-            let payTypesOkAndReadyToGo = SapIntegration.doAllPaytypesHaveGlAccounts(businessUnitSapConfig)
-            if(!payTypesOkAndReadyToGo) {
-                return JSON.stringify({
-                    "status": false,
-                    "message": "Please set the G/L accounts for all paytypes on the SAP Integration setup page"
-                })
-            }
-            //--
-            let unitsBulkSumsForSap = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
+            let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
             //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
 
-            if(unitsBulkSumsForSap.employees.length > 0) {
-                let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
-                let postData = JSON.stringify({
-                    period: period,
+            if(processingResult.status === true) {
+                if(processingResult.employees.length > 0) {
+                    let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
+                    let postData = JSON.stringify({
+                        period: period,
 
-                    sapServername: businessUnitSapConfig.sapServername,
-                    sapUsername: businessUnitSapConfig.sapUsername,
-                    sapUserPassword: businessUnitSapConfig.sapUserPassword,
-                    sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
-                    sapDatabaseUsername: businessUnitSapConfig.sapDatabaseUsername,
-                    sapDatabasePassword: businessUnitSapConfig.sapDatabasePassword,
+                        sapServername: businessUnitSapConfig.sapServername,
+                        sapUsername: businessUnitSapConfig.sapUsername,
+                        sapUserPassword: businessUnitSapConfig.sapUserPassword,
+                        sapCompanyDatabaseName: businessUnitSapConfig.sapCompanyDatabaseName,
+                        sapDatabaseUsername: businessUnitSapConfig.sapDatabaseUsername,
+                        sapDatabasePassword: businessUnitSapConfig.sapDatabasePassword,
 
-                    data: unitsBulkSumsForSap.unitsBulkSum
-                })
-                let requestHeaders = {'Content-Type': 'application/json'}
-
-                let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
-                let actualServerResponse = serverRes.data.replace(/\//g, "")
-
-                let serverResponseObj = JSON.parse(actualServerResponse)
-
-                if(serverResponseObj.status === true) {
-                    unitsBulkSumsForSap.employees.forEach((anEmployeeId) => {
-                        let payrunDoc = Payruns.findOne({
-                            businessId: businessUnitId,
-                            period: period,
-                            employeeId: anEmployeeId
-                        })
-                        if(payrunDoc) {
-                           Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
-                        } else {
-                            console.log(`Could not find payrunDoc`)
-                        }
+                        data: processingResult.unitsBulkSum
                     })
-                    console.log(`Payrun post to SAP was successful`)
+                    let requestHeaders = {'Content-Type': 'application/json'}
+
+                    let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
+                    let actualServerResponse = serverRes.data.replace(/\//g, "")
+
+                    let serverResponseObj = JSON.parse(actualServerResponse)
+
+                    if(serverResponseObj.status === true) {
+                        processingResult.employees.forEach((anEmployeeId) => {
+                            let payrunDoc = Payruns.findOne({
+                                businessId: businessUnitId,
+                                period: period,
+                                employeeId: anEmployeeId
+                            })
+                            if(payrunDoc) {
+                               Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
+                            } else {
+                                console.log(`Could not find payrunDoc`)
+                            }
+                        })
+                        console.log(`Payrun post to SAP was successful`)
+                    }
+                    return actualServerResponse.replace(/\//g, "")
+                } else {
+                    return JSON.stringify({"status": false, "message": "There are no employee payments to post to SAP"})
                 }
-                return actualServerResponse.replace(/\//g, "")
             } else {
-                return JSON.stringify({"status": false, "message": "There are no employee payments to post to SAP"})
+                return JSON.stringify(processingResult)
             }
         } catch(e) {
             console.log(`Error in testing connection! ${e.message}`)

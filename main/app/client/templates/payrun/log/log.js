@@ -66,8 +66,9 @@ Template.Log.onRendered(function () {
 });
 
 Template.Log.onDestroyed(function () {
-
+    Modal.hide('Log')
 });
+
 Core.getInput = function(arr){
     const newArr = [...arr];
     const children = newArr.map(x => {

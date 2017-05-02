@@ -85,19 +85,22 @@ Template.payruns.events({
 
             Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
                 resetButton()
-                console.log(`res: ${res}`)
+                console.log(`res: ${JSON.stringify(res)}`)
                 if (!err) {
-                    let responseAsObj = JSON.parse(res)
-                    let dialogType = (responseAsObj["status"] === true) ? "success" : "error"
-                    swal("Payrun Post Status", responseAsObj["message"], dialogType);
-                } else {
-                    console.log(`CCC`)
                     if(res) {
                         let responseAsObj = JSON.parse(res)
-                        swal("Payrun Post Status", responseAsObj["message"], "error");
+                        if(responseAsObj.status === true) {
+                            swal("Payrun Post Status", responseAsObj["message"], "success");
+                        } else {
+                            let errors = responseAsObj.errors
+                            console.log(`Errors: ${JSON.stringify(errors)}`)
+                            Modal.show('PayrunResultsPostToSapErrors', errors)
+                        }
                     } else {
                         swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
                     }
+                } else {
+                    swal("Payrun Post Status", err.message, "error");
                 }
             })
         }
@@ -123,7 +126,10 @@ Template.payruns.helpers({
     },
 
     'errorMsg': function() {
-      return Template.instance().errorMsg.get();
+        return Template.instance().errorMsg.get();
+    },
+    'payrunResultsPostToSapErrors': function() {
+        return Template.instance().payrunResultsPostToSapErrors.get();
     }
 });
 
@@ -217,4 +223,28 @@ Template.singlePayrunResult.events({
 
       Modal.show("PayRunResultModal", thisContext);
     }
+});
+
+
+/*****************************************************************************/
+/* PayrunResultsPostToSapErrors: Helpers */
+/*****************************************************************************/
+Template.PayrunResultsPostToSapErrors.helpers({
+    'payrunResultsPostToSapErrors': function() {
+        return Template.instance().payrunResultsPostToSapErrors.get();
+    }
+});
+
+/*****************************************************************************/
+/* PayrunResultsPostToSapErrors: Lifecycle Hooks */
+/*****************************************************************************/
+Template.PayrunResultsPostToSapErrors.onCreated(function () {
+    let self = this;
+
+    self.payrunResultsPostToSapErrors = new ReactiveVar()
+    self.payrunResultsPostToSapErrors.set(self.data);
+});
+
+Template.PayrunResultsPostToSapErrors.onDestroyed(function () {
+    Modal.hide('PayrunResultsPostToSapErrors')
 });
