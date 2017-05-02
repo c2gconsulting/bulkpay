@@ -57,8 +57,14 @@ Template.header.helpers({
     'procurementsStatusNotSeen': function() {
         return Template.instance().procurementsStatusNotSeen.get()
     },
+    'timesToApprove': function() {
+        return Template.instance().timesToApprove.get()
+    },
     'currentUserId': function() {
         return Meteor.userId();
+    },
+    'getActivityDescription': function(activityId) {
+        return Activities.findOne({_id: activityId}).description;
     }
 });
 
@@ -69,17 +75,30 @@ Template.header.onCreated(function() {
     self.procurementsToApprove = new ReactiveVar()
     self.procurementsStatusNotSeen = new ReactiveVar()
 
+    self.timesToApprove = new ReactiveVar()
+    self.timesStatusNotSeen = new ReactiveVar()
+
+    self.getIds = (users) => {
+        const newUsers = [...users];
+        const ids = newUsers.map(x => {
+            //get unique ids of users
+            return x._id;
+        });
+        return ids;
+    }
+
     self.autorun(function() {
         let businessUnitId = Session.get('context')
-        console.log(`[Header.js] current businessUnitId: ${businessUnitId}`)
-        console.log(`[Header.js] current user id: ${Meteor.userId()}`)
 
         let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
         let procurementsStatusNotSeenSub = self.subscribe('ProcurementRequisitionsStatusNotSeen', businessUnitId)
+        //--
+        let allEmployeesSub = self.subscribe('allEmployees', businessUnitId)
+        //let allActivitesSub = self.subscribe('AllActivities', businessUnitId);
+        let timesAndLeavesSub = self.subscribe('timedata', businessUnitId)
 
         if(procurementsToApproveSub.ready()) {
             console.log(`ProcurementsSub is ready`)
-
             let currentUser = Meteor.user()
 
             if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
@@ -99,6 +118,37 @@ Template.header.onCreated(function() {
                 $or: [{status: 'Treated'}, {status: 'Rejected'}],
                 isStatusSeenByCreator: {$ne: true}
             }).fetch())
+        }
+
+        if(allEmployeesSub.ready() && timesAndLeavesSub.ready()) {
+            console.log(`allEmployeesSub, allActivitesSub, timesAndLeavesSub is ready`)
+            let user = Meteor.user()
+            let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
+                return x._id
+            });
+            const selector = {
+                businessIds: businessUnitId,
+                "employeeProfile.employment.position": {$in: positions}
+            };
+            console.log(`selector: ${JSON.stringify(selector)}`)
+
+            let allSuperviseeIds = []
+
+            Meteor.users.find().fetch().forEach(aUser => {
+                let userPositionId = aUser.employeeProfile.employment.position
+                if(positions.indexOf(userPositionId) !== -1) {
+                    allSuperviseeIds.push(aUser._id)
+                }
+            });
+            console.log(`allSuperviseeIds: ${JSON.stringify(allSuperviseeIds)}`)
+
+            let timesToApprove = Times.find({
+                employeeId: {$in: allSuperviseeIds},
+                status: 'Open'
+            }).fetch()
+            console.log(`Times to approve: ${JSON.stringify(timesToApprove)}`)
+
+            self.timesToApprove.set(timesToApprove)
         }
     })
 })

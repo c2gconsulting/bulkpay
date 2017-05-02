@@ -14,7 +14,11 @@ Core.publish("timedata", function (businessId) {
         });
         //console.log(positions);
         //return all meteor users in that position
-        const selector = { "businessIds": businessId, employee: true, "employeeProfile.employment.position": {$in: positions} };
+        const selector = {
+            businessIds: businessId,
+            employee: true,
+            "employeeProfile.employment.position": {$in: positions}
+        };
         const users = Meteor.users.find(selector).fetch();
         const allSubs = getIds(users);
         allSubs.push(currentId);

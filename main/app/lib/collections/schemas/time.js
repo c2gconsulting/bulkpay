@@ -111,6 +111,10 @@ Core.Schemas.Time = new SimpleSchema({
         allowedValues: ['Approved', 'Open', "Rejected"],
         optional: true
     },
+    isStatusSeenByCreator: {
+        type: Boolean,
+        defaultValue: false
+    },
     approvedBy: {
         type: String,
         regEx: SimpleSchema.RegEx.Id,

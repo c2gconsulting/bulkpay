@@ -44,8 +44,9 @@ Core.publish("allEmployees", function (businessId) {
     check(businessId, String);
     if (businessId){
         //return all meteor users in that position
-        return [Meteor.users.find(selector, {
+        let employees = Meteor.users.find(selector, {
             fields: {
+                "_id": true,
                 "emails": true,
                 "employee": true,
                 "profile": true,
@@ -53,8 +54,8 @@ Core.publish("allEmployees", function (businessId) {
                 "username": true,
                 "roles": true
             }
-        }),
-        UserImages.find({})];
+        })
+        return [employees, UserImages.find({})];
     } else {
         return this.ready();
     }
