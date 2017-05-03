@@ -82,14 +82,14 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
         if(isPostedToSAP && isPostedToSAP === true) {
-            console.log(`isPostedToSAP is true`)
+            // console.log(`isPostedToSAP is true`)
             return
         }
         let employeeId = aPayrunResult.employeeId
         let employee = Meteor.users.findOne({_id: employeeId})
 
         if(!employee) {
-            console.log(`employee data could not be found`)
+            // console.log(`employee data could not be found`)
             status = false
             error.push(`An employee record for payrun could not be found`)
         }
@@ -98,13 +98,13 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
 
         try {
             if(!position) {
-                console.log(`Position could not be found: ${employeePositionId}`)
+                // console.log(`Position could not be found: ${employeePositionId}`)
                 status = false
                 error.push(`Employee: ${employee.profile.fullName} does not have a position`)
             } else {
                 let unit = getUnitForPosition(position)
                 if(!unit) {
-                    console.log(`Could not find unit for position: ${employeePositionId}`)
+                    // console.log(`Could not find unit for position: ${employeePositionId}`)
                     status = false
                     errors.push(`Employee: ${employee.profile.fullName} does not have a unit`)
                 } else {
@@ -133,6 +133,10 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                 errors.push(`Unit: ${unit.name} does not have cost center`)
                             }
                         }
+                    } else {
+                        // console.log(`sapUnitCostCenterDetails: ${JSON.stringify(sapUnitCostCenterDetails)}`)
+                        status = false
+                        errors.push(`Unit: ${unit.name} does not have cost center`)
                     }
                 }
             }
@@ -267,7 +271,7 @@ Meteor.methods({
                 })
             }
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-            //console.log(`unitsBulkSumsForSap: ${JSON.stringify(unitsBulkSumsForSap)}`)
+            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
