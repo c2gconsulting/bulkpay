@@ -6,6 +6,12 @@ Template.EmployeeTime.events({
 
 });
 
+
+Template.registerHelper('trimString', function(passedString, startstring, endstring) {
+    var theString = passedString.substring( startstring, endstring );
+    return new Handlebars.SafeString(theString)
+});
+
 /*****************************************************************************/
 /* EmployeeTime: Helpers */
 /*****************************************************************************/
@@ -22,8 +28,8 @@ Template.EmployeeTime.helpers({
         return Template.instance().dict.get('selected');
     },
     'getPositionDescription': (id) => {
-        return EntityObjects.findOne({_id: id}).name;
-
+        let positionEntity = EntityObjects.findOne({_id: id})
+        return positionEntity ? positionEntity.name : '---';
     }
 });
 
@@ -35,7 +41,7 @@ Template.EmployeeTime.onCreated(function () {
     let self = this;
     self.dict = new ReactiveDict();
 
-
+    self.subscribe('getPositions', Session.get('context'))
 });
 
 Template.EmployeeTime.onRendered(function () {

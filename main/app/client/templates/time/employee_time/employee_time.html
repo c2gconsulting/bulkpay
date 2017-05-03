@@ -36,7 +36,7 @@
                         <div id="collapseOne2" class="panel-collapse collapse">
                             <div class="panel-body">
                                 {{#with self}}
-                                    <ul class="media-list msg-list">
+                                    <ul class="media-list">
                                         <li class="media emplist" id="{{_id}}">
                                             <a class="pull-left" href="#">
                                                 <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
@@ -62,15 +62,17 @@
                         </div>
                         <div id="collapseTwo2" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                <ul class="media-list msg-list">
+                                <ul class="media-list">
                                     {{#each supervisee}}
                                         <li class="media emplist" id="{{_id}}">
                                             <a class="pull-left" href="#">
                                                 <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
                                             </a>
                                             <div class="media-body">
-                                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
-                                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
+                                                <h4 class="sender">{{trimString (getPositionDescription employeeProfile.employment.position) 0 30}}</h4>
+                                                <p title="{{profile.fullName}}">
+                                                    <a href="#"><strong class="subject">{{trimString profile.fullName 0 25}}</strong></a>
+                                                </p>
                                             </div>
                                         </li>
                                     {{/each}}

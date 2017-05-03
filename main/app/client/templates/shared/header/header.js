@@ -60,11 +60,18 @@ Template.header.helpers({
     'timesToApprove': function() {
         return Template.instance().timesToApprove.get()
     },
+    'timesStatusNotSeen': function() {
+        return Template.instance().timesStatusNotSeen.get()
+    },
     'currentUserId': function() {
         return Meteor.userId();
     },
-    'getActivityDescription': function(activityId) {
-        return Activities.findOne({_id: activityId}).description;
+    'getActivityDescription': function(time) {
+        // console.log(`Inside getActivityDescription! Time: ${JSON.stringify(time)}`)
+        let activity = Activities.findOne({_id: time.activity})
+        // console.log(`Activity: ${JSON.stringify(activity)}`)
+
+        return activity ? activity.description : '---';
     }
 });
 
@@ -78,6 +85,9 @@ Template.header.onCreated(function() {
     self.timesToApprove = new ReactiveVar()
     self.timesStatusNotSeen = new ReactiveVar()
 
+    self.leavesToApprove = new ReactiveVar()
+    self.leavesApprovalStatusNotSeen = new ReactiveVar()   // By leave creator
+
     self.getIds = (users) => {
         const newUsers = [...users];
         const ids = newUsers.map(x => {
@@ -90,15 +100,15 @@ Template.header.onCreated(function() {
     self.autorun(function() {
         let businessUnitId = Session.get('context')
 
+        self.subscribe('AllActivities', Session.get('context'));
+
         let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
         let procurementsStatusNotSeenSub = self.subscribe('ProcurementRequisitionsStatusNotSeen', businessUnitId)
         //--
         let allEmployeesSub = self.subscribe('allEmployees', businessUnitId)
-        //let allActivitesSub = self.subscribe('AllActivities', businessUnitId);
-        let timesAndLeavesSub = self.subscribe('timedata', businessUnitId)
+        let timesAndLeavesSub = self.subscribe('timedata', businessUnitId)  // This handles the subscription for 'times' and 'leaves'
 
         if(procurementsToApproveSub.ready()) {
-            console.log(`ProcurementsSub is ready`)
             let currentUser = Meteor.user()
 
             if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
@@ -121,7 +131,6 @@ Template.header.onCreated(function() {
         }
 
         if(allEmployeesSub.ready() && timesAndLeavesSub.ready()) {
-            console.log(`allEmployeesSub, allActivitesSub, timesAndLeavesSub is ready`)
             let user = Meteor.user()
             let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
                 return x._id
@@ -146,9 +155,19 @@ Template.header.onCreated(function() {
                 employeeId: {$in: allSuperviseeIds},
                 status: 'Open'
             }).fetch()
-            console.log(`Times to approve: ${JSON.stringify(timesToApprove)}`)
-
             self.timesToApprove.set(timesToApprove)
+            //--
+            let timesStatusNotSeen = Times.find({
+                employeeId: Meteor.userId(),
+                $or: [{status: 'Approved'}, {status: 'Rejected'}],
+            }).fetch()
+            self.timesStatusNotSeen.set(timesStatusNotSeen)
+            //--
+            let leavesToApprove = Leaves.find({
+                employeeId: {$in: allSuperviseeIds},
+                status: 'Open'
+            }).fetch()
+            self.leavesToApprove.set(leavesToApprove)
         }
     })
 })

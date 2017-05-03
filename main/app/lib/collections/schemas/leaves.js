@@ -177,6 +177,10 @@ Core.Schemas.Leave = new SimpleSchema({
         regEx: SimpleSchema.RegEx.Id,
         optional: true
     },
+    isApprovalStatusSeenByCreator: {
+        type: Boolean,
+        defaultValue: false
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

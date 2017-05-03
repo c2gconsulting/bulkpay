@@ -117,14 +117,44 @@
                 <h5>Employee times to approve</h5>
                 <ul class="media-list dropdown-list">
                     {{#each timesToApprove}}
-                    <li data-RequisitionId="{{_id}}" class="media pointer timeRowForApproval">
+                    <li data-timeId="{{_id}}" class="media pointer timeRowForApproval">
                         <!--<span class="badge badge-success">New</span>-->
                         <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
                         <div class="pageicon pull-left" style="padding: 9px;">
                             <i class="fa fa-fax"></i>
                         </div>
                         <div class="media-body">
-                            <strong>{{trimString (getActivityDescription this._id) 0 30}}</strong>
+                            <strong>{{trimString (getActivityDescription this) 0 30}}</strong>
+                            <p><i>{{trimString this.note 0 30}} ... </i></p>
+                            <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div><!-- dropdown-menu -->
+        </div><!-- btn-group -->
+        {{/if}}
+
+        {{#if condition timesStatusNotSeen.length '>' 0}}
+        <div class="btn-group btn-group-list btn-group-messages">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="badge">{{timesStatusNotSeen.length}}</span>
+            </button>
+
+            <div class="dropdown-menu pull-right">
+                <!--<a href="" class="link-right"><i class="fa fa-plus"></i></a>-->
+                <h5>Your recorded times</h5>
+                <ul class="media-list dropdown-list">
+                    {{#each timesStatusNotSeen}}
+                    <li data-timeId="{{_id}}" class="media pointer timesRowForApprovedOrRejected">
+                        <!--<span class="badge badge-success">New</span>-->
+                        <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
+                        <div class="pageicon pull-left" style="padding: 9px;">
+                            <i class="fa fa-fax"></i>
+                        </div>
+                        <div class="media-body">
+                            <strong>{{trimString (getActivityDescription this) 0 30}} ({{this.status}})</strong>
                             <p><i>{{trimString this.note 0 30}} ... </i></p>
                             <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
                         </div>
