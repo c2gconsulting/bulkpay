@@ -110,18 +110,24 @@ Template.SapB1Config.events({
 
         let payTypes = Template.instance().paytypes.get() || []
         let currentPayType = _.find(payTypes, function (o) {
-            return o.payTypeId === payTypeId;
+            return o._id === payTypeId;
         })
+
         if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            domElemAsJqueryElem.closest('tr td input[name=payTypeCreditGlAccountCode]').val('')
             swal('Validation error', 'G/L account code should not have hypen characters', 'error')
             return
         } else {
-            var isnum = /^\d+$/.test(payTypeGlAccountCode);
-            if(!isnum) {
-                swal('Validation error', 'G/L account code should be a pure number', 'error')
-                return
+            if(payTypeGlAccountCode && payTypeGlAccountCode.length > 0) {
+                var isnum = /^\d+$/.test(payTypeGlAccountCode);
+                if(!isnum) {
+                    domElemAsJqueryElem.closest('tr td input[name=payTypeCreditGlAccountCode]').val('')
+                    swal('Validation error', 'G/L account code should be a pure number', 'error')
+                    return
+                }
             }
         }
+        currentPayType.payTypeId = payTypeId
         currentPayType.payTypeCreditAccountCode = payTypeGlAccountCode
         Template.instance().paytypes.set(payTypes);
     },
@@ -135,18 +141,24 @@ Template.SapB1Config.events({
         let payTypes = Template.instance().paytypes.get() || []
 
         let currentPayType = _.find(payTypes, function (o) {
-            return o.payTypeId === payTypeId;
+            return o._id === payTypeId;
         })
+
         if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            domElemAsJqueryElem.closest('tr td input[name=payTypeDebitGlAccountCode]').val('')
             swal('Validation error', 'G/L account code should not have hypen characters', 'error')
             return
         } else {
-            var isnum = /^\d+$/.test(payTypeGlAccountCode);
-            if(!isnum) {
-                swal('Validation error', 'G/L account code should be a pure number', 'error')
-                return
+            if(payTypeGlAccountCode && payTypeGlAccountCode.length > 0) {
+                var isnum = /^\d+$/.test(payTypeGlAccountCode);
+                if(!isnum) {
+                    domElemAsJqueryElem.closest('tr td input[name=payTypeDebitGlAccountCode]').val('')
+                    swal('Validation error', 'G/L account code should be a pure number', 'error')
+                    return
+                }
             }
         }
+        currentPayType.payTypeId = payTypeId
         currentPayType.payTypeDebitAccountCode = payTypeGlAccountCode
         Template.instance().paytypes.set(payTypes);
     },
@@ -186,7 +198,7 @@ Template.SapB1Config.events({
         let businessUnitId = Session.get('context')
 
         let thePayTypes = Template.instance().paytypes.get()
-        console.log(`The thePayTypes: ${JSON.stringify(thePayTypes)}`)
+        // console.log(`The thePayTypes: ${JSON.stringify(thePayTypes)}`)
 
         Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, (err, res) => {
             if(res) {
@@ -273,7 +285,9 @@ Template.SapB1Config.onCreated(function () {
                     if(currentPayType) {
                         _.extend(payType, currentPayType)
                     }
+                } else {
                 }
+                payType.payTypeId = payType._id
                 return payType
             }));
         }
