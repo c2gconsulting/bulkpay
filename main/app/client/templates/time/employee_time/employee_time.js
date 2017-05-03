@@ -100,7 +100,8 @@ Template.EmployeeTime.onRendered(function () {
                 events: events,
                 eventClick: function(event) {
                     if (event._id) {
-                        self.dict.set('selected', {type: event.type, id: event._id});
+                        // self.dict.set('selected', {type: event.type, id: event._id});
+                        Modal.show('selectedEvent', {type: event.type, id: event._id})
                         return false;
                     }
                 }
@@ -126,4 +127,5 @@ Template.EmployeeTime.onRendered(function () {
 
 
 Template.EmployeeTime.onDestroyed(function () {
+    Modal.hide('selectedEvent')
 });

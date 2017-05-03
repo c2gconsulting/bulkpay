@@ -1,87 +1,101 @@
 <template name="selectedEvent">
-    {{#with selected}}
-        {{#if leave}}
-            <div class="media divider">
-                <a class="pull-left" href="#">
-                    <img class="media-object img-circle" src="/admin/img/Person.png">
-                </a>
 
-                <div class="media-body">
-                    <h4 class="media-heading"><a href="blog-single.html">{{employeeName employeeId}}</a></h4>
-                    <p class="media-desc">{{leaveType type}}</p>
-                </div>
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{#if leave}}Leave Approval{{else}}Time Approval{{/if}}</h3>
             </div>
-            <address>
-                <strong>Description.</strong><br>
-                {{description}}<br>
-            </address>
+            <div class="panel-body">
+            {{#with selected}}
+                {{#if leave}}
+                    <div class="media divider">
+                        <a class="pull-left" href="#">
+                            <img class="media-object img-circle" src="/admin/img/Person.png">
+                        </a>
 
-            <address>
-                <strong>Start Date : </strong><br>
-                <a href="#">{{dateFormat startDate}}</a>
-            </address>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{employeeName employeeId}}</h4>
+                            <p class="media-desc">{{leaveType type}}</p>
+                        </div>
+                    </div>
+                    <address>
+                        <strong>Description.</strong><br>
+                        {{description}}<br>
+                    </address>
 
-            <address>
-                <strong>End Date : </strong><br>
-                <a href="#">{{dateFormat endDate}}</a>
-            </address>
+                    <address>
+                        <strong>Start Date : </strong><br>
+                        <a href="#">{{dateFormat startDate}}</a>
+                    </address>
 
-            <address>
-                <strong>Duration : </strong><br>
-                <a href="#">{{duration}} Day(s)</a>
-            </address>
+                    <address>
+                        <strong>End Date : </strong><br>
+                        <a href="#">{{dateFormat endDate}}</a>
+                    </address>
 
-            {{#if canApproveLeave employeeId approvalStatus}}
-                <button class="btn btn-success btn-block" id="approve">Approve</button>
-                <button class="btn btn-warning btn-block" id="reject">Reject</button>
+                    <address>
+                        <strong>Duration : </strong><br>
+                        <a href="#">{{duration}} Day(s)</a>
+                    </address>
 
-            {{else}}
-                <button class="btn {{statusStyle approvalStatus}}  btn-rounded center center-block col-sm-12">{{approvalStatus}}</button>
-            {{/if}}
-        {{/if}}
-        {{#if time}}
-            <div class="media divider">
-                <a class="pull-left" href="#">
-                    <img class="media-object img-circle" src="/admin/img/Person.png">
-                </a>
+                    {{#if canApproveLeave employeeId approvalStatus}}
+                        <button class="btn btn-success btn-block" id="approve">Approve</button>
+                        <button class="btn btn-warning btn-block" id="reject">Reject</button>
+                        <button type="reset" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                    {{else}}
+                        <button class="btn {{statusStyle approvalStatus}}  btn-rounded center center-block col-sm-12">{{approvalStatus}}</button>
+                    {{/if}}
+                {{/if}}
+                {{#if time}}
+                    <div class="media divider">
+                        <a class="pull-left" href="#">
+                            <img class="media-object img-circle" src="/admin/img/Person.png">
+                        </a>
 
-                <div class="media-body">
-                    <h4 class="media-heading"><a href="blog-single.html">{{employeeName employeeId}}</a></h4>
-                    <p class="media-desc">{{activity}}</p>
-                </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">{{employeeName employeeId}}</h4>
+                            <p class="media-desc">Activity: {{getActivityDescription activity}}</p>
+                        </div>
+                    </div>
+                    <address>
+                        <strong>Note. : </strong><br>
+                        {{note}}
+                    </address>
+
+                    <address>
+                        <strong>Time Recording for : </strong><br>
+                        <a href="#">{{formatTime startTime}}</a>
+                    </address>
+
+                    <address>
+                        <strong>From : </strong><br>
+                        <a href="#">{{dateFormat startTime}}</a>
+                    </address>
+
+                    <address>
+                        <strong>To : </strong><br>
+                        <a href="#">{{dateFormat endTime}}</a>
+                    </address>
+
+                    <address>
+                        <strong>Duration : </strong><br>
+                        <a href="#">{{duration}} Hour(s)</a>
+                    </address>
+
+                    {{#if canApproveTime employeeId status}}
+                        <button class="btn btn-success btn-block" id="approve">Approve</button>
+                        <button class="btn btn-warning btn-block" id="reject">Reject</button>
+                        <button type="reset" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                    {{else}}
+                        <button class="btn {{statusStyle status}}  btn-rounded center center-block col-sm-12">{{status}}</button>
+                    {{/if}}
+                {{/if}}
+            {{/with}}
             </div>
-            <address>
-                <strong>Note. : </strong><br>
-                {{note}}
-            </address>
-
-            <address>
-                <strong>Time Recording for : </strong><br>
-                <a href="#">{{formatTime startTime}}</a>
-            </address>
-
-            <address>
-                <strong>From : </strong><br>
-                <a href="#">{{dateFormat startTime}}</a>
-            </address>
-
-            <address>
-                <strong>To : </strong><br>
-                <a href="#">{{dateFormat endTime}}</a>
-            </address>
-
-            <address>
-                <strong>Duration : </strong><br>
-                <a href="#">{{duration}} Hour(s)</a>
-            </address>
-
-            {{#if canApproveTime employeeId status}}
-                <button class="btn btn-success btn-block" id="approve">Approve</button>
-                <button class="btn btn-warning btn-block" id="reject">Reject</button>
-
-            {{else}}
-                <button class="btn {{statusStyle status}}  btn-rounded center center-block col-sm-12">{{status}}</button>
-            {{/if}}
-        {{/if}}
-    {{/with}}
+        </div>
+    </div>
+    </div>
+    </div>
 </template>

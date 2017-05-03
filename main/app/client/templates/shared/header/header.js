@@ -38,6 +38,11 @@ Template.header.events({
                 swal('Validation error', err.message, 'error')
             }
         })
+    },
+    'click .timeRowForApproval': function(e, tmpl) {
+        e.preventDefault()
+        let timeId = e.currentTarget.getAttribute('data-timeId')
+        Modal.show('selectedEvent', {type: 'Times', id: timeId})
     }
 });
 
@@ -175,3 +180,7 @@ Template.header.onCreated(function() {
 Template.header.onRendered(function () {
 
 });
+
+Template.header.onDestroyed(function() {
+    Modal.show('selectedEvent', {type: 'Times', id: timeId})
+})

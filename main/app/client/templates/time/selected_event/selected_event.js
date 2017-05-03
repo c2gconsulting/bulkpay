@@ -13,13 +13,13 @@ Template.selectedEvent.events({
                     showCancelButton: true,
                     confirmButtonColor: "#DD6B55",
                     confirmButtonText: "Yes, Approve!",
-                    cancelButtonText: "No, cancel plx!",
+                    cancelButtonText: "No, cancel",
                     closeOnConfirm: false,
                     closeOnCancel: false
                 },
-                function(isConfirm){
+                function(isConfirm) {
                     if (isConfirm) {
-                        Meteor.call('approveTimeData', selected, function(err, res){
+                        Meteor.call('approveTimeData', selected, function(err, res) {
                             if(res){
                                 swal('Success', 'Successfully approved event', 'success');
                             } else {
@@ -30,7 +30,6 @@ Template.selectedEvent.events({
                         swal("Cancelled", "Approval action cancelled :)", "error");
                     }
                 });
-
         }
     },
     'click #reject': (e, tmpl) => {
@@ -80,6 +79,10 @@ Template.selectedEvent.helpers({
     'time': () => {
         return Template.instance().data.type === 'Times';
     },
+    'getActivityDescription': (id) => {
+        let activity = Activities.findOne({_id: id});
+        return activity ? activity.description : '---';
+    },
     'employeeName': (id) => {
         return Meteor.users.findOne({_id: id}).profile.fullName;
     },
@@ -104,6 +107,7 @@ Template.selectedEvent.helpers({
 /*****************************************************************************/
 Template.selectedEvent.onCreated(function () {
     let self = this;
+    self.subscribe('AllActivities', Session.get('context'));
 });
 
 Template.selectedEvent.onRendered(function () {
