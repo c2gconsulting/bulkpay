@@ -43,6 +43,11 @@ Template.header.events({
         e.preventDefault()
         let timeId = e.currentTarget.getAttribute('data-timeId')
         Modal.show('selectedEvent', {type: 'Times', id: timeId})
+    },
+    'click .leaveRowForApproval': function(e, tmpl) {
+        e.preventDefault()
+        let leaveId = e.currentTarget.getAttribute('data-leaveId')
+        Modal.show('selectedEvent', {type: 'Leaves', id: leaveId})
     }
 });
 
@@ -67,6 +72,13 @@ Template.header.helpers({
     },
     'timesStatusNotSeen': function() {
         return Template.instance().timesStatusNotSeen.get()
+    },
+    'leavesToApprove': function() {
+        return Template.instance().leavesToApprove.get()
+    },
+    'getLeaveTypeName': function(leaveTypeId) {
+        let leaveType = LeaveTypes.findOne({_id: leaveTypeId})
+        return leaveType ? leaveType.name : '---'
     },
     'currentUserId': function() {
         return Meteor.userId();
@@ -144,7 +156,6 @@ Template.header.onCreated(function() {
                 businessIds: businessUnitId,
                 "employeeProfile.employment.position": {$in: positions}
             };
-            console.log(`selector: ${JSON.stringify(selector)}`)
 
             let allSuperviseeIds = []
 
@@ -170,7 +181,7 @@ Template.header.onCreated(function() {
             //--
             let leavesToApprove = Leaves.find({
                 employeeId: {$in: allSuperviseeIds},
-                status: 'Open'
+                approvalStatus: 'Open'
             }).fetch()
             self.leavesToApprove.set(leavesToApprove)
         }

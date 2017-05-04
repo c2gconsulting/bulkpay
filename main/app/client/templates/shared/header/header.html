@@ -165,6 +165,36 @@
         </div><!-- btn-group -->
         {{/if}}
 
+        {{#if condition leavesToApprove.length '>' 0}}
+        <div class="btn-group btn-group-list btn-group-messages">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="badge">{{leavesToApprove.length}}</span>
+            </button>
+
+            <div class="dropdown-menu pull-right">
+                <!--<a href="" class="link-right"><i class="fa fa-plus"></i></a>-->
+                <h5>Employee leave requests to approve</h5>
+                <ul class="media-list dropdown-list">
+                    {{#each leavesToApprove}}
+                    <li data-leaveId="{{_id}}" class="media pointer leaveRowForApproval">
+                        <!--<span class="badge badge-success">New</span>-->
+                        <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
+                        <div class="pageicon pull-left" style="padding: 9px;">
+                            <i class="fa fa-fax"></i>
+                        </div>
+                        <div class="media-body">
+                            <strong>{{trimString (getLeaveTypeName this.type) 0 30}}</strong>
+                            <p><i>{{trimString this.description 0 30}} ... </i></p>
+                            <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div><!-- dropdown-menu -->
+        </div><!-- btn-group -->
+        {{/if}}
+
             <div class="btn-group btn-group-option">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-caret-down"></i>

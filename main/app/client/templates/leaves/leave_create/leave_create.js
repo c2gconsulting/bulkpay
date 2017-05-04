@@ -16,6 +16,9 @@ Template.LeaveCreate.helpers({
         });
         return returnedArray
     },
+    'businessIdHelper': () => {
+        return Session.get('context')
+    },
     'formType': () => {
         if(Template.instance().data)
             return "leaveForm";

@@ -142,10 +142,7 @@ Core.Schemas.Leave = new SimpleSchema({
         optional: true
     },
     businessId: {
-        type: String,
-        autoValue: function () {
-            return BusinessUnits.findOne()._id
-        }
+        type: String
     },
     employeeId: {
         type: String,
