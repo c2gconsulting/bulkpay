@@ -88,7 +88,17 @@ Meteor.methods({
                     throw new Meteor.Error('401', 'Unauthorized');
                 }
         }
+    },
+    "Leaves/markAsSeen": function(businessUnitId, leaveId){
+        check(businessUnitId, String);
+        this.unblock()
+
+        let leaveRequest = Leaves.findOne({_id: leaveId})
+        if(leaveRequest && leaveRequest.employeeId === Meteor.userId()) {
+            Leaves.update(leaveId, {$set: {isApprovalStatusSeenByCreator: true}})
+            return true;
+        } else {
+            throw new Meteor.Error(401, "Unauthorized. You didn't create that leave request")
+        }
     }
-
 });
-

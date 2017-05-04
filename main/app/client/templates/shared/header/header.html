@@ -195,6 +195,33 @@
         </div><!-- btn-group -->
         {{/if}}
 
+        {{#if condition leavesApprovalStatusNotSeen.length '>' 0}}
+        <div class="btn-group btn-group-list btn-group-messages">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="badge">{{leavesApprovalStatusNotSeen.length}}</span>
+            </button>
+
+            <div class="dropdown-menu pull-right">
+                <h5>Your leave requests</h5>
+                <ul class="media-list dropdown-list">
+                    {{#each leavesApprovalStatusNotSeen}}
+                    <li class="media pointer">
+                        <span data-leaveId="{{_id}}" class="badge badge-success leaveApprovalSeen">Seen</span>
+                        <div class="pageicon pull-left" style="padding: 9px;">
+                            <i class="fa fa-fax"></i>
+                        </div>
+                        <div class="media-body">
+                            <strong>{{trimString (getLeaveTypeName this.type) 0 30}} ({{this.approvalStatus}})</strong>
+                            <p><i>{{trimString this.description 0 30}} ... </i></p>
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+        {{/if}}
+
             <div class="btn-group btn-group-option">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-caret-down"></i>

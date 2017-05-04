@@ -44,9 +44,8 @@
                         <button class="btn btn-success btn-block" id="approve">Approve</button>
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>
                     {{else}}
-                        <button class="btn {{statusStyle approvalStatus}}  btn-rounded center center-block col-sm-12">{{approvalStatus}}</button>
+                        <button class="btn {{statusStyle approvalStatus}} btn-rounded center center-block col-sm-12" data-dismiss="modal">{{approvalStatus}}</button>
                     {{/if}}
-                    <button type="reset" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
                 {{/if}}
                 {{#if time}}
                     <div class="media divider">
@@ -88,9 +87,8 @@
                         <button class="btn btn-success btn-block" id="approve">Approve</button>
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>
                     {{else}}
-                        <button class="btn {{statusStyle status}}  btn-rounded center center-block col-sm-12">{{status}}</button>
+                        <button class="btn {{statusStyle status}}  btn-rounded center center-block col-sm-12" data-dismiss="modal">{{status}}</button>
                     {{/if}}
-                    <button type="reset" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
                 {{/if}}
             {{/with}}
             </div>

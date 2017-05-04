@@ -93,7 +93,6 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized to approve requisition.")
         }
-        throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     },
     "ProcurementRequisition/reject": function(businessUnitId, docId){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
@@ -116,7 +115,6 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized to approve requisition.")
         }
-        throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     },
     "ProcurementRequisition/markAsSeen": function(businessUnitId, docId){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
@@ -132,6 +130,5 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized. You didn't create that requisition")
         }
-        throw new Meteor.Error(404, "Sorry, you have not supervisor to approve your requisition");
     }
 });

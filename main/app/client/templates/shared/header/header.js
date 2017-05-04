@@ -48,6 +48,19 @@ Template.header.events({
         e.preventDefault()
         let leaveId = e.currentTarget.getAttribute('data-leaveId')
         Modal.show('selectedEvent', {type: 'Leaves', id: leaveId})
+    },
+    'click .leaveApprovalSeen': function(e, tmpl) {
+        e.preventDefault()
+
+        let leaveId = e.currentTarget.getAttribute('data-leaveId')
+        console.log(`[Inside leaveApprovalSeen] leaveId: ${leaveId}`)
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('Leaves/markAsSeen', businessUnitId, leaveId, function(err, res) {
+            if(err) {
+                swal('Validation error', err.message, 'error')
+            }
+        })
     }
 });
 
@@ -76,6 +89,9 @@ Template.header.helpers({
     'leavesToApprove': function() {
         return Template.instance().leavesToApprove.get()
     },
+    'leavesApprovalStatusNotSeen': function() {
+        return Template.instance().leavesApprovalStatusNotSeen.get()
+    },
     'getLeaveTypeName': function(leaveTypeId) {
         let leaveType = LeaveTypes.findOne({_id: leaveTypeId})
         return leaveType ? leaveType.name : '---'
@@ -84,16 +100,12 @@ Template.header.helpers({
         return Meteor.userId();
     },
     'getActivityDescription': function(time) {
-        // console.log(`Inside getActivityDescription! Time: ${JSON.stringify(time)}`)
         let activity = Activities.findOne({_id: time.activity})
-        // console.log(`Activity: ${JSON.stringify(activity)}`)
-
         return activity ? activity.description : '---';
     }
 });
 
 Template.header.onCreated(function() {
-    console.log(`[header.js] inside onCreated`)
     let self = this
 
     self.procurementsToApprove = new ReactiveVar()
@@ -116,6 +128,8 @@ Template.header.onCreated(function() {
 
     self.autorun(function() {
         let businessUnitId = Session.get('context')
+        if(!businessUnitId)
+            return
 
         self.subscribe('AllActivities', Session.get('context'));
 
@@ -184,6 +198,13 @@ Template.header.onCreated(function() {
                 approvalStatus: 'Open'
             }).fetch()
             self.leavesToApprove.set(leavesToApprove)
+            //--
+            let leavesStatusNotSeen = Leaves.find({
+                employeeId: Meteor.userId(),
+                $or: [{approvalStatus: 'Approved'}, {approvalStatus: 'Rejected'}],
+                isApprovalStatusSeenByCreator : {$ne: true}
+            }).fetch()
+            self.leavesApprovalStatusNotSeen.set(leavesStatusNotSeen)
         }
     })
 })
@@ -193,5 +214,5 @@ Template.header.onRendered(function () {
 });
 
 Template.header.onDestroyed(function() {
-    Modal.show('selectedEvent', {type: 'Times', id: timeId})
+    Modal.hide('selectedEvent')
 })
