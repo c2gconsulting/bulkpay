@@ -151,7 +151,6 @@ Template.payruns.onCreated(function () {
 
     self.autorun(() => {
         let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
-
         self.subscribe("Payruns", currentPayrunPeriod);
 
         if (self.subscriptionsReady()) {

@@ -18,43 +18,60 @@
 
     <div class="contentpanel">
         <div class="row">
-            {{#if myPaySlips}}
-                <div class="col-md-4 col-md-offset-4">
-                    <div class="table-responsive">
-                        <table class="table table-primary mb60 table-hover">
-                            <thead>
-                            <tr>
-                                <th>Period</th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {{#each myPaySlips}}
-                              {{> singlePaySlipResult index=@index data=this}}
-                            {{/each}}
-                            </tbody>
-                        </table>
-                    </div><!-- table-responsive -->
-                </div>
-            {{else}}
-                <div class="col-md-12">
-                    {{#if errorMsg}}
-                    <div class="alert alert-danger text-center">
-                        <p>{{errorMsg}}</p>
+          <div class="col-md-12 employee-filter">
+              <div class="row">
+                  <div class="col-md-8">
+                    <div class="row">
+                        <h5>Please select a period</h5>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select name="paymentPeriodMonth" class="form-control dropdown" style="width: 100%">
+                                        <option value="">Select Month</option>
+                                        {{#each month}}
+                                            <option value="{{period}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select name="paymentPeriodYear" class="form-control dropdown" style="width: 100%">
+                                        <option value="">Select Year </option>
+                                        {{#each year}}
+                                            <option value="{{this}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div>
+
+                            <div class="col-md-3">
+                                <button class="btn btn-primary mr5 ladda-button" id="get-employee-payslip">Get Payslip</button>
+                            </div>
+                        </div>
                     </div>
-                    {{/if}}
-                </div>
-            {{/if}}
+
+                    <div class="row">
+                        {{#if errorMsg}}
+                        <div class="alert alert-danger text-center">
+                            <p>{{errorMsg}}</p>
+                        </div>
+                        {{/if}}
+                    </div>
+                  </div>
+              </div>
+          </div>
         </div><!-- row -->
     </div><!-- contentpanel -->
 </template>
 
 
-<template name="singlePaySlipResult">
+<!-- <template name="singlePaySlipResult">
   <tr class="pointer anEmployeePayResult">
       <td>{{getPeriodText data.period}}</td>
       <td class="text-right">
           <button class="btn btn-primary payButton" id="viewPaySlip">View</button>
       </td>
   </tr>
-</template>
+</template> -->

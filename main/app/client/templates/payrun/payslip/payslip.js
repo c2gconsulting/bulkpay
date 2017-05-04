@@ -67,10 +67,10 @@ Template.Payslip.onCreated(function () {
 });
 
 Template.Payslip.onRendered(function () {
-    console.log(Template.instance().data);
+    // console.log(`Pay slip data: \n${JSON.stringify(Template.instance().data)}`);
 
 });
 
 Template.Payslip.onDestroyed(function () {
-
+    Session.get('currentPayrunPeriod', null)
 });

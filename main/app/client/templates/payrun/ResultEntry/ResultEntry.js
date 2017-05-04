@@ -10,7 +10,7 @@ Template.ResultEntry.events({
         l.start();
     },
     'click .payslip': (e, tmpl) => {
-        console.log("what i'm sending to payslip is ", tmpl.data.payslip);
+        // console.log("what i'm sending to payslip is ", JSON.stringify(tmpl.data.payslip));
         Modal.show('Payslip', tmpl.data.payslip);
     },
     'click .log': (e, tmpl) => {
