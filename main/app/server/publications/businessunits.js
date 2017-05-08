@@ -4,9 +4,10 @@
 
 Core.publish("BusinessUnits", function () {
     let user = this.userId;
-    if (Core.hasPayrollAccess(user) || Core.hasEmployeeAccess(user)) {
-        return BusinessUnits.find();
-    } else {
+
+    // if (Core.hasPayrollAccess(user) || Core.hasEmployeeAccess(user)) {
+    //     return BusinessUnits.find();
+    // } else {
         let found = Meteor.users.findOne({_id: user});
         // user not authorized. do not publish business units
         if(found.businessIds){
@@ -14,7 +15,7 @@ Core.publish("BusinessUnits", function () {
         } else{
             return this.ready();
         }
-    }
+    // }
 });
 
 /**
