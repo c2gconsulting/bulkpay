@@ -5,17 +5,19 @@
 Core.publish("BusinessUnits", function () {
     let user = this.userId;
 
-    // if (Core.hasPayrollAccess(user) || Core.hasEmployeeAccess(user)) {
-    //     return BusinessUnits.find();
-    // } else {
-        let found = Meteor.users.findOne({_id: user});
-        // user not authorized. do not publish business units
-        if(found.businessIds){
-            return BusinessUnits.find({_id: {$in: found.businessIds}});
-        } else{
+    let found = Meteor.users.findOne({_id: user});
+    if(found.businessIds && found.businessIds.length > 0){
+        console.log(`usesr businessIds is NOT null`)
+        return BusinessUnits.find({_id: {$in: found.businessIds}});
+    } else {
+        console.log(`usesr businessIds is null`)
+
+        if (Core.hasPayrollAccess(user) || Core.hasEmployeeAccess(user)) {
+            return BusinessUnits.find();
+        } else {
             return this.ready();
         }
-    // }
+    }
 });
 
 /**
