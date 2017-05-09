@@ -32,13 +32,18 @@ Template.TimeWritingReport.events({
                 tmpl.$('.excel').removeAttr('disabled');
             };
             //--
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), startTime, endTime, function(err, res) {
+            let startTimeAsDate = tmpl.getDateFromString(startTime)
+            let endTimeAsDate = tmpl.getDateFromString(endTime)
+
+            //--
+            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
+                startTimeAsDate, endTimeAsDate, function(err, res) {
                 resetButton()
                 if(res){
-                    BulkpayExplorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
+                    // BulkpayExplorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
                 } else {
                     console.log(err);
-                    swal('No result found', 'Payroll Result not found for period', 'error');
+                    swal('No result found', 'Result not found for period', 'error');
                 }
             });
         } else {
@@ -72,6 +77,11 @@ Template.TimeWritingReport.helpers({
 /*****************************************************************************/
 Template.TimeWritingReport.onCreated(function () {
     let self = this;
+
+    self.getDateFromString = function(str1) {
+        let theDate = moment(str1);
+        return theDate.add('hours', 1).toDate()
+    }
 });
 
 Template.TimeWritingReport.onRendered(function () {
