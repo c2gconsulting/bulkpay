@@ -14,8 +14,6 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized");
         }
-
     }
-
 });
 

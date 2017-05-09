@@ -306,3 +306,10 @@ Router.route('/business/:_id/reports/comprehensive', {
     action: 'comprehensive',
     where: 'client'
 });
+
+Router.route('/business/:_id/reports/timewriting', {
+    name: 'reports.timewriting',
+    controller: 'ReportsController',
+    action: 'timewriting',
+    where: 'client'
+});

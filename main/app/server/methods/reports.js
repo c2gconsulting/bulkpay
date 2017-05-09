@@ -125,5 +125,39 @@ Meteor.methods({
                 return null
             }
         }
+    },
+    'reports/timesForEveryoneByProject': function(businessId, startDate, endDate) {
+        check(period, String);
+        check(businessId, String);
+        //--
+        console.log(`startDate: ${JSON.stringify(startDate)}`)
+        console.log(`endDate: ${JSON.stringify(endDate)}`)
+
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let timesForProject = Times.find({
+                businessId: businessId, 
+                project: {$exists : true},
+                startTime: {$gte: startDate},
+                endTime: {$lt: endDate}
+            }).fetch();
+
+            let biffedUpTimes = timesForProject.map(aTime => {
+                let project = Projects.findOne({_id: aTime.project})
+                if(project) {
+                    _.extend(aTime.project, project)
+                }
+                //--
+                let activity = Activities.findOne({_id: aTime.activity})
+                if(activity) {
+                    _.extend(aTime.activity, activity)
+                }
+                return aTime
+            })
+            console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
+
+            return biffedUpTimes
+        }
     }
 })
