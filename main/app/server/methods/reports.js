@@ -127,7 +127,6 @@ Meteor.methods({
         }
     },
     'reports/timesForEveryoneByProject': function(businessId, startDate, endDate) {
-        check(period, String);
         check(businessId, String);
         //--
         console.log(`startDate: ${JSON.stringify(startDate)}`)
@@ -142,8 +141,15 @@ Meteor.methods({
                 startTime: {$gte: startDate},
                 endTime: {$lt: endDate}
             }).fetch();
+            console.log(`timesForProject: ${JSON.stringify(timesForProject)}`)
 
             let biffedUpTimes = timesForProject.map(aTime => {
+                let projectEmployee = Meteor.users.findOne({_id: aTime.employeeId})
+                if(projectEmployee) {
+                    aTime.employee = {}
+                    _.extend(aTime.employee, projectEmployee)
+                }
+                //--
                 let project = Projects.findOne({_id: aTime.project})
                 if(project) {
                     _.extend(aTime.project, project)

@@ -32,8 +32,7 @@ Template.TimeWritingReport.events({
                 tmpl.$('.excel').removeAttr('disabled');
             };
             //--
-            const period = month + year;
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), period, function(err, res) {
+            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), startTime, endTime, function(err, res) {
                 resetButton()
                 if(res){
                     BulkpayExplorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
