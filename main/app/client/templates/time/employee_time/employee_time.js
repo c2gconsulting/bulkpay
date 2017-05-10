@@ -98,7 +98,7 @@ Template.EmployeeTime.onRendered(function () {
                     let theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
                     //console.log(`The weekdays: ${JSON.stringify(theWeekDays)}`)
 
-                    Modal.show('TimeCreate', theWeekDays);
+                    Modal.show('TimeCreate2', theWeekDays);
                 },
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events

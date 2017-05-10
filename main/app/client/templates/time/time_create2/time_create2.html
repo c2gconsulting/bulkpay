@@ -1,0 +1,88 @@
+<template name="TimeCreate2">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                {{#autoForm collection="Times" id=formType doc=this type=formAction }}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Enter Time Data</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">Cost Element</label>
+                                <div class="col-sm-8">
+
+                                    <div class="rdio rdio-default">
+                                        <input type="radio" name="costElement" id="Project" value="Project" checked="checked">
+                                        <label for="Project">Project</label>
+                                    </div>
+
+                                    <div class="rdio rdio-primary">
+                                        <input type="radio" name="costElement" value="costCenter" id="costCenter">
+                                        <label for="costCenter">Cost Center</label>
+                                    </div>
+
+                                </div><!-- col-sm-8 -->
+                            </div>
+                        </div> <!-- row -->
+                        <div class="row">
+                            {{#if projectSelected}}
+                                    <div class="col-sm-6">
+                                        {{> afQuickField name="project" options=projects class="dropdown" id="project"}}
+                                    </div><!-- col-sm-3 -->
+
+                                    <div class="col-sm-6">
+                                        {{> afQuickField name="activity"  id="activity" options=projectActivities class="dropdown" }}
+                                    </div><!-- col-sm-3 -->
+                            {{/if}}
+                             {{#if costCenterSelected}}
+                                <div class="col-sm-6">
+                                    {{> afQuickField name="costCenter" options=costCenters class="dropdown" id="cost"}}
+                                </div><!-- col-sm-3 -->
+
+                                <div class="col-sm-6">
+                                    {{> afQuickField name="activity"  id="activity" options=costCenterActivities class="dropdown" }}
+                                </div><!-- col-sm-3 -->
+                             {{/if}}
+
+                            <div class="col-sm-12">
+                                <label>Days</label>                                
+                                <div class="">
+                                    {{#each datesForTimeWriting}}
+                                        <ul class="pagination pagination-split pagination-sm pagination-contact pull-left">
+                                            {{#if condition currentDayIndex '==' @index}}
+                                                <li class="active"><a class="goToPage" data-pageNum="2">{{getDayFromDate this}}</a></li>
+                                            {{else}}
+                                                <li><a class="goToPage" data-pageNum="2">{{getDayFromDate this}}</a></li>
+                                            {{/if}}
+                                        </ul>
+                                    {{/each}}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                {{> afQuickField name="duration" id="duration" title="(in hours)"}}
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                {{> afQuickField name="note" rows=3 }}
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="TimeCreate">Save</button>
+
+                        <button class="btn btn-primary mr5 pull-right" id="NextDurationForDay">Next</button>
+                    </div><!-- panel-footer -->
+                </div>
+               {{/autoForm}}
+            </div>
+        </div>
+    </div>
+</template>
