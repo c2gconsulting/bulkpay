@@ -64,6 +64,15 @@ Meteor.methods({
 
             let employee = Meteor.users.findOne({_id: employeeId})
             if(employee) {
+                if(!employee.employeeProfile.employment.position 
+                    || employee.employeeProfile.employment.position.trim() === "") {
+                    item.ErrorLine = (i + 1)
+                    item.Error = "Employee does not have a position"
+                    skipped.push(item);
+                    skippedCount += 1
+                    continue                    
+                }
+                //--
                 let paygradeId = item.PaygradeUniqueId;
                 if(!paygradeId) {
                     item.ErrorLine = (i + 1)
