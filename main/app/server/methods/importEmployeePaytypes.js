@@ -35,7 +35,9 @@ Meteor.methods({
                             return aPayType.paytype === payTypeId
                         })
                         if (isPayTypeAllowed) {
-                            userPaytypes.push({paytype: payTypeId, value: item[anItemProperty]})
+                            let payTypeAmount = item[anItemProperty]
+                            let payTypeAmountWithNoCommas = payTypeAmount.replace(/,/g, "").trim();
+                            userPaytypes.push({paytype: payTypeId, value: payTypeAmountWithNoCommas})
                         }
                     }
                 }
