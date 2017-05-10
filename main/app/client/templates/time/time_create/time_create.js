@@ -91,6 +91,9 @@ Template.TimeCreate.onCreated(function () {
     self.costCenter = new ReactiveVar();
     self.selectedElement = new ReactiveVar("Project");
 
+    let datesForTimeWriting = self.data
+    console.log(`Dates for time writing: ${JSON.stringify(datesForTimeWriting)}`)
+
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
     self.subscribe('AllActivities', Session.get('context'));
