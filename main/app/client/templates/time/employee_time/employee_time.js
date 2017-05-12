@@ -50,7 +50,7 @@ Template.EmployeeTime.onRendered(function () {
     self.autorun(function(){
         let events = [];
         const leaves = Leaves.find({}).fetch();
-        const times = Times.find({}).fetch();
+        const times = TimeWritings.find({}).fetch();
         leaves.forEach(x => {
             const user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
             const leaveDescription = LeaveTypes.findOne({_id: x.type}).name;
@@ -68,10 +68,17 @@ Template.EmployeeTime.onRendered(function () {
             let user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
             let obj = {};
             obj._id = x._id;
-            obj.type = 'Times';
+            obj.type = 'TimeWritings';
             obj.title = user + "-" + x.activity;
-            obj.start = moment(x.startTime).format('YYYY-MM-DDTHH:mm:ss');
-            obj.end = moment(x.endTime).format('YYYY-MM-DDTHH:mm:ss');
+
+            var dayStart = moment(x.day).startOf('day'); // set to 12:00 am today
+            var dayEnd = moment(x.day).endOf('day'); // set to 23:59 pm today
+
+            // obj.start = moment(x.startTime).format('YYYY-MM-DDTHH:mm:ss');
+            // obj.end = moment(x.endTime).format('YYYY-MM-DDTHH:mm:ss');
+            obj.start = dayStart
+            obj.end = dayEnd
+
             obj.constraint = 'businessHours';
             obj.color = getColor(x.status);
             events.push(obj);

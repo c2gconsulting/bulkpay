@@ -334,6 +334,12 @@ Times = new Mongo.Collection("times");
 Partitioner.partitionCollection(Times);
 Times.attachSchema(Core.Schemas.Time);
 
+/**
+ * Core Collections TimeWritings
+ */
+TimeWritings = new Mongo.Collection("timewritings");
+Partitioner.partitionCollection(TimeWritings);
+TimeWritings.attachSchema(Core.Schemas.TimeWriting);
 
 /**
  * Core Collections ProcurementRequisitions
@@ -387,6 +393,16 @@ Times.allow({
     }
 });
 
+TimeWritings.allow({
+    insert: function(userId, doc) {
+        // only allow updating if you are logged in
+        return Core.hasSelfServiceAccess(Meteor.userId());
+    },
+    update: function(userId, doc){
+        //only allow if user has Admin access
+        return doc.employeeId === Meteor.userId();
+    }
+});
 
 Constants.allow({
     insert: function(userId, doc) {

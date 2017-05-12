@@ -37,12 +37,17 @@ Core.Schemas.TimeWriting = new SimpleSchema({
             let employeeId = this.siblingField("employeeId").value;
             let duration = this.siblingField("duration").value;
 
+            let dayAsDate = this.siblingField("day").value;
+
+            var dayStart = moment(dayAsDate).startOf('day'); // set to 12:00 am today
+            var dayEnd = moment(dayAsDate).endOf('day'); // set to 23:59 pm today
+
             return Times.find({
                 activity: this.value,
                 employeeId: employeeId,
-                startTime: {
-                    $gte: startTime,
-                    $lt: endTime
+                day: {
+                    $gte: dayStart,
+                    $lt: dayEnd
                 }
             }).count() > 0 ? "duplicateActivityOnSameDayNotAllowed" : true
         }
@@ -51,13 +56,12 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: String,
         optional: true
     },
+    day: {
+        type: Date
+    },
     note: {
         type: String,
         optional: true
-    },
-    includeBreak: {
-        type: Boolean,
-        defaultValue: true
     },
     status: {
         type: String,

@@ -2,7 +2,7 @@
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {{#autoForm collection="Times" id=formType doc=this type=formAction }}
+                {{#autoForm collection="TimeWritings" id=formType doc=this type=formAction }}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Enter Time Data</h3>
@@ -47,27 +47,34 @@
                              {{/if}}
 
                             <div class="col-sm-12">
-                                <label>Days</label>                                
+                                <label>Week days</label>                                
                                 <div class="">
                                     {{#each datesForTimeWriting}}
                                         <ul class="pagination pagination-split pagination-sm pagination-contact pull-left">
                                             {{#if condition currentDayIndex '==' @index}}
-                                                <li class="active"><a class="goToPage" data-pageNum="2">{{getDayFromDate this}}</a></li>
+                                                <li class="active">
+                                                    <a class="goToPage datesForTimeWriting" data-dayNum="{{@index}}">{{getDayFromDate this}}</a>
+                                                </li>
                                             {{else}}
-                                                <li><a class="goToPage" data-pageNum="2">{{getDayFromDate this}}</a></li>
+                                                <li>
+                                                    <a class="goToPage datesForTimeWriting" data-dayNum="{{@index}}">{{getDayFromDate this}}</a>
+                                                </li>
                                             {{/if}}
                                         </ul>
                                     {{/each}}
                                 </div>
                             </div>
 
-                            <div class="col-sm-2">
-                                {{> afQuickField name="duration" id="duration" title="(in hours)"}}
+                            <div class="col-sm-8">
+                                <div class="col-sm-6">
+                                    {{> afQuickField name="duration" id="duration" title="(in hours)" placeholder="Duration(in hours)"}}
+                                    <label>Hours left for current day: {{hoursToTimeWriteForCurrentDay}}</label> 
+                                </div>
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
 
                         <div class="row">
-
+                            <br/>
                             <div class="col-sm-12">
                                 {{> afQuickField name="note" rows=3 }}
                             </div><!-- col-sm-3 -->
@@ -78,7 +85,7 @@
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                         <button class="btn btn-primary mr5" id="TimeCreate">Save</button>
 
-                        <button class="btn btn-primary mr5 pull-right" id="NextDurationForDay">Next</button>
+                        <button class="btn btn-primary mr5 pull-right" id="NextDurationForDay">Go to Next day</button>
                     </div><!-- panel-footer -->
                 </div>
                {{/autoForm}}

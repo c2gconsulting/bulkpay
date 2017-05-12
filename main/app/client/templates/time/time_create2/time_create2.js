@@ -16,6 +16,19 @@ Template.TimeCreate2.events({
         tmpl.costCenter.set(center);
 
         console.log(`costCenter change: ${center}`)
+    },
+    'click .datesForTimeWriting': (e, tmpl) => {
+        let element = e.currentTarget
+        let dayIndex = element.getAttribute('data-dayNum')
+        console.log(`dayIndex: ${dayIndex}`)
+
+        tmpl.currentDayIndex.set(parseInt(dayIndex))
+        let businessId = Session.get('context')
+
+        let dayToFindTimesFor = tmpl.datesForTimeWriting.get()[dayIndex]
+        console.log(`dayToFindTimesFor: ${JSON.stringify(dayToFindTimesFor)}`)
+
+        Meteor.subscribe('timesForDay', businessId, dayToFindTimesFor)
     }
 });
 
@@ -87,6 +100,12 @@ Template.TimeCreate2.helpers({
     },
     'currentDayIndex': function(date) {
         return Template.instance().currentDayIndex.get()
+    },
+    'isTimeAvailableToTimeWriteForCurrentDay': function() {
+        return Template.instance().hoursToTimeWriteForCurrentDay.get() > 0 ? true : false
+    },
+    'hoursToTimeWriteForCurrentDay': function() {
+        return Template.instance().hoursToTimeWriteForCurrentDay.get()
     }
 });
 
@@ -101,13 +120,17 @@ Template.TimeCreate2.onCreated(function () {
     self.costCenter = new ReactiveVar();
     self.selectedElement = new ReactiveVar("Project");
 
-    let datesForTimeWriting = self.data
-    console.log(`Dates for time writing: ${JSON.stringify(datesForTimeWriting)}`)
+    self.datesForTimeWriting = new ReactiveVar()
+    self.datesForTimeWriting.set(self.data)
+    console.log(`Dates for time writing: ${JSON.stringify(self.datesForTimeWriting.get())}`)
 
     self.currentDayIndex = new ReactiveVar()
-    if(datesForTimeWriting && datesForTimeWriting.length > 0) {
+    if(self.datesForTimeWriting.get().length > 0) {
         self.currentDayIndex.set(0)
     }
+
+    self.hoursToTimeWriteForCurrentDay = new ReactiveVar()
+    //self.hoursToTimeWriteForCurrentDay.set(8)
 
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
@@ -115,12 +138,24 @@ Template.TimeCreate2.onCreated(function () {
 
     //--
     self.autorun(function(){
-        // if(self.project.get()) {
-        //     self.subscribe('activities', "project", self.project.get());
-        // }
-        // if(self.costCenter.get()) {
-        //     self.subscribe('activities', "unit", self.costCenter.get());
-        // }
+        let currentDayIndex = self.currentDayIndex.get()
+
+        let dayToFindTimesFor = self.datesForTimeWriting.get()[currentDayIndex]
+        var dayStart = moment(dayToFindTimesFor).startOf('day'); // set to 12:00 am today
+        var dayEnd = moment(dayToFindTimesFor).endOf('day'); // set to 23:59 pm today
+
+        let timesRecordedForDay = Times.find({
+            employeeId: Meteor.userId(), 
+            day: {$gte: dayStart, $lt: dayEnd}
+        }).fetch();
+        console.log(`timesRecordedForDay: ${JSON.stringify(timesRecordedForDay)}`)
+
+        let numberOfHoursTimewritedFor = 0
+        timesRecordedForDay.forEach(aTime => {
+            numberOfHoursTimewritedFor += aTime.duration
+        })
+        console.log(`numberOfHoursTimewritedFor: ${numberOfHoursTimewritedFor}`)
+        self.hoursToTimeWriteForCurrentDay.set(8 - numberOfHoursTimewritedFor)
     });
 });
 
@@ -132,10 +167,11 @@ Template.TimeCreate2.onRendered(function () {
     self.autorun(function() {
         $("#duration").on("change", function () {
             let duration = $("#duration").val();
+            let hoursToTimeWriteForCurrentDay = self.hoursToTimeWriteForCurrentDay.get()
 
             if (duration){
                 let durationAsHours = parseInt(duration)
-                if (durationAsHours >= 1 && durationAsHours <= 8){
+                if (durationAsHours <= hoursToTimeWriteForCurrentDay){
                     $('#TimeCreate').prop('disabled', false);
                 } else {
                   $('#TimeCreate').prop('disabled', true);
@@ -145,5 +181,5 @@ Template.TimeCreate2.onRendered(function () {
     });
 });
 
-Template.TimeCreate.onDestroyed(function () {
+Template.TimeCreate2.onDestroyed(function () {
 });

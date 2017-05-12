@@ -30,6 +30,20 @@ Core.publish("timedata", function (businessId) {
     }
 });
 
+Core.publish("timesForDay", function (businessId, dayAsDate) {
+    this.unblock();
+    check(businessId, String);
+
+    var dayStart = moment(dayAsDate).startOf('day'); // set to 12:00 am today
+    var dayEnd = moment(dayAsDate).endOf('day'); // set to 23:59 pm today
+
+    return Times.find({
+        employeeId: this.userId, 
+        day: {$gte: dayStart, $lt: dayEnd}
+    });
+});
+
+
 function getIds(users){
     const newUsers = [...users];
     const ids = newUsers.map(x => {
