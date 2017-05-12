@@ -122,18 +122,22 @@ Template.EntityCreate.helpers({
         return Template.instance().data.action == "edit";
         //use ReactiveVar or reactivedict instead of sessions..
     },
-    'parentName': (parentId) => {
-        console.log("Parent id: " + parentId);
+    'parentName': () => {
+        let selectedNodeData = EntityObjects.findOne({_id: Template.instance().data.node})
 
-        if(parentId){
-            return EntityObjects.findOne({_id: parentId}).name;
-        }
-        let root = Template.instance().isroot.get();
-        if(root) {
-            return BusinessUnits.findOne().name;
-        } else {
-            return EntityObjects.findOne().name;
-        }
+        return selectedNodeData ? selectedNodeData.name : ""
+        // let parentId = selectedNodeData.parentId
+        // console.log("Parent id: " + parentId);
+
+        // if(parentId){
+        //     return EntityObjects.findOne({_id: parentId}).name;
+        // }
+        // let root = Template.instance().isroot.get();
+        // if(root) {
+        //     return BusinessUnits.findOne().name;
+        // } else {
+        //     return EntityObjects.findOne().name;
+        // }
     },
     'checked': (prop) => {
         if(Template.instance().data)
@@ -169,11 +173,20 @@ Template.EntityCreate.onCreated(function () {
     let baseCompany = self.data.node === "root";
     //set reactiveVar to indicate node selection
     self.isroot = new ReactiveVar( baseCompany );
+
+    let entitySelectedSubscription = null
+
     if(!baseCompany){
-        self.subscribe("getEntity", self.data.node).wait;
+        entitySelectedSubscription = self.subscribe("getEntity", self.data.node);
     }
     self.subscribe("getPositions", Session.get('context'));
 
+    self.autorun(function() {
+        if(entitySelectedSubscription && entitySelectedSubscription.ready()) {
+            let selectedNodeData = EntityObjects.findOne({_id: self.data.node})
+            self.subscribe("getEntity", selectedNodeData.parentId);
+        }
+    })
 
 });
 
