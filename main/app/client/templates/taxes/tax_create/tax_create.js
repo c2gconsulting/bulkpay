@@ -17,6 +17,13 @@ Template.TaxCreate.events({
             swal("Validation error", `Please enter a valid name`, "error");
             return;
         }
+        //--
+        let grossIncomeBucket = $('[name="grossIncomeBucket"]').val()
+        if(!grossIncomeBucket || grossIncomeBucket.length === 0) {
+            swal("Validation error", `Please specify the gross income bucket`, "error");
+            return
+        }
+
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
         l.start();
         const details = {
@@ -25,6 +32,8 @@ Template.TaxCreate.events({
             name: $('[name="name"]').val(),
             grossIncomeRelief: parseInt($('[name="grossIncomeRelief"]').val()) || 20,
             consolidatedRelief: parseInt($('[name="consolidatedRelief"]').val()) || 200000,
+            grossIncomeBucket: grossIncomeBucket,
+
             bucket: $('[name="bucket"]').val(),
             status: $('[name="status"]').val(),
             rules:  tmpl.dict.get("taxRules")
@@ -208,6 +217,11 @@ Template.TaxCreate.helpers({
             return Template.instance().data[context] === val ? selected="selected" : '';
         }
     },
+    isSelected(context, val) {
+        if(Template.instance().data){
+            return Template.instance().data[context] === val ? true : false;
+        }
+    },
     'modalHeaderTitle': function() {
       return Template.instance().data.modalHeaderTitle || "New Tax Rule";
     },
@@ -237,6 +251,9 @@ Template.TaxCreate.helpers({
     },
     edit() {
         return
+    },
+    "paytype": () => {
+        return Template.instance().paytypes.get()
     }
 });
 
@@ -244,6 +261,13 @@ Template.TaxCreate.helpers({
 /* TaxCreate: Lifecycle Hooks */
 /*****************************************************************************/
 Template.TaxCreate.onCreated(function () {
+    let self = this
+    let businessUnitId = Session.get('context');
+
+    self.subscribe("PayTypes", businessUnitId);
+    //--
+    self.paytypes = new ReactiveVar()
+
     this.dict = new ReactiveDict();
     this.isATaxRuleSelectedForEdit = new ReactiveVar();
     this.isATaxRuleSelectedForEdit.set(false);
@@ -260,6 +284,11 @@ Template.TaxCreate.onCreated(function () {
         this.dict.set("taxRules", DefaultRule);
     }
 
+    self.autorun(function() {
+        if (Template.instance().subscriptionsReady()){
+            self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch())
+        }
+    })
 });
 
 Template.TaxCreate.onRendered(function () {

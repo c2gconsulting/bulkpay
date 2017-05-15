@@ -38,6 +38,22 @@
 
                             <div class="col-sm-12">
                                 <div class="form-group">
+                                    <label class="control-label">Gross Income Bucket</label>
+                                    <select  name="grossIncomeBucket" class="form-control dropdown">
+                                        <option value=""></option>
+                                        {{#each paytype}}
+                                            {{#if isSelected "grossIncomeBucket" _id}}
+                                            <option value="{{_id}}" selected>{{code}} - {{title}}</option>
+                                            {{else}}
+                                            <option value="{{_id}}">{{code}} - {{title}}</option>                                            
+                                            {{/if}}
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
                                     <label class="control-label">Status</label>
                                     <select  name="status" class="form-control dropdown" >
                                         <option value="Active" {{selected "status" "Active"}}>Active</option>
