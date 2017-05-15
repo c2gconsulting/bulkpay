@@ -86,6 +86,10 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: Date,
         optional: true
     },
+    isApprovalStatusSeenByCreator: {
+        type: Boolean,
+        defaultValue: false
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

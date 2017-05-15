@@ -17,5 +17,17 @@ Meteor.methods({
             console.log(e);
             throw new Meteor.Error(401, e.message);
         }
+    },
+    "time/markAsSeen": function(businessUnitId, timeId){
+        check(businessUnitId, String);
+        this.unblock()
+
+        let timeRecord = TimeWritings.findOne({_id: timeId})
+        if(timeRecord && timeRecord.employeeId === Meteor.userId()) {            
+            TimeWritings.update(timeId, {$set: {isApprovalStatusSeenByCreator: true}})
+            return true;
+        } else {
+            throw new Meteor.Error(401, "Unauthorized. You didn't create that time record")
+        }
     }
 })

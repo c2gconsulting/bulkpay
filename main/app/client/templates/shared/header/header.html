@@ -147,9 +147,9 @@
                 <h5>Your recorded times</h5>
                 <ul class="media-list dropdown-list">
                     {{#each timesStatusNotSeen}}
-                    <li data-timeId="{{_id}}" class="media pointer timesRowForApprovedOrRejected">
-                        <!--<span class="badge badge-success">New</span>-->
-                        <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
+                    <li data-timeId="{{_id}}" class="media pointer timesRowForApprovedOrRejected"> 
+                        <span data-timeId="{{_id}}" class="badge badge-success timeApprovalSeen">Seen</span>
+
                         <div class="pageicon pull-left" style="padding: 9px;">
                             <i class="fa fa-fax"></i>
                         </div>

@@ -61,6 +61,19 @@ Template.header.events({
                 swal('Validation error', err.message, 'error')
             }
         })
+    },
+    'click .timeApprovalSeen': function(e, tmpl) {
+        e.preventDefault()
+
+        let timeId = e.currentTarget.getAttribute('data-timeId')
+        console.log(`[Inside timeApprovalSeen] timeId: ${timeId}`)
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('time/markAsSeen', businessUnitId, timeId, function(err, res) {
+            if(err) {
+                swal('Validation error', err.message, 'error')
+            }
+        })
     }
 });
 
@@ -196,6 +209,7 @@ Template.header.onCreated(function() {
             let timesStatusNotSeen = TimeWritings.find({
                 employeeId: Meteor.userId(),
                 $or: [{status: 'Approved'}, {status: 'Rejected'}],
+                isApprovalStatusSeenByCreator : {$ne: true}
             }).fetch()
             self.timesStatusNotSeen.set(timesStatusNotSeen)
             //--

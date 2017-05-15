@@ -71,7 +71,7 @@ Template.TimeCreate2.events({
 
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
         if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
-            swal('Validation error', "You cannot record time more than 8 hours on the smae day", 'error')
+            swal('Validation error', "You cannot record time more than 8 hours on the same day", 'error')
             return
         }
 
