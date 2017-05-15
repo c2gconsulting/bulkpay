@@ -34,6 +34,8 @@ Template.Node.events({
     'click .addnode': (e, tmpl) => {
         e.preventDefault();
         let selectedNode = Session.get('node');
+        console.log(`Selected node for new member: ${selectedNode}`)
+        
         Modal.show('EntityCreate', {node: selectedNode, action: "create"});
     },
 });
