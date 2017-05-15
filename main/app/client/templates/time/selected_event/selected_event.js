@@ -77,7 +77,7 @@ Template.selectedEvent.helpers({
         return Template.instance().data.type === 'Leaves';
     },
     'time': () => {
-        return Template.instance().data.type === 'Times';
+        return Template.instance().data.type === 'TimeWritings';
     },
     'getActivityDescription': (id) => {
         let activity = Activities.findOne({_id: id});

@@ -16,7 +16,8 @@ EmployeesController = BusinessUnitController.extend({
   
   waitOn: function () {
       this.subscribe("subUsers", this.params._id);
-      this.subscribe("timedata", this.params._id);
+      //this.subscribe("timedata", this.params._id);  //uses old 'times' collection
+      this.subscribe("alltimedata", this.params._id); //uses new 'timewriting' collection
 
   },
   
