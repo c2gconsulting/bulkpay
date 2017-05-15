@@ -36,14 +36,15 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         custom: function () {
             let employeeId = this.siblingField("employeeId").value;
             let duration = this.siblingField("duration").value;
+            let activity = this.siblingField("activity").value;
 
             let dayAsDate = this.siblingField("day").value;
 
-            var dayStart = moment(dayAsDate).startOf('day'); // set to 12:00 am today
-            var dayEnd = moment(dayAsDate).endOf('day'); // set to 23:59 pm today
+            var dayStart = moment(dayAsDate).startOf('day').toDate();
+            var dayEnd = moment(dayAsDate).endOf('day').toDate();
 
-            return Times.find({
-                activity: this.value,
+            return TimeWritings.find({
+                activity: activity,
                 employeeId: employeeId,
                 day: {
                     $gte: dayStart,
@@ -58,6 +59,9 @@ Core.Schemas.TimeWriting = new SimpleSchema({
     },
     day: {
         type: Date
+    },
+    duration: {
+        type: Number
     },
     note: {
         type: String,

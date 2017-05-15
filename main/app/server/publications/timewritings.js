@@ -1,11 +1,9 @@
-/**
- * Projects publications
- */
 
-Core.publish("timedata", function (businessId) {
+Core.publish("alltimedata", function (businessId) {
     this.unblock(); // eliminate wait time impact
     //return [Times.find({}),Leaves.find({})];
     check(businessId, String);
+
     let currentId = this.userId;
     let user = Meteor.users.findOne({_id: currentId});
     if (user && user.employeeProfile.employment.position){
@@ -24,11 +22,31 @@ Core.publish("timedata", function (businessId) {
         allSubs.push(currentId);
         const allPositions = getPositions(allSubs);
         //also publish positions of all employees
-        return [Times.find({employeeId: {$in: allSubs}}), Leaves.find({employeeId: {$in: allSubs}}), LeaveTypes.find({businessId: businessId, status: 'Active'}), EntityObjects.find({_id: {$in: allPositions}})];
+        return [
+            TimeWritings.find({employeeId: {$in: allSubs}}), 
+            Leaves.find({employeeId: {$in: allSubs}}), 
+            LeaveTypes.find({businessId: businessId, status: 'Active'}), 
+            EntityObjects.find({_id: {$in: allPositions}})
+        ];
     } else {
         return this.ready();
     }
 });
+
+Core.publish("timesForDay", function (businessId, dayAsDate) {
+    this.unblock();
+    check(businessId, String);
+
+    var dayStart = moment(dayAsDate).startOf('day').toDate();
+    var dayEnd = moment(dayAsDate).endOf('day').toDate();
+
+    let timesFound = TimeWritings.find({
+        employeeId: this.userId, 
+        day: {$gte: dayStart, $lt: dayEnd}
+    });
+    return timesFound
+});
+
 
 function getIds(users){
     const newUsers = [...users];

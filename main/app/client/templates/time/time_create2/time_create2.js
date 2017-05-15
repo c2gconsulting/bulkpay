@@ -7,11 +7,11 @@ Template.TimeCreate2.events({
         if(selected)
             Template.instance().selectedElement.set(selected);
     },
-    'change [name="project"]': (e,tmpl) => {
+    'change [name="projects"]': (e,tmpl) => {
         let project = $(e.target).val();
         tmpl.project.set(project);
     },
-    'change [name="costCenter"]': (e,tmpl) => {
+    'change [name="costCenters"]': (e,tmpl) => {
         let center = $(e.target).val();
         tmpl.costCenter.set(center);
 
@@ -29,6 +29,77 @@ Template.TimeCreate2.events({
         console.log(`dayToFindTimesFor: ${JSON.stringify(dayToFindTimesFor)}`)
 
         Meteor.subscribe('timesForDay', businessId, dayToFindTimesFor)
+    },
+    'click #TimeCreate': (e, tmpl) => {
+        e.preventDefault()
+
+        let costElement = $('[name="costElement"]:checked').val();
+        console.log(`costElement: ${JSON.stringify(costElement)}`)
+
+        let costElementId = null
+        if(costElement) {
+            if(costElement === 'project') {
+                costElementId = $('[name="projects"]').val();
+            } else if(costElement === 'costCenter') {
+                costElementId = $('[name="costCenters"]').val();
+            }
+        }
+        console.log(`costElementId: ${JSON.stringify(costElementId)}`)
+        if(!costElementId || costElementId.length === 0) {
+            if(costElement === 'project') {
+                swal('Validation error', "Please select a project", 'error')
+            } else if(costElement === 'costCenter') {
+                swal('Validation error', "Please select a cost center", 'error')
+            }
+            return
+        }
+        let activityId = $('[name="activities"]').val();
+        console.log(`activityId: ${JSON.stringify(activityId)}`)
+        if(!activityId || activityId.length === 0) {
+            swal('Validation error', "Please select an activity", 'error')
+            return
+        }
+
+        let currentDayIndex = Template.instance().currentDayIndex.get()
+        let datesForTimeWriting = Template.instance().datesForTimeWriting.get()
+        let day = datesForTimeWriting[currentDayIndex]
+        console.log(`day: ${JSON.stringify(day)}`)
+
+        let duration = $('#duration').val();
+        console.log(`duration: ${duration}`)
+        let durationAsNumber = parseInt(duration)
+
+        let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
+        if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+            swal('Validation error', "You cannot record time more than 8 hours on the smae day", 'error')
+            return
+        }
+
+        let note = $('#note').val() || "";
+        console.log(`note: ${note}`)
+        //--
+        let timeDoc = {
+            employeeId: Meteor.userId(),
+            activity: activityId,
+            day: day,
+            duration: durationAsNumber,
+            note: note,
+            businessId: Session.get('context')
+        }
+        if(costElement === 'project') {
+            timeDoc.project = costElementId
+        } else if(costElement === 'costCenter') {
+            timeDoc.costCenter = costElementId
+        }
+        console.log(`timeDoc: ${JSON.stringify(timeDoc)}`)
+        //--
+        Meteor.call('time/create', timeDoc, function(err, res) {
+            if(!err) {
+                swal('Successful', "Time recorded successful", 'success')
+            } else {
+                swal('Error', err.reason, 'error')
+            }
+        })
     }
 });
 
@@ -51,7 +122,7 @@ Template.TimeCreate2.helpers({
         return centers;
     },
     'projectSelected': function() {
-        return Template.instance().selectedElement.get() === "Project";
+        return Template.instance().selectedElement.get() === "project";
     },
     'costCenterSelected': function() {
         return Template.instance().selectedElement.get() === "costCenter";
@@ -118,7 +189,7 @@ Template.TimeCreate2.onCreated(function () {
     self.profile = new ReactiveDict();
     self.project = new ReactiveVar();
     self.costCenter = new ReactiveVar();
-    self.selectedElement = new ReactiveVar("Project");
+    self.selectedElement = new ReactiveVar("project");
 
     self.datesForTimeWriting = new ReactiveVar()
     self.datesForTimeWriting.set(self.data)
@@ -138,13 +209,18 @@ Template.TimeCreate2.onCreated(function () {
 
     //--
     self.autorun(function(){
+        if(!self.subscriptionsReady()) {
+            return
+        }
+
         let currentDayIndex = self.currentDayIndex.get()
 
         let dayToFindTimesFor = self.datesForTimeWriting.get()[currentDayIndex]
-        var dayStart = moment(dayToFindTimesFor).startOf('day'); // set to 12:00 am today
-        var dayEnd = moment(dayToFindTimesFor).endOf('day'); // set to 23:59 pm today
+        console.log(`dayToFindTimesFor: ${JSON.stringify(dayToFindTimesFor)}`)
+        var dayStart = moment(dayToFindTimesFor).startOf('day').toDate();
+        var dayEnd = moment(dayToFindTimesFor).endOf('day').toDate();
 
-        let timesRecordedForDay = Times.find({
+        let timesRecordedForDay = TimeWritings.find({
             employeeId: Meteor.userId(), 
             day: {$gte: dayStart, $lt: dayEnd}
         }).fetch();
@@ -161,24 +237,25 @@ Template.TimeCreate2.onCreated(function () {
 
 Template.TimeCreate2.onRendered(function () {
     let self = this;
-    //disable submit temporary fix
-    $('#TimeCreate').prop('disabled', true);
 
-    self.autorun(function() {
-        $("#duration").on("change", function () {
-            let duration = $("#duration").val();
-            let hoursToTimeWriteForCurrentDay = self.hoursToTimeWriteForCurrentDay.get()
+    // $('#TimeCreate').prop('disabled', true);
 
-            if (duration){
-                let durationAsHours = parseInt(duration)
-                if (durationAsHours <= hoursToTimeWriteForCurrentDay){
-                    $('#TimeCreate').prop('disabled', false);
-                } else {
-                  $('#TimeCreate').prop('disabled', true);
-                }
-            }
-        });
-    });
+    // self.autorun(function() {
+    //     $("#duration").on("change", function () {
+    //         let duration = $("#duration").val();
+    //         console.log(`[onRendered] duration: ${duration}`)
+    //         let hoursToTimeWriteForCurrentDay = self.hoursToTimeWriteForCurrentDay.get()
+
+    //         if (duration){
+    //             let durationAsHours = parseInt(duration)
+    //             if (durationAsHours <= hoursToTimeWriteForCurrentDay){
+    //                 $('#TimeCreate').prop('disabled', false);
+    //             } else {
+    //               $('#TimeCreate').prop('disabled', true);
+    //             }
+    //         }
+    //     });
+    // });
 });
 
 Template.TimeCreate2.onDestroyed(function () {

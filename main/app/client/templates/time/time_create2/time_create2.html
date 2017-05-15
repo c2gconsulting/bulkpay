@@ -2,7 +2,6 @@
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {{#autoForm collection="TimeWritings" id=formType doc=this type=formAction }}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Enter Time Data</h3>
@@ -13,12 +12,12 @@
                                 <label class="col-sm-4 control-label">Cost Element</label>
                                 <div class="col-sm-8">
 
-                                    <div class="rdio rdio-default">
-                                        <input type="radio" name="costElement" id="Project" value="Project" checked="checked">
+                                    <div class="radio radio-default">
+                                        <input type="radio" name="costElement" value="project" id="Project" checked="checked">
                                         <label for="Project">Project</label>
                                     </div>
 
-                                    <div class="rdio rdio-primary">
+                                    <div class="radio radio-primary">
                                         <input type="radio" name="costElement" value="costCenter" id="costCenter">
                                         <label for="costCenter">Cost Center</label>
                                     </div>
@@ -28,21 +27,53 @@
                         </div> <!-- row -->
                         <div class="row">
                             {{#if projectSelected}}
-                                    <div class="col-sm-6">
-                                        {{> afQuickField name="project" options=projects class="dropdown" id="project"}}
-                                    </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Projects</label>
+                                        <select name="projects" class="form-control dropdown" id="projects">
+                                            <option value=""></option>
+                                            {{#each projects}}
+                                                <option value="{{value}}">{{label}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
 
-                                    <div class="col-sm-6">
-                                        {{> afQuickField name="activity"  id="activity" options=projectActivities class="dropdown" }}
-                                    </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Activities</label>
+                                        <select name="activities" class="form-control dropdown" id="activities">
+                                            <option value=""></option>
+                                            {{#each projectActivities}}
+                                                <option value="{{value}}">{{label}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
                             {{/if}}
                              {{#if costCenterSelected}}
                                 <div class="col-sm-6">
-                                    {{> afQuickField name="costCenter" options=costCenters class="dropdown" id="cost"}}
+                                    <div class="form-group">
+                                        <label class="control-label">Cost center</label>
+                                        <select name="costCenters" class="form-control dropdown" id="costCenters">
+                                            <option value=""></option>
+                                            {{#each costCenters}}
+                                                <option value="{{value}}">{{label}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
                                 </div><!-- col-sm-3 -->
 
                                 <div class="col-sm-6">
-                                    {{> afQuickField name="activity"  id="activity" options=costCenterActivities class="dropdown" }}
+                                    <div class="form-group">
+                                        <label class="control-label">Activities</label>
+                                        <select name="activities" class="form-control dropdown" id="activities">
+                                            <option value=""></option>
+                                            {{#each costCenterActivities}}
+                                                <option value="{{value}}">{{label}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
                                 </div><!-- col-sm-3 -->
                              {{/if}}
 
@@ -65,19 +96,28 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-8">
+                            <!--<div class="col-sm-8">
                                 <div class="col-sm-6">
                                     {{> afQuickField name="duration" id="duration" title="(in hours)" placeholder="Duration(in hours)"}}
                                     <label>Hours left for current day: {{hoursToTimeWriteForCurrentDay}}</label> 
                                 </div>
-                            </div><!-- col-sm-3 -->
+                            </div>-->
+
+                            <div class="col-sm-4">
+                                <label for="duration" class="control-label">Duration (in hours)</label>
+                                <input type="number"  class="form-control" name="duration" id="duration" value="" min="1" max="8"/>
+                                <label>Hours left for current day: {{hoursToTimeWriteForCurrentDay}}</label>
+                            </div>
                         </div><!-- row -->
 
                         <div class="row">
                             <br/>
                             <div class="col-sm-12">
-                                {{> afQuickField name="note" rows=3 }}
-                            </div><!-- col-sm-3 -->
+                                <div class="form-group">
+                                    <label for="duration" class="control-label">Note</label>
+                                    <textarea rows="3" class="form-control" name="note" id="note" value=""></textarea>
+                                </div><!-- form-group -->
+                            </div>
                         </div><!-- row -->
 
                     </div>
@@ -85,10 +125,9 @@
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                         <button class="btn btn-primary mr5" id="TimeCreate">Save</button>
 
-                        <button class="btn btn-primary mr5 pull-right" id="NextDurationForDay">Go to Next day</button>
+                        <!--<button class="btn btn-primary mr5 pull-right" id="NextDurationForDay">Go to Next day</button>-->
                     </div><!-- panel-footer -->
                 </div>
-               {{/autoForm}}
             </div>
         </div>
     </div>
