@@ -125,7 +125,7 @@
                         </div>
                         <div class="media-body">
                             <strong>{{trimString (getActivityDescription this) 0 30}}</strong>
-                            <p><i>{{trimString this.note 0 30}} ... </i></p>
+                            <p><i>{{trimString (getTimeNoteText this.note) 0 30}}</i></p>
                             <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
                         </div>
                     </li>

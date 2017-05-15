@@ -42,7 +42,7 @@ Template.header.events({
     'click .timeRowForApproval': function(e, tmpl) {
         e.preventDefault()
         let timeId = e.currentTarget.getAttribute('data-timeId')
-        Modal.show('selectedEvent', {type: 'Times', id: timeId})
+        Modal.show('selectedEvent', {type: 'TimeWritings', id: timeId})
     },
     'click .leaveRowForApproval': function(e, tmpl) {
         e.preventDefault()
@@ -102,6 +102,12 @@ Template.header.helpers({
     'getActivityDescription': function(time) {
         let activity = Activities.findOne({_id: time.activity})
         return activity ? activity.description : '---';
+    },
+    'getTimeNoteText': function(note) {
+        if(note && note.length > 0) {
+            return note
+        } else 
+            return "---"
     }
 });
 
@@ -137,7 +143,7 @@ Template.header.onCreated(function() {
         let procurementsStatusNotSeenSub = self.subscribe('ProcurementRequisitionsStatusNotSeen', businessUnitId)
         //--
         let allEmployeesSub = self.subscribe('allEmployees', businessUnitId)
-        let timesAndLeavesSub = self.subscribe('timedata', businessUnitId)  // This handles the subscription for 'times' and 'leaves'
+        let timesAndLeavesSub = self.subscribe('alltimedata', businessUnitId)  // This handles the subscription for 'times' and 'leaves'
 
         if(procurementsToApproveSub.ready()) {
             let currentUser = Meteor.user()
@@ -181,13 +187,13 @@ Template.header.onCreated(function() {
             });
             console.log(`allSuperviseeIds: ${JSON.stringify(allSuperviseeIds)}`)
 
-            let timesToApprove = Times.find({
+            let timesToApprove = TimeWritings.find({
                 employeeId: {$in: allSuperviseeIds},
                 status: 'Open'
             }).fetch()
             self.timesToApprove.set(timesToApprove)
             //--
-            let timesStatusNotSeen = Times.find({
+            let timesStatusNotSeen = TimeWritings.find({
                 employeeId: Meteor.userId(),
                 $or: [{status: 'Approved'}, {status: 'Rejected'}],
             }).fetch()

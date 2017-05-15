@@ -39,13 +39,13 @@ Meteor.methods({
                 } else {
                     throw new Meteor.Error('401', 'Unauthorized');
                 }
-            case 'Times':
+            case 'TimeWritings':
                 if(Core.hasTimeApprovalAccess(this.userId)){
-                    let time = Times.findOne({_id: timeObj.id});
+                    let time = TimeWritings.findOne({_id: timeObj.id});
                     if(time && time.status === 'Open') {
                         if (time.employeeId === this.userId)
                             throw new Meteor.Error('401', 'Cannot approve your own Timesheet');
-                        const approval = Times.update({_id: timeObj.id}, {$set: {status: 'Approved', approvedBy: this.userId, approvedDate: new Date()}});
+                        const approval = TimeWritings.update({_id: timeObj.id}, {$set: {status: 'Approved', approvedBy: this.userId, approvedDate: new Date()}});
                         return approval;
                     } else {
                         throw new Meteor.Error('403', 'No action can be taken when Time is not Open')
@@ -73,13 +73,13 @@ Meteor.methods({
                 } else {
                     throw new Meteor.Error('401', 'Unauthorized');
                 }
-            case 'Times':
+            case 'TimeWritings':
                 if(Core.hasTimeApprovalAccess(this.userId)){
-                    let time = Times.findOne({_id: timeObj.id});
+                    let time = TimeWritings.findOne({_id: timeObj.id});
                     if(time && time.status === 'Open') {
                         if (time.employeeId === this.userId)
                             throw new Meteor.Error('401', 'Cannot approve your own Timesheet');
-                        const approval = Times.update({_id: timeObj.id}, {$set: {status: 'Rejected', approvedBy: this.userId, approvedDate: new Date()}});
+                        const approval = TimeWritings.update({_id: timeObj.id}, {$set: {status: 'Rejected', approvedBy: this.userId, approvedDate: new Date()}});
                         return approval;
                     } else {
                         throw new Meteor.Error('403', 'No action can be taken when Time is not Open')
