@@ -17,9 +17,7 @@ Template.registerHelper('trimString', function(passedString, startstring, endstr
 /*****************************************************************************/
 Template.EmployeeTime.helpers({
     'supervisee': () => {
-        return Meteor.users.find().fetch().filter(x => {
-            return x._id !== Meteor.userId();
-        });
+        return Template.instance().supervisees.get()
     },
     'self': () => {
         return Meteor.users.findOne({_id: Meteor.userId()});
@@ -37,11 +35,36 @@ Template.EmployeeTime.helpers({
 /* EmployeeTime: Lifecycle Hooks */
 /*****************************************************************************/
 Template.EmployeeTime.onCreated(function () {
-    //subscribe to employees that are under user
     let self = this;
     self.dict = new ReactiveDict();
 
-    self.subscribe('getPositions', Session.get('context'))
+    self.supervisees = new ReactiveVar();
+
+    let businessId = Session.get('context')
+    console.log(`business id: `, businessId)
+
+    let positionsSubs = self.subscribe('getPositions', businessId)
+
+    self.autorun(function(){
+        if(positionsSubs.ready()) {
+            let currentUser = Meteor.user()
+
+            let superviseePositions = EntityObjects.find({
+                otype: "Position", 
+                $or: [
+                    {'properties.supervisor': currentUser.employeeProfile.employment.position},
+                    {'properties.alternateSupervisor': currentUser.employeeProfile.employment.position}
+                ]
+            }).fetch()
+            
+            let superviseePositionIds = superviseePositions.map(x => {
+                return x._id
+            });
+
+            let supervisees = Meteor.users.find({'employeeProfile.employment.position': {$in: superviseePositionIds}}).fetch()
+            self.supervisees.set(supervisees)
+        }
+    })
 });
 
 Template.EmployeeTime.onRendered(function () {
