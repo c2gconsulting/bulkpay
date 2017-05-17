@@ -19,7 +19,7 @@ Template.EntityCreate.events({
         }
 
         const details = {
-            businessId: BusinessUnits.findOne()._id,
+            businessId: Session.get('context'),
             name: nameOfEntity,
             parentId: getParent($('[name="level"]:checked').val()),
             otype: $('[name="otype"]').val(),
@@ -28,13 +28,15 @@ Template.EntityCreate.events({
         };
         function getParent(val) {
             if (!Template.instance().isroot.get()) {
-                let entity = EntityObjects.findOne();
+                let selectedNodeId = Template.instance().data.node
+                let selectedNodeData = EntityObjects.findOne({_id: selectedNodeId})
+
                 switch (val) {
                     case "sibling":
                         //parent id = entity.parent
-                        return entity.parentId;
+                        return selectedNodeData.parentId;
                     case  "child":
-                        return entity._id;
+                        return selectedNodeData._id;
                 }
             }else {
                 return null;
