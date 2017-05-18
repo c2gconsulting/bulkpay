@@ -1,5 +1,5 @@
 /**
- * Projects publications
+ * This file is deprecated. see timewritings.js
  */
 
 Core.publish("timedata", function (businessId) {

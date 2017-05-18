@@ -29,5 +29,25 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized. You didn't create that time record")
         }
+    },
+    "time/delete": function(timeId){
+        this.unblock()
+
+        let timeRecord = TimeWritings.findOne({_id: timeId})
+        if(timeRecord && timeRecord.employeeId === Meteor.userId()) {
+            if(timeRecord.status) {
+                if(timeRecord.status === 'Approved' || timeRecord.status === 'Rejected') {
+                    throw new Meteor.Error(401, `Unauthorized. Time record has already been ${timeRecord.status.toLowerCase()}`)
+                } else {
+                    TimeWritings.remove({_id: timeId})
+                    return true;
+                }
+            } else {
+                TimeWritings.remove({_id: timeId})
+                return true;
+            }
+        } else {
+            throw new Meteor.Error(401, "Unauthorized. You didn't create that time record")
+        }
     }
 })

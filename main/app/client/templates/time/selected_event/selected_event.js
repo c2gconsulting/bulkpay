@@ -61,8 +61,37 @@ Template.selectedEvent.events({
                 });
 
         }
+    },
+    'click #deleteByCreator': (e, tmpl) => {
+        let selected = tmpl.data;
+        if(selected && selected.hasOwnProperty('type')){
+            swal({
+                    title: "Are you sure?",
+                    text: "This action cannot be reversed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+            },
+            function(isConfirm){
+                if (isConfirm) {
+                    Meteor.call('time/delete', selected.id, function(err, res){
+                        if(res){
+                            Modal.hide('selectedEvent');
+                            swal('Success', 'Successfully deleted time record', 'success');
+                        } else {
+                            swal('Delete Error', `${err.message}`, 'error');
+                        }
+                    })
+                } else {
+                    swal("Cancelled", "Approval action cancelled :)", "error");
+                }
+            });
+        }
     }
-
 });
 
 /*****************************************************************************/

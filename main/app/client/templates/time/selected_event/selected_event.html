@@ -77,9 +77,10 @@
                     {{#if canApproveTime employeeId status}}
                         <button class="btn btn-success btn-block" id="approve">Approve</button>
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>
-                        <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
                     {{else}}
-                        <button class="btn {{statusStyle status}}  btn-rounded center center-block col-sm-12" data-dismiss="modal">{{status}}</button>
+                        <button class="btn btn-danger btn-rounded center center-block col-sm-12" id="deleteByCreator">Delete time record</button>
+                        <button class="btn btn-warning btn-rounded center center-block col-sm-12" data-dismiss="modal">Close</button>
                     {{/if}}
                 {{/if}}
             {{/with}}
