@@ -124,6 +124,9 @@ Template.selectedEvent.helpers({
     'canApproveTime': (employeeId, status) => {
         return Core.hasTimeApprovalAccess(Meteor.userId()) && Meteor.userId() !== employeeId && status === 'Open' ;
     },
+    'canDeleteIt': function(employeeId, status) {
+        return Meteor.userId() === employeeId && status === 'Open';
+    },
     'statusStyle': (status) => {
             if (status === 'Open') return 'btn-warning';
             if (status === 'Approved') return 'btn-success';

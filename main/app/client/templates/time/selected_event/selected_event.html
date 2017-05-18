@@ -79,7 +79,9 @@
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>
                         <button class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
                     {{else}}
+                        {{#if canDeleteIt employeeId status}}
                         <button class="btn btn-danger btn-rounded center center-block col-sm-12" id="deleteByCreator">Delete time record</button>
+                        {{/if}}
                         <button class="btn btn-warning btn-rounded center center-block col-sm-12" data-dismiss="modal">Close</button>
                     {{/if}}
                 {{/if}}
