@@ -65,6 +65,7 @@ Template.selectedEvent.events({
     'click #deleteByCreator': (e, tmpl) => {
         let selected = tmpl.data;
         if(selected && selected.hasOwnProperty('type')){
+            Modal.hide('selectedEvent')
             swal({
                     title: "Are you sure?",
                     text: "This action cannot be reversed!",
