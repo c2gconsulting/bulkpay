@@ -6,8 +6,9 @@ Template.LeaveEntitlementCreate.events({
         e.preventDefault()
 
         let leaveEntitlementName = $('#leaveEntitlementName').val();
-        let allowLeavesInHours = $('#allowLeavesInHours').is(":checked")
         let numberOfLeaveDaysPerAnnum = $('#numberOfLeaveDaysPerAnnum').val();
+        let allowLeavesInHours = $('#allowLeavesInHours').is(":checked")
+        let applyEntitlementToEmployeesWithPaygrade = $('#applyEntitlementToEmployeesWithPaygrade').is(":checked")
 
         let numberOfLeaveDaysPerAnnumAsNumber = parseFloat(numberOfLeaveDaysPerAnnum)
 
@@ -19,13 +20,20 @@ Template.LeaveEntitlementCreate.events({
             tmpl.inputErrorMsg.set("You need to number of leave days per year for this entitlement")
             return
         }
+
+        let employeePayGradesToApplyEntitlementTo = []
+        if(applyEntitlementToEmployeesWithPaygrade) {
+            employeePayGradesToApplyEntitlementTo = tmpl.selectedPaygrades.get()
+        }
+
         tmpl.inputErrorMsg.set(null)
 
-        // //--
+        //--
         let leaveEntitlementDoc = {
             name: leaveEntitlementName,
             allowLeaveRequestsInHours: allowLeavesInHours,
             numberOfLeaveDaysPerAnnum: numberOfLeaveDaysPerAnnum,
+            payGradeIds: employeePayGradesToApplyEntitlementTo,
             businessId: Session.get('context')
         }
 
@@ -37,6 +45,18 @@ Template.LeaveEntitlementCreate.events({
                 swal('Error', err.reason, 'error')
             }
         })
+    },
+    'change #applyEntitlementToEmployeesWithPaygrade': function(e, tmpl) {
+        let applyEntitlementToEmployeesWithPaygrade = $('#applyEntitlementToEmployeesWithPaygrade').is(":checked")
+        if(applyEntitlementToEmployeesWithPaygrade) {
+            $('#payGradesSemanticSelect').show()
+        } else {
+            $('#payGradesSemanticSelect').hide()
+        }
+    },
+    'change [name="employeePayGrades"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.selectedPaygrades.set(selected)
     }
 });
 
@@ -46,7 +66,10 @@ Template.LeaveEntitlementCreate.events({
 Template.LeaveEntitlementCreate.helpers({
     inputErrorMsg: function() {
         return Template.instance().inputErrorMsg.get()
-    }
+    },
+    payGrades: function() {
+        return PayGrades.find({status: 'Active'}).fetch()
+    },
 });
 
 
@@ -56,10 +79,15 @@ Template.LeaveEntitlementCreate.helpers({
 Template.LeaveEntitlementCreate.onCreated(function () {
     let self = this
     self.inputErrorMsg = new ReactiveVar()
+    self.selectedPaygrades = new ReactiveVar()
+
+
+    self.subscribe('paygrades', Session.get('context'));
 });
 
 Template.LeaveEntitlementCreate.onRendered(function () {
     let self = this;
+    $('#payGradesSemanticSelect').hide()
 });
 
 Template.LeaveEntitlementCreate.onDestroyed(function () {

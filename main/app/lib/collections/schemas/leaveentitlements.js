@@ -12,6 +12,10 @@ Core.Schemas.LeaveEntitlement = new SimpleSchema({
         type: Number,
         optional: true
     },
+    payGradeIds: {
+        type: [String],
+        optional: true
+    },
     allowLeaveRequestsInHours: {
         type: Boolean,
     },
