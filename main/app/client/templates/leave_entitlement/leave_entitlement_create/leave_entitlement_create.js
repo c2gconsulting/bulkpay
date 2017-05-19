@@ -36,8 +36,10 @@ Template.LeaveEntitlementCreate.events({
             payGradeIds: employeePayGradesToApplyEntitlementTo,
             businessId: Session.get('context')
         }
+        let currentYear = moment().year()
+        let currentYearAsNumber = parseInt(currentYear)
 
-        Meteor.call('LeaveEntitlement/create', leaveEntitlementDoc, function(err, res) {
+        Meteor.call('LeaveEntitlement/create', leaveEntitlementDoc, currentYearAsNumber, function(err, res) {
             Modal.hide('LeaveEntitlementCreate')
             if(!err) {
                 swal('Successful', "Leave entitlement successful", 'success')

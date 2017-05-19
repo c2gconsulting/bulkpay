@@ -1,8 +1,8 @@
 Core.Schemas.UserLeaveDaysLeft = new SimpleSchema({
     year: {
-        type: Date
+        type: Number
     },
-    daysLeftInYear: {
+    daysLeft: {
         type: Number
     }
 })

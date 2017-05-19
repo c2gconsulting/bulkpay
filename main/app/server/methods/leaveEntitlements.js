@@ -1,6 +1,6 @@
 Meteor.methods({
 
-    "LeaveEntitlement/create": function(leaveEntitlementDoc){
+    "LeaveEntitlement/create": function(leaveEntitlementDoc, currentYear){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -10,8 +10,6 @@ Meteor.methods({
             let newLeaveEntitlementId = LeaveEntitlements.insert(leaveEntitlementDoc);
 
             if(leaveEntitlementDoc.payGradeIds && leaveEntitlementDoc.payGradeIds.length > 0) {
-                let currentYear = moment().startOf('year').toDate()
-
                 let employeesWithPaygrade = Meteor.users.find({
                   'employeeProfile.employment.paygrade': {$in: leaveEntitlementDoc.payGradeIds}
                 })
@@ -20,13 +18,13 @@ Meteor.methods({
                     if(employeeLeaveEntitlement) {
                         let leaveDaysLeftHistory = employeeLeaveEntitlement.leaveDaysLeft || []
                         let leaveDaysLeftForYear = _.find(leaveDaysLeftHistory, (aYear) => {
-                            return moment(aYear.year).isSame(moment(currentYear))
+                            return (aYear.year === currentYear)
                         })
                         if(leaveDaysLeftForYear) {
                             leaveDaysLeftForYear.leaveEntitlementId = newLeaveEntitlementId
-                            leaveDaysLeftForYear.daysLeftInYear = leaveEntitlementDoc.numberOfLeaveDaysPerAnnum
+                            leaveDaysLeftForYear.daysLeft = leaveEntitlementDoc.numberOfLeaveDaysPerAnnum
                             delete employeeLeaveEntitlement.createdAt
-                            
+
                             UserLeaveEntitlements.update(employeeLeaveEntitlement._id, {$set: employeeLeaveEntitlement})
                         }
                     } else {
@@ -36,7 +34,7 @@ Meteor.methods({
                             businessId : leaveEntitlementDoc.businessId,
                             leaveDaysLeft : [{
                                 year: currentYear,
-                                daysLeftInYear: leaveEntitlementDoc.numberOfLeaveDaysPerAnnum
+                                daysLeft: leaveEntitlementDoc.numberOfLeaveDaysPerAnnum
                             }]
                         })
                     }
