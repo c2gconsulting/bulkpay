@@ -1,8 +1,6 @@
 Meteor.methods({
 
     "time/create": function(time){
-        console.log(time);
-
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }

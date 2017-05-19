@@ -1,9 +1,4 @@
 
-/**
- * Leave Types Schema
- */
-
-
 Core.Schemas.Time = new SimpleSchema({
     _id: {
         type: String,

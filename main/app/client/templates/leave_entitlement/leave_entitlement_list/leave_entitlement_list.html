@@ -1,4 +1,4 @@
-<template name="LeaveTypeList">
+<template name="LeaveEntitlementsIndex">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left" style="padding: 9px;">
@@ -7,9 +7,9 @@
             <div class="media-body">
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
-                    <li>Leave Types</li>
+                    <li>Leave Entitlements</li>
                 </ul>
-                <h4>Leaves <span class="mb20 pull-right" id="createLeaveType"><a class="btn btn-primary">New Leave Type</a></span></h4>
+                <h4>Leaves Entitlements<span class="mb20 pull-right" id="createLeaveEntitlement"><a class="btn btn-primary">New Leave Entitlement</a></span></h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -19,11 +19,7 @@
             <div class="col-sm-12">
 
                 <br>
-                <h3 class="xlg-title">All Leave Types</h3>
-                {{#each leaveType}}
-                    {{> LeaveTypeEntry }}
-                {{/each}}
-
+                <h3 class="xlg-title">All Leave Entitlements</h3>
             </div>
         </div>
     </div><!-- contentpanel -->

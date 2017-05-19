@@ -22,10 +22,7 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         }
     },
     businessId: {
-        type: String,
-        autoValue: function () {
-            return BusinessUnits.findOne()._id
-        }
+        type: String
     },
     project: {
         type: String,

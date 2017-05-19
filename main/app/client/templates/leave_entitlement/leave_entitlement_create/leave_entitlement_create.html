@@ -1,0 +1,47 @@
+<template name="LeaveEntitlementCreate">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Enter Leave Entitlement</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{#if inputErrorMsg}}
+                        <div class="alert alert-danger text-center">
+                            <p>{{inputErrorMsg}}</p>
+                        </div>
+                        {{/if}}
+    
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="leaveEntitlementName" class="control-label">Name</label>
+                                <input type="text"  class="form-control" name="leaveEntitlementName" id="leaveEntitlementName" value="" min="1" max="8"/>
+                                <label></label>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" id="allowLeavesInHours" name="allowLeavesInHours" />
+                                <label for="allowLeavesInHours" class="control-label">Allow leaves in hours</label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label for="numberOfLeaveDaysPerAnnum" class="control-label" id="LabelForNumberOfLeaveDaysPerAnnum">Number of leave days per annum</label>
+                                <input type="number" class="form-control" name="numberOfLeaveDaysPerAnnum" id="numberOfLeaveDaysPerAnnum" value="" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="LeaveEntitlementCreate">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
