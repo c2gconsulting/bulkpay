@@ -95,7 +95,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
 
     timeReportDataFromDb.forEach(aTimeDatum => {
         let projectInReportData = _.find(reportData, aProject => {
-            aProject.project = aTimeDatum.project
+            return aProject.project = aTimeDatum.project
         })
         let timeDatumCopy = {...aTimeDatum}
         if(!projectInReportData) {
@@ -109,11 +109,15 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
             let foundEmployeeData = _.find(projectEmployeesSoFar, anEmployee => {
                 return anEmployee._id === aTimeDatum.employeeId
             })
-            let emloyeeProjectDaysInPeriod = foundEmployeeData.days
-
+            if(foundEmployeeData) {
+                let emloyeeProjectDaysInPeriod = foundEmployeeData.days
+                emloyeeProjectDaysInPeriod.push(aTimeDatum.day)
+            } else {
+                projectEmployeesSoFar.push({...aTimeDatum.employeeDetails, days: [aTimeDatum.day]})
+            }
         }
     })
-    console.log(`reportData`, reportData)
+    //console.log(`reportData`, JSON.stringify(reportData))
     return reportData
 }
 
@@ -171,8 +175,8 @@ Meteor.methods({
                 if(projectEmployee) {
                     aTime.employeeDetails = {}
                     let employeeDetails = {
-                        fullName: projectEmployee.profile.fullName,
                         _id: projectEmployee._id,
+                        fullName: projectEmployee.profile.fullName,
                         employmentCode: projectEmployee.employeeProfile.employeeId
                     }
                     _.extend(aTime.employeeDetails, employeeDetails)
@@ -182,8 +186,8 @@ Meteor.methods({
                 if(project) {
                     aTime.projectDetails = {}
                     let projectDetails = {
+                        _id: project._id,
                         projectName: project.name,
-                        _id: project._id
                     }
                     _.extend(aTime.projectDetails, projectDetails)
                 }
