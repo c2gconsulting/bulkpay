@@ -67,7 +67,10 @@ Template.LeaveCreate.events({
             leaveDoc.durationInHours = durationAsNumber * 24
         }
         //--
-        Meteor.call('leave/create', leaveDoc, function(err, res) {
+        let currentYear = moment().year()
+        let currentYearAsNumber = parseInt(currentYear)
+
+        Meteor.call('leave/create', leaveDoc, currentYearAsNumber, function(err, res) {
             if(!err) {
                 swal('Successful', "Leave request successful", 'success')
             } else {

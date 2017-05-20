@@ -44,5 +44,44 @@ Meteor.methods({
         } catch (e) {
             throw new Meteor.Error(401, e.message);
         }
+    },
+
+    "LeaveEntitlement/setForOneEmployee": function(businessId, leaveEntitlementId, currentYear){
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+
+        try {
+            let leaveEntitlement = LeaveEntitlements.findOne({_id: leaveEntitlementId})
+
+            if(!leaveEntitlement) {
+                throw new Meteor.Error(401, "Sorry, that leave entitlement does not exist");
+            }
+
+            let employeeLeaveEntitlement = UserLeaveEntitlements.findOne({userId: this.userId})
+            if(employeeLeaveEntitlement) {
+                let leaveDaysLeftHistory = employeeLeaveEntitlement.leaveDaysLeft || []
+                let leaveDaysLeftForYear = _.find(leaveDaysLeftHistory, (aYear) => {
+                    return (aYear.year === currentYear)
+                })
+                if(leaveDaysLeftForYear) {
+                    throw new Meteor.Error(401, "Sorry, that employee already has a leave entitlement for the year");
+                }
+            } else {
+                UserLeaveEntitlements.insert({
+                    userId : this.userId,
+                    leaveEntitlementId : leaveEntitlementId,
+                    businessId : businessId,
+                    leaveDaysLeft : [{
+                        year: currentYear,
+                        daysLeft: leaveEntitlement.numberOfLeaveDaysPerAnnum
+                    }]
+                })
+                return true
+            }
+        } catch (e) {
+            throw new Meteor.Error(401, e.message);
+        }
     }
 })

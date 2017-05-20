@@ -34,6 +34,32 @@ Template.EmployeeSelectedEntry.events({
   },
   'click #employee-edit-roles-data': function(e, tmpl) {
     Template.instance().setEmployeePermissons();
+  },
+  'click #userLeaveEntitlementSave': function(e, tmpl) {
+    let allUserLeaveEntitlements = $("[name=allUserLeaveEntitlements]").val();
+
+    if(allUserLeaveEntitlements && allUserLeaveEntitlements.length > 0) {
+      let year = moment().year()
+      let yearAsNumber = parseInt(year)
+
+      let businessId = Session.get('context')
+
+      Meteor.call('LeaveEntitlement/setForOneEmployee', businessId, allUserLeaveEntitlements, yearAsNumber, (err, res) => {
+          if (res){
+              swal({
+                  title: "Success",
+                  text: `Leave entitlement saved!`,
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+          } else {
+            swal('Save error!', err.reason, 'error')
+          }
+      });
+    } else {
+      swal('Save error!', 'You did not select a leave entitlement', 'error')      
+    }
   }
 });
 

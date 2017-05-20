@@ -3,7 +3,7 @@
  */
 Meteor.methods({
 
-    "leave/create": function(leave){
+    "leave/create": function(leave, currentYearAsNumber){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -11,10 +11,35 @@ Meteor.methods({
         this.unblock();
 
         try {
-            Leaves.insert(leave);
-            return true
+            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+                businessId: leave.businessId, userId: userId
+            })
+            if(!userLeaveEntitlement) {
+                let errMsg = "Sorry, you do not have a leave entitlement set yet. Please meet your HR admin."
+               throw new Meteor.Error(401, errMsg);
+            }
+
+            let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+            let foundDaysLeftInYear = _.find(userDaysLeftHistory, aYearData => {
+                return aYearData.year === currentYearAsNumber
+            })
+
+            if(!foundDaysLeftInYear) {
+                throw new Meteor.Error(401, "Sorry, you have no leave entitlement for the year");
+            }
+
+            if(foundDaysLeftInYear.daysLeft < 1) {
+                throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
+            }
+            if(foundDaysLeftInYear.daysLeft > leave.duration) {
+                Leaves.insert(leave);
+                foundDaysLeftInYear.daysLeft -= leave.duration
+
+                delete employeeLeaveEntitlement.createdAt
+                UserLeaveEntitlements.update(userLeaveEntitlement._id, {$set: userLeaveEntitlement})
+                return true
+            }
         } catch (e) {
-            console.log(e);
             throw new Meteor.Error(401, e.message);
         }
     },
