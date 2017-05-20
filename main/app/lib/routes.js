@@ -191,6 +191,12 @@ Router.route('/business/:_id/employee/time', {
     action: 'time',
     where: 'client'
 });
+Router.route('/business/:_id/employee/time/approve', {
+    name: 'employee.time.approve',
+    controller: 'EmployeesController',
+    action: 'approveTime',
+    where: 'client'
+});
 
 Router.route('/business/:_id/projects', {
     name: 'project.list',

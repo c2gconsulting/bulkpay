@@ -1,4 +1,4 @@
-<template name="EmployeeTime">
+<template name="ApproveEmployeeTime">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left" style="padding: 9px;">
@@ -7,10 +7,9 @@
             <div class="media-body">
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
-                    <li><a href="">Pages</a></li>
-                    <li>Time Management </li>
+                    <li>Approve employee time</li>
                 </ul>
-                <h4>Time Management</h4>
+                <h4>Approve employee time</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -21,8 +20,8 @@
                 <div id="calendar"></div>
             </div><!-- col-md-9 -->
             <div class="col-md-3">
-                <h5 class="lg-title mb10">Employee Time</h5>
-                <p class="mb20">View all employee Times/Leave</p>
+                <!--<h5 class="lg-title mb10">Employee Time</h5>
+                <p class="mb20">View all employee Times/Leave</p>-->
 
                 <!--<div class="row" id="spinner">
                 </div>-->
@@ -31,26 +30,30 @@
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
-                                    Self Time Sheets
+                                <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo2">
+                                    Supervisee
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapseOne2" class="panel-collapse collapse">
+                        <div id="collapseTwo2" class="panel-collapse collapse in">
                             <div class="panel-body">
-                                {{#with self}}
-                                    <ul class="media-list">
+                                <ul class="media-list">
+                                    {{#if supervisee}}
+                                    {{#each supervisee}}
                                         <li class="media emplist" id="{{_id}}">
                                             <a class="pull-left" href="#">
                                                 <img class="media-object img-circle img-online" src="/admin/img/Person.png" alt="...">
                                             </a>
                                             <div class="media-body">
-                                                <h4 class="sender">{{getPositionDescription employeeProfile.employment.position}}</h4>
-                                                <p><a href="#"><strong class="subject">{{profile.fullName}}</strong></a></p>
+                                                <h4 class="sender">{{trimString (getPositionDescription employeeProfile.employment.position) 0 30}}</h4>
+                                                <p title="{{profile.fullName}}">
+                                                    <a href="#"><strong class="subject">{{trimString profile.fullName 0 25}}</strong></a>
+                                                </p>
                                             </div>
                                         </li>
-                                    </ul>
-                                {{/with}}
+                                    {{/each}}
+                                    {{/if}}
+                                </ul>
                             </div>
                         </div>
                     </div><!-- panel -->

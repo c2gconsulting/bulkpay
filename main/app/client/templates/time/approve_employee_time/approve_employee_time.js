@@ -1,16 +1,26 @@
 /*****************************************************************************/
-/* EmployeeTime: Event Handlers */
+/* ApproveEmployeeTime: Event Handlers */
 /*****************************************************************************/
 //import _ from 'underscore';
-
-Template.EmployeeTime.events({
+Template.ApproveEmployeeTime.events({
 
 });
 
+
+Template.registerHelper('trimString', function(passedString, startstring, endstring) {
+    if(passedString) {
+        var theString = passedString.substring( startstring, endstring );
+        return new Handlebars.SafeString(theString)
+    }
+});
+
 /*****************************************************************************/
-/* EmployeeTime: Helpers */
+/* ApproveEmployeeTime: Helpers */
 /*****************************************************************************/
-Template.EmployeeTime.helpers({
+Template.ApproveEmployeeTime.helpers({
+    'supervisee': () => {
+        return Template.instance().supervisees.get()
+    },
     'self': () => {
         return Meteor.users.findOne({_id: Meteor.userId()});
     },
@@ -24,25 +34,57 @@ Template.EmployeeTime.helpers({
 });
 
 /*****************************************************************************/
-/* EmployeeTime: Lifecycle Hooks */
+/* ApproveEmployeeTime: Lifecycle Hooks */
 /*****************************************************************************/
-Template.EmployeeTime.onCreated(function () {
+Template.ApproveEmployeeTime.onCreated(function () {
     let self = this;
-
     self.dict = new ReactiveDict();
+
+    self.supervisees = new ReactiveVar();
+
     let businessId = Session.get('context')
 
     let positionsSubs = self.subscribe('getPositions', businessId)
+    let timesAndLeavesSubs = self.subscribe('alltimedata', businessId)   // This gives us leaves and times of supervisees
+    let allEmployeeSubs = self.subscribe('allEmployees', businessId)
+
+    self.getSupervisees = function() {
+        let user = Meteor.user()
+        let businessId = Session.get('context')
+
+        let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
+            return x._id
+        });
+
+        let allSuperviseeIds = []
+
+        Meteor.users.find().fetch({businessIds: businessId}).forEach(aUser => {
+            let userPositionId = aUser.employeeProfile.employment.position
+            if(positions.indexOf(userPositionId) !== -1) {
+                allSuperviseeIds.push(aUser._id)
+            }
+        });
+        return allSuperviseeIds
+    }
+
+    self.autorun(function(){
+        if(positionsSubs.ready() && timesAndLeavesSubs.ready() && allEmployeeSubs.ready()) {
+            let supervisees = Meteor.users.find({_id: {$in: self.getSupervisees()}}).fetch()
+            self.supervisees.set(supervisees)
+        }
+    })
 });
 
-Template.EmployeeTime.onRendered(function () {
+Template.ApproveEmployeeTime.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this;
 
+    // var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
+
     self.autorun(function(){
         let events = [];
-        const leaves = Leaves.find({employeeId: Meteor.userId()}).fetch();
-        const times = TimeWritings.find({employeeId: Meteor.userId()}).fetch();
+        const leaves = Leaves.find({employeeId: {$in: self.getSupervisees()}}).fetch();
+        const times = TimeWritings.find({employeeId: {$in: self.getSupervisees()}}).fetch();
 
         leaves.forEach(x => {
             const user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
@@ -156,6 +198,6 @@ Template.EmployeeTime.onRendered(function () {
 });
 
 
-Template.EmployeeTime.onDestroyed(function () {
+Template.ApproveEmployeeTime.onDestroyed(function () {
     Modal.hide('selectedEvent')
 });

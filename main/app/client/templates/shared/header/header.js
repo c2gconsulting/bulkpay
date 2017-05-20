@@ -192,13 +192,13 @@ Template.header.onCreated(function() {
 
             let allSuperviseeIds = []
 
+            // Meteor.users.find({businessIds: businessUnitId}).fetch().forEach(aUser => {
             Meteor.users.find().fetch().forEach(aUser => {
                 let userPositionId = aUser.employeeProfile.employment.position
                 if(positions.indexOf(userPositionId) !== -1) {
                     allSuperviseeIds.push(aUser._id)
                 }
             });
-            console.log(`allSuperviseeIds: ${JSON.stringify(allSuperviseeIds)}`)
 
             let timesToApprove = TimeWritings.find({
                 employeeId: {$in: allSuperviseeIds},

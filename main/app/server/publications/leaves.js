@@ -53,3 +53,18 @@ Core.publish("employeeLeaves", function (bid, limit, sort) {
     }
     return this.ready();
 });
+
+Core.publish("employeeLeavesNoPagination", function (bid) {
+    let user = this.userId;
+    console.log(`user`, user)
+    
+    if(bid && user){
+        let cursor = Leaves.find({businessId: bid, employeeId: user});
+        let leaves = _.uniq(cursor.fetch().map(x => {
+            if(x.type && x.type !== undefined)
+                return x.type;
+        }));
+        return [cursor, LeaveTypes.find({_id: {$in: leaves}})];
+    }
+    return this.ready();
+});

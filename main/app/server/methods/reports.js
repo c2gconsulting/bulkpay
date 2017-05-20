@@ -1,9 +1,9 @@
 import _ from 'underscore';
 
 
-let Utils = {}
+let ReportUtils = {}
 
-Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
+ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
     let payTypeHeaders = ['Employee']
     let payTypesTotal = ['Total']
 
@@ -54,7 +54,7 @@ Utils.getPayTypeHeadersAndTotal = function(employeePayments) {
     return {payTypeHeaders, payTypesTotal}
 }
 
-Utils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
+ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
     let payTypeValues = []
 
     employeePayments.forEach(anEmployeeData => {
@@ -90,6 +90,33 @@ Utils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
     return payTypeValues
 }
 
+ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
+    let reportData = []
+
+    timeReportDataFromDb.forEach(aTimeDatum => {
+        let projectInReportData = _.find(reportData, aProject => {
+            aProject.project = aTimeDatum.project
+        })
+        let timeDatumCopy = {...aTimeDatum}
+        if(!projectInReportData) {
+            reportData.push({
+                project: aTimeDatum.project,
+                projectName: aTimeDatum.projectDetails.projectName,
+                employees: [{...aTimeDatum.employeeDetails, days: [aTimeDatum.day]}],
+            })
+        } else {
+            let projectEmployeesSoFar = projectInReportData.employees
+            let foundEmployeeData = _.find(projectEmployeesSoFar, anEmployee => {
+                return anEmployee._id === aTimeDatum.employeeId
+            })
+            let emloyeeProjectDaysInPeriod = foundEmployeeData.days
+
+        }
+    })
+    console.log(`reportData`, reportData)
+    return reportData
+}
+
 
 /**
  *  Payruns Methods
@@ -107,19 +134,18 @@ Meteor.methods({
 
             if(payRunResults && payRunResults.length > 0){
                 //console.log(`Result: ${JSON.stringify(payRunResults)}`)
-                let payTypeHeadersAndTotal = Utils.getPayTypeHeadersAndTotal(payRunResults) // paytypeId -> {total -> (value) }
+                let payTypeHeadersAndTotal = ReportUtils.getPayTypeHeadersAndTotal(payRunResults) // paytypeId -> {total -> (value) }
                 //console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
 
                 let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
                     return aHeader.description || aHeader
                 })
                 //--
-                let reportData = Utils.getPayTypeValues(payRunResults, payTypeHeadersAndTotal.payTypeHeaders)
+                let reportData = ReportUtils.getPayTypeValues(payRunResults, payTypeHeadersAndTotal.payTypeHeaders)
 
                 reportData.push(payTypeHeadersAndTotal.payTypesTotal.map(aColumnToTotals => {
                     return (aColumnToTotals.total || aColumnToTotals)
                 }))
-
                 return {fields: formattedHeader, data: reportData};
             } else {
                 return null
@@ -129,17 +155,14 @@ Meteor.methods({
     'reports/timesForEveryoneByProject': function(businessId, startDate, endDate) {
         check(businessId, String)
         //--
-        console.log(`startDate: ${JSON.stringify(startDate)}`)
-        console.log(`endDate: ${JSON.stringify(endDate)}`)
-
         if(Core.hasPayrollAccess(this.userid)) {
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            let timesForProject = Times.find({
+            let timesForProject = TimeWritings.find({
                 businessId: businessId, 
                 project: {$exists : true},
-                startTime: {$gte: startDate},
-                endTime: {$lt: endDate}
+                day: {$gte: startDate},
+                day: {$lt: endDate}
             }).fetch();
             console.log(`timesForProject number: ${JSON.stringify(timesForProject.length)}`)
 
@@ -147,25 +170,37 @@ Meteor.methods({
                 let projectEmployee = Meteor.users.findOne({_id: aTime.employeeId})
                 if(projectEmployee) {
                     aTime.employeeDetails = {}
-                    _.extend(aTime.employeeDetails, projectEmployee)
+                    let employeeDetails = {
+                        fullName: projectEmployee.profile.fullName,
+                        _id: projectEmployee._id,
+                        employmentCode: projectEmployee.employeeProfile.employeeId
+                    }
+                    _.extend(aTime.employeeDetails, employeeDetails)
                 }
                 //--
                 let project = Projects.findOne({_id: aTime.project})
                 if(project) {
                     aTime.projectDetails = {}
-                    _.extend(aTime.projectDetails, project)
+                    let projectDetails = {
+                        projectName: project.name,
+                        _id: project._id
+                    }
+                    _.extend(aTime.projectDetails, projectDetails)
                 }
                 //--
                 let activity = Activities.findOne({_id: aTime.activity})
                 if(activity) {
                     aTime.activityDetails = {}
-                    _.extend(aTime.activityDetails, activity)
+                    let activityDetails = {
+                        activityName: activity.description
+                    }
+                    _.extend(aTime.activityDetails, activityDetails)
                 }
                 return aTime
             })
             console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
 
-            return biffedUpTimes
+            return ReportUtils.processedReportDataForProjects(biffedUpTimes)
         }
     }
 })
