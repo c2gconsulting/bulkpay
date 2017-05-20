@@ -20,8 +20,12 @@ Meteor.methods({
             }
 
             let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
-            let foundDaysLeftInYear = _.find(userDaysLeftHistory, aYearData => {
-                return aYearData.year === currentYearAsNumber
+            let indexOfFoundYear = -1
+            let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+                if(aYearData.year === currentYearAsNumber) {
+                    indexOfFoundYear = indexOfYear
+                    return true
+                }
             })
 
             if(!foundDaysLeftInYear) {
@@ -33,9 +37,14 @@ Meteor.methods({
             }
             if(foundDaysLeftInYear.daysLeft > leave.duration) {
                 Leaves.insert(leave);
-                foundDaysLeftInYear.daysLeft -= leave.duration
+                //--
+                userDaysLeftHistory[indexOfFoundYear] = {
+                    year: currentYearAsNumber,
+                    daysLeft: foundDaysLeftInYear.daysLeft - leave.duration
+                }
 
                 delete userLeaveEntitlement.createdAt
+                
                 UserLeaveEntitlements.update(userLeaveEntitlement._id, {$set: userLeaveEntitlement})
                 return true
             } else {
