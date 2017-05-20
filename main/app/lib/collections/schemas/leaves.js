@@ -96,17 +96,11 @@ Core.Schemas.Leave = new SimpleSchema({
         autoform: {
             readonly: true
         },
-        autoValue:function(){
-            let startDate = this.field("startDate").value;
-            let endDate = this.field("endDate").value;
-            if (startDate && endDate){
-                startDate = moment(startDate);
-                endDate = moment(endDate);
-                var duration = endDate.diff(startDate, 'days');
-                return duration;
-            }
-        },
+        decimal: true,
         optional: true
+    },
+    durationInHours: {
+        type: Number
     },
     type: {
         type: String,

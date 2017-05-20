@@ -2,47 +2,87 @@
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {{#autoForm collection="Leaves" id=formType doc=this type=formAction }}
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">Apply for Leave</h3>
                     </div>
-                    {{> afQuickField name='businessId' value=businessIdHelper type='hidden'}}
 
                     <div class="panel-body">
-
+                        {{#if inputErrorMsg}}
+                        <div class="alert alert-danger text-center">
+                            <p>{{inputErrorMsg}}</p>
+                        </div>
+                        {{/if}}
+  
                         <div class="row">
                             <div class="col-sm-3">
-                                {{> afQuickField name="startDate" class="datepicker" id="startDate"}}
-                            </div><!-- col-sm-3 -->
+                                {{#if leaveInDaysMode}}
+                                    <label class="control-label">Start date</label>
+                                    {{#datepicker }}
+                                        <input name="startDate" id="startDate" type="text" class="form-control datepicker" data-field="startDate" />
+                                    {{/datepicker}}
+                                {{else}}
+                                    <label class="control-label">Start Time</label>
+                                    {{#datetimepicker }}
+                                        <input name="startDate" id="startDate" type="text" class="form-control datetimepicker" data-field="startDate" />
+                                    {{/datetimepicker}}
+                                {{/if}}
+                            </div>
+
+                            {{#if leaveInDaysMode}}
+                                <div class="col-sm-3">
+                                    <label class="control-label">End date</label>
+                                    {{#datepicker }}
+                                        <input name="endDate" id="endDate" type="text" class="form-control datepicker" data-field="endDate" />
+                                    {{/datepicker}}
+                                </div>
+                            {{/if}}
 
                             <div class="col-sm-3">
-                                {{> afQuickField name="endDate" class="datepicker" id="endDate"}}
-                            </div><!-- col-sm-3 -->
+                                {{#if leaveInDaysMode}}
+                                    <label for="duration" class="control-label">Duration (in days)</label>
+                                    <input type="number"  class="form-control" name="duration" id="duration" value="" disabled />
+                                {{else}}
+                                    <label for="duration" class="control-label">Duration (in hours)</label>
+                                    <input type="number"  class="form-control" name="duration" id="duration" value="" min="1" max="24" />
+                                {{/if}}
+                            </div>
 
                             <div class="col-sm-3">
-                                {{> afQuickField name="duration" disabled=true id="duration"}}
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                {{> afQuickField name="type" options=leaveTypes class="dropdown" id="type"}}
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                                <div class="form-group">
+                                    <label class="control-label">Leave types</label>
+                                    <select name="leaveTypes" class="form-control dropdown" id="leaveTypes">
+                                        <option value=""></option>
+                                        {{#each leaveTypes}}
+                                            <option value="{{_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" id="allowLeavesInHours" name="allowLeavesInHours" />
+                                <label for="allowLeavesInHours" class="control-label">Allow leaves in hours</label>
+                            </div>
+                        </div>
 
                         <div class="row">
-
+                            <br/>
                             <div class="col-sm-12">
-                                {{> afQuickField name="description" rows=3 }}
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-
+                                <div class="form-group">
+                                    <label for="description" class="control-label">Description</label>
+                                    <textarea rows="3" class="form-control" name="description" id="description" value=""></textarea>
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-footer">
-                        <button type="submit" class="btn btn-primary mr5" id="LeaveCreate">Save</button>
-                        <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="LeaveCreate">Save</button>
+                        <button class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
                     </div><!-- panel-footer -->
                 </div>
-               {{/autoForm}}
             </div>
         </div>
     </div>

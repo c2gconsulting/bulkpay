@@ -3,6 +3,21 @@
  */
 Meteor.methods({
 
+    "leave/create": function(leave){
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        let userId = Meteor.userId();
+        this.unblock();
+
+        try {
+            Leaves.insert(leave);
+            return true
+        } catch (e) {
+            console.log(e);
+            throw new Meteor.Error(401, e.message);
+        }
+    },
     "leave/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
