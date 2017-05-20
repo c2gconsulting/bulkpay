@@ -132,7 +132,7 @@ Template.LeaveCreate.onCreated(function () {
 
 Template.LeaveCreate.onRendered(function () {
     let self = this;
-    self.$('select.dropdown').dropdown();
+    // self.$('select.dropdown').dropdown();
 
     //disable submit temporary fix
     // $('#LeaveCreate').prop('disabled', true);

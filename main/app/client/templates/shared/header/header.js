@@ -182,6 +182,12 @@ Template.header.onCreated(function() {
 
         if(allEmployeesSub.ready() && timesAndLeavesSub.ready()) {
             let user = Meteor.user()
+            
+            if (!user || !user.employeeProfile || !user.employeeProfile.employment 
+                || !user.employeeProfile.employment.position){
+                return
+            }
+
             let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
                 return x._id
             });

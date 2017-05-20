@@ -35,9 +35,11 @@ Meteor.methods({
                 Leaves.insert(leave);
                 foundDaysLeftInYear.daysLeft -= leave.duration
 
-                delete employeeLeaveEntitlement.createdAt
+                delete userLeaveEntitlement.createdAt
                 UserLeaveEntitlements.update(userLeaveEntitlement._id, {$set: userLeaveEntitlement})
                 return true
+            } else {
+                throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
             }
         } catch (e) {
             throw new Meteor.Error(401, e.message);

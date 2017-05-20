@@ -84,7 +84,10 @@ Template.Node.helpers({
         return Meteor.users.find({employee: true});
     },
     'positionName': (positionId) => {
-        return EntityObjects.findOne({"_id": positionId}).name
+        let entity = EntityObjects.findOne({"_id": positionId})
+        if(entity) {
+            return entity.name
+        }
     },
     'unitHead': (positionId) => {
         return !!EntityObjects.findOne({"_id": positionId}).unitHead == true? "hod":"";
