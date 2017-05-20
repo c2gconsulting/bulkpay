@@ -222,6 +222,47 @@
                 </div>
             </div>
 
+            {{#if canSetLeaveEntitlement}}
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" class="collapsed" data-parent="#accordion2" href="#collapseTwo6">
+                            Leave entitlement
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTwo6" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div class="media emplist">
+                            <div class="media-body">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Leave entitlement</label>
+                                    <div class="col-sm-8">
+                                        <select name="allUserLeaveEntitlements" style="width: 100%" class="form-control dropdown">
+                                        {{#each allUserLeaveEntitlements}}
+                                            {{#if isEqual this._id selectedUserLeaveEntitlementId}}
+                                            <option value="{{_id}}" selected>{{name}} - ({{numberOfLeaveDaysPerAnnum}}) days</option>
+                                            {{else}}
+                                            <option value="{{_id}}">{{name}} - ({{numberOfLeaveDaysPerAnnum}}) days</option>
+                                            {{/if}}
+                                        {{/each}}
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        &nbsp;
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5 ladda-button pull-right" id="userLeaveEntitlementSave">Save</button>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+
             {{#if hasRoleManageAccess}}
                 <div class="panel panel-primary">
                     <div class="panel-heading">

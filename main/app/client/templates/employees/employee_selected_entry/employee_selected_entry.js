@@ -60,11 +60,31 @@ Template.EmployeeSelectedEntry.helpers({
       return UserImages.findOne({_id: id});
   },
   positionName: (id)=> {
-      if(id)
-        return EntityObjects.findOne({_id: id}).name;
-      else {
+      if(id) {
+        let entity = EntityObjects.findOne({_id: id})
+        if(entity) {
+            return entity.name;
+        }
+      } else {
         return "";
       }
+  },
+  isEqual: (a, b) => {
+    return a === b;
+  },
+  selectedUserLeaveEntitlements: function() {
+      return Template.instance().selectedUserLeaveEntitlements.get()
+  },
+  selectedUserLeaveEntitlementId: function() {
+      let selectedLeaveEntitlement = Template.instance().selectedUserLeaveEntitlements.get()
+      console.log(`selectedLeaveEntitlement`, selectedLeaveEntitlement)
+
+      if(selectedLeaveEntitlement) {
+        return selectedLeaveEntitlement.leaveEntitlementId
+      }
+  },
+  allUserLeaveEntitlements: function() {
+      return Template.instance().allLeaveEntitlements.get()
   },
   hasRoleManageAccess: () => {
     let canManageRoles = Core.hasRoleManageAccess(Meteor.userId())
@@ -121,6 +141,11 @@ Template.EmployeeSelectedEntry.helpers({
 
     return canManagePayroll;
   },
+  canSetLeaveEntitlement: () => {
+    let userId = Meteor.userId()
+
+    return Core.hasEmployeeAccess(userId) || Core.hasLeaveManageAccess(userId)
+  },
   hasProcurementRequisitionApproveAccess: () => {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
       console.log("selected employee id: " + selectedEmployee._id);
@@ -138,6 +163,11 @@ Template.EmployeeSelectedEntry.helpers({
 Template.EmployeeSelectedEntry.onCreated(function () {
     let self = this;
     Session.set('employeesList_selectedEmployee', undefined);
+
+    let businessId = Session.get('context')
+
+    self.allLeaveEntitlements = new ReactiveVar()
+    self.selectedUserLeaveEntitlements = new ReactiveVar()
 
     self.setEmployeePermissons = function() {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
@@ -201,6 +231,26 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         });
       }
     };
+
+    self.autorun(function() {
+        let selectedEmployee = Session.get('employeesList_selectedEmployee');
+        if(selectedEmployee) {
+            let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, selectedEmployee._id)
+            let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
+
+            if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
+                let selectedUserLeaveEntitlements = UserLeaveEntitlements.findOne({
+                    businessId: businessId, userId: selectedEmployee._id
+                })
+                self.selectedUserLeaveEntitlements.set(selectedUserLeaveEntitlements)
+
+                let allLeaveEntitlements = LeaveEntitlements.find({
+                    businessId: businessId
+                }).fetch()
+                self.allLeaveEntitlements.set(allLeaveEntitlements)
+            }
+        }
+    })
 });
 
 Template.EmployeeSelectedEntry.onRendered(function () {

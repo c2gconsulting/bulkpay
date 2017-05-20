@@ -8,12 +8,14 @@ Template.EmployeeEntry.events({
 /* EmployeeEntry: Helpers */
 /*****************************************************************************/
 Template.EmployeeEntry.helpers({
-    positionName: (id)=>{
-        return EntityObjects.findOne({_id: id}).name;
+    positionName: (id) => {
+        let entity = EntityObjects.findOne({_id: id})
+        if(entity) {
+            return entity.name
+        }
     },
     "images": (id) => {
         return UserImages.findOne({_id: id});
-
     }
 });
 
