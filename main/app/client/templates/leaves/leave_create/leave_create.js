@@ -92,6 +92,9 @@ Template.LeaveCreate.helpers({
     },
     leaveInDaysMode : function() {
         return !Template.instance().isAllowingHoursLeave.get()
+    },
+    numberOfLeaveDaysLeft: function() {
+        return Template.instance().numberOfLeaveDaysLeft.get()
     }
 });
 
@@ -101,13 +104,15 @@ Template.LeaveCreate.helpers({
 /*****************************************************************************/
 Template.LeaveCreate.onCreated(function () {
     let self = this;
+    let businessId = Session.get('context')
+
     self.profile = new ReactiveDict();
     self.isAllowingHoursLeave = new ReactiveVar();
     self.isAllowingHoursLeave.set(false)
 
-    self.inputErrorMsg = new ReactiveVar()
+    self.numberOfLeaveDaysLeft = new ReactiveVar();
 
-    self.subscribe('employeeLeaveTypes', Session.get('context'));
+    self.inputErrorMsg = new ReactiveVar()
 
     self.getNumberOfWeekDays = function(startDate, endDate) {
         let startDateMoment = moment(startDate)
@@ -128,6 +133,35 @@ Template.LeaveCreate.onCreated(function () {
         }
         return weekDates.length + 1
     }
+
+    self.subscribe('employeeLeaveTypes', businessId);
+
+    self.autorun(function() {
+        let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, Meteor.userId())
+        let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
+
+        if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
+            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+                businessId: businessId, userId: Meteor.userId()
+            })
+
+            if(userLeaveEntitlement) {
+                let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+                let currentYear = moment().year()
+                let currentYearAsNumber = parseInt(currentYear)
+
+                let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+                    if(aYearData.year === currentYearAsNumber) {
+                        indexOfFoundYear = indexOfYear
+                        return true
+                    }
+                })
+                if(foundDaysLeftInYear) {
+                    Template.instance().numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
+                }
+            }
+        }
+    })
 });
 
 Template.LeaveCreate.onRendered(function () {

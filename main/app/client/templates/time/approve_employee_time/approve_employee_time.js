@@ -51,19 +51,20 @@ Template.ApproveEmployeeTime.onCreated(function () {
     self.getSupervisees = function() {
         let user = Meteor.user()
         let businessId = Session.get('context')
-
-        let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
-            return x._id
-        });
-
         let allSuperviseeIds = []
 
-        Meteor.users.find().fetch({businessIds: businessId}).forEach(aUser => {
-            let userPositionId = aUser.employeeProfile.employment.position
-            if(positions.indexOf(userPositionId) !== -1) {
-                allSuperviseeIds.push(aUser._id)
-            }
-        });
+        if(user.employeeProfile && user.employeeProfile.employment) {
+            let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
+                return x._id
+            });
+
+            Meteor.users.find().fetch({businessIds: businessId}).forEach(aUser => {
+                let userPositionId = aUser.employeeProfile.employment.position
+                if(positions.indexOf(userPositionId) !== -1) {
+                    allSuperviseeIds.push(aUser._id)
+                }
+            });
+        }
         return allSuperviseeIds
     }
 

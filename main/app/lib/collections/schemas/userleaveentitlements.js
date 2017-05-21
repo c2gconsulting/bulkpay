@@ -3,7 +3,8 @@ Core.Schemas.UserLeaveDaysLeft = new SimpleSchema({
         type: Number
     },
     daysLeft: {
-        type: Number
+        type: Number,
+        decimal: true,
     }
 })
 
