@@ -29,7 +29,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-10 col-md-offset-1">
+                                    <div class="col-md-6 col-md-offset-3">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">
                                                 <div class="row">
@@ -71,25 +71,31 @@
                                                     </thead>
                                                     <tbody>
                                                         {{#each timeWritingReports}}
-                                                        <tr>
-                                                            <td><b>Project: {{projectName}}</b></td>
-                                                            <td></td>
-                                                        </tr>
-                                                            {{#each this.employees}}
                                                             <tr>
-                                                                <td><b>Employee ID: {{employeeDetails.employmentCode}} - {{this.employeeDetails.fullName}}</b></td>
+                                                                <td><b>Project: {{projectName}}</b></td>
                                                                 <td></td>
                                                             </tr>
 
-                                                                {{#each this.days}}
+                                                            {{#each this.employees}}
                                                                 <tr>
-                                                                    <td>{{day}}</td>
-                                                                    <td>{{duration}}</td>
+                                                                    <td><b>Employee ID: {{employeeDetails.employmentCode}} - {{this.employeeDetails.fullName}}</b></td>
+                                                                    <td></td>
                                                                 </tr>
+
+                                                                {{#each this.days}}
+                                                                    <tr>
+                                                                        <td>{{day}}</td>
+                                                                        <td>{{duration}}</td>
+                                                                    </tr>
+
+                                                                    {{#if isLastIndex ../days @index}}
+                                                                    <tr>
+                                                                        <td><b>Total</b>: </td>
+                                                                        <td>{{../employeeTimeTotal}}</td>
+                                                                    </tr>
+                                                                    {{/if}}
                                                                 {{/each}}
                                                             {{/each}}
-                                                            
-                                                            <tr><td></td><td></td></tr>
                                                         {{/each}}
                                                     </tbody>
                                                 </table>

@@ -112,6 +112,9 @@ Template.TimeWritingReport.helpers({
     },
     'timeWritingReports': function() {
         return Template.instance().timeWritingReports.get()
+    },
+    'isLastIndex': function(array, currentIndex) {
+        return (currentIndex === (array.length - 1))
     }
 });
 

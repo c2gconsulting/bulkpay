@@ -93,6 +93,10 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
 ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
     let reportData = []
 
+    let giveMeGoodLookingDate = function(date) {
+        return moment(date).format('DD MMM YYYY')
+    }
+
     timeReportDataFromDb.forEach(aTimeDatum => {
         let projectInReportData = _.find(reportData, aProject => {
             return aProject.project = aTimeDatum.project
@@ -110,7 +114,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                 employees: [{
                     employeeDetails: timeDatumCopy.employeeDetails, 
                     days: [{
-                        day: aTimeDatum.day, duration: aTimeDatum.duration
+                        day: giveMeGoodLookingDate(aTimeDatum.day), duration: aTimeDatum.duration
                     }],
                     employeeTimeTotal: employeeTimeTotal
                 }],
@@ -126,7 +130,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
             })
             if(foundEmployeeData) {// Same project - Same employee - New time
                 foundEmployeeData.days.push({
-                    day: aTimeDatum.day, duration: aTimeDatum.duration
+                    day: giveMeGoodLookingDate(aTimeDatum.day), duration: aTimeDatum.duration
                 })
                 foundEmployeeData.employeeTimeTotal += aTimeDatum.duration
             } else {// Same project - New employee for project - New time
@@ -137,7 +141,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                 projectInReportData.employees.push({
                     employeeDetails: timeDatumCopy.employeeDetails, 
                     days: [{
-                        day: aTimeDatum.day, 
+                        day: giveMeGoodLookingDate(aTimeDatum.day), 
                         duration: aTimeDatum.duration
                     }],
                     employeeTimeTotal: employeeTimeTotal
@@ -145,7 +149,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
             }
         }
     })
-    //console.log(`reportData`, JSON.stringify(reportData))
+    // console.log(`reportData`, JSON.stringify(reportData))
     return reportData
 }
 
