@@ -48,7 +48,7 @@ Template.TimeWritingReport.events({
             swal('Error', 'Please select Start and end Times', 'error');
         }
     },
-    'click #getReportForPeriodForDisplay': function(e, tmpl) {
+    'click #getReportForProjectsForDisplay': function(e, tmpl) {
         e.preventDefault();
         const startTime = $('[name="startTime"]').val();
         const endTime = $('[name="endTime"]').val();
@@ -70,11 +70,13 @@ Template.TimeWritingReport.events({
                 } catch(e) {
                 }
 
-                tmpl.$('#getReportForPeriodForDisplay').text('Get reports');
+                tmpl.$('#getReportForPeriodForDisplay').text('Get reports for projects');
                 $('#getReportForPeriodForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
                 tmpl.$('#getReportForPeriodForDisplay').removeAttr('disabled');
             };
             //--
+            Template.instance().showingReportsForProjects.set(false)
+            Template.instance().showingReportsForUnits.set(false)
 
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
@@ -83,6 +85,52 @@ Template.TimeWritingReport.events({
                 startTimeAsDate, endTimeAsDate, function(err, res) {
                 resetButton()
                 if(res){
+                    tmpl.showingReportsForProjects.set(true)
+                    tmpl.timeWritingReports.set(res)
+                } else {
+                    swal('No result found', err.reason, 'error');
+                }
+            });
+        }
+    },
+    'click #getReportForUnitsForDisplay': function(e, tmpl) {
+        e.preventDefault();
+        const startTime = $('[name="startTime"]').val();
+        const endTime = $('[name="endTime"]').val();
+
+        if(startTime && endTime) {
+            tmpl.$('#getReportForUnitsForDisplay').text('Preparing... ');
+            tmpl.$('#getReportForUnitsForDisplay').attr('disabled', true);
+            try {
+                let l = Ladda.create(tmpl.$('#getReportForUnitsForDisplay')[0]);
+                l.start();
+            } catch(e) {
+            }
+            //--
+            let resetButton = function() {
+                try {
+                    let l = Ladda.create(tmpl.$('#getReportForUnitsForDisplay')[0]);
+                    l.stop();
+                    l.remove();
+                } catch(e) {
+                }
+
+                tmpl.$('#getReportForUnitsForDisplay').text('Get reports for units');
+                $('#getReportForUnitsForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
+                tmpl.$('#getReportForUnitsForDisplay').removeAttr('disabled');
+            };
+            //--
+            Template.instance().showingReportsForProjects.set(false)
+            Template.instance().showingReportsForUnits.set(false)
+
+            let startTimeAsDate = tmpl.getDateFromString(startTime)
+            let endTimeAsDate = tmpl.getDateFromString(endTime)
+
+            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
+                startTimeAsDate, endTimeAsDate, function(err, res) {
+                resetButton()
+                if(res){
+                    tmpl.showingReportsForUnits.set(true)
                     tmpl.timeWritingReports.set(res)
                 } else {
                     swal('No result found', err.reason, 'error');
@@ -115,6 +163,12 @@ Template.TimeWritingReport.helpers({
     },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
+    },
+    'showingReportsForProjects': function() {
+        return Template.instance().showingReportsForProjects.get()
+    },
+    'showingReportsForUnits': function() {
+        return Template.instance().showingReportsForUnits.get()
     }
 });
 
@@ -125,6 +179,8 @@ Template.TimeWritingReport.onCreated(function () {
     let self = this;
 
     self.timeWritingReports = new ReactiveVar()
+    self.showingReportsForProjects = new ReactiveVar()
+    self.showingReportsForUnits = new ReactiveVar()
 
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);

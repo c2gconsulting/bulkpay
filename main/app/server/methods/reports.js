@@ -154,6 +154,59 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
     return reportData
 }
 
+ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
+    let reportData = []
+
+    let giveMeGoodLookingDate = function(date) {
+        return moment(date).format('DD MMM YYYY')
+    }
+
+    timeReportDataFromDb.forEach(aTimeDatum => {
+        let unitInReportData = _.find(reportData, aUnit => {
+            return aUnit.costCenter = aTimeDatum.costCenter
+        })
+
+        if(!unitInReportData) {// New unit - New employee - New time
+            let employeeTimeTotal = parseFloat(aTimeDatum.duration)
+            if(isNaN(employeeTimeTotal)) {
+                employeeTimeTotal = 0
+            }
+            reportData.push({
+                unit: aTimeDatum.project,
+                unitName: aTimeDatum.unitDetails.unitName,
+                employees: [{
+                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeTimeTotal: employeeTimeTotal
+                }],
+                unitTotalHours: employeeTimeTotal
+            })
+        } else {
+            let unitEmployeesSoFar = unitInReportData.employees
+            let foundEmployeeData = _.find(unitEmployeesSoFar, (anEmployeeData) => {
+                if(anEmployeeData.employeeDetails._id === aTimeDatum.employeeId) {
+                    return true
+                } 
+            })
+            if(foundEmployeeData) {// Same unit - Same employee - New time
+                foundEmployeeData.employeeTimeTotal += aTimeDatum.duration
+            } else {// Same unit - New employee for project - New time
+                let employeeTimeTotal = parseFloat(aTimeDatum.duration)
+                if(isNaN(employeeTimeTotal)) {
+                    employeeTimeTotal = 0
+                }
+                unitInReportData.employees.push({
+                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeTimeTotal: employeeTimeTotal
+                })
+            }
+            unitInReportData.unitTotalHours += aTimeDatum.duration
+        }
+    })
+    // console.log(`reportData`, JSON.stringify(reportData))
+    return reportData
+}
+
+
 
 /**
  *  Payruns Methods
@@ -239,5 +292,57 @@ Meteor.methods({
 
             return ReportUtils.processedReportDataForProjects(biffedUpTimes)
         }
-    }
+    },
+
+    'reports/timesForEveryoneByUnit': function(businessId, startDate, endDate) {
+        check(businessId, String)
+        //--
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let timesForUnit = TimeWritings.find({
+                businessId: businessId, 
+                costCenter: {$exists : true},
+                day: {$gte: startDate},
+                day: {$lt: endDate}
+            }).fetch();
+            console.log(`timesForUnit number: ${JSON.stringify(timesForUnit.length)}`)
+
+            let biffedUpTimes = timesForUnit.map(aTime => {
+                let employee = Meteor.users.findOne({_id: aTime.employeeId})
+                if(employee) {
+                    aTime.employeeDetails = {}
+                    let employeeDetails = {
+                        _id: employee._id,
+                        fullName: employee.profile.fullName,
+                        employmentCode: employee.employeeProfile.employeeId
+                    }
+                    _.extend(aTime.employeeDetails, employeeDetails)
+                }
+                //--
+                let unit = EntityObjects.findOne({_id: aTime.costCenter})
+                if(unit) {
+                    aTime.unitDetails = {}
+                    let unitDetails = {
+                        _id: unit._id,
+                        unitName: unit.name,
+                    }
+                    _.extend(aTime.unitDetails, unitDetails)
+                }
+                //--
+                let activity = Activities.findOne({_id: aTime.activity})
+                if(activity) {
+                    aTime.activityDetails = {}
+                    let activityDetails = {
+                        activityName: activity.description
+                    }
+                    _.extend(aTime.activityDetails, activityDetails)
+                }
+                return aTime
+            })
+            console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
+
+            return ReportUtils.processedReportDataForUnits(biffedUpTimes)
+        }
+    }    
 })
