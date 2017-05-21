@@ -101,7 +101,6 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
         let projectInReportData = _.find(reportData, aProject => {
             return aProject.project = aTimeDatum.project
         })
-        let timeDatumCopy = {...aTimeDatum}
 
         if(!projectInReportData) {// New project - New employee - New time
             let employeeTimeTotal = parseFloat(aTimeDatum.duration)
@@ -112,12 +111,13 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                 project: aTimeDatum.project,
                 projectName: aTimeDatum.projectDetails.projectName,
                 employees: [{
-                    employeeDetails: timeDatumCopy.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails, 
                     days: [{
                         day: giveMeGoodLookingDate(aTimeDatum.day), duration: aTimeDatum.duration
                     }],
                     employeeTimeTotal: employeeTimeTotal
                 }],
+                projectTotalHours: employeeTimeTotal
             })
         } else {
             let projectEmployeesSoFar = projectInReportData.employees
@@ -139,7 +139,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                     employeeTimeTotal = 0
                 }
                 projectInReportData.employees.push({
-                    employeeDetails: timeDatumCopy.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails, 
                     days: [{
                         day: giveMeGoodLookingDate(aTimeDatum.day), 
                         duration: aTimeDatum.duration
@@ -147,6 +147,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                     employeeTimeTotal: employeeTimeTotal
                 })
             }
+            projectInReportData.projectTotalHours += aTimeDatum.duration
         }
     })
     // console.log(`reportData`, JSON.stringify(reportData))

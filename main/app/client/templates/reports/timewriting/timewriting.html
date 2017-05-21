@@ -55,9 +55,6 @@
 
                                                     <div class="col-md-3">
                                                         <button class="btn btn-primary" id="getReportForPeriodForDisplay">Get reports</button>
-                                                        <!--<button class="btn btn-success excel">
-                                                            <i class="fa fa-bar-excel-o"></i> Export CSV
-                                                        </button>-->
                                                     </div>
                                                 </div>
 
@@ -90,11 +87,17 @@
 
                                                                     {{#if isLastIndex ../days @index}}
                                                                     <tr>
-                                                                        <td><b>Total</b>: </td>
+                                                                        <td class="text-right"><b>EmployeeTotal</b>: </td>
                                                                         <td>{{../employeeTimeTotal}}</td>
                                                                     </tr>
                                                                     {{/if}}
                                                                 {{/each}}
+                                                                {{#if isLastIndex ../employees @index}}
+                                                                    <tr>
+                                                                        <td class="text-right"><b>Project Total Hours</b>: </td>
+                                                                        <td>{{../projectTotalHours}}</td>
+                                                                    </tr>
+                                                                    {{/if}}
                                                             {{/each}}
                                                         {{/each}}
                                                     </tbody>
