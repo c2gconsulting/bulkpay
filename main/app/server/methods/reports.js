@@ -99,7 +99,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
 
     timeReportDataFromDb.forEach(aTimeDatum => {
         let projectInReportData = _.find(reportData, aProject => {
-            return aProject.project = aTimeDatum.project
+            return aProject.project === aTimeDatum.project
         })
 
         if(!projectInReportData) {// New project - New employee - New time
@@ -163,7 +163,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
 
     timeReportDataFromDb.forEach(aTimeDatum => {
         let unitInReportData = _.find(reportData, aUnit => {
-            return aUnit.costCenter = aTimeDatum.costCenter
+            return aUnit.unit === aTimeDatum.costCenter
         })
 
         if(!unitInReportData) {// New unit - New employee - New time
@@ -172,7 +172,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
                 employeeTimeTotal = 0
             }
             reportData.push({
-                unit: aTimeDatum.project,
+                unit: aTimeDatum.costCenter,
                 unitName: aTimeDatum.unitDetails.unitName,
                 employees: [{
                     employeeDetails: aTimeDatum.employeeDetails, 
@@ -189,7 +189,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
             })
             if(foundEmployeeData) {// Same unit - Same employee - New time
                 foundEmployeeData.employeeTimeTotal += aTimeDatum.duration
-            } else {// Same unit - New employee for project - New time
+            } else {// Same unit - New employee for unit - New time
                 let employeeTimeTotal = parseFloat(aTimeDatum.duration)
                 if(isNaN(employeeTimeTotal)) {
                     employeeTimeTotal = 0
@@ -288,7 +288,7 @@ Meteor.methods({
                 }
                 return aTime
             })
-            // console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
+            //console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
 
             return ReportUtils.processedReportDataForProjects(biffedUpTimes)
         }
@@ -340,7 +340,7 @@ Meteor.methods({
                 }
                 return aTime
             })
-            console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
+            // console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
 
             return ReportUtils.processedReportDataForUnits(biffedUpTimes)
         }
