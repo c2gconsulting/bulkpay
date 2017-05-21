@@ -4,8 +4,16 @@
 Template.TimeCreate2.events({
     'change [name="costElement"]': (e, tmpl) => {
         let selected = $(e.target).val();
-        if(selected)
-            Template.instance().selectedElement.set(selected);
+        if(selected) {
+            if(selected && selected === 'leave') {
+                Modal.hide('TimeCreate2')
+                setTimeout(function() {
+                    Modal.show('LeaveCreate')
+                }, 1000)
+            } else {
+                Template.instance().selectedElement.set(selected);
+            }
+        }
     },
     'change [name="projects"]': (e,tmpl) => {
         let project = $(e.target).val();
