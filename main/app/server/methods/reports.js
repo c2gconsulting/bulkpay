@@ -98,22 +98,50 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
             return aProject.project = aTimeDatum.project
         })
         let timeDatumCopy = {...aTimeDatum}
-        if(!projectInReportData) {
+
+        if(!projectInReportData) {// New project - New employee - New time
+            let employeeTimeTotal = parseFloat(aTimeDatum.duration)
+            if(isNaN(employeeTimeTotal)) {
+                employeeTimeTotal = 0
+            }
             reportData.push({
                 project: aTimeDatum.project,
                 projectName: aTimeDatum.projectDetails.projectName,
-                employees: [{...aTimeDatum.employeeDetails, days: [aTimeDatum.day]}],
+                employees: [{
+                    employeeDetails: timeDatumCopy.employeeDetails, 
+                    days: [{
+                        day: aTimeDatum.day, duration: aTimeDatum.duration
+                    }],
+                    employeeTimeTotal: employeeTimeTotal
+                }],
             })
         } else {
             let projectEmployeesSoFar = projectInReportData.employees
-            let foundEmployeeData = _.find(projectEmployeesSoFar, anEmployee => {
-                return anEmployee._id === aTimeDatum.employeeId
+            let foundEmployeeDataIndex = -1
+            let foundEmployeeData = _.find(projectEmployeesSoFar, (anEmployeeData, employeeIndex) => {
+                if(anEmployeeData.employeeDetails._id === aTimeDatum.employeeId) {
+                    foundEmployeeDataIndex = employeeIndex
+                    return true
+                } 
             })
-            if(foundEmployeeData) {
-                let emloyeeProjectDaysInPeriod = foundEmployeeData.days
-                emloyeeProjectDaysInPeriod.push(aTimeDatum.day)
-            } else {
-                projectEmployeesSoFar.push({...aTimeDatum.employeeDetails, days: [aTimeDatum.day]})
+            if(foundEmployeeData) {// Same project - Same employee - New time
+                foundEmployeeData.days.push({
+                    day: aTimeDatum.day, duration: aTimeDatum.duration
+                })
+                foundEmployeeData.employeeTimeTotal += aTimeDatum.duration
+            } else {// Same project - New employee for project - New time
+                let employeeTimeTotal = parseFloat(aTimeDatum.duration)
+                if(isNaN(employeeTimeTotal)) {
+                    employeeTimeTotal = 0
+                }
+                projectInReportData.employees.push({
+                    employeeDetails: timeDatumCopy.employeeDetails, 
+                    days: [{
+                        day: aTimeDatum.day, 
+                        duration: aTimeDatum.duration
+                    }],
+                    employeeTimeTotal: employeeTimeTotal
+                })
             }
         }
     })
@@ -202,7 +230,7 @@ Meteor.methods({
                 }
                 return aTime
             })
-            console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
+            // console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
 
             return ReportUtils.processedReportDataForProjects(biffedUpTimes)
         }
