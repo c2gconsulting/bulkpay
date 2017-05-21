@@ -769,6 +769,9 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
     let totalTax = 0;
     //apply tax rules on taxable income
     const rules = [...tax.rules];
+
+    let isTaxableIncomeLessThanFirstUpperLimit =  false
+
     //add log for debugging
     //deduct upper limit from taxable income
     //no need to calcuate tax if taxable income-
@@ -791,10 +794,17 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
                 processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: totalTax });
             }
         }
+    } else {
+        isTaxableIncomeLessThanFirstUpperLimit = true
     }
     const netTax = totalTax / 12;
-    processing.push({code: `Net Tax(Total Tax / 12 )`, derived: `${totalTax}` / 12 });
-    processing.push({code: `Net Tax`, derived: netTax });
+    if(isTaxableIncomeLessThanFirstUpperLimit) {
+        processing.push({code: `Net Tax(Total Tax / 12 ) - {Fail! Taxable income is less than first upper limit of tax rule}`, derived: `${totalTax}` / 12 });
+        processing.push({code: `Net Tax - {Fail! Taxable income is less than first upper limit of tax rule}`, derived: netTax });
+    } else {
+        processing.push({code: `Net Tax(Total Tax / 12 )`, derived: `${totalTax}` / 12 });
+        processing.push({code: `Net Tax`, derived: netTax });
+    }
     const log = {paytype: tax.code, input: input, processing: processing};
 
     return {netTax: parseFloat(netTax).toFixed(2), taxLog: log};
