@@ -19,10 +19,13 @@ Meteor.methods({
                throw new Meteor.Error(401, errMsg);
             }
 
+            let leaveYear = leave.startDate
+            let leaveYearAsNumber = parseInt(moment(leaveYear).year())
+
             let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
             let indexOfFoundYear = -1
             let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
-                if(aYearData.year === currentYearAsNumber) {
+                if(aYearData.year === leaveYearAsNumber) {
                     indexOfFoundYear = indexOfYear
                     return true
                 }
@@ -37,15 +40,6 @@ Meteor.methods({
             }
             if(foundDaysLeftInYear.daysLeft > leave.duration) {
                 Leaves.insert(leave);
-                //--
-                userDaysLeftHistory[indexOfFoundYear] = {
-                    year: currentYearAsNumber,
-                    daysLeft: foundDaysLeftInYear.daysLeft - leave.duration
-                }
-
-                delete userLeaveEntitlement.createdAt
-                
-                UserLeaveEntitlements.update(userLeaveEntitlement._id, {$set: userLeaveEntitlement})
                 return true
             } else {
                 throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
@@ -77,18 +71,52 @@ Meteor.methods({
         check(timeObj, Object);
         switch (timeObj.type){
             case 'Leaves':
-                if(Core.hasLeaveApprovalAccess(this.userId)){
-                    let request = Leaves.findOne({_id: timeObj.id});
-                    if (request && request.approvalStatus === 'Open'){  //cannot approve self leave
-                        if(request.employeeId === this.userId)
-                            throw new Meteor.Error('401', 'Cannot Approve your own Request');
-                        const approval = Leaves.update({_id: timeObj.id}, {$set: {approvalStatus: 'Approved', approvedBy: this.userId, approvedDate: new Date()}})
-                        return approval;
-                    } else {
-                        throw new Meteor.Error('403', 'No action can be taken when Leave is not Open')
-                    }
-                } else {
+                if(!Core.hasLeaveApprovalAccess(this.userId)){
                     throw new Meteor.Error('401', 'Unauthorized');
+                }
+                let request = Leaves.findOne({_id: timeObj.id});
+                if (!request || request.approvalStatus !== 'Open'){  //cannot approve self leave
+                    throw new Meteor.Error('403', 'No action can be taken when Leave is not Open')
+                }
+                if(request.employeeId === this.userId) {
+                    throw new Meteor.Error('401', 'Cannot Approve your own Request');
+                }
+                //--
+                let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+                    businessId: request.businessId, userId: request.employeeId
+                })
+                if(!userLeaveEntitlement) {
+                    throw new Meteor.Error(401, "The employee does not have a leave entitlement");
+                }
+                let leaveYear = request.startDate
+                let leaveYearAsNumber = parseInt(moment(leaveYear).year())
+
+                let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+                let indexOfFoundYear = -1
+                let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+                    if(aYearData.year === leaveYearAsNumber) {
+                        indexOfFoundYear = indexOfYear
+                        return true
+                    }
+                })
+                if(!foundDaysLeftInYear) {
+                    throw new Meteor.Error(401, "The employee does not have a leave entitlement for the year specified in the leave request");
+                }
+
+                if(foundDaysLeftInYear.daysLeft > request.duration) {
+                    const approval = Leaves.update({_id: timeObj.id}, 
+                        {$set: {approvalStatus: 'Approved', approvedBy: this.userId, approvedDate: new Date()}
+                    })
+                    userDaysLeftHistory[indexOfFoundYear] = {
+                        year: leaveYearAsNumber,
+                        daysLeft: foundDaysLeftInYear.daysLeft - request.duration
+                    }
+                    delete userLeaveEntitlement.createdAt
+                    UserLeaveEntitlements.update(userLeaveEntitlement._id, {$set: userLeaveEntitlement})
+    
+                    return approval;
+                } else {
+                    throw new Meteor.Error(401, "The employee does not have enough leave days for this leave request");
                 }
             case 'TimeWritings':
                 if(Core.hasTimeApprovalAccess(this.userId)){
