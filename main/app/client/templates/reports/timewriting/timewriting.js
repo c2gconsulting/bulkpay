@@ -87,7 +87,7 @@ Template.TimeWritingReport.events({
                 if(res){
                     tmpl.showingReportsForProjects.set(true)
                     tmpl.timeWritingReports.set(res)
-                    tmpl.exportTimesForProjectsReportData(res)
+                    tmpl.exportTimesForProjectsReportData(res, startTime, endTime)
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
@@ -178,7 +178,7 @@ Template.TimeWritingReport.events({
                 if(res){
                     tmpl.showingReportsForUnits.set(true)
                     tmpl.timeWritingReports.set(res)
-                    tmpl.exportTimesForUnitsReportData(res)
+                    tmpl.exportTimesForUnitsReportData(res, startTime, endTime)
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
@@ -234,7 +234,7 @@ Template.TimeWritingReport.onCreated(function () {
         return theDate.add('hours', 1).toDate()
     }
 
-    self.exportTimesForProjectsReportData = function(theData) {
+    self.exportTimesForProjectsReportData = function(theData, startTime, endTime) {
         let formattedHeader = ["Project > Employee", "Hours"]
 
         let reportData = []
@@ -258,10 +258,11 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Project Total Hours: ", aDatum.projectTotalHours])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, `Time Report`);
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+            `Project Time Report ${startTime} - ${endTime}`);
     }
 
-    self.exportTimesForUnitsReportData = function(theData) {
+    self.exportTimesForUnitsReportData = function(theData, startTime, endTime) {
         let formattedHeader = ["Unit > Employee", "Hours"]
 
         let reportData = []
@@ -279,7 +280,8 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Unit Total Hours: ", aDatum.unitTotalHours])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, `Time Report`);
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+            `Cost-Center Time Report ${startTime} - ${endTime}`);
     }
 });
 
