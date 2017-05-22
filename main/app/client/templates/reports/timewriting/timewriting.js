@@ -137,6 +137,52 @@ Template.TimeWritingReport.events({
                 }
             });            
         }
+    },
+    'click #exportReportForUnits': function(e, tmpl) {
+        e.preventDefault();
+        const startTime = $('[name="startTime"]').val();
+        const endTime = $('[name="endTime"]').val();
+
+        if(startTime && endTime) {
+            tmpl.$('#exportReportForUnits').text('Preparing... ');
+            tmpl.$('#exportReportForUnits').attr('disabled', true);
+            try {
+                let l = Ladda.create(tmpl.$('#exportReportForUnits')[0]);
+                l.start();
+            } catch(e) {
+            }
+            //--
+            let resetButton = function() {
+                try {
+                    let l = Ladda.create(tmpl.$('#exportReportForUnits')[0]);
+                    l.stop();
+                    l.remove();
+                } catch(e) {
+                }
+
+                tmpl.$('#exportReportForUnits').text('Get reports for units');
+                $('#exportReportForUnits').prepend("<i class='glyphicon glyphicon-download'></i>");
+                tmpl.$('#exportReportForUnits').removeAttr('disabled');
+            };
+            //--
+            Template.instance().showingReportsForProjects.set(false)
+            Template.instance().showingReportsForUnits.set(false)
+
+            let startTimeAsDate = tmpl.getDateFromString(startTime)
+            let endTimeAsDate = tmpl.getDateFromString(endTime)
+
+            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
+                startTimeAsDate, endTimeAsDate, function(err, res) {
+                resetButton()
+                if(res){
+                    tmpl.showingReportsForUnits.set(true)
+                    tmpl.timeWritingReports.set(res)
+                    tmpl.exportTimesForUnitsReportData(res)
+                } else {
+                    swal('No result found', err.reason, 'error');
+                }
+            });            
+        }
     }
 });
 
@@ -185,6 +231,27 @@ Template.TimeWritingReport.onCreated(function () {
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);
         return theDate.add('hours', 1).toDate()
+    }
+
+    self.exportTimesForUnitsReportData = function(theData) {
+        let formattedHeader = ["Unit > Employee", "Hours"]
+
+        let reportData = []
+
+        theData.forEach(aDatum => {
+            let unitName = aDatum.unitName
+            reportData.push(["Unit: " + unitName, ""])
+            //--
+            let unitEmployees = aDatum.employees
+            unitEmployees.forEach(anEmployeeDatum => {
+                let empDetails = anEmployeeDatum.employeeDetails
+                let empCodeAndName = empDetails.employmentCode + " - " + empDetails.fullName
+                reportData.push([empCodeAndName, anEmployeeDatum.employeeTimeTotal])
+            })
+            //--
+            reportData.push(["Unit Total Hours: ", aDatum.unitTotalHours])
+        })
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, `Time Report`);
     }
 });
 
