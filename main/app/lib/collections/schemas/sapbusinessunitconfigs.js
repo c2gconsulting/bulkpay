@@ -40,7 +40,7 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
         type: String,
         optional: true
     },
-    businessUnitId: {
+    businessId: {
         type: String
     },
     ipAddress : {

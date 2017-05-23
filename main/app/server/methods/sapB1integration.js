@@ -160,7 +160,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
  *  SAP B1 Integration Methods
  */
 Meteor.methods({
-    'sapB1integration/testConnection': function (businessUnitId, sapConfig) {
+    'sapB1integration/testConnection': function (businessId, sapConfig) {
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -181,11 +181,11 @@ Meteor.methods({
               let serverResponseObj = JSON.parse(actualServerResponse)
 
               if(serverResponseObj.status === true) {
-                  let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+                  let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
                   if(businessUnitSapConfig) {
                       SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : sapConfig});
                   } else {
-                      sapConfig.businessUnitId = businessUnitId
+                      sapConfig.businessId = businessUnitId
                       SapBusinessUnitConfigs.insert(sapConfig)
                   }
               }

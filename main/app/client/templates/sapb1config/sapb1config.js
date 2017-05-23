@@ -42,10 +42,12 @@ Template.SapB1Config.events({
             return
         }
         //--
+        let businessUnitId = Session.get('context')
+
         let sapConfig = {
             ipAddress : sapServerIpAddress,
             protocol : protocol,
-
+            businessId: businessUnitId,
             sapServername : sapServername,
             sapUsername : sapUsername,
             sapUserPassword : sapUserPassword,
@@ -57,7 +59,6 @@ Template.SapB1Config.events({
         tmpl.$('#testConnection').text('Connecting ... ');
         tmpl.$('#testConnection').attr('disabled', true);
         //--
-        let businessUnitId = Session.get('context')
         Meteor.call('sapB1integration/testConnection', businessUnitId, sapConfig, (err, res) => {
             tmpl.$('#testConnection').text('Test Connection');
             tmpl.$('#testConnection').removeAttr('disabled');
@@ -250,7 +251,7 @@ Template.SapB1Config.onCreated(function () {
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
-            let sapBizUnitConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId})
+            let sapBizUnitConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId})
             self.sapBusinessUnitConfig.set(sapBizUnitConfig)
 
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(unit => {
