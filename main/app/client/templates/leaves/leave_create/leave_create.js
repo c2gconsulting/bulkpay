@@ -2,6 +2,24 @@
 /* LeaveCreate: Event Handlers */
 /*****************************************************************************/
 Template.LeaveCreate.events({
+    'change #startDate': function(e, tmpl) {
+        let start = $("#startDate").val();
+        let end = $("#endDate").val();
+        if (start && end){
+            let duration = tmpl.getNumberOfWeekDays(start, end)
+            let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+            $("#duration").val(durationAsDaysAndHours)
+        }
+    },
+    'change #endDate': function(e, tmpl) {
+        let start = $("#startDate").val();
+        let end = $("#endDate").val();
+        if (start && end){
+            let duration = tmpl.getNumberOfWeekDays(start, end)
+            let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+            $("#duration").val(durationAsDaysAndHours)
+        }
+    },
     'change #allowLeavesInHours': function(e, tmpl) {
         let allowLeavesInHours = $('#allowLeavesInHours').is(":checked")
         if(allowLeavesInHours) {
@@ -226,26 +244,6 @@ Template.LeaveCreate.onRendered(function () {
             let propertyType = self.$("#duration").val();
             self.profile.set('duration', propertyType)
         }
-        $("#startDate").on("change", function () {
-            let start = $("#startDate").val();
-            let end = $("#endDate").val();
-            if (start && end){
-                let duration = self.getNumberOfWeekDays(start, end)
-                let durationAsDaysAndHours = self.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
-                $("#duration").val(durationAsDaysAndHours)
-            }
-        });
-        $("#endDate").on("change", function () {
-            let start = $("#startDate").val();
-            let end = $("#endDate").val();
-            if (start && end){
-                let duration = self.getNumberOfWeekDays(start, end)
-                let durationAsDaysAndHours = self.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
-                $("#duration").val(durationAsDaysAndHours)
-            }
-        });
-
-
         $("#type,#endDate,#startDate").on("change", function () {
             let duration = parseInt($("#duration").val());
             let selectedType = $('#type').val();
