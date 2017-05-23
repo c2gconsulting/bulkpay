@@ -60,6 +60,10 @@ Core.Schemas.PayType = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
+    isTimeWritingDependent: {
+        type: Boolean,
+        defaultValue: false
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

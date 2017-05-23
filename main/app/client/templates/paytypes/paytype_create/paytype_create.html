@@ -103,7 +103,7 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
                                     <input type="checkbox" id="pay-type-key-state" checked="{{checked 'isBase'}}" name="isBase" />
@@ -111,7 +111,7 @@
                                 </div>
                             </div><!-- col-sm-4 -->
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
                                     <input type="checkbox" id="pay-type-output-state" checked="{{checked 'addToTotal'}}" name="addToTotal" />
@@ -119,6 +119,14 @@
                                 </div>
                             </div><!-- col-sm-4 -->
 
+                            <div class="col-sm-3">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="payment-depends-on-time-writing" 
+                                        checked="{{checked 'isTimeWritingDependent'}}" />
+                                    <label for="payment-depends-on-time-writing">Depends on time-writing</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
                         </div><!-- row -->
                     </div>
                     <div class="panel-footer">

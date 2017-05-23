@@ -24,7 +24,7 @@ Template.PaytypeCreate.events({
         l.start();
 
         const details = {
-            businessId: BusinessUnits.findOne()._id,
+            businessId: Session.get('context'),
             code: payTypeCode,
             title: payTypeTitle,
             type: $('[name="type"]').val(),
@@ -35,7 +35,8 @@ Template.PaytypeCreate.events({
             status: $('[name="status"]').val(),
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
             isBase: $('[name="isBase"]').is(':checked') ? true : false,
-            addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false
+            addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false,
+            isTimeWritingDependent: $('#payment-depends-on-time-writing').is(':checked') ? true : false
         };
         //console.log(`Pay type details for creation: ${JSON.stringify(details)}`)
 
