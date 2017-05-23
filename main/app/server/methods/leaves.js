@@ -52,20 +52,20 @@ Meteor.methods({
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
-        // check if user has permission to delete and if leave type can be deleted
-        if(Core.hasLeaveManageAccess(this.userId)){
-            LeaveTypes.remove({_id: id});
+        
+        let doc = Leaves.findOne({_id: id});
+        if(!doc) {
+
+        }
+        if(doc.employeeId !== this.userId) {
+            throw new Meteor.Error(401, "Unauthorized. You cannot delete a leave request you did not create.");
+        }
+        if(doc.approvalStatus === "Open"){
+            Leaves.remove({_id: id});
             return true;
         } else {
-            console.log("got here");
-            let doc = Leaves.findOne({_id: id});
-            if(doc && doc.employeeId == this.userId && doc.approvalStatus !== "Approved"){
-                Leaves.remove({_id: id});
-                return true;
-            }
-            throw new Meteor.Error(401, "Unauthorized");
+            throw new Meteor.Error(401, "You cannot delete a leave request that has already been approved or rejected.");            
         }
-
     },
     'approveTimeData': function(timeObj){
         check(timeObj, Object);
