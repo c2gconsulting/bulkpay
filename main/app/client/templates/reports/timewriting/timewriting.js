@@ -36,8 +36,10 @@ Template.TimeWritingReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
+            let selectedEmployees = tmpl.selectedEmployees.get()
+
             Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.showingReportsForProjects.set(true)
@@ -81,8 +83,10 @@ Template.TimeWritingReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
+            let selectedEmployees = tmpl.selectedEmployees.get()
+
             Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.showingReportsForProjects.set(true)
@@ -127,8 +131,10 @@ Template.TimeWritingReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
+            let selectedEmployees = tmpl.selectedEmployees.get()
+
             Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.showingReportsForUnits.set(true)
@@ -172,8 +178,10 @@ Template.TimeWritingReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
+            let selectedEmployees = tmpl.selectedEmployees.get()
+
             Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.showingReportsForUnits.set(true)
@@ -184,6 +192,10 @@ Template.TimeWritingReport.events({
                 }
             });            
         }
+    },
+    'change [name="employee"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.selectedEmployees.set(selected)
     }
 });
 
@@ -204,6 +216,9 @@ Template.TimeWritingReport.helpers({
     },
     'year': function(){
         return Core.years();
+    },
+    'employees': () => {
+        return Meteor.users.find({"employee": true});
     },
     'timeWritingReports': function() {
         return Template.instance().timeWritingReports.get()
@@ -228,6 +243,8 @@ Template.TimeWritingReport.onCreated(function () {
     self.timeWritingReports = new ReactiveVar()
     self.showingReportsForProjects = new ReactiveVar()
     self.showingReportsForUnits = new ReactiveVar()
+
+    self.selectedEmployees = new ReactiveVar()
 
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);

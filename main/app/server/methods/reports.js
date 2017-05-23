@@ -212,9 +212,10 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
  *  Payruns Methods
  */
 Meteor.methods({
-    'reports/getComprehensivePayResult': (businessId, period) => {
+    'reports/getComprehensivePayResult': function(businessId, period) {
         check(period, String);
         check(businessId, String);
+        this.unblock()
         //--
         if(Core.hasPayrollAccess(this.userid)) {
             throw new Meteor.Error(401, 'Unauthorized');
@@ -242,19 +243,23 @@ Meteor.methods({
             }
         }
     },
-    'reports/timesForEveryoneByProject': function(businessId, startDate, endDate) {
+    'reports/timesForEveryoneByProject': function(businessId, startDate, endDate, selectedEmployees) {
         check(businessId, String)
+        this.unblock()
         //--
         if(Core.hasPayrollAccess(this.userid)) {
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            let timesForProject = TimeWritings.find({
+            let queryObj = {
                 businessId: businessId, 
                 project: {$exists : true},
                 day: {$gte: startDate},
                 day: {$lt: endDate}
-            }).fetch();
-            console.log(`timesForProject number: ${JSON.stringify(timesForProject.length)}`)
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {                
+                queryObj.employeeId = {$in: selectedEmployees}
+            }
+            let timesForProject = TimeWritings.find(queryObj).fetch();
 
             let biffedUpTimes = timesForProject.map(aTime => {
                 let projectEmployee = Meteor.users.findOne({_id: aTime.employeeId})
@@ -294,19 +299,23 @@ Meteor.methods({
         }
     },
 
-    'reports/timesForEveryoneByUnit': function(businessId, startDate, endDate) {
+    'reports/timesForEveryoneByUnit': function(businessId, startDate, endDate, selectedEmployees) {
         check(businessId, String)
+        this.unblock()
         //--
         if(Core.hasPayrollAccess(this.userid)) {
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            let timesForUnit = TimeWritings.find({
+            let queryObj = {
                 businessId: businessId, 
                 costCenter: {$exists : true},
                 day: {$gte: startDate},
                 day: {$lt: endDate}
-            }).fetch();
-            console.log(`timesForUnit number: ${JSON.stringify(timesForUnit.length)}`)
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {                
+                queryObj.employeeId = {$in: selectedEmployees}
+            }
+            let timesForUnit = TimeWritings.find(queryObj).fetch();
 
             let biffedUpTimes = timesForUnit.map(aTime => {
                 let employee = Meteor.users.findOne({_id: aTime.employeeId})
