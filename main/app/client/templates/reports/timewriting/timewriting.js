@@ -25,7 +25,7 @@ Template.TimeWritingReport.events({
                 } catch(e) {
                 }
 
-                tmpl.$('#getReportForPeriodForDisplay').text('Get reports for projects');
+                tmpl.$('#getReportForPeriodForDisplay').text('Project reports');
                 // $('#getReportForPeriodForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
                 tmpl.$('#getReportForPeriodForDisplay').removeAttr('disabled');
             };
@@ -116,7 +116,7 @@ Template.TimeWritingReport.events({
                 } catch(e) {
                 }
 
-                tmpl.$('#getReportForUnitsForDisplay').text('Get reports for units');
+                tmpl.$('#getReportForUnitsForDisplay').text('Cost-Center reports');
                 // $('#getReportForUnitsForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
                 tmpl.$('#getReportForUnitsForDisplay').removeAttr('disabled');
             };

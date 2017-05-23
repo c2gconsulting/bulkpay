@@ -18,9 +18,9 @@
                             <div class="col-sm-3">
                                 {{#if leaveInDaysMode}}
                                     <label class="control-label">Start date</label>
-                                    {{#datepicker }}
-                                        <input name="startDate" id="startDate" type="text" class="form-control datepicker" data-field="startDate" />
-                                    {{/datepicker}}
+                                    {{#datetimepicker }}
+                                        <input name="startDate" id="startDate" type="text" class="form-control datetimepicker" data-field="startDate" />
+                                    {{/datetimepicker}}
                                 {{else}}
                                     <label class="control-label">Start Time</label>
                                     {{#datetimepicker }}
@@ -32,16 +32,16 @@
                             {{#if leaveInDaysMode}}
                                 <div class="col-sm-3">
                                     <label class="control-label">End date</label>
-                                    {{#datepicker }}
-                                        <input name="endDate" id="endDate" type="text" class="form-control datepicker" data-field="endDate" />
-                                    {{/datepicker}}
+                                    {{#datetimepicker }}
+                                        <input name="endDate" id="endDate" type="text" class="form-control datetimepicker" data-field="endDate" />
+                                    {{/datetimepicker}}
                                 </div>
                             {{/if}}
 
                             <div class="col-sm-3">
                                 {{#if leaveInDaysMode}}
-                                    <label for="duration" class="control-label">Duration (in days)</label>
-                                    <input type="number"  class="form-control" name="duration" id="duration" value="" disabled />
+                                    <label for="duration" class="control-label">Duration</label>
+                                    <input type="text"  class="form-control" name="duration" id="duration" value="" disabled />
                                 {{else}}
                                     <label for="duration" class="control-label">Duration (in hours)</label>
                                     <input type="number"  class="form-control" name="duration" id="duration" value="" min="1" max="24" />

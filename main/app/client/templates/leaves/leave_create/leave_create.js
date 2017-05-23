@@ -21,18 +21,20 @@ Template.LeaveCreate.events({
         let startDateObj = moment(start).toDate()
         let endDateObj = null
 
-        let duration = $('#duration').val();
-        let durationAsNumber = parseInt(duration)
+        let durationAsNumber = 0
 
         let allowLeavesInHours = $('#allowLeavesInHours').is(":checked")
         let selectedLeaveType = $('#leaveTypes').val()
 
         if(allowLeavesInHours) {
+            let duration = $('#duration').val();
+            durationAsNumber = parseInt(duration)
+
             if(isNaN(durationAsNumber)) {
-                tmpl.inputErrorMsg.set("Please enter in the duration of leave(in hours)")
+                tmpl.inputErrorMsg.set("Please enter the duration of leave(in hours)")
                 return
             } else if(durationAsNumber < 1) {
-                tmpl.inputErrorMsg.set("Please enter in the duration of leave(in hours) greater than zero")
+                tmpl.inputErrorMsg.set("Please enter the duration of leave(in hours) greater than zero")
                 return
             } else {
                 endDateObj = moment(start).add(duration, 'hour').toDate()
@@ -44,6 +46,8 @@ Template.LeaveCreate.events({
                 return
             }
             endDateObj = moment(end).toDate()
+
+            durationAsNumber = tmpl.getDurationOfWeekDaysInHours(start, end) / 24  // in days
         }
         if(!selectedLeaveType || selectedLeaveType.length === 0) {
             tmpl.inputErrorMsg.set("Please select a leave type")
@@ -94,7 +98,7 @@ Template.LeaveCreate.helpers({
         return !Template.instance().isAllowingHoursLeave.get()
     },
     numberOfLeaveDaysLeft: function() {
-        return Template.instance().numberOfLeaveDaysLeft.get()
+        return Template.instance().numberOfLeaveDaysLeft.get() || '---'
     }
 });
 
@@ -131,7 +135,46 @@ Template.LeaveCreate.onCreated(function () {
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }
+        let numOfWeekDays = weekDates.length + 1
+
         return weekDates.length + 1
+    }
+
+    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {
+        let startDateMoment = moment(startDate)
+        let endDateMoment = moment(endDate)
+        //--
+        let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
+        let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
+        //--
+        let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+
+        let startDateMomentClone = moment(startDateMoment); // use a clone
+        let weekDates = []
+
+        while (numberOfDays > 0) {
+            if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+            } else {
+                numberOfHoursInPeriodWeekDays -= (24)
+            }
+            startDateMomentClone.add(1, 'days');
+            numberOfDays -= 1;
+        }
+        return numberOfHoursInPeriodWeekDays
+    }
+
+    self.prettifyDurationOfWeekDaysInDaysAndHours = function(startDate, endDate) {
+        let durationInHours = self.getDurationOfWeekDaysInHours(startDate, endDate)
+        let numberOfDaysInHours = Math.floor(durationInHours / 24) 
+
+        if(numberOfDaysInHours < 1) {
+            return durationInHours + ' hours'
+        } else {
+            let hoursLeft = (durationInHours - (numberOfDaysInHours * 24))
+            let durationPrettified = numberOfDaysInHours + ' days, ' + hoursLeft + ' hours'
+            return durationPrettified
+        }
     }
 
     self.subscribe('employeeLeaveTypes', businessId);
@@ -188,7 +231,8 @@ Template.LeaveCreate.onRendered(function () {
             let end = $("#endDate").val();
             if (start && end){
                 let duration = self.getNumberOfWeekDays(start, end)
-                $("#duration").val(duration <= 0 ? 0 : duration)
+                let durationAsDaysAndHours = self.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+                $("#duration").val(durationAsDaysAndHours)
             }
         });
         $("#endDate").on("change", function () {
@@ -196,7 +240,8 @@ Template.LeaveCreate.onRendered(function () {
             let end = $("#endDate").val();
             if (start && end){
                 let duration = self.getNumberOfWeekDays(start, end)
-                $("#duration").val(duration <= 0 ? 0 : duration)
+                let durationAsDaysAndHours = self.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+                $("#duration").val(durationAsDaysAndHours)
             }
         });
 
@@ -204,6 +249,7 @@ Template.LeaveCreate.onRendered(function () {
         $("#type,#endDate,#startDate").on("change", function () {
             let duration = parseInt($("#duration").val());
             let selectedType = $('#type').val();
+
             if (duration && selectedType){
                 let selectedQuota = parseInt(LeaveTypes.findOne({_id: selectedType}).maximumDuration);
                 //get remaining quota of employee.
