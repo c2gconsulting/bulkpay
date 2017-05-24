@@ -92,9 +92,15 @@ Template.payruns.events({
                         if(responseAsObj.status === true) {
                             swal("Payrun Post Status", responseAsObj["message"], "success");
                         } else {
-                            let errors = responseAsObj.errors
-                            console.log(`Errors: ${JSON.stringify(errors)}`)
-                            Modal.show('PayrunResultsPostToSapErrors', errors)
+                            if(responseAsObj.errors) {
+                                let errors = responseAsObj.errors
+                                console.log(`Errors: ${JSON.stringify(errors)}`)
+                                Modal.show('PayrunResultsPostToSapErrors', errors)
+                            } else if(responseAsObj.message) {
+                                swal("Payrun Post Status", responseAsObj.message, "error");
+                            } else {
+                                swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                            }
                         }
                     } else {
                         swal("Payrun Post Status", "A server error occurred. Please try again later", "error");

@@ -31,30 +31,52 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                 //--
                 let payTypeDebitAccountCode = ""
                 let payTypeCreditAccountCode = ""
+                let payTypeProjectDebitAccountCode = ""
+                let payTypeProjectCreditAccountCode = ""
+
                 if (sapPayTypeDetails) {
                     if (sapPayTypeDetails.payTypeDebitAccountCode) {
                         payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
                     } else {
-                        console.log(`sapPayTypeDetails.payTypeDebitAccountCode is NULL`)
+                        status = false
+                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
                     }
                     if (sapPayTypeDetails.payTypeCreditAccountCode) {
                         payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
                     } else {
-                        console.log(`sapPayTypeDetails.payTypeCreditAccountCode is NULL`)
+                        status = false
+                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
+                    }
+                    //--
+                    if (sapPayTypeDetails.payTypeProjectDebitAccountCode) {
+                        payTypeProjectDebitAccountCode = sapPayTypeDetails.payTypeProjectDebitAccountCode
+                    } else {
+                        status = false
+                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Debit G/L account`)
+                    }
+
+                    if (sapPayTypeDetails.payTypeProjectCreditAccountCode) {
+                        payTypeProjectCreditAccountCode = sapPayTypeDetails.payTypeProjectCreditAccountCode
+                    } else {
+                        status = false
+                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Credit G/L account`)
                     }
 
                     unitBulkSumPayments.push({
                         payTypeId: aPayment.id,
-                        amountLC: aPayment.amountLC,
+                        costCenterPayAmount: aPayment.costCenterPayAmount,
+                        projectPayAmount: aPayment.projectPayAmount,
                         description: aPayment.description,
                         payTypeDebitAccountCode: payTypeDebitAccountCode,
-                        payTypeCreditAccountCode: payTypeCreditAccountCode
+                        payTypeCreditAccountCode: payTypeCreditAccountCode,
+                        payTypeProjectDebitAccountCode: payTypeProjectDebitAccountCode,
+                        payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
                     })
                 } else {
                     console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
                 }
             } else {
-               console.log(`This payment has no id: ${JSON.stringify(aPayment)}`)
+               // console.log(`This payment has no id: ${JSON.stringify(aPayment)}`)
             }
         })
         unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
@@ -120,7 +142,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                     return aUnitPayment.payTypeId === aPayment.id
                                 })
                                 if(paymentToAccumulate) {
-                                    paymentToAccumulate.amountLC += aPayment.amountLC
+                                    paymentToAccumulate.costCenterPayAmount += aPayment.costCenterPayAmount
+                                    paymentToAccumulate.projectPayAmount += aPayment.projectPayAmount
                                 }
                             })
                             arrayOfEmployees.push(employeeId)
@@ -130,13 +153,13 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                 arrayOfEmployees.push(employeeId)
                             } else {
                                 status = false
-                                errors.push(`Unit: ${unit.name} does not have cost center`)
+                                errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
                             }
                         }
                     } else {
                         // console.log(`sapUnitCostCenterDetails: ${JSON.stringify(sapUnitCostCenterDetails)}`)
                         status = false
-                        errors.push(`Unit: ${unit.name} does not have cost center`)
+                        errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
                     }
                 }
             }
@@ -292,6 +315,7 @@ Meteor.methods({
 
                     let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
                     let actualServerResponse = serverRes.data.replace(/\//g, "")
+                    // console.log(`actualServerResponse`, actualServerResponse)
 
                     let serverResponseObj = JSON.parse(actualServerResponse)
 
