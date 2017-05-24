@@ -177,11 +177,11 @@ Meteor.methods({
           try {
               let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
               let actualServerResponse = connectionTestResponse.data.replace(/\//g, "")
-
+              
               let serverResponseObj = JSON.parse(actualServerResponse)
 
               if(serverResponseObj.status === true) {
-                  let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
+                  let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessId});
                   if(businessUnitSapConfig) {
                       SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : sapConfig});
                   } else {
