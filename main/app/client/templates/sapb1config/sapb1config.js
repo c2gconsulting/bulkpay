@@ -83,7 +83,7 @@ Template.SapB1Config.events({
         let units = Template.instance().units.get()
 
         let currentUnit = _.find(units, function (o) {
-            return o.unitId === unitId;
+            return o._id === unitId;
         })
         currentUnit.costCenterCode = unitGlAccountCode
 
@@ -226,11 +226,9 @@ Template.SapB1Config.events({
         Template.instance().paytypes.set(payTypes);
     },
     'click #saveSapCostCenterCodes': (e, tmpl) => {
-        console.log(`units gl account button clicked`)
         let businessUnitId = Session.get('context')
 
         let theUnits = Template.instance().units.get()
-        console.log(`The units: ${JSON.stringify(theUnits)}`)
 
         Meteor.call("sapB1integration/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
             if(res) {
@@ -238,6 +236,7 @@ Template.SapB1Config.events({
                 swal('Success', 'Cost center codes were successfully updated', 'success')
             } else {
                 console.log(err);
+                swal('Error', err.reason, 'error')
             }
         })
     },
@@ -325,6 +324,7 @@ Template.SapB1Config.onCreated(function () {
                         _.extend(unit, currentUnit)
                     }
                 }
+                unit.unitId = unit._id
                 return unit
             }));
 
