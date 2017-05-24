@@ -253,8 +253,7 @@ Meteor.methods({
             let queryObj = {
                 businessId: businessId, 
                 project: {$exists : true},
-                day: {$gte: startDate},
-                day: {$lt: endDate}
+                day: {$gte: startDate, $lt: endDate}
             }
             if(selectedEmployees && selectedEmployees.length > 0) {                
                 queryObj.employeeId = {$in: selectedEmployees}
@@ -309,8 +308,7 @@ Meteor.methods({
             let queryObj = {
                 businessId: businessId, 
                 costCenter: {$exists : true},
-                day: {$gte: startDate},
-                day: {$lt: endDate}
+                day: {$gte: startDate, $lt: endDate}
             }
             if(selectedEmployees && selectedEmployees.length > 0) {                
                 queryObj.employeeId = {$in: selectedEmployees}

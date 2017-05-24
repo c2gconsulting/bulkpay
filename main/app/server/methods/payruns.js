@@ -382,6 +382,15 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
             } else {
                 const employeeResult = {businessId: businessId, employeeId: x._id, period: periodFormat, payment : []}; //holds every payment to be saved for employee in payrun
+
+                const projectsPayDetails = 
+                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
+                console.log(`projectsPayDetails`, projectsPayDetails)
+                
+                const costCentersPayDetails = 
+                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
+                console.log(`costCentersPayDetails`, costCentersPayDetails)
+                //--
                 const pg = x.employeeProfile.employment.paygrade;  //paygrade
                 let pt = x.employeeProfile.employment.paytypes;  //paytype
 
@@ -448,6 +457,14 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
                             let input = [], processing = [];
 
+                            input.push({
+                                code: 'Hours worked on projects in month',
+                                value: projectsPayDetails.duration
+                            })
+                            input.push({
+                                code: 'Hours worked on cost centers in month',
+                                value: costCentersPayDetails.duration
+                            })
                             let boundary = [...paytypes]; //available types as at current processing
                             boundary.length = index + 1;
                             //format boundary for display in log
@@ -663,6 +680,81 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
     //after the recurssion return result to calling function;
     return {result: payresult, error:processingError, payrun};
 };
+
+
+
+function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, employeeUserId) {
+    const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
+
+    const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
+    const endDate = moment(startDate).endOf('month').toDate();
+
+    let queryObj = {
+        businessId: businessId, 
+        project: {$exists : true},
+        day: {$gte: startDate, $lt: endDate},
+        employeeId: employeeUserId,
+        status: 'Approved'
+    }
+
+    // let allProjectTimesInMonth = TimeWritings.find(queryObj).fetch()
+
+    let allProjectTimesInMonth = TimeWritings.aggregate([
+        { $match: queryObj},
+        { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
+    ]);
+    //--
+    let totalWorkHoursInYear = 2080
+    let numberOfMonthsInYear = 12
+
+    if(allProjectTimesInMonth) {
+        if(allProjectTimesInMonth.length === 1) {
+            const duration = allProjectTimesInMonth[0].duration
+            const fraction = duration * numberOfMonthsInYear / totalWorkHoursInYear
+            return {duration, fraction}
+        } else {
+            return {duration: 0, fraction: 0}
+        }
+    } else {
+        return {duration: 0, fraction: 0}
+    }
+}
+
+function getFractionForCalcCostCentersPayValue(businessId, periodMonth, periodYear, employeeUserId) {
+    const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
+
+    const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
+    const endDate = moment(startDate).endOf('month').toDate();
+
+    let queryObj = {
+        businessId: businessId, 
+        costCenter: {$exists : true},
+        day: {$gte: startDate, $lt: endDate},
+        employeeId: employeeUserId,
+        status: 'Approved'
+    }
+
+    let allCostCenterTimesInMonth = TimeWritings.aggregate([
+        { $match: queryObj},
+        { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
+    ]);
+    //--
+    let totalWorkHoursInYear = 2080
+    let numberOfMonthsInYear = 12
+
+    if(allCostCenterTimesInMonth) {
+        if(allCostCenterTimesInMonth.length === 1) {
+            const duration = allCostCenterTimesInMonth[0].duration
+            const fraction = duration * numberOfMonthsInYear / totalWorkHoursInYear
+            return {duration, fraction}
+        } else {
+            return {duration: 0, fraction: 0}
+        }
+    } else {
+        return {duration: 0, fraction: 0}
+    }
+}
+
 
 function derivePayElement(person) {
     let gradePaytypes = PayGrades.find({_id: person.employeeProfile.employment.paygrade});
