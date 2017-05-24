@@ -383,14 +383,20 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
             } else {
                 const employeeResult = {businessId: businessId, employeeId: x._id, period: periodFormat, payment : []}; //holds every payment to be saved for employee in payrun
 
+                //--Time recording things
                 const projectsPayDetails = 
                     getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
+                // {duration: , fraction: }
                 console.log(`projectsPayDetails`, projectsPayDetails)
                 
                 const costCentersPayDetails = 
                     getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
+                // {duration: , fraction: }                
                 console.log(`costCentersPayDetails`, costCentersPayDetails)
+
+                let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
                 //--
+
                 const pg = x.employeeProfile.employment.paygrade;  //paygrade
                 let pt = x.employeeProfile.employment.paytypes;  //paytype
 
@@ -457,14 +463,26 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
                             let input = [], processing = [];
 
-                            input.push({
-                                code: 'Hours worked on projects in month',
-                                value: projectsPayDetails.duration
-                            })
-                            input.push({
-                                code: 'Hours worked on cost centers in month',
-                                value: costCentersPayDetails.duration
-                            })
+                            if(x.isTimeWritingDependent) {
+                                input.push({
+                                    code: 'Hours worked on projects in month',
+                                    value: projectsPayDetails.duration
+                                })
+                                input.push({
+                                    code: 'Pay from projects multiplier fraction',
+                                    value: projectsPayDetails.fraction
+                                })
+
+                                input.push({
+                                    code: 'Hours worked on cost centers in month',
+                                    value: costCentersPayDetails.duration
+                                })
+                                input.push({
+                                    code: 'Pay from cost-centers multiplier fraction',
+                                    value: costCentersPayDetails.fraction
+                                })
+                            }
+
                             let boundary = [...paytypes]; //available types as at current processing
                             boundary.length = index + 1;
                             //format boundary for display in log
@@ -500,10 +518,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                 var parsed = rules.parse(formula, '');
 
                                 if (parsed.result !== null && !isNaN(parsed.result)) {
-                                    x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
-                                    processing.push({code: x.code, derived: x.parsedValue});
                                     //negate value if paytype is deduction.
-
+                                    x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
+                                    //--    
                                     let netPayTypeAmount; //net amount used if payment type is monthly
                                     if(x.frequency === 'Monthly' && !x.additionalPay){
                                         netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
@@ -517,20 +534,53 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     defaultTaxBucket += x.taxable ? parseFloat(x.parsedValue) : 0;
                                     //for reliefs add to relief bucket
                                     reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
+                                    
                                     //assigned bucket if one of the paytype is selected as tax bucket
                                     assignedTaxBucket = x._id === tax.bucket ? parseFloat(x.parsedValue) : null;
+
                                     processing.push({code: x.code, taxBucket: defaultTaxBucket});
+
                                     //if paytype in pension then add to default pension buket
                                     const ptIndex = pension && _.indexOf(pension.payTypes, x._id);
                                     pensionBucket += ptIndex !== -1 ? parseFloat(x.parsedValue) : 0; // add parsed value to pension bucket if paytype is found
                                     //gross income for pension relief;
                                     grossIncomeBucket += tax.grossIncomeBucket === x._id ? parseFloat(x.parsedValue) : 0;
                                     processing.push({code: x.code, pensionBucket: pensionBucket});
+
                                     //set value
-                                    const value = netPayTypeAmount || parseFloat(x.parsedValue);
+                                    let value = 0
+                                    if(netPayTypeAmount) {
+                                        value = netPayTypeAmount
+                                    } else {
+                                        value = parseFloat(x.parsedValue);
+                                    }
+                                    //--
+                                    let projectPayAmount = 0
+                                    let costCenterPayAmount = 0
+                                    
+                                    if(x.isTimeWritingDependent) {
+                                        if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
+                                            projectPayAmount = projectsPayDetails.fraction * value
+                                            costCenterPayAmount = costCentersPayDetails.fraction * value
+                                            value = projectPayAmount + costCenterPayAmount
+
+                                            processing.push({code: "Pay from projects", derived: projectPayAmount});
+                                            processing.push({code: "Pay from cost centers", derived: costCenterPayAmount});
+
+                                            processing.push({code: x.code, derived: "(Pay from projects) + (Pay from cost-centers)"});
+                                            processing.push({code: x.code, derived: value});
+                                        } else {
+                                            value = 0
+                                            processing.push({code: x.code, derived: value});
+                                        }
+                                    } else {
+                                        processing.push({code: x.code, derived: value});
+                                        costCenterPayAmount = value
+                                    }
+                                    //--
                                     //check if payment or deduction and add to corresponding payslip state
                                     switch (x.type) {
-                                        case 'Benefit':
+                                        case 'Benefit':                                            
                                             //add to payslip benefit if display in payslip
                                             if (x.displayInPayslip && x.addToTotal) {
                                                 benefit.push({
@@ -562,7 +612,13 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             }
                                     }
                                     //add value to result
-                                    employeeResult.payment.push({id: x._id, reference: 'Paytype', amountLC: value, amountPC: value, code: x.code, description: x.title, type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type });
+                                    employeeResult.payment.push({
+                                        id: x._id, reference: 'Paytype', 
+                                        amountLC: value, amountPC: value, 
+                                        projectPayAmount: projectPayAmount, costCenterPayAmount: costCenterPayAmount,
+                                        code: x.code, description: x.title, 
+                                        type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type 
+                                    });
                                     log.push({paytype: x.code, input: input, processing: processing});
                                 } else {
                                     //when there is an error, stop processing this employee and move to the next one

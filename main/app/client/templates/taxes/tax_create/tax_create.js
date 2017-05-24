@@ -18,12 +18,6 @@ Template.TaxCreate.events({
             return;
         }
         //--
-        let grossIncomeBucket = $('[name="grossIncomeBucket"]').val()
-        if(!grossIncomeBucket || grossIncomeBucket.length === 0) {
-            swal("Validation error", `Please specify the gross income bucket`, "error");
-            return
-        }
-
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
         l.start();
         const details = {
@@ -32,12 +26,16 @@ Template.TaxCreate.events({
             name: $('[name="name"]').val(),
             grossIncomeRelief: parseInt($('[name="grossIncomeRelief"]').val()) || 20,
             consolidatedRelief: parseInt($('[name="consolidatedRelief"]').val()) || 200000,
-            grossIncomeBucket: grossIncomeBucket,
-
             bucket: $('[name="bucket"]').val(),
             status: $('[name="status"]').val(),
             rules:  tmpl.dict.get("taxRules")
         };
+
+        let grossIncomeBucket = $('[name="grossIncomeBucket"]').val()
+        if(grossIncomeBucket && grossIncomeBucket.length > 0) {
+            details.grossIncomeBucket = grossIncomeBucket
+        }
+
         if(tmpl.data){//edit action for updating tax
             const tId = tmpl.data._id;
             const code = tmpl.data.code;

@@ -17,7 +17,8 @@ Core.Schemas.Tax = new SimpleSchema({
         type: String
     },
     grossIncomeBucket: {
-        type: String
+        type: String,
+        optional: true
     },
     grossIncomeRelief: {
         type: Number,

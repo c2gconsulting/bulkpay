@@ -34,7 +34,7 @@ Template.PayrunNew.events({
         if (params.employees.length > 0 || params.paygrades.length > 0){
             Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
                 if(res){
-                    //console.log(`Payrun results: ${JSON.stringify(res)}`);
+                    // console.log(`Payrun results: ${JSON.stringify(res)}`);
                     Session.set('currentPayrunPeriod', res.period);
 
                     //set result as reactive dict payResult
@@ -73,6 +73,16 @@ Template.PayrunNew.events({
     },
     'hover .table tbody tr': (e,tmpl) => {
         console.log('hover called');
+    },
+    selectedMonth: function (val) {
+        if(Template.instance().selectedMonth.get()) {
+            return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
+        }
+    },
+    selectedYear: function (val) {
+        if(Template.instance().selectedYear.get()) {
+            return Template.instance().selectedYear.get() === val ? selected="selected" : '';
+        }
     }
 });
 
@@ -118,6 +128,16 @@ Template.PayrunNew.helpers({
     'processingError': () => {
         const payresult = Template.instance().dict.get('payResult');
         return payresult.payObj.error.length;
+    },
+    selectedMonth: function (val) {
+        if(Template.instance().selectedMonth.get()) {
+            return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
+        }
+    },
+    selectedYear: function (val) {
+        if(Template.instance().selectedYear.get()) {
+            return Template.instance().selectedYear.get() === val ? selected="selected" : '';
+        }
     }
 });
 
@@ -133,6 +153,16 @@ Template.PayrunNew.onCreated(function () {
     self.grades = new ReactiveVar([]);
     self.includePay = new ReactiveVar(false);
     // if annual payment included, subscribe to all annual pay.
+
+    //--
+    self.selectedMonth = new ReactiveVar();
+    self.selectedYear = new ReactiveVar();
+    //--
+    let theMoment = moment();
+    self.selectedMonth.set(theMoment.format('MM'))
+    self.selectedYear.set(theMoment.format('YYYY'))
+    //--
+
     self.autorun(function(){
         let includeType = self.includePay.get();
         let selectedGrade = self.grades.get();
