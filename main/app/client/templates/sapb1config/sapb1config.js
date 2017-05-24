@@ -163,6 +163,68 @@ Template.SapB1Config.events({
         currentPayType.payTypeDebitAccountCode = payTypeGlAccountCode
         Template.instance().paytypes.set(payTypes);
     },
+    'blur #tab4-data-body tr input[name=payTypeProjectCreditAccountCode]': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let payTypeGlAccountCode = domElem.value
+
+        let domElemAsJqueryElem = $(domElem)
+        let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
+
+        let payTypes = Template.instance().paytypes.get() || []
+
+        let currentPayType = _.find(payTypes, function (o) {
+            return o._id === payTypeId;
+        })
+
+        if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            domElemAsJqueryElem.closest('tr td input[name=payTypeProjectCreditAccountCode]').val('')
+            swal('Validation error', 'G/L account code should not have hypen characters', 'error')
+            return
+        } else {
+            if(payTypeGlAccountCode && payTypeGlAccountCode.length > 0) {
+                var isnum = /^\d+$/.test(payTypeGlAccountCode);
+                if(!isnum) {
+                    domElemAsJqueryElem.closest('tr td input[name=payTypeProjectCreditAccountCode]').val('')
+                    swal('Validation error', 'G/L account code should be a pure number', 'error')
+                    return
+                }
+            }
+        }
+        currentPayType.payTypeId = payTypeId
+        currentPayType.payTypeProjectCreditAccountCode = payTypeGlAccountCode
+        Template.instance().paytypes.set(payTypes);
+    },
+    'blur #tab4-data-body tr input[name=payTypeProjectDebitAccountCode]': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let payTypeGlAccountCode = domElem.value
+
+        let domElemAsJqueryElem = $(domElem)
+        let payTypeId = domElemAsJqueryElem.closest('tr').attr('id')
+
+        let payTypes = Template.instance().paytypes.get() || []
+
+        let currentPayType = _.find(payTypes, function (o) {
+            return o._id === payTypeId;
+        })
+
+        if(payTypeGlAccountCode && payTypeGlAccountCode.indexOf('-') != -1) {
+            domElemAsJqueryElem.closest('tr td input[name=payTypeProjectDebitAccountCode]').val('')
+            swal('Validation error', 'G/L account code should not have hypen characters', 'error')
+            return
+        } else {
+            if(payTypeGlAccountCode && payTypeGlAccountCode.length > 0) {
+                var isnum = /^\d+$/.test(payTypeGlAccountCode);
+                if(!isnum) {
+                    domElemAsJqueryElem.closest('tr td input[name=payTypeProjectDebitAccountCode]').val('')
+                    swal('Validation error', 'G/L account code should be a pure number', 'error')
+                    return
+                }
+            }
+        }
+        currentPayType.payTypeId = payTypeId
+        currentPayType.payTypeProjectDebitAccountCode = payTypeGlAccountCode
+        Template.instance().paytypes.set(payTypes);
+    },
     'click #saveSapCostCenterCodes': (e, tmpl) => {
         console.log(`units gl account button clicked`)
         let businessUnitId = Session.get('context')

@@ -177,7 +177,7 @@ Meteor.methods({
           try {
               let connectionTestResponse = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
               let actualServerResponse = connectionTestResponse.data.replace(/\//g, "")
-              
+
               let serverResponseObj = JSON.parse(actualServerResponse)
 
               if(serverResponseObj.status === true) {
@@ -206,11 +206,11 @@ Meteor.methods({
         this.unblock()
         //--
         if(unitCostCenterCodesArray && unitCostCenterCodesArray.length > 0) {
-            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
             if(businessUnitSapConfig) {
                 SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {units: unitCostCenterCodesArray}});
             } else {
-                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, units: unitCostCenterCodesArray})
+                SapBusinessUnitConfigs.insert({businessId: businessUnitId, units: unitCostCenterCodesArray})
             }
             return true;
         } else {
@@ -224,11 +224,11 @@ Meteor.methods({
         check(businessUnitId, String);
         //--
         if(projectCodesArray && projectCodesArray.length > 0) {
-            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
             if(businessUnitSapConfig) {
                 SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {projects: projectCodesArray}});
             } else {
-                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, projects: projectCodesArray})
+                SapBusinessUnitConfigs.insert({businessId: businessUnitId, projects: projectCodesArray})
             }
             return true;
         } else {
@@ -242,11 +242,11 @@ Meteor.methods({
         check(businessUnitId, String);
         //--
         if(payTypesGLAccountCodesArray && payTypesGLAccountCodesArray.length > 0) {
-            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId});
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
             if(businessUnitSapConfig) {
                 SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {payTypes: payTypesGLAccountCodesArray}});
             } else {
-                SapBusinessUnitConfigs.insert({businessUnitId: businessUnitId, payTypes: payTypesGLAccountCodesArray})
+                SapBusinessUnitConfigs.insert({businessId: businessUnitId, payTypes: payTypesGLAccountCodesArray})
             }
             return true;
         } else {
@@ -262,7 +262,7 @@ Meteor.methods({
         let errorResponse = null
         try {
             let payRunResult = Payruns.find({period: period}).fetch();
-            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessUnitId: businessUnitId})
+            let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId})
 
             if(!businessUnitSapConfig) {
                 return JSON.stringify({

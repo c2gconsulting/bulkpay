@@ -29,6 +29,14 @@ Core.Schemas.SapPayTypeConfig = new SimpleSchema({
     payTypeCreditAccountCode : {
         type: String,
         optional: true
+    },
+    payTypeProjectDebitAccountCode : {
+        type: String,
+        optional: true
+    },
+    payTypeProjectCreditAccountCode : {
+        type: String,
+        optional: true
     }
 });
 

@@ -41,6 +41,16 @@ Core.Schemas.Payrun = new SimpleSchema({
             type: Number,
             decimal: true
         },
+        'payment.$.projectPayAmount': { // amount in Local Currency
+          type: Number,
+            decimal: true,
+            optional: true
+        },
+        'payment.$.costCenterPayAmount': { // amount in Local Currency
+          type: Number,
+            decimal: true,
+            optional: true
+        },
         'payment.$.code': { // Will be used if paytype is deleted from the system... keeps a reference to the payment code as as payroll run
           type: String
         },

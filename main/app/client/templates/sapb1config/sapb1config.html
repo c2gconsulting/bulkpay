@@ -25,7 +25,7 @@
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Company</a></li>
                                 <li><a href="#new-tab2" data-toggle="tab"><strong></strong> Units</a></li>
-                                <li><a href="#new-tab3" data-toggle="tab"><strong></strong> Projects</a></li>
+                                <!--<li><a href="#new-tab3" data-toggle="tab"><strong></strong> Projects</a></li>-->
                                 <li><a href="#new-tab4" data-toggle="tab"><strong></strong> PayTypes </a></li>
                             </ul>
 
@@ -183,7 +183,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
-                                <div class="tab-pane" id="new-tab3">
+                                <!--<div class="tab-pane" id="new-tab3">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -211,9 +211,9 @@
                                                 {{/each}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div>-->
 
 
                                 <div class="tab-pane" id="new-tab4">
@@ -229,8 +229,10 @@
                                                 <tr>
                                                     <th>S/N</th>
                                                     <th>PayType</th>
-                                                    <th>Credit G/L Account Code</th>
-                                                    <th>Debit G/L Account Code</th>
+                                                    <th>Cost-Center Credit G/L Account Code</th>
+                                                    <th>Cost-Center Debit G/L Account Code</th>
+                                                    <th>Project Credit G/L Account Code</th>
+                                                    <th>Project Debit G/L Account Code</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab4-data-body">
@@ -245,6 +247,14 @@
                                                         <td>
                                                             <input type="text" name="payTypeDebitGlAccountCode" class="form-control calc"
                                                                    value="{{payTypeDebitAccountCode}}"/>
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="payTypeProjectDebitAccountCode" class="form-control calc"
+                                                                   value="{{payTypeProjectDebitAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="payTypeProjectCreditAccountCode" class="form-control calc"
+                                                                   value="{{payTypeProjectCreditAccountCode}}"/>
                                                         </td>
                                                     </tr>
                                                     {{/each}}
