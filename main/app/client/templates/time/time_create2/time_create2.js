@@ -78,7 +78,14 @@ Template.TimeCreate2.events({
         let durationAsNumber = parseInt(duration)
 
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
-        if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+
+        let allowOvertime = $('#allowOvertime').is(":checked")
+        if(allowOvertime) {
+            if(durationAsNumber > 24) {
+                swal('Validation error', "You cannot record overtime more than 24 hours on the same day", 'error')
+                return
+            }
+        } else if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
             swal('Validation error', "You cannot record time more than 8 hours on the same day", 'error')
             return
         }
