@@ -17,6 +17,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     let status = true
     let errors = []
 
+    let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
+
     //Be patient. The main processing happens after this function definition
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
         unitsBulkSum[unitId] = {}
@@ -28,7 +30,15 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                 let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
                     return aPayType.payTypeId === aPayment.id;
                 })
-                //--
+                let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
+                    return (aPayType._id && (aPayType._id === aPayment.id));
+                })
+                if(payTypeFullDetails) {
+                    if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
+                        return
+                    }
+                }
+
                 let payTypeDebitAccountCode = ""
                 let payTypeCreditAccountCode = ""
                 let payTypeProjectDebitAccountCode = ""
