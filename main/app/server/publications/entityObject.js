@@ -55,3 +55,7 @@ Core.publish("getEntityWithDirectDecent", function(id){
 Core.publish("getCostElement", function (businessId) {
     return EntityObjects.find({otype: 'Unit', businessId: businessId});
 });
+
+Core.publish("getLocationEntity", function (businessId) {
+    return EntityObjects.find({otype: 'Location', businessId: businessId});
+});

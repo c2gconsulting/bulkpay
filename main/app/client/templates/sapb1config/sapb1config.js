@@ -211,6 +211,9 @@ Template.SapB1Config.helpers({
     },
     "taxes": () => {
         return Template.instance().taxes.get()
+    },
+    "getCostCenterOrgChartParents": (unit) => {
+        return Template.instance().getParentsText(unit)
     }
 });
 
@@ -228,11 +231,32 @@ Template.SapB1Config.onCreated(function () {
     self.subscribe('employeeprojects', businessUnitId);
     self.subscribe('taxes', businessUnitId)
 
+    self.subscribe("getPositions", businessUnitId);
+    self.subscribe("getLocationEntity", businessUnitId);
+    
     self.sapBusinessUnitConfig = new ReactiveVar()
     self.units = new ReactiveVar()
     self.projects = new ReactiveVar()
     self.paytypes = new ReactiveVar()
     self.taxes = new ReactiveVar()
+
+    self.getParentsText = (unit) => {// We need parents 2 levels up
+        let parentsText = ''
+        if(unit.parentId) {
+            let possibleParent = EntityObjects.findOne({_id: unit.parentId})
+            if(possibleParent) {
+                parentsText += possibleParent.name
+
+                if(possibleParent.parentId) {
+                    let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
+                    if(possibleParent2) {
+                        parentsText += ' >> ' + possibleParent2.name
+                        return parentsText
+                    } return ''
+                } else return parentsText
+            } else return ''
+        } else return ''
+    }
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){

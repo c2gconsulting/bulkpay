@@ -38,7 +38,7 @@ Template.ImportEmployeePositionsModal.events({
                             parentsText += ' >> ' + possibleParent2.name
                             return parentsText
                         } return ''
-                    } else return ''
+                    } else return parentsText
                 } else return ''
             } else return ''
         }
@@ -163,6 +163,8 @@ Template.ImportEmployeePositionsModal.onCreated(function () {
     self.subscribe("getPositions", Session.get('context'));
     self.subscribe("getCostElement", Session.get('context'));
 
+    self.subscribe("getLocationEntity", Session.get('context'));
+    
     self.response = new ReactiveDict()
 
     self.isUploading = new ReactiveVar()

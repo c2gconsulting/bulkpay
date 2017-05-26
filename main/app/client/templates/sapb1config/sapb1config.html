@@ -164,6 +164,7 @@
                                                 <tr>
                                                     <th>S/N</th>
                                                     <th>Unit</th>
+                                                    <th>Org chart parents</th>
                                                     <th>SAP Cost Center Code</th>
                                                 </tr>
                                                 </thead>
@@ -172,6 +173,7 @@
                                                     <tr class="item" style="cursor: move;">
                                                         <td>{{@index}}</td>
                                                         <td>{{name}}</td>
+                                                        <td>{{getCostCenterOrgChartParents this}}</td>
                                                         <td>
                                                             <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/>
                                                         </td>
