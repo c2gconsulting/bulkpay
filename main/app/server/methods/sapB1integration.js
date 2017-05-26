@@ -18,6 +18,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     let errors = []
 
     let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
+    let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
 
     //Be patient. The main processing happens after this function definition
     let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
@@ -39,12 +40,12 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     }
                 }
 
-                let payTypeDebitAccountCode = ""
-                let payTypeCreditAccountCode = ""
-                let payTypeProjectDebitAccountCode = ""
-                let payTypeProjectCreditAccountCode = ""
 
                 if (sapPayTypeDetails) {
+                    let payTypeDebitAccountCode = ""
+                    let payTypeCreditAccountCode = ""
+                    let payTypeProjectDebitAccountCode = ""
+                    let payTypeProjectCreditAccountCode = ""
                     if (sapPayTypeDetails.payTypeDebitAccountCode) {
                         payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
                     } else {
@@ -83,7 +84,40 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                         payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
                     })
                 } else {
-                    console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
+                    // console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
+                    let payTypeDebitAccountCode = ""
+                    let payTypeCreditAccountCode = ""
+
+                    if (!sapPayTypeDetails && aPayment.reference === 'Tax') {
+                        let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
+                            return aPayType.payTypeId === aPayment.id;
+                        })
+                        // console.log(`Found tax payment: `, sapTaxDetails)
+
+                        if(sapTaxDetails) {
+                            if (sapTaxDetails.payTypeDebitAccountCode) {
+                                payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
+                            } else {
+                                status = false
+                                errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
+                            }
+                            if (sapTaxDetails.payTypeCreditAccountCode) {
+                                payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
+                            } else {
+                                status = false
+                                errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
+                            }
+
+                            unitBulkSumPayments.push({
+                                payTypeId: aPayment.id,
+                                costCenterPayAmount: aPayment.amountLC,
+                                projectPayAmount: 0,
+                                description: aPayment.description,
+                                payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                payTypeCreditAccountCode: payTypeCreditAccountCode,
+                            })
+                        }
+                    }
                 }
             } else {
                // console.log(`This payment has no id: ${JSON.stringify(aPayment)}`)
@@ -174,7 +208,6 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                 }
             }
         } catch(ex) {
-            console.log(`processPayrunResultsForSap error: ${ex.message}`)
             status = false
             errors.push(`${ex.message}`)
         }
@@ -268,7 +301,8 @@ Meteor.methods({
             throw new Meteor.Error(404, "Empty project codes data");
         }
     },
-    "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray){
+    "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray, 
+        taxesGLAccountCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -277,9 +311,17 @@ Meteor.methods({
         if(payTypesGLAccountCodesArray && payTypesGLAccountCodesArray.length > 0) {
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
             if(businessUnitSapConfig) {
-                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, {$set : {payTypes: payTypesGLAccountCodesArray}});
+                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, 
+                {$set : {
+                    payTypes: payTypesGLAccountCodesArray,
+                    taxes: taxesGLAccountCodesArray
+                }});
             } else {
-                SapBusinessUnitConfigs.insert({businessId: businessUnitId, payTypes: payTypesGLAccountCodesArray})
+                SapBusinessUnitConfigs.insert({
+                    businessId: businessUnitId, 
+                    payTypes: payTypesGLAccountCodesArray,
+                    taxes: taxesGLAccountCodesArray
+                })
             }
             return true;
         } else {
@@ -339,10 +381,9 @@ Meteor.methods({
                             if(payrunDoc) {
                                Payruns.update(payrunDoc._id, {$set: {isPostedToSAP: true}})
                             } else {
-                                console.log(`Could not find payrunDoc`)
+                                //console.log(`Could not find payrunDoc`)
                             }
                         })
-                        console.log(`Payrun post to SAP was successful`)
                     }
                     return actualServerResponse.replace(/\//g, "")
                 } else {
@@ -352,8 +393,7 @@ Meteor.methods({
                 return JSON.stringify(processingResult)
             }
         } catch(e) {
-            console.log(`Error in testing connection! ${e.message}`)
-            errorResponse = '{"status": false, "message": "An error occurred in posting payrun results."}'
+            errorResponse = '{"status": false, "message": "Could not connect to SAP Integration service"}'
         }
         return errorResponse;
     }
