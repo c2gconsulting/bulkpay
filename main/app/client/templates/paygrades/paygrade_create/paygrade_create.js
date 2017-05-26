@@ -13,8 +13,7 @@ Template.PaygradeCreate.events({
             code: $('[name="code"]').val(),
             description: $('[name="description"]').val(),
             positions: Core.returnSelection($('[name="positions"]')),
-            // payGroups: Core.returnSelection($('[name="paygroups"]')),
-            payGroups: [$('[name="paygroups"]').val()],
+            payGroups: Core.returnSelection($('[name="paygroups"]')),
             status: $('[name="status"]').val(),
             payTypes: getPaytypes()
 
@@ -268,16 +267,9 @@ Template.PaygradeCreate.onCreated(function () {
 
 });
 
-Template.PaygradeCreate.onRendered(function () {    
+Template.PaygradeCreate.onRendered(function () {
     var self = this;
     var oldIndex, newIndex;
-    
-    if(Template.instance().data) {
-        let payGradePayGroups = Template.instance().data.payGroups
-        $('#paygroups').val(payGradePayGroups[0]);
-        // $(`#paygroups option[value=${payGradePayGroups[0]}]`).attr('selected','selected');
-    }
-
     // fix a little rendering bug by clicking on step 1
     $('#step1').click();
     $('#progress-wizard-new').bootstrapWizard({
@@ -326,8 +318,7 @@ Template.PaygradeCreate.onRendered(function () {
             _super($item, container);
         }
     });
-
-        // $('select').dropdown();
+    $('select.dropdown').dropdown();
 });
 
 Template.PaygradeCreate.onDestroyed(function () {
