@@ -64,6 +64,10 @@ Core.Schemas.PayType = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
+    includeWithSapIntegration: {
+        type: Boolean,
+        defaultValue: false
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
