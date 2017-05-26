@@ -161,7 +161,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         if(!employee) {
             // console.log(`employee data could not be found`)
             status = false
-            error.push(`An employee record for payrun could not be found`)
+            errors.push(`An employee record for payrun could not be found`)
         }
         let employeePositionId = employee.employeeProfile.employment.position
         let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
@@ -170,7 +170,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
             if(!position) {
                 // console.log(`Position could not be found: ${employeePositionId}`)
                 status = false
-                error.push(`Employee: ${employee.profile.fullName} does not have a position`)
+                errors.push(`Employee: ${employee.profile.fullName} does not have a position`)
             } else {
                 let unit = getUnitForPosition(position)
                 if(!unit) {
