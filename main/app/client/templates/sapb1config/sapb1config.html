@@ -260,6 +260,37 @@
                                                     {{/each}}
                                                 </tbody>
                                             </table>
+                                            
+                                            <p>
+                                                <b>Taxes</b>
+                                            </p>
+
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">
+                                                    {{#each taxes}}
+                                                    <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{code}} - {{name}}</td>
+                                                        <td>
+                                                            <input type="text" name="taxesCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="taxesDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeDebitAccountCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                            </table>
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->

@@ -164,8 +164,24 @@ Template.SapB1Config.events({
             }
         })
         // console.log(`The thePayTypes: ${JSON.stringify(thePayTypes)}`)
+        //--
+        let taxesCreditGlAccountCode = []
+        let taxesDebitGlAccountCode = []
+        $('input[name=taxesCreditGlAccountCode]').each(function(anInput) {
+            taxesCreditGlAccountCode.push($(this).val())
+        })
+        $('input[name=taxesDebitGlAccountCode]').each(function(anInput) {
+            taxesDebitGlAccountCode.push($(this).val())
+        })
+        let theTaxes = Template.instance().taxes.get().map((aPayType, index) => {
+            return {
+                payTypeId: aPayType.payTypeId,
+                payTypeCreditAccountCode: taxesCreditGlAccountCode[index],
+                payTypeDebitAccountCode: taxesDebitGlAccountCode[index],
+            }
+        })
 
-        Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, (err, res) => {
+        Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, theTaxes, (err, res) => {
             if(res) {
                 console.log(JSON.stringify(res));
                 swal('Success', 'Pay type account codes were successfully updated', 'success')
@@ -192,6 +208,9 @@ Template.SapB1Config.helpers({
     },
     "paytype": () => {
         return Template.instance().paytypes.get()
+    },
+    "taxes": () => {
+        return Template.instance().taxes.get()
     }
 });
 
@@ -207,11 +226,13 @@ Template.SapB1Config.onCreated(function () {
     self.subscribe('getCostElement', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('employeeprojects', businessUnitId);
+    self.subscribe('taxes', businessUnitId)
 
     self.sapBusinessUnitConfig = new ReactiveVar()
     self.units = new ReactiveVar()
     self.projects = new ReactiveVar()
     self.paytypes = new ReactiveVar()
+    self.taxes = new ReactiveVar()
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
@@ -246,6 +267,20 @@ Template.SapB1Config.onCreated(function () {
             self.paytypes.set(PayTypes.find({'status': 'Active'}).fetch().map(payType => {
                 if(sapBizUnitConfig) {
                     let currentPayType = _.find(sapBizUnitConfig.payTypes, function (oldPayType) {
+                        return oldPayType.payTypeId === payType._id;
+                    })
+                    if(currentPayType) {
+                        _.extend(payType, currentPayType)
+                    }
+                } else {
+                }
+                payType.payTypeId = payType._id
+                return payType
+            }));
+
+            self.taxes.set(Tax.find({}).fetch().map(payType => {
+                if(sapBizUnitConfig) {
+                    let currentPayType = _.find(sapBizUnitConfig.taxes, function (oldPayType) {
                         return oldPayType.payTypeId === payType._id;
                     })
                     if(currentPayType) {

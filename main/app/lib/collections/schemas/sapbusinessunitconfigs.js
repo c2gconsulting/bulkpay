@@ -97,6 +97,10 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
         type: [Core.Schemas.SapPayTypeConfig],
         optional: true
     },
+    taxes: {
+        type: [Core.Schemas.SapPayTypeConfig],
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
