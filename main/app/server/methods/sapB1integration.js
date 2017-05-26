@@ -62,15 +62,19 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     if (sapPayTypeDetails.payTypeProjectDebitAccountCode) {
                         payTypeProjectDebitAccountCode = sapPayTypeDetails.payTypeProjectDebitAccountCode
                     } else {
-                        status = false
-                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Debit G/L account`)
+                        if(aPayment.projectPayAmount > 0) {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Debit G/L account`)
+                        }
                     }
 
                     if (sapPayTypeDetails.payTypeProjectCreditAccountCode) {
                         payTypeProjectCreditAccountCode = sapPayTypeDetails.payTypeProjectCreditAccountCode
                     } else {
-                        status = false
-                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Credit G/L account`)
+                        if(aPayment.projectPayAmount > 0) {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Credit G/L account`)
+                        }
                     }
 
                     unitBulkSumPayments.push({

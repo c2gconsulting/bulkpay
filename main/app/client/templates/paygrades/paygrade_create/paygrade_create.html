@@ -57,14 +57,22 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Pay Groups</label>
                                             <div class="col-sm-8">
-                                                {{#semanticselect}}
+                                                <!--{{#semanticselect}}
                                                     <select name="paygroups" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
                                                         <option value="">Select PayGroup</option>
                                                         {{#each paygroup}}
-                                                            <option value="{{_id}}" {{selectedObj "payGroups"}}>{{name}}</option>
+                                                            <option value="{{_id}}">{{name}}</option>
                                                         {{/each}}
                                                     </select>
-                                                {{/semanticselect}}
+                                                {{/semanticselect}}-->
+
+                                              <select name="paygroups" id="paygroups" style="width: 100%" class="form-control">
+                                                  <option value="">Select PayGroup</option>
+                                                  {{#each paygroup}}
+                                                      <option value="{{_id}}">{{name}}</option>
+                                                  {{/each}}
+                                              </select>
+
                                             </div>
                                         </div><!-- form-group -->
 
