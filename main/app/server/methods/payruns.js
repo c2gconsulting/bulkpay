@@ -387,12 +387,10 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const projectsPayDetails = 
                     getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
                 // {duration: , fraction: }
-                console.log(`projectsPayDetails`, projectsPayDetails)
                 
                 const costCentersPayDetails = 
                     getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
                 // {duration: , fraction: }                
-                console.log(`costCentersPayDetails`, costCentersPayDetails)
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
                 //--

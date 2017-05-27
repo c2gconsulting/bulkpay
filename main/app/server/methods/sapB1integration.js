@@ -152,7 +152,6 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
         if(isPostedToSAP && isPostedToSAP === true) {
-            // console.log(`isPostedToSAP is true`)
             return
         }
         let employeeId = aPayrunResult.employeeId

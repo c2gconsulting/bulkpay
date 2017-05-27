@@ -14,8 +14,6 @@ Template.navigator.helpers({
 Template.navlist.helpers({
     hasProcurementRequisitionApproveAccess: () => {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
-        console.log("[navigator.js] canApproveProcurementApprove: " + canApproveProcurement);
-
         return canApproveProcurement;
     },
     isProcurementRequisitionActive: () => {
@@ -45,9 +43,9 @@ Template.navlist.helpers({
 });
 
 Template.navlist.onCreated(function () {
-    console.log(`Inside navlist onCreated`)
     let self = this
     let businessUnitId = Session.get('context');
+    // console.log(`businessUnitId`, businessUnitId)
 
     self.businessUnitCustomConfig = new ReactiveVar()
 

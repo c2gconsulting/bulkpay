@@ -7,7 +7,6 @@ Template.EmployeePaymentDetailsDataModal.events({
   },
   'click #save': (e, tmpl) => {
     let user = Template.instance().getEditUser();
-    console.log("User to update on server: \n" + JSON.stringify(user));
 
     Meteor.call('account/updatePaymentData', user, user._id, (err, res) => {
         if (res){
@@ -32,8 +31,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.paymentMethod = value;
-
-      console.log("user payment paymentMethod changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -44,8 +41,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.bank = value;
-
-      console.log("user payment bank changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -56,8 +51,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.accountNumber = value;
-
-      console.log("user payment accountNumber changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -68,8 +61,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.accountName = value;
-
-      console.log("user payment accountName changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -80,8 +71,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.pensionmanager = value;
-
-      console.log("user payment pensionmanager changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -92,8 +81,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.RSAPin = value;
-
-      console.log("user payment RSAPin changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -104,8 +91,6 @@ Template.EmployeePaymentDetailsDataModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.payment = user.employeeProfile.payment || {};
       user.employeeProfile.payment.taxPayerId = value;
-
-      console.log("user Tax Payer Id changed to: " + value);
     }
     Template.instance().setEditUser(user);
   }
@@ -120,8 +105,6 @@ Template.EmployeePaymentDetailsDataModal.helpers({
         return [selectedEmployee];
     },
     'pfas': function(){
-      console.log("[PaymentDetails] Inside pfas");
-
       let allPfas = PensionManagers.find({});
       return allPfas;
     },

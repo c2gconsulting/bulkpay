@@ -9,7 +9,6 @@ import _ from 'underscore';
 Template.EmployeeEditEmploymentPayrollModal.events({
   'click #saveEmployment': (e, tmpl) => {
     let user = Template.instance().getEditUser();
-    console.log("User to update on server: \n" + JSON.stringify(user));
 
     let hireDate = $('[data-field="employmentHireDate"]').val() ? new Date($('[data-field="employmentHireDate"]').val()) : null;
     let confirmationDate = $('[data-field="employmentConfirmationDate"]').val() ? new Date($('[data-field="employmentConfirmationDate"]').val()) : null;
@@ -38,9 +37,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
   },
   'click #saveEmployeePayrollPaytypes': (e, tmpl) => {
     let user = Template.instance().getEditUser();
-
     let payTypesArray = tmpl.getPaytypes();
-    console.log("Pay types array: " + JSON.stringify(payTypesArray));
 
     Meteor.call('account/updatePayTypesData', payTypesArray, user._id, (err, res) => {
         if (res){
@@ -65,7 +62,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       user.employeeProfile.employment = user.employeeProfile.employment || {};
       user.employeeProfile.employment.position = value;
 
-      console.log("user employment position changed to: " + value);
       tmpl.selectedPosition.set(value);
     }
     Template.instance().setEditUser(user);
@@ -78,7 +74,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         user.employeeProfile.employment = user.employeeProfile.employment || {};
         user.employeeProfile.employment.paygrade = value;
 
-        console.log("user employment paygrade changed to: " + value);
         tmpl.selectedGrade.set(value);
       }
       Template.instance().setEditUser(user);
@@ -90,8 +85,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.employment = user.employeeProfile.employment || {};
       user.employeeProfile.employment.hireDate = value;
-
-      console.log("user employment hireDate changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -102,8 +95,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.employment = user.employeeProfile.employment || {};
       user.employeeProfile.employment.confirmationDate = value;
-
-      console.log("user employment confirmationDate changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -114,8 +105,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.employment = user.employeeProfile.employment || {};
       user.employeeProfile.employment.status = value;
-
-      console.log("user employment status changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -126,8 +115,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
       user.employeeProfile = user.employeeProfile || {};
       user.employeeProfile.employment = user.employeeProfile.employment || {};
       user.employeeProfile.employment.terminationDate = value;
-
-      console.log("user employment terminationDate changed to: " + value);
     }
     Template.instance().setEditUser(user);
   },
@@ -230,7 +217,6 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);
-  console.log(`Selected employee: ${JSON.stringify(selectedEmployee)}`)
   //--
   self.selectedPosition = new ReactiveVar();
   self.selectedPosition.set(selectedEmployee.employeeProfile.employment.position);
@@ -242,21 +228,17 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   self.subscribe("getPositions", Session.get('context'));
   self.subscribe("getbuconstants", Session.get('context'));
+  self.subscribe("PayTypes", Session.get('context'));
 
   self.changePayTypesForSelectedPayGrade = (selectedGrade) => {
-
     let grade = PayGrades.findOne({_id: selectedGrade});
+
     if (grade){
         let paytypes = null;
         let paytypeIds = grade.payTypes.map(x => {
             return x.paytype;
         });
-
-        // The name of this subscription is confusing fpr what it actually does.
-        // It actually makes it possible to 'find' paytypes
-        self.subscribe("getpositionGrades", paytypeIds);
         //--
-
         let selectedEmployee = Session.get('employeesList_selectedEmployee')
 
         if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
@@ -267,9 +249,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
           });
 
           paytypes = paytypes.map(x => {
-            //console.log("a paytype : " + JSON.stringify(x));
             let pt = PayTypes.findOne({_id: x.paytype});
-            //console.log("paytype from db : " + JSON.stringify(pt));
             if(pt) {
               if(x.value) {
                   pt.inputed = x.value;
@@ -324,7 +304,6 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
 Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee');
-  console.log("Positon: " + selectedEmployee.employeeProfile.employment.position);
 
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
   $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
