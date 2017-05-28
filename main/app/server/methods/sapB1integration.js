@@ -21,7 +21,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
 
     //Be patient. The main processing happens after this function definition
-    let initializeUnitBulkSum = (unitId, costCenterCode, aPayrunResult) => {
+    let initializeUnitBulkSum = (employee, unitId, costCenterCode, aPayrunResult) => {
         unitsBulkSum[unitId] = {}
         unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
 
@@ -35,11 +35,17 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     return (aPayType._id && (aPayType._id === aPayment.id));
                 })
                 if(payTypeFullDetails) {
+                    if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
+                        employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
+                        // DeltaTek and employee is of 'National' paygrade
+                        if(payTypeFullDetails._id === '(6) Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
+                            return
+                        }
+                    }
                     if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
                         return
                     }
                 }
-
 
                 if (sapPayTypeDetails) {
                     let payTypeDebitAccountCode = ""
@@ -196,7 +202,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                             arrayOfEmployees.push(employeeId)
                         } else {
                             if(sapUnitCostCenterDetails.costCenterCode && sapUnitCostCenterDetails.costCenterCode.length > 0) {
-                                initializeUnitBulkSum(unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
+                                initializeUnitBulkSum(employee, unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
                                 arrayOfEmployees.push(employeeId)
                             } else {
                                 status = false
@@ -349,7 +355,7 @@ Meteor.methods({
                 })
             }
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
