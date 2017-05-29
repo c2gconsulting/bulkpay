@@ -355,7 +355,7 @@ Meteor.methods({
                 })
             }
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
