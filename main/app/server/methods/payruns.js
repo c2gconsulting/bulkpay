@@ -591,8 +591,10 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         })
                                         if(currencyRateForPayType) {
                                             if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
-                                                valueInForeignCurrency = value * currencyRateForPayType.rateToBaseCurrency
+                                                value = value * currencyRateForPayType.rateToBaseCurrency
                                             }
+                                        } else {
+                                            console.log(`Could not find currency: ${x.currency} exchange rate: for paytype: ${x.code}`)
                                         }
                                     }
                                     //--
@@ -603,6 +605,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 benefit.push({
                                                     title: x.title,
                                                     code: x.code,
+                                                    currency: x.currency || "",
                                                     value, 
                                                     valueInForeignCurrency
                                                 });
@@ -610,6 +613,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
+                                                    currency: x.currency || "",
                                                     value,
                                                     valueInForeignCurrency
                                                 });
@@ -620,6 +624,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 deduction.push({
                                                     title: x.title,
                                                     code: x.code,
+                                                    currency: x.currency || "",
                                                     value,
                                                     valueInForeignCurrency
                                                 });
@@ -627,6 +632,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
+                                                    currency: x.currency || "",
                                                     value,
                                                     valueInForeignCurrency
                                                 });
