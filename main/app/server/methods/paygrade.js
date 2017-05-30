@@ -54,29 +54,35 @@ Meteor.methods({
         employeesWithPayGrade.forEach(anEmployee => {
             console.log(`employee id: ${anEmployee._id}`)
             let employeePaytypes = anEmployee.employeeProfile.employment.paytypes
-            let newPayTypesToInsert = []
+            if(employeePaytypes) {
+                let newPayTypesToInsert = []
 
-            paygradePaytypes.forEach(function(aPayGradePayType) {
-                let employeePayTypeWithVal = null
-                let numOfEmployeePayTypes = employeePaytypes.length
-                for(let i = 0; i < numOfEmployeePayTypes; i++) {
-                    let anEmployeePayType = employeePaytypes[i]
-                    if(anEmployeePayType.paytype === aPayGradePayType.paytype) {
-                        employeePayTypeWithVal = anEmployeePayType
-                        break;
+                paygradePaytypes.forEach(function(aPayGradePayType) {
+                    let employeePayTypeWithVal = null
+                    let numOfEmployeePayTypes = employeePaytypes.length
+                    for(let i = 0; i < numOfEmployeePayTypes; i++) {
+                        let anEmployeePayType = employeePaytypes[i]
+                        if(anEmployeePayType.paytype === aPayGradePayType.paytype) {
+                            employeePayTypeWithVal = anEmployeePayType
+                            break;
+                        }
                     }
+                    if(!employeePayTypeWithVal) {
+                        delete aPayGradePayType.displayInPayslip
+                        newPayTypesToInsert.push(aPayGradePayType);
+                    } else {
+                        newPayTypesToInsert.push(employeePayTypeWithVal);
+                    }
+                })
+                console.log(`newPayTypesToInsert: ${newPayTypesToInsert.length}`)
+                if(newPayTypesToInsert.length > 0) {
+                    result = Meteor.users.update(anEmployee._id,
+                        { $set: { 'employeeProfile.employment.paytypes': newPayTypesToInsert }}
+                    );
                 }
-                if(!employeePayTypeWithVal) {
-                    delete aPayGradePayType.displayInPayslip
-                    newPayTypesToInsert.push(aPayGradePayType);
-                } else {
-                    newPayTypesToInsert.push(employeePayTypeWithVal);
-                }
-            })
-            console.log(`newPayTypesToInsert: ${newPayTypesToInsert.length}`)
-            if(newPayTypesToInsert.length > 0) {
-                const result = Meteor.users.update(anEmployee._id,
-                    { $set: { 'employeeProfile.employment.paytypes': newPayTypesToInsert }}
+            } else {
+                result = Meteor.users.update(anEmployee._id,
+                    { $set: { 'employeeProfile.employment.paytypes': paygradePaytypes }}
                 );
             }
         })
