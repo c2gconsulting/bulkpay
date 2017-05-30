@@ -262,8 +262,6 @@ Template.EmployeePersonalDataModal.onCreated(function () {
 
 Template.EmployeePersonalDataModal.onRendered(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee');
-  console.log("person country: " + selectedEmployee.employeeProfile.nationality);
-  console.log("person state: " + selectedEmployee.employeeProfile.nationality);
 
   $('[name="gender"]').val(selectedEmployee.employeeProfile.gender);
   $('[name="maritalStatus"]').val(selectedEmployee.employeeProfile.maritalStatus);
