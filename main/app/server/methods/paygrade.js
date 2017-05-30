@@ -43,7 +43,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = PayGrades.update(selector, {$set: details} );
+        let result = PayGrades.update(selector, {$set: details} );
 
         //--We need to update employee paytypes in case new paytypes were added to the paygrade
         let paygradePaytypes = details.payTypes
