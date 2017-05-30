@@ -697,8 +697,11 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     if(pension) {
                         let valueInForeignCurrency = employeePenContrib * -1
                         final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1, valueInForeignCurrency});
-                        if(pension.displayEmployerInPayslip) final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib}]); //if employer contribution (displayEmployerInPayslip) add to other payments
 
+                        if(pension.displayEmployerInPayslip) {                         
+                            valueInForeignCurrency = employerPenContrib
+                            final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib, valueInForeignCurrency}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+                        }
                     }
                     //calculate net payment as payment - deductions;
                     // negate and add pension to deduction
