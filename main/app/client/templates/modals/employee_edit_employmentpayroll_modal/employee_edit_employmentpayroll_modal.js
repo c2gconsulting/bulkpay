@@ -241,7 +241,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
         //--
         let selectedEmployee = Session.get('employeesList_selectedEmployee')
 
-        if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade) {
+        if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade 
+            && (selectedEmployee.employeeProfile.employment.paytypes)) {
           paytypes = selectedEmployee.employeeProfile.employment.paytypes;
 
           let paytypesFromPayGrade = grade.payTypes.map(x => {

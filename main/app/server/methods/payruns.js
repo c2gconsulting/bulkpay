@@ -370,7 +370,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
     let tenantId = Core.getTenantId(Meteor.userId())
     let tenant = Tenants.findOne(tenantId)
-    console.log(`tenant`, tenant)
 
     let currencyRatesForPeriod = Currencies.find({businessId: businessId, period: periodFormat}).fetch()
 

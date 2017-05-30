@@ -134,6 +134,7 @@ Template.EmployeeCreate.events({
                 Router.go('employees', {_id: Session.get('context')});
             } else {
                 console.log(err);
+                swal(`New employee create error`, err.reason, 'error')
                 //err = JSON.parse(err.details);
                 //// add necessary handler on error
                 ////use details from schema.key to locate html tag and error handler
