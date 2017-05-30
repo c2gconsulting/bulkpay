@@ -20,15 +20,6 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
 
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="control-label">Rate to Base Currency <span class="asterisk important-input">*</span></label>
-                                    <input type="number" placeholder="0" name="rateToBaseCurrency" class="form-control" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-                        </div><!-- row -->
-
-                        <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Period Month <span class="asterisk important-input">*</span></label>
@@ -50,6 +41,17 @@
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Rate to Base Currency({{baseCurrency}}) <span class="asterisk important-input">*</span></label>
+                                    <label class="control-label">e.g If 1 NGN is equal is 350 USD, enter 350</label>                                    
+                                    <input type="number" placeholder="0" name="rateToBaseCurrency" class="form-control" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
                         </div>
                     </div>
 

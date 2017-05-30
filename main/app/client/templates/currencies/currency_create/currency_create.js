@@ -75,6 +75,9 @@ Template.CurrencyCreate.helpers({
     'years': () => {
         return Core.years();
     },
+    'baseCurrency': function() {
+        return Core.getTenantBaseCurrency().iso;
+    },
     selectedMonth: function (val) {
         if(Template.instance().selectedMonth.get()) {
             return Template.instance().selectedMonth.get() === val ? selected="selected" : '';

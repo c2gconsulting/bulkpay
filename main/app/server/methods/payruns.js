@@ -366,11 +366,18 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
     let count = 0;
 
+    const periodFormat = period.month + period.year;// format is 012017 ex.
+
+    let tenantId = Core.getTenantId(Meteor.userId())
+    let tenant = Tenants.findOne(tenantId)
+    console.log(`tenant`, tenant)
+
+    let currencyRatesForPeriod = Currencies.find({businessId: businessId, period: periodFormat}).fetch()
+
     let runPayrun = (counter) => {
         let x = employees[counter];
         if (x) {
             //first check if result exist for employee for that period and if not, continue processing.
-            const periodFormat = period.month + period.year;// format is 012017 ex.
             result = Payruns.findOne({employeeId: x._id, period: periodFormat, businessId: businessId});
             if (result){
                 //add relevant errors
@@ -382,6 +389,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
             } else {
                 const employeeResult = {businessId: businessId, employeeId: x._id, period: periodFormat, payment : []}; //holds every payment to be saved for employee in payrun
+
 
                 //--Time recording things
                 const projectsPayDetails = 
@@ -576,7 +584,19 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         costCenterPayAmount = value
                                     }
                                     //--
-                                    //check if payment or deduction and add to corresponding payslip state
+                                    let valueInForeignCurrency = value
+
+                                    if(tenant.baseCurrency.iso !== x.currency) {
+                                        let currencyRateForPayType = _.find(currencyRatesForPeriod, (aCurrency) => {
+                                            return aCurrency.code === x.currency
+                                        })
+                                        if(currencyRateForPayType) {
+                                            if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
+                                                valueInForeignCurrency = value * currencyRateForPayType.rateToBaseCurrency
+                                            }
+                                        }
+                                    }
+                                    //--
                                     switch (x.type) {
                                         case 'Benefit':                                            
                                             //add to payslip benefit if display in payslip
@@ -584,13 +604,15 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 benefit.push({
                                                     title: x.title,
                                                     code: x.code,
-                                                    value
+                                                    value, 
+                                                    valueInForeignCurrency
                                                 });
                                             } else if(x.displayInPayslip && !x.addToTotal){
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
-                                                    value
+                                                    value,
+                                                    valueInForeignCurrency
                                                 });
                                             }
                                             break;
@@ -599,20 +621,22 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 deduction.push({
                                                     title: x.title,
                                                     code: x.code,
-                                                    value
+                                                    value,
+                                                    valueInForeignCurrency
                                                 });
                                             } else if(x.displayInPayslip && !x.addToTotal){
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
-                                                    value
+                                                    value,
+                                                    valueInForeignCurrency
                                                 });
                                             }
                                     }
                                     //add value to result
                                     employeeResult.payment.push({
                                         id: x._id, reference: 'Paytype', 
-                                        amountLC: value, amountPC: value, 
+                                        amountLC: value, amountPC: valueInForeignCurrency, 
                                         projectPayAmount: projectPayAmount, costCenterPayAmount: costCenterPayAmount,
                                         code: x.code, description: x.title, 
                                         type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type 
@@ -667,10 +691,12 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     //collate results and populate paySlip; and push to payresult
                     let final = {};
                     final.log = log; //payrun processing log
+
                     final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
-                    final.payslip.deduction.push({title: tax.code , code: tax.name, value: netTax * -1}); // negate add tax to deduction
+                    final.payslip.deduction.push({title: tax.code , code: tax.name, value: netTax * -1, valueInForeignCurrency: netTax * -1}); // negate add tax to deduction
                     if(pension) {
-                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1});
+                        let valueInForeignCurrency = employeePenContrib * -1
+                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1, valueInForeignCurrency});
                         if(pension.displayEmployerInPayslip) final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib}]); //if employer contribution (displayEmployerInPayslip) add to other payments
 
                     }
