@@ -532,16 +532,33 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
                                     }
 
-
                                     //if add to total, add wt to totalsBucket
                                     totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
-                                    //add parsed value to defaultTax bucket if paytype is taxable
-                                    defaultTaxBucket += x.taxable ? parseFloat(x.parsedValue) : 0;
-                                    //for reliefs add to relief bucket
-                                    reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
                                     
+                                    //--
+                                    //add parsed value to defaultTax bucket if paytype is taxable
+                                    if(tenant.baseCurrency.iso === x.currency) {
+                                        defaultTaxBucket += x.taxable ? parseFloat(x.parsedValue) : 0;
+                                    } else {
+                                        defaultTaxBucket += x.taxable ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
+                                    }
+                                    console.log(`defaultTaxBucket`, defaultTaxBucket)
+                                    
+                                    //--
+                                    //for reliefs add to relief bucket
+                                    if(tenant.baseCurrency.iso === x.currency) {
+                                        reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
+                                    } else {
+                                        reliefBucket += x.reliefFromTax ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
+                                    }
+
                                     //assigned bucket if one of the paytype is selected as tax bucket
-                                    assignedTaxBucket = x._id === tax.bucket ? parseFloat(x.parsedValue) : null;
+                                    if(tenant.baseCurrency.iso === x.currency) {
+                                        assignedTaxBucket = x._id === tax.bucket ? parseFloat(x.parsedValue) : null;
+                                    } else {
+                                        assignedTaxBucket = x._id === tax.bucket ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : null
+                                    }
+                                    console.log(`assignedTaxBucket`, assignedTaxBucket)
 
                                     processing.push({code: x.code, taxBucket: defaultTaxBucket});
 
@@ -549,7 +566,12 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     const ptIndex = pension && _.indexOf(pension.payTypes, x._id);
                                     pensionBucket += ptIndex !== -1 ? parseFloat(x.parsedValue) : 0; // add parsed value to pension bucket if paytype is found
                                     //gross income for pension relief;
-                                    grossIncomeBucket += tax.grossIncomeBucket === x._id ? parseFloat(x.parsedValue) : 0;
+
+                                    if(tenant.baseCurrency.iso === x.currency) {
+                                        grossIncomeBucket += tax.grossIncomeBucket === x._id ? parseFloat(x.parsedValue) : 0;
+                                    } else {
+                                        grossIncomeBucket += tax.grossIncomeBucket === x._id ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
+                                    }
                                     processing.push({code: x.code, pensionBucket: pensionBucket});
 
                                     //set value
@@ -584,7 +606,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     }
                                     //--
                                     let valueInForeignCurrency = value
-
                                     if(tenant.baseCurrency.iso !== x.currency) {
                                         let currencyRateForPayType = _.find(currencyRatesForPeriod, (aCurrency) => {
                                             return aCurrency.code === x.currency
@@ -593,8 +614,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
                                                 value = value * currencyRateForPayType.rateToBaseCurrency
                                             }
-                                        } else {
-                                            console.log(`Could not find currency: ${x.currency} exchange rate: for paytype: ${x.code}`)
                                         }
                                     }
                                     //--
@@ -682,7 +701,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                    if(pensionLog)    //add pension calculation log
                         log.push(pensionLog);
                     //add employee to relief Bucket
-                    reliefBucket += (grossPension); //nagate employee Pension contribution and add to relief bucket
+                    reliefBucket += (grossPension || 0); //nagate employee Pension contribution and add to relief bucket
 
                     //get tax;
                     const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
@@ -771,7 +790,19 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
     return {result: payresult, error:processingError, payrun};
 };
 
+function getPayAmountInForeignCurrency(payTypeDetails, amountInLocalCurrency, currencyRatesForPeriod) {
+    let amountInForeignCurrency = null
 
+    let currencyRateForPayType = _.find(currencyRatesForPeriod, (aCurrency) => {
+        return aCurrency.code === payTypeDetails.currency
+    })
+    if(currencyRateForPayType) {
+        if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
+            amountInForeignCurrency = amountInLocalCurrency * currencyRateForPayType.rateToBaseCurrency
+        }
+    }
+    return amountInForeignCurrency
+}
 
 function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, employeeUserId) {
     const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
