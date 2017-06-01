@@ -1,6 +1,67 @@
 /*****************************************************************************/
 /* PayrunNew: Event Handlers */
 /*****************************************************************************/
+
+let ReportUtils = {}
+
+ReportUtils.getPayTypeHeaders = function(employeePayments) {
+    let payTypeHeaders = ['Employee']
+
+    employeePayments.forEach(anEmployeeData => {
+        anEmployeeData.payment.forEach(anEmployeePayType => {
+            if(anEmployeePayType.id) {
+                let doesPayTypeHeaderExist = _.find(payTypeHeaders, function(aPayType) {
+                    return aPayType.id && (aPayType.id === anEmployeePayType.id)
+                })
+                if(!doesPayTypeHeaderExist) {
+                    payTypeHeaders.push({
+                        id: anEmployeePayType.id,
+                        description: anEmployeePayType.description
+                    })
+                }
+            }
+        })
+    })
+    payTypeHeaders.push('Net Pay')
+
+    return {payTypeHeaders}
+}
+
+ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
+    let payTypeValues = []
+
+    employeePayments.forEach(anEmployeeData => {
+        let aRowOfPayTypeValues = []
+
+        payTypeHeaders.forEach(aPaytypeHeader => {
+            if(aPaytypeHeader === 'Employee') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+                aRowOfPayTypeValues.push(employee.profile.fullName)
+                return
+            }
+            //--
+            let doesPayTypeExist = _.find(anEmployeeData.payment, function(aPayType) {
+                return aPayType.id && (aPaytypeHeader.id === aPayType.id)
+            })
+            if(doesPayTypeExist) {
+                aRowOfPayTypeValues.push(doesPayTypeExist.amountLC)
+            } else if(aPaytypeHeader === 'Net Pay') {
+                let netPay = _.find(anEmployeeData.payment, function(aPayType) {
+                    return (aPayType.code === 'NMP')
+                })
+                if(netPay) {
+                    aRowOfPayTypeValues.push(netPay.amountLC)
+                }
+            } else {
+                aRowOfPayTypeValues.push("---")
+            }
+        })
+        payTypeValues.push(aRowOfPayTypeValues)
+    })
+    return payTypeValues
+}
+
+
 Template.PayrunNew.events({
     'click #startProcessing': (e,tmpl) => {
         let payGrades = function(){
@@ -83,6 +144,23 @@ Template.PayrunNew.events({
         if(Template.instance().selectedYear.get()) {
             return Template.instance().selectedYear.get() === val ? selected="selected" : '';
         }
+    },
+    'click #export-to-csv': (e,tmpl) => {
+        const payResult = Template.instance().dict.get('payResult');
+        if (payResult) {
+            let payTypeHeadersAndTotal = ReportUtils.getPayTypeHeaders(payResult.payObj.payrun) 
+
+            let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
+                return aHeader.description || aHeader
+            })
+            //--
+            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, payTypeHeadersAndTotal.payTypeHeaders)
+
+            BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+                `Payrun results export`);
+        } else {
+            swal('Error', 'No payrun results', 'error')
+        }
     }
 });
 
@@ -122,6 +200,7 @@ Template.PayrunNew.helpers({
     'employeeResult': () => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
+            console.log(`pay result`, payResult.payObj.result)
             return payResult.payObj.result;
         }
     },

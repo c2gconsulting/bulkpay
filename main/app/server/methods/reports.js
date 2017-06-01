@@ -221,7 +221,6 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             const payRunResults =  Payruns.find({businessId: businessId, period: period}).fetch();
-            console.log(`payRunResults: ${JSON.stringify(payRunResults)}`)
 
             if(payRunResults && payRunResults.length > 0){
                 //console.log(`Result: ${JSON.stringify(payRunResults)}`)
