@@ -13,5 +13,24 @@ Meteor.methods({
         //create payment
         let paymentId = AdditionalPayments.insert(params)
         return {_id: paymentId};
+    },
+    "additionalPay/delete": function(id){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        AdditionalPayments.remove({_id: id});
+        return true;
+    },
+    "additionalPay/update": function(id, details){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(id, String);
+        
+        const selector = {
+            _id: id
+        };
+        const result = AdditionalPayments.update(selector, {$set: details} );
+        return result;
     }
 })

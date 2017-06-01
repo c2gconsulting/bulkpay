@@ -4,7 +4,10 @@
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Add additional Payment for Employee</h3>
+                        <h3 class="panel-title">
+                            {{#if edit}} Edit additional Payment for Employee {{else }}Add additional Payment for Employee{{/if}}
+                        </h3>
+                        
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -13,7 +16,11 @@
                                     <label class="control-label">Period</label>
                                     <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
                                         {{#each month}}
-                                            <option value="{{period}}">{{name}}</option>
+                                            {{#if isEqual this.period (periodMonth)}}
+                                                <option value="{{period}}" selected>{{name}}</option>
+                                            {{else}}
+                                                <option value="{{period}}">{{name}}</option>
+                                            {{/if}}
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->
@@ -24,7 +31,11 @@
                                     <label class="control-label">Year</label>
                                     <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
                                         {{#each years}}
+                                            {{#if isEqual this (periodYear)}}
+                                            <option value="{{this}}" selected>{{this}}</option>
+                                            {{else}}
                                             <option value="{{this}}">{{this}}</option>
+                                            {{/if}}
                                         {{/each}}
                                     </select>
                                 </div><!-- form-group -->
@@ -37,7 +48,11 @@
                                         <select name="employee" style="width: 100%" class="ui fluid search dropdown form-control">
                                             <option value="">Employees</option>
                                             {{#each employees}}
+                                                {{#if isEqual _id (checked 'employee')}}
+                                                <option value="{{employeeProfile.employeeId}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                {{else}}
                                                 <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                {{/if}}
                                             {{/each}}
                                         </select>
                                     {{/semanticselect}}
@@ -50,24 +65,30 @@
                                     <select name="paytype" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="">Pay Type</option>
                                         {{#each paytypes}}
+                                            {{#if isEqual _id (checked 'paytype')}}
+                                            <option value="{{code}}" selected>{{code}} - {{title}}</option>
+                                            {{else}}
                                             <option value="{{code}}">{{code}} - {{title}}</option>
+                                            {{/if}}
                                         {{/each}}
                                     </select>
                                 {{/semanticselect}}
                             </div><!-- col-sm-6 -->
+                        </div><!-- row -->
 
-                            <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Amount</label>
-                                    <input type="number" placeholder="0" name="amount" class="form-control" />
+                                    <input type="number" placeholder="0" name="amount" class="form-control" value="{{checked 'amount'}}" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
-
-                        </div><!-- row -->
+                        </div>
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" id="createAdditionalPay">Create</button>
+                        <button class="btn btn-primary mr5" id="createAdditionalPay">{{#if edit}}Update{{else}}Create{{/if}}</button>
                         <button type="reset" class="btn btn-danger" id="new-on-off-close" data-dismiss="modal">Cancel</button>
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteAdditionalPay">Delete</button>{{/if}}
                     </div><!-- panel-footer -->
                 </div>
             </div>

@@ -7,25 +7,26 @@ Template.AdditionalPayCreate.events({
         event.preventDefault();
         let l = Ladda.create(tmpl.$('#createAdditionalPay')[0]);
         l.start();
+        //--
+        let businessId = Session.get('context')
         const details = {
-            businessId: BusinessUnits.findOne()._id,
+            businessId: businessId,
             paytype: $('[name="paytype"]').val(),
             employee: $('[name="employee"]').val(),
             period: `${$('[name="paymentPeriod.month"]').val() + $('[name="paymentPeriod.year"]').val()}`,
             amount: $('[name="amount"]').val()
         };
-        if(tmpl.data){//edit action for updating paytype
-            // const ptId = tmpl.data._id;
-            // const code = tmpl.data.code;
-            // Meteor.call("paytype/update", tmpl.data._id, details, (err, res) => {
-            //     l.stop();
-            //     if(err){
-            //         swal("Update Failed", `Cannot Update paytype ${code}`, "error");
-            //     } else {
-            //         swal("Successful Update!", `Succesffully update paytype ${code}`, "success");
-            //         Modal.hide("PaytypeCreate");
-            //     }
-            // });
+
+        if(tmpl.data) {
+            Meteor.call("additionalPay/update", tmpl.data._id, details, (err, res) => {
+                l.stop();
+                if(err){
+                    swal("Update Failed", `Cannot Update additional pay ${err.reason}`, "error");
+                } else {
+                    swal("Success!", `Update successful`, "success");
+                    Modal.hide("AdditionalPayCreate");
+                }
+            });
         } else{ //New Action for creating paytype}
             Meteor.call('additionalPay/create', details, Session.get('context'), (err, res) => {
                 l.stop();
@@ -52,6 +53,25 @@ Template.AdditionalPayCreate.events({
                 }
             });
         }
+    },
+    'click #deleteAdditionalPay': (e, tmpl) => {
+        event.preventDefault();
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to undo this",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, () => {
+            Meteor.call('additionalPay/delete', tmpl.data._id, (err, res) => {
+                if(!err){
+                    swal("Deleted!", `Additional pay has been deleted.`, "success");
+                    Modal.hide("AdditionalPayCreate");
+                }
+            });
+        });
     }
 });
 
@@ -70,6 +90,29 @@ Template.AdditionalPayCreate.helpers({
     },
     'years': () => {
         return Core.years();
+    },
+    'isEqual': (a, b) => {
+        return a === b;
+    },
+    'edit': () => {
+        return Template.instance().data ? true:false;
+    },
+    'periodMonth': () => {
+        if(Template.instance().data) {
+            let monthAndYear = Template.instance().data.period
+            return monthAndYear.substring(0, 2)
+        }
+    },
+    'periodYear': () => {
+        if(Template.instance().data) {
+            let monthAndYear = Template.instance().data.period
+            return monthAndYear.substring(2)
+        }
+    },
+    'checked': (prop) => {
+        if(Template.instance().data)
+            return Template.instance().data[prop];
+        return false;
     }
 });
 

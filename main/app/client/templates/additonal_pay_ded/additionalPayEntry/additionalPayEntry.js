@@ -9,6 +9,9 @@ Template.AdditionalPayEntry.events({
     'click #uploadAddPay': function(e){
         e.preventDefault();
         Modal.show('ImportModal');
+    },
+    'click .pointer': function(e, tmpl){
+        Modal.show('AdditionalPayCreate', this.data);
     }
 });
 
