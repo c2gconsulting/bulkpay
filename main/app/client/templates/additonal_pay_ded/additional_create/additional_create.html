@@ -48,7 +48,7 @@
                                         <select name="employee" style="width: 100%" class="ui fluid search dropdown form-control">
                                             <option value="">Employees</option>
                                             {{#each employees}}
-                                                {{#if isEqual _id (checked 'employee')}}
+                                                {{#if isEqual employeeProfile.employeeId (checked 'employee')}}
                                                 <option value="{{employeeProfile.employeeId}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                                 {{else}}
                                                 <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
@@ -65,7 +65,7 @@
                                     <select name="paytype" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="">Pay Type</option>
                                         {{#each paytypes}}
-                                            {{#if isEqual _id (checked 'paytype')}}
+                                            {{#if isEqual code (checked 'paytype')}}
                                             <option value="{{code}}" selected>{{code}} - {{title}}</option>
                                             {{else}}
                                             <option value="{{code}}">{{code}} - {{title}}</option>
