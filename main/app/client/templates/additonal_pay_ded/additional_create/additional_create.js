@@ -80,7 +80,7 @@ Template.AdditionalPayCreate.events({
 /*****************************************************************************/
 Template.AdditionalPayCreate.helpers({
     'paytypes': function(){
-        return PayTypes.find();
+        return Template.instance().allPaytypes.get()
     },
     'employees': () => {
         return Meteor.users.find({"employee": true});
@@ -121,8 +121,17 @@ Template.AdditionalPayCreate.helpers({
 /*****************************************************************************/
 Template.AdditionalPayCreate.onCreated(function () {
     let self = this;
-    self.subscribe("activeEmployees", Session.get('context'));
-    self.subscribe("PayTypes", Session.get('context'));
+
+    self.allPaytypes = new ReactiveVar()
+
+    self.autorun(function() {
+        self.subscribe("activeEmployees", Session.get('context'));
+        let payTypesSubscription = self.subscribe("PayTypes", Session.get('context'));
+
+        if(payTypesSubscription.ready()) {
+            self.allPaytypes.set(PayTypes.find().fetch())
+        }
+    })
 });
 
 Template.AdditionalPayCreate.onRendered(function () {
