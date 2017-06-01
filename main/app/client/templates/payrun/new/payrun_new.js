@@ -11,20 +11,28 @@ ReportUtils.getPayTypeHeaders = function(employeePayments) {
         anEmployeeData.payment.forEach(anEmployeePayType => {
             if(anEmployeePayType.id) {
                 let doesPayTypeHeaderExist = _.find(payTypeHeaders, function(aPayType) {
-                    return aPayType.id && (aPayType.id === anEmployeePayType.id)
+                    return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
                 })
                 if(!doesPayTypeHeaderExist) {
                     payTypeHeaders.push({
                         id: anEmployeePayType.id,
+                        code: anEmployeePayType.code,
                         description: anEmployeePayType.description
                     })
                 }
             }
         })
     })
-    payTypeHeaders.push('Total Deduction')
-    payTypeHeaders.push('Net Pay')
-
+    payTypeHeaders.push({
+        id: 'totalDeduction',
+        code: 'totalDeduction',
+        description: 'Total Deduction'
+    })
+    payTypeHeaders.push({
+        id: 'netPay',
+        code: 'netPay',
+        description: 'Net Pay'
+    })
     return {payTypeHeaders}
 }
 
@@ -42,7 +50,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
             }
             //--
             let payDetails = _.find(anEmployeeData.payment, function(aPayType) {
-                return aPayType.id && (aPaytypeHeader.id === aPayType.id)
+                return aPayType.id && (aPaytypeHeader.id === aPayType.id && aPaytypeHeader.code === aPayType.code)
             })
             if(payDetails) {
                 let payAmount = payDetails.amountLC
@@ -52,14 +60,14 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                     }
                 }
                 aRowOfPayTypeValues.push(payAmount)
-            } else if(aPaytypeHeader === 'Net Pay') {
+            } else if(aPaytypeHeader.id === 'netPay') {
                 let netPay = _.find(anEmployeeData.payment, function(aPayType) {
                     return (aPayType.code === 'NMP')
                 })
                 if(netPay) {
                     aRowOfPayTypeValues.push(netPay.amountLC)
                 }
-            } else if(aPaytypeHeader === 'Total Deduction') {
+            } else if(aPaytypeHeader.id === 'totalDeduction') {
                 let totalDeduction = _.find(anEmployeeData.payment, function(aPayType) {
                     return (aPayType.code === 'TDEDUCT')
                 })
@@ -162,13 +170,13 @@ Template.PayrunNew.events({
     'click #export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
-            let payTypeHeadersAndTotal = ReportUtils.getPayTypeHeaders(payResult.payObj.payrun) 
+            let payTypeHeaders = ReportUtils.getPayTypeHeaders(payResult.payObj.payrun) 
 
-            let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
+            let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
                 return aHeader.description || aHeader
             })
             //--
-            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, payTypeHeadersAndTotal.payTypeHeaders)
+            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, payTypeHeaders.payTypeHeaders)
 
             BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
                 `Payrun results export`);
