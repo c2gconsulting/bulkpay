@@ -40,11 +40,17 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                 return
             }
             //--
-            let doesPayTypeExist = _.find(anEmployeeData.payment, function(aPayType) {
+            let payDetails = _.find(anEmployeeData.payment, function(aPayType) {
                 return aPayType.id && (aPaytypeHeader.id === aPayType.id)
             })
-            if(doesPayTypeExist) {
-                aRowOfPayTypeValues.push(doesPayTypeExist.amountLC)
+            if(payDetails) {
+                let payAmount = payDetails.amountLC
+                if(payDetails.type === 'Deduction') {
+                    if(payAmount > 0) {
+                        payAmount *= -1
+                    }
+                }
+                aRowOfPayTypeValues.push(payAmount)
             } else if(aPaytypeHeader === 'Net Pay') {
                 let netPay = _.find(anEmployeeData.payment, function(aPayType) {
                     return (aPayType.code === 'NMP')
