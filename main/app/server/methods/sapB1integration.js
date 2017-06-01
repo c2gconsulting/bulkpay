@@ -85,8 +85,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
 
                     unitBulkSumPayments.push({
                         payTypeId: aPayment.id,
-                        costCenterPayAmount: aPayment.costCenterPayAmount,
-                        projectPayAmount: aPayment.projectPayAmount,
+                        costCenterPayAmount: aPayment.costCenterPayAmount || 0,
+                        projectPayAmount: aPayment.projectPayAmount || 0,
                         description: aPayment.description,
                         payTypeDebitAccountCode: payTypeDebitAccountCode,
                         payTypeCreditAccountCode: payTypeCreditAccountCode,
@@ -120,7 +120,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
 
                             unitBulkSumPayments.push({
                                 payTypeId: aPayment.id,
-                                costCenterPayAmount: aPayment.amountLC,
+                                costCenterPayAmount: aPayment.amountLC || 0,
                                 projectPayAmount: 0,
                                 description: aPayment.description,
                                 payTypeDebitAccountCode: payTypeDebitAccountCode,
@@ -195,8 +195,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                     return aUnitPayment.payTypeId === aPayment.id
                                 })
                                 if(paymentToAccumulate) {
-                                    paymentToAccumulate.costCenterPayAmount += aPayment.costCenterPayAmount
-                                    paymentToAccumulate.projectPayAmount += aPayment.projectPayAmount
+                                    paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
+                                    paymentToAccumulate.projectPayAmount += (aPayment.projectPayAmount || 0)
                                 }
                             })
                             arrayOfEmployees.push(employeeId)
