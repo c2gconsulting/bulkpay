@@ -17,7 +17,8 @@ Core.Schemas.AdditionalPayment = new SimpleSchema({
         type: String
     },
     amount: {
-        type: Number
+        type: Number,
+        decimal: true
     },
     businessId: {
         type: String

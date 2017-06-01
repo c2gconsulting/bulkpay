@@ -21,8 +21,19 @@ Meteor.methods({
 
         for ( let i = 0; i < data.length; i++ ) {
             let item   = data[ i ];
+
+            let payTypeCode = item.paytype
+
+            let fullPayTypeDetails = PayTypes.findOne({code: payTypeCode, businessId: businessId});
+            if(!fullPayTypeDetails) {
+                errors.push({line: i, error: `Pay type with code: ${payTypeCode} does not exist`});
+                errorCount += 1
+            }
             //amount is string, change to number
-            item.amount = parseFloat(item.amount);
+            let payTypeAmount = item.amount || 0
+            let payTypeAmountWithNoCommas = payTypeAmount.replace(/,/g, "").trim();
+
+            item.amount = parseFloat(payTypeAmountWithNoCommas);
             //add period to item
             item.period = period;
             //add businessId
@@ -31,11 +42,9 @@ Meteor.methods({
             try{
                 additionalPayContext.validate(item);
             } catch(e){
-                    errors.push({line: i, error: e});
-                    errorCount += 1
+                errors.push({line: i, error: e.message});
+                errorCount += 1
             }
-
-
         }
 
 
@@ -58,12 +67,11 @@ Meteor.methods({
                     } else {
                         errorCount += 1
                     }
-
                 }
             }
         }
 
-        return {skipped: skippedCount, success: successCount, failed: errorCount}
+        return {skipped: skippedCount, success: successCount, failed: errorCount, errors: errors}
 
     }
 

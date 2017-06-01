@@ -542,7 +542,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     } else {
                                         defaultTaxBucket += x.taxable ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
                                     }
-                                    console.log(`defaultTaxBucket`, defaultTaxBucket)
+                                    // console.log(`defaultTaxBucket`, defaultTaxBucket)
                                     
                                     //--
                                     //for reliefs add to relief bucket
@@ -558,7 +558,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     } else {
                                         assignedTaxBucket = x._id === tax.bucket ? getPayAmountInForeignCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : null
                                     }
-                                    console.log(`assignedTaxBucket`, assignedTaxBucket)
+                                    // console.log(`assignedTaxBucket`, assignedTaxBucket)
 
                                     processing.push({code: x.code, taxBucket: defaultTaxBucket});
 
