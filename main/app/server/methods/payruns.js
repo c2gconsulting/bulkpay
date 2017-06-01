@@ -737,7 +737,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
                     //populate result for net payment
                     employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: netPayment, code: 'NMP', description: 'Net Payment', type: 'netPayment' });
-
+                    employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: totalDeduction, code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
                     final.payslip.totalPayment = totalPayment;
                     final.payslip.totalDeduction = totalDeduction;

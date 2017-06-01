@@ -22,6 +22,7 @@ ReportUtils.getPayTypeHeaders = function(employeePayments) {
             }
         })
     })
+    payTypeHeaders.push('Total Deduction')
     payTypeHeaders.push('Net Pay')
 
     return {payTypeHeaders}
@@ -57,6 +58,13 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                 })
                 if(netPay) {
                     aRowOfPayTypeValues.push(netPay.amountLC)
+                }
+            } else if(aPaytypeHeader === 'Total Deduction') {
+                let totalDeduction = _.find(anEmployeeData.payment, function(aPayType) {
+                    return (aPayType.code === 'TDEDUCT')
+                })
+                if(totalDeduction) {
+                    aRowOfPayTypeValues.push(totalDeduction.amountLC)
                 }
             } else {
                 aRowOfPayTypeValues.push("---")

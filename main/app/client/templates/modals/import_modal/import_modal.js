@@ -41,16 +41,6 @@ Template.ImportModal.events({
         } catch(e) {
             console.log(e);
         }
-        if (file.type !== "text/csv") {
-            try {
-                let l = Ladda.create(tmpl.$('#upload')[0]);
-                l.stop();
-                l.remove();
-            } catch(e) {
-                console.log(e);
-            }
-            return
-        }
         let overwrite = $("#check-overwrite").is(":checked")
         Papa.parse( file, {
             header: true,
