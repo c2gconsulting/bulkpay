@@ -348,6 +348,8 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
                         //set default inputed as parsed value if not editable per employee
                       } else {
                         console.log("[Autorun] x.parsed.result is NULL");
+                        x.parsedValue = 0;
+                        x.monthly = 0;
                       }
                   }
                   //
