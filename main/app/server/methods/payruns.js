@@ -705,7 +705,28 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
                     //get tax;
                     const taxBucket = assignedTaxBucket || defaultTaxBucket; //automatically use default tax bucket if tax bucket not found
-                    const {netTax, taxLog} = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+                    //--
+                    let netTax = null
+                    let taxLog = null
+                    
+                    const effectiveTaxDetails = Tax.findOne({isUsingEffectiveTaxRate: true, employees: x._id, status: 'Active'});
+                    if(effectiveTaxDetails) {
+                        netTax = (taxBucket * effectiveTaxDetails.effectiveTaxRate ) /12
+                        const taxComputationInput = [{code: 'Effective Tax Rate', value: effectiveTaxDetails.effectiveTaxRate}, 
+                            {code: 'TaxBucket', value: taxBucket}
+                        ];
+                        const taxProcessing = [];
+                        taxProcessing.push({code: 'Tax', derived: '(taxBucket * effectiveTaxDetails.effectiveTaxRate) / 12'});
+                        taxProcessing.push({code: 'Tax', derived: netTax });
+
+                        netTax = parseFloat(netTax).toFixed(2)
+
+                        taxLog = {paytype: effectiveTaxDetails.code, input: taxComputationInput, processing: taxProcessing};
+                    } else {
+                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+                        netTax = taxCalculationResult.netTax
+                        taxLog = taxCalculationResult.taxLog
+                    }
 
                     //populate result for tax
                     employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTax, amountPC: netTax, code: tax.code, description: tax.name, type: 'Deduction'  });
