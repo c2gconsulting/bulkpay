@@ -17,24 +17,43 @@ Template.TaxCreate.events({
             swal("Validation error", `Please enter a valid name`, "error");
             return;
         }
+        let businessId = Session.get('context')
         //--
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
         l.start();
-        const details = {
-            businessId: BusinessUnits.findOne()._id,
-            code: $('[name="code"]').val(),
-            name: $('[name="name"]').val(),
-            grossIncomeRelief: parseInt($('[name="grossIncomeRelief"]').val()) || 20,
-            consolidatedRelief: parseInt($('[name="consolidatedRelief"]').val()) || 200000,
-            bucket: $('[name="bucket"]').val(),
-            status: $('[name="status"]').val(),
-            rules:  tmpl.dict.get("taxRules")
-        };
+        let details = null;
+        
+        if(tmpl.isUsingEffectiveTaxRate.get()) {
+            let effectiveTaxRate = $('#effectiveTaxRate').val()
+            let effectiveTaxRateAsNumber = parseFloat(effectiveTaxRate)
 
-        let grossIncomeBucket = $('[name="grossIncomeBucket"]').val()
-        if(grossIncomeBucket && grossIncomeBucket.length > 0) {
-            details.grossIncomeBucket = grossIncomeBucket
+            details = {
+                businessId: businessId,
+                code: $('[name="code"]').val(),
+                name: $('[name="name"]').val(),
+                isUsingEffectiveTaxRate : true,
+                effectiveTaxRate: !isNaN(effectiveTaxRateAsNumber) ? effectiveTaxRateAsNumber : 0,
+                employees: Core.returnSelection($('[name="employee"]')),
+            };
+        } else {
+            details = {
+                businessId: businessId,
+                code: $('[name="code"]').val(),
+                name: $('[name="name"]').val(),
+                isUsingEffectiveTaxRate : false,
+                grossIncomeRelief: parseInt($('[name="grossIncomeRelief"]').val()) || 20,
+                consolidatedRelief: parseInt($('[name="consolidatedRelief"]').val()) || 200000,
+                bucket: $('[name="bucket"]').val(),
+                status: $('[name="status"]').val(),
+                rules:  tmpl.dict.get("taxRules")
+            };
+
+            let grossIncomeBucket = $('[name="grossIncomeBucket"]').val()
+            if(grossIncomeBucket && grossIncomeBucket.length > 0) {
+                details.grossIncomeBucket = grossIncomeBucket
+            }
         }
+        //--
 
         if(tmpl.data){//edit action for updating tax
             const tId = tmpl.data._id;
@@ -48,7 +67,6 @@ Template.TaxCreate.events({
                     Modal.hide("TaxCreate");
                 }
             });
-
         } else{ //New Action for creating paytype}
             Meteor.call('tax/create', details, (err, res) => {
                 l.stop();
@@ -68,11 +86,13 @@ Template.TaxCreate.events({
                     _.each(err, (obj) => {
                         $('[name=' + obj.name +']').addClass('errorValidation');
                         $('[name=' + obj.name +']').attr("placeholder", obj.name + ' ' + obj.type);
-
                     })
                 }
             });
         }
+    },
+    'change #useEffectiveTaxRate': (e, tmpl) => {
+        Template.instance().isUsingEffectiveTaxRate.set(e.currentTarget.checked)
     },
     'click #deleteTax': (e, tmpl) => {
         event.preventDefault();
@@ -210,14 +230,25 @@ Template.registerHelper('equals',(a,b)=>{
 Template.TaxCreate.helpers({
     selected(context, val) {
         if(Template.instance().data){
-            //get value of the option element
-            //check and return selected if the template instce of data.val matches
             return Template.instance().data[context] === val ? selected="selected" : '';
         }
     },
     isSelected(context, val) {
         if(Template.instance().data){
             return Template.instance().data[context] === val ? true : false;
+        }
+    },
+    selectedObj: function (x) {
+        if(Template.instance().data){
+            let self = this;
+            let selected;
+            let prop = Template.instance().data[x];
+            selected = _.find(prop, function(r) {
+                return r ===  self._id;
+            });
+            if (selected){
+                return "selected"
+            }
         }
     },
     'modalHeaderTitle': function() {
@@ -248,7 +279,13 @@ Template.TaxCreate.helpers({
       return Template.instance().indexOfSelectedTaxRuleForEdit.get();
     },
     edit() {
-        return
+        return Template.instance().data ? true : false
+    },
+    isUsingEffectiveTaxRate: function() {
+        return Template.instance().isUsingEffectiveTaxRate.get()
+    },
+    'employees': () => {
+        return Meteor.users.find({"employee": true});
     },
     "paytype": () => {
         return Template.instance().paytypes.get()
@@ -263,10 +300,15 @@ Template.TaxCreate.onCreated(function () {
     let businessUnitId = Session.get('context');
 
     self.subscribe("PayTypes", businessUnitId);
+    self.subscribe("allEmployees", businessUnitId);
     //--
     self.paytypes = new ReactiveVar()
 
     this.dict = new ReactiveDict();
+
+    this.isUsingEffectiveTaxRate = new ReactiveVar()
+    this.isUsingEffectiveTaxRate.set(false)
+
     this.isATaxRuleSelectedForEdit = new ReactiveVar();
     this.isATaxRuleSelectedForEdit.set(false);
 
@@ -276,10 +318,18 @@ Template.TaxCreate.onCreated(function () {
     this.currentIndexOfDraggedTaxRule = new ReactiveVar();
     this.currentIndexOfDraggedTaxRule.set(null);
     //--
-    if(this.data){
-        this.dict.set("taxRules", this.data.rules);
+    if(self.data){
+        if(self.data.isUsingEffectiveTaxRate) {
+            self.isUsingEffectiveTaxRate.set(this.data.isUsingEffectiveTaxRate)
+        } else {
+            if(self.data.rules) {
+                self.dict.set("taxRules", this.data.rules);
+            } else {
+                self.dict.set("taxRules", DefaultRule);
+            }
+        }
     } else {
-        this.dict.set("taxRules", DefaultRule);
+        self.dict.set("taxRules", DefaultRule);
     }
 
     self.autorun(function() {

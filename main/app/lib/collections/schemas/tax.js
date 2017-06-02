@@ -16,20 +16,36 @@ Core.Schemas.Tax = new SimpleSchema({
     name: {
         type: String
     },
+    isUsingEffectiveTaxRate: {
+        type: Boolean,
+        optional: true
+    },
+    effectiveTaxRate: {
+        type: Number,
+        optional: true,
+        decimal: true
+    },
+    employees: {
+        type: [String],
+        optional: true
+    },
     grossIncomeBucket: {
         type: String,
         optional: true
     },
     grossIncomeRelief: {
         type: Number,
-        defaultValue: 20
+        defaultValue: 20,
+        optional: true
     },
     consolidatedRelief: {
         type: Number,
-        defaultValue: 200000
+        defaultValue: 200000,
+        optional: true
     },
     bucket: {
-        type: String
+        type: String,
+        optional: true
     },
     status: {
         type: String,

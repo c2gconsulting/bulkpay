@@ -970,11 +970,14 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
     const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
     processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
     processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
+
     const consolidatedRelief = tax.consolidatedRelief;
     processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
+    
     const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
     processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
     processing.push({code: `Total Relief`, derived: totalRelief });
+    
     let taxableIncome = taxBucket - totalRelief;
     processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
     processing.push({code: `Taxable Income`, derived: taxableIncome });
