@@ -26,7 +26,7 @@ Core.Schemas.Payrun = new SimpleSchema({
         },
         'payment.$.reference': {
           type: String,
-          allowedValues: ['Tax', 'Pension', 'Standard', 'Paytype'],
+          allowedValues: ['Tax', 'Pension', 'Standard', 'Paytype', 'Standard-1'],
           defaultValue: 'Paytype'
         },
         'payment.$.amountLC': { // amount in Local Currency
