@@ -789,7 +789,11 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     //Add currently process employee details to final.payslip.employee
                     const employee = getDetailsInPayslip(x);
                     final.payslip.employee = employee;
-                    final.payslip.employee.grade = grade.code;
+                    if(grade) {
+                        final.payslip.employee.grade = grade.code;
+                    } else {
+                        final.payslip.employee.grade = "";                        
+                    }
                     final.error = true;
 
                     //payement will also be sent to result for factoring and storage;
