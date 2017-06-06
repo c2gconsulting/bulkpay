@@ -138,10 +138,12 @@ Meteor.methods({
         if(Core.hasTimeApprovalAccess(this.userId)){
             let queryToFindTimeRecords = {
                 day: {$gte: startDay, $lte: endDay}, 
-                businessId: businessId, employeeId: {$in: supervisorIds}
+                // businessId: businessId, employeeId: {$in: supervisorIds}
+                employeeId: {$in: supervisorIds}
             }
             let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-
+            // console.log(`timeRecordsToApprove`, timeRecordsToApprove)
+            
             if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
                 let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
                     return aTimeRecord._id

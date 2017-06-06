@@ -106,11 +106,15 @@ Template.ApproveEmployeeTime.onRendered(function () {
     let self = this;
 
     // var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
+    let businessId = Session.get('context')
 
     self.autorun(function(){
         let events = [];
         const leaves = Leaves.find({employeeId: {$in: self.getSupervisees()}}).fetch();
-        const times = TimeWritings.find({employeeId: {$in: self.getSupervisees()}}).fetch();
+        const times = TimeWritings.find({
+            employeeId: {$in: self.getSupervisees()},
+            // businessId: businessId
+        }).fetch();
 
         leaves.forEach(x => {
             const user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
