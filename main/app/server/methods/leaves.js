@@ -134,7 +134,26 @@ Meteor.methods({
                 }
         }
     },
+    'approveTimeDataInPeriod': function(startDay, endDay, businessId, supervisorIds){
+        if(Core.hasTimeApprovalAccess(this.userId)){
+            let queryToFindTimeRecords = {
+                day: {$gte: startDay, $lte: endDay}, 
+                businessId: businessId, employeeId: {$in: supervisorIds}
+            }
+            let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
 
+            if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
+                let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
+                    return aTimeRecord._id
+                })
+
+                let numRecordsUpdated = TimeWritings.update({_id: {$in: timeRecordIds}}, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Approved'}})
+            }
+            return true
+        } else {
+            throw new Meteor.Error('401', 'Unauthorized');
+        }
+    },
     'rejectTimeData': function(timeObj){
         check(timeObj, Object);
         switch (timeObj.type){

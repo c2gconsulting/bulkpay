@@ -22,19 +22,15 @@ Template.TimeCreate2.events({
     'change [name="costCenters"]': (e,tmpl) => {
         let center = $(e.target).val();
         tmpl.costCenter.set(center);
-
-        console.log(`costCenter change: ${center}`)
     },
     'click .datesForTimeWriting': (e, tmpl) => {
         let element = e.currentTarget
         let dayIndex = element.getAttribute('data-dayNum')
-        console.log(`dayIndex: ${dayIndex}`)
 
         tmpl.currentDayIndex.set(parseInt(dayIndex))
         let businessId = Session.get('context')
 
         let dayToFindTimesFor = tmpl.datesForTimeWriting.get()[dayIndex]
-        console.log(`dayToFindTimesFor: ${JSON.stringify(dayToFindTimesFor)}`)
 
         Meteor.subscribe('timesForDay', businessId, dayToFindTimesFor)
     },
@@ -42,7 +38,6 @@ Template.TimeCreate2.events({
         e.preventDefault()
 
         let costElement = $('[name="costElement"]:checked').val();
-        console.log(`costElement: ${JSON.stringify(costElement)}`)
 
         let costElementId = null
         if(costElement) {
@@ -52,7 +47,6 @@ Template.TimeCreate2.events({
                 costElementId = $('[name="costCenters"]').val();
             }
         }
-        console.log(`costElementId: ${JSON.stringify(costElementId)}`)
         if(!costElementId || costElementId.length === 0) {
             if(costElement === 'project') {
                 swal('Validation error', "Please select a project", 'error')
@@ -62,7 +56,6 @@ Template.TimeCreate2.events({
             return
         }
         let activityId = $('[name="activities"]').val();
-        console.log(`activityId: ${JSON.stringify(activityId)}`)
         if(!activityId || activityId.length === 0) {
             swal('Validation error', "Please select an activity", 'error')
             return
@@ -71,10 +64,8 @@ Template.TimeCreate2.events({
         let currentDayIndex = Template.instance().currentDayIndex.get()
         let datesForTimeWriting = Template.instance().datesForTimeWriting.get()
         let day = datesForTimeWriting[currentDayIndex]
-        console.log(`day: ${JSON.stringify(day)}`)
 
         let duration = $('#duration').val();
-        console.log(`duration: ${duration}`)
         let durationAsNumber = parseInt(duration)
 
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
@@ -91,7 +82,6 @@ Template.TimeCreate2.events({
         }
 
         let note = $('#note').val() || "";
-        console.log(`note: ${note}`)
         //--
         let timeDoc = {
             employeeId: Meteor.userId(),
@@ -106,7 +96,6 @@ Template.TimeCreate2.events({
         } else if(costElement === 'costCenter') {
             timeDoc.costCenter = costElementId
         }
-        console.log(`timeDoc: ${JSON.stringify(timeDoc)}`)
         //--
         Meteor.call('time/create', timeDoc, function(err, res) {
             if(!err) {
@@ -126,8 +115,6 @@ Template.TimeCreate2.helpers({
         const projects = Projects.find().fetch().map(x => {
             return {label: x.name, value: x._id};
         });
-        // console.log("projects: " + JSON.stringify(projects));
-
         return projects;
     },
     'costCenters': function () {
@@ -174,7 +161,6 @@ Template.TimeCreate2.helpers({
                 value: x._id
             };
         })
-        console.log(`activitiesForDisplay: ${JSON.stringify(activitiesForDisplay)}`)
         return activitiesForDisplay;
     },
     'datesForTimeWriting': function() {
@@ -208,7 +194,6 @@ Template.TimeCreate2.onCreated(function () {
 
     self.datesForTimeWriting = new ReactiveVar()
     self.datesForTimeWriting.set(self.data)
-    console.log(`Dates for time writing: ${JSON.stringify(self.datesForTimeWriting.get())}`)
 
     self.currentDayIndex = new ReactiveVar()
     if(self.datesForTimeWriting.get().length > 0) {
@@ -231,7 +216,6 @@ Template.TimeCreate2.onCreated(function () {
         let currentDayIndex = self.currentDayIndex.get()
 
         let dayToFindTimesFor = self.datesForTimeWriting.get()[currentDayIndex]
-        console.log(`dayToFindTimesFor: ${JSON.stringify(dayToFindTimesFor)}`)
         var dayStart = moment(dayToFindTimesFor).startOf('day').toDate();
         var dayEnd = moment(dayToFindTimesFor).endOf('day').toDate();
 
@@ -239,13 +223,11 @@ Template.TimeCreate2.onCreated(function () {
             employeeId: Meteor.userId(), 
             day: {$gte: dayStart, $lt: dayEnd}
         }).fetch();
-        console.log(`timesRecordedForDay: ${JSON.stringify(timesRecordedForDay)}`)
 
         let numberOfHoursTimewritedFor = 0
         timesRecordedForDay.forEach(aTime => {
             numberOfHoursTimewritedFor += aTime.duration
         })
-        console.log(`numberOfHoursTimewritedFor: ${numberOfHoursTimewritedFor}`)
         self.hoursToTimeWriteForCurrentDay.set(8 - numberOfHoursTimewritedFor)
     });
 });

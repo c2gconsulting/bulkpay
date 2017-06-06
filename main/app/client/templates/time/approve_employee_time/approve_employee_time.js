@@ -45,7 +45,6 @@ Template.ApproveEmployeeTime.onCreated(function () {
     let businessId = Session.get('context')
 
     let positionsSubs = self.subscribe('getPositions', businessId)
-    let timesAndLeavesSubs = self.subscribe('alltimedata', businessId)   // This gives us leaves and times of supervisees
     let allEmployeeSubs = self.subscribe('allEmployees', businessId)
 
     self.getSupervisees = function() {
@@ -68,7 +67,33 @@ Template.ApproveEmployeeTime.onCreated(function () {
         return allSuperviseeIds
     }
 
+    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {
+        let startDateMoment = moment(startDate)
+        let endDateMoment = moment(endDate)
+        //--
+        let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
+        let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
+        //--
+        let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+
+        let startDateMomentClone = moment(startDateMoment); // use a clone
+        let weekDates = []
+
+        while (numberOfDays > 0) {
+            if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+            } else {
+                numberOfHoursInPeriodWeekDays -= (24)
+            }
+            startDateMomentClone.add(1, 'days');
+            numberOfDays -= 1;
+        }
+        return numberOfHoursInPeriodWeekDays
+    }
+
     self.autorun(function(){
+        let timesAndLeavesSubs = self.subscribe('alltimedata', businessId)   // This gives us leaves and times of supervisees
+
         if(positionsSubs.ready() && timesAndLeavesSubs.ready() && allEmployeeSubs.ready()) {
             let supervisees = Meteor.users.find({_id: {$in: self.getSupervisees()}}).fetch()
             self.supervisees.set(supervisees)
@@ -141,10 +166,8 @@ Template.ApproveEmployeeTime.onRendered(function () {
                     let date = start.format('MM/DD/YYYY');
                     let endDate = end.format('MM/DD/YYYY');
                     Session.set('startdate', date);
-                    let theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
-                    //console.log(`The weekdays: ${JSON.stringify(theWeekDays)}`)
 
-                    Modal.show('TimeCreate2', theWeekDays);
+                    self.confirmApproveTimesBetweenPeriod(date, endDate)
                 },
                 editable: true,
                 eventLimit: true, // allow "more" link when too many events
@@ -182,7 +205,6 @@ Template.ApproveEmployeeTime.onRendered(function () {
         endDateMoment.add(1, 'hours');
 
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
-        console.log(`Number of days: ${numberOfDays}`)
 
         let startDateMomentClone = moment(startDateMoment); // use a clone
         let weekDates = []
@@ -195,6 +217,46 @@ Template.ApproveEmployeeTime.onRendered(function () {
             numberOfDays -= 1;
         }
         return weekDates
+    }
+
+    self.confirmApproveTimesBetweenPeriod = function(startDate, endDate) {
+        let theWeekDays = self.getDurationOfWeekDaysInHours(startDate, endDate)
+        if(theWeekDays > 0) {
+            let weekDaysAsDateObjs = self.getWeekDaysFromFullCalender(startDate, endDate)
+            startDate = weekDaysAsDateObjs[0]
+            endDate = weekDaysAsDateObjs[weekDaysAsDateObjs.length - 1]
+            swal({
+                title: "Are you sure?",
+                text: "This will approve all time-records in the selected period. This action cannot be reversed!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, Approve!",
+                cancelButtonText: "No, cancel",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+            function(isConfirm) {
+                if (isConfirm) {
+                    let businessId = Session.get('context')
+                    let startDateMoment = moment(startDate)
+                    startDate = startDateMoment.startOf('day').toDate()
+
+                    let endDateMoment = moment(endDate)
+                    endDate = endDateMoment.endOf('day').toDate()
+                    
+                    Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, self.getSupervisees(), function(err, res){
+                        if(res){
+                            swal('Success', 'Approvals were uccessful', 'success');
+                        } else {
+                            swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
+                        }
+                    })
+                } else {
+                    swal("Cancelled", "Approval action cancelled!", "error");
+                }
+            });
+        }
     }
 });
 
