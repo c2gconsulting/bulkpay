@@ -117,6 +117,12 @@ Template.LeaveCreate.helpers({
     },
     numberOfLeaveDaysLeft: function() {
         return Template.instance().numberOfLeaveDaysLeft.get() || '---'
+    },
+    startOfToday: function() {
+        return moment().startOf('day').toDate()
+    },
+    endOfToday: function() {
+        return moment().endOf('day').toDate()
     }
 });
 
@@ -190,7 +196,7 @@ Template.LeaveCreate.onCreated(function () {
             return durationInHours + ' hours'
         } else {
             let hoursLeft = (durationInHours - (numberOfDaysInHours * 24))
-            let durationPrettified = numberOfDaysInHours + ' days, ' + hoursLeft + ' hours'
+            let durationPrettified = numberOfDaysInHours + ' day(s), ' + hoursLeft + ' hours'
             return durationPrettified
         }
     }
@@ -236,7 +242,7 @@ Template.LeaveCreate.onRendered(function () {
     let end = $("#endDate").val();
     if (start && end){
         let duration = self.getNumberOfWeekDays(start, end)
-        $("#duration").val(duration <= 0 ? 0 : duration)
+        $("#duration").val(duration <= 0 ? 0 : duration + ' day(s)')
     }
 
     self.autorun(function() {
