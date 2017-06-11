@@ -142,14 +142,18 @@ Meteor.methods({
                 employeeId: {$in: supervisorIds}
             }
             let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-            // console.log(`timeRecordsToApprove`, timeRecordsToApprove)
+            // console.log(`timeRecordsToApprove`, JSON.stringify(timeRecordsToApprove))
             
             if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
                 let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
                     return aTimeRecord._id
                 })
+                // console.log(`timeRecordIds: `, timeRecordIds)
 
-                let numRecordsUpdated = TimeWritings.update({_id: {$in: timeRecordIds}}, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Approved'}})
+                let numRecordsUpdated = TimeWritings.update({
+                    _id: {$in: timeRecordIds}
+                }, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Approved'}},
+                {multi: true})
             }
             return true
         } else {
