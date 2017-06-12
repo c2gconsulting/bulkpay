@@ -56,6 +56,24 @@ Accounts.onCreateUser(function (options, user) {
     return user;
 });
 
+let getPasswordResetToken = function(user, userId, email) {
+    var token = Random.secret();
+    var when = new Date();
+    var tokenRecord = {
+        token: token,
+        email: email,
+        when: when,
+        reason: 'reset'
+    };
+    Meteor.users.update(userId, {$set: {
+        "services.password.reset": tokenRecord
+    }});
+
+    Meteor._ensure(user, 'services', 'password').reset = tokenRecord;
+
+    return token
+}
+
 /**
  * Accounts.onLogin event
  * automatically push checkoutLogin when users login.
@@ -75,7 +93,7 @@ Accounts.onLogin(function (options) {
      _id: options.user._id
      }, update, {
      multi: true
-     });*/
+    });*/
 });
 
 
@@ -94,7 +112,40 @@ Meteor.methods({
         }
         return false;
     },
+    "account/customLogin": function(usernameOrEmail, hashedPassword) {
+        if(!usernameOrEmail) {
+            throw new Meteor.Error(401, "Username/Email not specified");
+        }
+        if(!hashedPassword) {
+            throw new Meteor.Error(401, "Password not specified");
+        }
+        
+        let user = Meteor.users.findOne({customUsername: usernameOrEmail})
 
+        if(user) {
+            let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
+            let loginResult = Accounts._checkPassword(user, myPassword);
+
+            if(loginResult.error) {
+                throw loginResult.error
+            } else {
+                let hashedDefaultPassword = Package.sha.SHA256("123456")
+                let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+
+                let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
+
+                if(defaultLoginResult.error) {
+                    return {status: true, loginType: 'usingRealPassword'}
+                } else {
+                    let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
+
+                    return {status: true, loginType: 'usingDefaultPassword', resetPasswordToken: resetPasswordToken}
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "Username does not exist");            
+        }
+    },
     "account/update": function (user, userId) {
         check(user, Object);
         check(userId, String);

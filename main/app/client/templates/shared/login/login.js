@@ -9,22 +9,45 @@ Template.login.events({
     let email = $('[name="username"]').val();
 		let password = $('[name="password"]').val();
 
-		Meteor.loginWithPassword(email, password, function(err){
-			if (err) {
-				console.log(err);
-				$('div #login_error').removeClass('hide');
-				$('div #login_error').html('Your email or password is incorrect');
-			} else {
-        var currentRoute = Router.current().route.getName();
-				console.log(`Log in successful. Current route: ${currentRoute}`)
+		if(email.indexOf('@') >= 0) {
+				Meteor.loginWithPassword(email, password, function(err){
+					if (err) {
+						console.log(err);
+						$('div #login_error').removeClass('hide');
+						$('div #login_error').html('Your email or password is incorrect');
+					} else {
+						var currentRoute = Router.current().route.getName();
+						console.log(`Log in successful. Current route: ${currentRoute}`)
 
-        if (currentRoute == "login") {
-            Router.go("home");
-        } else {
-					console.log(`Current route is not login`)
-				}
-      }
-		});
+						if (currentRoute == "login") {
+								Router.go("home");
+						} else {
+							console.log(`Current route is not login`)
+						}
+					}
+				});
+		 } else {
+			 let hashedPassword = Package.sha.SHA256(password)
+			 Meteor.call('account/customLogin', email, hashedPassword, function(err, res) {
+					if(err) {
+						$('div #login_error').removeClass('hide');
+						$('div #login_error').html(err.reason);
+					} else {
+						$('div #login_error').addClass('hide');
+						$('div #login_error').html('');
+						if(res.status === true) {
+							if(res.loginType === 'usingDefaultPassword') {
+								Router.go('reset.password', {token: res.resetPasswordToken})
+							} else {
+								var currentRoute = Router.current().route.getName();
+								console.log(`Log in successful. Current route: ${currentRoute}`)
+								
+								Router.go("home");
+							}
+						}
+					}
+			 })
+		 }
 	},
 	'click #reset-password-l': function(e, tmpl) {
 		e.preventDefault();
