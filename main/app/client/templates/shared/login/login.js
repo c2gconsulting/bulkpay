@@ -27,26 +27,34 @@ Template.login.events({
 					}
 				});
 		 } else {
-			 let hashedPassword = Package.sha.SHA256(password)
-			 Meteor.call('account/customLogin', email, hashedPassword, function(err, res) {
-					if(err) {
-						$('div #login_error').removeClass('hide');
-						$('div #login_error').html(err.reason);
-					} else {
-						$('div #login_error').addClass('hide');
-						$('div #login_error').html('');
-						if(res.status === true) {
-							if(res.loginType === 'usingDefaultPassword') {
-								Router.go('reset.password', {token: res.resetPasswordToken})
-							} else {
-								var currentRoute = Router.current().route.getName();
-								console.log(`Log in successful. Current route: ${currentRoute}`)
-								
-								Router.go("home");
+				let hashedPassword = Package.sha.SHA256(password)
+				Meteor.call('account/customLogin', email, hashedPassword, function(err, res) {
+						if(err) {
+							$('div #login_error').removeClass('hide');
+							$('div #login_error').html(err.reason);
+						} else {
+							$('div #login_error').addClass('hide');
+							$('div #login_error').html('');
+							if(res.status === true) {
+								if(res.loginType === 'usingDefaultPassword') {
+									Router.go('reset.password', {token: res.resetPasswordToken})
+								} else {
+									Meteor.loginWithPassword(res.userEmail, password, function(err){
+										if (!err) {
+											var currentRoute = Router.current().route.getName();
+											console.log(`Log in successful. Current route: ${currentRoute}`)
+
+											if (currentRoute == "login") {
+													Router.go("home");
+											} else {
+												console.log(`Current route is not login`)
+											}
+										}
+									});
+								}
 							}
 						}
-					}
-			 })
+				})
 		 }
 	},
 	'click #reset-password-l': function(e, tmpl) {

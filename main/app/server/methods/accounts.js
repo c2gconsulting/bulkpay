@@ -133,13 +133,20 @@ Meteor.methods({
                 let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
 
                 let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
+                let userEmail = user.emails[0].address || ''
+
 
                 if(defaultLoginResult.error) {
-                    return {status: true, loginType: 'usingRealPassword'}
+                    return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
                 } else {
                     let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
 
-                    return {status: true, loginType: 'usingDefaultPassword', resetPasswordToken: resetPasswordToken}
+                    return {
+                        status: true, 
+                        loginType: 'usingDefaultPassword', 
+                        resetPasswordToken: resetPasswordToken,
+                        userEmail: userEmail
+                    }
                 }
             }
         } else {
