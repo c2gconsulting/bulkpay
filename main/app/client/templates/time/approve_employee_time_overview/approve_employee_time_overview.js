@@ -11,21 +11,21 @@ Template.ApproveEmployeeTimeOverview.events({
     let jqueryRowElement = $(rowElement);
     let timeRecordId = jqueryRowElement.attr('id')
     // console.log(`timeRecordId: `, timeRecordId)
-    
-    let businessId = Session.get('context');
 
-    let startDate = tmpl.startDate
-    let endDate = tmpl.endDate
     let employeeId = tmpl.employeeId
 
-    // Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
-    //     if(res){
-    //         Modal.hide('ApproveTimeOverview')
-    //         swal('Success', 'Approvals were successful', 'success');
-    //     } else {
-    //         swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
-    //     }
-    // })
+    let timeRecordObj = {
+        id: timeRecordId,
+        type: 'TimeWritings'
+    }
+
+    Meteor.call('approveTimeData', timeRecordObj, function(err, res) {
+        if(res){
+            swal('Success', 'Successfully approved event', 'success');
+        } else {
+            swal('Approval Error', `error when approving time data: ${err.message}`, 'error');
+        }
+    })
   },
   'click .rejectEmployeeTimeRecord': function(e, tmpl) {
     e.preventDefault()
@@ -33,24 +33,21 @@ Template.ApproveEmployeeTimeOverview.events({
     let jqueryRowElement = $(rowElement);
     let timeRecordId = jqueryRowElement.attr('id')
     // console.log(`timeRecordId: `, timeRecordId)
-
     //--
-    let businessId = Session.get('context');
+    let timeRecordObj = {
+        id: timeRecordId,
+        type: 'TimeWritings'
+    }
 
-    let startDate = tmpl.startDate
-    let endDate = tmpl.endDate
-    let employeeId = tmpl.employeeId
-
-    // Meteor.call('rejectTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
-    //     if(res){
-    //         Modal.hide('ApproveTimeOverview')
-    //         swal('Success', 'Rejections were successful', 'success');
-    //     } else {
-    //         swal('Approval Error', `error when rejecting time-records: ${err.message}`, 'error');
-    //     }
-    // })
+    Meteor.call('rejectTimeData', timeRecordObj, function(err, res) {
+        if(res){
+            swal('Success', 'Successfully rejected time record', 'success');
+        } else {
+            swal('Approval Error', `Error when approving time record: ${err.message}`, 'error');
+        }
+    })
   },
-  'click #ApproveAll': (e, tmpl) => {ApproveAll
+  'click #ApproveAll': (e, tmpl) => {
     e.stopPropagation();
     //--
     let businessId = Session.get('context');

@@ -32,8 +32,10 @@
                                                         <td>{{getDayText day}}</td>
                                                         <td>{{duration}}</td>
                                                         <td>
+                                                            {{#if condition status "==" "Open"}}
                                                             <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecord">Approve</button>
                                                             <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecord">Reject</button>
+                                                            {{/if}}
                                                         </td>
                                                     </tr>
                                                     {{/each}}
