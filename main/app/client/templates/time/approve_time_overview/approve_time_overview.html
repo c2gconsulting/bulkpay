@@ -23,13 +23,13 @@
                                                 </thead>
                                                 <tbody>
                                                     {{#each timeRecords}}
-                                                    <tr class="pointer aTaxRuleItem" name="">
+                                                    <tr class="pointer" id="{{employeeId}}">
                                                         <td>{{empId}}</td>
                                                         <td>{{employeeFullName}}</td>
                                                         <td>{{totalHours}}</td>
                                                         <td>
-                                                            <button class="btn btn-primary mr5 ladda-button" id="confirmTaxRuleEdit">Approve</button>
-                                                            <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelTaxRuleEdit">Reject</button>
+                                                            <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecords">Approve</button>
+                                                            <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecords">Reject</button>
                                                         </td>
                                                     </tr>
                                                     {{/each}}

@@ -42,6 +42,50 @@ Template.ApproveTimeOverview.events({
             swal('Approval Error', `error when rejecting time-records: ${err.message}`, 'error');
         }
     })
+  },
+  'click .approveEmployeeTimeRecords': (e, tmpl) => {
+    const rowElement = e.currentTarget.closest('tr');
+    let jqueryRowElement = $(rowElement);
+    let employeeId = jqueryRowElement.attr('id')
+
+    e.stopPropagation();
+    //--
+    let businessId = Session.get('context');
+
+    let startDate = tmpl.startDate
+    let endDate = tmpl.endDate
+    let employeeSuperviseeIds = [employeeId]
+
+    Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
+        if(res){
+            Modal.hide('ApproveTimeOverview')
+            swal('Success', 'Approvals were successful', 'success');
+        } else {
+            swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
+        }
+    })
+  },
+  'click .rejectEmployeeTimeRecords': (e, tmpl) => {
+    const rowElement = e.currentTarget.closest('tr');
+    let jqueryRowElement = $(rowElement);
+    let employeeId = jqueryRowElement.attr('id')
+
+    e.stopPropagation();
+    //--
+    let businessId = Session.get('context');
+
+    let startDate = tmpl.startDate
+    let endDate = tmpl.endDate
+    let employeeSuperviseeIds = [employeeId]
+
+    Meteor.call('rejectTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
+        if(res){
+            Modal.hide('ApproveTimeOverview')
+            swal('Success', 'Rejections were successful', 'success');
+        } else {
+            swal('Approval Error', `error when rejecting time-records: ${err.message}`, 'error');
+        }
+    })
   }
 });
 

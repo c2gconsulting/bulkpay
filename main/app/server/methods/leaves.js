@@ -160,6 +160,32 @@ Meteor.methods({
             throw new Meteor.Error('401', 'Unauthorized');
         }
     },
+    'rejectTimeDataInPeriod': function(startDay, endDay, businessId, supervisorIds){
+        if(Core.hasTimeApprovalAccess(this.userId)){
+            let queryToFindTimeRecords = {
+                day: {$gte: startDay, $lte: endDay}, 
+                // businessId: businessId, employeeId: {$in: supervisorIds}
+                employeeId: {$in: supervisorIds}
+            }
+            let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
+            // console.log(`timeRecordsToApprove`, JSON.stringify(timeRecordsToApprove))
+            
+            if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
+                let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
+                    return aTimeRecord._id
+                })
+                // console.log(`timeRecordIds: `, timeRecordIds)
+
+                let numRecordsUpdated = TimeWritings.update({
+                    _id: {$in: timeRecordIds}
+                }, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Rejected'}},
+                {multi: true})
+            }
+            return true
+        } else {
+            throw new Meteor.Error('401', 'Unauthorized');
+        }
+    },
     'rejectTimeData': function(timeObj){
         check(timeObj, Object);
         switch (timeObj.type){
