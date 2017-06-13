@@ -5,6 +5,22 @@ import Ladda from 'ladda';
 import _ from 'underscore';
 
 Template.ApproveTimeOverview.events({
+  'click .employeeTimeRow': function(e, tmpl) {
+    const rowElement = e.currentTarget
+    let jqueryRowElement = $(rowElement);
+    let employeeId = jqueryRowElement.attr('id')
+
+    e.stopPropagation();
+
+    let startDate = tmpl.startDate
+    let endDate = tmpl.endDate
+
+    Modal.hide('ApproveTimeOverview')
+
+    setTimeout(function() {
+      Modal.show('ApproveEmployeeTimeOverview', {startDate, endDate, employeeId})
+    }, 1000)
+  },
   'click #Approve': function(e, tmpl) {
     e.preventDefault()
     // Modal.show('TaxCreate')

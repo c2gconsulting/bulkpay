@@ -1,4 +1,4 @@
-<template name="ApproveTimeOverview">
+<template name="ApproveEmployeeTimeOverview">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -15,18 +15,21 @@
                                             <table class="table table-primary mb60 table-hover" id="ruleTable">
                                                 <thead>
                                                 <tr>
-                                                    <th>Employee ID</th>
-                                                    <th>Employee</th>
-                                                    <th>Total time</th>
+                                                    <th>Cost Center</th>
+                                                    <th>Project</th>
+                                                    <th>Activity</th>
+                                                    <th>Day</th>
+                                                    <th>Duration(hours)</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                     {{#each timeRecords}}
-                                                    <tr class="pointer employeeTimeRow" id="{{employeeId}}">
-                                                        <td>{{empId}}</td>
-                                                        <td>{{employeeFullName}}</td>
-                                                        <td>{{totalHours}}</td>
+                                                    <tr class="pointer" id="{{employeeId}}">
+                                                        <td>{{costCenter}}</td>
+                                                        <td>{{project}}</td>
+                                                        <td>{{day}}</td>
+                                                        <td>{{duration}}</td>
                                                         <td>
                                                             <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecords">Approve</button>
                                                             <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecords">Reject</button>

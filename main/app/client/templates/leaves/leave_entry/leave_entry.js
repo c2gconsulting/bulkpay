@@ -55,6 +55,9 @@ Template.LeaveEntry.helpers({
     },
     'click view': () => {
 
+    },
+    'toTwoDecimalPlaces': function(theNumber) {
+        return theNumber ? theNumber.toFixed(2) : ''
     }
 });
 

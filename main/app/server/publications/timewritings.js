@@ -32,13 +32,13 @@ Core.publish("alltimedata", function (businessId) {
     }
 });
 
-Core.publish("timewritings", function (businessId, timeRecordIds) {
+Core.publish("timewritings", function (businessId, superviseeUserIds) {
     this.unblock();
     check(businessId, String);
 
     return [
-        TimeWritings.find({_id: {$in: timeRecordIds}}), 
-        // Leaves.find({employeeId: {$in: allSubs}})
+        TimeWritings.find({employeeId: {$in: superviseeUserIds}}), 
+        Leaves.find({employeeId: {$in: superviseeUserIds}})
     ];
 });
 
