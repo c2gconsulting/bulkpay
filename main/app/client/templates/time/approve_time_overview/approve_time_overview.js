@@ -58,7 +58,6 @@ Template.ApproveTimeOverview.events({
 
     Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
         if(res){
-            Modal.hide('ApproveTimeOverview')
             swal('Success', 'Approvals were successful', 'success');
         } else {
             swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
@@ -80,7 +79,6 @@ Template.ApproveTimeOverview.events({
 
     Meteor.call('rejectTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
         if(res){
-            Modal.hide('ApproveTimeOverview')
             swal('Success', 'Rejections were successful', 'success');
         } else {
             swal('Approval Error', `error when rejecting time-records: ${err.message}`, 'error');
