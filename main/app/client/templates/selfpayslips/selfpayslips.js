@@ -109,7 +109,8 @@ Template.selfpayslips.onCreated(function () {
                     benefit.push({
                         title: aPayment.description,
                         code: aPayment.code,
-                        value: aPayment.amountLC
+                        value: aPayment.amountLC,
+                        valueInForeignCurrency: aPayment.amountPC
                     })
                 }
             } else if(aPayment.type === 'Deduction') {
@@ -117,7 +118,8 @@ Template.selfpayslips.onCreated(function () {
                     deduction.push({
                         title: aPayment.description,
                         code: aPayment.code,
-                        value: aPayment.amountLC
+                        value: aPayment.amountLC,
+                        valueInForeignCurrency: aPayment.amountPC
                     })
                 // }
             } else if(aPayment.type === 'Others') {
@@ -125,7 +127,8 @@ Template.selfpayslips.onCreated(function () {
                     others.push({
                         title: aPayment.description,
                         code: aPayment.code,
-                        value: aPayment.amountLC
+                        value: aPayment.amountLC,
+                        valueInForeignCurrency: aPayment.amountPC
                     })
                 // }
             } else if(aPayment.type === 'netPayment') {

@@ -620,7 +620,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     switch (x.type) {
                                         case 'Benefit':                                            
                                             //add to payslip benefit if display in payslip
-                                            if (x.displayInPayslip && x.addToTotal) {
+                                            if (x.addToTotal) {
                                                 benefit.push({
                                                     title: x.title,
                                                     code: x.code,
@@ -628,7 +628,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                     value, 
                                                     valueInForeignCurrency
                                                 });
-                                            } else if(x.displayInPayslip && !x.addToTotal){
+                                            } else if(!x.addToTotal){
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
@@ -639,7 +639,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             }
                                             break;
                                         case 'Deduction':
-                                            if (x.displayInPayslip && x.addToTotal){
+                                            if (x.addToTotal){
                                                 deduction.push({
                                                     title: x.title,
                                                     code: x.code,
@@ -647,7 +647,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                     value,
                                                     valueInForeignCurrency
                                                 });
-                                            } else if(x.displayInPayslip && !x.addToTotal){
+                                            } else if(!x.addToTotal){
                                                 others.push({
                                                     title: x.title,
                                                     code: x.code,
