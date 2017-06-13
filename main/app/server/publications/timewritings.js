@@ -32,7 +32,7 @@ Core.publish("alltimedata", function (businessId) {
     }
 });
 
-Core.publish("timewritings", function (timeRecordIds) {
+Core.publish("timewritings", function (businessId, timeRecordIds) {
     this.unblock();
     check(businessId, String);
 

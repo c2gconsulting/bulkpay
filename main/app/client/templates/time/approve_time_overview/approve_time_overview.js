@@ -5,7 +5,44 @@ import Ladda from 'ladda';
 import _ from 'underscore';
 
 Template.ApproveTimeOverview.events({
+  'click #Approve': function(e, tmpl) {
+    e.preventDefault()
+    // Modal.show('TaxCreate')
+    //--
+    let businessId = Session.get('context');
 
+    let startDate = tmpl.startDate
+    let endDate = tmpl.endDate
+    let employeeSuperviseeIds = tmpl.employeeSuperviseeIds
+
+    Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
+        if(res){
+            Modal.hide('ApproveTimeOverview')
+            swal('Success', 'Approvals were successful', 'success');
+        } else {
+            swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
+        }
+    })
+  },
+  'click #Reject': function(e, tmpl) {
+    e.preventDefault()
+    // Modal.show('TaxCreate')
+    //--
+    let businessId = Session.get('context');
+
+    let startDate = tmpl.startDate
+    let endDate = tmpl.endDate
+    let employeeSuperviseeIds = tmpl.employeeSuperviseeIds
+
+    Meteor.call('rejectTimeDataInPeriod', startDate, endDate, businessId, employeeSuperviseeIds, function(err, res){
+        if(res){
+            Modal.hide('ApproveTimeOverview')
+            swal('Success', 'Rejections were successful', 'success');
+        } else {
+            swal('Approval Error', `error when rejecting time-records: ${err.message}`, 'error');
+        }
+    })
+  }
 });
 
 /*****************************************************************************/
@@ -23,6 +60,9 @@ Template.ApproveTimeOverview.helpers({
     },
     'employees': () => {
         return Meteor.users.find({"employee": true});
+    },
+    'timeRecords': function() {
+        return Template.instance().timeRecords.get()
     }
 });
 
@@ -36,24 +76,55 @@ Template.ApproveTimeOverview.onCreated(function () {
     self.subscribe("allEmployees", businessUnitId);
 
     self.dataContext = self.data
-    console.log(`Modal data context:`, self.data)
 
-    let startDate = self.data.startDate
-    let endDate = self.data.endDate
+    self.startDate = self.data.startDate
+    self.endDate = self.data.endDate
 
-    self.startDay = moment(startDate).format('DD/MM/YYYY');
-    self.endDay = moment(endDate).format('DD/MM/YYYY');
+    self.employeeSuperviseeIds = self.data.employeeSuperviseeIds
+
+    self.startDay = moment(self.startDate).format('DD/MM/YYYY');
+    self.endDay = moment(self.endDate).format('DD/MM/YYYY');
+
+    self.timeRecords = new ReactiveVar()
+
     //--
     self.autorun(function() {
+        self.subscribe("timewritings", businessUnitId, self.employeeSuperviseeIds)
+
         if (Template.instance().subscriptionsReady()) {
+            let queryToFindTimeRecords = {
+                day: {$gte: self.startDate, $lte: self.endDate}, 
+                // businessId: businessId, employeeId: {$in: supervisorIds}
+                employeeId: {$in: self.employeeSuperviseeIds}
+            }
+            let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
 
-            // let queryToFindTimeRecords = {
-            //     day: {$gte: startDay, $lte: endDay}, 
-            //     // businessId: businessId, employeeId: {$in: supervisorIds}
-            //     employeeId: {$in: supervisorIds}
-            // }
-            // let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-
+            if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
+                let timeRecords = []
+                _.each(timeRecordsToApprove, aTime => {
+                    let employeeFound = _.find(timeRecords, anEmployeeTime => {
+                        return anEmployeeTime.employeeId === aTime.employeeId
+                    })
+                    if(employeeFound) {
+                        employeeFound.totalHours += aTime.duration
+                    } else {
+                        let employee = Meteor.users.findOne(aTime.employeeId)
+                        let empId = ''
+                        let employeeFullName = ''
+                        if(employee) {
+                            empId = employee.employeeProfile.employeeId
+                            employeeFullName = employee.profile.fullName
+                        }
+                        timeRecords.push({
+                            empId: empId,
+                            employeeId: aTime.employeeId,
+                            employeeFullName: employeeFullName,
+                            totalHours: aTime.duration
+                        })
+                    }
+                })
+                self.timeRecords.set(timeRecords)
+            }
         }
     })
 });

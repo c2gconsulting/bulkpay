@@ -15,20 +15,24 @@
                                             <table class="table table-primary mb60 table-hover" id="ruleTable">
                                                 <thead>
                                                 <tr>
+                                                    <th>Employee ID</th>
                                                     <th>Employee</th>
                                                     <th>Total time</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                    {{#each timeRecords}}
                                                     <tr class="pointer aTaxRuleItem" name="">
-                                                        <td><a class="pointer">Efe</a></td>
-                                                        <td><a class="pointer">0</a></td>
+                                                        <td>{{empId}}</td>
+                                                        <td>{{employeeFullName}}</td>
+                                                        <td>{{totalHours}}</td>
                                                         <td>
                                                             <button class="btn btn-primary mr5 ladda-button" id="confirmTaxRuleEdit">Approve</button>
                                                             <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelTaxRuleEdit">Reject</button>
                                                         </td>
                                                     </tr>
+                                                    {{/each}}
                                                 </tbody>
                                             </table>
                                         </div><!-- table-responsive -->
@@ -38,8 +42,8 @@
                         </div><!-- row -->
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" id="TaxButton">Approve</button>
-                        <button type="reset" class="btn btn-danger" id="new-tax-close" data-dismiss="modal">Reject</button>
+                        <button class="btn btn-primary mr5" id="Approve">Approve all</button>
+                        <button type="reset" class="btn btn-danger" id="Reject" data-dismiss="modal">Reject all</button>
                         <button type="reset" class="btn btn-danger pull-right" id="deleteTax" data-dismiss="modal">Close</button>
                     </div><!-- panel-footer -->
                 </div>
