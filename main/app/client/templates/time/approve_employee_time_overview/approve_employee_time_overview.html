@@ -25,14 +25,15 @@
                                                 </thead>
                                                 <tbody>
                                                     {{#each timeRecords}}
-                                                    <tr class="pointer" id="{{employeeId}}">
-                                                        <td>{{costCenter}}</td>
-                                                        <td>{{project}}</td>
-                                                        <td>{{day}}</td>
+                                                    <tr class="pointer" id="{{_id}}"><!-- timeRecord id -->
+                                                        <td>{{getCostCenterName costCenter}}</td>
+                                                        <td>{{getProjectName project}}</td>
+                                                        <td>{{getActivityName activity}}</td>
+                                                        <td>{{getDayText day}}</td>
                                                         <td>{{duration}}</td>
                                                         <td>
-                                                            <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecords">Approve</button>
-                                                            <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecords">Reject</button>
+                                                            <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecord">Approve</button>
+                                                            <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecord">Reject</button>
                                                         </td>
                                                     </tr>
                                                     {{/each}}
@@ -45,8 +46,8 @@
                         </div><!-- row -->
                     </div>
                     <div class="panel-footer">
-                        <button class="btn btn-primary mr5" id="Approve">Approve all</button>
-                        <button type="reset" class="btn btn-danger" id="Reject" data-dismiss="modal">Reject all</button>
+                        <button class="btn btn-primary mr5" id="ApproveAll">Approve all</button>
+                        <button type="reset" class="btn btn-danger" id="RejectAll" data-dismiss="modal">Reject all</button>
                         <button type="reset" class="btn btn-danger pull-right" id="deleteTax" data-dismiss="modal">Close</button>
                     </div><!-- panel-footer -->
                 </div>
