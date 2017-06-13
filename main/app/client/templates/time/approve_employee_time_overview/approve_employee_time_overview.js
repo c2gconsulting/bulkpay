@@ -94,9 +94,14 @@ Template.registerHelper('equals',(a,b)=>{
 
 Template.ApproveEmployeeTimeOverview.helpers({
     'modalHeaderTitle': function() {
-      let startDay = Template.instance().startDay
-      let endDay = Template.instance().endDay
-      return `Approve time overview (${startDay} - ${endDay})`;
+      let employeeId = Template.instance().employeeId
+      let user = Meteor.users.findOne({_id: employeeId})
+
+      if(user) {
+        let startDay = Template.instance().startDay
+        let endDay = Template.instance().endDay
+        return `Approve time records for ${user.profile.fullName} (${startDay} - ${endDay})`;
+      }
     },
     'employees': () => {
         return Meteor.users.find({"employee": true});
@@ -106,7 +111,7 @@ Template.ApproveEmployeeTimeOverview.helpers({
     },
     'getProjectName': function(projectId) {
         if(projectId) {
-            const project = Projects.find({_id: projectId}).fetch()
+            const project = Projects.findOne({_id: projectId})
             return project ? project.name : '---'
         } else {
             return '---'
@@ -114,7 +119,7 @@ Template.ApproveEmployeeTimeOverview.helpers({
     },
     'getCostCenterName': function(costCenterId) {
         if(costCenterId) {
-            const center = EntityObjects.find({_id: costCenterId}).fetch()
+            const center = EntityObjects.findOne({_id: costCenterId})
             return center ? center.name : '---'
         } else {
             return '---'
@@ -122,7 +127,7 @@ Template.ApproveEmployeeTimeOverview.helpers({
     },
     'getActivityName': function(activityId) {
         if(activityId) {
-            let activity = Activities.find({_id: activityId}).fetch();
+            let activity = Activities.findOne({_id: activityId})
             return activity ? activity.description : '---'
         } else {
             return '---'
