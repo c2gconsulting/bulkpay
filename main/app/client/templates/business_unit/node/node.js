@@ -95,6 +95,11 @@ Template.Node.helpers({
     "images": (id) => {
         return UserImages.findOne({_id: id});
 
+    },
+    'hasPayrollAccess': function() {
+        let userId = Meteor.userId()
+
+        return Core.hasPayrollAccess(userId);
     }
 });
 
@@ -170,11 +175,15 @@ Template.MemberNode.events({
   },
   'click .selectedNodeChildUnit': (e, tmpl) => {
       e.preventDefault();
-      let selectedNodeElement = e.currentTarget;
-      let unitId = selectedNodeElement.getAttribute("name");
-      console.log(`Unit id: ${unitId}`)
+      let userId = Meteor.userId()
 
-      Modal.show('BusinessUnitActivities', unitId);
+      if(Core.hasPayrollAccess(userId)) {
+            let selectedNodeElement = e.currentTarget;
+            let unitId = selectedNodeElement.getAttribute("name");
+            console.log(`Unit id: ${unitId}`)
+
+            Modal.show('BusinessUnitActivities', unitId);
+      }
   },
   'click .selectedLeafNode': (e, tmpl) => {
       e.preventDefault();

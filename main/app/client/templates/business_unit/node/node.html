@@ -28,7 +28,9 @@
 
                             <div class="mb30"></div>
 
+                            {{#if hasPayrollAccess}}
                             <h5 class="lg-title">Decendants<a href="" class="pull-right addnode">+ Add New Member</a></h5>
+                            {{/if}}
                             <ul class="folder-list">
                                 {{#each children }}
                                     <li>
@@ -150,17 +152,21 @@
 <template name="MemberNode">
     {{#if isChildAUnit currentNodeData.otype}}
     <a class="selectedNodeChildUnit" name="{{currentNodeData._id}}" style="cursor: pointer;"><i class="fa {{icon currentNodeData.otype}}"></i> {{currentNodeData.name}}
+        {{#if hasPayrollAccess}}
         <span class="pull-right">
             <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
             <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>
         </span><!-- panel-btns -->
+        {{/if}}
     </a>
     {{else}}
     <a class="selectedLeafNode" name={{currentNodeData._id}}><i class="fa {{icon currentNodeData.otype}}"></i> {{currentNodeData.name}}
+        {{#if hasPayrollAccess}}
         <span class="pull-right">
             <i class="fa fa-edit editnode" name="{{currentNodeData._id}}"></i>
             <i class="fa fa-trash-o deletenode" name="{{currentNodeData._id}}"></i>
         </span><!-- panel-btns -->
+        {{/if}}
     </a>
     {{/if}}
 </template>
