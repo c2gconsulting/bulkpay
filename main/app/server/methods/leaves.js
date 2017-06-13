@@ -142,17 +142,30 @@ Meteor.methods({
                 employeeId: {$in: supervisorIds}
             }
             let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-            // console.log(`timeRecordsToApprove`, JSON.stringify(timeRecordsToApprove))
             
             if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
                 let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
                     return aTimeRecord._id
                 })
-                // console.log(`timeRecordIds: `, timeRecordIds)
-
                 let numRecordsUpdated = TimeWritings.update({
                     _id: {$in: timeRecordIds}
                 }, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Approved'}},
+                {multi: true})
+            }
+            //--
+            let queryToFindLeaveRecords = {
+                startDate: {$gte: startDay}, 
+                endDate: {$lte: endDay}, 
+                employeeId: {$in: supervisorIds}
+            }
+            let leavesToApprove = Leaves.find(queryToFindLeaveRecords).fetch()
+            if(leavesToApprove && leavesToApprove.length > 0) {
+                let leaveRecordIds = leavesToApprove.map(aLeaveRecord => {
+                    return aLeaveRecord._id
+                })
+                Leaves.update({
+                    _id: {$in: leaveRecordIds}
+                }, {$set: {approvedBy: this.userId, approvedDate: new Date(), approvalStatus: 'Approved'}},
                 {multi: true})
             }
             return true
@@ -167,18 +180,30 @@ Meteor.methods({
                 // businessId: businessId, employeeId: {$in: supervisorIds}
                 employeeId: {$in: supervisorIds}
             }
-            let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-            // console.log(`timeRecordsToApprove`, JSON.stringify(timeRecordsToApprove))
-            
+            let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()            
             if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
                 let timeRecordIds = timeRecordsToApprove.map(aTimeRecord => {
                     return aTimeRecord._id
                 })
-                // console.log(`timeRecordIds: `, timeRecordIds)
-
                 let numRecordsUpdated = TimeWritings.update({
                     _id: {$in: timeRecordIds}
                 }, {$set: {approvedBy: this.userId, approvedDate: new Date(), status: 'Rejected'}},
+                {multi: true})
+            }
+            //--
+            let queryToFindLeaveRecords = {
+                startDate: {$gte: startDay}, 
+                endDate: {$lte: endDay}, 
+                employeeId: {$in: supervisorIds}
+            }
+            let leavesToApprove = Leaves.find(queryToFindLeaveRecords).fetch()
+            if(leavesToApprove && leavesToApprove.length > 0) {
+                let leaveRecordIds = leavesToApprove.map(aLeaveRecord => {
+                    return aLeaveRecord._id
+                })
+                Leaves.update({
+                    _id: {$in: leaveRecordIds}
+                }, {$set: {approvedBy: this.userId, approvedDate: new Date(), approvalStatus: 'Rejected'}},
                 {multi: true})
             }
             return true
