@@ -100,7 +100,7 @@ Template.ApproveEmployeeTimeOverview.helpers({
       if(user) {
         let startDay = Template.instance().startDay
         let endDay = Template.instance().endDay
-        return `Approve time records for ${user.profile.fullName} (${startDay} - ${endDay})`;
+        return `Approvals for ${user.profile.fullName} (${startDay} - ${endDay})`;
       }
     },
     'employees': () => {
@@ -108,6 +108,9 @@ Template.ApproveEmployeeTimeOverview.helpers({
     },
     'timeRecords': function() {
         return Template.instance().timeRecords.get()
+    },
+    'leaveRecords': function() {
+        return Template.instance().leaveRecords.get()
     },
     'getProjectName': function(projectId) {
         if(projectId) {
@@ -133,10 +136,20 @@ Template.ApproveEmployeeTimeOverview.helpers({
             return '---'
         }
     },
+    'getLeaveTypeName': (leaveTypeId) => {
+        let leave = LeaveTypes.findOne({_id: leaveTypeId});
+        if(leave)
+            return leave.name;
+        else 
+            return '---'
+    },
     'getDayText': function(date) {
         let dateMoment = moment(date).format('DD/MM/YYYY')
 
         return dateMoment
+    },
+    'toTwoDecimalPlaces': function(theNumber) {
+        return theNumber.toFixed(2)
     }
 });
 
@@ -160,6 +173,7 @@ Template.ApproveEmployeeTimeOverview.onCreated(function () {
     self.endDay = moment(self.endDate).format('DD/MM/YYYY');
 
     self.timeRecords = new ReactiveVar()
+    self.leaveRecords = new ReactiveVar()
 
     //--
     self.autorun(function() {
@@ -177,6 +191,13 @@ Template.ApproveEmployeeTimeOverview.onCreated(function () {
             }
             let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
             self.timeRecords.set(timeRecordsToApprove)
+            //--
+            let leavesToApprove = Leaves.find({
+                startDate: {$gte: self.startDate}, 
+                endDate: {$lte: self.endDate}, 
+                employeeId: {$in: [self.employeeId]}
+            }).fetch()
+            self.leaveRecords.set(leavesToApprove)
         }
     })
 });

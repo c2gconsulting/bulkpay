@@ -18,23 +18,45 @@
                                                     <th>Cost Center</th>
                                                     <th>Project</th>
                                                     <th>Activity</th>
-                                                    <th>Day</th>
+                                                    <th>Leave Type</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
                                                     <th>Duration(hours)</th>
                                                     <th></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                     {{#each timeRecords}}
-                                                    <tr class="pointer" id="{{_id}}"><!-- timeRecord id -->
+                                                    <tr class="pointer" id="{{_id}}" title="Time record"><!-- timeRecord id -->
                                                         <td>{{getCostCenterName costCenter}}</td>
                                                         <td>{{getProjectName project}}</td>
                                                         <td>{{getActivityName activity}}</td>
+                                                        <td>---</td>
                                                         <td>{{getDayText day}}</td>
+                                                        <td>---</td>
                                                         <td>{{duration}}</td>
                                                         <td>
                                                             {{#if condition status "==" "Open"}}
                                                             <button class="btn btn-primary mr5 ladda-button approveEmployeeTimeRecord">Approve</button>
                                                             <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeTimeRecord">Reject</button>
+                                                            {{/if}}
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+
+                                                    {{#each leaveRecords}}
+                                                    <tr class="pointer" id="{{_id}}" title="Leave record">
+                                                        <td>---</td>
+                                                        <td>---</td>
+                                                        <td>---</td>
+                                                        <td>{{getLeaveTypeName type}}</td>
+                                                        <td>{{getDayText startDate}}</td>
+                                                        <td>{{getDayText endDate}}</td>
+                                                        <td>{{toTwoDecimalPlaces durationInHours}}</td>
+                                                        <td>
+                                                            {{#if condition approvalStatus "==" "Open"}}
+                                                            <button class="btn btn-primary mr5 ladda-button approveEmployeeLeaveRecord">Approve</button>
+                                                            <button type="reset" class="btn btn-danger mr5 ladda-button rejectEmployeeLeaveRecord">Reject</button>
                                                             {{/if}}
                                                         </td>
                                                     </tr>

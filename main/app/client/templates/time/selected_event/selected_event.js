@@ -132,6 +132,9 @@ Template.selectedEvent.helpers({
             if (status === 'Open') return 'btn-warning';
             if (status === 'Approved') return 'btn-success';
             if (status === 'Rejected') return 'btn-danger';
+    },
+    'toTwoDecimalPlaces': function(theNumber) {
+        return theNumber.toFixed(2)
     }
 });
 

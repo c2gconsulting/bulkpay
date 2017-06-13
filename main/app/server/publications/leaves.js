@@ -31,8 +31,6 @@ Core.publish("employeeLeaveTypes", function (bid) {
         if(found.employee){
             let positions = found.employeeProfile.employment.position;
             let paygrade = found.employeeProfile.employment.paygrade;
-            console.log(positions);
-            console.log(paygrade);
             //return leavetypes of user in either positions or paygrades
             return LeaveTypes.find({$or: [{positionIds: positions}, {payGradeIds: paygrade}]})
         }
@@ -48,7 +46,6 @@ Core.publish("employeeLeaves", function (bid, limit, sort) {
             if(x.type && x.type !== undefined)
                 return x.type;
         }));
-        console.log(leaves);
         return [cursor, LeaveTypes.find({_id: {$in: leaves}})];
     }
     return this.ready();
@@ -56,7 +53,6 @@ Core.publish("employeeLeaves", function (bid, limit, sort) {
 
 Core.publish("employeeLeavesNoPagination", function (bid) {
     let user = this.userId;
-    console.log(`user`, user)
     
     if(bid && user){
         let cursor = Leaves.find({businessId: bid, employeeId: user});

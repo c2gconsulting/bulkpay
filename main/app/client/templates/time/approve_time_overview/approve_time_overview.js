@@ -150,15 +150,15 @@ Template.ApproveTimeOverview.onCreated(function () {
         self.subscribe("timewritings", businessUnitId, self.employeeSuperviseeIds)
 
         if (Template.instance().subscriptionsReady()) {
+            let timeRecords = []
+
             let queryToFindTimeRecords = {
                 day: {$gte: self.startDate, $lte: self.endDate}, 
                 // businessId: businessId, employeeId: {$in: supervisorIds}
                 employeeId: {$in: self.employeeSuperviseeIds}
             }
             let timeRecordsToApprove = TimeWritings.find(queryToFindTimeRecords).fetch()
-
             if(timeRecordsToApprove && timeRecordsToApprove.length > 0) {
-                let timeRecords = []
                 _.each(timeRecordsToApprove, aTime => {
                     let employeeFound = _.find(timeRecords, anEmployeeTime => {
                         return anEmployeeTime.employeeId === aTime.employeeId
@@ -181,8 +181,40 @@ Template.ApproveTimeOverview.onCreated(function () {
                         })
                     }
                 })
-                self.timeRecords.set(timeRecords)
             }
+            //--
+            let leavesToApprove = Leaves.find({
+                startDate: {$gte: self.startDate}, 
+                endDate: {$lte: self.endDate}, 
+                employeeId: {$in: self.employeeSuperviseeIds}
+            }).fetch()
+            console.log(`leavesToApprove: `, leavesToApprove)
+
+            if(leavesToApprove && leavesToApprove.length > 0) {
+                _.each(leavesToApprove, aLeave => {
+                    let employeeFound = _.find(timeRecords, anEmployeeTime => {
+                        return anEmployeeTime.employeeId === aLeave.employeeId
+                    })
+                    if(employeeFound) {
+                        employeeFound.totalHours += aLeave.durationInHours
+                    } else {
+                        let employee = Meteor.users.findOne(aLeave.employeeId)
+                        let empId = ''
+                        let employeeFullName = ''
+                        if(employee) {
+                            empId = employee.employeeProfile.employeeId
+                            employeeFullName = employee.profile.fullName
+                        }
+                        timeRecords.push({
+                            empId: empId,
+                            employeeId: aLeave.employeeId,
+                            employeeFullName: employeeFullName,
+                            totalHours: aLeave.durationInHours
+                        })
+                    }
+                })
+            }
+            self.timeRecords.set(timeRecords)
         }
     })
 });

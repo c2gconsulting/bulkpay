@@ -36,8 +36,13 @@
                     </address>
 
                     <address>
-                        <strong>Duration : </strong><br>
-                        <a href="#">{{duration}} Day(s)</a>
+                        <strong>Duration Days(s): </strong><br>
+                        <a href="#">{{toTwoDecimalPlaces duration}}</a>
+                    </address>
+
+                    <address>
+                        <strong>Duration Hour(s): </strong><br>
+                        <a href="#">{{durationInHours}}</a>
                     </address>
 
                     {{#if canApproveLeave employeeId approvalStatus}}
@@ -70,8 +75,8 @@
                     </address>
 
                     <address>
-                        <strong>Duration : </strong><br>
-                        <a href="#">{{duration}} Hour(s)</a>
+                        <strong>Duration Hour(s): </strong><br>
+                        <a href="#">{{toTwoDecimalPlaces duration}}</a>
                     </address>
 
                     {{#if canApproveTime employeeId status}}
