@@ -32,6 +32,16 @@ Core.publish("alltimedata", function (businessId) {
     }
 });
 
+Core.publish("timewritings", function (timeRecordIds) {
+    this.unblock();
+    check(businessId, String);
+
+    return [
+        TimeWritings.find({_id: {$in: timeRecordIds}}), 
+        // Leaves.find({employeeId: {$in: allSubs}})
+    ];
+});
+
 Core.publish("timesForDay", function (businessId, dayAsDate) {
     this.unblock();
     check(businessId, String);

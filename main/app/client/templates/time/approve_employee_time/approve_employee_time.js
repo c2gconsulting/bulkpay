@@ -229,37 +229,48 @@ Template.ApproveEmployeeTime.onRendered(function () {
             let weekDaysAsDateObjs = self.getWeekDaysFromFullCalender(startDate, endDate)
             startDate = weekDaysAsDateObjs[0]
             endDate = weekDaysAsDateObjs[weekDaysAsDateObjs.length - 1]
-            swal({
-                title: "Are you sure?",
-                text: "This will approve all time-records in the selected period. This action cannot be reversed!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Yes, Approve!",
-                cancelButtonText: "No, cancel",
-                closeOnConfirm: false,
-                closeOnCancel: false
-            },
-            function(isConfirm) {
-                if (isConfirm) {
-                    let businessId = Session.get('context')
-                    let startDateMoment = moment(startDate)
-                    startDate = startDateMoment.startOf('day').toDate()
 
-                    let endDateMoment = moment(endDate)
-                    endDate = endDateMoment.endOf('day').toDate()
+            let startDateMoment = moment(startDate)
+            startDate = startDateMoment.startOf('day').toDate()
+
+            let endDateMoment = moment(endDate)
+            endDate = endDateMoment.endOf('day').toDate()
+
+            let employeeSuperviseeIds = self.getSupervisees()
+
+            Modal.show('ApproveTimeOverview', {startDate, endDate, employeeSuperviseeIds})
+
+            // swal({
+            //     title: "Are you sure?",
+            //     text: "This will approve all time-records in the selected period. This action cannot be reversed!",
+            //     type: "warning",
+            //     showCancelButton: true,
+            //     confirmButtonColor: "#DD6B55",
+            //     confirmButtonText: "Yes, Approve!",
+            //     cancelButtonText: "No, cancel",
+            //     closeOnConfirm: false,
+            //     closeOnCancel: false
+            // },
+            // function(isConfirm) {
+            //     if (isConfirm) {
+            //         let businessId = Session.get('context')
+            //         let startDateMoment = moment(startDate)
+            //         startDate = startDateMoment.startOf('day').toDate()
+
+            //         let endDateMoment = moment(endDate)
+            //         endDate = endDateMoment.endOf('day').toDate()
                     
-                    Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, self.getSupervisees(), function(err, res){
-                        if(res){
-                            swal('Success', 'Approvals were uccessful', 'success');
-                        } else {
-                            swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
-                        }
-                    })
-                } else {
-                    swal("Cancelled", "Approval action cancelled!", "error");
-                }
-            });
+            //         Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, self.getSupervisees(), function(err, res){
+            //             if(res){
+            //                 swal('Success', 'Approvals were uccessful', 'success');
+            //             } else {
+            //                 swal('Approval Error', `error when approving time-records: ${err.message}`, 'error');
+            //             }
+            //         })
+            //     } else {
+            //         swal("Cancelled", "Approval action cancelled!", "error");
+            //     }
+            // });
         }
     }
 });
