@@ -47,6 +47,48 @@ Template.ApproveEmployeeTimeOverview.events({
         }
     })
   },
+  'click .approveEmployeeLeaveRecord': function(e, tmpl) {
+    e.preventDefault()
+    const rowElement = e.currentTarget.closest('tr');
+    let jqueryRowElement = $(rowElement);
+    let timeRecordId = jqueryRowElement.attr('id')
+    // console.log(`timeRecordId: `, timeRecordId)
+
+    let employeeId = tmpl.employeeId
+
+    let timeRecordObj = {
+        id: timeRecordId,
+        type: 'Leaves'
+    }
+
+    Meteor.call('approveTimeData', timeRecordObj, function(err, res) {
+        if(res){
+            swal('Success', 'Successfully approved leave record', 'success');
+        } else {
+            swal('Approval Error', `error when approving leave record: ${err.message}`, 'error');
+        }
+    })
+  },
+  'click .rejectEmployeeLeaveRecord': function(e, tmpl) {
+    e.preventDefault()
+    const rowElement = e.currentTarget.closest('tr');
+    let jqueryRowElement = $(rowElement);
+    let timeRecordId = jqueryRowElement.attr('id')
+    // console.log(`timeRecordId: `, timeRecordId)
+    //--
+    let timeRecordObj = {
+        id: timeRecordId,
+        type: 'Leaves'
+    }
+
+    Meteor.call('rejectTimeData', timeRecordObj, function(err, res) {
+        if(res){
+            swal('Success', 'Successfully rejected leave record', 'success');
+        } else {
+            swal('Approval Error', `Error when rejecting leave record: ${err.message}`, 'error');
+        }
+    })
+  },
   'click #ApproveAll': (e, tmpl) => {
     e.stopPropagation();
     //--
