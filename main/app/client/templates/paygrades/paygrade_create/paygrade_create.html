@@ -234,20 +234,45 @@
 
                                     <div class="tab-pane" id="new-tab3-2">
                                         <div class="form-group">
+                                            <h5 class="lg-title">This section, you determine what is shown/displayed in the payslip for this Payment Grade</h5><br/>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="paySlipPaytypes">
+                                                    <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {{#each assigned}}
+                                                        <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                            <td><input type="text" class="text-center" style="width: 30px" value="{{@index}}"></td>
+                                                            <td><input type="checkbox" id="{{@index}}" class="payslip" checked="{{displayInSlip _id}}" ></td>
+                                                            <td><label for="{{@index}}">{{code}} - {{title}}</label></td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!--<div class="form-group">
                                             <div class="row">
                                                 <p>This section, you determine what is shown/displayed in the payslip for this Payment Grade</p>
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-12" id="paySlipPaytypes">
                                                     {{#each assigned }}
-                                                        <li class="list-group-item">
+                                                        <li class="list-group-item item">
                                                             <div class="ckbox ckbox-default">
                                                                 <input type="checkbox" id="{{@index}}" class="payslip" checked="{{displayInSlip _id}}" >
                                                                 <label for="{{@index}}">{{code}} - {{title}}</label>
+                                                                <input type="text" id="{{@index}}" maxlength="4">
                                                             </div>
                                                         </li>
                                                     {{/each}}
                                                 </div>
                                             </div>
-                                        </div><!-- form-group -->
+                                        </div>-->
                                     </div><!-- tab-pane -->
 
                                 </div><!-- tab-content -->

@@ -22,9 +22,21 @@ Template.PaygradeCreate.events({
             let paytypes =  [];
             let assigned = Template.instance().dict.get('assigned');
             //return relevant fields
-            assigned.forEach(x => {
+            
+            assigned.forEach((x, payTypeIndex) => {
                 let payment = {};
-                payment.paytype = x._id; payment.value = x.value; payment.displayInPayslip = x.displayInPayslip;
+                payment.paytype = x._id;
+                payment.value = x.value;
+                payment.displayInPayslip = x.displayInPayslip;
+
+                let payTypePositionId = $('#paySlipPaytypes > tbody > tr').eq(payTypeIndex).find('td').eq(0).find('input').eq(0).val()
+                let payTypePositionIdAsNum = parseInt(payTypePositionId)
+
+                if(!isNaN(payTypePositionIdAsNum)) {
+                    payment.paySlipPositionId = payTypePositionIdAsNum
+                } else {
+                    payment.paySlipPositionId = payTypeIndex
+                }
                 paytypes.push(payment);
             });
             return paytypes;
@@ -318,6 +330,31 @@ Template.PaygradeCreate.onRendered(function () {
             _super($item, container);
         }
     });
+
+    // //--Make paytypes in payslip sortable
+    // $('#paySlipPaytypes').sortable({
+    //     containerSelector: 'table',
+    //     itemPath: '> tbody',
+    //     itemSelector: 'tr',
+    //     placeholder: '<tr class="placeholder"/>',
+    //     onDragStart: function ($item, container, _super) {
+    //         oldIndex = $item.index();
+    //         //$item.appendTo($item.parent());
+    //         _super($item, container);
+    //     },
+    //     onDrop: function($item, container, _super) {
+    //         newIndex = $item.index() ;//.attr('id'));
+    //         //get assigned
+    //         let assigned = self.dict.get('assigned');
+    //         let aPaytype = assigned[oldIndex]
+    //         // aPaytype.paySlipPositionIndex = newIndex
+    //         // assigned.move(oldIndex, newIndex);
+    //         self.dict.set('assigned', assigned);
+
+    //         _super($item, container);
+    //     }
+    // });
+
     $('select.dropdown').dropdown();
 });
 
