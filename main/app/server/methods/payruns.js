@@ -769,6 +769,8 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     const employee = getDetailsInPayslip(x);
                     final.payslip.employee = employee;
                     final.payslip.employee.grade = grade.code;
+                    final.payslip.employee.gradeId = grade._id;
+                    final.payslip.period = period
 
                     //payement will also be sent to result for factoring and storage;
                     payresult.push(final);

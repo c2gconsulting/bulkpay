@@ -116,6 +116,36 @@
                             </table>
                         </div><!-- table-responsive -->
 
+                        {{#if getNetPayAlternateCurrency}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Totals</th>
+                                    <th>Local Currency(NGN)</th>
+                                    <th>{{getNetPayAlternateCurrency}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Total Payments:</td>
+                                        <td>{{formatMoneyD totalPayment}}</td>
+                                        <td>{{formatMoneyD (division totalPayment getNetPayAlternateCurrencyRateToBase)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Deductions:</td>
+                                        <td>{{formatMoneyD totalDeduction}}</td>
+                                        <td>{{formatMoneyD (division totalDeduction getNetPayAlternateCurrencyRateToBase)}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Payment Amount:</td>
+                                        <td>{{formatMoneyD netPayment}}</td>
+                                        <td>{{formatMoneyD (division netPayment getNetPayAlternateCurrencyRateToBase)}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {{else}}
                         <table class="table table-total">
                             <tbody>
                             <tr>
@@ -132,6 +162,7 @@
                             </tr>
                             </tbody>
                         </table>
+                        {{/if}}
 
                         <div class="text-right btn-invoice">
                             <button class="btn btn-white btn-lg"><i class="fa fa-print mr5"></i> Print Slip</button>

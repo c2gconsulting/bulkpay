@@ -23,7 +23,48 @@ Template.Payslip.helpers({
     },
     'currency': () => {
         return Core.getTenantBaseCurrency().iso;
+    },
+    'getNetPayAlternateCurrency': function() {
+        let self = Template.instance()
 
+        if(self.data && self.data.employee && self.data.employee.gradeId) {
+            let employeePayGradeId = self.data.employee.gradeId
+            let payGrade = PayGrades.findOne(employeePayGradeId)
+
+            if(payGrade) {
+                let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+                return netPayAlternativeCurrency
+            }
+        }
+    },
+    'getNetPayAlternateCurrencyRateToBase': function() {
+        let self = Template.instance()
+        let period = self.data.period
+        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        
+        let employeePayGradeId = Template.instance().data.employee.gradeId
+        let payGrade = PayGrades.findOne(employeePayGradeId)
+
+        if(payGrade) {
+            let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+
+            let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: netPayAlternativeCurrency})
+
+            if(currencyInPeriod) {
+                let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                return rateToBaseCurrency
+            }
+        }
+    },
+    multiply: function(a, b) {
+        return a * b
+    },
+    division: function(numerator, denominator) {
+        if(denominator > 0) {
+            return (numerator / denominator).toFixed(2)
+        } else {
+            return '---'
+        }
     }
 });
 
@@ -44,6 +85,11 @@ Template.Payslip.onCreated(function () {
     let businessUnitId = Session.get('context')
 
     let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+    self.subscribe("paygrades", Session.get('context'));
+    console.log(`payments: `, self.data)
+
+    let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+    self.subscribe('currenciesForPeriod', formattedPeriod);
 
     let months = {
         '01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May',
@@ -59,8 +105,6 @@ Template.Payslip.onCreated(function () {
     self.autorun(function(){
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-            //console.log(`Business unit: ${JSON.stringify(businessUnit)}`)
-
             self.businessUnitName.set(businessUnit.name)
         }
     })
