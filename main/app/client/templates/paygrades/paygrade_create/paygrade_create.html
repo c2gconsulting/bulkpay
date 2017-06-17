@@ -256,13 +256,13 @@
                                                 </table>
 
                                                 <div class="row">
-                                                    <div class="col-sm-6">
+                                                    <div class="col-sm-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">Net pay alternate Currency <span class="asterisk important-input">*</span></label>
+                                                            <label class="control-label">Net pay alternate currency</label>
                                                             <select name="currencyCode" class="form-control dropdown" style="width: 100%">
                                                                 <option value="">None</option>
                                                                 {{#each allCurrencies}}
-                                                                    <option value="{{this}}">{{this}}</option>
+                                                                    <option value="{{this}}" {{selectedNetPayAlternateCurrency this}}>{{this}}</option>
                                                                 {{/each}}
                                                             </select>
                                                         </div>

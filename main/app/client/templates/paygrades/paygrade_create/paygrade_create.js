@@ -171,6 +171,15 @@ Template.PaygradeCreate.helpers({
             return "selected"
         }
     },
+    selectedNetPayAlternateCurrency: function(currency) {
+        if(Template.instance().data) {
+            if(Template.instance().data.netPayAlternativeCurrency) {
+                if(currency === Template.instance().data.netPayAlternativeCurrency) {
+                    return "selected"
+                }
+            }
+        }
+    },
     'checked': (id) => {
         if(Template.instance().data){
            let index =  _.findLastIndex(Template.instance().data.payTypes, {paytype: id});
@@ -287,8 +296,10 @@ Template.PaygradeCreate.onCreated(function () {
 Template.PaygradeCreate.onRendered(function () {
     var self = this;
     var oldIndex, newIndex;
+    
     // fix a little rendering bug by clicking on step 1
     $('#step1').click();
+
     $('#progress-wizard-new').bootstrapWizard({
         onTabShow: function (tab, navigation, index) {
             tab.prevAll().addClass('done');
@@ -312,8 +323,6 @@ Template.PaygradeCreate.onRendered(function () {
         onTabClick: function (tab, navigation, index) {
             return true;
         }
-
-
     });
     //initialize rule table
     $('#derivativeTable').sortable({
