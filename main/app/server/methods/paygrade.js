@@ -43,7 +43,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        let result = PayGrades.update(selector, {$set: details} );
+        let result = PayGrades.update(selector, {$set: details});
 
         //--We need to update employee paytypes in case new paytypes were added to the paygrade
         let paygradePaytypes = details.payTypes
@@ -52,7 +52,6 @@ Meteor.methods({
         //console.log(`numberOfEmployeesWithPayGrade: ${numberOfEmployeesWithPayGrade}`)
 
         employeesWithPayGrade.forEach(anEmployee => {
-            console.log(`employee id: ${anEmployee._id}`)
             let employeePaytypes = anEmployee.employeeProfile.employment.paytypes
             if(employeePaytypes) {
                 let newPayTypesToInsert = []
@@ -74,7 +73,6 @@ Meteor.methods({
                         newPayTypesToInsert.push(employeePayTypeWithVal);
                     }
                 })
-                console.log(`newPayTypesToInsert: ${newPayTypesToInsert.length}`)
                 if(newPayTypesToInsert.length > 0) {
                     result = Meteor.users.update(anEmployee._id,
                         { $set: { 'employeeProfile.employment.paytypes': newPayTypesToInsert }}

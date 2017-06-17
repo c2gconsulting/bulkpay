@@ -254,6 +254,20 @@
                                                     {{/each}}
                                                     </tbody>
                                                 </table>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Net pay alternate Currency <span class="asterisk important-input">*</span></label>
+                                                            <select name="currencyCode" class="form-control dropdown" style="width: 100%">
+                                                                <option value="">None</option>
+                                                                {{#each allCurrencies}}
+                                                                    <option value="{{this}}">{{this}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 

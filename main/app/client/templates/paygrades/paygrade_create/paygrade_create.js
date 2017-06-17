@@ -16,8 +16,11 @@ Template.PaygradeCreate.events({
             payGroups: Core.returnSelection($('[name="paygroups"]')),
             status: $('[name="status"]').val(),
             payTypes: getPaytypes()
-
         };
+
+        let currencyCode = $('[name="currencyCode"]').val()
+        details['netPayAlternativeCurrency'] = currencyCode
+
         function getPaytypes(){
             let paytypes =  [];
             let assigned = Template.instance().dict.get('assigned');
@@ -192,8 +195,10 @@ Template.PaygradeCreate.helpers({
         } else {
             return 'New Pay Grade'
         }
+    },
+    'allCurrencies': () => {
+        return Core.currencies();
     }
-
 });
 
 /*****************************************************************************/

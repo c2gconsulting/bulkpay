@@ -30,7 +30,10 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: [Object],
         blackbox: true
     },
-
+    netPayAlternativeCurrency: {
+        type: String,
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
