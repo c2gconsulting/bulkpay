@@ -7,32 +7,90 @@ let ReportUtils = {}
 ReportUtils.getPayTypeHeaders = function(employeePayments) {
     let payTypeHeaders = ['Employee']
 
+    let payGrade =  null
+    let firstUserId = employeePayments[0].employeeId
+    let firstUser = Meteor.users.findOne(firstUserId)
+    if(firstUser) {
+        let payGradeId = firstUser.employeeProfile.employment.paygrade
+        if(payGradeId) {
+            payGrade = PayGrades.findOne(payGradeId)
+        }
+    }
+
+    let numberOfPayments = employeePayments[0].payment.length
+
+    let headerColumnSlots = _.range(numberOfPayments - 3).map(x => {
+        return {}
+    })
+    let numPaytypesBeforeSuppl = payTypeHeaders.length - 1  // Employee
+
+    payTypeHeaders.push(...headerColumnSlots)
+    let supplementaryPayTypeHeaders = [
+    // {
+    //     id: 'STATPEN_EE',
+    //     code: 'STATPEN_EE',
+    //     description: 'STATUTORY PENSION CONTRIBUTION Employee'
+    // },
+    // {
+    //     id: 'STATPEN_ER',
+    //     code: 'STATPEN_ER',
+    //     description: 'STATUTORY PENSION CONTRIBUTION Employer'
+    // },
+    {
+        id: 'totalDeduction',
+        code: 'totalDeduction',
+        description: 'Total Deduction'
+    },
+    {
+        id: 'netPay',
+        code: 'netPay',
+        description: 'Net Pay'
+    }]
+    payTypeHeaders.push(...supplementaryPayTypeHeaders)
+    //--
+
     employeePayments.forEach(anEmployeeData => {
-        anEmployeeData.payment.forEach(anEmployeePayType => {
+        anEmployeeData.payment.forEach((anEmployeePayType, empPayTypeIndex) => {
             if(anEmployeePayType.id) {
                 let doesPayTypeHeaderExist = _.find(payTypeHeaders, function(aPayType) {
                     return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
                 })
                 if(!doesPayTypeHeaderExist) {
-                    payTypeHeaders.push({
-                        id: anEmployeePayType.id,
-                        code: anEmployeePayType.code,
-                        description: anEmployeePayType.description
-                    })
+                    if(payGrade) {
+                        let payGradePaytypeDetails = _.find(payGrade.payTypes, function(payGradePaytype) {
+                            return payGradePaytype.paytype === anEmployeePayType.id
+                        })
+                        if(payGradePaytypeDetails) {// Adding '1' cos of the first 'Employee' column
+                            if(payGradePaytypeDetails.hasOwnProperty("paySlipPositionId")) {
+                                payTypeHeaders[payGradePaytypeDetails.paySlipPositionId + 1] = {
+                                    id: anEmployeePayType.id,
+                                    code: anEmployeePayType.code,
+                                    description: anEmployeePayType.description
+                                }
+                            } else {
+                                console.log(`paySlipPositionId is NULL`)
+                                console.log(`payGradePaytypeDetails: `, payGradePaytypeDetails)
+                            }
+                        } else {
+                            // console.log(`payGradePaytypeDetails: Pension_EE or Pension_ER`)
+                            // console.log(`anEmployeePayType not in paygrade: `, anEmployeePayType)
+                            payTypeHeaders.splice(numPaytypesBeforeSuppl + empPayTypeIndex, 0, {
+                                id: anEmployeePayType.id,
+                                code: anEmployeePayType.code,
+                                description: anEmployeePayType.description
+                            })
+                        }
+                    }
+                    // payTypeHeaders.push({
+                    //     id: anEmployeePayType.id,
+                    //     code: anEmployeePayType.code,
+                    //     description: anEmployeePayType.description
+                    // })
                 }
             }
         })
     })
-    payTypeHeaders.push({
-        id: 'totalDeduction',
-        code: 'totalDeduction',
-        description: 'Total Deduction'
-    })
-    payTypeHeaders.push({
-        id: 'netPay',
-        code: 'netPay',
-        description: 'Net Pay'
-    })
+
     return {payTypeHeaders}
 }
 
@@ -98,7 +156,7 @@ Template.PayrunNew.events({
             $("input:checkbox[name=selectAnnual]:checked").each(function () {
                 selected.push($(this).attr("id"));
             });
-            console.log(selected);
+            // console.log(selected);
             return selected;
         };
         var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
@@ -170,6 +228,8 @@ Template.PayrunNew.events({
     'click #export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
+            // console.log(`payResult: `, payResult)
+
             let payTypeHeaders = ReportUtils.getPayTypeHeaders(payResult.payObj.payrun) 
 
             let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {

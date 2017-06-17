@@ -26,7 +26,9 @@ Core.Schemas.PayGrade = new SimpleSchema({
         defaultValue: "Active",
         allowedValues: ["Active", "Inactive"]
     },
-    payTypes: {// One of the keys in the object: payTypePositionId
+    payTypes: {
+        // One of the keys in the object: payTypePositionId. 
+        // When payrun is immediately exported to CSV, it specifies the order of the paytypes
         type: [Object],
         blackbox: true
     },
