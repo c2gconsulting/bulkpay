@@ -57,20 +57,45 @@ Template.EmployeeEditEmploymentPayrollModal.events({
   'click #saveEmployeeNetPayAllocation': (e, tmpl) => {
     let user = Template.instance().getEditUser();
 
-    Meteor.call('account/netPayAllocation', user._id, true, "USD", 1000, (err, res) => {
-        if (res){
-            swal({
-                title: "Success",
-                text: `Employee Net Pay Allocation details saved`,
-                confirmButtonClass: "btn-success",
-                type: "success",
-                confirmButtonText: "OK"
-            });
-            Modal.hide('EmployeeEditEmploymentPayrollModal');
-        } else {
-            console.log(err);
-        }
-    });
+    let hasNetPayAllocation = $('[name="hasNetPayAllocation"]').val() ? $('[name="hasNetPayAllocation"]').val() : null;
+    let foreignCurrencyCode = $('[name="foreignCurrencyCode"]').val() ? $('[name="foreignCurrencyCode"]').val() : null;
+    let foreignCurrencyAmount = $('[name="foreignCurrencyAmount"]').val() ? $('[name="foreignCurrencyAmount"]').val() : null;
+
+    if(!hasNetPayAllocation || hasNetPayAllocation.trim().length === 0) {
+        swal('Validation error', 'Please set if this employee has net pay allocation in foreign currency', 'error')
+        return
+    }
+    if(!foreignCurrencyCode || foreignCurrencyCode.trim().length === 0) {
+        swal('Validation error', 'Please choose the currency for net pay allocation', 'error')
+        return
+    }
+
+    if(!foreignCurrencyAmount || foreignCurrencyAmount.trim().length === 0) {
+        swal('Validation error', 'Please specify the amount for net pay allocation', 'error')
+        return
+    }
+    //--
+    try {
+        let hasNetPayAllocationAsBoolean = (hasNetPayAllocation === "true")
+        let amountAsNumber = parseFloat(foreignCurrencyAmount)
+
+        Meteor.call('account/netPayAllocation', user._id, hasNetPayAllocationAsBoolean, foreignCurrencyCode, amountAsNumber, (err, res) => {
+            if (res){
+                swal({
+                    title: "Success",
+                    text: `Employee Net Pay Allocation details saved`,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+                Modal.hide('EmployeeEditEmploymentPayrollModal');
+            } else {
+                console.log(err);
+            }
+        });
+    } catch(e) {
+        swal('Validation error', 'Amount specified is not a number', 'error')
+    }
   },
   'change [name=employmentPosition]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
