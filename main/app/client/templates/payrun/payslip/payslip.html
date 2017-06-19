@@ -164,6 +164,28 @@
                         </table>
                         {{/if}}
 
+
+                        {{#with netPayCurrencyAllocation}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Net Pay Currency Allocation</th>
+                                    <th>NGN</th>
+                                    <th>{{foreignCurrency}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Net Pay</td>
+                                        <td>{{formatMoneyD (getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists ../netPayment)}}</td>
+                                        <td>{{formatMoneyD (getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists ../netPayment)}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/with}}
+
                         <div class="text-right btn-invoice">
                             <button class="btn btn-white btn-lg"><i class="fa fa-print mr5"></i> Print Slip</button>
                         </div>

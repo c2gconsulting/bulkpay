@@ -56,6 +56,76 @@ Template.Payslip.helpers({
             }
         }
     },
+    netPayCurrencyAllocation: function() {
+        let self = Template.instance()
+        let employeeUserId = self.data.employee.employeeUserId
+        let user = Meteor.users.findOne(employeeUserId)
+
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
+                return netPayAllocation
+            }
+        }
+    },
+    getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists: function(netPaymentInBaseCurrency) {
+        let self = Template.instance()
+        let employeeUserId = self.data.employee.employeeUserId
+
+        let period = self.data.period
+        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        
+        let user = Meteor.users.findOne(employeeUserId)
+
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
+                let foreignCurrency = netPayAllocation.foreignCurrency
+
+                let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
+                if(currencyInPeriod) {
+                    let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                    let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                    
+                    let netPayinLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                    if(netPayinLocalCurrency < 0) {
+                        return (netPaymentInBaseCurrency / rateToBaseCurrency)
+                    } else {
+                        return netPayAllocation.foreignCurrencyAmount
+                    }
+                }
+            }
+        }
+    },
+    getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists: function(netPaymentInBaseCurrency) {
+        let self = Template.instance()
+        let employeeUserId = self.data.employee.employeeUserId
+
+        let period = self.data.period
+        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        
+        let user = Meteor.users.findOne(employeeUserId)
+
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
+                let foreignCurrency = netPayAllocation.foreignCurrency
+
+                let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
+                if(currencyInPeriod) {
+                    let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                    let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                    
+                    let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                    if(netPayRemainderInLocalCurrency < 0) {
+                        return '---'
+                    } else {
+                        return netPayRemainderInLocalCurrency
+                    }
+                }
+            }
+        }
+    },
     multiply: function(a, b) {
         return a * b
     },
@@ -86,7 +156,7 @@ Template.Payslip.onCreated(function () {
 
     let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
     self.subscribe("paygrades", Session.get('context'));
-    console.log(`payments: `, self.data)
+    // console.log(`payments: `, self.data)
 
     let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
     self.subscribe('currenciesForPeriod', formattedPeriod);

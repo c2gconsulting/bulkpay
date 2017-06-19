@@ -1072,6 +1072,7 @@ return {} object containing employee details to be displayed on payslip
  */
 function getDetailsInPayslip(employee){
     let details = {};
+    details.employeeUserId = employee._id;
     details.employeeId = employee.employeeProfile.employeeId;
     details.fullname = employee.profile.fullName;
     details.accountNumber = employee.employeeProfile.payment.accountNumber || "";
