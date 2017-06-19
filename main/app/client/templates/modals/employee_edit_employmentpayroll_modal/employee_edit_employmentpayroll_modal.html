@@ -170,8 +170,8 @@
                                           <div class="col-sm-4">
                                               <select name="hasNetPayAllocation" style="width: 100%" class="form-control dropdown">
                                                     <option value="">Nothing selected</option>
-                                                    <option value="false">No</option>
-                                                    <option value="true">Yes</option>
+                                                    <option value="false" {{hasNetPayAllocation}}>No</option>
+                                                    <option value="true" {{hasNetPayAllocation}}>Yes</option>
                                               </select>
                                           </div>
                                       </div>
@@ -182,7 +182,7 @@
                                                 <select name="foreignCurrencyCode" class="form-control dropdown" style="width: 100%">
                                                     <option value="">None</option>
                                                     {{#each allCurrencies}}
-                                                        <option value="{{this}}">{{this}}</option>
+                                                        <option value="{{this}}" {{hasNetPayAllocationCurrency this}}>{{this}}</option>
                                                     {{/each}}
                                                 </select>
                                             </div>
@@ -191,7 +191,7 @@
                                     <div class="form-group">
                                         <label class="col-sm-4 control-label">Foreign currency amount</label>
                                         <div class="col-sm-4">
-                                            <input name="foreignCurrencyAmount" type="text" class="form-control" value="" />
+                                            <input name="foreignCurrencyAmount" type="text" class="form-control" value="{{hasNetPayAllocationAmount}}" />
                                         </div>
                                     </div>
                                   </form>

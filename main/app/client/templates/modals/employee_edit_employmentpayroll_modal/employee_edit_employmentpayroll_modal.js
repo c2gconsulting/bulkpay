@@ -234,7 +234,40 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
   },
   'allCurrencies': () => {
       return Core.currencies();
-  }
+  },
+    selectedNetPayAllocation: function(currency) {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            return user.employeeProfile.employment.netPayAllocation
+        }
+    },
+    hasNetPayAllocation: function() {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation) {
+                return (netPayAllocation.hasNetPayAllocation === true) ? "selected" : ''   
+            }
+        }
+    },
+    hasNetPayAllocationCurrency: function(currency) {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation) {
+                return (netPayAllocation.foreignCurrency === currency) ? "selected" : ''   
+            }
+        }
+    },
+    hasNetPayAllocationAmount: function() {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation) {
+                return (netPayAllocation.foreignCurrencyAmount) || ''
+            }
+        }
+    }
 });
 
 /*****************************************************************************/
