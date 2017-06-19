@@ -197,7 +197,50 @@ _.extend(Core, {
 
   startWebHooksJobs: function () {
     return webHookJobs.startJobServer();
-  }
+  },
+  getStatsForUsersStillWithDefaultPassword: function() {
+      let allDaarUsers = Meteor.users.find({businessIds: 'tgC7zYJf9ceSBmoT9'}).fetch()
+      console.log(`Num allDaarUsers: `, allDaarUsers.length)
+      
+      let numDaarUsersWithRealPassword = 0
+      let numDaarUsersWithDefaultPassword = 0
+      let daarUsersWithRealPassword = []
+      let daarUsersWithDefaultPassword = []
+
+      for (let aDaarUser of allDaarUsers) {
+          let hashedDefaultPassword = Package.sha.SHA256("123456") 
+          let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+
+          let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
+
+          let firstName = aDaarUser.profile.firstname
+          let lastName = aDaarUser.profile.lastname
+          let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+
+          if(defaultLoginResult.error) {
+              daarUsersWithRealPassword.push({
+                  firstName : firstName,
+                  lastName: lastName,
+                  email: email
+              })
+              numDaarUsersWithRealPassword += 1
+          } else {
+              daarUsersWithDefaultPassword.push({
+                  firstName : firstName,
+                  lastName: lastName,
+                  email: email
+              })
+              numDaarUsersWithDefaultPassword += 1
+          }
+      }
+      //--
+      console.log(`daarUsersWithRealPassword: \n${JSON.stringify(daarUsersWithRealPassword)}\n`)
+      console.log(`daarUsersWithDefaultPassword: \n${JSON.stringify(daarUsersWithDefaultPassword)}\n\n`)
+      //--
+      console.log(`numDaarUsersWithRealPassword: ${numDaarUsersWithRealPassword}\n`)
+      console.log(`numDaarUsersWithDefaultPassword: ${numDaarUsersWithDefaultPassword}\n`)
+      console.log(`All done!`)
+  } 
 
   /*,
   configureMailUrl: function (user, password, host, port) {
@@ -247,5 +290,6 @@ Meteor.startup(function () {
   Core.initSettings();
   Core.initAccount();
   Core.init();
-  Core.startWebHooksJobs()
+  Core.startWebHooksJobs();
+  Core.getStatsForUsersStillWithDefaultPassword()
 });
