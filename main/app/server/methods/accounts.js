@@ -292,6 +292,36 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    "account/netPayAllocation": function (userId, hasNetPayAllocation, foreignCurrency, foreignCurrencyAmount) {
+        check(userId, String);
+        
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+        let account =  Meteor.users.findOne(userId);
+        if (account) {
+            let updateObj = null
+            if(hasNetPayAllocation === true) {
+                updateObj = {
+                    hasNetPayAllocation : hasNetPayAllocation,
+                    foreignCurrency: foreignCurrency,
+                    foreignCurrencyAmount: foreignCurrencyAmount
+                }
+            } else {
+                updateObj = {
+                    hasNetPayAllocation: false,
+                    foreignCurrency: null,
+                    foreignCurrencyAmount: null
+                }
+            }
+            Meteor.users.update({_id: account._id}, {$set: {
+              "employeeProfile.employment.netPayAllocation": updateObj
+            }});
+            return true
+        } else {
+            throw new Meteor.Error(404, "Account Not found");
+        }
+    },
 
     "account/updatePaymentData": function (user, userId) {
         check(user, Object);

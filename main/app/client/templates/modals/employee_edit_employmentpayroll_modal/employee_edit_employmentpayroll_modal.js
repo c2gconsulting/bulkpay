@@ -54,6 +54,24 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         }
     });
   },
+  'click #saveEmployeeNetPayAllocation': (e, tmpl) => {
+    let user = Template.instance().getEditUser();
+
+    Meteor.call('account/netPayAllocation', user._id, true, "USD", 1000, (err, res) => {
+        if (res){
+            swal({
+                title: "Success",
+                text: `Employee Net Pay Allocation details saved`,
+                confirmButtonClass: "btn-success",
+                type: "success",
+                confirmButtonText: "OK"
+            });
+            Modal.hide('EmployeeEditEmploymentPayrollModal');
+        } else {
+            console.log(err);
+        }
+    });
+  },
   'change [name=employmentPosition]': function (e, tmpl) {
     let user = Template.instance().getEditUser();
     let value = e.currentTarget.value;
@@ -188,6 +206,9 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       if(paytype){
           return paytype.editablePerEmployee? '':'disabled';
       }
+  },
+  'allCurrencies': () => {
+      return Core.currencies();
   }
 });
 

@@ -8,6 +8,7 @@
                   <ul class="nav nav-tabs nav-line">
                       <li class="active"><a href=".employment" data-toggle="tab"><strong>Employment Details</strong></a></li>
                       <li><a href=".payroll" data-toggle="tab"><strong>Payroll details</strong></a></li>
+                      <li><a href=".netPayAllocation" data-toggle="tab"><strong>Net Pay Allocation</strong></a></li>
                   </ul>
                 </div>
                 <div class="panel-body">
@@ -158,6 +159,43 @@
                             </div>
                         </div><!-- panel -->
                     </div><!-- tab-pane -->
+
+                    <div class="tab-pane netPayAllocation" id="netPayAllocation">
+                        <div class="panel">
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
+                                <form class="form-horizontal form-bordered">
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label">Has Net Pay Allocation</label>
+                                          <div class="col-sm-4">
+                                              <select name="hasNetPayAllocation" style="width: 100%" class="form-control dropdown">
+                                                    <option value="">Nothing selected</option>
+                                                    <option value="false">No</option>
+                                                    <option value="true">Yes</option>
+                                              </select>
+                                          </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                          <label class="col-sm-4 control-label">Foreign currency</label>
+                                            <div class="col-sm-4">
+                                                <select name="foreignCurrencyCode" class="form-control dropdown" style="width: 100%">
+                                                    <option value="">None</option>
+                                                    {{#each allCurrencies}}
+                                                        <option value="{{this}}">{{this}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                      </div>
+                                  </form>
+                            </div><!-- panel-body -->
+
+                            <div class="panel-footer">
+                                <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                <button class="btn btn-primary mr5 ladda-button" id="saveEmployeeNetPayAllocation">Save</button>
+                            </div>
+                        </div><!-- panel -->
+                    </div>
                   </div>
 
                 </div>
