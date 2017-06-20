@@ -292,7 +292,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
-    "account/netPayAllocation": function (userId, hasNetPayAllocation, foreignCurrency, foreignCurrencyAmount) {
+    "account/netPayAllocation": function (userId, hasNetPayAllocation, foreignCurrency, rateToBaseCurrency, foreignCurrencyAmount) {
         check(userId, String);
         
         if (!Meteor.userId()){
@@ -305,6 +305,7 @@ Meteor.methods({
                 updateObj = {
                     hasNetPayAllocation : hasNetPayAllocation,
                     foreignCurrency: foreignCurrency,
+                    rateToBaseCurrency: rateToBaseCurrency,
                     foreignCurrencyAmount: foreignCurrencyAmount
                 }
             } else {

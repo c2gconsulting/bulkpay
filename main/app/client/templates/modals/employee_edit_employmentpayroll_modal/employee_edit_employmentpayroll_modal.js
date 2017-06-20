@@ -59,14 +59,19 @@ Template.EmployeeEditEmploymentPayrollModal.events({
 
     let hasNetPayAllocation = $('[name="hasNetPayAllocation"]').val() ? $('[name="hasNetPayAllocation"]').val() : null;
     let foreignCurrencyCode = $('[name="foreignCurrencyCode"]').val() ? $('[name="foreignCurrencyCode"]').val() : null;
+    let rateToBaseCurrency = $('[name="rateToBaseCurrency"]').val() ? $('[name="rateToBaseCurrency"]').val() : null;
     let foreignCurrencyAmount = $('[name="foreignCurrencyAmount"]').val() ? $('[name="foreignCurrencyAmount"]').val() : null;
 
     if(!hasNetPayAllocation || hasNetPayAllocation.trim().length === 0) {
-        swal('Validation error', 'Please set if this employee has net pay allocation in foreign currency', 'error')
+        swal('Validation error', 'Please set if this employee has net pay currency allocation', 'error')
         return
     }
     if(!foreignCurrencyCode || foreignCurrencyCode.trim().length === 0) {
-        swal('Validation error', 'Please choose the currency for net pay allocation', 'error')
+        swal('Validation error', 'Please choose the currency', 'error')
+        return
+    }
+    if(!rateToBaseCurrency || rateToBaseCurrency.trim().length === 0) {
+        swal('Validation error', 'Please specify the currency exchange rate', 'error')
         return
     }
 
@@ -79,7 +84,8 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         let hasNetPayAllocationAsBoolean = (hasNetPayAllocation === "true")
         let amountAsNumber = parseFloat(foreignCurrencyAmount)
 
-        Meteor.call('account/netPayAllocation', user._id, hasNetPayAllocationAsBoolean, foreignCurrencyCode, amountAsNumber, (err, res) => {
+        Meteor.call('account/netPayAllocation', user._id, hasNetPayAllocationAsBoolean, 
+            foreignCurrencyCode, rateToBaseCurrency, amountAsNumber, (err, res) => {
             if (res){
                 swal({
                     title: "Success",
@@ -235,6 +241,10 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
   'allCurrencies': () => {
       return Core.currencies();
   },
+
+    'baseCurrency': function() {
+        return Core.getTenantBaseCurrency().iso;
+    },
     selectedNetPayAllocation: function(currency) {
         let user = Template.instance().getEditUser();
         if(user) {
@@ -256,6 +266,15 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
             let netPayAllocation = user.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
                 return (netPayAllocation.foreignCurrency === currency) ? "selected" : ''   
+            }
+        }
+    },
+    netPayAllocationRateToBaseCurrency: function() {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation) {
+                return (netPayAllocation.rateToBaseCurrency) || ''
             }
         }
     },
