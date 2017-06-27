@@ -81,10 +81,8 @@ Template.Payslip.helpers({
             let netPayAllocation = user.employeeProfile.employment.netPayAllocation
             if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
                 let foreignCurrency = netPayAllocation.foreignCurrency
-
-                let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
-                if(currencyInPeriod) {
-                    let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                let rateToBaseCurrency = netPayAllocation.rateToBaseCurrency
+                if(rateToBaseCurrency) {
                     let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
                     
                     let netPayinLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
@@ -94,6 +92,19 @@ Template.Payslip.helpers({
                         return netPayAllocation.foreignCurrencyAmount
                     }
                 }
+
+                // let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
+                // if(currencyInPeriod) {
+                //     let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                //     let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                    
+                //     let netPayinLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                //     if(netPayinLocalCurrency < 0) {
+                //         return (netPaymentInBaseCurrency / rateToBaseCurrency)
+                //     } else {
+                //         return netPayAllocation.foreignCurrencyAmount
+                //     }
+                // }
             }
         }
     },
@@ -110,10 +121,9 @@ Template.Payslip.helpers({
             let netPayAllocation = user.employeeProfile.employment.netPayAllocation
             if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
                 let foreignCurrency = netPayAllocation.foreignCurrency
+                let rateToBaseCurrency = netPayAllocation.rateToBaseCurrency
 
-                let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
-                if(currencyInPeriod) {
-                    let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                if(rateToBaseCurrency) {
                     let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
                     
                     let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
@@ -123,6 +133,18 @@ Template.Payslip.helpers({
                         return netPayRemainderInLocalCurrency
                     }
                 }
+                // let currencyInPeriod = Currencies.findOne({period: formattedPeriod, code: foreignCurrency})
+                // if(currencyInPeriod) {
+                //     let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+                //     let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                    
+                //     let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                //     if(netPayRemainderInLocalCurrency < 0) {
+                //         return '---'
+                //     } else {
+                //         return netPayRemainderInLocalCurrency
+                //     }
+                // }
             }
         }
     },

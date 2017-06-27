@@ -15,7 +15,8 @@ Template.PaygradeCreate.events({
             positions: Core.returnSelection($('[name="positions"]')),
             payGroups: Core.returnSelection($('[name="paygroups"]')),
             status: $('[name="status"]').val(),
-            payTypes: getPaytypes()
+            payTypes: getPaytypes(),
+            payTypePositionIds: payTypesPositionOnPayrunExport()
         };
 
         let currencyCode = $('[name="currencyCode"]').val()
@@ -32,18 +33,36 @@ Template.PaygradeCreate.events({
                 payment.value = x.value;
                 payment.displayInPayslip = x.displayInPayslip;
 
-                let payTypePositionId = $('#paySlipPaytypes > tbody > tr').eq(payTypeIndex).find('td').eq(0).find('input').eq(0).val()
-                let payTypePositionIdAsNum = parseInt(payTypePositionId)
+                // let payTypePositionId = $('#paySlipPaytypes > tbody > tr').eq(payTypeIndex).find('td').eq(0).find('input').eq(0).val()
+                // let payTypePositionIdAsNum = parseInt(payTypePositionId)
 
-                if(!isNaN(payTypePositionIdAsNum)) {
-                    payment.paySlipPositionId = payTypePositionIdAsNum
-                } else {
-                    payment.paySlipPositionId = payTypeIndex
-                }
+                // if(!isNaN(payTypePositionIdAsNum)) {
+                //     payment.paySlipPositionId = payTypePositionIdAsNum
+                // } else {
+                //     payment.paySlipPositionId = payTypeIndex
+                // }
                 paytypes.push(payment);
             });
             return paytypes;
         };
+
+        function payTypesPositionOnPayrunExport() {
+            let paytypes =  [];
+            let payTypesPositionOnPayrunExport = Template.instance().payTypesPositionOnPayrunExport.get()
+
+            payTypesPositionOnPayrunExport.forEach((x, payTypeIndex) => {
+                let payment = {};
+                payment.paytype = x._id;
+                payment.value = x.value;
+                payment.displayInPayslip = x.displayInPayslip;
+
+                payment.paySlipPositionId = payTypeIndex
+
+                paytypes.push(payment);
+            });
+            return paytypes;
+        };
+        
         if(tmpl.data){//edit action for updating tax
             const pygId = tmpl.data._id;
             const code = tmpl.data.code;
@@ -151,6 +170,9 @@ Template.PaygradeCreate.helpers({
     'assigned': () => {
         return Template.instance().dict.get('assigned');
     },
+    'payTypesWithPositionOnPayrunExport': () => {
+        return Template.instance().payTypesPositionOnPayrunExport.get()
+    },
     'fixed': (derivative) => {
         return derivative == "Fixed";
     },
@@ -217,14 +239,21 @@ Template.PaygradeCreate.onCreated(function () {
     let self = this;
     let context = Session.get('context');
     self.dict = new ReactiveDict();
+    self.payTypesPositionOnPayrunExport = new ReactiveVar()
+    self.payTypesPositionOnPayrunExport.set([])
+
     self.subscribe("PayTypes", context);
     self.subscribe("taxes", context);
     self.subscribe("pensions", context);
     self.subscribe("getPositions", context);
     self.subscribe("payGroups", context);
     self.subscribe("getbuconstants", context);
+    self.subscribe("paygrades", context);
 
-    if(self.data){
+    let selectedPayGradeIdForEdit = Session.get('selectedPayGradeForEdit')
+    self.currentPayGrade = new ReactiveVar()
+
+    if(self.data) {
         //populate and map paytypes
         self.autorun(function(){
             if (Template.instance().subscriptionsReady()){
@@ -236,7 +265,23 @@ Template.PaygradeCreate.onCreated(function () {
                     return x;
                 });
                 self.dict.set("assigned", self.data.payTypes); //set assigned to be data
-                console.log(self.data.payTypes);
+                // console.log(self.data.payTypes);
+                //--
+                if(selectedPayGradeIdForEdit) {
+                    let currentPayGrade = PayGrades.findOne(selectedPayGradeIdForEdit)
+                    self.currentPayGrade.set(currentPayGrade);
+
+                    if(currentPayGrade) {
+                        currentPayGrade.payTypePositionIds.forEach(x=>{
+                            let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+                            if(ptype) {
+                                delete ptype.paytype;
+                                _.extend(x, ptype);
+                            }
+                        });
+                        self.payTypesPositionOnPayrunExport.set(currentPayGrade.payTypePositionIds)
+                    }
+                }
             }
         });
     } else {
@@ -286,11 +331,7 @@ Template.PaygradeCreate.onCreated(function () {
             });
             self.dict.set('assigned', assigned);
         }
-
     });
-
-
-
 });
 
 Template.PaygradeCreate.onRendered(function () {
@@ -341,33 +382,35 @@ Template.PaygradeCreate.onRendered(function () {
             let assigned = self.dict.get('assigned');
             assigned.move(oldIndex, newIndex);
             self.dict.set('assigned', assigned);
+            //--
             _super($item, container);
         }
     });
 
-    // //--Make paytypes in payslip sortable
-    // $('#paySlipPaytypes').sortable({
-    //     containerSelector: 'table',
-    //     itemPath: '> tbody',
-    //     itemSelector: 'tr',
-    //     placeholder: '<tr class="placeholder"/>',
-    //     onDragStart: function ($item, container, _super) {
-    //         oldIndex = $item.index();
-    //         //$item.appendTo($item.parent());
-    //         _super($item, container);
-    //     },
-    //     onDrop: function($item, container, _super) {
-    //         newIndex = $item.index() ;//.attr('id'));
-    //         //get assigned
-    //         let assigned = self.dict.get('assigned');
-    //         let aPaytype = assigned[oldIndex]
-    //         // aPaytype.paySlipPositionIndex = newIndex
-    //         // assigned.move(oldIndex, newIndex);
-    //         self.dict.set('assigned', assigned);
+    //--Make paytypes in payslip sortable
+    $('#paySlipPaytypes').sortable({
+        containerSelector: 'table',
+        itemPath: '> tbody',
+        itemSelector: 'tr',
+        placeholder: '<tr class="placeholder"/>',
+        onDragStart: function ($item, container, _super) {
+            oldIndex = $item.index();
+            //$item.appendTo($item.parent());
+            _super($item, container);
+        },
+        onDrop: function($item, container, _super) {
+            newIndex = $item.index() ;
+            //--
+            let payTypesPositionOnPayrunExport = self.payTypesPositionOnPayrunExport.get()
+            let aPaytype = payTypesPositionOnPayrunExport[oldIndex]
+            aPaytype.paySlipPositionIndex = newIndex
+            payTypesPositionOnPayrunExport.move(oldIndex, newIndex);
 
-    //         _super($item, container);
-    //     }
-    // });
+            self.payTypesPositionOnPayrunExport.set(payTypesPositionOnPayrunExport)
+            //--
+            _super($item, container);
+        }
+    });
 
     $('select.dropdown').dropdown();
 });

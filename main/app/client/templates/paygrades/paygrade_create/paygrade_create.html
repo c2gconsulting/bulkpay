@@ -245,9 +245,8 @@
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                    {{#each assigned}}
+                                                    {{#each payTypesWithPositionOnPayrunExport}}
                                                         <tr class="item" style="cursor: move;" id="{{_id}}">
-                                                            <td><input type="text" class="text-center" style="width: 30px" value="{{paySlipPositionId}}"></td>
                                                             <td><input type="checkbox" id="{{@index}}" class="payslip" checked="{{displayInSlip _id}}" ></td>
                                                             <td><label for="{{@index}}">{{code}} - {{title}}</label></td>
                                                         </tr>

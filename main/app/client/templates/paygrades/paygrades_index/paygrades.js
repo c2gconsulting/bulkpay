@@ -42,6 +42,10 @@ Template.Paygrades.helpers({
 
 Template.Paygrades.events({
     'click .pointer': function(e, tmpl){
+        let element = e.currentTarget
+        let payGradeId = $(element).attr('data-payGradeId')
+        Session.set('selectedPayGradeForEdit', payGradeId)
+
         Modal.show('PaygradeCreate', this.data);
     }
 });
