@@ -30,7 +30,9 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         numberOfPayments = employeePayments[0].payment.length
     }
  
-    let headerColumnSlots = _.range(numberOfPayments - 3).map(x => {
+    // 5 === 1 for employee column PLUS 2 for deductions and net pay
+    // PLUS 3 for pension employee and pension employer
+    let headerColumnSlots = _.range(numberOfPayments - 5).map(x => {
         return {}
     })
     let numPaytypesBeforeSuppl = payTypeHeaders.length - 1  // Employee
@@ -80,18 +82,23 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                                     code: anEmployeePayType.code,
                                     description: anEmployeePayType.description
                                 }
-                            } else {
-                                console.log(`paySlipPositionId is NULL`)
-                                console.log(`payGradePaytypeDetails: `, payGradePaytypeDetails)
                             }
                         } else {
                             // console.log(`payGradePaytypeDetails: Pension_EE or Pension_ER`)
                             // console.log(`anEmployeePayType not in paygrade: `, anEmployeePayType)
-                            payTypeHeaders.splice(numPaytypesBeforeSuppl + empPayTypeIndex, 0, {
-                                id: anEmployeePayType.id,
-                                code: anEmployeePayType.code,
-                                description: anEmployeePayType.description
-                            })
+                            if(anEmployeePayType.id === 'STATPEN_EE' || anEmployeePayType.id === 'STATPEN_ER') {
+                                payTypeHeaders.splice(numPaytypesBeforeSuppl, 0, {
+                                    id: anEmployeePayType.id,
+                                    code: anEmployeePayType.code,
+                                    description: anEmployeePayType.description
+                                })
+                            } else {
+                                payTypeHeaders.splice(numPaytypesBeforeSuppl + empPayTypeIndex, 0, {
+                                    id: anEmployeePayType.id,
+                                    code: anEmployeePayType.code,
+                                    description: anEmployeePayType.description
+                                })
+                            }
                         }
                     }
                     // payTypeHeaders.push({
