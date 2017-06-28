@@ -83,26 +83,28 @@ Router.route('/getStats', function() {
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         // console.log(`Looping: `, userIndex)
-        let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
+        if(userIndex < allDaarUsers.length - 2) {
+            let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
 
-        let firstName = aDaarUser.profile.firstname
-        let lastName = aDaarUser.profile.lastname
-        let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+            let firstName = aDaarUser.profile.firstname
+            let lastName = aDaarUser.profile.lastname
+            let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
 
-        if(defaultLoginResult.error) {
-            daarUsersWithRealPassword.push({
-                firstName : firstName,
-                lastName: lastName,
-                email: email
-            })
-            numDaarUsersWithRealPassword += 1           
-        } else {
-            daarUsersWithDefaultPassword.push({
-                firstName : firstName,
-                lastName: lastName,
-                email: email
-            })
-            numDaarUsersWithDefaultPassword += 1
+            if(defaultLoginResult.error) {
+                daarUsersWithRealPassword.push({
+                    firstName : firstName,
+                    lastName: lastName,
+                    email: email
+                })
+                numDaarUsersWithRealPassword += 1           
+            } else {
+                daarUsersWithDefaultPassword.push({
+                    firstName : firstName,
+                    lastName: lastName,
+                    email: email
+                })
+                numDaarUsersWithDefaultPassword += 1
+            }
         }
     })
     //--
