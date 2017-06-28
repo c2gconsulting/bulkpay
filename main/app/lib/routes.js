@@ -83,7 +83,7 @@ Router.route('/getStats', function() {
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         // console.log(`Looping: `, userIndex)
-        if(userIndex < allDaarUsers.length - 2) {
+        if(userIndex < 1055) {
             let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
 
             let firstName = aDaarUser.profile.firstname
