@@ -82,7 +82,7 @@ Router.route('/getStats', function() {
     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
-        console.log(`Looping: `, userIndex)
+        // console.log(`Looping: `, userIndex)
         let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
 
         let firstName = aDaarUser.profile.firstname
