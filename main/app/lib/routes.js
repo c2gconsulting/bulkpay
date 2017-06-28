@@ -68,6 +68,58 @@ Router.route('/', {
 //     this.response.end()
 // }, {where: 'server'});
 
+Router.route('/getStats', function() {
+    console.log('routes.js file ... inside getStats')
+    let allDaarUsers = Meteor.users.find({businessIds: 'tgC7zYJf9ceSBmoT9'}).fetch()
+    console.log(`Num allDaarUsers: `, allDaarUsers.length)
+    
+    let numDaarUsersWithRealPassword = 0
+    let numDaarUsersWithDefaultPassword = 0
+    let daarUsersWithRealPassword = []
+    let daarUsersWithDefaultPassword = []
+
+    let hashedDefaultPassword = Package.sha.SHA256("123456") 
+    let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+
+    allDaarUsers.forEach((aDaarUser, userIndex) => {
+        console.log(`Looping: `, userIndex)
+        let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
+
+        let firstName = aDaarUser.profile.firstname
+        let lastName = aDaarUser.profile.lastname
+        let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+
+        if(defaultLoginResult.error) {
+            daarUsersWithRealPassword.push({
+                firstName : firstName,
+                lastName: lastName,
+                email: email
+            })
+            numDaarUsersWithRealPassword += 1           
+        } else {
+            daarUsersWithDefaultPassword.push({
+                firstName : firstName,
+                lastName: lastName,
+                email: email
+            })
+            numDaarUsersWithDefaultPassword += 1
+        }
+    })
+    //--
+    console.log(`daarUsersWithRealPassword: \n${JSON.stringify(daarUsersWithRealPassword)}\n`)
+    console.log(`daarUsersWithDefaultPassword: \n${JSON.stringify(daarUsersWithDefaultPassword)}\n\n`)
+    //--
+    console.log(`numDaarUsersWithRealPassword: ${numDaarUsersWithRealPassword}\n`)
+    console.log(`numDaarUsersWithDefaultPassword: ${numDaarUsersWithDefaultPassword}\n`)
+    console.log(`All done!`)
+
+    // var theResponse = {daarUsersWithRealPassword, daarUsersWithDefaultPassword, numDaarUsersWithRealPassword, numDaarUsersWithDefaultPassword}
+    // this.response.write(JSON.stringify(theResponse))
+
+    // this.response.write({daarUsersWithRealPassword, daarUsersWithDefaultPassword, numDaarUsersWithRealPassword, numDaarUsersWithDefaultPassword})
+    this.response.end()
+}, {where: 'server'});
+
 /*
  Router.route('/login', {
  name: 'login',

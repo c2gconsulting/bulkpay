@@ -94,5 +94,4 @@ Auth.loginWithPassword = function(user, password) {
             }
         }
     });
-
 }

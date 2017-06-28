@@ -291,5 +291,5 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs();
-  Core.getStatsForUsersStillWithDefaultPassword()
+  // Core.getStatsForUsersStillWithDefaultPassword()
 });
