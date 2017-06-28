@@ -7,7 +7,7 @@ let ReportUtils = {}
 
 
 ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
-    let payTypeHeaders = ['Employee'] 
+    let payTypeHeaders = ['EMP ID', 'Employee'] 
  
     let payGrade =  null
     let firstUserId = employeePayments[0].employeeId
@@ -19,6 +19,10 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         }
     }
  
+     let numPaytypesBeforeSuppl = 0
+    // Supplementary payments are payments like netpay, 
+    // pension employee contrib and pension employer contrib
+
     let numberOfPayments = 0
     if(payGrade) {
         if(payGrade.payTypePositionIds && payGrade.payTypePositionIds.length > 0) {
@@ -26,8 +30,10 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         } else {
             numberOfPayments = employeePayments[0].payment.length
         }
+        numPaytypesBeforeSuppl = numberOfPayments
     } else {
         numberOfPayments = employeePayments[0].payment.length
+        numPaytypesBeforeSuppl = payTypeHeaders.length - 2  // EMP ID, Employee
     }
  
     // 5 === 1 for employee column PLUS 2 for deductions and net pay
@@ -35,22 +41,9 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
     let headerColumnSlots = _.range(numberOfPayments - 5).map(x => {
         return {}
     })
-    let numPaytypesBeforeSuppl = payTypeHeaders.length - 1  // Employee
-    // Supplementary payments are payments like netpay, 
-    // pension employee contrib and pension employer contrib
  
     payTypeHeaders.push(...headerColumnSlots)
     let supplementaryPayTypeHeaders = [
-    // {
-    //     id: 'STATPEN_EE',
-    //     code: 'STATPEN_EE',
-    //     description: 'STATUTORY PENSION CONTRIBUTION Employee'
-    // },
-    // {
-    //     id: 'STATPEN_ER',
-    //     code: 'STATPEN_ER',
-    //     description: 'STATUTORY PENSION CONTRIBUTION Employer'
-    // },
     {
         id: 'totalDeduction',
         code: 'totalDeduction',
@@ -75,37 +68,22 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                         let payGradePaytypeDetails = _.find(payGrade.payTypePositionIds, function(payGradePaytype) {
                             return payGradePaytype.paytype === anEmployeePayType.id
                         })
-                        if(payGradePaytypeDetails) {// Adding '1' cos of the first 'Employee' column
+                        if(payGradePaytypeDetails) {// Adding '1' cos of the first 'EMP ID' and 'Employee' columns
                             if(payGradePaytypeDetails.hasOwnProperty("paySlipPositionId")) {
-                                payTypeHeaders[payGradePaytypeDetails.paySlipPositionId + 1] = {
+                                payTypeHeaders[payGradePaytypeDetails.paySlipPositionId + 2] = {
                                     id: anEmployeePayType.id,
                                     code: anEmployeePayType.code,
                                     description: anEmployeePayType.description
                                 }
                             }
                         } else {
-                            // console.log(`payGradePaytypeDetails: Pension_EE or Pension_ER`)
-                            // console.log(`anEmployeePayType not in paygrade: `, anEmployeePayType)
-                            if(anEmployeePayType.id === 'STATPEN_EE' || anEmployeePayType.id === 'STATPEN_ER') {
-                                payTypeHeaders.splice(numPaytypesBeforeSuppl, 0, {
-                                    id: anEmployeePayType.id,
-                                    code: anEmployeePayType.code,
-                                    description: anEmployeePayType.description
-                                })
-                            } else {
-                                payTypeHeaders.splice(numPaytypesBeforeSuppl + empPayTypeIndex, 0, {
-                                    id: anEmployeePayType.id,
-                                    code: anEmployeePayType.code,
-                                    description: anEmployeePayType.description
-                                })
-                            }
+                            payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
+                                id: anEmployeePayType.id,
+                                code: anEmployeePayType.code,
+                                description: anEmployeePayType.description
+                            })
                         }
                     }
-                    // payTypeHeaders.push({
-                    //     id: anEmployeePayType.id,
-                    //     code: anEmployeePayType.code,
-                    //     description: anEmployeePayType.description
-                    // })
                 }
             }
         })
@@ -153,6 +131,11 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
         let aRowOfPayTypeValues = []
 
         payTypeHeaders.forEach(aPaytypeHeader => {
+            if(aPaytypeHeader === 'EMP ID') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+                aRowOfPayTypeValues.push(employee.employeeProfile.employeeId)
+                return
+            }
             if(aPaytypeHeader === 'Employee') {
                 let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
                 aRowOfPayTypeValues.push(employee.profile.fullName)
