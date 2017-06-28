@@ -147,6 +147,9 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
             })
             if(payDetails) {
                 let payAmount = payDetails.amountLC
+                if(payDetails.amountLC != payDetails.amountPC) {
+                    payAmount = payDetails.amountPC
+                }
                 if(payDetails.type === 'Deduction') {
                     if(payAmount > 0) {
                         payAmount *= -1
@@ -154,18 +157,27 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                 }
                 aRowOfPayTypeValues.push(payAmount)
             } else if(aPaytypeHeader.id === 'netPay') {
+
                 let netPay = _.find(anEmployeeData.payment, function(aPayType) {
                     return (aPayType.code === 'NMP')
                 })
                 if(netPay) {
-                    aRowOfPayTypeValues.push(netPay.amountLC)
+                    let payAmount = netPay.amountLC
+                    if(netPay.amountLC != netPay.amountPC) {
+                        payAmount = netPay.amountPC
+                    }
+                    aRowOfPayTypeValues.push(payAmount)
                 }
             } else if(aPaytypeHeader.id === 'totalDeduction') {
                 let totalDeduction = _.find(anEmployeeData.payment, function(aPayType) {
                     return (aPayType.code === 'TDEDUCT')
                 })
                 if(totalDeduction) {
-                    aRowOfPayTypeValues.push(totalDeduction.amountLC)
+                    let payAmount = totalDeduction.amountLC
+                    if(totalDeduction.amountLC != totalDeduction.amountPC) {
+                        payAmount = totalDeduction.amountPC
+                    }                    
+                    aRowOfPayTypeValues.push(payAmount)
                 }
             } else {
                 aRowOfPayTypeValues.push("---")
@@ -263,6 +275,8 @@ Template.PayrunNew.events({
     'click #export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
+            // console.log(`payResult: `, payResult)
+
             let payTypeHeaders = ReportUtils.getPayTypeHeaders2(payResult.payObj.payrun) 
 
             let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
