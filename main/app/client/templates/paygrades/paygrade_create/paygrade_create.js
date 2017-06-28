@@ -272,14 +272,18 @@ Template.PaygradeCreate.onCreated(function () {
                     self.currentPayGrade.set(currentPayGrade);
 
                     if(currentPayGrade) {
-                        currentPayGrade.payTypePositionIds.forEach(x=>{
-                            let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-                            if(ptype) {
-                                delete ptype.paytype;
-                                _.extend(x, ptype);
-                            }
-                        });
-                        self.payTypesPositionOnPayrunExport.set(currentPayGrade.payTypePositionIds)
+                        if(currentPayGrade.payTypePositionIds && currentPayGrade.payTypePositionIds.length > 0) {
+                            currentPayGrade.payTypePositionIds.forEach(x=>{
+                                let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+                                if(ptype) {
+                                    delete ptype.paytype;
+                                    _.extend(x, ptype);
+                                }
+                            });
+                            self.payTypesPositionOnPayrunExport.set(currentPayGrade.payTypePositionIds)
+                        } else {
+                            self.payTypesPositionOnPayrunExport.set(self.data.payTypes)
+                        }
                     }
                 }
             }
@@ -322,7 +326,6 @@ Template.PaygradeCreate.onCreated(function () {
                     if (parsed.error) {
                         x.parsedValue = parsed.error;
                         x.monthly = ""
-
                     }
                 } else {
                     x.parsedValue = "";
