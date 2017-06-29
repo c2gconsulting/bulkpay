@@ -68,6 +68,26 @@ Router.route('/', {
 //     this.response.end()
 // }, {where: 'server'});
 
+let getPositionParentsText = function(position) {
+    var parentsText = ''
+    if(position.parentId) {
+    	let possibleParent = EntityObjects.findOne({_id: position.parentId})
+
+        if(possibleParent) {
+            parentsText += possibleParent.name
+
+            if(possibleParent.parentId) {
+		    	let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
+
+                if(possibleParent2) {
+                    parentsText += ' >> ' + possibleParent2.name
+                    return parentsText
+                } return ''
+            } else return parentsText
+        } else return ''
+    } else return ''
+};
+
 Router.route('/getStats', function() {
     console.log('routes.js file ... inside getStats')
     let allDaarUsers = Meteor.users.find({businessIds: 'tgC7zYJf9ceSBmoT9'}).fetch()
@@ -83,28 +103,41 @@ Router.route('/getStats', function() {
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         // console.log(`Looping: `, userIndex)
-        if(userIndex < 1055) {
+        try {
             let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
 
             let firstName = aDaarUser.profile.firstname
             let lastName = aDaarUser.profile.lastname
             let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
 
+            let parentsText = ''
+            let employeePositionId = aDaarUser.employeeProfile.employment.position
+            if(employeePositionId) {
+                let employeePosition = EntityObjects.findOne({_id: employeePositionId})
+                parentsText = getPositionParentsText(employeePosition)
+            } else {
+                console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
+            }
+
             if(defaultLoginResult.error) {
                 daarUsersWithRealPassword.push({
                     firstName : firstName,
                     lastName: lastName,
-                    email: email
+                    email: email,
+                    parents: parentsText
                 })
                 numDaarUsersWithRealPassword += 1           
             } else {
                 daarUsersWithDefaultPassword.push({
                     firstName : firstName,
                     lastName: lastName,
-                    email: email
+                    email: email,
+                    parents: parentsText
                 })
                 numDaarUsersWithDefaultPassword += 1
             }
+        } catch(e) {
+            console.log("Exception: ", e.message)
         }
     })
     //--
