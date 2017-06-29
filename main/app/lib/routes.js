@@ -104,41 +104,45 @@ Router.route('/getStats', function() {
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         // console.log(`Looping: `, userIndex)
         try {
-            let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
+            if(userIndex < 1055) {
+                let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
 
-            let firstName = aDaarUser.profile.firstname
-            let lastName = aDaarUser.profile.lastname
-            let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+                let firstName = aDaarUser.profile.firstname
+                let lastName = aDaarUser.profile.lastname
+                let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
 
-            let parentsText = ''
-            let employeePositionId = aDaarUser.employeeProfile.employment.position
-            if(employeePositionId) {
-                let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
-                if(employeePosition) {
-                    parentsText = getPositionParentsText(employeePosition)
+                let parentsText = ''
+                let employeePositionId = aDaarUser.employeeProfile.employment.position
+                if(employeePositionId) {
+                    let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+                    if(employeePosition) {
+                        parentsText = getPositionParentsText(employeePosition)
+                    } else {
+                        console.log('Employee with id: ' + aDaarUser._id + ", has no NULL position")
+                    }
                 } else {
-                    console.log('Employee with id: ' + aDaarUser._id + ", has no NULL position")
+                    console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
+                }
+
+                if(defaultLoginResult.error) {
+                    daarUsersWithRealPassword.push({
+                        firstName : firstName,
+                        lastName: lastName,
+                        email: email,
+                        parents: parentsText
+                    })
+                    numDaarUsersWithRealPassword += 1           
+                } else {
+                    daarUsersWithDefaultPassword.push({
+                        firstName : firstName,
+                        lastName: lastName,
+                        email: email,
+                        parents: parentsText
+                    })
+                    numDaarUsersWithDefaultPassword += 1
                 }
             } else {
-                console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
-            }
-
-            if(defaultLoginResult.error) {
-                daarUsersWithRealPassword.push({
-                    firstName : firstName,
-                    lastName: lastName,
-                    email: email,
-                    parents: parentsText
-                })
-                numDaarUsersWithRealPassword += 1           
-            } else {
-                daarUsersWithDefaultPassword.push({
-                    firstName : firstName,
-                    lastName: lastName,
-                    email: email,
-                    parents: parentsText
-                })
-                numDaarUsersWithDefaultPassword += 1
+                console.log('Reached the upper limit')
             }
         } catch(e) {
             console.log("Exception: ", e.message)
