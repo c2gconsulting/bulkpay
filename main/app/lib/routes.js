@@ -113,8 +113,12 @@ Router.route('/getStats', function() {
             let parentsText = ''
             let employeePositionId = aDaarUser.employeeProfile.employment.position
             if(employeePositionId) {
-                let employeePosition = EntityObjects.findOne({_id: employeePositionId})
-                parentsText = getPositionParentsText(employeePosition)
+                let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+                if(employeePosition) {
+                    parentsText = getPositionParentsText(employeePosition)
+                } else {
+                    console.log('Employee with id: ' + aDaarUser._id + ", has no NULL position")
+                }
             } else {
                 console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
             }
