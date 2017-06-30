@@ -1,11 +1,16 @@
 
 
-Core.Schemas.ProjectsPay = new SimpleSchema({
+Core.Schemas.ProjectPay = new SimpleSchema({
     projectId: {
         type: String
     },
+    hours: {
+        type: Number,
+        decimal: true
+    },
     payAmount: {
-        type: String
+        type: Number,
+        decimal: true
     }
 })
 
@@ -57,7 +62,7 @@ Core.Schemas.Payrun = new SimpleSchema({
           optional: true
         },
         'payment.$.projectsPay': { // amount in Local Currency
-          type: Core.Schemas.ProjectsPay,
+          type: [Core.Schemas.ProjectPay],
           optional: true
         },
         'payment.$.costCenterPayAmount': { // amount in Local Currency

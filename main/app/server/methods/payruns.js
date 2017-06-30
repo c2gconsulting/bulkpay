@@ -394,6 +394,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const projectsPayDetails = 
                     getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
                 // {duration: , fraction: }
+                // console.log(`projectsPayDetails: `, projectsPayDetails)
                 
                 const costCentersPayDetails = 
                     getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
@@ -845,26 +846,39 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
         status: 'Approved'
     }
 
-    // let allProjectTimesInMonth = TimeWritings.find(queryObj).fetch()
-
     let allProjectTimesInMonth = TimeWritings.aggregate([
         { $match: queryObj},
-        { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
+        { $group: {
+          _id: {
+            "empUserId": "$employeeId",
+            "project": "$project"
+          }, 
+          duration: { $sum: "$duration" }
+        } }
     ]);
     //--
     let totalWorkHoursInYear = 2080
     let numberOfMonthsInYear = 12
 
     if(allProjectTimesInMonth) {
-        if(allProjectTimesInMonth.length === 1) {
-            const duration = allProjectTimesInMonth[0].duration
-            const fraction = duration * numberOfMonthsInYear / totalWorkHoursInYear
-            return {duration, fraction}
+        if(allProjectTimesInMonth.length > 0) {
+            let projectDurations = []
+
+            let totalProjectsDuration = 0
+            allProjectTimesInMonth.forEach(aProjectTime => {
+                totalProjectsDuration += aProjectTime.duration
+                projectDurations.push({
+                    project: aProjectTime._id.project, 
+                    duration: aProjectTime.duration
+                })
+            })
+            const fraction = totalProjectsDuration * numberOfMonthsInYear / totalWorkHoursInYear
+            return {duration: totalProjectsDuration, fraction, projectDurations}
         } else {
-            return {duration: 0, fraction: 0}
+            return {duration: 0, fraction: 0, projectDurations: []}
         }
     } else {
-        return {duration: 0, fraction: 0}
+        return {duration: 0, fraction: 0, projectDurations: []}
     }
 }
 
