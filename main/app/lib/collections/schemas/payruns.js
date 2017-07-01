@@ -4,7 +4,7 @@ Core.Schemas.ProjectPay = new SimpleSchema({
     projectId: {
         type: String
     },
-    hours: {
+    durationInHours: {
         type: Number,
         decimal: true
     },

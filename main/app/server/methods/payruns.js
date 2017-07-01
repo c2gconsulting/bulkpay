@@ -394,7 +394,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const projectsPayDetails = 
                     getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
                 // {duration: , fraction: }
-                // console.log(`projectsPayDetails: `, projectsPayDetails)
                 
                 const costCentersPayDetails = 
                     getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
@@ -474,11 +473,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     code: 'Hours worked on projects in month',
                                     value: projectsPayDetails.duration
                                 })
-                                input.push({
-                                    code: 'Pay from projects multiplier fraction',
-                                    value: projectsPayDetails.fraction
-                                })
-
                                 input.push({
                                     code: 'Hours worked on cost centers in month',
                                     value: costCentersPayDetails.duration
@@ -585,9 +579,23 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     //--
                                     let projectPayAmount = 0
                                     let costCenterPayAmount = 0
-                                    
+                                    let projectsPay = []
+
                                     if(x.isTimeWritingDependent) {
                                         if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
+                                            let totalWorkHoursInYear = 2080
+                                            let numberOfMonthsInYear = 12
+                                            
+                                            projectsPayDetails.projectDurations.forEach(aProject => {
+                                                const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
+                                                let projectPayAmount = fraction * value
+
+                                                projectsPay.push({
+                                                    projectId: aProject.project,
+                                                    durationInHours: aProject.duration,
+                                                    payAmount: projectPayAmount
+                                                })
+                                            })
                                             projectPayAmount = projectsPayDetails.fraction * value
                                             costCenterPayAmount = costCentersPayDetails.fraction * value
                                             value = projectPayAmount + costCenterPayAmount
@@ -595,7 +603,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             processing.push({code: "Pay from projects", derived: projectPayAmount});
                                             processing.push({code: "Pay from cost centers", derived: costCenterPayAmount});
 
-                                            processing.push({code: x.code, derived: "(Pay from projects) + (Pay from cost-centers)"});
+                                            processing.push({code: x.code, derived: "(Pay from projects) + (Pay from cost-center)"});
                                             processing.push({code: x.code, derived: value});
                                         } else {
                                             value = 0
@@ -662,7 +670,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     employeeResult.payment.push({
                                         id: x._id, reference: 'Paytype', 
                                         amountLC: value, amountPC: valueInForeignCurrency, 
-                                        projectPayAmount: projectPayAmount, costCenterPayAmount: costCenterPayAmount,
+                                        projectPayAmount: projectPayAmount, 
+                                        costCenterPayAmount: costCenterPayAmount,
+                                        projectsPay: projectsPay,
                                         code: x.code, description: x.title, 
                                         type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type 
                                     });
@@ -862,6 +872,7 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
 
     if(allProjectTimesInMonth) {
         if(allProjectTimesInMonth.length > 0) {
+            // console.log(`allProjectTimesInMonth: `, allProjectTimesInMonth)
             let projectDurations = []
 
             let totalProjectsDuration = 0
