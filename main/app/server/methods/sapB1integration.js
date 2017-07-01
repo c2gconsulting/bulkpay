@@ -40,98 +40,6 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         }
     }
 
-    //Be patient. The main processing happens after this function definition
-
-    // let initializeUnitBulkSum = (employee, unitId, costCenterCode, aPayrunResult) => {
-    //     unitsBulkSum[unitId] = {}
-    //     unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
-
-    //     let unitBulkSumPayments = []
-    //     unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.forEach(aPayment => {
-    //         if(aPayment && aPayment.id) {
-    //             let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
-    //                 return aPayType.payTypeId === aPayment.id;
-    //             })
-    //             let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
-    //                 return (aPayType._id && (aPayType._id === aPayment.id));
-    //             })
-    //             if(payTypeFullDetails) {
-    //                 if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
-    //                     employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
-    //                     // DeltaTek and employee is of 'National' paygrade
-    //                     if(payTypeFullDetails._id === 'Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
-    //                         return
-    //                     }
-    //                 }
-    //                 if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
-    //                     return
-    //                 }
-    //             }
-
-    //             if (sapPayTypeDetails) {
-    //                 let payTypeDebitAccountCode = ""
-    //                 let payTypeCreditAccountCode = ""
-    //                 if (sapPayTypeDetails.payTypeDebitAccountCode) {
-    //                     payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
-    //                 } else {
-    //                     status = false
-    //                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
-    //                 }
-    //                 if (sapPayTypeDetails.payTypeCreditAccountCode) {
-    //                     payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
-    //                 } else {
-    //                     status = false
-    //                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
-    //                 }
-
-    //                 unitBulkSumPayments.push({
-    //                     payTypeId: aPayment.id,
-    //                     costCenterPayAmount: aPayment.costCenterPayAmount || 0,
-    //                     projectPayAmount: aPayment.projectPayAmount || 0,
-    //                     description: aPayment.description,
-    //                     payTypeDebitAccountCode: payTypeDebitAccountCode,
-    //                     payTypeCreditAccountCode: payTypeCreditAccountCode
-    //                 })
-    //             } else {
-    //                 let payTypeDebitAccountCode = ""
-    //                 let payTypeCreditAccountCode = ""
-
-    //                 if (!sapPayTypeDetails && aPayment.reference === 'Tax') {
-    //                     let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
-    //                         return aPayType.payTypeId === aPayment.id;
-    //                     })
-
-    //                     if(sapTaxDetails) {
-    //                         if (sapTaxDetails.payTypeDebitAccountCode) {
-    //                             payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
-    //                         } else {
-    //                             status = false
-    //                             errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
-    //                         }
-    //                         if (sapTaxDetails.payTypeCreditAccountCode) {
-    //                             payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
-    //                         } else {
-    //                             status = false
-    //                             errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
-    //                         }
-
-    //                         unitBulkSumPayments.push({
-    //                             payTypeId: aPayment.id,
-    //                             costCenterPayAmount: aPayment.amountLC || 0,
-    //                             projectPayAmount: 0,
-    //                             description: aPayment.description,
-    //                             payTypeDebitAccountCode: payTypeDebitAccountCode,
-    //                             payTypeCreditAccountCode: payTypeCreditAccountCode,
-    //                         })
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     })
-    //     unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
-    // }
-
-
     //--Main processing happens here
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
@@ -207,8 +115,36 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
 
                     if(!sapPayTypeDetails) {
                         if (aPayment.reference === 'Tax') {
-                            // Handle tax later
-                            return
+                            let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
+                                return aPayType.payTypeId === aPayment.id;
+                            })
+
+                            if(sapTaxDetails) {
+                                let payTypeDebitAccountCode = ""
+                                let payTypeCreditAccountCode = ""
+                                if (sapTaxDetails.payTypeDebitAccountCode) {
+                                    payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
+                                } else {
+                                    status = false
+                                    errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
+                                }
+                                if (sapTaxDetails.payTypeCreditAccountCode) {
+                                    payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
+                                } else {
+                                    status = false
+                                    errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
+                                }
+                                if(!payTypeDebitAccountCode || !payTypeDebitAccountCode) {
+                                    return
+                                }
+                                unitBulkSumPayments.push({
+                                    payTypeId: aPayment.id,
+                                    costCenterPayAmount: aPayment.amountLC || 0,
+                                    description: aPayment.description,
+                                    payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                    payTypeCreditAccountCode: payTypeCreditAccountCode,
+                                })
+                            }
                         } else {
                             return
                         }
@@ -222,8 +158,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     if(paymentToAccumulate) {
                         paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
                     } else {
-                        let payTypeDebitAccountCode = ""
-                        let payTypeCreditAccountCode = ""
+                        let payTypeDebitAccountCode = null
+                        let payTypeCreditAccountCode = null
 
                         if (sapPayTypeDetails.payTypeDebitAccountCode) {
                             payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
@@ -236,6 +172,9 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                         } else {
                             status = false
                             errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
+                        }
+                        if(!payTypeDebitAccountCode || !payTypeDebitAccountCode) {
+                            return
                         }
                         if (sapPayTypeDetails.payTypeDebitAccountCode && sapPayTypeDetails.payTypeCreditAccountCode) {
                             unitBulkSumPayments.push({
