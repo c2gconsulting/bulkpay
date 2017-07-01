@@ -9,132 +9,18 @@ let SapIntegration = {}
  *
  * @param {Object} businessUnitSapConfig - the SAP config for the business
  * @param {Array} payRunResults -
- * @return {Object, Array} Bulksum, Array of employees that contribute to bulksum
+ * @return {Object, Object, Array} Bulksum for units, Bulksum for projects, Array of employees that contribute to bulksum
  */
 SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResults) => {
     let unitsBulkSum = {}
+    let projectsBulkSum = {}
     let arrayOfEmployees = []
     let status = true
     let errors = []
 
     let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
     let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
-
-    //Be patient. The main processing happens after this function definition
-    let initializeUnitBulkSum = (employee, unitId, costCenterCode, aPayrunResult) => {
-        unitsBulkSum[unitId] = {}
-        unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
-
-        let unitBulkSumPayments = []
-        unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.forEach(aPayment => {
-            if(aPayment && aPayment.id) {
-                let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
-                    return aPayType.payTypeId === aPayment.id;
-                })
-                let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
-                    return (aPayType._id && (aPayType._id === aPayment.id));
-                })
-                if(payTypeFullDetails) {
-                    if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
-                        employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
-                        // DeltaTek and employee is of 'National' paygrade
-                        if(payTypeFullDetails._id === '(6) Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
-                            return
-                        }
-                    }
-                    if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
-                        return
-                    }
-                }
-
-                if (sapPayTypeDetails) {
-                    let payTypeDebitAccountCode = ""
-                    let payTypeCreditAccountCode = ""
-                    let payTypeProjectDebitAccountCode = ""
-                    let payTypeProjectCreditAccountCode = ""
-                    if (sapPayTypeDetails.payTypeDebitAccountCode) {
-                        payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
-                    } else {
-                        status = false
-                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
-                    }
-                    if (sapPayTypeDetails.payTypeCreditAccountCode) {
-                        payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
-                    } else {
-                        status = false
-                        errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
-                    }
-                    //--
-                    if (sapPayTypeDetails.payTypeProjectDebitAccountCode) {
-                        payTypeProjectDebitAccountCode = sapPayTypeDetails.payTypeProjectDebitAccountCode
-                    } else {
-                        if(aPayment.projectPayAmount > 0) {
-                            status = false
-                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Debit G/L account`)
-                        }
-                    }
-
-                    if (sapPayTypeDetails.payTypeProjectCreditAccountCode) {
-                        payTypeProjectCreditAccountCode = sapPayTypeDetails.payTypeProjectCreditAccountCode
-                    } else {
-                        if(aPayment.projectPayAmount > 0) {
-                            status = false
-                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Credit G/L account`)
-                        }
-                    }
-
-                    unitBulkSumPayments.push({
-                        payTypeId: aPayment.id,
-                        costCenterPayAmount: aPayment.costCenterPayAmount || 0,
-                        projectPayAmount: aPayment.projectPayAmount || 0,
-                        description: aPayment.description,
-                        payTypeDebitAccountCode: payTypeDebitAccountCode,
-                        payTypeCreditAccountCode: payTypeCreditAccountCode,
-                        payTypeProjectDebitAccountCode: payTypeProjectDebitAccountCode,
-                        payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
-                    })
-                } else {
-                    // console.log(`sapPayTypeDetails is null. aPayment: ${JSON.stringify(aPayment)}`)
-                    let payTypeDebitAccountCode = ""
-                    let payTypeCreditAccountCode = ""
-
-                    if (!sapPayTypeDetails && aPayment.reference === 'Tax') {
-                        let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
-                            return aPayType.payTypeId === aPayment.id;
-                        })
-                        // console.log(`Found tax payment: `, sapTaxDetails)
-
-                        if(sapTaxDetails) {
-                            if (sapTaxDetails.payTypeDebitAccountCode) {
-                                payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
-                            } else {
-                                status = false
-                                errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
-                            }
-                            if (sapTaxDetails.payTypeCreditAccountCode) {
-                                payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
-                            } else {
-                                status = false
-                                errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
-                            }
-
-                            unitBulkSumPayments.push({
-                                payTypeId: aPayment.id,
-                                costCenterPayAmount: aPayment.amountLC || 0,
-                                projectPayAmount: 0,
-                                description: aPayment.description,
-                                payTypeDebitAccountCode: payTypeDebitAccountCode,
-                                payTypeCreditAccountCode: payTypeCreditAccountCode,
-                            })
-                        }
-                    }
-                }
-            } else {
-               // console.log(`This payment has no id: ${JSON.stringify(aPayment)}`)
-            }
-        })
-        unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
-    }
+    let allProjects = Projects.find({businessId: businessUnitSapConfig.businessId}).fetch()
 
     let getUnitForPosition = (entity) => {
         let possibleUnitId = entity.parentId
@@ -154,6 +40,98 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         }
     }
 
+    //Be patient. The main processing happens after this function definition
+
+    // let initializeUnitBulkSum = (employee, unitId, costCenterCode, aPayrunResult) => {
+    //     unitsBulkSum[unitId] = {}
+    //     unitsBulkSum[unitId]['costCenterCode'] = costCenterCode || ""
+
+    //     let unitBulkSumPayments = []
+    //     unitsBulkSum[unitId]['payments'] = aPayrunResult.payment.forEach(aPayment => {
+    //         if(aPayment && aPayment.id) {
+    //             let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
+    //                 return aPayType.payTypeId === aPayment.id;
+    //             })
+    //             let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
+    //                 return (aPayType._id && (aPayType._id === aPayment.id));
+    //             })
+    //             if(payTypeFullDetails) {
+    //                 if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
+    //                     employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
+    //                     // DeltaTek and employee is of 'National' paygrade
+    //                     if(payTypeFullDetails._id === 'Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
+    //                         return
+    //                     }
+    //                 }
+    //                 if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
+    //                     return
+    //                 }
+    //             }
+
+    //             if (sapPayTypeDetails) {
+    //                 let payTypeDebitAccountCode = ""
+    //                 let payTypeCreditAccountCode = ""
+    //                 if (sapPayTypeDetails.payTypeDebitAccountCode) {
+    //                     payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
+    //                 } else {
+    //                     status = false
+    //                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
+    //                 }
+    //                 if (sapPayTypeDetails.payTypeCreditAccountCode) {
+    //                     payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
+    //                 } else {
+    //                     status = false
+    //                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
+    //                 }
+
+    //                 unitBulkSumPayments.push({
+    //                     payTypeId: aPayment.id,
+    //                     costCenterPayAmount: aPayment.costCenterPayAmount || 0,
+    //                     projectPayAmount: aPayment.projectPayAmount || 0,
+    //                     description: aPayment.description,
+    //                     payTypeDebitAccountCode: payTypeDebitAccountCode,
+    //                     payTypeCreditAccountCode: payTypeCreditAccountCode
+    //                 })
+    //             } else {
+    //                 let payTypeDebitAccountCode = ""
+    //                 let payTypeCreditAccountCode = ""
+
+    //                 if (!sapPayTypeDetails && aPayment.reference === 'Tax') {
+    //                     let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
+    //                         return aPayType.payTypeId === aPayment.id;
+    //                     })
+
+    //                     if(sapTaxDetails) {
+    //                         if (sapTaxDetails.payTypeDebitAccountCode) {
+    //                             payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
+    //                         } else {
+    //                             status = false
+    //                             errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
+    //                         }
+    //                         if (sapTaxDetails.payTypeCreditAccountCode) {
+    //                             payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
+    //                         } else {
+    //                             status = false
+    //                             errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
+    //                         }
+
+    //                         unitBulkSumPayments.push({
+    //                             payTypeId: aPayment.id,
+    //                             costCenterPayAmount: aPayment.amountLC || 0,
+    //                             projectPayAmount: 0,
+    //                             description: aPayment.description,
+    //                             payTypeDebitAccountCode: payTypeDebitAccountCode,
+    //                             payTypeCreditAccountCode: payTypeCreditAccountCode,
+    //                         })
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     })
+    //     unitsBulkSum[unitId]['payments'] = unitBulkSumPayments
+    // }
+
+
     //--Main processing happens here
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
@@ -164,67 +142,179 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         let employee = Meteor.users.findOne({_id: employeeId})
 
         if(!employee) {
-            // console.log(`employee data could not be found`)
             status = false
             errors.push(`An employee record for payrun could not be found`)
+            continue
         }
         let employeePositionId = employee.employeeProfile.employment.position
         let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
 
         try {
             if(!position) {
-                // console.log(`Position could not be found: ${employeePositionId}`)
                 status = false
                 errors.push(`Employee: ${employee.profile.fullName} does not have a position`)
-            } else {
-                let unit = getUnitForPosition(position)
-                if(!unit) {
-                    // console.log(`Could not find unit for position: ${employeePositionId}`)
-                    status = false
-                    errors.push(`Employee: ${employee.profile.fullName} does not have a unit`)
-                } else {
-                    let unitId = unit._id
-                    let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                        return aUnit.unitId === unitId;
+                continue
+            }
+            //--
+            let unit = getUnitForPosition(position)
+            if(!unit) {
+                status = false
+                errors.push(`Employee: ${employee.profile.fullName} does not have a unit`)
+                continue
+            }
+            //--
+            let unitId = unit._id
+
+            let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
+                return aUnit.unitId === unitId;
+            })
+            if(!sapUnitCostCenterDetails  || 
+                (!sapUnitCostCenterDetails.costCenterCode || sapUnitCostCenterDetails.costCenterCode.length === 0)) {
+                status = false
+                errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
+            }
+            //--
+            if(!unitsBulkSum[unitId]) {
+                unitsBulkSum[unitId] = {}
+                unitsBulkSum[unitId]['costCenterCode'] = sapUnitCostCenterDetails.costCenterCode
+                unitsBulkSum[unitId]['payments'] = []
+            }
+            let unitToWorkWith = unitsBulkSum[unitId]
+            let unitBulkSumPayments = unitToWorkWith.payments
+            //--
+            aPayrunResult.payment.forEach(aPayment => {
+                if(aPayment && aPayment.id) {
+                    let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
+                        return (aPayType._id && (aPayType._id === aPayment.id));
                     })
-                    if(sapUnitCostCenterDetails) {
-                        let unitToWorkWith = unitsBulkSum[unitId]
-                        if(unitToWorkWith) {
-                            aPayrunResult.payment.forEach(aPayment => {
-                                let paymentToAccumulate = _.find(unitToWorkWith.payments, (aUnitPayment) => {
-                                    return aUnitPayment.payTypeId === aPayment.id
-                                })
-                                if(paymentToAccumulate) {
-                                    paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
-                                    paymentToAccumulate.projectPayAmount += (aPayment.projectPayAmount || 0)
-                                }
-                            })
-                            arrayOfEmployees.push(employeeId)
-                        } else {
-                            if(sapUnitCostCenterDetails.costCenterCode && sapUnitCostCenterDetails.costCenterCode.length > 0) {
-                                initializeUnitBulkSum(employee, unitId, sapUnitCostCenterDetails.costCenterCode, aPayrunResult)
-                                arrayOfEmployees.push(employeeId)
-                            } else {
-                                status = false
-                                errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
+                    //--
+                    if(payTypeFullDetails) {
+                        if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
+                            employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
+                            // DeltaTek and employee is of 'National' paygrade
+                            if(payTypeFullDetails._id === 'Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
+                                return // Go to next iteration
                             }
                         }
-                    } else {
-                        // console.log(`sapUnitCostCenterDetails: ${JSON.stringify(sapUnitCostCenterDetails)}`)
-                        status = false
-                        errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
+                        if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
+                            return // Go to next iteration
+                        }
                     }
+                    //--
+                    let sapPayTypeDetails = _.find(businessUnitSapConfig.payTypes, function (aPayType) {
+                        return aPayType.payTypeId === aPayment.id;
+                    })
+
+                    if(!sapPayTypeDetails) {
+                        if (aPayment.reference === 'Tax') {
+                            // Handle tax later
+                            return
+                        } else {
+                            return
+                        }
+                    }
+                    //--
+                    let paymentToAccumulate = _.find(unitBulkSumPayments, (aUnitPayment) => {
+                        return aUnitPayment.payTypeId === aPayment.id
+                    })
+
+                    //--
+                    if(paymentToAccumulate) {
+                        paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
+                    } else {
+                        let payTypeDebitAccountCode = ""
+                        let payTypeCreditAccountCode = ""
+
+                        if (sapPayTypeDetails.payTypeDebitAccountCode) {
+                            payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
+                        } else {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
+                        }
+                        if (sapPayTypeDetails.payTypeCreditAccountCode) {
+                            payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
+                        } else {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
+                        }
+                        if (sapPayTypeDetails.payTypeDebitAccountCode && sapPayTypeDetails.payTypeCreditAccountCode) {
+                            unitBulkSumPayments.push({
+                                payTypeId: aPayment.id,
+                                costCenterPayAmount: aPayment.costCenterPayAmount || 0,
+                                description: aPayment.description,
+                                payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                payTypeCreditAccountCode: payTypeCreditAccountCode
+                            })
+                        }
+                    }
+                    //--
+                    let paymentProjectsPay = aPayment.projectsPay || []
+                    paymentProjectsPay.forEach(aProjectPay => {
+                        let payTypeProjectDebitAccountCode = null
+                        let payTypeProjectCreditAccountCode = null
+                        //--
+                        if (sapPayTypeDetails.payTypeProjectDebitAccountCode) {
+                            payTypeProjectDebitAccountCode = sapPayTypeDetails.payTypeProjectDebitAccountCode
+                        } else {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Debit G/L account`)
+                        }
+                        if (sapPayTypeDetails.payTypeProjectCreditAccountCode) {
+                            payTypeProjectCreditAccountCode = sapPayTypeDetails.payTypeProjectCreditAccountCode
+                        } else {
+                            status = false
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Project Credit G/L account`)
+                        }
+                        //--
+                        if(!payTypeProjectDebitAccountCode || !payTypeProjectCreditAccountCode) {
+                            return
+                        }
+                        //--
+                        if(!projectsBulkSum[aProjectPay.projectId]) {
+                            projectsBulkSum[aProjectPay.projectId] = {}
+
+                            let sapUnitProjectDetails = _.find(businessUnitSapConfig.projects, (aProject) => {
+                                return (aProject.projectId === aProjectPay.projectId)
+                            })
+                            if(!sapUnitProjectDetails  || 
+                                (!sapUnitProjectDetails.projectSapCode || sapUnitProjectDetails.projectSapCode.length === 0)) {
+                                status = false
+                                errors.push(`Project: does not have an SAP project code`)
+                                return
+                            }
+                            projectsBulkSum[aProjectPay.projectId]['projectSapCode'] = sapUnitProjectDetails.projectSapCode
+                            projectsBulkSum[aProjectPay.projectId]['payments'] = []
+                        }
+                        let projectInBulkSum = projectsBulkSum[aProjectPay.projectId]
+                        let projectBulkSumPayments = projectInBulkSum.payments
+
+                        let projectPaymentToAccumulate = _.find(projectBulkSumPayments, (aProjectPayment) => {
+                            return aProjectPayment.payTypeId === aPayment.id
+                        })
+                        if(projectPaymentToAccumulate) {
+                            projectPaymentToAccumulate.projectPayAmount += aProjectPay.payAmount
+                        } else {
+                            projectBulkSumPayments.push({
+                                payTypeId: aPayment.id,
+                                projectPayAmount: aProjectPay.payAmount,
+                                description: aPayment.description,
+                                payTypeProjectDebitAccountCode: payTypeProjectDebitAccountCode,
+                                payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
+                            })
+                        }
+                    })
                 }
-            }
+            })
+            arrayOfEmployees.push(employeeId)                            
         } catch(ex) {
             status = false
             errors.push(`${ex.message}`)
         }
     }
 
-    //console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
+    // console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
     if(status) {
-        return {status, unitsBulkSum, employees: arrayOfEmployees}
+        return {status, unitsBulkSum, projectsBulkSum, employees: arrayOfEmployees}
     } else {
         return {status, errors}
     }
