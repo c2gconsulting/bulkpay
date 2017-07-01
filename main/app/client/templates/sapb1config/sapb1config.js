@@ -99,7 +99,7 @@ Template.SapB1Config.events({
         let currentProject = _.find(projects, function (o) {
             return o.projectId === projectId;
         })
-        currentProject.projectCode = projectCode
+        currentProject.projectSapCode = projectCode
         Template.instance().projects.set(projects);
     },
     'click #saveSapCostCenterCodes': (e, tmpl) => {
@@ -121,7 +121,6 @@ Template.SapB1Config.events({
         let businessUnitId = Session.get('context')
 
         let theProjects = Template.instance().projects.get()
-        console.log(`The projects: ${JSON.stringify(theProjects)}`)
 
         Meteor.call("sapB1integration/updateProjectCodes", businessUnitId, theProjects, (err, res) => {
             if(res) {

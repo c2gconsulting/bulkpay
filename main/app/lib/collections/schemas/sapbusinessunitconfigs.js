@@ -13,7 +13,7 @@ Core.Schemas.SapProjectConfig = new SimpleSchema({
     projectId : {
         type: String
     },
-    projectCode : {
+    projectSapCode : {
         type: String,
         optional: true
     }

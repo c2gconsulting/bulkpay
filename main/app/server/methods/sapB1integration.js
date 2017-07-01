@@ -399,7 +399,8 @@ Meteor.methods({
                         sapDatabaseUsername: businessUnitSapConfig.sapDatabaseUsername,
                         sapDatabasePassword: businessUnitSapConfig.sapDatabasePassword,
 
-                        data: processingResult.unitsBulkSum
+                        unitsBulkSum: processingResult.unitsBulkSum,
+                        projectsBulkSum: processingResult.projectsBulkSum,
                     })
                     let requestHeaders = {'Content-Type': 'application/json'}
 
