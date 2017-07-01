@@ -282,6 +282,8 @@ Template.SapB1Config.onCreated(function () {
                     })
                     if(currentProject) {
                         _.extend(project, currentProject)
+                    } else {
+                        project.projectId = project._id
                     }
                 }
                 return project
