@@ -44,7 +44,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
         if(isPostedToSAP && isPostedToSAP === true) {
-            return
+            continue
         }
         let employeeId = aPayrunResult.employeeId
         let employee = Meteor.users.findOne({_id: employeeId})
