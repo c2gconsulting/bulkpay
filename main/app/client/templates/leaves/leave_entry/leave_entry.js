@@ -22,7 +22,7 @@ Template.LeaveEntry.events({
                     if(!err){
                         swal("Deleted!", `Request Deleted`, "success");
                     } else {
-                        swal("Error!", `Cannot delete Request`, "error");
+                        swal("Error!", err.reason, "error");
                     }
                 });
 

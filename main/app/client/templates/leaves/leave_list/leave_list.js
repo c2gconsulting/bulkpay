@@ -36,7 +36,6 @@ Template.LeaveList.onCreated(function () {
         sort[sortBy] = sortDirection;
         let subscription = instance.subscribe('employeeLeaves', Session.get('context'), limit, sort);
 
-
         // if subscription is ready, set limit to newLimit
         if (subscription.ready()) {
             instance.loaded.set(limit);
@@ -52,8 +51,13 @@ Template.LeaveList.onCreated(function () {
         options.sort = {};
         options.sort[sortBy] = sortDirection;
         options.limit = instance.loaded.get();
-        
-        return Leaves.find({businessId: instance.data._id}, options);
+
+        let currentUserId = Meteor.userId()
+
+        return Leaves.find({
+            businessId: Session.get('context'),
+            employeeId: currentUserId
+        }, options);
     };
 });
 
