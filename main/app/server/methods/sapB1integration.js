@@ -218,7 +218,16 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                             if(!sapUnitProjectDetails  || 
                                 (!sapUnitProjectDetails.projectSapCode || sapUnitProjectDetails.projectSapCode.length === 0)) {
                                 status = false
-                                errors.push(`Project: does not have an SAP project code`)
+                                let projectName = ''
+                                let projectData = _.find(allProjects, (project) => {
+                                    return (project._id === aProjectPay.projectId)
+                                })
+                                if(projectData) {
+                                    projectName = projectData.name
+                                    errors.push(`Project: ${projectName} does not have an SAP project code`)
+                                } else {
+                                    errors.push(`Project does not have an SAP project code`)
+                                }
                                 return
                             }
                             projectsBulkSum[aProjectPay.projectId]['projectSapCode'] = sapUnitProjectDetails.projectSapCode
