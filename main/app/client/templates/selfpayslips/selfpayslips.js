@@ -14,7 +14,14 @@ Template.selfpayslips.events({
             if(!err) {
                 tmpl.errorMsg.set(null);
                 let processedPayslipData = tmpl.processSelfPayslipData(res)
-                console.log(`processedPayslipData: ${JSON.stringify(processedPayslipData)}`)
+                // console.log(`processedPayslipData: ${JSON.stringify(processedPayslipData)}`)
+
+                if(processedPayslipData) {
+                    processedPayslipData.period = {
+                        month: paymentPeriodMonth,
+                        year: paymentPeriodYear
+                    }
+                }
 
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
                 Modal.show('Payslip', processedPayslipData);
