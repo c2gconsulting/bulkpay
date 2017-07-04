@@ -40,6 +40,31 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
         }
     }
 
+    let shortenMemoForSapJournalEntry = (paytypeDesc, memoTag, unitName) => {
+        if(paytypeDesc && unitName) {
+            let defaultMemo = paytypeDesc + memoTag + unitName + ")"
+            if(defaultMemo.length > 49) {
+                let paytypeDescShortened = paytypeDesc
+                if(paytypeDesc.length > 17) {
+                    paytypeDescShortened = paytypeDesc.substring(0, 12) + ' ...'
+                }
+                //--
+                let charactersLeft = paytypeDescShortened.length + 16
+                let unitShortened = paytypeDesc
+
+                let memoLengthWithUnitName = charactersLeft + memoTag.length + unitName.length
+                if(memoLengthWithUnitName > 47) {
+                    unitShortened = unitName.substring(0, 12) + ' ...'
+                }
+                return paytypeDescShortened + memoTag + unitShortened + ")"
+            } else {
+                return defaultMemo
+            }
+        } else {
+            return '---'
+        }
+    }
+
     //--Main processing happens here
     for(let aPayrunResult of payRunResults) {
         let isPostedToSAP = aPayrunResult.isPostedToSAP
@@ -140,7 +165,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                 unitBulkSumPayments.push({
                                     payTypeId: aPayment.id,
                                     costCenterPayAmount: aPayment.amountLC || 0,
-                                    description: aPayment.description,
+                                    description: shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", unit.name),
                                     payTypeDebitAccountCode: payTypeDebitAccountCode,
                                     payTypeCreditAccountCode: payTypeCreditAccountCode,
                                 })
@@ -180,7 +205,7 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                             unitBulkSumPayments.push({
                                 payTypeId: aPayment.id,
                                 costCenterPayAmount: aPayment.costCenterPayAmount || 0,
-                                description: aPayment.description,
+                                description: shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", unit.name),
                                 payTypeDebitAccountCode: payTypeDebitAccountCode,
                                 payTypeCreditAccountCode: payTypeCreditAccountCode
                             })
@@ -209,6 +234,17 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                             return
                         }
                         //--
+                        let projectName = ''
+                        let projectData = _.find(allProjects, (project) => {
+                            return (project._id === aProjectPay.projectId)
+                        })
+                        if(projectData) {
+                            projectName = projectData.name
+                        } else {
+                            status = false
+                            errors.push(`A project which exists for payrun does not exist on the BulkPay system`)
+                        }
+                        //--
                         if(!projectsBulkSum[aProjectPay.projectId]) {
                             projectsBulkSum[aProjectPay.projectId] = {}
 
@@ -218,15 +254,10 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                             if(!sapUnitProjectDetails  || 
                                 (!sapUnitProjectDetails.projectSapCode || sapUnitProjectDetails.projectSapCode.length === 0)) {
                                 status = false
-                                let projectName = ''
-                                let projectData = _.find(allProjects, (project) => {
-                                    return (project._id === aProjectPay.projectId)
-                                })
                                 if(projectData) {
-                                    projectName = projectData.name
                                     errors.push(`Project: ${projectName} does not have an SAP project code`)
                                 } else {
-                                    errors.push(`Project does not have an SAP project code`)
+                                    errors.push(`A project does not have an SAP project code`)
                                 }
                                 return
                             }
@@ -244,8 +275,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                         } else {
                             projectBulkSumPayments.push({
                                 payTypeId: aPayment.id,
-                                projectPayAmount: aProjectPay.payAmount,
-                                description: aPayment.description,
+                                projectPayAmount: aProjectPay.payAmount, 
+                                description: shortenMemoForSapJournalEntry(aPayment.description, " (Project: ", projectData.name),
                                 payTypeProjectDebitAccountCode: payTypeProjectDebitAccountCode,
                                 payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
                             })
