@@ -88,41 +88,14 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             }
         })
     })
+    payTypeHeaders.forEach((aColumn, index) => {
+        if(Object.keys(aColumn).length === 0) {
+            payTypeHeaders.splice(index, 1);
+        }
+    })
 
     return {payTypeHeaders}
 }
-
-// ReportUtils.getPayTypeHeaders = function(employeePayments) {
-//     let payTypeHeaders = ['Employee']
-
-//     employeePayments.forEach(anEmployeeData => {
-//         anEmployeeData.payment.forEach(anEmployeePayType => {
-//             if(anEmployeePayType.id) {
-//                 let doesPayTypeHeaderExist = _.find(payTypeHeaders, function(aPayType) {
-//                     return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
-//                 })
-//                 if(!doesPayTypeHeaderExist) {
-//                     payTypeHeaders.push({
-//                         id: anEmployeePayType.id,
-//                         code: anEmployeePayType.code,
-//                         description: anEmployeePayType.description
-//                     })
-//                 }
-//             }
-//         })
-//     })
-//     payTypeHeaders.push({
-//         id: 'totalDeduction',
-//         code: 'totalDeduction',
-//         description: 'Total Deduction'
-//     })
-//     payTypeHeaders.push({
-//         id: 'netPay',
-//         code: 'netPay',
-//         description: 'Net Pay'
-//     })
-//     return {payTypeHeaders}
-// }
 
 ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
     let payTypeValues = []
@@ -275,7 +248,7 @@ Template.PayrunNew.events({
     'click #export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
-            // console.log(`payResult: `, payResult)
+            console.log(`payResult(exportToCsv): `, payResult)
 
             let payTypeHeaders = ReportUtils.getPayTypeHeaders2(payResult.payObj.payrun) 
 
