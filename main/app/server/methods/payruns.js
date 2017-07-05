@@ -768,8 +768,8 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
 
                     //populate result for net payment
-                    employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: netPayment, code: 'NMP', description: 'Net Payment', type: 'netPayment' });
-                    employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: totalDeduction, code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
+                    employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: getNetPayInForeignCurrency(netPayment, grade, currencyRatesForPeriod), code: 'NMP', description: 'Net Payment', type: 'netPayment' });
+                    employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: getNetPayInForeignCurrency(totalDeduction, grade, currencyRatesForPeriod), code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
                     final.payslip.totalPayment = totalPayment;
                     final.payslip.totalDeduction = totalDeduction;
@@ -840,6 +840,25 @@ function getPayAmountInForeignCurrency(payTypeDetails, amountInLocalCurrency, cu
         }
     }
     return amountInForeignCurrency
+}
+
+function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRatesForPeriod) {
+    if(payGrade) {
+        let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+    
+        let currencyInPeriod = _.find(currencyRatesForPeriod, (aCurrency) => {
+            return aCurrency.code === netPayAlternativeCurrency
+        })
+
+        if(currencyInPeriod) {
+            let rateToBaseCurrency = currencyInPeriod.rateToBaseCurrency
+            return (rateToBaseCurrency > 0) ? (amountInLocalCurrency / rateToBaseCurrency).toFixed(2) : amountInLocalCurrency
+        } else {
+            return amountInLocalCurrency
+        }
+    } else {
+        return amountInLocalCurrency
+    }
 }
 
 function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, employeeUserId) {
