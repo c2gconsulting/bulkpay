@@ -36,26 +36,14 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         numPaytypesBeforeSuppl = payTypeHeaders.length - 2  // EMP ID, Employee
     }
  
-    // 5 === 1 for employee column PLUS 2 for deductions and net pay
-    // PLUS 3 for pension employee and pension employer
+    // 5 === 2 for employee id and employee column PLUS 2 for deductions and net pay
+    // PLUS 2 for pension employee and pension employer
     let headerColumnSlots = _.range(numberOfPayments - 5).map(x => {
         return {}
     })
  
     payTypeHeaders.push(...headerColumnSlots)
-    let supplementaryPayTypeHeaders = [
-    {
-        id: 'totalDeduction',
-        code: 'totalDeduction',
-        description: 'Total Deduction'
-    },
-    {
-        id: 'netPay',
-        code: 'netPay',
-        description: 'Net Pay'
-    }]
-    payTypeHeaders.push(...supplementaryPayTypeHeaders)
-    //--
+    //-- 
 
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach((anEmployeePayType, empPayTypeIndex) => {
@@ -68,7 +56,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                         let payGradePaytypeDetails = _.find(payGrade.payTypePositionIds, function(payGradePaytype) {
                             return payGradePaytype.paytype === anEmployeePayType.id
                         })
-                        if(payGradePaytypeDetails) {// Adding '1' cos of the first 'EMP ID' and 'Employee' columns
+                        if(payGradePaytypeDetails) {// Adding '2' cos of the first 'EMP ID' and 'Employee' columns
                             if(payGradePaytypeDetails.hasOwnProperty("paySlipPositionId")) {
                                 payTypeHeaders[payGradePaytypeDetails.paySlipPositionId + 2] = {
                                     id: anEmployeePayType.id,
@@ -88,11 +76,25 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             }
         })
     })
+    
     payTypeHeaders.forEach((aColumn, index) => {
         if(Object.keys(aColumn).length === 0) {
             payTypeHeaders.splice(index, 1);
         }
     })
+
+    let supplementaryPayTypeHeaders = [
+    {
+        id: 'totalDeduction',
+        code: 'totalDeduction',
+        description: 'Total Deduction'
+    },
+    {
+        id: 'netPay',
+        code: 'netPay',
+        description: 'Net Pay'
+    }]
+    payTypeHeaders.push(...supplementaryPayTypeHeaders)
 
     return {payTypeHeaders}
 }
