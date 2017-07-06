@@ -24,6 +24,12 @@ Template.Payslip.helpers({
     'currency': () => {
         return Core.getTenantBaseCurrency().iso;
     },
+    'isPaymentCurrencySameAsTenants': (payment) => {
+        if(payment && payment.currency) {
+            let tenantCurrency = Core.getTenantBaseCurrency().iso
+            return payment.currency === tenantCurrency
+        }
+    },
     'getNetPayAlternateCurrency': function() {
         let self = Template.instance()
 

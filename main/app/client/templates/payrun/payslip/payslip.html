@@ -46,7 +46,10 @@
                                     <th>Payments</th>
                                     <th>Code</th>
                                     <th>Local Currency(NGN)</th>
+
+                                    {{#if getNetPayAlternateCurrency}}
                                     <th>Paytype Currency</th>
+                                    {{/if}}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -57,8 +60,30 @@
                                         <p></p>
                                     </td>
                                     <td>{{code}}</td>
-                                    <td>{{formatMoneyD value}}</td>
-                                    <td>{{formatMoneyD valueInForeignCurrency}}</td>
+                                    
+                                    <td>
+                                        {{#if this.currency}}
+                                        {{#if isPaymentCurrencySameAsTenants this}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                        {{else}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                    </td>
+
+                                    {{#if getNetPayAlternateCurrency}}
+                                    <td>
+                                        {{#if this.currency}}
+                                            {{#if getNetPayAlternateCurrency}}
+                                                {{#unless isPaymentCurrencySameAsTenants this}}
+                                                    {{formatMoneyD valueInForeignCurrency}}
+                                                {{/unless}}
+                                            {{else}}
+                                                {{formatMoneyD valueInForeignCurrency}}
+                                            {{/if}}
+                                        {{/if}}
+                                    </td>
+                                    {{/if}}
                                 </tr>
                                 {{/each}}
                                 </tbody>
@@ -71,7 +96,10 @@
                                     <th>Deduction</th>
                                     <th>Code</th>
                                     <th>Local Currency({{currency}})</th>
+
+                                    {{#if getNetPayAlternateCurrency}}
                                     <th>Paytype Currency</th>
+                                    {{/if}}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -82,8 +110,29 @@
                                             <p></p>
                                         </td>
                                         <td>{{code}}</td>
-                                        <td>{{formatMoneyD value}}</td>
-                                        <td>{{formatMoneyD valueInForeignCurrency}}</td>
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if isPaymentCurrencySameAsTenants this}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
+                                        {{else}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                        </td>
+                                        
+                                        {{#if getNetPayAlternateCurrency}}
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if getNetPayAlternateCurrency}}
+                                                {{#unless isPaymentCurrencySameAsTenants this}}
+                                                    {{formatMoneyD valueInForeignCurrency}}
+                                                {{/unless}}
+                                            {{else}}
+                                            {{formatMoneyD valueInForeignCurrency}}
+                                            {{/if}}
+                                        {{/if}}
+                                        </td>
+                                        {{/if}}
                                     </tr>
                                 {{/each}}
                                 </tbody>
@@ -97,7 +146,10 @@
                                     <th>Other Payments</th>
                                     <th>Code</th>
                                     <th>Local Currency(NGN)</th>
+                                    
+                                    {{#if getNetPayAlternateCurrency}}
                                     <th>Paytype Currency</th>
+                                    {{/if}}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -108,8 +160,29 @@
                                             <p></p>
                                         </td>
                                         <td>{{code}}</td>
-                                        <td>{{formatMoneyD value}}</td>
-                                        <td>{{formatMoneyD valueInForeignCurrency}}</td>
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if isPaymentCurrencySameAsTenants this}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
+                                        {{else}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                        </td>
+
+                                        {{#if getNetPayAlternateCurrency}}
+                                        <td>
+                                        {{#if this.currency}}                                            
+                                            {{#if getNetPayAlternateCurrency}}
+                                                {{#unless isPaymentCurrencySameAsTenants this}}
+                                                    {{formatMoneyD valueInForeignCurrency}}
+                                                {{/unless}}
+                                            {{else}}
+                                                {{formatMoneyD valueInForeignCurrency}}
+                                            {{/if}}
+                                        {{/if}}
+                                        </td>
+                                        {{/if}}
                                     </tr>
                                 {{/each}}
                                 </tbody>
