@@ -55,10 +55,10 @@ RequisitionController = BusinessUnitController.extend({
         this.render('ProcurementRequisitionApprovalList')
     },
 
-    showTravelRequisitionsList: function() {
+    showTravelRequestsList: function() {
         this.render('TravelRequisitionIndex')
     },
-    showTravelRequisitionApprovalList: function() {
+    showTravelRequestApprovalList: function() {
         this.render('TravelRequisitionApprovalList')
     },
     

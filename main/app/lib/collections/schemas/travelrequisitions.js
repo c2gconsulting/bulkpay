@@ -7,7 +7,7 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         type: String,
         optional: true
     },
-    businessUnitId: {
+    businessId: {
         type: String
     },
     description: {

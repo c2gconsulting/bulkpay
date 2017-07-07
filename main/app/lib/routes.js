@@ -291,16 +291,16 @@ Router.route('/business/:_id/employee/procurementrequisitions/approvalslist', {
     where: 'client'
 });
 
-Router.route('/business/:_id/employee/travelrequisitions', {
-    name: 'travelrequisition.list',
+Router.route('/business/:_id/employee/travelrequests', {
+    name: 'travelrequests.list',
     controller: 'RequisitionController',
-    action: 'showTravelRequisitionsList',
+    action: 'showTravelRequestsList',
     where: 'client'
 });
-Router.route('/business/:_id/employee/travelrequisitions/approvalslist', {
-    name: 'travelrequisition.approvalList',
+Router.route('/business/:_id/employee/travelrequests/approvalslist', {
+    name: 'travelrequests.approvalList',
     controller: 'RequisitionApprovalListController',
-    action: 'showTravelRequisitionApprovalList',
+    action: 'showTravelRequestApprovalList',
     where: 'client'
 });
 

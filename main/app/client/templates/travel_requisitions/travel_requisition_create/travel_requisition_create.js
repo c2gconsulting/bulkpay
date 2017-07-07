@@ -32,7 +32,7 @@ Template.TravelRequisitionCreate.events({
 
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+            Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
                 if(!err) {
                     swal({title: "Success", text: "Requisition Draft saved", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -67,7 +67,7 @@ Template.TravelRequisitionCreate.events({
             }
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, function(err, res) {
+            Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
                 if(!err) {
                     swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -75,7 +75,6 @@ Template.TravelRequisitionCreate.events({
                         Modal.hide()
                     })
                 } else {
-                    // console.log(`Err: ${JSON.stringify(err)}`)
                     swal('Validation error', err.message, 'error')
                 }
             })
@@ -105,7 +104,6 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let self = this;
 
     let businessUnitId = Session.get('context');
-    console.log(`businessUnit: ${businessUnitId}`)
 
     self.unitId = new ReactiveVar()
 
@@ -117,6 +115,7 @@ Template.TravelRequisitionCreate.onCreated(function () {
             if(employeeProfile) {
                 let userPositionId = employeeProfile.employment.position
                 let positionSubscription = self.subscribe('getEntity', userPositionId)
+
                 if(positionSubscription.ready()){
                     let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
                     self.unitId.set(userPosition.parentId)

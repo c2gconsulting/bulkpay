@@ -13,9 +13,7 @@
 
     <h5 class="leftpanel-title">Navigation</h5>
     <ul class="nav nav-pills nav-stacked">
-        {{#if context}}
-            {{> navlist}}
-        {{/if}}
+        {{> navlist}}
         <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
     </ul>
 
@@ -89,10 +87,10 @@
             {{/if}}
 
             {{#if isTravelRequisitionActive}}
-                <li><a href="{{pathFor 'travelrequisition.list'}}">Travel requests</a></li>
+                <li><a href="{{pathFor 'travelrequests.list'}}">Travel requests</a></li>
 
                 {{#if hasTravelRequisitionApproveAccess}}
-                <li><a href="{{pathFor 'travelrequisition.approvalList'}}">Trips Approval</a></li>
+                <li><a href="{{pathFor 'travelrequests.approvalList'}}">Trips Approval</a></li>
                 {{/if}}
             {{/if}}
 

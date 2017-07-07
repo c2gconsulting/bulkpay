@@ -60,7 +60,7 @@ Template.TravelRequisitionIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = ProcurementRequisitions.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition.find({createdBy: Meteor.userId()}).count()
         console.log(`totalNum: ${totalNum}`)
 
         let result = Math.floor(totalNum/limit)
@@ -101,7 +101,7 @@ Template.TravelRequisitionIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return ProcurementRequisitions.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisitions.find({createdBy: Meteor.userId()}, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
