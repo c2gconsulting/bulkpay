@@ -30,7 +30,7 @@ Template.TravelRequisitionIndex.events({
         console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getProcurementsICreated(skip)
-        Template.instance().procurementsICreated.set(newPageOfProcurements)
+        Template.instance().travelRequestsICreated.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -55,12 +55,12 @@ Template.registerHelper('repeat', function(max) {
 /* TravelRequisitionIndex: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionIndex.helpers({
-    'procurementsICreated': function() {
-        return Template.instance().procurementsICreated.get()
+    'travelRequestsICreated': function() {
+        return Template.instance().travelRequestsICreated.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisitions.find({createdBy: Meteor.userId()}).count()
         console.log(`totalNum: ${totalNum}`)
 
         let result = Math.floor(totalNum/limit)
@@ -88,10 +88,9 @@ Template.TravelRequisitionIndex.onCreated(function () {
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
-    self.procurementsICreated = new ReactiveVar()
-    self.procurementsToApprove = new ReactiveVar()
+    self.travelRequestsICreated = new ReactiveVar()
 
-    self.getProcurementsICreated = function(skip) {
+    self.getTravelRequestsICreated = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -113,9 +112,9 @@ Template.TravelRequisitionIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let procurementsCreatedSub = self.subscribe('ProcurementRequisitionsICreated', businessUnitId, limit, sort)
-        if(procurementsCreatedSub.ready()) {
-            self.procurementsICreated.set(self.getProcurementsICreated(0))
+        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
+        if(travelRequestsCreatedSub.ready()) {
+            self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
         }
     })
 });
