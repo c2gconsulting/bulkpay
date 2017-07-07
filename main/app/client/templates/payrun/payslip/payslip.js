@@ -33,8 +33,8 @@ Template.Payslip.helpers({
     'getNetPayAlternateCurrency': function() {
         let self = Template.instance()
 
-        if(self.data && self.data.employee && self.data.employee.gradeId) {
-            let employeePayGradeId = self.data.employee.gradeId
+        if(self.data.payslip && self.data.payslip.employee && self.data.payslip.employee.gradeId) {
+            let employeePayGradeId = self.data.payslip.employee.gradeId
             let payGrade = PayGrades.findOne(employeePayGradeId)
 
             if(payGrade) {
@@ -45,10 +45,10 @@ Template.Payslip.helpers({
     },
     'getNetPayAlternateCurrencyRateToBase': function() {
         let self = Template.instance()
-        let period = self.data.period
-        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        let period = self.data.payslip.period
+        let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
         
-        let employeePayGradeId = Template.instance().data.employee.gradeId
+        let employeePayGradeId = Template.instance().data.payslip.employee.gradeId
         let payGrade = PayGrades.findOne(employeePayGradeId)
 
         if(payGrade) {
@@ -64,7 +64,7 @@ Template.Payslip.helpers({
     },
     netPayCurrencyAllocation: function() {
         let self = Template.instance()
-        let employeeUserId = self.data.employee.employeeUserId
+        let employeeUserId = self.data.payslip.employee.employeeUserId
         let user = Meteor.users.findOne(employeeUserId)
 
         if(user) {
@@ -76,10 +76,10 @@ Template.Payslip.helpers({
     },
     getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists: function(netPaymentInBaseCurrency) {
         let self = Template.instance()
-        let employeeUserId = self.data.employee.employeeUserId
+        let employeeUserId = self.data.payslip.employee.employeeUserId
 
-        let period = self.data.period
-        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        let period = self.data.payslip.period
+        let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
         
         let user = Meteor.users.findOne(employeeUserId)
 
@@ -116,10 +116,10 @@ Template.Payslip.helpers({
     },
     getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists: function(netPaymentInBaseCurrency) {
         let self = Template.instance()
-        let employeeUserId = self.data.employee.employeeUserId
+        let employeeUserId = self.data.payslip.employee.employeeUserId
 
-        let period = self.data.period
-        let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+        let period = self.data.payslip.period
+        let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
         
         let user = Meteor.users.findOne(employeeUserId)
 
@@ -173,7 +173,7 @@ Template.Payslip.onCreated(function () {
     let self = this;
 
     self.employeeData = new ReactiveVar();
-    self.employeeData.set(self.data.employee);
+    self.employeeData.set(self.data.payslip.employee);
 
     self.businessUnitName = new ReactiveVar()
 
@@ -186,7 +186,7 @@ Template.Payslip.onCreated(function () {
     self.subscribe("paygrades", Session.get('context'));
     // console.log(`payments: `, self.data)
 
-    let formattedPeriod = `${self.data.period.month}${self.data.period.year}`
+    let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
     self.subscribe('currenciesForPeriod', formattedPeriod);
 
     let months = {

@@ -11,7 +11,13 @@ Template.ResultEntry.events({
     },
     'click .payslip': (e, tmpl) => {
         // console.log("what i'm sending to payslip is ", JSON.stringify(tmpl.data.payslip));
-        Modal.show('Payslip', tmpl.data.payslip);
+
+        let payLoadForPayslip = {
+            payslip: tmpl.data.payslip,
+            payslipWithCurrencyDelineation: tmpl.data.payslipWithCurrencyDelineation
+        }
+
+        Modal.show('Payslip', payLoadForPayslip);
     },
     'click .log': (e, tmpl) => {
         Modal.show('Log', tmpl.data.log);
