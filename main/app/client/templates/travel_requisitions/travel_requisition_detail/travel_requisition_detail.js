@@ -35,7 +35,7 @@ Template.TravelRequisitionDetail.events({
 
                 let businessUnitId = Session.get('context')
 
-                Meteor.call('ProcurementRequisition/createDraft', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
                         swal({title: "Success", text: "Requisition Draft saved", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -70,7 +70,7 @@ Template.TravelRequisitionDetail.events({
 
                 let businessUnitId = Session.get('context')
 
-                Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
                         swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -93,7 +93,7 @@ Template.TravelRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
+            Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
                 if(!err) {
                     swal({title: "Success", text: "Requisition treated", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -112,7 +112,7 @@ Template.TravelRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/reject', businessUnitId, procurementDetails._id, function(err, res) {
+            Meteor.call('TravelRequest/reject', businessUnitId, procurementDetails._id, function(err, res) {
                 if(!err) {
                     swal({title: "Success", text: "Requisition rejected", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
@@ -173,10 +173,10 @@ Template.TravelRequisitionDetail.onCreated(function () {
     }
 
     self.autorun(function() {
-        let procurementSub = self.subscribe('ProcurementRequisition', invokeReason.requisitionId)
+        let procurementSub = self.subscribe('TravelRequest', invokeReason.requisitionId)
         if(procurementSub.ready()) {
             console.log(`procurement subscription ready `)
-            let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
+            let procurementDetails = TravelRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
             
             if(procurementDetails.unitId) {
