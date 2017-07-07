@@ -881,7 +881,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         taxLog = taxCalculationResult.taxLog
 
                         //populate result for tax
-                        employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTax, amountPC: '', code: tax.code, description: tax.name, type: 'Deduction'  });
+                        employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: '', code: tax.code, description: tax.name, type: 'Deduction'  });
                     }
 
                     if(taxLog)
