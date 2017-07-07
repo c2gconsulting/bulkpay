@@ -277,19 +277,32 @@ Router.route('/business/:_id/employee/leave/entitlements', {
     action: 'showLeaveEntitlementsList',
     where: 'client'
 });
+
 Router.route('/business/:_id/employee/procurementrequisitions', {
     name: 'procurementrequisition.list',
-    controller: 'ProcurementRequisitionController',
+    controller: 'RequisitionController',
     action: 'showProcurementRequisitionsList',
     where: 'client'
 });
 Router.route('/business/:_id/employee/procurementrequisitions/approvalslist', {
     name: 'procurementrequisition.approvalList',
-    controller: 'ProcurementRequisitionApprovalListController',
+    controller: 'RequisitionApprovalListController',
     action: 'showProcurementRequisitionApprovalList',
     where: 'client'
 });
 
+Router.route('/business/:_id/employee/travelrequisitions', {
+    name: 'travelrequisition.list',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisitionsList',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/travelrequisitions/approvalslist', {
+    name: 'travelrequisition.approvalList',
+    controller: 'RequisitionApprovalListController',
+    action: 'showTravelRequisitionApprovalList',
+    where: 'client'
+});
 
 Router.route('/business/:_id/reports/netpay', {
     name: 'reports.netpay',

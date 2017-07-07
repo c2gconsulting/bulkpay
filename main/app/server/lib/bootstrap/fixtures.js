@@ -145,6 +145,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
         isProcurementRequisitionActive : false,
+        isTravelRequisitionActive: false,
         isActive: true
     }
     let daarConfig = {
@@ -152,6 +153,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades',
         isProcurementRequisitionActive : true,
+        isTravelRequisitionActive: true,
         isActive: true
     }
 

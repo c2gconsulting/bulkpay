@@ -24,6 +24,18 @@ Template.navlist.helpers({
             return true
         }
     },
+    hasTravelRequisitionApproveAccess: () => {
+        let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
+        return canApproveTrip;
+    },
+    isTravelRequisitionActive: () => {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTravelRequisitionActive && businessUnitCustomConfig.isActive
+        } else {
+            return true
+        }
+    },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {

@@ -21,6 +21,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isProcurementRequisitionActive: {
         type: Boolean
     },
+    isTravelRequisitionActive: {
+        type: Boolean
+    },
     isActive: {
         type: Boolean
     },

@@ -1,4 +1,4 @@
-ProcurementRequisitionApprovalListController = BusinessUnitController.extend({
+RequisitionController = BusinessUnitController.extend({
 
     // a place to put your subscriptions
     // this.subscribe('items');
@@ -48,9 +48,20 @@ ProcurementRequisitionApprovalListController = BusinessUnitController.extend({
     // action: function () {
     //   this.render();
     // },
+    showProcurementRequisitionsList: function() {
+        this.render('ProcurementRequisitionIndex')
+    },
     showProcurementRequisitionApprovalList: function() {
         this.render('ProcurementRequisitionApprovalList')
     },
+
+    showTravelRequisitionsList: function() {
+        this.render('TravelRequisitionIndex')
+    },
+    showTravelRequisitionApprovalList: function() {
+        this.render('TravelRequisitionApprovalList')
+    },
+    
     onAfterAction: function () {
     },
     onStop: function () {

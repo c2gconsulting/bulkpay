@@ -88,6 +88,14 @@
                 {{/if}}
             {{/if}}
 
+            {{#if isTravelRequisitionActive}}
+                <li><a href="{{pathFor 'travelrequisition.list'}}">Travel requests</a></li>
+
+                {{#if hasTravelRequisitionApproveAccess}}
+                <li><a href="{{pathFor 'travelrequisition.approvalList'}}">Trips Approval</a></li>
+                {{/if}}
+            {{/if}}
+
             <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         </ul>
     </li>

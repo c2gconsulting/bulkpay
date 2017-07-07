@@ -363,6 +363,13 @@ ProcurementRequisitions = new Mongo.Collection("procurementrequisitions");
 Partitioner.partitionCollection(ProcurementRequisitions);
 ProcurementRequisitions.attachSchema(Core.Schemas.ProcurementRequisition);
 
+/**
+ * Core Collections ProcurementRequisitions
+ */
+TravelRequisitions = new Mongo.Collection("travelrequisitions");
+Partitioner.partitionCollection(TravelRequisitions);
+TravelRequisitions.attachSchema(Core.Schemas.TravelRequisition);
+
 
 LeaveTypes.allow({
     insert: function(userId, doc) {

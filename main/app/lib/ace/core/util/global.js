@@ -220,6 +220,9 @@ _.extend(Core, {
     hasProcurementRequisitionApproveAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE, userId);
     },
+    hasTravelRequisitionApproveAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.TRAVEL_REQUISITION_APPROVE, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },
