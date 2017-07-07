@@ -91,6 +91,89 @@
                             </table>
                         </div><!-- table-responsive -->
 
+                        {{#if getNetPayAlternateCurrency}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Total Payments</th>
+                                    <th>Local Currency({{currency}})</th>
+                                    <th>{{getNetPayAlternateCurrency}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td>{{formatMoneyD (totalBenefitForCurrency (currency))}}</td>
+                                        <td>{{formatMoneyD (totalBenefitForCurrency (getNetPayAlternateCurrency))}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/if}}
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Deductions</th>
+                                    <th>Code</th>
+                                    <th>Local Currency({{currency}})</th>
+
+                                    {{#if getNetPayAlternateCurrency}}
+                                    <th>Paytype Currency</th>
+                                    {{/if}}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{#each deduction}}
+                                    <tr>
+                                        <td>
+                                            <h5><a href="">{{title}}</a></h5>
+                                            <p></p>
+                                        </td>
+                                        <td>{{code}}</td>
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if isPaymentCurrencySameAsTenants this}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
+                                        {{else}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                        </td>
+                                        
+                                        {{#if getNetPayAlternateCurrency}}
+                                        <td>
+                                            {{formatMoneyD valueInForeignCurrency}}
+                                        </td>
+                                        {{/if}}
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                            </table>
+                        </div><!-- table-responsive -->
+
+                        {{#if getNetPayAlternateCurrency}}
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Total Deductions</th>
+                                    <th>Local Currency({{currency}})</th>
+                                    <th>{{getNetPayAlternateCurrency}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td>-{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
+                                        <td>-{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        {{/if}}
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-dark table-invoice">
@@ -140,57 +223,7 @@
                                 {{/each}}
                                 </tbody>
                             </table>
-                        </div><!-- table-responsive -->
-
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-dark table-invoice">
-                                <thead>
-                                <tr>
-                                    <th>Deduction</th>
-                                    <th>Code</th>
-                                    <th>Local Currency({{currency}})</th>
-
-                                    {{#if getNetPayAlternateCurrency}}
-                                    <th>Paytype Currency</th>
-                                    {{/if}}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {{#each deduction}}
-                                    <tr>
-                                        <td>
-                                            <h5><a href="">{{title}}</a></h5>
-                                            <p></p>
-                                        </td>
-                                        <td>{{code}}</td>
-                                        <td>
-                                        {{#if this.currency}}
-                                            {{#if isPaymentCurrencySameAsTenants this}}
-                                                {{formatMoneyD value}}
-                                            {{/if}}
-                                        {{else}}
-                                            {{formatMoneyD value}}
-                                        {{/if}}
-                                        </td>
-                                        
-                                        {{#if getNetPayAlternateCurrency}}
-                                        <td>
-                                        {{#if this.currency}}
-                                            {{#if getNetPayAlternateCurrency}}
-                                                {{#unless isPaymentCurrencySameAsTenants this}}
-                                                    {{formatMoneyD valueInForeignCurrency}}
-                                                {{/unless}}
-                                            {{else}}
-                                            {{formatMoneyD valueInForeignCurrency}}
-                                            {{/if}}
-                                        {{/if}}
-                                        </td>
-                                        {{/if}}
-                                    </tr>
-                                {{/each}}
-                                </tbody>
-                            </table>
-                        </div><!-- table-responsive -->
+                        </div><!-- table-responsive -->                        
 
                         {{#if getNetPayAlternateCurrency}}
                         <div class="table-responsive">
@@ -198,7 +231,7 @@
                                 <thead>
                                 <tr>
                                     <th>Totals</th>
-                                    <th>Local Currency(NGN)</th>
+                                    <th>Local Currency({{currency}})</th>
                                     <th>{{getNetPayAlternateCurrency}}</th>
                                 </tr>
                                 </thead>
@@ -210,8 +243,8 @@
                                     </tr>
                                     <tr>
                                         <td>Total Deductions:</td>
-                                        <td>{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
-                                        <td>{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>                                    </tr>
+                                        <td>-{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
+                                        <td>-{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>                                    </tr>
                                     <tr>
                                         <td>Net Pay:</td>
                                         <td>{{formatMoneyD (subtract (totalBenefitForCurrency (currency)) (totalDeductionForCurrency (currency)))}}</td>

@@ -183,7 +183,6 @@ Template.Payslip.helpers({
         let self = Template.instance()
 
         let payslipWithCurrencyDelineation = self.data.payslipWithCurrencyDelineation
-        console.log(`payslipWithCurrencyDelineation: `, payslipWithCurrencyDelineation)
 
         if(payslipWithCurrencyDelineation) {
             let currencyPayments = payslipWithCurrencyDelineation.deduction[currency]

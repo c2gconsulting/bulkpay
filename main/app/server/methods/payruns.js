@@ -700,7 +700,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                     code: x.code,
                                                     currency: x.currency || "",
                                                     value,
-                                                    valueInForeignCurrency
+                                                    valueInForeignCurrency: ''
                                                 });
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.deduction[x.currency]
                                                 if(!paymentsForCurrency) {
