@@ -89,55 +89,7 @@
                                 </tbody>
                             </table>
                         </div><!-- table-responsive -->
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-dark table-invoice">
-                                <thead>
-                                <tr>
-                                    <th>Deduction</th>
-                                    <th>Code</th>
-                                    <th>Local Currency({{currency}})</th>
 
-                                    {{#if getNetPayAlternateCurrency}}
-                                    <th>Paytype Currency</th>
-                                    {{/if}}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {{#each deduction}}
-                                    <tr>
-                                        <td>
-                                            <h5><a href="">{{title}}</a></h5>
-                                            <p></p>
-                                        </td>
-                                        <td>{{code}}</td>
-                                        <td>
-                                        {{#if this.currency}}
-                                            {{#if isPaymentCurrencySameAsTenants this}}
-                                                {{formatMoneyD value}}
-                                            {{/if}}
-                                        {{else}}
-                                            {{formatMoneyD value}}
-                                        {{/if}}
-                                        </td>
-                                        
-                                        {{#if getNetPayAlternateCurrency}}
-                                        <td>
-                                        {{#if this.currency}}
-                                            {{#if getNetPayAlternateCurrency}}
-                                                {{#unless isPaymentCurrencySameAsTenants this}}
-                                                    {{formatMoneyD valueInForeignCurrency}}
-                                                {{/unless}}
-                                            {{else}}
-                                            {{formatMoneyD valueInForeignCurrency}}
-                                            {{/if}}
-                                        {{/if}}
-                                        </td>
-                                        {{/if}}
-                                    </tr>
-                                {{/each}}
-                                </tbody>
-                            </table>
-                        </div><!-- table-responsive -->
 
                         <div class="table-responsive">
                             <table class="table table-bordered table-dark table-invoice">
@@ -179,6 +131,56 @@
                                                 {{/unless}}
                                             {{else}}
                                                 {{formatMoneyD valueInForeignCurrency}}
+                                            {{/if}}
+                                        {{/if}}
+                                        </td>
+                                        {{/if}}
+                                    </tr>
+                                {{/each}}
+                                </tbody>
+                            </table>
+                        </div><!-- table-responsive -->
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-dark table-invoice">
+                                <thead>
+                                <tr>
+                                    <th>Deduction</th>
+                                    <th>Code</th>
+                                    <th>Local Currency({{currency}})</th>
+
+                                    {{#if getNetPayAlternateCurrency}}
+                                    <th>Paytype Currency</th>
+                                    {{/if}}
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {{#each deduction}}
+                                    <tr>
+                                        <td>
+                                            <h5><a href="">{{title}}</a></h5>
+                                            <p></p>
+                                        </td>
+                                        <td>{{code}}</td>
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if isPaymentCurrencySameAsTenants this}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
+                                        {{else}}
+                                            {{formatMoneyD value}}
+                                        {{/if}}
+                                        </td>
+                                        
+                                        {{#if getNetPayAlternateCurrency}}
+                                        <td>
+                                        {{#if this.currency}}
+                                            {{#if getNetPayAlternateCurrency}}
+                                                {{#unless isPaymentCurrencySameAsTenants this}}
+                                                    {{formatMoneyD valueInForeignCurrency}}
+                                                {{/unless}}
+                                            {{else}}
+                                            {{formatMoneyD valueInForeignCurrency}}
                                             {{/if}}
                                         {{/if}}
                                         </td>
