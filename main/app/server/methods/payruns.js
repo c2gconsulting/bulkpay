@@ -663,9 +663,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 benefit.push(paymentObj);
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.benefit[x.currency]
                                                 if(!paymentsForCurrency) {
-                                                    paymentsAccountingForCurrency.benefit[x.currency] = []
+                                                    paymentsAccountingForCurrency.benefit[x.currency] = {payments: []}
                                                 }
-                                                paymentsAccountingForCurrency.benefit[x.currency].push({
+                                                paymentsAccountingForCurrency.benefit[x.currency].payments.push({
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
@@ -682,9 +682,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 });
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.others[x.currency]
                                                 if(!paymentsForCurrency) {
-                                                    paymentsAccountingForCurrency.others[x.currency] = []
+                                                    paymentsAccountingForCurrency.others[x.currency] = {payments: []}
                                                 }
-                                                paymentsAccountingForCurrency.others[x.currency].push({
+                                                paymentsAccountingForCurrency.others[x.currency].payments.push({
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
@@ -704,9 +704,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 });
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.deduction[x.currency]
                                                 if(!paymentsForCurrency) {
-                                                    paymentsAccountingForCurrency.deduction[x.currency] = []
+                                                    paymentsAccountingForCurrency.deduction[x.currency] = {payments: []}
                                                 }
-                                                paymentsAccountingForCurrency.deduction[x.currency].push({
+                                                paymentsAccountingForCurrency.deduction[x.currency].payments.push({
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
@@ -723,9 +723,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 });
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.others[x.currency]
                                                 if(!paymentsForCurrency) {
-                                                    paymentsAccountingForCurrency.deduction[x.currency] = []
+                                                    paymentsAccountingForCurrency.deduction[x.currency] = {payments: []}
                                                 }
-                                                paymentsAccountingForCurrency.deduction[x.currency].push({
+                                                paymentsAccountingForCurrency.deduction[x.currency].payments.push({
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
@@ -827,7 +827,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                     }
 
                                     let paymentsInCurrency = paymentsAccountingForCurrency[aPayCategory][aCurrency]
-                                    paymentsInCurrency.forEach(aPayment => {
+                                    paymentsInCurrency.payments.forEach(aPayment => {
                                         if(aPayment.taxable) {
                                             let paymentAsFloat = parseFloat(aPayment.value)
                                             if(!isNaN(paymentAsFloat)) {
@@ -914,7 +914,25 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                     //--
                     final.payslipWithCurrencyDelineation = paymentsAccountingForCurrency
                     //--
+                    let benefitsDeductionsAndOthers = Object.keys(paymentsAccountingForCurrency)
+                    benefitsDeductionsAndOthers.forEach(aPayCategory => {
+                        let payCategoryCurrencies = Object.keys(paymentsAccountingForCurrency[aPayCategory])
 
+                        payCategoryCurrencies.forEach(aCurrency => {
+                            let total = 0
+
+                            let paymentsInCurrency = paymentsAccountingForCurrency[aPayCategory][aCurrency]
+                            paymentsInCurrency.payments.forEach(aPayment => {
+                                let paymentAsFloat = parseFloat(aPayment.value)
+                                if(!isNaN(paymentAsFloat)) {
+                                    total += paymentAsFloat
+                                }
+                            })
+                            paymentsInCurrency.total = total
+                        })
+                    })
+
+                    //--
                     //calculate net payment as payment - deductions;
                     // negate and add pension to deduction
                     const totalPayment = sumPayments(final.payslip.benefit);
