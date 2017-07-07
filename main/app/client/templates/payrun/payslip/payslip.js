@@ -163,6 +163,34 @@ Template.Payslip.helpers({
         } else {
             return '---'
         }
+    },
+    subtract: function(a, b) {
+        return a - b
+    },
+    totalBenefitForCurrency: function(currency) {
+        let self = Template.instance()
+
+        let payslipWithCurrencyDelineation = self.data.payslipWithCurrencyDelineation
+
+        if(payslipWithCurrencyDelineation) {
+            let currencyPayments = payslipWithCurrencyDelineation.benefit[currency]
+            if(currencyPayments) {
+                return currencyPayments.total
+            }
+        }
+    },
+    totalDeductionForCurrency: function(currency) {
+        let self = Template.instance()
+
+        let payslipWithCurrencyDelineation = self.data.payslipWithCurrencyDelineation
+        console.log(`payslipWithCurrencyDelineation: `, payslipWithCurrencyDelineation)
+
+        if(payslipWithCurrencyDelineation) {
+            let currencyPayments = payslipWithCurrencyDelineation.deduction[currency]
+            if(currencyPayments) {
+                return currencyPayments.total
+            }
+        }
     }
 });
 

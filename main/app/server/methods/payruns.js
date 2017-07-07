@@ -642,11 +642,11 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         let currencyRateForPayType = _.find(currencyRatesForPeriod, (aCurrency) => {
                                             return aCurrency.code === x.currency
                                         })
-                                        if(currencyRateForPayType) {
-                                            if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
-                                                value = value * currencyRateForPayType.rateToBaseCurrency
-                                            }
-                                        }
+                                        // if(currencyRateForPayType) {
+                                        //     if(!isNaN(currencyRateForPayType.rateToBaseCurrency)) {
+                                        //         value = value * currencyRateForPayType.rateToBaseCurrency
+                                        //     }
+                                        // }
                                     }
                                     //--
                                     switch (x.type) {
@@ -710,7 +710,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
-                                                    taxable: x.taxable,
+                                                    taxable: x.taxable,  // redundant. Deductions can't be taxable
                                                     value
                                                 })
                                             } else if(!x.addToTotal){
@@ -723,9 +723,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 });
                                                 let paymentsForCurrency = paymentsAccountingForCurrency.others[x.currency]
                                                 if(!paymentsForCurrency) {
-                                                    paymentsAccountingForCurrency.deduction[x.currency] = {payments: []}
+                                                    paymentsAccountingForCurrency.others[x.currency] = {payments: []}
                                                 }
-                                                paymentsAccountingForCurrency.deduction[x.currency].payments.push({
+                                                paymentsAccountingForCurrency.others[x.currency].payments.push({
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency,
@@ -844,10 +844,29 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                             let taxCurrencies = Object.keys(taxableIncomeInDiffCurrencies)
                             taxCurrencies.forEach(aCurrency => {
                                 let taxableIncome = taxableIncomeInDiffCurrencies[aCurrency]        
+
+                                if(!paymentsAccountingForCurrency.deduction[aCurrency]) {
+                                    paymentsAccountingForCurrency.deduction[aCurrency] = {payments: []}
+                                }
+
                                 if(aCurrency === tenant.baseCurrency.iso) {
-                                    netTaxLocal = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)
+                                    netTaxLocal = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)                                    
+                                    paymentsAccountingForCurrency.deduction[aCurrency].payments.push({
+                                        title: tax.name,
+                                        code: tax.code,
+                                        currency: aCurrency,
+                                        // taxable: true,
+                                        value: netTaxLocal
+                                    })
                                 } else {
                                     netTaxForeign = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)
+                                    paymentsAccountingForCurrency.deduction[aCurrency].payments.push({
+                                        title: tax.name,
+                                        code: tax.code,
+                                        currency: aCurrency,
+                                        // taxable: true,
+                                        value: netTaxForeign
+                                    })
                                 }
                                 //--
                                 taxComputationInput.push({
@@ -897,7 +916,6 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         value: netTaxLocal * -1, 
                         valueInForeignCurrency: netTaxForeign * -1
                     }); // negate add tax to deduction
-
                     //--End of Tax processing
 
                     if(pension) {
@@ -922,6 +940,10 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                             let total = 0
 
                             let paymentsInCurrency = paymentsAccountingForCurrency[aPayCategory][aCurrency]
+                            if(!paymentsInCurrency) {
+                                paymentsAccountingForCurrency[aPayCategory][aCurrency] = {payments: []}
+                                paymentsInCurrency = paymentsAccountingForCurrency[aPayCategory][aCurrency]
+                            }
                             paymentsInCurrency.payments.forEach(aPayment => {
                                 let paymentAsFloat = parseFloat(aPayment.value)
                                 if(!isNaN(paymentAsFloat)) {
