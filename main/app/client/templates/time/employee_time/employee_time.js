@@ -65,7 +65,8 @@ Template.EmployeeTime.onRendered(function () {
             let obj = {};
             obj._id = x._id;
             obj.type = 'TimeWritings';
-            obj.title = user + "-" + x.activity;
+            // obj.title = user + "-" + x.activity;
+            obj.title = user;
 
             var dayStart = moment(x.day).startOf('day').toDate(); // set to 12:00 am today
             var dayEnd = moment(x.day).endOf('day').toDate(); // set to 23:59 pm today

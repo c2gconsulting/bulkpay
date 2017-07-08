@@ -10,6 +10,76 @@ Template.TravelRequisitionCreate.events({
 
         Modal.show('TravelRequisitionCreate')
     },
+    "keyup input[name=flightCost]": _.throttle(function(e, tmpl) {
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let flightCostAsNumber = parseFloat(text)
+        if(isNaN(flightCostAsNumber)) {
+            flightCostAsNumber = 0
+        }
+        tmpl.flightCost.set(flightCostAsNumber)
+
+        let accommodationCost = tmpl.accommodationCost.get()
+        let localTransportCost = tmpl.localTransportCost.get()
+        let perDiemCost = tmpl.perDiemCost.get()
+        let miscCost = tmpl.miscCost.get()
+
+        let totalTripCost = flightCostAsNumber + accommodationCost + localTransportCost + 
+            perDiemCost + miscCost
+
+        tmpl.totalTripCost.set(totalTripCost)
+    }, 200),
+    "keyup input[name=accommodationCost]": _.throttle(function(e, tmpl) {
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let accommodationCostAsNumber = parseFloat(text)
+        if(isNaN(accommodationCostAsNumber)) {
+            accommodationCostAsNumber = 0
+        }
+        tmpl.accommodationCost.set(accommodationCostAsNumber)
+
+        let flightCost = tmpl.flightCost.get()
+        let localTransportCost = tmpl.localTransportCost.get()
+        let perDiemCost = tmpl.perDiemCost.get()
+        let miscCost = tmpl.miscCost.get()
+
+        let totalTripCost = flightCost + accommodationCostAsNumber + localTransportCost + 
+            perDiemCost + miscCost
+
+        tmpl.totalTripCost.set(totalTripCost)
+    }, 200),
+    "keyup input[name=localTransportCost]": _.throttle(function(e, tmpl) {
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        console.log(`Inside local transport cost: `, text)
+        
+        let localTransportCostAsNumber = parseFloat(text)
+        if(isNaN(localTransportCostAsNumber)) {
+            localTransportCostAsNumber = 0
+        }
+        tmpl.localTransportCost.set(localTransportCostAsNumber)
+
+        let flightCost = tmpl.flightCost.get()
+        let accommodationCost = tmpl.accommodationCost.get()
+        let perDiemCost = tmpl.perDiemCost.get()
+        let miscCost = tmpl.miscCost.get()
+
+        let totalTripCost = flightCost + accommodationCost + localTransportCostAsNumber + 
+            perDiemCost + miscCost
+
+        tmpl.totalTripCost.set(totalTripCost)
+    }, 200),
+
+
     'click #new-requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
         let description = $("input[name=description]").val()
@@ -164,6 +234,9 @@ Template.TravelRequisitionCreate.helpers({
 
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
+    },
+    'totalTripCost': function() {
+        return Template.instance().totalTripCost.get()
     }
 });
 
@@ -178,6 +251,13 @@ Template.TravelRequisitionCreate.onCreated(function () {
     self.unitId = new ReactiveVar()
 
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
+    //--
+    self.flightCost = new ReactiveVar(0)
+    self.accommodationCost = new ReactiveVar(0)
+    self.localTransportCost = new ReactiveVar(0)
+    self.totalTripCost = new ReactiveVar(0)
+    self.perDiemCost = new ReactiveVar(0)
+    self.miscCost = new ReactiveVar(0)
 
     self.autorun(function(){
         if(unitsSubscription.ready()){
