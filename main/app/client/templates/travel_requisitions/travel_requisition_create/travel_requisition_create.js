@@ -60,8 +60,6 @@ Template.TravelRequisitionCreate.events({
         if (!text || text.trim().length === 0) {
             text = "0"
         }
-        console.log(`Inside local transport cost: `, text)
-        
         let localTransportCostAsNumber = parseFloat(text)
         if(isNaN(localTransportCostAsNumber)) {
             localTransportCostAsNumber = 0
@@ -78,7 +76,51 @@ Template.TravelRequisitionCreate.events({
 
         tmpl.totalTripCost.set(totalTripCost)
     }, 200),
+    "keyup input[name=perDiemCost]": _.throttle(function(e, tmpl) {
+        var text = $(e.target).val().trim();
 
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        
+        let perDiemCostAsNumber = parseFloat(text)
+        if(isNaN(perDiemCostAsNumber)) {
+            perDiemCostAsNumber = 0
+        }
+        tmpl.perDiemCost.set(perDiemCostAsNumber)
+
+        let flightCost = tmpl.flightCost.get()
+        let accommodationCost = tmpl.accommodationCost.get()
+        let localTransportCost = tmpl.localTransportCost.get()
+        let miscCost = tmpl.miscCost.get()
+
+        let totalTripCost = flightCost + accommodationCost + localTransportCost + 
+            perDiemCostAsNumber + miscCost
+
+        tmpl.totalTripCost.set(totalTripCost)
+    }, 200),
+    "keyup input[name=miscCosts]": _.throttle(function(e, tmpl) {
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }        
+        let miscCostAsNumber = parseFloat(text)
+        if(isNaN(miscCostAsNumber)) {
+            miscCostAsNumber = 0
+        }
+        tmpl.miscCost.set(miscCostAsNumber)
+
+        let flightCost = tmpl.flightCost.get()
+        let accommodationCost = tmpl.accommodationCost.get()
+        let localTransportCost = tmpl.localTransportCost.get()
+        let perDiemCost = tmpl.perDiemCost.get()
+
+        let totalTripCost = flightCost + accommodationCost + localTransportCost + 
+            perDiemCost + miscCostAsNumber
+
+        tmpl.totalTripCost.set(totalTripCost)
+    }, 200),
 
     'click #new-requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
