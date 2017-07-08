@@ -29,7 +29,7 @@ Template.TravelRequisitionApprovalList.events({
         let skip = limit * pageNumAsInt
         console.log(`skip: ${skip}`)
 
-        let newPageOfProcurements = Template.instance().getProcurementsToApprove(skip)
+        let newPageOfProcurements = Template.instance().getTravelRequestsToApprove(skip)
         Template.instance().travelRequestsToApprove.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)

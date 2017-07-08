@@ -29,7 +29,7 @@ Template.TravelRequisitionIndex.events({
         let skip = limit * pageNumAsInt
         console.log(`skip: ${skip}`)
 
-        let newPageOfProcurements = Template.instance().getProcurementsICreated(skip)
+        let newPageOfProcurements = Template.instance().getTravelRequestsICreated(skip)
         Template.instance().travelRequestsICreated.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
