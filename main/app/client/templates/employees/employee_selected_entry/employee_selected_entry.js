@@ -180,6 +180,26 @@ Template.EmployeeSelectedEntry.helpers({
       console.log("canApproveProcurementApprove: " + canApproveProcurement);
 
       return canApproveProcurement;
+  },
+  isProcurementRequisitionActive: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isProcurementRequisitionActive && businessUnitCustomConfig.isActive
+      } else {
+          return true
+      }
+  },
+  hasTravelRequisitionApproveAccess: () => {
+      let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
+      return canApproveTrip;
+  },
+  isTravelRequisitionActive: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isTravelRequisitionActive && businessUnitCustomConfig.isActive
+      } else {
+          return true
+      }
   }
 });
 
@@ -195,6 +215,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
     self.allLeaveEntitlements = new ReactiveVar()
     self.selectedUserLeaveEntitlements = new ReactiveVar()
 
+    self.businessUnitCustomConfig = new ReactiveVar()
+
     self.setEmployeePermissons = function() {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
       if(selectedEmployee) {
@@ -206,6 +228,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
         let shouldManagePayroll = $("[name=payrollManage]").val();
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
+        let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
 
         let arrayOfRoles = [];
         if(shouldManageEmployeeData === "true") {
@@ -232,6 +255,10 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(shouldApproveProcurementRequisition === "true") {
             arrayOfRoles.push(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE)
         }
+        if(shouldTravelRequestApprove === "true") {
+            arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_APPROVE)
+        }
+
         if(Core.hasRoleManageAccess(Meteor.userId())) {
           let shouldHaveRoleManageAccess = $("[name=roleManage]").val();
           if(shouldHaveRoleManageAccess === "true") {
@@ -263,8 +290,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(selectedEmployee) {
             let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, selectedEmployee._id)
             let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
+            let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessId, Core.tenantId);
 
-            if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
+            if(userEntitlementSubs.ready() && allLeaveEntitlements.ready() && customConfigSub.ready()){
                 let selectedUserLeaveEntitlements = UserLeaveEntitlements.findOne({
                     businessId: businessId, userId: selectedEmployee._id
                 })
@@ -274,6 +302,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
                     businessId: businessId
                 }).fetch()
                 self.allLeaveEntitlements.set(allLeaveEntitlements)
+                //--
+                self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessId}))
             }
         }
     })

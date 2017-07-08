@@ -37,7 +37,7 @@ Template.TravelRequisitionDetail.events({
 
                 Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
-                        swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                        swal({title: "Success", text: "Travel request Draft saved", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                         }, () => {
                             Modal.hide()
@@ -72,7 +72,7 @@ Template.TravelRequisitionDetail.events({
 
                 Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
-                        swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
+                        swal({title: "Success", text: "Travel request is now pending treatment", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                         }, () => {
                             Modal.hide()
@@ -95,7 +95,7 @@ Template.TravelRequisitionDetail.events({
 
             Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
                 if(!err) {
-                    swal({title: "Success", text: "Requisition treated", type: "success",
+                    swal({title: "Success", text: "Travel request treated", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                     }, () => {
                         Modal.hide()
@@ -114,7 +114,7 @@ Template.TravelRequisitionDetail.events({
 
             Meteor.call('TravelRequest/reject', businessUnitId, procurementDetails._id, function(err, res) {
                 if(!err) {
-                    swal({title: "Success", text: "Requisition rejected", type: "success",
+                    swal({title: "Success", text: "Travel request rejected", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                     }, () => {
                         Modal.hide()

@@ -286,7 +286,7 @@ Router.route('/business/:_id/employee/procurementrequisitions', {
 });
 Router.route('/business/:_id/employee/procurementrequisitions/approvalslist', {
     name: 'procurementrequisition.approvalList',
-    controller: 'RequisitionApprovalListController',
+    controller: 'RequisitionController',
     action: 'showProcurementRequisitionApprovalList',
     where: 'client'
 });
@@ -299,7 +299,7 @@ Router.route('/business/:_id/employee/travelrequests', {
 });
 Router.route('/business/:_id/employee/travelrequests/approvalslist', {
     name: 'travelrequests.approvalList',
-    controller: 'RequisitionApprovalListController',
+    controller: 'RequisitionController',
     action: 'showTravelRequestApprovalList',
     where: 'client'
 });

@@ -30,7 +30,7 @@ Template.TravelRequisitionApprovalList.events({
         console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getProcurementsToApprove(skip)
-        Template.instance().procurementsToApprove.set(newPageOfProcurements)
+        Template.instance().travelRequestsToApprove.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -55,8 +55,8 @@ Template.registerHelper('repeat', function(max) {
 /* TravelRequisitionApprovalList: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionApprovalList.helpers({
-    'procurementsICreated': function() {
-        return Template.instance().procurementsToApprove.get()
+    'travelRequestsToApprove': function() {
+        return Template.instance().travelRequestsToApprove.get()
     },
     'numberOfPages': function() {
         let currentUser = Meteor.user()
@@ -64,7 +64,7 @@ Template.TravelRequisitionApprovalList.helpers({
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
-            let totalNum = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).count();
+            let totalNum = TravelRequisitions.find({supervisorPositionId: currentUserPosition}).count();
             console.log(`totalNum: ${totalNum}`)
 
             let result = Math.floor(totalNum/limit)
@@ -94,9 +94,9 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
-    self.procurementsToApprove = new ReactiveVar()
+    self.travelRequestsToApprove = new ReactiveVar()
 
-    self.getProcurementsToApprove = function(skip) {
+    self.getTravelRequestsToApprove = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -110,7 +110,7 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
         if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return ProcurementRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
+            return TravelRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
         }
         return null
     }
@@ -124,13 +124,14 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId, limit, sort)
+        let travelRequestsToApproveSub = self.subscribe('TravelRequestsToApprove', businessUnitId, limit, sort)
         //--
-        if(procurementsToApproveSub.ready()) {
+        if(travelRequestsToApproveSub.ready()) {
             let currentUser = Meteor.user()
             if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
                 let currentUserPosition = currentUser.employeeProfile.employment.position
-                self.procurementsToApprove.set(self.getProcurementsToApprove(0))
+
+                self.travelRequestsToApprove.set(self.getTravelRequestsToApprove(0))
             }
         }
     })
