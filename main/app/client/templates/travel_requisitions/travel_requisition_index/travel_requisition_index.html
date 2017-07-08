@@ -35,6 +35,7 @@
                                         <th>Unit</th>
                                         <th>Date required</th>
                                         <th>Status</th>
+                                        <th>Total Trip Cost</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -44,6 +45,7 @@
                                             <td>{{getUnitName unitId}}</td>
                                             <td>{{formatDate dateRequired}}</td>
                                             <td>{{status}}</td>
+                                            <td>{{getTotalTripCost this}}</td>
                                         </tr>
                                     {{/each}}
                                     </tbody>

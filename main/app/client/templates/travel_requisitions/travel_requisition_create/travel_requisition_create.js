@@ -297,9 +297,9 @@ Template.TravelRequisitionCreate.onCreated(function () {
     self.flightCost = new ReactiveVar(0)
     self.accommodationCost = new ReactiveVar(0)
     self.localTransportCost = new ReactiveVar(0)
-    self.totalTripCost = new ReactiveVar(0)
     self.perDiemCost = new ReactiveVar(0)
     self.miscCost = new ReactiveVar(0)
+    self.totalTripCost = new ReactiveVar(0)
 
     self.autorun(function(){
         if(unitsSubscription.ready()){

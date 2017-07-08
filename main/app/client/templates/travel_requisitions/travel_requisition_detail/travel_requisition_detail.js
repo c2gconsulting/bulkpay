@@ -148,6 +148,9 @@ Template.TravelRequisitionDetail.helpers({
     'getUnitName': function(unitId) {
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
+    },
+    'totalTripCost': function() {
+        return Template.instance().totalTripCost.get()
     }
 });
 
@@ -165,6 +168,9 @@ Template.TravelRequisitionDetail.onCreated(function () {
 
     let invokeReason = self.data;
     console.log(`invokeReason: ${JSON.stringify(invokeReason)}`)
+
+    self.totalTripCost = new ReactiveVar(0)
+
     if(invokeReason.reason === 'edit') {
         self.isInEditMode.set(true)
     }
@@ -176,11 +182,24 @@ Template.TravelRequisitionDetail.onCreated(function () {
         let procurementSub = self.subscribe('TravelRequest', invokeReason.requisitionId)
         if(procurementSub.ready()) {
             console.log(`procurement subscription ready `)
-            let procurementDetails = TravelRequisitions.findOne({_id: invokeReason.requisitionId})
-            self.procurementDetails.set(procurementDetails)
-            
-            if(procurementDetails.unitId) {
-                self.subscribe('getEntity', procurementDetails.unitId)
+            let travelRequestDetails = TravelRequisitions.findOne({_id: invokeReason.requisitionId})
+            self.procurementDetails.set(travelRequestDetails)
+            //--
+            if(travelRequestDetails && travelRequestDetails.tripCosts) {
+                let flightCost = travelRequestDetails.tripCosts.flightCost || 0
+                let accommodationCost = travelRequestDetails.tripCosts.accommodationCost || 0
+                let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
+                let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
+                let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
+
+                let totalTripCost = flightCost + accommodationCost + localTransportCost + 
+                    perDiemCost + miscCosts
+
+                self.totalTripCost.set(totalTripCost)
+            }
+            //--
+            if(travelRequestDetails.unitId) {
+                self.subscribe('getEntity', travelRequestDetails.unitId)
             }
         }
     })

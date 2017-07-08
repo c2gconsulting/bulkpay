@@ -75,6 +75,22 @@ Template.TravelRequisitionIndex.helpers({
     'getUnitName': function(unitId) {
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
+    },
+    'getTotalTripCost': function(travelRequestDetails) {
+        if(travelRequestDetails && travelRequestDetails.tripCosts) {
+            let flightCost = travelRequestDetails.tripCosts.flightCost || 0
+            let accommodationCost = travelRequestDetails.tripCosts.accommodationCost || 0
+            let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
+            let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
+            let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
+
+            let totalTripCost = flightCost + accommodationCost + localTransportCost + 
+                perDiemCost + miscCosts
+
+            return totalTripCost
+        } else  {
+            return 0
+        }
     }
 });
 
