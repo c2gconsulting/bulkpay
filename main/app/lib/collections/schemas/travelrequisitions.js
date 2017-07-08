@@ -1,3 +1,29 @@
+/**
+ * Trip Cost
+ */
+
+Core.Schemas.TripCosts = new SimpleSchema({
+    flightCost: {
+        type: Number,
+        decimal: true
+    },
+    accommodationCost: {
+        type: Number,
+        decimal: true
+    },
+    localTransportCost: {
+        type: Number,
+        decimal: true
+    },
+    perDiemCost: {
+        type: Number,
+        decimal: true
+    },
+    miscCosts: {
+        type: Number,
+        decimal: true
+    }
+});
 
 /**
  * Travel Requisitions Schema
@@ -27,7 +53,7 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         optional: true
     },
     tripCosts: {
-        type: [Object],
+        type: Core.Schemas.TripCosts,
         optional: true
     },
     status: {

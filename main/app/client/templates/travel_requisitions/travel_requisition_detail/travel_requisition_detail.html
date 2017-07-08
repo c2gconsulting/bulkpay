@@ -63,6 +63,84 @@
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
 
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <br/>
+                                <label class="control-label" for="requisitionReason"><b>Travel costs</b></label>
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="flightCost">Flight</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="flightCost" type="text" placeholder="Flight" class="form-control"
+                                        value="{{tripCosts.flightCost}}"/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="accommodationCost">Accommodation</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="accommodationCost" type="text" placeholder="Accommodation" class="form-control"
+                                        value="{{tripCosts.accommodationCost}}"/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="localTransportCost">Local transport</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="localTransportCost" type="text" placeholder="Local transport" class="form-control"
+                                        value="{{tripCosts.localTransportCost}}"/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+                        
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="perDiemCost">Per diem</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="perDiemCost" type="text" placeholder="Per diem" class="form-control"
+                                        value="{{tripCosts.perDiemCost}}"/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="miscCosts">Miscellaneous costs</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="miscCosts" type="text" placeholder="Miscellaneous costs" class="form-control"
+                                        value="{{tripCosts.miscCosts}}"/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Total cost</label>
+                                </div><!-- col-sm-3 -->
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value=""/>
+                                </div><!-- col-sm-3 -->
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>

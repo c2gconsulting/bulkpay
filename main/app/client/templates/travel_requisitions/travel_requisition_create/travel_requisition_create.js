@@ -16,6 +16,12 @@ Template.TravelRequisitionCreate.events({
         let dateRequired = $("input[name=dateRequired]").val()
         let requisitionReason = $("textarea[name=requisitionReason]").val()
 
+        let flightCost = $("input[name=flightCost]").val()
+        let accommodationCost = $("input[name=accommodationCost]").val()
+        let localTransportCost = $("input[name=localTransportCost]").val()
+        let perDiemCost = $("input[name=perDiemCost]").val()
+        let miscCosts = $("input[name=miscCosts]").val()
+
         if(description && description.length > 0) {
             let requisitionDoc = {}
             requisitionDoc.description = description
@@ -29,6 +35,35 @@ Template.TravelRequisitionCreate.events({
             if(currentUserUnitId) {
                 requisitionDoc.unitId = currentUserUnitId
             }
+            //--
+            let flightCostAsNumber = parseFloat(flightCost)
+            if(isNaN(flightCostAsNumber)) {
+                flightCostAsNumber = 0
+            }
+            let accomodationCostAsNumber = parseFloat(accommodationCost)
+            if(isNaN(accomodationCostAsNumber)) {
+                accomodationCostAsNumber = 0
+            }
+            let localTransportCostAsNumber = parseFloat(localTransportCost)
+            if(isNaN(localTransportCostAsNumber)) {
+                localTransportCostAsNumber = 0
+            }
+            let perDiemCostAsNumber = parseFloat(perDiemCost)
+            if(isNaN(perDiemCostAsNumber)) {
+                perDiemCostAsNumber = 0
+            }
+            let miscCostAsNumber = parseFloat(miscCosts)
+            if(isNaN(miscCostAsNumber)) {
+                miscCostAsNumber = 0
+            }
+            requisitionDoc.tripCosts = {
+                flightCost: flightCostAsNumber,
+                accommodationCost: accomodationCostAsNumber,
+                localTransportCost: localTransportCostAsNumber,
+                perDiemCost: perDiemCostAsNumber,
+                miscCosts: miscCostAsNumber
+            }
+            //--
 
             let businessUnitId = Session.get('context')
 
@@ -53,6 +88,12 @@ Template.TravelRequisitionCreate.events({
         let dateRequired = $("input[name=dateRequired]").val()
         let requisitionReason = $("textarea[name=requisitionReason]").val()
 
+        let flightCost = $("input[name=flightCost]").val()
+        let accommodationCost = $("input[name=accommodationCost]").val()
+        let localTransportCost = $("input[name=localTransportCost]").val()
+        let perDiemCost = $("input[name=perDiemCost]").val()
+        let miscCosts = $("input[name=miscCosts]").val()
+
         let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
         if(validation === true) {
             let requisitionDoc = {}
@@ -65,6 +106,35 @@ Template.TravelRequisitionCreate.events({
             if(currentUserUnitId) {
                 requisitionDoc.unitId = currentUserUnitId
             }
+            //--
+            let flightCostAsNumber = parseFloat(flightCost)
+            if(isNaN(flightCostAsNumber)) {
+                flightCostAsNumber = 0
+            }
+            let accomodationCostAsNumber = parseFloat(accommodationCost)
+            if(isNaN(accomodationCostAsNumber)) {
+                accomodationCostAsNumber = 0
+            }
+            let localTransportCostAsNumber = parseFloat(localTransportCost)
+            if(isNaN(localTransportCostAsNumber)) {
+                localTransportCostAsNumber = 0
+            }
+            let perDiemCostAsNumber = parseFloat(perDiemCost)
+            if(isNaN(perDiemCostAsNumber)) {
+                perDiemCostAsNumber = 0
+            }
+            let miscCostAsNumber = parseFloat(miscCosts)
+            if(isNaN(miscCostAsNumber)) {
+                miscCostAsNumber = 0
+            }
+            requisitionDoc.tripCosts = {
+                flightCost: flightCostAsNumber,
+                accommodationCost: accomodationCostAsNumber,
+                localTransportCost: localTransportCostAsNumber,
+                perDiemCost: perDiemCostAsNumber,
+                miscCosts: miscCostAsNumber
+            }
+            //--
             let businessUnitId = Session.get('context')
 
             Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
