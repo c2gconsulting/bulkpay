@@ -9,11 +9,11 @@ Template.navigator.helpers({
     'currentUserId': function() {
         return Meteor.userId();
     },
-    hasProcurementRequisitionApproveAccess: () => {
+    hasProcurementRequisitionApproveAccess: function () {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
         return canApproveProcurement;
     },
-    isProcurementRequisitionActive: () => {
+    isProcurementRequisitionActive: function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
@@ -21,12 +21,13 @@ Template.navigator.helpers({
             return false
         }
     },
-    hasTravelRequisitionApproveAccess: () => {
+    hasTravelRequisitionApproveAccess: function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
     },
-    isTravelRequisitionActive: () => {
+    isTravelRequisitionActive: function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
         } else {
@@ -53,17 +54,15 @@ Template.navigator.helpers({
 
 Template.navigator.onCreated(function () {
     let self = this
-    let businessUnitId = Session.get('context');
-    // console.log(`businessUnitId`, businessUnitId)
 
     self.businessUnitCustomConfig = new ReactiveVar()
-
-    console.log(`Inside navigator onCreated`)
-    console.log(`Core.getTenantId(): `, Core.getTenantId())
-    console.log(`businessUnitId: `, businessUnitId)
-    let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-
+    
     self.autorun(function(){
+        let businessUnitId = Session.get('context');
+        // console.log(`businessUnitId`, businessUnitId)
+
+        let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
+
         if(customConfigSub.ready()) {
             self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
             // console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)

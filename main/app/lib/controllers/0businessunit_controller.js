@@ -33,7 +33,13 @@ BusinessUnitController = ApplicationController.extend({
     },
 
     // You can provide any of the hook options
-
+    // onRun: function () {
+    //     //set session context for side bar nav using session store ..
+    //     if(this.params._id) {
+    //         Session.set('context', this.params._id);
+    //     }
+    //     this.next();
+    // },
     onRun: function () {
         this.next();
     },
@@ -43,7 +49,10 @@ BusinessUnitController = ApplicationController.extend({
     onBeforeAction: function () {
         // console.log(`Inside businessunit controller onBeforeAction: ${this.params._id}`);
 
+        console.log(`this.params._id: `, this.params._id)
         if(this.params._id){
+            Session.set('context', this.params._id);
+
             let bu = BusinessUnits.findOne({_id: this.params._id});
             if (bu){
                 this.next();
