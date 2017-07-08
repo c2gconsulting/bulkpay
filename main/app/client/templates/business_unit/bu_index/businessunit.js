@@ -383,7 +383,7 @@ Template.singleBu.helpers({
     'parentName': function(data){
         if(data.parentId){
             let bu = BusinessUnits.findOne({_id: data.parentId});
-            return bu.name;
+            return (bu) ? bu.name : '';
         }
         return null;
     },

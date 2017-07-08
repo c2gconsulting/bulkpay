@@ -174,29 +174,28 @@ Template.EmployeeSelectedEntry.helpers({
   },
   hasProcurementRequisitionApproveAccess: () => {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      console.log("selected employee id: " + selectedEmployee._id);
-
       let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
-      console.log("canApproveProcurementApprove: " + canApproveProcurement);
 
       return canApproveProcurement;
   },
   isProcurementRequisitionActive: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
       if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isProcurementRequisitionActive && businessUnitCustomConfig.isActive
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
       } else {
           return true
       }
   },
   hasTravelRequisitionApproveAccess: () => {
-      let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let canApproveTrip = Core.hasTravelRequisitionApproveAccess(selectedEmployee._id);
+
       return canApproveTrip;
   },
   isTravelRequisitionActive: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
       if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isTravelRequisitionActive && businessUnitCustomConfig.isActive
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
       } else {
           return true
       }
@@ -290,7 +289,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(selectedEmployee) {
             let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, selectedEmployee._id)
             let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
-            let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessId, Core.tenantId);
+            let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessId, Core.getTenantId());
 
             if(userEntitlementSubs.ready() && allLeaveEntitlements.ready() && customConfigSub.ready()){
                 let selectedUserLeaveEntitlements = UserLeaveEntitlements.findOne({
