@@ -345,3 +345,10 @@ Router.route('/business/:_id/reports/procurement', {
     action: 'procurement',
     where: 'client'
 });
+
+Router.route('/business/:_id/reports/travelrequisition', {
+    name: 'reports.travelrequisition',
+    controller: 'ReportsController',
+    action: 'travelRequest',
+    where: 'client'
+});

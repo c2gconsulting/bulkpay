@@ -381,5 +381,36 @@ Meteor.methods({
             })
             return biffedUpProcurements
         }
-    }    
+    },
+    'reports/travelRequest': function(businessId, startDate, endDate, selectedEmployees) {
+        check(businessId, String)
+        this.unblock()
+        //--
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let queryObj = {
+                businessId: businessId, 
+                createdAt: {$gte: startDate, $lte: endDate}
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {                
+                queryObj.createdBy = {$in: selectedEmployees}
+            }
+            let travelRequests = TravelRequisitions.find(queryObj).fetch();
+
+            let biffedUpTravelRequests = travelRequests.map(aTravelRequest => {
+                let employee = Meteor.users.findOne({_id: aTravelRequest.createdBy})
+                if(employee) {
+                    aTravelRequest.createdByFullName = employee.profile.fullName
+                }
+                //--
+                let unit = EntityObjects.findOne({_id: aTravelRequest.unitId})
+                if(unit) {
+                    aTravelRequest.unitName = unit.name
+                }
+                return aTravelRequest
+            })
+            return biffedUpTravelRequests
+        }
+    }
 })
