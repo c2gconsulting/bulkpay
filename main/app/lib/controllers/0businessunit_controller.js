@@ -48,8 +48,8 @@ BusinessUnitController = ApplicationController.extend({
     },
     onBeforeAction: function () {
         // console.log(`Inside businessunit controller onBeforeAction: ${this.params._id}`);
+        // console.log(`this.params._id: `, this.params._id)
 
-        console.log(`this.params._id: `, this.params._id)
         if(this.params._id){
             Session.set('context', this.params._id);
 

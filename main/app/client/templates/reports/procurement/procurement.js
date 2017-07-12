@@ -3,14 +3,14 @@
 /* ProcurementReport: Event Handlers */
 /*****************************************************************************/
 Template.ProcurementReport.events({
-    'click #getReportForProjectsForDisplay': function(e, tmpl) {
+    'click #getResult': function(e, tmpl) {
         e.preventDefault();
         const startTime = $('[name="startTime"]').val();
         const endTime = $('[name="endTime"]').val();
 
         if(startTime && endTime) {
-            tmpl.$('#getReportForPeriodForDisplay').text('Preparing... ');
-            tmpl.$('#getReportForPeriodForDisplay').attr('disabled', true);
+            tmpl.$('#getResult').text('Preparing... ');
+            tmpl.$('#getResult').attr('disabled', true);
             try {
                 let l = Ladda.create(tmpl.$('#getReportForPeriodForDisplay')[0]);
                 l.start();
@@ -19,174 +19,70 @@ Template.ProcurementReport.events({
             //--
             let resetButton = function() {
                 try {
-                    let l = Ladda.create(tmpl.$('#getReportForPeriodForDisplay')[0]);
+                    let l = Ladda.create(tmpl.$('#getResult')[0]);
                     l.stop();
                     l.remove();
                 } catch(e) {
                 }
 
-                tmpl.$('#getReportForPeriodForDisplay').text('Project reports');
-                // $('#getReportForPeriodForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
-                tmpl.$('#getReportForPeriodForDisplay').removeAttr('disabled');
+                tmpl.$('#getResult').text(' View');
+                tmpl.$('#getResult').removeAttr('disabled');
             };
             //--
-            Template.instance().showingReportsForProjects.set(false)
-            Template.instance().showingReportsForUnits.set(false)
-
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
+            Meteor.call('reports/procurement', Session.get('context'), 
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
-                    tmpl.showingReportsForProjects.set(true)
-                    tmpl.timeWritingReports.set(res)
+                    tmpl.procurementReports.set(res)
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
             });
         }
     },
-    'click #exportReportForProjects': function(e, tmpl) {
+    'click #excel': function(e, tmpl) {
         e.preventDefault();
         const startTime = $('[name="startTime"]').val();
         const endTime = $('[name="endTime"]').val();
 
         if(startTime && endTime) {
-            tmpl.$('#exportReportForProjects').text('Preparing... ');
-            tmpl.$('#exportReportForProjects').attr('disabled', true);
+            tmpl.$('#excel').text('Preparing... ');
+            tmpl.$('#excel').attr('disabled', true);
             try {
-                let l = Ladda.create(tmpl.$('#exportReportForProjects')[0]);
+                let l = Ladda.create(tmpl.$('#excel')[0]);
                 l.start();
             } catch(e) {
             }
             //--
             let resetButton = function() {
                 try {
-                    let l = Ladda.create(tmpl.$('#exportReportForProjects')[0]);
+                    let l = Ladda.create(tmpl.$('#excel')[0]);
                     l.stop();
                     l.remove();
                 } catch(e) {
                 }
 
-                tmpl.$('#exportReportForProjects').text('Export');
-                $('#exportReportForProjects').prepend("<i class='glyphicon glyphicon-download'></i>");
-                tmpl.$('#exportReportForProjects').removeAttr('disabled');
+                tmpl.$('#excel').text('Export');
+                $('#excel').prepend("<i class='glyphicon glyphicon-download'></i>");
+                tmpl.$('#excel').removeAttr('disabled');
             };
             //--
-            Template.instance().showingReportsForProjects.set(false)
-            Template.instance().showingReportsForUnits.set(false)
-
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
+            Meteor.call('reports/procurement', Session.get('context'), 
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
-                    tmpl.showingReportsForProjects.set(true)
-                    tmpl.timeWritingReports.set(res)
-                    tmpl.exportTimesForProjectsReportData(res, startTime, endTime)
-                } else {
-                    swal('No result found', err.reason, 'error');
-                }
-            });            
-        }
-    },
-    'click #getReportForUnitsForDisplay': function(e, tmpl) {
-        e.preventDefault();
-        const startTime = $('[name="startTime"]').val();
-        const endTime = $('[name="endTime"]').val();
-
-        if(startTime && endTime) {
-            tmpl.$('#getReportForUnitsForDisplay').text('Preparing... ');
-            tmpl.$('#getReportForUnitsForDisplay').attr('disabled', true);
-            try {
-                let l = Ladda.create(tmpl.$('#getReportForUnitsForDisplay')[0]);
-                l.start();
-            } catch(e) {
-            }
-            //--
-            let resetButton = function() {
-                try {
-                    let l = Ladda.create(tmpl.$('#getReportForUnitsForDisplay')[0]);
-                    l.stop();
-                    l.remove();
-                } catch(e) {
-                }
-
-                tmpl.$('#getReportForUnitsForDisplay').text('Cost-Center reports');
-                // $('#getReportForUnitsForDisplay').prepend("<i class='glyphicon glyphicon-download'></i>");
-                tmpl.$('#getReportForUnitsForDisplay').removeAttr('disabled');
-            };
-            //--
-            Template.instance().showingReportsForProjects.set(false)
-            Template.instance().showingReportsForUnits.set(false)
-
-            let startTimeAsDate = tmpl.getDateFromString(startTime)
-            let endTimeAsDate = tmpl.getDateFromString(endTime)
-
-            let selectedEmployees = tmpl.selectedEmployees.get()
-
-            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
-                resetButton()
-                if(res){
-                    tmpl.showingReportsForUnits.set(true)
-                    tmpl.timeWritingReports.set(res)
-                } else {
-                    swal('No result found', err.reason, 'error');
-                }
-            });            
-        }
-    },
-    'click #exportReportForUnits': function(e, tmpl) {
-        e.preventDefault();
-        const startTime = $('[name="startTime"]').val();
-        const endTime = $('[name="endTime"]').val();
-
-        if(startTime && endTime) {
-            tmpl.$('#exportReportForUnits').text('Preparing... ');
-            tmpl.$('#exportReportForUnits').attr('disabled', true);
-            try {
-                let l = Ladda.create(tmpl.$('#exportReportForUnits')[0]);
-                l.start();
-            } catch(e) {
-            }
-            //--
-            let resetButton = function() {
-                try {
-                    let l = Ladda.create(tmpl.$('#exportReportForUnits')[0]);
-                    l.stop();
-                    l.remove();
-                } catch(e) {
-                }
-
-                tmpl.$('#exportReportForUnits').text('Export');
-                $('#exportReportForUnits').prepend("<i class='glyphicon glyphicon-download'></i>");
-                tmpl.$('#exportReportForUnits').removeAttr('disabled');
-            };
-            //--
-            Template.instance().showingReportsForProjects.set(false)
-            Template.instance().showingReportsForUnits.set(false)
-
-            let startTimeAsDate = tmpl.getDateFromString(startTime)
-            let endTimeAsDate = tmpl.getDateFromString(endTime)
-
-            let selectedEmployees = tmpl.selectedEmployees.get()
-
-            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
-                resetButton()
-                if(res){
-                    tmpl.showingReportsForUnits.set(true)
-                    tmpl.timeWritingReports.set(res)
-                    tmpl.exportTimesForUnitsReportData(res, startTime, endTime)
+                    tmpl.procurementReports.set(res)
+                    tmpl.exportProcurementReportData(res, startTime, endTime)
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
@@ -220,17 +116,11 @@ Template.ProcurementReport.helpers({
     'employees': () => {
         return Meteor.users.find({"employee": true});
     },
-    'timeWritingReports': function() {
-        return Template.instance().timeWritingReports.get()
+    'procurementReports': function() {
+        return Template.instance().procurementReports.get()
     },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
-    },
-    'showingReportsForProjects': function() {
-        return Template.instance().showingReportsForProjects.get()
-    },
-    'showingReportsForUnits': function() {
-        return Template.instance().showingReportsForUnits.get()
     }
 });
 
@@ -240,9 +130,7 @@ Template.ProcurementReport.helpers({
 Template.ProcurementReport.onCreated(function () {
     let self = this;
 
-    self.timeWritingReports = new ReactiveVar()
-    self.showingReportsForProjects = new ReactiveVar()
-    self.showingReportsForUnits = new ReactiveVar()
+    self.procurementReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
 
@@ -251,59 +139,20 @@ Template.ProcurementReport.onCreated(function () {
         return theDate.add('hours', 1).toDate()
     }
 
-    self.exportTimesForProjectsReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Project > Employee", "Hours"]
+    self.exportProcurementReportData = function(theData, startTime, endTime) {
+        let formattedHeader = ["Created By", "Unit", "Date required", "Status"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
-            let projectName = aDatum.projectName
-            reportData.push(["Project: " + projectName, ""])
-            //--
-            let projectEmployees = aDatum.employees
-            projectEmployees.forEach(anEmployeeDatum => {
-                let empDetails = anEmployeeDatum.employeeDetails
-                let empCodeAndName = "Employee ID: " + empDetails.employmentCode + " - " + empDetails.fullName
-                reportData.push([empCodeAndName, ""])
-
-                anEmployeeDatum.days.forEach(anEmployeeDayDatum => {
-                    reportData.push([anEmployeeDayDatum.day, anEmployeeDayDatum.duration])
-                })
-
-                reportData.push(["EmployeeTotal:", anEmployeeDatum.employeeTimeTotal])
-            })
-            //--
-            reportData.push(["Project Total Hours: ", aDatum.projectTotalHours])
+            reportData.push([aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-            `Project Time Report ${startTime} - ${endTime}`);
-    }
-
-    self.exportTimesForUnitsReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Unit > Employee", "Hours"]
-
-        let reportData = []
-
-        theData.forEach(aDatum => {
-            let unitName = aDatum.unitName
-            reportData.push(["Unit: " + unitName, ""])
-            //--
-            let unitEmployees = aDatum.employees
-            unitEmployees.forEach(anEmployeeDatum => {
-                let empDetails = anEmployeeDatum.employeeDetails
-                let empCodeAndName = empDetails.employmentCode + " - " + empDetails.fullName
-                reportData.push([empCodeAndName, anEmployeeDatum.employeeTimeTotal])
-            })
-            //--
-            reportData.push(["Unit Total Hours: ", aDatum.unitTotalHours])
-        })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-            `Cost-Center Time Report ${startTime} - ${endTime}`);
+            `Procurement Requisition Report ${startTime} - ${endTime}`);
     }
 });
 
 Template.ProcurementReport.onRendered(function () {
-    //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
 });
 

@@ -252,7 +252,7 @@ Meteor.methods({
             let queryObj = {
                 businessId: businessId, 
                 project: {$exists : true},
-                day: {$gte: startDate, $lt: endDate}
+                day: {$gte: startDate, $lte: endDate}
             }
             if(selectedEmployees && selectedEmployees.length > 0) {                
                 queryObj.employeeId = {$in: selectedEmployees}
@@ -307,7 +307,7 @@ Meteor.methods({
             let queryObj = {
                 businessId: businessId, 
                 costCenter: {$exists : true},
-                day: {$gte: startDate, $lt: endDate}
+                day: {$gte: startDate, $lte: endDate}
             }
             if(selectedEmployees && selectedEmployees.length > 0) {                
                 queryObj.employeeId = {$in: selectedEmployees}
@@ -349,6 +349,37 @@ Meteor.methods({
             // console.log(`biffUpTimes: ${JSON.stringify(biffedUpTimes)}`)
 
             return ReportUtils.processedReportDataForUnits(biffedUpTimes)
+        }
+    },
+    'reports/procurement': function(businessId, startDate, endDate, selectedEmployees) {
+        check(businessId, String)
+        this.unblock()
+        //--
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let queryObj = {
+                businessUnitId: businessId, 
+                createdAt: {$gte: startDate, $lte: endDate}
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {                
+                queryObj.createdBy = {$in: selectedEmployees}
+            }
+            let procurements = ProcurementRequisitions.find(queryObj).fetch();
+
+            let biffedUpProcurements = procurements.map(aProcurement => {
+                let employee = Meteor.users.findOne({_id: aProcurement.createdBy})
+                if(employee) {
+                    aProcurement.createdByFullName = employee.profile.fullName
+                }
+                //--
+                let unit = EntityObjects.findOne({_id: aProcurement.unitId})
+                if(unit) {
+                    aProcurement.unitName = unit.name
+                }
+                return aProcurement
+            })
+            return biffedUpProcurements
         }
     }    
 })
