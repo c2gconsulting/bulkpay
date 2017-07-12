@@ -338,3 +338,10 @@ Router.route('/business/:_id/reports/timewriting', {
     action: 'timewriting',
     where: 'client'
 });
+
+Router.route('/business/:_id/reports/procurement', {
+    name: 'reports.procurement',
+    controller: 'ReportsController',
+    action: 'procurement',
+    where: 'client'
+});

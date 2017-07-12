@@ -65,6 +65,9 @@ ReportsController = BusinessUnitController.extend({
     timewriting: function () {
         this.render('TimeWritingReport');
     },
+    procurement: function () {
+        this.render('ProcurementReport');
+    },
 
     onAfterAction: function () {
     },
