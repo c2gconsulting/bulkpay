@@ -114,6 +114,17 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
 
             supplementaryPayTypeHeaders.push({
+                id: 'tax_' + localCurrency,
+                code: 'tax_' + localCurrency,
+                description: localCurrency + ' Tax'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'tax_' + netPayAlternativeCurrency,
+                code: 'tax_' + netPayAlternativeCurrency,
+                description: netPayAlternativeCurrency + ' Tax'
+            })
+            //--
+            supplementaryPayTypeHeaders.push({
                 id: 'totalBenefit_' + netPayAlternativeCurrency,
                 code: 'totalBenefit_' + netPayAlternativeCurrency,
                 description: netPayAlternativeCurrency + ' Total Benefit'
@@ -191,9 +202,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                 let payAmount = payDetails.amountLC
 
                 if(netPayAlternativeCurrency && netPayAlternativeCurrency !== localCurrency) {
-                    if(payDetails.reference === 'Tax') {
-                        
-                    }
+
                 } else {
                     if(payDetails.reference !== 'Tax' && payDetails.amountLC != payDetails.amountPC) {
                         payAmount = payDetails.amountPC
@@ -294,6 +303,46 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         let totalDeduction = payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total || 0
 
                         aRowOfPayTypeValues.push(totalBenefit - totalDeduction)
+                    }
+                } else if(aPaytypeHeader.id === 'tax_' + localCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        let deductions = payslipWithCurrencyDelineation.deduction[localCurrency].payments || []
+
+                        let foundTax = _.find(deductions, aDeduction => {
+                            return aDeduction.reference === 'Tax'
+                        })
+                        if(foundTax) {
+                            aRowOfPayTypeValues.push(foundTax.value)
+                        } else {
+                            aRowOfPayTypeValues.push("---")
+                        }
+                    }
+                } else if(aPaytypeHeader.id === 'tax_' + netPayAlternativeCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        let deductions = payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].payments || []
+
+                        let foundTax = _.find(deductions, aDeduction => {
+                            return aDeduction.reference === 'Tax'
+                        })
+                        if(foundTax) {
+                            aRowOfPayTypeValues.push(foundTax.value)
+                        } else {
+                            aRowOfPayTypeValues.push("---")
+                        }
                     }
                 } else {
                     aRowOfPayTypeValues.push("---")

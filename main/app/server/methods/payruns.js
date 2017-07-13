@@ -1,4 +1,5 @@
 import _ from 'underscore';
+
 /**
  *  Payruns Methods
  */
@@ -353,6 +354,14 @@ Meteor.methods({
     }
 
 });
+
+/*
+    I am truly sorry for the code you are about to read.
+    It was bad when I started working on it. The function was too long
+    to start refactoring. I could have broken something so I didn't clean it up.
+ */
+
+
 // use oop
 // instantiate payment object for employee with props for all methods required
 function processEmployeePay(employees, includedAnnuals, businessId, period) {
@@ -856,6 +865,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         code: tax.code,
                                         currency: aCurrency,
                                         // taxable: true,
+                                        reference: 'Tax',
                                         value: netTaxLocal
                                     })
                                 } else {
@@ -865,6 +875,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         code: tax.code,
                                         currency: aCurrency,
                                         // taxable: true,
+                                        reference: 'Tax',
                                         value: netTaxForeign
                                     })
                                 }
