@@ -953,6 +953,10 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                             paymentsInCurrency.total = total
                         })
                     })
+                    const employeeDetails = getDetailsInPayslip(x);
+                    paymentsAccountingForCurrency.employee = employeeDetails;
+                    paymentsAccountingForCurrency.employee.grade = grade.code;
+                    paymentsAccountingForCurrency.employee.gradeId = grade._id;
 
                     //--
                     //calculate net payment as payment - deductions;

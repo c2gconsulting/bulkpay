@@ -83,24 +83,77 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         }
     })
 
-    let supplementaryPayTypeHeaders = [
-    {
-        id: 'totalDeduction',
-        code: 'totalDeduction',
-        description: 'Total Deduction'
-    },
-    {
-        id: 'netPay',
-        code: 'netPay',
-        description: 'Net Pay'
-    }]
+    let localCurrency = Core.getTenantBaseCurrency().iso;
+
+    let supplementaryPayTypeHeaders = []
+
+    if(payGrade) {
+        if(payGrade.netPayAlternativeCurrency !== localCurrency) {
+            supplementaryPayTypeHeaders.push({
+                id: 'totalBenefit_' + localCurrency,
+                code: 'totalBenefit_' + localCurrency,
+                description: localCurrency + ' Total Benefit'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'totalDeduction_' + localCurrency,
+                code: 'totalDeduction_' + localCurrency,
+                description: localCurrency + ' Total Deduction'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'netPay_' + localCurrency,
+                code: 'netPay_' + localCurrency,
+                description: localCurrency + ' Net Pay'
+            })
+            //--
+            let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+
+            supplementaryPayTypeHeaders.push({
+                id: 'totalBenefit_' + netPayAlternativeCurrency,
+                code: 'totalBenefit_' + netPayAlternativeCurrency,
+                description: netPayAlternativeCurrency + ' Total Benefit'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'totalDeduction_' + netPayAlternativeCurrency,
+                code: 'totalDeduction_' + netPayAlternativeCurrency,
+                description: netPayAlternativeCurrency + ' Total Deduction'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'netPay_' + netPayAlternativeCurrency,
+                code: 'netPay_' + netPayAlternativeCurrency,
+                description: netPayAlternativeCurrency + ' Net Pay'
+            })
+        } else {
+            supplementaryPayTypeHeaders.push({
+                id: 'totalDeduction',
+                code: 'totalDeduction',
+                description: 'Total Deduction'
+            })
+            supplementaryPayTypeHeaders.push({
+                id: 'netPay',
+                code: 'netPay',
+                description: 'Net Pay'
+            })            
+        }
+    }
+
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
 
     return {payTypeHeaders}
 }
 
-ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
+ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults, payTypeHeaders) {
     let payTypeValues = []
+    // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
+    
+    let payGrade =  null
+    let firstUserId = employeePayments[0].employeeId
+    let firstUser = Meteor.users.findOne(firstUserId)
+    if(firstUser) {
+        let payGradeId = firstUser.employeeProfile.employment.paygrade
+        if(payGradeId) {
+            payGrade = PayGrades.findOne(payGradeId)
+        }
+    }
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
@@ -145,7 +198,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                 }
             } else if(aPaytypeHeader.id === 'totalDeduction') {
                 let totalDeduction = _.find(anEmployeeData.payment, function(aPayType) {
-                    return (aPayType.code === 'TDEDUCT')
+                    return (aPayType.code === 'TDEDUCT')    
                 })
                 if(totalDeduction) {
                     let payAmount = totalDeduction.amountLC
@@ -155,13 +208,114 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
                     aRowOfPayTypeValues.push(payAmount)
                 }
             } else {
-                aRowOfPayTypeValues.push("---")
+                let localCurrency = Core.getTenantBaseCurrency().iso;
+                let netPayAlternativeCurrency = ''
+                if(payGrade) {
+                    if(payGrade.netPayAlternativeCurrency) {
+                        netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+                    }
+                }
+
+                if(aPaytypeHeader.id === 'totalBenefit_' + localCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)
+                    }
+                } else if(aPaytypeHeader.id === 'totalDeduction_' + localCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[localCurrency].total)
+                    }
+                } else if(aPaytypeHeader.id === 'netPay_' + localCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        let totalBenefit = payslipWithCurrencyDelineation.benefit[localCurrency].total || 0
+                        let totalDeduction = payslipWithCurrencyDelineation.deduction[localCurrency].total || 0
+
+                        aRowOfPayTypeValues.push(totalBenefit - totalDeduction)
+                    }
+                } else if(aPaytypeHeader.id === 'totalBenefit_' + netPayAlternativeCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[netPayAlternativeCurrency].total)
+                    }
+                } else if(aPaytypeHeader.id === 'totalDeduction_' + netPayAlternativeCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)
+                    }
+                } else if(aPaytypeHeader.id === 'netPay_' + netPayAlternativeCurrency) {
+                    let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
+                        let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
+
+                        return (anEmployeeData.employeeId === employeeData.employeeUserId)
+                    })
+                    if(found) {
+                        let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
+                        let totalBenefit = payslipWithCurrencyDelineation.benefit[netPayAlternativeCurrency].total || 0
+                        let totalDeduction = payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total || 0
+
+                        aRowOfPayTypeValues.push(totalBenefit - totalDeduction)
+                    }
+                } else {
+                    aRowOfPayTypeValues.push("---")
+                }
             }
         })
         payTypeValues.push(aRowOfPayTypeValues)
     })
+    //--
+
+    //--
     return payTypeValues
 }
+
+//----------
+
+// ReportUtils.getPayTypeHeadersStrategy3 = function(paymentReultsWithCurrencyDelineation) {
+//     // console.log(`paymentReultsWithCurrencyDelineation: `, JSON.stringify(paymentReultsWithCurrencyDelineation))
+//     let payTypeHeaders = ['EMP ID', 'Employee']
+
+//     _.each(paymentReultsWithCurrencyDelineation, anEmployeePayments => {
+//         let benefitPayments = anEmployeePayments["benefit"] || []
+//         let benefitCurrencies = Object.keys(benefitPayments)
+//         console.log(`benefitCurrencies: `, benefitCurrencies)
+
+//         let deductionPayments = anEmployeePayments["deduction"] || []
+//         let deductionCurrencies = Object.keys(deductionPayments)
+//         console.log(`deductionCurrencies: `, deductionCurrencies)
+
+//         let otherPayments = anEmployeePayments["others"] || []
+//         let otherCurrencies = Object.keys(otherPayments)
+//         console.log(`otherCurrencies: `, otherCurrencies)
+
+//     })
+// }
 
 
 Template.PayrunNew.events({
@@ -250,15 +404,21 @@ Template.PayrunNew.events({
     'click #export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
-            console.log(`payResult(exportToCsv): `, payResult)
+            // console.log(`payResult(exportToCsv): `, payResult)
 
-            let payTypeHeaders = ReportUtils.getPayTypeHeaders2(payResult.payObj.payrun) 
+            let payTypeHeaders = ReportUtils.getPayTypeHeaders2(payResult.payObj.payrun)
+
+            let detailedPayrunResults = payResult.payObj.result
+            // let paymentsWithCurrencyDelineation = _.pluck(detailedPayrunResults, "payslipWithCurrencyDelineation")
+
+            // let payTypeHeaders = ReportUtils.getPayTypeHeadersStrategy3(paymentsWithCurrencyDelineation)
 
             let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
                 return aHeader.description || aHeader
             })
             //--
-            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, payTypeHeaders.payTypeHeaders)
+            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, 
+                detailedPayrunResults, payTypeHeaders.payTypeHeaders)
 
             BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
                 `Payrun results export`);
