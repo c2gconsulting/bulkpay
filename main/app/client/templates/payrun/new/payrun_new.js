@@ -65,11 +65,17 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                                 }
                             }
                         } else {
-                            payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
-                                id: anEmployeePayType.id,
-                                code: anEmployeePayType.code,
-                                description: anEmployeePayType.description
-                            })
+                            if(payGrade.netPayAlternativeCurrency !== localCurrency) {
+                                if(anEmployeePayType.reference === 'Tax') {
+                                    console.log(`skipping tax`)
+                                }
+                            } else {
+                                payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
+                                    id: anEmployeePayType.id,
+                                    code: anEmployeePayType.code,
+                                    description: anEmployeePayType.description
+                                })
+                            }
                         }
                     }
                 }
@@ -88,7 +94,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
     let supplementaryPayTypeHeaders = []
 
     if(payGrade) {
-        if(payGrade.netPayAlternativeCurrency !== localCurrency) {
+        if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
             supplementaryPayTypeHeaders.push({
                 id: 'totalBenefit_' + localCurrency,
                 code: 'totalBenefit_' + localCurrency,
@@ -154,6 +160,14 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
             payGrade = PayGrades.findOne(payGradeId)
         }
     }
+    //--
+    let localCurrency = Core.getTenantBaseCurrency().iso;
+    let netPayAlternativeCurrency = ''
+    if(payGrade) {
+        if(payGrade.netPayAlternativeCurrency) {
+            netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+        }
+    }
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
@@ -175,8 +189,15 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
             })
             if(payDetails) {
                 let payAmount = payDetails.amountLC
-                if(payDetails.amountLC != payDetails.amountPC) {
-                    payAmount = payDetails.amountPC
+
+                if(netPayAlternativeCurrency && netPayAlternativeCurrency !== localCurrency) {
+                    if(payDetails.reference === 'Tax') {
+                        
+                    }
+                } else {
+                    if(payDetails.reference !== 'Tax' && payDetails.amountLC != payDetails.amountPC) {
+                        payAmount = payDetails.amountPC
+                    }
                 }
                 if(payDetails.type === 'Deduction') {
                     if(payAmount > 0) {
@@ -208,14 +229,6 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                     aRowOfPayTypeValues.push(payAmount)
                 }
             } else {
-                let localCurrency = Core.getTenantBaseCurrency().iso;
-                let netPayAlternativeCurrency = ''
-                if(payGrade) {
-                    if(payGrade.netPayAlternativeCurrency) {
-                        netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
-                    }
-                }
-
                 if(aPaytypeHeader.id === 'totalBenefit_' + localCurrency) {
                     let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
                         let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
