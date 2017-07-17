@@ -100,26 +100,26 @@
                           </li>
                           {{/if}}
                           {{#if isMenuExpanded 'selfServiceMenu'}}
-                              <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
-                              <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
+                              <li><a href="{{pathFor 'employee.time'}}" id="employeetime">Record Time</a></li>
+                              <li><a href="{{pathFor 'leave.list'}}" id="leavelist">Request Leave</a></li>
 
                               {{#if isProcurementRequisitionActive}}
-                                  <li><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
+                                  <li><a href="{{pathFor 'procurementrequisition.list'}}" id="procurementrequisitionlist">Requisitions</a></li>
 
                                   {{#if hasProcurementRequisitionApproveAccess}}
-                                  <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Requisitions Approval</a></li>
+                                  <li><a href="{{pathFor 'procurementrequisition.approvalList'}}" id="procurementrequisitionapprovalList">Requisitions Approval</a></li>
                                   {{/if}}
                               {{/if}}
 
                               {{#if isTravelRequisitionActive}}
-                                  <li><a href="{{pathFor 'travelrequests.list'}}">Travel requests</a></li>
+                                  <li><a href="{{pathFor 'travelrequests.list'}}" id="travelrequestslist">Travel requests</a></li>
 
                                   {{#if hasTravelRequisitionApproveAccess}}
-                                  <li><a href="{{pathFor 'travelrequests.approvalList'}}">Trips Approval</a></li>
+                                  <li><a href="{{pathFor 'travelrequests.approvalList'}}" id="travelrequestsapprovalList">Trips Approval</a></li>
                                   {{/if}}
                               {{/if}}
 
-                              <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
+                              <li><a href="{{pathFor 'payslip'}}" id="payslip">View Pay Slip</a></li>
                           {{/if}}
 
 

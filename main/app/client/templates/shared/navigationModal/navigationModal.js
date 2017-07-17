@@ -112,6 +112,42 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    //--Self-Service sub menus
+    'click #employeetime': function(event, tmpl) {
+      Router.go('employee.time', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #leavelist': function(event, tmpl) {
+      Router.go('leave.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #procurementrequisitionlist': function(event, tmpl) {
+      Router.go('procurementrequisition.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #procurementrequisitionapprovalList': function(event, tmpl) {
+      Router.go('procurementrequisition.approvalList', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travelrequestslist': function(event, tmpl) {
+      Router.go('travelrequests.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travelrequestsapprovalList': function(event, tmpl) {
+      Router.go('travelrequests.approvalList', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #payslip': function(event, tmpl) {
+      Router.go('payslip', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },    
 });
 
 Template.navigationModal.helpers({
