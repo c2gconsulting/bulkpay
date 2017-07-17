@@ -1,6 +1,10 @@
 
 
 Template.header.events({
+    'click #navigationModal': function(e, tmpl) {
+        Modal.show('navigationModal')
+        e.preventDefault()
+    },
     'click .requisitionRowForApproval': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')

@@ -1,8 +1,10 @@
 <template name="navigator">
+    <div class="side-bar">
+    
     <div class="media profile-left">
-        <a class="pull-left profile-thumb" href="/business/{{context}}/employee/{{currentUserId}}/profile">
-            <img class="img-circle" src="/images/photos/avatar.jpg" alt="">
-        </a>
+        <!--<a class="pull-left profile-thumb" href="/business/{{context}}/employee/{{currentUserId}}/profile">
+            <img class="img-circle" id="user-profile-image" src="/images/photos/avatar.jpg" alt="">
+        </a>-->
         <div class="media-body">
             <a href="/business/{{context}}/employee/{{currentUserId}}/profile">
                 <h4 class="media-heading">{{currentUser.profile.fullName}}</h4>
@@ -157,4 +159,5 @@
         <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
     </ul>
 
+    </div>
 </template>
