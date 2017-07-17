@@ -1099,7 +1099,7 @@ function getWeekDays(startDate, endDate) {
     let startDateMoment = moment(startDate)
     let endDateMoment = moment(endDate)
 
-    let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+    let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
 
     let startDateMomentClone = moment(startDateMoment); // use a clone
     let weekDates = []
