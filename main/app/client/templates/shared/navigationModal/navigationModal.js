@@ -148,6 +148,13 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },    
+
+
+    'click #home': function(event, tmpl) {
+      Router.go('home', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    }
 });
 
 Template.navigationModal.helpers({
