@@ -410,7 +410,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const firsDayOfPeriod = `${month}-01-${year} GMT`;
                 const firsDayOfPeriodAsDate = new Date(firsDayOfPeriod);
 
-                let numHoursWorkedInMonth = getEmployeeNumHoursWorkedInMonth(x, firsDayOfPeriodAsDate)
+                let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(x, firsDayOfPeriodAsDate)
                 
                 //--
                 //--Time recording things
@@ -495,6 +495,15 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         //revisit this to factor in all payment frequency and create a logic on how processing is made
                         if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
                             let input = [], processing = [];
+
+                            input.push({
+                                code: 'Number of days employee can work in month',
+                                value: numDaysEmployeeCanWorkInMonth
+                            })
+                            input.push({
+                                code: 'Number of hours employee can work in month',
+                                value: numDaysEmployeeCanWorkInMonth * 8
+                            })
 
                             if(x.isTimeWritingDependent) {
                                 input.push({
@@ -633,7 +642,8 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                             let numberOfMonthsInYear = 12
                                             
                                             projectsPayDetails.projectDurations.forEach(aProject => {
-                                                const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
+                                                // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
+                                                const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * 8)
                                                 let projectPayAmount = fraction * value
 
                                                 projectsPay.push({
@@ -657,7 +667,13 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         }
                                     } else {
                                         processing.push({code: x.code, derived: value});
-                                        costCenterPayAmount = value
+                                        let totalWorkHoursInYear = 2080
+                                        let numberOfMonthsInYear = 12
+
+                                        costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth * 8) * numberOfMonthsInYear / totalWorkHoursInYear)
+                                        value = costCenterPayAmount
+
+                                        processing.push({code: x.code, derived: value});
                                     }
                                     //--
                                     let valueInForeignCurrency = value
@@ -1050,9 +1066,9 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
     return {result: payresult, error:processingError, payrun};
 };
 
-function getEmployeeNumHoursWorkedInMonth(employee, firstDayOfMonthDateObj) {
+function getDaysEmployeeCanWorkInMonth(employee, firstDayOfMonthDateObj) {
     let employeeResumption = employee.employeeProfile.employment.hireDate
-    console.log(`\n employee id: `, employee._id)
+    // console.log(`\n employee id: `, employee._id)
     let employeeResumptionMoment = moment(employeeResumption)
 
     let monthDateMoment = moment(firstDayOfMonthDateObj)
@@ -1060,24 +1076,23 @@ function getEmployeeNumHoursWorkedInMonth(employee, firstDayOfMonthDateObj) {
 
     let endOfMonthDate = moment(firstDayOfMonthDateObj).endOf('month').toDate()
 
-    let numDaysWorked = 0
+    let numDaysToWorkInMonth = 0
 
     if(employeeResumptionMoment.year() === monthDateMoment.year()) {
         if (employeeResumptionMoment.month() === monthDateMoment.month()) {
-            numDaysWorked = getWeekDays(employeeResumption, endOfMonthDate).length
+            numDaysToWorkInMonth = getWeekDays(employeeResumption, endOfMonthDate).length
         } else if(employeeResumptionMoment.month() > monthDateMoment.month()) {
-            numDaysWorked = 0
+            numDaysToWorkInMonth = 0
         } else {
-            numDaysWorked = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
+            numDaysToWorkInMonth = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
         }
     } else if(employeeResumptionMoment.year() > monthDateMoment.year()) {
-        numDaysWorked = 0
+        numDaysToWorkInMonth = 0
     } else if(employeeResumptionMoment.year() < monthDateMoment.year()) {
-        numDaysWorked = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
+        numDaysToWorkInMonth = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
     }
-    console.log(`numDaysWorked: `, numDaysWorked)
 
-    return numDaysWorked * 8
+    return numDaysToWorkInMonth
 }
 
 function getWeekDays(startDate, endDate) {
