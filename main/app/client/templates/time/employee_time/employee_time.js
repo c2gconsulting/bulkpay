@@ -86,9 +86,12 @@ Template.EmployeeTime.onRendered(function () {
 
             $('#calendar').fullCalendar({
                 header: {
-                    left: 'prev,next today',
+                    // left: 'prev,next today',
+                    left: 'prev,next',
+
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay,listMonth'
+                    // right: 'month,agendaWeek,agendaDay,listMonth'
+                    right: 'month,listMonth'
                 },
                 allDay: false,
                 default: '_',
