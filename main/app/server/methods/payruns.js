@@ -411,6 +411,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 const firsDayOfPeriodAsDate = new Date(firsDayOfPeriod);
 
                 let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(x, firsDayOfPeriodAsDate)
+                let totalNumWeekDaysInMonth = getWeekDays(firsDayOfPeriodAsDate, moment(firsDayOfPeriodAsDate).endOf('month').toDate()).length
                 
                 //--
                 //--Time recording things
@@ -504,6 +505,12 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                 code: 'Number of hours employee can work in month',
                                 value: numDaysEmployeeCanWorkInMonth * 8
                             })
+
+                            input.push({
+                                code: 'Number of week days in month',
+                                value: totalNumWeekDaysInMonth
+                            })
+
 
                             if(x.isTimeWritingDependent) {
                                 input.push({
@@ -670,7 +677,10 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                         let totalWorkHoursInYear = 2080
                                         let numberOfMonthsInYear = 12
 
-                                        costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth * 8) * numberOfMonthsInYear / totalWorkHoursInYear)
+                                        processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+
+                                        costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+
                                         value = costCenterPayAmount
 
                                         processing.push({code: x.code, derived: value});
