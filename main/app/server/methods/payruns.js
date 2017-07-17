@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import moment from 'moment';
 
 /**
  *  Payruns Methods
@@ -320,7 +321,7 @@ Meteor.methods({
         } else if (employees.length > 0) {
             const year = period.year;
             const month = period.month;
-            const firsDayOfPeriod = `01-${month}-${year} GMT`;
+            const firsDayOfPeriod = `${month}-01-${year} GMT`;
             const DateLimit = new Date(firsDayOfPeriod);
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
@@ -396,9 +397,22 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                 processingError.push(error);
 
             } else {
-                const employeeResult = {businessId: businessId, employeeId: x._id, period: periodFormat, payment : []}; //holds every payment to be saved for employee in payrun
+                const employeeResult = {
+                    businessId: businessId, 
+                    employeeId: x._id, 
+                    period: periodFormat, 
+                    payment : []
+                }; //holds every payment to be saved for employee in payrun
+                //--
+                const year = period.year;
+                const month = period.month;
 
+                const firsDayOfPeriod = `${month}-01-${year} GMT`;
+                const firsDayOfPeriodAsDate = new Date(firsDayOfPeriod);
 
+                let numHoursWorkedInMonth = getEmployeeNumHoursWorkedInMonth(x, firsDayOfPeriodAsDate)
+                
+                //--
                 //--Time recording things
                 const projectsPayDetails = 
                     getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
@@ -1035,6 +1049,55 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
     //after the recurssion return result to calling function;
     return {result: payresult, error:processingError, payrun};
 };
+
+function getEmployeeNumHoursWorkedInMonth(employee, firstDayOfMonthDateObj) {
+    let employeeResumption = employee.employeeProfile.employment.hireDate
+    console.log(`\n employee id: `, employee._id)
+    let employeeResumptionMoment = moment(employeeResumption)
+
+    let monthDateMoment = moment(firstDayOfMonthDateObj)
+
+
+    let endOfMonthDate = moment(firstDayOfMonthDateObj).endOf('month').toDate()
+
+    let numDaysWorked = 0
+
+    if(employeeResumptionMoment.year() === monthDateMoment.year()) {
+        if (employeeResumptionMoment.month() === monthDateMoment.month()) {
+            numDaysWorked = getWeekDays(employeeResumption, endOfMonthDate).length
+        } else if(employeeResumptionMoment.month() > monthDateMoment.month()) {
+            numDaysWorked = 0
+        } else {
+            numDaysWorked = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
+        }
+    } else if(employeeResumptionMoment.year() > monthDateMoment.year()) {
+        numDaysWorked = 0
+    } else if(employeeResumptionMoment.year() < monthDateMoment.year()) {
+        numDaysWorked = getWeekDays(firstDayOfMonthDateObj, endOfMonthDate).length
+    }
+    console.log(`numDaysWorked: `, numDaysWorked)
+
+    return numDaysWorked * 8
+}
+
+function getWeekDays(startDate, endDate) {
+    let startDateMoment = moment(startDate)
+    let endDateMoment = moment(endDate)
+
+    let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+
+    let startDateMomentClone = moment(startDateMoment); // use a clone
+    let weekDates = []
+
+    while (numberOfDays > 0) {
+        if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+            weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+        }
+        startDateMomentClone.add(1, 'days');
+        numberOfDays -= 1;
+    }
+    return weekDates
+}
 
 function getPayAmountInForeignCurrency(payTypeDetails, amountInLocalCurrency, currencyRatesForPeriod) {
     let amountInForeignCurrency = null
