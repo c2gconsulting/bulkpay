@@ -783,6 +783,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                                                 })
                                             }
                                     }
+                                    
                                     //add value to result
                                     employeeResult.payment.push({
                                         id: x._id, reference: 'Paytype', 
@@ -860,7 +861,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
 
                             //populate result for tax
                             if(tenant.baseCurrency.iso === assignedTaxBucket.currency) {
-                                employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: '', code: tax.code, description: tax.name, type: 'Deduction'  });
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
                             } else {
                                 employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: '', amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
                             }
@@ -951,7 +952,7 @@ function processEmployeePay(employees, includedAnnuals, businessId, period) {
                         taxLog = taxCalculationResult.taxLog
 
                         //populate result for tax
-                        employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: '', code: tax.code, description: tax.name, type: 'Deduction'  });
+                        employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
                     }
 
                     if(taxLog)
