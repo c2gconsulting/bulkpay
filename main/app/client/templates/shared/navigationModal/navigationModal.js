@@ -77,6 +77,18 @@ Template.navigationModal.events({
         }
     },
     //------sub menus
+    'click #buprofile': function(event, tmpl) {
+      Router.go('bu.profile', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #budetails': function(event, tmpl) {
+      Router.go('bu.details', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
     'click #paytypes': function(event, tmpl) {
       Router.go('paytypes', {_id: Session.get('context')})
       Modal.hide('navigationModal');
@@ -112,6 +124,59 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+
+
+    'click #sapconfig': function(event, tmpl) {
+      Router.go('sap.config', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
+    'click #employees': function(event, tmpl) {
+      Router.go('employees', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #leaveentitlementlist': function(event, tmpl) {
+      Router.go('leave.entitlement.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #leavetypes': function(event, tmpl) {
+      Router.go('leavetypes', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #employeetimeapprove': function(event, tmpl) {
+      Router.go('employee.time.approve', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #projectlist': function(event, tmpl) {
+      Router.go('project.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
+    'click #payrunnew': function(event, tmpl) {
+      Router.go('payrun.new', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #additionalpay': function(event, tmpl) {
+      Router.go('additional.pay', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #payruns': function(event, tmpl) {
+      Router.go('payruns', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
     //--Self-Service sub menus
     'click #employeetime': function(event, tmpl) {
       Router.go('employee.time', {_id: Session.get('context')})

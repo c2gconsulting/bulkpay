@@ -22,8 +22,8 @@
                               </li>
                           {{/if}}
                           {{#if isMenuExpanded 'companyMenu'}}
-                              <li><a href="{{pathFor 'bu.profile'}}">Profile</a></li>
-                              <li><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
+                              <li><a href="{{pathFor 'bu.profile'}}" id="buprofile">Profile</a></li>
+                              <li><a href="{{pathFor 'bu.details'}}" id="budetails">Org Chart</a></li>
                           {{/if}}
 
                           {{#if hasPayrollAccess}}
@@ -51,7 +51,7 @@
                               </li>
                           {{/if}}
                           {{#if isMenuExpanded 'sapB1IntegrationMenu'}}
-                              <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
+                              <li><a href="{{pathFor route='sap.config'}}" id="sapconfig">Setup</a></li>
                           {{/if}}
 
 
@@ -64,13 +64,13 @@
                               </li>
                           {{/if}}
                           {{#if isMenuExpanded 'administrationMenu'}}
-                              <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+                              <li><a href="{{pathFor 'employees'}}" id="employees">Manage Employees</a></li>
                               <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
                               
-                              <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
-                              <li><a href="{{pathFor 'leavetypes'}}">Manage Leave Types</a></li>
-                              <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
-                              <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
+                              <li><a href="{{pathFor 'leave.entitlement.list'}}" id="leaveentitlementlist">Manage Leave Entitlements</a></li>
+                              <li><a href="{{pathFor 'leavetypes'}}" id="leavetypes">Manage Leave Types</a></li>
+                              <li><a href="{{pathFor 'employee.time.approve'}}" id="employeetimeapprove">Approve employees Time</a></li>
+                              <li><a href="{{pathFor 'project.list'}}" id="projectlist">Create/Assign Projects</a></li>
                           {{/if}}
 
 
@@ -83,11 +83,11 @@
                               </li>
                           {{/if}}
                           {{#if isMenuExpanded 'payrunsMenu'}}
-                              <li><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
+                              <li><a href="{{pathFor route='payrun.new'}}" id="payrunnew">New Pay Run</a></li>
 
-                              <li><a href="{{pathFor route='additional.pay'}}">Additional Payment/ Deduction</a></li>
+                              <li><a href="{{pathFor route='additional.pay'}}" id="additionalpay">Additional Payment/ Deduction</a></li>
                               <!--<li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>-->
-                              <li><a href="{{pathFor route='payruns'}}">Payrun Results</a></li>
+                              <li><a href="{{pathFor route='payruns'}}" id="payruns">Payrun Results</a></li>
                           {{/if}}
 
 
