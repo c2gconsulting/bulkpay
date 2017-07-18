@@ -131,17 +131,17 @@
                               </a>
                           </li>
                           {{#if isMenuExpanded 'reportsMenu'}}
-                              <li><a href="{{pathFor 'reports.netpay'}}">Net pay report</a></li>
-                              <li><a href="{{pathFor 'reports.tax'}}">Tax reports</a></li>
-                              <li><a href="{{pathFor 'reports.pension'}}">Pension reports</a></li>
-                              <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive reports</a></li>
-                              <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing reports</a></li>
+                              <li><a href="{{pathFor 'reports.netpay'}}" id="reportsnetpay">Net pay report</a></li>
+                              <li><a href="{{pathFor 'reports.tax'}}" id="reportstax">Tax reports</a></li>
+                              <li><a href="{{pathFor 'reports.pension'}}" id="reportspension">Pension reports</a></li>
+                              <li><a href="{{pathFor 'reports.comprehensive'}}" id="reportscomprehensive">Comprehensive reports</a></li>
+                              <li><a href="{{pathFor 'reports.timewriting'}}" id="reportstimewriting">Time-writing reports</a></li>
 
                               {{#if isProcurementRequisitionActive}}
-                                  <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
+                                  <li><a href="{{pathFor 'reports.procurement'}}" id="reportsprocurement">Procurement report</a></li>
                               {{/if}}
                               {{#if isTravelRequisitionActive}}
-                                  <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requisition report</a></li>
+                                  <li><a href="{{pathFor 'reports.travelrequisition'}}" id="reportstravelrequisition">Travel requisition report</a></li>
                               {{/if}}
                           {{/if}}
 

@@ -212,7 +212,44 @@ Template.navigationModal.events({
       Router.go('payslip', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
-    },    
+    },
+
+
+    'click #reportsnetpay': function(event, tmpl) {
+      Router.go('reports.netpay', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportstax': function(event, tmpl) {
+      Router.go('reports.tax', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportspension': function(event, tmpl) {
+      Router.go('reports.pension', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportscomprehensive': function(event, tmpl) {
+      Router.go('reports.comprehensive', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportstimewriting': function(event, tmpl) {
+      Router.go('reports.timewriting', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportsprocurement': function(event, tmpl) {
+      Router.go('reports.procurement', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #reportstravelrequisition': function(event, tmpl) {
+      Router.go('reports.travelrequisition', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
 
 
     'click #home': function(event, tmpl) {
