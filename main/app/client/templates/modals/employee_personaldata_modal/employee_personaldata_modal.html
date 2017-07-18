@@ -147,9 +147,11 @@
                   <button type="reset" class="btn btn-danger pull-right" id="save-close" data-dismiss="modal">Cancel</button>
                   <button class="btn btn-primary mr5 ladda-button pull-right" id="save">Save</button>
 
-                 <button class="btn btn-primary mr5 ladda-button pull-left" id="sendEnrollmentEmail"
-                    title="Please note! It'll require this user to change his password">Send Enrollment Email</button>
-                 <button class="btn btn-primary mr5 ladda-button pull-left" id="resetUsernameAndPassword">Reset Username and password</button>
+                  {{#if hasEmployeeAccess}}
+                    <button class="btn btn-primary mr5 ladda-button pull-left" id="sendEnrollmentEmail"
+                        title="Please note! It'll require this user to change his password">Send Enrollment Email</button>
+                    <button class="btn btn-primary mr5 ladda-button pull-left" id="resetUsernameAndPassword">Reset Username and password</button>
+                 {{/if}}
               </div>
           </div>
       </div>

@@ -266,6 +266,10 @@ Template.EmployeePersonalDataModal.helpers({
     },
     'grades': () => {
         return PayGrades.find();
+    },
+    hasEmployeeAccess: () => {
+      let canManageEmployeeData = Core.hasEmployeeAccess(Meteor.userId())
+      return canManageEmployeeData;
     }
 });
 
