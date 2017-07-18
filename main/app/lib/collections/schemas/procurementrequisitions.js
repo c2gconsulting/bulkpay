@@ -41,6 +41,10 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
         type: String,
         optional: true
     },
+    alternativeSupervisorPositionId: {
+        type: String,
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

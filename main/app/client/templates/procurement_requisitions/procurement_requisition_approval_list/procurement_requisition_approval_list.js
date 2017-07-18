@@ -110,7 +110,11 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return ProcurementRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
+            return ProcurementRequisitions.find({
+                $or: [{supervisorPositionId : currentUserPosition}, 
+                        {alternativeSupervisorPositionId: currentUserPosition}],                
+                status: 'Pending'
+            }, options);
         }
         return null
     }

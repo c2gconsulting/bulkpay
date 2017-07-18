@@ -169,10 +169,11 @@ Template.header.onCreated(function() {
                 let currentUserPosition = currentUser.employeeProfile.employment.position
 
                 let procurementsToApprove = ProcurementRequisitions.find({
-                    supervisorPositionId: currentUserPosition,
+                    $or: [{supervisorPositionId : currentUserPosition}, 
+                            {alternativeSupervisorPositionId: currentUserPosition}],
                     status: 'Pending'
                 }).fetch()
-                console.log(`[header.js] procurementsToApprove: ${JSON.stringify(procurementsToApprove)}`)
+                // console.log(`[header.js] procurementsToApprove: ${JSON.stringify(procurementsToApprove)}`)
                 self.procurementsToApprove.set(procurementsToApprove)
             }
         }

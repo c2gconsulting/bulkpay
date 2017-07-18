@@ -34,7 +34,8 @@ Core.publish("ProcurementRequisitionsToApprove", function (businessUnitId) {
     if (Core.hasProcurementRequisitionApproveAccess(this.userId)) {
         return ProcurementRequisitions.find({
             businessUnitId: businessUnitId,
-            supervisorPositionId: userPositionId
+            $or: [{supervisorPositionId : userPositionId}, 
+                    {alternativeSupervisorPositionId: userPositionId}]
         });
     } else {
         return Meteor.Error(401, "Unauthorized! You don't have the 'Procurement Requisition Approve' role");
