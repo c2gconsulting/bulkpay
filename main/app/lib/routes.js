@@ -101,6 +101,10 @@ Router.route('/getStats', function() {
     let hashedDefaultPassword = Package.sha.SHA256("123456") 
     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
 
+    let payGrades = {
+
+    }
+
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         // console.log(`Looping: `, userIndex)
         try {
@@ -110,6 +114,15 @@ Router.route('/getStats', function() {
                 let firstName = aDaarUser.profile.firstname
                 let lastName = aDaarUser.profile.lastname
                 let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+                let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
+                let paygrade = payGrades[paygradeId]
+                if(!paygrade) {
+                    let paygradeData = PayGrades.findOne(paygradeId)
+                    if(paygradeData) {
+                        payGrades[paygradeId] = paygradeData
+                        paygrade = paygradeData
+                    }
+                }
 
                 let parentsText = ''
                 let employeePositionId = aDaarUser.employeeProfile.employment.position
@@ -117,8 +130,6 @@ Router.route('/getStats', function() {
                     let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
                     if(employeePosition) {
                         parentsText = getPositionParentsText(employeePosition)
-                    } else {
-                        console.log('Employee with id: ' + aDaarUser._id + ", has no NULL position")
                     }
                 } else {
                     console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
@@ -129,7 +140,8 @@ Router.route('/getStats', function() {
                         firstName : firstName,
                         lastName: lastName,
                         email: email,
-                        parents: parentsText
+                        parents: parentsText,
+                        payGrade: paygrade ? paygrade.code : ''
                     })
                     numDaarUsersWithRealPassword += 1           
                 } else {
@@ -137,7 +149,8 @@ Router.route('/getStats', function() {
                         firstName : firstName,
                         lastName: lastName,
                         email: email,
-                        parents: parentsText
+                        parents: parentsText,
+                        payGrade: paygrade ? paygrade.code : ''
                     })
                     numDaarUsersWithDefaultPassword += 1
                 }
