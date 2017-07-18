@@ -173,7 +173,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
             }
             reportData.push({
                 unit: aTimeDatum.costCenter,
-                unitName: aTimeDatum.unitDetails.unitName,
+                unitName: aTimeDatum.unitDetails ? aTimeDatum.unitDetails.unitName : '',
                 employees: [{
                     employeeDetails: aTimeDatum.employeeDetails, 
                     employeeTimeTotal: employeeTimeTotal
