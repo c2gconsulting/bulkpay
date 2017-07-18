@@ -57,6 +57,14 @@
                                 </div>
                             </div>
                             <div class="">
+                                <label for="otherNames" class="col-sm-4 control-label">Username</label>
+                                <div class="col-sm-8">
+                                    <input name="customUsername" type="text" class="form-control"
+                                      value="{{customUsername}}" disabled />
+                                </div>
+                            </div>
+
+                            <div class="">
                                 <label for="employee-address" class="col-sm-4 control-label">Address</label>
                                 <div class="col-sm-8">
                                     <textarea name="address" id="employee-address" class="form-control" rows="2"
@@ -141,6 +149,7 @@
 
                  <button class="btn btn-primary mr5 ladda-button pull-left" id="sendEnrollmentEmail"
                     title="Please note! It'll require this user to change his password">Send Enrollment Email</button>
+                 <button class="btn btn-primary mr5 ladda-button pull-left" id="resetUsernameAndPassword">Reset Username and password</button>
               </div>
           </div>
       </div>

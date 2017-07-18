@@ -53,6 +53,37 @@ Template.EmployeePersonalDataModal.events({
             }
         });
     },
+    'click #resetUsernameAndPassword': function(e, tmpl) {
+        let user = Template.instance().getEditUser();
+
+        $('#resetUsernameAndPassword').text('Sending. Please wait ...')
+        tmpl.$('#resetUsernameAndPassword').attr('disabled', true);
+
+        Meteor.call('accounts/resetToDefaultUsernameAndPassword', Session.get('context'), user._id, (err, res) => {
+            $('#resetUsernameAndPassword').text('Reset Username and Password')
+            tmpl.$('#resetUsernameAndPassword').attr('disabled', false);
+
+            if (res){
+              user.customUsername = res;
+              tmpl.setEditUser(user);
+
+              let selectedSessionUser = Session.get('employeesList_selectedEmployee')
+              selectedSessionUser.customUsername = res
+              Session.set('employeesList_selectedEmployee', selectedSessionUser)
+
+              swal({
+                  title: "Success",
+                  text: "Username and Password were reset successfully",
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+            } else {
+                console.log(err);
+                swal('Error', err.message, 'error')
+            }
+        });
+    },
     'change #uploadBtn': function(e){
         if (e.target.files && e.target.files[0]) {
             let reader = new FileReader();
@@ -249,7 +280,6 @@ Template.EmployeePersonalDataModal.onCreated(function () {
     }
 
     self.setEditUser = (editUser) => {
-      console.log("Inside setEditUser");
       Session.set('employeePersonalData', editUser);
     }
 

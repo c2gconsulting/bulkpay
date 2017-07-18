@@ -443,6 +443,30 @@ Meteor.methods({
         }
     },
 
+    "accounts/resetToDefaultUsernameAndPassword": function(businessId, userId) {
+        let foundUser = Meteor.users.findOne({
+            _id: userId,
+            businessIds: {"$in" : [businessId]}
+        })
+
+        if(foundUser) {
+          let userFirstName = foundUser.profile.firstname || ""
+          let userLastName = foundUser.profile.lastname || ""
+          //--
+          userFirstName = userFirstName.trim()
+          userLastName = userLastName.trim()
+          //--
+          let defaultUsername = userFirstName + "." + userLastName
+          defaultUsername = defaultUsername.toLowerCase()
+
+          Meteor.users.update(foundUser._id, {$set: {customUsername: defaultUsername}}) 
+          Accounts.setPassword(foundUser._id, "123456")
+          return defaultUsername
+        } else {
+            throw new Meteor.Error(404, 'User does not exist for company');
+        }
+    },
+
     /*
      * invite new admin users
      * (not consumers) to secure access in the dashboard
