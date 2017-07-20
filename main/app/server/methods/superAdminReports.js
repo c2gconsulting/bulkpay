@@ -30,7 +30,7 @@ Meteor.methods({
 
     let payrunResults = processEmployeePay(Meteor.userId(), allDaarUsers, [], businessId, {
         year: '2017',
-        month: '01'
+        month: '03' // Don't use January '01'
     })
     console.log(`payrun processing done!`)
     
