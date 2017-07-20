@@ -352,3 +352,10 @@ Router.route('/business/:_id/reports/travelrequisition', {
     action: 'travelRequest',
     where: 'client'
 });
+
+Router.route('/business/:_id/superadmin/reports/users', {
+    name: 'superadmin.reports.users',
+    controller: 'SuperAdminReportsController',
+    action: 'getUsersWithDefaultOrRealPassword',
+    where: 'client'
+});

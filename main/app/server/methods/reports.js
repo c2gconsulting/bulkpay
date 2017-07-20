@@ -207,10 +207,6 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
 }
 
 
-
-/**
- *  Payruns Methods
- */
 Meteor.methods({
     'reports/getComprehensivePayResult': function(businessId, period) {
         check(period, String);

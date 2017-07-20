@@ -143,6 +143,17 @@
             {{/if}}
         {{/if}}
 
+        {{#if hasAdminAccess}}
+            <li class="parent {{isMenuExpandedFocusClass 'superAdminReportsMenu'}}">
+                <a href="" id="superAdminReportsMenu"><i class="fa fa-university"></i>
+                    <span>Super Admin Reports</span>
+                </a>
+            </li>
+        {{/if}}
+        {{#if isMenuExpanded 'superAdminReportsMenu'}}
+            <li><a href="{{pathFor 'superadmin.reports.users'}}">Users</a></li>
+        {{/if}}
+
             <!--<li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>-->
                 <!--<ul class="children">-->
                     <!--<li><a href="#">Salary Register</a></li>-->

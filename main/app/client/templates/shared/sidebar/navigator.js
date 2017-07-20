@@ -75,6 +75,16 @@ Template.navigator.events({
         } else {
             tmpl.expandedMenu.set(menuId)
         }
+    },
+    'click #superAdminReportsMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
     }
 });
 
