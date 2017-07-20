@@ -8,7 +8,36 @@ Template.UsersWithDefaultorRealPassword.events({
         e.preventDefault();
 
     },
+    'click #exportReportForUsersWithDefaultPassword': function(e, tmpl) {
+        e.preventDefault();
+        tmpl.$('#exportReportForUsersWithDefaultPassword').text('Preparing... ');
+        tmpl.$('#exportReportForUsersWithDefaultPassword').attr('disabled', true);
+        try {
+            let l = Ladda.create(tmpl.$('#exportReportForUsersWithDefaultPassword')[0]);
+            l.start();
+        } catch(e) {
+        }
+        //--
+        let resetButton = function() {
+            try {
+                let l = Ladda.create(tmpl.$('#exportReportForUsersWithDefaultPassword')[0]);
+                l.stop();
+                l.remove();
+            } catch(e) {
+            }
 
+            tmpl.$('#exportReportForUsersWithDefaultPassword').text('Export');
+            $('#exportReportForUsersWithDefaultPassword').prepend("<i class='glyphicon glyphicon-download'></i>");
+            tmpl.$('#exportReportForUsersWithDefaultPassword').removeAttr('disabled');
+        };
+
+        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'parents', 'payGrade', 'netPay']
+        let reportData = Template.instance().usersWithDefaultPassword.get()
+
+        BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
+            `Users with default password report`);
+        resetButton()
+    },
     'click #exportReportForUsersWithRealPassword': function(e, tmpl) {
         e.preventDefault();
         tmpl.$('#exportReportForUsersWithRealPassword').text('Preparing... ');
@@ -32,11 +61,12 @@ Template.UsersWithDefaultorRealPassword.events({
             tmpl.$('#exportReportForUsersWithRealPassword').removeAttr('disabled');
         };
 
-        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'parents', 'payGrade']
+        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'parents', 'payGrade', 'netPay']
         let reportData = Template.instance().usersWithRealPassword.get()
 
         BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
             `Users with real password report`);
+        resetButton()        
     }
 });
 

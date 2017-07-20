@@ -28,10 +28,10 @@ Meteor.methods({
     console.log(`Num allDaarUsers: `, allDaarUsers.length)
     this.unblock()
 
-    // processEmployeePay(Meteor.userId(), allDaarUsers, [], 'tgC7zYJf9ceSBmoT9', {
-    //     year: '2017',
-    //     month: '01'
-    // })
+    let payrunResults = processEmployeePay(Meteor.userId(), allDaarUsers, [], businessId, {
+        year: '2017',
+        month: '01'
+    })
     console.log(`payrun processing done!`)
     
     let numDaarUsersWithRealPassword = 0
@@ -75,6 +75,16 @@ Meteor.methods({
                 } else {
                     console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
                 }
+                //--
+                let employeeNetPay = ''
+                if(payrunResults && payrunResults.result.length > 0) {
+                   _.find(payrunResults.result, aPayrunData => {
+                      let paySlip = aPayrunData.payslip
+                      if(paySlip && paySlip.employee && paySlip.employee.employeeUserId === aDaarUser._id) {
+                          employeeNetPay = paySlip.netPayment
+                      }
+                   })
+                }
 
                 if(defaultLoginResult.error) {
                     daarUsersWithRealPassword.push({
@@ -83,7 +93,8 @@ Meteor.methods({
                         lastName: lastName,
                         email: email,
                         parents: parentsText,
-                        payGrade: paygrade ? paygrade.code : ''
+                        payGrade: paygrade ? paygrade.code : '',
+                        netPay: employeeNetPay
                     })
                     numDaarUsersWithRealPassword += 1
                 } else {
@@ -93,7 +104,8 @@ Meteor.methods({
                         lastName: lastName,
                         email: email,
                         parents: parentsText,
-                        payGrade: paygrade ? paygrade.code : ''
+                        payGrade: paygrade ? paygrade.code : '',
+                        netPay: employeeNetPay
                     })
                     numDaarUsersWithDefaultPassword += 1
                 }
