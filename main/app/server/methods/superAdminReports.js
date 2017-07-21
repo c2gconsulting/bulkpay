@@ -23,7 +23,6 @@ let getPositionParentsText = function(position) {
 
 Meteor.methods({
   'superAdminReports/getUsersWithDefaultPassword': function(businessId) {
-    console.log('routes.js file ... inside getStats')
     let allDaarUsers = Meteor.users.find({businessIds: businessId}).fetch()
     console.log(`Num allDaarUsers: `, allDaarUsers.length)
     this.unblock()
@@ -42,13 +41,11 @@ Meteor.methods({
     let hashedDefaultPassword = Package.sha.SHA256("123456") 
     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
 
-    let payGrades = {
-
-    }
+    let payGrades = {}
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         try {
-            if(userIndex < 1055) {
+            // if(userIndex < 1055) {
                 let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
                 let empId = aDaarUser.employeeProfile.employeeId || ""
 
@@ -85,33 +82,26 @@ Meteor.methods({
                       }
                    })
                 }
+                let employeeData = {
+                    empId: empId,
+                    firstName : firstName,
+                    lastName: lastName,
+                    email: email,
+                    parents: parentsText,
+                    payGrade: paygrade ? paygrade.code : '',
+                    netPay: employeeNetPay
+                }
 
                 if(defaultLoginResult.error) {
-                    daarUsersWithRealPassword.push({
-                        empId: empId,
-                        firstName : firstName,
-                        lastName: lastName,
-                        email: email,
-                        parents: parentsText,
-                        payGrade: paygrade ? paygrade.code : '',
-                        netPay: employeeNetPay
-                    })
+                    daarUsersWithRealPassword.push(employeeData)
                     numDaarUsersWithRealPassword += 1
                 } else {
-                    daarUsersWithDefaultPassword.push({
-                        empId: empId,
-                        firstName : firstName,
-                        lastName: lastName,
-                        email: email,
-                        parents: parentsText,
-                        payGrade: paygrade ? paygrade.code : '',
-                        netPay: employeeNetPay
-                    })
+                    daarUsersWithDefaultPassword.push(employeeData)
                     numDaarUsersWithDefaultPassword += 1
                 }
-            } else {
-                console.log('Reached the upper limit')
-            }
+            // } else {
+            //     console.log('Reached the upper limit')
+            // }
         } catch(e) {
             console.log("Exception: ", e.message)
         }
