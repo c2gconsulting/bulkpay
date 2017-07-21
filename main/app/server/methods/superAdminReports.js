@@ -79,6 +79,7 @@ Meteor.methods({
                       let paySlip = aPayrunData.payslip
                       if(paySlip && paySlip.employee && paySlip.employee.employeeUserId === aDaarUser._id) {
                           employeeNetPay = paySlip.netPayment
+                          return true
                       }
                    })
                 }
