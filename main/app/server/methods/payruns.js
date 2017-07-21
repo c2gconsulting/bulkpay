@@ -1080,11 +1080,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 function getDaysEmployeeCanWorkInMonth(employee, firstDayOfMonthDateObj) {
     let employeeResumption = employee.employeeProfile.employment.hireDate
     // console.log(`\n employee id: `, employee._id)
+
+    if(!employeeResumption || employeeResumption === '') {
+        employeeResumption = firstDayOfMonthDateObj
+    }
     let employeeResumptionMoment = moment(employeeResumption)
 
     let monthDateMoment = moment(firstDayOfMonthDateObj)
-
-
     let endOfMonthDate = moment(firstDayOfMonthDateObj).endOf('month').toDate()
 
     let numDaysToWorkInMonth = 0
