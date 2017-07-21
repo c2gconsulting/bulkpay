@@ -29,7 +29,7 @@ Meteor.methods({
 
     let payrunResults = processEmployeePay(Meteor.userId(), allDaarUsers, [], businessId, {
         year: '2017',
-        month: '03' // Don't use January '01'
+        month: '12'
     })
     console.log(`payrun processing done!`)
     
@@ -45,64 +45,60 @@ Meteor.methods({
 
     allDaarUsers.forEach((aDaarUser, userIndex) => {
         try {
-            // if(userIndex < 1055) {
-                let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
-                let empId = aDaarUser.employeeProfile.employeeId || ""
+            let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
+            let empId = aDaarUser.employeeProfile.employeeId || ""
 
-                let firstName = aDaarUser.profile.firstname
-                let lastName = aDaarUser.profile.lastname
-                let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
-                let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
-                let paygrade = payGrades[paygradeId]
-                if(!paygrade) {
-                    let paygradeData = PayGrades.findOne(paygradeId)
-                    if(paygradeData) {
-                        payGrades[paygradeId] = paygradeData
-                        paygrade = paygradeData
+            let firstName = aDaarUser.profile.firstname
+            let lastName = aDaarUser.profile.lastname
+            let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
+            let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
+            let paygrade = payGrades[paygradeId]
+            if(!paygrade) {
+                let paygradeData = PayGrades.findOne(paygradeId)
+                if(paygradeData) {
+                    payGrades[paygradeId] = paygradeData
+                    paygrade = paygradeData
+                }
+            }
+
+            let parentsText = ''
+            let employeePositionId = aDaarUser.employeeProfile.employment.position
+            if(employeePositionId) {
+                let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+                if(employeePosition) {
+                    parentsText = getPositionParentsText(employeePosition)
+                }
+            } else {
+                console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
+            }
+            //--
+            let employeeNetPay = ''
+            if(payrunResults && payrunResults.result.length > 0) {
+                _.find(payrunResults.result, aPayrunData => {
+                    let paySlip = aPayrunData.payslip
+                    if(paySlip && paySlip.employee && paySlip.employee.employeeUserId === aDaarUser._id) {
+                        employeeNetPay = paySlip.netPayment
+                        return true
                     }
-                }
+                })
+            }
+            let employeeData = {
+                empId: empId,
+                firstName : firstName,
+                lastName: lastName,
+                email: email,
+                parents: parentsText,
+                payGrade: paygrade ? paygrade.code : '',
+                netPay: employeeNetPay
+            }
 
-                let parentsText = ''
-                let employeePositionId = aDaarUser.employeeProfile.employment.position
-                if(employeePositionId) {
-                    let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
-                    if(employeePosition) {
-                        parentsText = getPositionParentsText(employeePosition)
-                    }
-                } else {
-                    console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
-                }
-                //--
-                let employeeNetPay = ''
-                if(payrunResults && payrunResults.result.length > 0) {
-                   _.find(payrunResults.result, aPayrunData => {
-                      let paySlip = aPayrunData.payslip
-                      if(paySlip && paySlip.employee && paySlip.employee.employeeUserId === aDaarUser._id) {
-                          employeeNetPay = paySlip.netPayment
-                          return true
-                      }
-                   })
-                }
-                let employeeData = {
-                    empId: empId,
-                    firstName : firstName,
-                    lastName: lastName,
-                    email: email,
-                    parents: parentsText,
-                    payGrade: paygrade ? paygrade.code : '',
-                    netPay: employeeNetPay
-                }
-
-                if(defaultLoginResult.error) {
-                    daarUsersWithRealPassword.push(employeeData)
-                    numDaarUsersWithRealPassword += 1
-                } else {
-                    daarUsersWithDefaultPassword.push(employeeData)
-                    numDaarUsersWithDefaultPassword += 1
-                }
-            // } else {
-            //     console.log('Reached the upper limit')
-            // }
+            if(defaultLoginResult.error) {
+                daarUsersWithRealPassword.push(employeeData)
+                numDaarUsersWithRealPassword += 1
+            } else {
+                daarUsersWithDefaultPassword.push(employeeData)
+                numDaarUsersWithDefaultPassword += 1
+            }
         } catch(e) {
             console.log("Exception: ", e.message)
         }
