@@ -32,6 +32,17 @@ Meteor.methods({
         month: '12'
     })
     console.log(`payrun processing done!`)
+    //--
+    let efficientPayrunResults = {}
+    if(payrunResults.result) {
+        payrunResults.result.forEach(aPayrunData => {
+            let paySlip = aPayrunData.payslip
+            if(paySlip && paySlip.employee && paySlip.employee.employeeUserId) {
+                efficientPayrunResults[paySlip.employee.employeeUserId] = aPayrunData
+            }
+        })
+    }
+    //--
     
     let numDaarUsersWithRealPassword = 0
     let numDaarUsersWithDefaultPassword = 0
@@ -73,14 +84,14 @@ Meteor.methods({
             }
             //--
             let employeeNetPay = ''
-            if(payrunResults && payrunResults.result.length > 0) {
-                _.find(payrunResults.result, aPayrunData => {
-                    let paySlip = aPayrunData.payslip
-                    if(paySlip && paySlip.employee && paySlip.employee.employeeUserId === aDaarUser._id) {
-                        employeeNetPay = paySlip.netPayment
-                        return true
-                    }
-                })
+            let employeePayrunResults = efficientPayrunResults[aDaarUser._id]
+
+            if(employeePayrunResults) {
+                let paySlip = employeePayrunResults.payslip
+                employeeNetPay = paySlip.netPayment
+                if(employeeNetPay) {
+                    employeeNetPay = parseFloat(employeeNetPay).toFixed(2);
+                }
             }
             let employeeData = {
                 empId: empId,
