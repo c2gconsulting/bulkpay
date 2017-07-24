@@ -124,6 +124,56 @@ Template.ProcurementRequisitionDetail.events({
                 }
             })
         }
+    },
+    'click #requisition-print': function(e, tmpl) {
+        // $("#ProcurementRequisitionDetailModal").printThis({
+        //     importStyle: true
+        // });
+        let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
+        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
+
+        let procurementDetails = Template.instance().procurementDetails.get()
+
+        let user = Meteor.users.findOne(procurementDetails.createdBy)
+        let employeeFullName = ''
+        let employeeId = ''
+        if(user) {
+            employeeFullName = user.profile.fullName
+            employeeId = user.employeeProfile.employeeId;
+        }
+
+        let firstTransform = $("#ProcurementRequisitionDetailModal")
+        .clone()
+        .remove('.panel-footer')
+        .find('.panel-title')
+        .html('Purchase Requisition')
+        .end()
+        .find('.panel-title')
+        .prepend(`
+            <img src='${businessUnitLogoUrl}' class='img-responsive mb10' alt='' />
+        `)
+        // .prepend(`
+        //     <img src='${businessUnitLogoUrl}' class='img-responsive mb10' alt='' />
+        //     <h5 class="subtitle mb10">Employee Full Name: ${employeeFullName}</h5>
+        //     <h5 class="subtitle mb10">Employee No: ${employeeId}</h5>
+        // `)
+        .end()
+
+        if(businessUnitLogoUrl) {
+            // firstTransform
+            // .find('.panel-title')
+            // .prepend(`
+            //     <h5 class="subtitle mb10">Employee Full Name: ${employeeFullName}</h5>
+            //     <h5 class="subtitle mb10">Employee No: ${employeeId}</h5>`
+            // )
+
+            // .end()
+            // .end()
+        }
+
+        firstTransform.printThis({
+            importStyle: true
+        });
     }
 });
 
@@ -172,16 +222,25 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         self.isInApproveMode.set(true)
     }
 
+    self.businessUnitLogoUrl = new ReactiveVar()
+
+
     self.autorun(function() {
+        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let procurementSub = self.subscribe('ProcurementRequisition', invokeReason.requisitionId)
+
         if(procurementSub.ready()) {
-            console.log(`procurement subscription ready `)
             let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
             
             if(procurementDetails.unitId) {
                 self.subscribe('getEntity', procurementDetails.unitId)
             }
+        }
+
+        if(businessUnitSubscription.ready()) {
+            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
     })
 

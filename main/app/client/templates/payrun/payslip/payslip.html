@@ -1,5 +1,5 @@
 <template name="Payslip">
-    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div id="PayslipModal" class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-default">
@@ -10,7 +10,9 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-6">
-                                <!--<img src="/img/payslip/dtologo.png" class="img-responsive mb10" alt="" />-->
+                                {{#if paySlipBusinessLogoUrl}}
+                                <img src="{{paySlipBusinessLogoUrl}}" class="img-responsive mb10" alt="" />
+                                {{/if}}
                                 <strong id="businessUnitName">{{businessUnitName}}</strong>
                                 <br/><br/>
 
@@ -295,7 +297,7 @@
                         {{/with}}
 
                         <div class="text-right btn-invoice">
-                            <button class="btn btn-white btn-lg"><i class="fa fa-print mr5"></i> Print Slip</button>
+                            <button class="btn btn-white btn-lg" id="PayslipPrint"><i class="fa fa-print mr5"></i> Print Slip</button>
                         </div>
 
                         <div class="mb30"></div>

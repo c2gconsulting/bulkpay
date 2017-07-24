@@ -35,5 +35,6 @@ BrowserPolicy.content.allowImageOrigin("fbcdn-profile-a.akamaihd.net");
 BrowserPolicy.content.allowImageOrigin("secure.gravatar.com");
 BrowserPolicy.content.allowImageOrigin("i0.wp.com");
 BrowserPolicy.content.allowImageOrigin("*.intercomassets.com");
+BrowserPolicy.content.allowImageOrigin("*.cloudinary.com");
 
 BrowserPolicy.content.allowEval(__meteor_runtime_config__.ROOT_URL);
