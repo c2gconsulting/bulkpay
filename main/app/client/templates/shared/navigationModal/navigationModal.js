@@ -279,25 +279,27 @@ Template.navigationModal.helpers({
         return canApproveProcurement;
     },
     'isProcurementRequisitionActive': function () {
-        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        if(businessUnitCustomConfig) {
-            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
-        } else {
-            return false
-        }
+        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        // if(businessUnitCustomConfig) {
+        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
+        // } else {
+        //     return false
+        // }
+        return true;
     },
     'hasTravelRequisitionApproveAccess': function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
     },
     'isTravelRequisitionActive': function () {
-        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 
-        if(businessUnitCustomConfig) {
-            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
-        } else {
-            return false
-        }
+        // if(businessUnitCustomConfig) {
+        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
+        // } else {
+        //     return false
+        // }
+        return true;
     },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
