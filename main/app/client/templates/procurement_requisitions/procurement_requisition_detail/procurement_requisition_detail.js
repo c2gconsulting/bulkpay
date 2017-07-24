@@ -146,7 +146,7 @@ Template.ProcurementRequisitionDetail.events({
         .clone()
         .remove('.panel-footer')
         .find('.panel-title')
-        .html('Purchase Requisition')
+        .html(`Purchase Requisition: ${employeeFullName}`)
         .end()
         .find('.panel-title')
         .prepend(`

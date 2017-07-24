@@ -3,8 +3,9 @@
 /*****************************************************************************/
 Template.Payslip.events({
     'click #PayslipPrint': function(e, tmpl) {
-        $("#PayslipModal").printThis({
-        });
+        e.preventDefault()
+        // $("#PayslipModal").printThis({
+        // });
 
         // $("#PayslipModal").printThis({
         //     importStyle: true
