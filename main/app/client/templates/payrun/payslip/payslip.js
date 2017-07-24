@@ -2,7 +2,14 @@
 /* Payslip: Event Handlers */
 /*****************************************************************************/
 Template.Payslip.events({
+    'click #PayslipPrint': function(e, tmpl) {
+        $("#PayslipModal").printThis({
+        });
 
+        // $("#PayslipModal").printThis({
+        //     importStyle: true
+        // });
+    }
 });
 
 /*****************************************************************************/
@@ -190,6 +197,12 @@ Template.Payslip.helpers({
                 return currencyPayments.total
             }
         }
+    },
+    paySlipBusinessLogoUrl: function() {
+        let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
+        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
+
+        return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     }
 });
 
@@ -203,6 +216,7 @@ Template.Payslip.onCreated(function () {
     self.employeeData.set(self.data.payslip.employee);
 
     self.businessUnitName = new ReactiveVar()
+    self.businessUnitLogoUrl = new ReactiveVar()
 
     self.payrunPeriod = new ReactiveVar();
 
@@ -231,6 +245,7 @@ Template.Payslip.onCreated(function () {
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             self.businessUnitName.set(businessUnit.name)
+            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
     })
 });

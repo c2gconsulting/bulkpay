@@ -274,30 +274,32 @@ Template.navigationModal.helpers({
         let currentExpandedMenuId = Template.instance().expandedMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
-    hasProcurementRequisitionApproveAccess: function () {
+    'hasProcurementRequisitionApproveAccess': function () {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
         return canApproveProcurement;
     },
-    isProcurementRequisitionActive: function () {
-        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        if(businessUnitCustomConfig) {
-            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
-        } else {
-            return false
-        }
+    'isProcurementRequisitionActive': function () {
+        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        // if(businessUnitCustomConfig) {
+        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
+        // } else {
+        //     return false
+        // }
+        return true;
     },
-    hasTravelRequisitionApproveAccess: function () {
+    'hasTravelRequisitionApproveAccess': function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
     },
-    isTravelRequisitionActive: function () {
-        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    'isTravelRequisitionActive': function () {
+        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 
-        if(businessUnitCustomConfig) {
-            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
-        } else {
-            return false
-        }
+        // if(businessUnitCustomConfig) {
+        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
+        // } else {
+        //     return false
+        // }
+        return true;
     },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
