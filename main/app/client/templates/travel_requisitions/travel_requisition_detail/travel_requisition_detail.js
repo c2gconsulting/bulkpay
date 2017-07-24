@@ -124,7 +124,43 @@ Template.TravelRequisitionDetail.events({
                 }
             })
         }
-    }
+    },
+    'click #requisition-print': function(e, tmpl) {
+        // $("#ProcurementRequisitionDetailModal").printThis({
+        //     importStyle: true
+        // });
+        let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
+        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
+
+        let procurementDetails = Template.instance().procurementDetails.get()
+
+        let user = Meteor.users.findOne(procurementDetails.createdBy)
+        let employeeFullName = ''
+        let employeeId = ''
+        if(user) {
+            employeeFullName = user.profile.fullName
+            employeeId = user.employeeProfile.employeeId;
+        }
+
+        let firstTransform = $("#TravelRequisitionDetailModal")
+        .clone()
+        .remove('.panel-footer')
+        .find('.panel-title')
+        .html(`Travel Request: ${employeeFullName}`)
+        .end()
+        .find('.panel-title')
+        .prepend(`
+            <img src='${businessUnitLogoUrl}' class='img-responsive mb10' alt='' />
+        `)
+        .end()
+
+        if(businessUnitLogoUrl) {
+        }
+
+        firstTransform.printThis({
+            importStyle: true
+        });
+    }    
 });
 
 
@@ -178,10 +214,13 @@ Template.TravelRequisitionDetail.onCreated(function () {
         self.isInApproveMode.set(true)
     }
 
+    self.businessUnitLogoUrl = new ReactiveVar()
+
     self.autorun(function() {
+        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let procurementSub = self.subscribe('TravelRequest', invokeReason.requisitionId)
+
         if(procurementSub.ready()) {
-            console.log(`procurement subscription ready `)
             let travelRequestDetails = TravelRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(travelRequestDetails)
             //--
@@ -201,6 +240,11 @@ Template.TravelRequisitionDetail.onCreated(function () {
             if(travelRequestDetails.unitId) {
                 self.subscribe('getEntity', travelRequestDetails.unitId)
             }
+        }
+
+        if(businessUnitSubscription.ready()) {
+            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
     })
 

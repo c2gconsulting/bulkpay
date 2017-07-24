@@ -1,5 +1,5 @@
 <template name="TravelRequisitionDetail">
-    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div id="TravelRequisitionDetailModal" class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="panel panel-default">
@@ -144,6 +144,7 @@
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
 
                         {{#if isInEditMode}}
                         <button class="btn btn-danger mr5 pull-right" id="requisition-create" data-dismiss="modal">Submit for Approval</button>
