@@ -274,11 +274,11 @@ Template.navigationModal.helpers({
         let currentExpandedMenuId = Template.instance().expandedMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
-    hasProcurementRequisitionApproveAccess: function () {
+    'hasProcurementRequisitionApproveAccess': function () {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
         return canApproveProcurement;
     },
-    isProcurementRequisitionActive: function () {
+    'isProcurementRequisitionActive': function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
@@ -286,11 +286,11 @@ Template.navigationModal.helpers({
             return false
         }
     },
-    hasTravelRequisitionApproveAccess: function () {
+    'hasTravelRequisitionApproveAccess': function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
     },
-    isTravelRequisitionActive: function () {
+    'isTravelRequisitionActive': function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 
         if(businessUnitCustomConfig) {
