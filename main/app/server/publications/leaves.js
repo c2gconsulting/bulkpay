@@ -51,6 +51,20 @@ Core.publish("employeeLeaves", function (bid, limit, sort) {
     return this.ready();
 });
 
+Core.publish("employeeApprovedLeaves", function (bid) {
+    let user = this.userId;
+    if(bid && user){
+        let cursor = Leaves.find({
+            businessId: bid, 
+            employeeId: user,
+            approvalStatus: 'Approved'
+        });
+        return cursor
+    }
+    return this.ready();
+});
+
+
 Core.publish("employeeLeavesNoPagination", function (bid) {
     let user = this.userId;
     

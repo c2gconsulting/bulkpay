@@ -204,29 +204,70 @@ Template.LeaveCreate.onCreated(function () {
     self.subscribe('employeeLeaveTypes', businessId);
 
     self.autorun(function() {
-        let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, Meteor.userId())
-        let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
+        // let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, Meteor.userId())
+        // let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
 
-        if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
-            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
-                businessId: businessId, userId: Meteor.userId()
-            })
+        // if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
+        //     let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+        //         businessId: businessId, userId: Meteor.userId()
+        //     })
 
-            if(userLeaveEntitlement) {
-                let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
-                let currentYear = moment().year()
-                let currentYearAsNumber = parseInt(currentYear)
+        //     if(userLeaveEntitlement) {
+        //         let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+        //         let currentYear = moment().year()
+        //         let currentYearAsNumber = parseInt(currentYear)
 
-                let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
-                    if(aYearData.year === currentYearAsNumber) {
-                        indexOfFoundYear = indexOfYear
-                        return true
-                    }
-                })
-                if(foundDaysLeftInYear) {
-                    Template.instance().numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
+        //         let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+        //             if(aYearData.year === currentYearAsNumber) {
+        //                 indexOfFoundYear = indexOfYear
+        //                 return true
+        //             }
+        //         })
+        //         if(foundDaysLeftInYear) {
+        //             Template.instance().numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
+        //         }
+        //     }
+        // }
+        //--
+        
+        let employeeApprovedLeavesSub = self.subscribe('employeeApprovedLeaves', businessId)
+        let suppLeavesForUserSub = self.subscribe('supplementaryLeaveForUser', businessId, Meteor.userId())
+
+        if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready()) {
+            let suppLeavesForUser = SupplementaryLeaves.findOne({businessId: businessId, employees: {$in: [Meteor.userId()]}});
+
+            let user = Meteor.users.findOne(Meteor.userId())
+            let numberOfDaysSinceResumption = 0
+            if(user) {
+                let hireDate = user.employeeProfile.employment.hireDate
+                if(hireDate) {
+                    let hireDateAsMoment = moment(hireDate)
+
+                    numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
+                    console.log(`numberOfDaysSinceResumption: `, numberOfDaysSinceResumption)
                 }
             }
+            //--
+            let hoursOfLeaveApproved = 0
+            let userApprovedLeaves = Leaves.find({
+                businessId: businessId, 
+                employeeId: Meteor.userId(),
+                approvalStatus: 'Approved'
+            }).fetch();
+            userApprovedLeaves.forEach(aLeave => {
+                hoursOfLeaveApproved += aLeave.durationInHours
+            })
+            console.log(`hoursOfLeaveApproved: `, hoursOfLeaveApproved)
+            //--
+            let numSupplementaryLeaveDays = 0
+            if(suppLeavesForUser) {
+                numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
+            }
+            console.log(`numSupplementaryLeaveDays: `, numSupplementaryLeaveDays)
+            //--
+            let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+
+            Template.instance().numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft)
         }
     })
 });
