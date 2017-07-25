@@ -91,17 +91,17 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             let netPayAllocation = anEmployeeFullData.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
                 if(netPayAllocation.hasNetPayAllocation) {
-                    console.log(`anEmployeeFullData: `, anEmployeeFullData)
-
                     if(netPayCurrencyAllocation_Headers.length < 1) {
                         netPayCurrencyAllocation_Headers.push({
                             id: 'netPayCurrencyAllocation_' + localCurrency,
                             code: 'netPayCurrencyAllocation_' + localCurrency,
+                            currency: localCurrency,
                             description: localCurrency + ' NetPay Currency Allocation'
                         })
                         netPayCurrencyAllocation_Headers.push({
                             id: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
                             code: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
+                            currency: netPayAllocation.foreignCurrency,
                             description: netPayAllocation.foreignCurrency + ' NetPay Currency Allocation'
                         })
                     }
@@ -109,8 +109,6 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             }
         }
     })
-
-    console.log(`netPayCurrencyAllocation_Headers: `, netPayCurrencyAllocation_Headers)
     
     payTypeHeaders.forEach((aColumn, index) => {
         if(Object.keys(aColumn).length === 0) {
@@ -211,6 +209,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
+        let netPaymentInBaseCurrency = 0
 
         payTypeHeaders.forEach(aPaytypeHeader => {
             if(aPaytypeHeader === 'EMP ID') {
@@ -253,6 +252,8 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                     if(netPay.amountLC != netPay.amountPC) {
                         payAmount = netPay.amountPC
                     }
+                    netPaymentInBaseCurrency = payAmount
+
                     aRowOfPayTypeValues.push(payAmount)
                 }
             } else if(aPaytypeHeader.id === 'totalDeduction') {
@@ -373,6 +374,16 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                             aRowOfPayTypeValues.push("---")
                         }
                     }
+                } else if(aPaytypeHeader.id.startsWith('netPayCurrencyAllocation_')) {
+                    let currency = aPaytypeHeader.currency
+                    let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+                    let allocation = ''
+                    if(currency === localCurrency) {
+                        allocation = ReportUtils.getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists(employee, netPaymentInBaseCurrency)
+                    } else {
+                        allocation = ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists(employee, netPaymentInBaseCurrency)
+                    }
+                    aRowOfPayTypeValues.push(allocation)
                 } else {
                     aRowOfPayTypeValues.push("---")
                 }
@@ -386,28 +397,50 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
     return payTypeValues
 }
 
+ReportUtils.getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists = function(user, netPaymentInBaseCurrency) {
+    if(user) {
+        let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+        if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
+            let foreignCurrency = netPayAllocation.foreignCurrency
+            let rateToBaseCurrency = netPayAllocation.rateToBaseCurrency
+
+            if(rateToBaseCurrency) {
+                let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                
+                let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                if(netPayRemainderInLocalCurrency < 0) {
+                    return '---'
+                } else {
+                    return netPayRemainderInLocalCurrency
+                }
+            }
+        }
+    }
+    return '---'
+}
+
+ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists = function(user, netPaymentInBaseCurrency) {
+    if(user) {
+        let netPayAllocation = user.employeeProfile.employment.netPayAllocation
+        if(netPayAllocation && (netPayAllocation.hasNetPayAllocation === true)) {
+            let foreignCurrency = netPayAllocation.foreignCurrency
+            let rateToBaseCurrency = netPayAllocation.rateToBaseCurrency
+            if(rateToBaseCurrency) {
+                let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
+                
+                let netPayinLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
+                if(netPayinLocalCurrency < 0) {
+                    return (netPaymentInBaseCurrency / rateToBaseCurrency)
+                } else {
+                    return netPayAllocation.foreignCurrencyAmount
+                }
+            }
+        }
+    }
+    return "---"
+}
+
 //----------
-
-// ReportUtils.getPayTypeHeadersStrategy3 = function(paymentReultsWithCurrencyDelineation) {
-//     // console.log(`paymentReultsWithCurrencyDelineation: `, JSON.stringify(paymentReultsWithCurrencyDelineation))
-//     let payTypeHeaders = ['EMP ID', 'Employee']
-
-//     _.each(paymentReultsWithCurrencyDelineation, anEmployeePayments => {
-//         let benefitPayments = anEmployeePayments["benefit"] || []
-//         let benefitCurrencies = Object.keys(benefitPayments)
-//         console.log(`benefitCurrencies: `, benefitCurrencies)
-
-//         let deductionPayments = anEmployeePayments["deduction"] || []
-//         let deductionCurrencies = Object.keys(deductionPayments)
-//         console.log(`deductionCurrencies: `, deductionCurrencies)
-
-//         let otherPayments = anEmployeePayments["others"] || []
-//         let otherCurrencies = Object.keys(otherPayments)
-//         console.log(`otherCurrencies: `, otherCurrencies)
-
-//     })
-// }
-
 
 Template.PayrunNew.events({
     'click #startProcessing': (e,tmpl) => {
