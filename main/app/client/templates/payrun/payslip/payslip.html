@@ -147,7 +147,11 @@
                                         
                                         {{#if getNetPayAlternateCurrency}}
                                         <td>
-                                            {{formatMoneyD valueInForeignCurrency}}
+                                            {{#if valueInForeignCurrency}}
+                                                {{formatMoneyD valueInForeignCurrency}}
+                                            {{else}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
                                         </td>
                                         {{/if}}
                                     </tr>
@@ -245,12 +249,13 @@
                                     </tr>
                                     <tr>
                                         <td>Total Deductions:</td>
-                                        <td>-{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
-                                        <td>-{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>                                    </tr>
+                                        <td>{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
+                                        <td>{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>
+                                    </tr>
                                     <tr>
                                         <td>Net Pay:</td>
-                                        <td>{{formatMoneyD (subtract (totalBenefitForCurrency (currency)) (totalDeductionForCurrency (currency)))}}</td>
-                                        <td>{{formatMoneyD (subtract (totalBenefitForCurrency (getNetPayAlternateCurrency)) (totalDeductionForCurrency (getNetPayAlternateCurrency)))}}</td>
+                                        <td>{{formatMoneyD (addition (totalBenefitForCurrency (currency)) (totalDeductionForCurrency (currency)))}}</td>
+                                        <td>{{formatMoneyD (addition (totalBenefitForCurrency (getNetPayAlternateCurrency)) (totalDeductionForCurrency (getNetPayAlternateCurrency)))}}</td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -494,7 +494,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     paytypes.forEach((x, index) => {
                         //skip processing of Annual non selected annual paytypes
                         //revisit this to factor in all payment frequency and create a logic on how processing is made
-                        if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
+                        // if (x.frequency !== 'Annually' || (x.frequency === 'Annually' && specifiedAsProcess(x._id))) {
+                        if (true) {
                             let input = [], processing = [];
 
                             input.push({
@@ -907,7 +908,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         currency: aCurrency,
                                         // taxable: true,
                                         reference: 'Tax',
-                                        value: netTaxLocal
+                                        value: netTaxLocal * -1
                                     })
                                 } else {
                                     netTaxForeign = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)
@@ -917,7 +918,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         currency: aCurrency,
                                         // taxable: true,
                                         reference: 'Tax',
-                                        value: netTaxForeign
+                                        value: netTaxForeign * -1
                                     })
                                 }
                                 //--

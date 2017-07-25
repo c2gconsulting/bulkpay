@@ -175,6 +175,9 @@ Template.Payslip.helpers({
     subtract: function(a, b) {
         return a - b
     },
+    addition: function(a, b) {
+        return a + b
+    },
     totalBenefitForCurrency: function(currency) {
         let self = Template.instance()
 
