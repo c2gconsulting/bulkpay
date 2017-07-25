@@ -42,6 +42,10 @@ Template.SupplementaryLeavesIndex.onDestroyed(function () {
 Template.singleSupplementaryLeave.helpers({
     activeClass: function(){
         return this.data.status === "Active" ? "success" : "danger";
+    },
+    getUserFullName: function(userId) {
+        let user = Meteor.users.findOne(userId)
+        return user.profile.fullName || ''
     }
 });
 Template.singleSupplementaryLeave.events({

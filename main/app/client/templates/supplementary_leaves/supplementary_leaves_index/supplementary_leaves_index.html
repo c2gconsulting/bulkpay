@@ -42,6 +42,7 @@
                                 <th>#</th>
                                 <th>Name</th>
                                 <th>Number of leave days</th>
+                                <th>Employees</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -62,5 +63,14 @@
         <td>{{index}}</td>
         <td>{{data.name}}</td>
         <td>{{data.numberOfLeaveDays}}</td>
+        <td>
+            <div class="media-manager-sidebar">
+                <ul class="tag-list">
+                    {{#each data.employees}}
+                        <li><a href="">{{getUserFullName this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        </td>
     </tr>
 </template>
