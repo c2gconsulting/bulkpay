@@ -172,6 +172,14 @@ Template.EmployeePersonalDataModal.events({
       }
       Template.instance().setEditUser(user);
     },
+    'blur [name=personalEmail]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.personalEmailAddress = value;
+      }
+      Template.instance().setEditUser(user);
+    },
     'blur [name=dateOfBirth]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;

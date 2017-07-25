@@ -53,7 +53,8 @@ Core.publish("allEmployees", function (businessId) {
                 "employeeProfile": true,
                 "username": true,
                 "roles": true,
-                "customUsername": true
+                "customUsername": true,
+                "personalEmailAddress": true
             }
         })
         return [employees, UserImages.find({})];
