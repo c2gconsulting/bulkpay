@@ -44,6 +44,9 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
  
     payTypeHeaders.push(...headerColumnSlots)
     //-- 
+    let localCurrency = Core.getTenantBaseCurrency().iso;
+
+    let netPayCurrencyAllocation_Headers = []
 
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach((anEmployeePayType, empPayTypeIndex) => {
@@ -81,7 +84,33 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                 }
             }
         })
+        //--
+        let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
+        
+        if(anEmployeeFullData) {
+            let netPayAllocation = anEmployeeFullData.employeeProfile.employment.netPayAllocation
+            if(netPayAllocation) {
+                if(netPayAllocation.hasNetPayAllocation) {
+                    console.log(`anEmployeeFullData: `, anEmployeeFullData)
+
+                    if(netPayCurrencyAllocation_Headers.length < 1) {
+                        netPayCurrencyAllocation_Headers.push({
+                            id: 'netPayCurrencyAllocation_' + localCurrency,
+                            code: 'netPayCurrencyAllocation_' + localCurrency,
+                            description: localCurrency + ' NetPay Currency Allocation'
+                        })
+                        netPayCurrencyAllocation_Headers.push({
+                            id: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
+                            code: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
+                            description: netPayAllocation.foreignCurrency + ' NetPay Currency Allocation'
+                        })
+                    }
+                }
+            }
+        }
     })
+
+    console.log(`netPayCurrencyAllocation_Headers: `, netPayCurrencyAllocation_Headers)
     
     payTypeHeaders.forEach((aColumn, index) => {
         if(Object.keys(aColumn).length === 0) {
@@ -89,7 +118,6 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         }
     })
 
-    let localCurrency = Core.getTenantBaseCurrency().iso;
 
     let supplementaryPayTypeHeaders = []
 
@@ -154,7 +182,8 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
     }
 
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
-
+    payTypeHeaders.push(...netPayCurrencyAllocation_Headers)
+    
     return {payTypeHeaders}
 }
 
