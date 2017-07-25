@@ -1,4 +1,4 @@
-<template name="Taxes">
+<template name="SupplementaryLeavesIndex">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left">
@@ -9,9 +9,9 @@
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a href="businessunits">Business</a></li>
                     <li>{{name}}</li>
-                    <li>Tax Rules</li>
+                    <li>Leave Balances</li>
                 </ul>
-                <h4>Tax Rules</h4>
+                <h4>Leave Balances</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-md-12">
                 <!-- <h5 class="lg-title mb5">Taxs</h5> -->
-                <p class="mb20 pull-right"><button class="btn btn-primary" id="createTax">New Tax Rule</button></p>
+                <p class="mb20 pull-right"><button class="btn btn-primary" id="createTax">New Leave Balance</button></p>
             </div>
         </div>
 
@@ -40,7 +40,6 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Code</th>
                                 <th>Name</th>
                                 <th>Status</th>
                             </tr>
@@ -58,10 +57,9 @@
     </div>
 </template>
 
-<template name="singleTax">
+<template name="singleSupplementaryLeave">
     <tr class="pointer">
         <td>{{index}}</td>
-        <td>{{data.code}}</td>
         <td>{{data.name}}</td>
         <td>
             <span class="label label-{{activeClass}}">{{data.status}}</span>

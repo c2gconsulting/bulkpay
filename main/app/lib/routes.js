@@ -277,6 +277,12 @@ Router.route('/business/:_id/employee/leave/entitlements', {
     action: 'showLeaveEntitlementsList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/leave/balances', {
+    name: 'leave.balances.list',
+    controller: 'LeaveBalancesController',
+    action: 'showLeaveBalancesList',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/procurementrequisitions', {
     name: 'procurementrequisition.list',

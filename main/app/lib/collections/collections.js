@@ -173,6 +173,12 @@ LeaveEntitlements = new Mongo.Collection("leaveentitlements");
 Partitioner.partitionCollection(LeaveEntitlements);
 LeaveEntitlements.attachSchema(Core.Schemas.LeaveEntitlement);
 
+/**
+ * Core Collections SupplementaryLeaves
+ */
+SupplementaryLeaves = new Mongo.Collection("supplementaryleaves");
+Partitioner.partitionCollection(SupplementaryLeaves);
+SupplementaryLeaves.attachSchema(Core.Schemas.SupplementaryLeave);
 
 /**
  * Core Collections UserLeaveEntitlement

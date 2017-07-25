@@ -1,0 +1,197 @@
+<template name="SupplementaryLeaveCreate">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{modalHeaderTitle}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tax-code" class="control-label">Code (alphanumeric) <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="tax-code" class="form-control" placeholder="Enter Code e.g. PAYE" name="code" value="{{code}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tax-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Enter description e.g Pay as you earn" name="name" value="{{name}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div>
+
+                        {{#unless edit}}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <div class="ckbox ckbox-success">
+                                        <input type="checkbox" id="useEffectiveTaxRate" />
+                                        <label for="useEffectiveTaxRate">Use effective tax rate</label>
+                                    </div>
+                                </div>
+                            </div><!-- col-sm-4 -->
+                        </div>
+                        {{/unless}}
+
+                        {{#if isUsingEffectiveTaxRate}}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="effectiveTaxRate" class="control-label">Effective Tax Rate</label>
+                                    <input type="number" class="form-control" id="effectiveTaxRate" name="effectiveTaxRate"
+                                        placeholder="0" value="{{effectiveTaxRate}}"/>
+                                    <!-- Current context is data which has the 'effectiveTaxRate' property-->
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="employee" class="control-label">Select employees</label>
+                                <div class="form-group">
+                                    {{#semanticselect}}
+                                        <select name="employee" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                            <option value="">Employees</option>
+                                            {{#each employees}}
+                                                <option value="{{_id}}" {{selectedObj 'employees'}}>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/semanticselect}}
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        {{else}}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tax-gross-income-relief" class="control-label">Gross Income Relief (%)</label>
+                                    <input type="number"  class="form-control" placeholder="20" name="grossIncomeRelief" value="{{grossIncomeRelief}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tax-consolidated-relief" class="control-label">Consolidated Relief</label>
+                                    <input type="number" class="form-control" placeholder="200000" name="consolidatedRelief" value="{{consolidatedRelief}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Gross Income Bucket</label>
+                                    <select  name="grossIncomeBucket" class="form-control dropdown">
+                                        <option value=""></option>
+                                        {{#each paytype}}
+                                            {{#if isSelected "grossIncomeBucket" _id}}
+                                            <option value="{{_id}}" selected>{{code}} - {{title}}</option>
+                                            {{else}}
+                                            <option value="{{_id}}">{{code}} - {{title}}</option>                                            
+                                            {{/if}}
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Status</label>
+                                    <select  name="status" class="form-control dropdown" >
+                                        <option value="Active" {{selected "status" "Active"}}>Active</option>
+                                        <option value="Inactive" {{selected "status" "Inactive"}}>Inactive</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Bucket</label>
+                                    <select  name="bucket" class="form-control dropdown" >
+                                        <option value="Default" {{selected "bucket" "Default"}}>Default Tax Bucket</option>
+                                        <!-- <option value="2tax" {{selected "bucket" "2tax"}}>2tax</option> -->
+                                        <!-- dropdown of all buckets -->
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <br>
+                                        <h5 class="lg-title mb5">Tax Rules</h5>
+                                        <p class="mb20 pull-right"><button id="add-rule-button" class="btn btn-primary btn-sm">Add Rule</button></p>
+                                    </div><!-- col-sm-12 -->
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-primary mb60 table-hover" id="ruleTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>Position</th>
+                                                    <th>Range</th>
+                                                    <th>Upper Limit Value</th>
+                                                    <th>Rate %</th>
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {{#if isTaxRuleSelected}}
+                                                {{#each rule}}
+                                                    <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
+                                                        <!-- <td><i class="glyphicon glyphicon-resize-vertical"></i></td> -->
+                                                        <td>{{@index}}</td>
+                                                        <td>{{range}}</td>
+
+                                                        {{#if equals @index indexOfSelectedTaxRule}}
+                                                          <td>
+                                                            <input name="taxRuleToEditUpperLimit" type="text" placeholder="" class="form-control"
+                                                              value="{{upperLimit}}"/>
+                                                          </td>
+                                                          <td>
+                                                            <input name="taxRuleToEditRate" type="text" placeholder="" class="form-control"
+                                                              value="{{rate}}"/>
+                                                          </td>
+                                                          <td>
+                                                              <button class="btn btn-primary mr5 ladda-button" id="confirmTaxRuleEdit">Confirm</button>
+                                                              <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelTaxRuleEdit">Cancel</button>
+                                                          </td>
+                                                        {{else}}
+                                                        <td><a class="pointer">{{upperLimit}}</a></td>
+                                                        <td><a class="pointer">{{rate}}</a></td>
+                                                        <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                        {{/if}}
+                                                    </tr>
+                                                {{/each}}
+                                                {{else}}
+                                                {{#each rule}}
+                                                    <tr class="pointer aTaxRuleItem" name="taxRuleIndex_{{@index}}">
+                                                        <!-- <td><i class="glyphicon glyphicon-resize-vertical"></i></td> -->
+                                                        <td>{{@index}}</td>
+                                                        <td>{{range}}</td>
+
+                                                        <td><a class="pointer">{{upperLimit}}</a></td>
+                                                        <td><a class="pointer">{{rate}}</a></td>
+                                                        <td><a class="pointer"><i class="fa fa-trash-o deletetr"></i></a></td>
+                                                    </tr>
+                                                {{/each}}
+                                                {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div>
+                                </div>
+                            </div><!-- col-sm-12 -->
+                        </div><!-- row -->
+                        {{/if}}
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5" id="TaxButton">{{#if edit}}Update{{else}}Create{{/if}}</button>
+                        <button type="reset" class="btn btn-danger" id="new-tax-close" data-dismiss="modal">Cancel</button>
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteTax">Delete</button>{{/if}}
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
