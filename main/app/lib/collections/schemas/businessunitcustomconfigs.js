@@ -24,6 +24,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isTravelRequisitionActive: {
         type: Boolean
     },
+    leaveDaysAccrual: {
+        type: String // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+    },
+    
     isActive: {
         type: Boolean
     },

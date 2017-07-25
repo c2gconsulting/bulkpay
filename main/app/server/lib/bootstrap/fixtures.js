@@ -149,6 +149,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         isActive: true
     }
     let daarConfig = {
@@ -160,6 +161,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         isActive: true
     }
 
