@@ -67,7 +67,7 @@
             
             <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
             <li><a href="{{pathFor 'leavetypes'}}">Manage Leave Types</a></li>
-            <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
+            <!--<li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>-->
             <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
         {{/if}}
 
@@ -100,6 +100,10 @@
         {{#if isMenuExpanded 'selfServiceMenu'}}
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
+
+            {{#if hasLeaveApprovalAccess}}
+            <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
+            {{/if}}
 
             {{#if isProcurementRequisitionActive}}
                 <li><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>

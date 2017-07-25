@@ -103,6 +103,10 @@ Template.navigator.helpers({
         let currentExpandedMenuId = Template.instance().expandedMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
+    hasLeaveApprovalAccess: function () {
+        return Core.hasLeaveApprovalAccess(Meteor.userId());
+    },
+
     hasProcurementRequisitionApproveAccess: function () {
         let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
         return canApproveProcurement;
