@@ -120,7 +120,8 @@ Template.SupplementaryLeaveCreate.helpers({
         }
     },
     modalHeaderTitle: function() {
-      return Template.instance().data.modalHeaderTitle || "New Leave Balance";
+    //   return Template.instance().data.modalHeaderTitle || "New Leave Balance";
+      return "Leave Balance";
     },
     edit() {
         return Template.instance().data ? true : false
