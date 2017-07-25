@@ -147,7 +147,11 @@
                                         
                                         {{#if getNetPayAlternateCurrency}}
                                         <td>
-                                            {{formatMoneyD valueInForeignCurrency}}
+                                            {{#if valueInForeignCurrency}}
+                                                {{formatMoneyD valueInForeignCurrency}}
+                                            {{else}}
+                                                {{formatMoneyD value}}
+                                            {{/if}}
                                         </td>
                                         {{/if}}
                                     </tr>
