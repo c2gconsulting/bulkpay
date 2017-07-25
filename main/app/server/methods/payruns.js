@@ -907,7 +907,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         currency: aCurrency,
                                         // taxable: true,
                                         reference: 'Tax',
-                                        value: netTaxLocal
+                                        value: netTaxLocal * -1
                                     })
                                 } else {
                                     netTaxForeign = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)
@@ -917,7 +917,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         currency: aCurrency,
                                         // taxable: true,
                                         reference: 'Tax',
-                                        value: netTaxForeign
+                                        value: netTaxForeign * -1
                                     })
                                 }
                                 //--
