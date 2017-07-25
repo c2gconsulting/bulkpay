@@ -30,7 +30,7 @@
             {{#if condition taxCount 'eq' 0}}
                 <div class="col-md-12">
                     <div class="alert alert-danger text-center">
-                        <p>No Tax defined </p>
+                        <p>No Leave Balance defined </p>
                     </div>
                 </div>
             {{else}}
@@ -41,12 +41,12 @@
                             <tr>
                                 <th>#</th>
                                 <th>Name</th>
-                                <th>Status</th>
+                                <th>Number of leave days</th>
                             </tr>
                             </thead>
                             <tbody>
                             {{#each tax}}
-                                {{> singleTax index=@index data=this}}
+                                {{> singleSupplementaryLeave index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -61,8 +61,6 @@
     <tr class="pointer">
         <td>{{index}}</td>
         <td>{{data.name}}</td>
-        <td>
-            <span class="label label-{{activeClass}}">{{data.status}}</span>
-        </td>
+        <td>{{data.numberOfLeaveDays}}</td>
     </tr>
 </template>

@@ -4,7 +4,7 @@
 Template.SupplementaryLeavesIndex.events({
     'click #createTax': function(e, tmpl){
         e.preventDefault();
-        Modal.show('TaxCreate');
+        Modal.show('SupplementaryLeaveCreate');
     }
 });
 
@@ -13,10 +13,10 @@ Template.SupplementaryLeavesIndex.events({
 /*****************************************************************************/
 Template.SupplementaryLeavesIndex.helpers({
     'taxCount': function(){
-        return Tax.find().count();
+        return SupplementaryLeaves.find().count();
     },
     tax: function(){
-        return Tax.find();
+        return SupplementaryLeaves.find();
     }
 });
 
@@ -25,14 +25,14 @@ Template.SupplementaryLeavesIndex.helpers({
 /*****************************************************************************/
 Template.SupplementaryLeavesIndex.onCreated(function () {
     let self = this;
-    self.subscribe("taxes", Session.get('context'));
+    self.subscribe("supplementaryLeaves", Session.get('context'));
 });
 
 Template.SupplementaryLeavesIndex.onRendered(function () {
 });
 
 Template.SupplementaryLeavesIndex.onDestroyed(function () {
-  Modal.hide('TaxCreate');
+  Modal.hide('SupplementaryLeaveCreate');
 });
 
 
@@ -46,7 +46,7 @@ Template.singleSupplementaryLeave.helpers({
 });
 Template.singleSupplementaryLeave.events({
     'click .pointer': function(e, tmpl){
-        this.data.modalHeaderTitle = "Tax Rule Edit";
-        Modal.show('TaxCreate', this.data);
+        this.data.modalHeaderTitle = "Leave Balance Edit";
+        Modal.show('SupplementaryLeaveCreate', this.data);
     }
 })
