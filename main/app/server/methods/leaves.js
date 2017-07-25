@@ -3,6 +3,51 @@
  */
 Meteor.methods({
 
+    // "leave/create": function(leave, currentYearAsNumber){
+    //     if (!this.userId) {
+    //         throw new Meteor.Error(401, "Unauthorized");
+    //     }
+    //     let userId = Meteor.userId();
+    //     this.unblock();
+
+    //     try {
+    //         let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+    //             businessId: leave.businessId, userId: userId
+    //         })
+    //         if(!userLeaveEntitlement) {
+    //             let errMsg = "Sorry, you do not have a leave entitlement set yet. Please meet your HR admin."
+    //            throw new Meteor.Error(401, errMsg);
+    //         }
+
+    //         let leaveYear = leave.startDate
+    //         let leaveYearAsNumber = parseInt(moment(leaveYear).year())
+
+    //         let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+    //         let indexOfFoundYear = -1
+    //         let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+    //             if(aYearData.year === leaveYearAsNumber) {
+    //                 indexOfFoundYear = indexOfYear
+    //                 return true
+    //             }
+    //         })
+
+    //         if(!foundDaysLeftInYear) {
+    //             throw new Meteor.Error(401, "Sorry, you have no leave entitlement for the year");
+    //         }
+
+    //         if(foundDaysLeftInYear.daysLeft < 1) {
+    //             throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
+    //         }
+    //         if(foundDaysLeftInYear.daysLeft > leave.duration) {
+    //             Leaves.insert(leave);
+    //             return true
+    //         } else {
+    //             throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
+    //         }
+    //     } catch (e) {
+    //         throw new Meteor.Error(401, e.message);
+    //     }
+    // },
     "leave/create": function(leave, currentYearAsNumber){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
@@ -11,34 +56,40 @@ Meteor.methods({
         this.unblock();
 
         try {
-            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
-                businessId: leave.businessId, userId: userId
-            })
-            if(!userLeaveEntitlement) {
-                let errMsg = "Sorry, you do not have a leave entitlement set yet. Please meet your HR admin."
-               throw new Meteor.Error(401, errMsg);
-            }
+            let suppLeavesForUser = SupplementaryLeaves.findOne({
+                businessId: leave.businessId, 
+                employees: {$in: [this.userId]}
+            });
 
-            let leaveYear = leave.startDate
-            let leaveYearAsNumber = parseInt(moment(leaveYear).year())
+            let user = Meteor.users.findOne(this.userId)
+            let numberOfDaysSinceResumption = 0
+            if(user) {
+                let hireDate = user.employeeProfile.employment.hireDate
+                if(hireDate) {
+                    let hireDateAsMoment = moment(hireDate)
 
-            let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
-            let indexOfFoundYear = -1
-            let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
-                if(aYearData.year === leaveYearAsNumber) {
-                    indexOfFoundYear = indexOfYear
-                    return true
+                    numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
                 }
+            }
+            //--
+            let hoursOfLeaveApproved = 0
+            let userApprovedLeaves = Leaves.find({
+                businessId: leave.businessId, 
+                employeeId: this.userId,
+                approvalStatus: 'Approved'
+            }).fetch();
+            userApprovedLeaves.forEach(aLeave => {
+                hoursOfLeaveApproved += aLeave.durationInHours
             })
-
-            if(!foundDaysLeftInYear) {
-                throw new Meteor.Error(401, "Sorry, you have no leave entitlement for the year");
+            //--
+            let numSupplementaryLeaveDays = 0
+            if(suppLeavesForUser) {
+                numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
             }
+            //--
+            let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
 
-            if(foundDaysLeftInYear.daysLeft < 1) {
-                throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
-            }
-            if(foundDaysLeftInYear.daysLeft > leave.duration) {
+            if(numberOfLeaveDaysLeft > leave.duration) {
                 Leaves.insert(leave);
                 return true
             } else {

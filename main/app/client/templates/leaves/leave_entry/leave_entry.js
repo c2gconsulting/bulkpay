@@ -9,7 +9,7 @@ Template.LeaveEntry.events({
     'click #delete': (e,tmpl) => {
         swal({
                 title: "Are you sure?",
-                text: "You will not be able to recover this Leave Type!",
+                text: "You will not be able to recover this Leave Request!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
