@@ -155,7 +155,7 @@ Template.TravelRequestReport.onCreated(function () {
     }
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Created By", "Unit", "Date required", "Trip Cost", "Status"]
+        let formattedHeader = ["Created By", "Unit", "Date required", "Approver", "Trip Cost", "Status"]
 
         let reportData = []
 

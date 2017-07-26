@@ -153,7 +153,7 @@ Template.ProcurementReport.onCreated(function () {
     }
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Created By", "Unit", "Date required", "Supervisor", "Status"]
+        let formattedHeader = ["Created By", "Unit", "Date required", "Approver", "Status"]
 
         let reportData = []
 
