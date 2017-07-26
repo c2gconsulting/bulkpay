@@ -81,6 +81,7 @@
                                                           <th>Created By</th>
                                                           <th>Unit</th>
                                                           <th>Date required</th>
+                                                          <th>Supervisor</th>
                                                           <th>Trip Cost</th>
                                                           <th>Status</th>
                                                       </tr>
@@ -91,6 +92,7 @@
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{unitName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
+                                                          <td>{{getSupervisor this}}</td>
                                                           <td>{{tripTotalCost this}}</td>
                                                           <td>{{status}}</td>
                                                       </tr>

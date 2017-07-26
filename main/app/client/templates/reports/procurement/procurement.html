@@ -81,6 +81,7 @@
                                                           <th>Created By</th>
                                                           <th>Unit</th>
                                                           <th>Date required</th>
+                                                          <th>Supervisor</th>
                                                           <th>Status</th>
                                                       </tr>
                                                   </thead>
@@ -90,6 +91,7 @@
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{unitName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
+                                                          <td>{{getSupervisor this}}</td>
                                                           <td>{{status}}</td>
                                                       </tr>
                                                     {{/each}}

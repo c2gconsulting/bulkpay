@@ -140,14 +140,27 @@
             <li><a href="{{pathFor 'reports.pension'}}">Pension reports</a></li>
             <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive reports</a></li>
             <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing reports</a></li>
+        {{/if}}
 
-            {{#if isProcurementRequisitionActive}}
-                <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
-            {{/if}}
-            {{#if isTravelRequisitionActive}}
-                <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requisition report</a></li>
+        {{#if isProcurementRequisitionActive}}
+            {{#if hasPayrollAccess}}
+                <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
+                    <a href="" id="auditReportsMenu">
+                        <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                        <span>Audit Reports</span>
+                    </a>
+                </li>
+
+                {{#if isMenuExpanded 'auditReportsMenu'}}
+                    <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
+
+                    {{#if isTravelRequisitionActive}}
+                        <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requisition report</a></li>
+                    {{/if}}
+                {{/if}}
             {{/if}}
         {{/if}}
+
 
         {{#if hasAdminAccess}}
             <li class="parent {{isMenuExpandedFocusClass 'superAdminReportsMenu'}}">

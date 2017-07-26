@@ -121,6 +121,9 @@ Template.ProcurementReport.helpers({
     },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
+    },
+    'getSupervisor': function(procurement) {
+        return Template.instance().getSupervisor(procurement)
     }
 });
 
@@ -129,6 +132,7 @@ Template.ProcurementReport.helpers({
 /*****************************************************************************/
 Template.ProcurementReport.onCreated(function () {
     let self = this;
+    // self.subscribe("getPositions", Session.get('context'));
 
     self.procurementReports = new ReactiveVar()
 
@@ -139,17 +143,28 @@ Template.ProcurementReport.onCreated(function () {
         return theDate.add('hours', 1).toDate()
     }
 
+    self.getSupervisor = function(procurement) {
+        let supervisor = Meteor.users.findOne({
+            'employeeProfile.employment.position': procurement.supervisorPositionId
+        })
+        if(supervisor) {
+            return supervisor.profile.fullName || '---'
+        }
+    }
+
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Created By", "Unit", "Date required", "Status"]
+        let formattedHeader = ["Created By", "Unit", "Date required", "Supervisor", "Status"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
-            reportData.push([aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, aDatum.status])
+            reportData.push([aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
+                self.getSupervisor(aDatum), aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Procurement Requisition Report ${startTime} - ${endTime}`);
     }
+
 });
 
 Template.ProcurementReport.onRendered(function () {

@@ -124,6 +124,9 @@ Template.TravelRequestReport.helpers({
     },
     'tripTotalCost': function(travelRequestDetails) {
         return Template.instance().getTotalTripCost(travelRequestDetails)
+    },
+    'getSupervisor': function(procurement) {
+        return Template.instance().getSupervisor(procurement)
     }
 });
 
@@ -142,6 +145,15 @@ Template.TravelRequestReport.onCreated(function () {
         return theDate.add('hours', 1).toDate()
     }
 
+    self.getSupervisor = function(procurement) {
+        let supervisor = Meteor.users.findOne({
+            'employeeProfile.employment.position': procurement.supervisorPositionId
+        })
+        if(supervisor) {
+            return supervisor.profile.fullName || '---'
+        }
+    }
+
     self.exportProcurementReportData = function(theData, startTime, endTime) {
         let formattedHeader = ["Created By", "Unit", "Date required", "Trip Cost", "Status"]
 
@@ -149,7 +161,7 @@ Template.TravelRequestReport.onCreated(function () {
 
         theData.forEach(aDatum => {
             reportData.push([aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
-            self.getTotalTripCost(aDatum), aDatum.status])
+                self.getSupervisor(aDatum), self.getTotalTripCost(aDatum), aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Travel Requisition Report ${startTime} - ${endTime}`);
