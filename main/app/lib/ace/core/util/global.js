@@ -223,6 +223,9 @@ _.extend(Core, {
     hasTravelRequisitionApproveAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TRAVEL_REQUISITION_APPROVE, userId);
     },
+    hasAuditReportsViewAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.AUDIT_REPORTS_VIEW, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },

@@ -142,6 +142,10 @@ Template.navigator.helpers({
             return false
         }
     },
+    hasAuditReportsViewAccess: function () {
+        let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());
+        return hasAuditReportsViewAccess;
+    },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {

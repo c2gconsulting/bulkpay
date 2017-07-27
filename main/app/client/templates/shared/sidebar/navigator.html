@@ -128,22 +128,23 @@
 
 
         {{#if hasPayrollAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'reportsMenu'}}">
-            <a href="" id="reportsMenu">
-                <i class="fa fa-file-archive-o" aria-hidden="true"></i>
-                <span>Reports</span>
-            </a>
-        </li>
-        {{#if isMenuExpanded 'reportsMenu'}}
-            <li><a href="{{pathFor 'reports.netpay'}}">Net pay report</a></li>
-            <li><a href="{{pathFor 'reports.tax'}}">Tax reports</a></li>
-            <li><a href="{{pathFor 'reports.pension'}}">Pension reports</a></li>
-            <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive reports</a></li>
-            <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing reports</a></li>
+            <li class="parent {{isMenuExpandedFocusClass 'reportsMenu'}}">
+                <a href="" id="reportsMenu">
+                    <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            {{#if isMenuExpanded 'reportsMenu'}}
+                <li><a href="{{pathFor 'reports.netpay'}}">Net pay report</a></li>
+                <li><a href="{{pathFor 'reports.tax'}}">Tax reports</a></li>
+                <li><a href="{{pathFor 'reports.pension'}}">Pension reports</a></li>
+                <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive reports</a></li>
+                <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing reports</a></li>
+            {{/if}}
         {{/if}}
 
         {{#if isProcurementRequisitionActive}}
-            {{#if hasPayrollAccess}}
+            {{#if hasAuditReportsViewAccess}}
                 <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
                     <a href="" id="auditReportsMenu">
                         <i class="fa fa-file-archive-o" aria-hidden="true"></i>
@@ -173,18 +174,17 @@
             <li><a href="{{pathFor 'superadmin.reports.users'}}">Users</a></li>
         {{/if}}
 
-            <!--<li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>-->
-                <!--<ul class="children">-->
-                    <!--<li><a href="#">Salary Register</a></li>-->
-                    <!--<li><a href="#">Pension Report</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
-            <!--<li class="parent"><a href=""><i class="fa fa-archive" aria-hidden="true"></i> <span>Pension Reports</span></a>-->
-                <!--<ul class="children">-->
-                    <!--<li><a href="#">Pensioners</a></li>-->
-                <!--</ul>-->
-            <!--</li>-->
-        {{/if}}
+        <!--<li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>-->
+            <!--<ul class="children">-->
+                <!--<li><a href="#">Salary Register</a></li>-->
+                <!--<li><a href="#">Pension Report</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
+        <!--<li class="parent"><a href=""><i class="fa fa-archive" aria-hidden="true"></i> <span>Pension Reports</span></a>-->
+            <!--<ul class="children">-->
+                <!--<li><a href="#">Pensioners</a></li>-->
+            <!--</ul>-->
+        <!--</li>-->
 
         <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
     </ul>

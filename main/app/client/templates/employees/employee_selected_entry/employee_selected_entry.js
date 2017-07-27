@@ -199,6 +199,12 @@ Template.EmployeeSelectedEntry.helpers({
       } else {
           return true
       }
+  },
+  hasAuditReportsViewAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(selectedEmployee._id);
+
+      return hasAuditReportsViewAccess;
   }
 });
 
@@ -228,6 +234,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManagePayroll = $("[name=payrollManage]").val();
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
+        let auditReportsView = $("[name=auditReportsView]").val();
+
 
         let arrayOfRoles = [];
         if(shouldManageEmployeeData === "true") {
@@ -256,6 +264,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldTravelRequestApprove === "true") {
             arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_APPROVE)
+        }
+        if(auditReportsView === "true") {
+            arrayOfRoles.push(Core.Permissions.AUDIT_REPORTS_VIEW)
         }
 
         if(Core.hasRoleManageAccess(Meteor.userId())) {
