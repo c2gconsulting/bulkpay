@@ -23,13 +23,16 @@ getActiveEmployees = (paygrade, period, businessId) => {
     check(paygrade, Array);
     const year = period.year;
     const month = period.month;
-    const firsDayOfPeriod = `01-${month}-${year} GMT`;
+    const firsDayOfPeriod = `${month}-01-${year} GMT`;
     const DateLimit = new Date(firsDayOfPeriod);
     return Meteor.users.find({'employeeProfile.employment.status': 'Active',
-        $or: [
-            {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
-            {'employeeProfile.employment.terminationDate': null},
-            {'employeeProfile.employment.terminationDate' : { $exists : false } }
+        $and: [
+            {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
+            {$or: [
+                {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                {'employeeProfile.employment.terminationDate': null},
+                {'employeeProfile.employment.terminationDate' : { $exists : false } }
+            ]}
         ],
         'employeeProfile.employment.paygrade': {$in: paygrade},
         'businessIds': businessId,

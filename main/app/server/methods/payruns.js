@@ -326,10 +326,13 @@ Meteor.methods({
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
             const users = Meteor.users.find({_id: {$in: employees},
-                $or: [
-                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
-                    {'employeeProfile.employment.terminationDate': null},
-                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                $and: [
+                    {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
+                    {$or: [
+                        {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                        {'employeeProfile.employment.terminationDate': null},
+                        {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                    ]}
                 ],
                 'employeeProfile.employment.status': 'Active',
                 'businessIds': businessId, }).fetch();
