@@ -68,17 +68,17 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                                 }
                             }
                         } else {
-                            if(payGrade.netPayAlternativeCurrency !== localCurrency) {
-                                if(anEmployeePayType.reference === 'Tax') {
-                                    console.log(`skipping tax`)
-                                }
-                            } else {
+                            // if(payGrade.netPayAlternativeCurrency !== localCurrency) {
+                            //     if(anEmployeePayType.reference === 'Tax') {
+                            //         console.log(`skipping tax`)
+                            //     }
+                            // } else {
                                 payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
                                     id: anEmployeePayType.id,
                                     code: anEmployeePayType.code,
                                     description: anEmployeePayType.description
                                 })
-                            }
+                            // }
                         }
                     }
                 }
