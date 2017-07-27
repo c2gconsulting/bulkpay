@@ -200,6 +200,12 @@ Template.EmployeeSelectedEntry.helpers({
           return true
       }
   },
+  hasPayrollReportsViewAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(selectedEmployee._id);
+
+      return hasPayrollReportsViewAccess;
+  },
   hasAuditReportsViewAccess: () => {
       let selectedEmployee = Session.get('employeesList_selectedEmployee');
       let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(selectedEmployee._id);
@@ -234,6 +240,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManagePayroll = $("[name=payrollManage]").val();
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
+        let payrollReportsView = $("[name=payrollReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
 
 
@@ -264,6 +271,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldTravelRequestApprove === "true") {
             arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_APPROVE)
+        }
+        if(payrollReportsView === "true") {
+            arrayOfRoles.push(Core.Permissions.PAYROLL_REPORTS_VIEW)
         }
         if(auditReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.AUDIT_REPORTS_VIEW)

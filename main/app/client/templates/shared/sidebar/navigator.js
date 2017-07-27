@@ -141,6 +141,10 @@ Template.navigator.helpers({
         } else {
             return false
         }
+    }, 
+    hasPayrollReportsViewAccess: function () {
+        let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
+        return hasPayrollReportsViewAccess;
     },
     hasAuditReportsViewAccess: function () {
         let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());

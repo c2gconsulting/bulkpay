@@ -413,6 +413,23 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <label for="payrollReportsView" class="col-sm-6 control-label">Payroll Reports View</label>
+                                        <div class="col-sm-5">
+                                            {{#if hasPayrollReportsViewAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollReportsView">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollReportsView">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
                                     {{#if isProcurementRequisitionActive}}
                                     <div class="row">
                                         <label for="procurementRequisitionApprove" class="col-sm-6 control-label">Procurement Requisition Approve</label>
