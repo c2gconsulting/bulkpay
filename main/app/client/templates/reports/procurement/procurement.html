@@ -78,6 +78,7 @@
                                               <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                                   <thead>
                                                       <tr>
+                                                          <th>Description</th>
                                                           <th>Created By</th>
                                                           <th>Unit</th>
                                                           <th>Date required</th>
@@ -88,6 +89,7 @@
                                                   <tbody>
                                                     {{#each procurementReports}}
                                                       <tr title="Requisition reason: {{requisitionReason}}">
+                                                          <td nowrap>{{limitText description}}</td>
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{unitName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
