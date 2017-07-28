@@ -7,12 +7,6 @@ import _ from 'underscore';
 Template.SupplementaryLeaveCreate.events({
     'click #TaxButton': (e, tmpl) => {
         event.preventDefault();
-        let newTaxRuleName = $('[name="name"]').val();
-
-        if(!newTaxRuleName || newTaxRuleName.trim().length < 1) {
-            swal("Validation error", `Please enter a valid name`, "error");
-            return;
-        }
         let businessId = Session.get('context')
         //--
         let l = Ladda.create(tmpl.$('#TaxButton')[0]);
@@ -23,14 +17,12 @@ Template.SupplementaryLeaveCreate.events({
 
         let details = {
             businessId: businessId,
-            name: $('[name="name"]').val(),
             numberOfLeaveDays: !isNaN(numberOfLeaveDaysAsNumber) ? numberOfLeaveDaysAsNumber : 0,
             employees: Core.returnSelection($('[name="employee"]')),
         };
 
-        if(tmpl.data){//edit action for updating tax
+        if(tmpl.data) {
             const tId = tmpl.data._id;
-            const code = tmpl.data.code;
             Meteor.call("supplementaryLeave/update", tId, details, (err, res) => {
                 l.stop();
                 if(err){
@@ -40,7 +32,7 @@ Template.SupplementaryLeaveCreate.events({
                     Modal.hide("TaxCreate");
                 }
             });
-        } else{ //New Action for creating paytype}
+        } else {
             Meteor.call('supplementaryLeave/create', details, (err, res) => {
                 l.stop();
                 if (res){

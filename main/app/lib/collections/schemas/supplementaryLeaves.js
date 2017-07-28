@@ -10,9 +10,6 @@ Core.Schemas.SupplementaryLeave = new SimpleSchema({
     businessId: {
         type: String
     },
-    name: {
-        type: String
-    },
     numberOfLeaveDays: {
         type: Number,
         optional: true,
