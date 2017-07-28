@@ -1,0 +1,52 @@
+<template name="ImportSupplementaryLeavesModal">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Supplementary Leave Balance Import</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6 choose-file-box">
+                                <div class="custom-input-file">
+                                    <span class="btn btn-primary fileinput-button">Choose File
+                                        <input type="file" id="fileInput">
+                                    </span>
+                                    <span class="file-info">No file choosen</span>
+                                </div>
+                                <p class="download_instruction">Download a <a href="" id="downloadSampleCsv" target="_parent" >sample CSV template</a> to see an example of the format required.</p>
+                                <p class="download_instruction">Please DO NOT modify the names of the columns in the template</p>
+                            </div>
+
+                            <div class="col-sm-6">
+                                {{#if isUploading}}
+                                    <!-- <div class="align-middle">{{> spinner}}</div> -->
+                                {{else}}
+                                    {{#if response}}
+                                        <div class="alert alert-success text-center">
+                                            <p>{{response.success}} Employee assignments imported</p>
+                                            <p>{{response.failed}} Employee assignments failed to import</p>
+                                            <p>{{response.skippedCount}} Employee assignments skipped</p>
+
+                                            {{#if error}}
+                                                <br/>
+                                                <button class="btn btn-primary mr5 ladda-button" id="recordsWithError">Download Errors file</button>
+                                            {{else}}
+
+                                            {{/if}}
+                                        </div>
+                                    {{/if}}
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <button class="btn btn-primary mr5 ladda-button" id="employeesFileUpload">Upload File</button>
+                        <button type="reset" class="btn btn-danger" id="upload-close" data-dismiss="modal">Cancel</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

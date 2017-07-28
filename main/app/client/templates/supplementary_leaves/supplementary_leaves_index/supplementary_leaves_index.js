@@ -2,9 +2,13 @@
 /* SupplementaryLeavesIndex: Event Handlers */
 /*****************************************************************************/
 Template.SupplementaryLeavesIndex.events({
-    'click #createTax': function(e, tmpl){
+    'click #createLeaveBalance': function(e, tmpl){
         e.preventDefault();
         Modal.show('SupplementaryLeaveCreate');
+    },
+    'click #uploadLeaveBalance': function(e, tmpl){
+        e.preventDefault();
+        Modal.show('ImportSupplementaryLeavesModal');
     }
 });
 
