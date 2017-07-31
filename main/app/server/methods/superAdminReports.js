@@ -26,22 +26,6 @@ Meteor.methods({
     let allDaarUsers = Meteor.users.find({businessIds: businessId}).fetch()
     console.log(`Num allDaarUsers: `, allDaarUsers.length)
     this.unblock()
-
-    let payrunResults = processEmployeePay(Meteor.userId(), allDaarUsers, [], businessId, {
-        year: '2017',
-        month: '12'
-    })
-    console.log(`payrun processing done!`)
-    //--
-    let efficientPayrunResults = {}
-    if(payrunResults.result) {
-        payrunResults.result.forEach(aPayrunData => {
-            let paySlip = aPayrunData.payslip
-            if(paySlip && paySlip.employee && paySlip.employee.employeeUserId) {
-                efficientPayrunResults[paySlip.employee.employeeUserId] = aPayrunData
-            }
-        })
-    }
     //--
     
     let numDaarUsersWithRealPassword = 0
@@ -49,12 +33,13 @@ Meteor.methods({
     let daarUsersWithRealPassword = []
     let daarUsersWithDefaultPassword = []
 
-    let hashedDefaultPassword = Package.sha.SHA256("123456") 
+    let hashedDefaultPassword = Package.sha.SHA256("123456")
     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
 
     let payGrades = {}
 
-    allDaarUsers.forEach((aDaarUser, userIndex) => {
+    for(let i = 0; i < allDaarUsers.length; i++) {        
+        let aDaarUser = allDaarUsers[i]
         try {
             let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
             let empId = aDaarUser.employeeProfile.employeeId || ""
@@ -83,24 +68,13 @@ Meteor.methods({
                 console.log('Employee with id: ' + aDaarUser._id + ", has no position id")
             }
             //--
-            let employeeNetPay = ''
-            let employeePayrunResults = efficientPayrunResults[aDaarUser._id]
-
-            if(employeePayrunResults) {
-                let paySlip = employeePayrunResults.payslip
-                employeeNetPay = paySlip.netPayment
-                if(employeeNetPay) {
-                    employeeNetPay = parseFloat(employeeNetPay).toFixed(2);
-                }
-            }
             let employeeData = {
                 empId: empId,
                 firstName : firstName,
                 lastName: lastName,
                 email: email,
                 parents: parentsText,
-                payGrade: paygrade ? paygrade.code : '',
-                netPay: employeeNetPay
+                payGrade: paygrade ? paygrade.code : ''
             }
 
             if(defaultLoginResult.error) {
@@ -110,10 +84,12 @@ Meteor.methods({
                 daarUsersWithDefaultPassword.push(employeeData)
                 numDaarUsersWithDefaultPassword += 1
             }
+            console.log('numDaarUsersWithRealPassword: ', numDaarUsersWithRealPassword)
+            console.log('numDaarUsersWithDefaultPassword: ', numDaarUsersWithDefaultPassword)
         } catch(e) {
             console.log("Exception: ", e.message)
         }
-    })
+    }
     
     return {
       daarUsersWithRealPassword, daarUsersWithDefaultPassword, 
