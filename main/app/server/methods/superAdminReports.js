@@ -39,7 +39,7 @@ Meteor.methods({
     let payGrades = {}
 
     for(let i = 0; i < allDaarUsers.length; i++) {        
-        let aDaarUser = allDaarUsers[i]
+        let aDaarUser = allDaarUsers[i] 
         try {
             let defaultLoginResult = Accounts._checkPassword(aDaarUser, defaultPassword);  
             let empId = aDaarUser.employeeProfile.employeeId || ""

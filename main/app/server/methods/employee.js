@@ -19,23 +19,44 @@ Meteor.methods({
 });
 
 
-getActiveEmployees = (paygrade, period, businessId) => {
+getActiveEmployees = (paygrade, period, businessId, businessUnitConfig) => {
     check(paygrade, Array);
     const year = period.year;
     const month = period.month;
     const firsDayOfPeriod = `${month}-01-${year} GMT`;
     const DateLimit = new Date(firsDayOfPeriod);
-    return Meteor.users.find({'employeeProfile.employment.status': 'Active',
-        $and: [
-            {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
-            {$or: [
-                {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
-                {'employeeProfile.employment.terminationDate': null},
-                {'employeeProfile.employment.terminationDate' : { $exists : false } }
-            ]}
-        ],
-        'employeeProfile.employment.paygrade': {$in: paygrade},
-        'businessIds': businessId,
-        'employee': true
-    }).fetch();
+
+    if(businessUnitConfig) {
+        let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
+        console.log(`checkEmployeeResumptionForPayroll: `, checkEmployeeResumptionForPayroll)
+
+        if(checkEmployeeResumptionForPayroll) {
+            return Meteor.users.find({'employeeProfile.employment.status': 'Active',
+                $and: [
+                    {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
+                    {$or: [
+                        {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                        {'employeeProfile.employment.terminationDate': null},
+                        {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                    ]}
+                ],
+                'employeeProfile.employment.paygrade': {$in: paygrade},
+                'businessIds': businessId,
+                'employee': true
+            }).fetch();
+        } else {
+            return Meteor.users.find({'employeeProfile.employment.status': 'Active',
+                $or: [
+                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                    {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                ],
+                'employeeProfile.employment.paygrade': {$in: paygrade},
+                'businessIds': businessId,
+                'employee': true
+            }).fetch();
+        }
+    } else {
+        return []
+    }
 };

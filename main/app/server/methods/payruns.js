@@ -310,13 +310,16 @@ Meteor.methods({
         check(paygrades, Array);
         let res;
         let payObj = {};
+
+        let businessUnitConfig = BusinessUnitCustomConfigs.findOne({businessId: businessId})
+        
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
         if (employees.length === 0 && paygrades.length > 0) {
-            res = getActiveEmployees(paygrades, period, businessId);
+            res = getActiveEmployees(paygrades, period, businessId, businessUnitConfig);
             //res contains employees ready for payment processing
 
             if (res && res.length > 0) {
-                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId, period);
+                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId, period, businessUnitConfig);
             }
         } else if (employees.length > 0) {
             const year = period.year;
@@ -325,18 +328,38 @@ Meteor.methods({
             const DateLimit = new Date(firsDayOfPeriod);
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
-            const users = Meteor.users.find({_id: {$in: employees},
-                $and: [
-                    {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
-                    {$or: [
-                        {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
-                        {'employeeProfile.employment.terminationDate': null},
-                        {'employeeProfile.employment.terminationDate' : { $exists : false } }
-                    ]}
-                ],
-                'employeeProfile.employment.status': 'Active',
-                'businessIds': businessId, }).fetch();
-            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, period);
+
+            let users = []
+
+            if(businessUnitConfig) {
+                let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
+
+                if(checkEmployeeResumptionForPayroll) {
+                    users = Meteor.users.find({_id: {$in: employees},
+                        $and: [
+                            {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
+                            {$or: [
+                                {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                                {'employeeProfile.employment.terminationDate': null},
+                                {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                            ]}
+                        ],
+                        'employeeProfile.employment.status': 'Active',
+                        'businessIds': businessId
+                    }).fetch();
+                } else {
+                    users = Meteor.users.find({_id: {$in: employees},
+                        $or: [
+                            {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                            {'employeeProfile.employment.terminationDate': null},
+                            {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                        ],
+                        'employeeProfile.employment.status': 'Active',
+                        'businessIds': businessId
+                    }).fetch();
+                }
+            }
+            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, period, businessUnitConfig);
         }
 
         //if live run and no error then save result
@@ -356,7 +379,6 @@ Meteor.methods({
         //just return something for now .... testing
         return {payObj, runtype, period};
     }
-
 });
 
 /*
@@ -368,7 +390,7 @@ Meteor.methods({
 
 // // use oop
 // instantiate payment object for employee with props for all methods required
-processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period) {
+processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig) {
     let paygrades = [];
     let payresult = [];  // holds result that will be sent to client
     let payrun = [];  //holds payrun for storing if not simulation
