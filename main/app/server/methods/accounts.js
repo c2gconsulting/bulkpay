@@ -135,7 +135,6 @@ Meteor.methods({
                 let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
                 let userEmail = user.emails[0].address || ''
 
-
                 if(defaultLoginResult.error) {
                     return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
                 } else {

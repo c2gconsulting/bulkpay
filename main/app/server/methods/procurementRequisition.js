@@ -1,12 +1,40 @@
 import _ from 'underscore';
 
 
+
+let ProcurementRequisitonHelper = {
+    sendRequisitionCreated: function(supervisorFullName, createdByEmail, createdByFullName, 
+        description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        try {
+            SSR.compileTemplate("procurementRequisitionNotification", Assets.getText("emailTemplates/procurementRequisitionNotification.html"));
+            Email.send({
+                to: "efeariaroo@gmail.com",
+                from: "BulkPay<bulkpay@c2gconsulting.com>",
+                subject: "Procurement Requisition created!",
+                html: SSR.render("procurementRequisitionNotification", {
+                    user: supervisorFullName,
+                    createdBy: createdByFullName,
+                    description: description,
+                    unit: unitName,
+                    dateRequired: dateRequired,
+                    reason: requisitionReason,
+                    approvalsPageUrl: approvalsPageUrl
+                })
+            });
+            return true
+        } catch(e) {
+            throw new Meteor.Error(401, e.message);
+        }
+    }
+}
+
+
 /**
  *  Procurement Requisition Methods
  */
 Meteor.methods({
     "ProcurementRequisition/createDraft": function(businessUnitId, procurementRequisitionDoc, docId){
-        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
         check(businessUnitId, String);
@@ -43,7 +71,7 @@ Meteor.methods({
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
     "ProcurementRequisition/create": function(businessUnitId, procurementRequisitionDoc, docId){
-        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
         check(businessUnitId, String);
@@ -55,14 +83,12 @@ Meteor.methods({
         }
 
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
         if(userPosition.properties 
             && (userPosition.properties.supervisor || userPosition.properties.alternateSupervisor)) {
             let supervisorPositionId = userPosition.properties.supervisor || ""
             let alternateSupervisorPositionId = userPosition.properties.alternateSupervisor || ""
-            console.log(`supervisorPositionId: ${supervisorPositionId}`)
 
             procurementRequisitionDoc.createdBy = Meteor.userId()
             procurementRequisitionDoc.businessUnitId = businessUnitId
@@ -75,12 +101,63 @@ Meteor.methods({
             } else {
                 ProcurementRequisitions.insert(procurementRequisitionDoc)
             }
+            //--
+            let createdBy = Meteor.users.findOne(Meteor.userId())
+            
+            let createdByEmail = createdBy.emails[0].address;
+            let createdByFullName = createdBy.profile.fullName
+            let unit = EntityObjects.findOne({_id: procurementRequisitionDoc.unitId, otype: 'Unit'})
+            let unitName = unit.name
+            let dateRequired = ''
+            if(procurementRequisitionDoc.dateRequired) {
+                dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')
+            }
+            let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/approvalslist`
+            //--
+            let supervisors = []
+            let alternateSupervisors = []
+
+            if(supervisorPositionId) {
+                supervisors = Meteor.users.find({
+                    'employeeProfile.employment.position': supervisorPositionId
+                }).fetch()
+            }
+
+            if(alternateSupervisorPositionId) {
+                alternateSupervisors = Meteor.users.find({
+                    'employeeProfile.employment.position': alternateSupervisorPositionId
+                }).fetch()
+            }
+            if(supervisors && supervisors.length > 0) {
+                supervisors.forEach(aSupervisor => {
+                    ProcurementRequisitonHelper.sendRequisitionCreated(
+                        aSupervisor.profile.fullName,
+                        createdByEmail, createdByFullName, 
+                        procurementRequisitionDoc.description, 
+                        unitName,
+                        dateRequired,
+                        procurementRequisitionDoc.requisitionReason,
+                        approvalsPageUrl)
+                })
+            }
+            if(alternateSupervisors && alternateSupervisors.length > 0) {
+                alternateSupervisors.forEach(aSupervisor => {
+                    ProcurementRequisitonHelper.sendRequisitionCreated(
+                        aSupervisor.profile.fullName,
+                        createdByEmail, createdByFullName, 
+                        procurementRequisitionDoc.description, 
+                        unitName,
+                        dateRequired,
+                        procurementRequisitionDoc.requisitionReason,
+                        approvalsPageUrl)
+                })
+            }            
             return true
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
     "ProcurementRequisition/approve": function(businessUnitId, docId){
-        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
         check(businessUnitId, String);
@@ -103,7 +180,7 @@ Meteor.methods({
         }
     },
     "ProcurementRequisition/reject": function(businessUnitId, docId){
-        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
         check(businessUnitId, String);
