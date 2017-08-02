@@ -27,7 +27,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     leaveDaysAccrual: {
         type: String // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
     },
-    
+    checkEmployeeResumptionForPayroll: {
+        type: Boolean
+    },
     isActive: {
         type: Boolean
     },

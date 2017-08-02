@@ -150,6 +150,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             requireTwoSupervisors: true
         },
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        checkEmployeeResumptionForPayroll: true,
         isActive: true
     }
     let daarConfig = {
@@ -162,6 +163,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             requireTwoSupervisors: true
         },
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        checkEmployeeResumptionForPayroll: false,
         isActive: true
     }
 
