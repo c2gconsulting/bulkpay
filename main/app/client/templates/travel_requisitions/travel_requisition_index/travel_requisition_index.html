@@ -49,7 +49,7 @@
                                             <td>{{getUnitName unitId}}</td>
                                             <td>{{formatDate dateRequired}}</td>
                                             <td>{{status}}</td>
-                                            <td>{{getTotalTripCost this}}</td>
+                                            <td>{{formatMoneyD (getTotalTripCost this)}}</td>
                                         </tr>
                                     {{/each}}
                                     </tbody>

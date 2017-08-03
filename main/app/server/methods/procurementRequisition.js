@@ -8,7 +8,7 @@ let ProcurementRequisitonHelper = {
         try {
             SSR.compileTemplate("procurementRequisitionNotification", Assets.getText("emailTemplates/procurementRequisitionNotification.html"));
             Email.send({
-                to: "efeariaroo@gmail.com",
+                to: createdByEmail,
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Procurement Requisition created!",
                 html: SSR.render("procurementRequisitionNotification", {
