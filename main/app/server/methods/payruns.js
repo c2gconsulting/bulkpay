@@ -75,7 +75,7 @@ Meteor.methods({
             const netpay = result.map(x => {
                 const netPayIndex = _.findLastIndex(x.payment, {code: 'NMP'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
                 if(netPayIndex > -1) {
-                    const amountPC = x.payment[netPayIndex].amountPC;
+                    const amountPC = x.payment[netPayIndex].amountLC;
                     //get employee details
                     let employee = Meteor.users.findOne({_id: x.employeeId});
                     if(employee){
