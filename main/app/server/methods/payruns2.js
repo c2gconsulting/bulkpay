@@ -84,6 +84,39 @@ let PayrunHelpers = {
 
     return paytypes
   },
+  getPaytypesForEmployee: (employeeSpecificPayments, grade, businessId, employeeId, periodFormat) => {
+    let empSpecificType = determineRule(employeeSpecificPayments, grade);
+
+    let paytypes = empSpecificType.map(x => {
+      let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+      delete x.paytype;
+      _.extend(x, ptype);
+
+      return x;
+    });
+
+    const addPay = AdditionalPayments.find({
+      businessId: businessId, 
+      employee: employeeId, 
+      period: periodFormat
+    }).fetch();
+
+    if(addPay && addPay.length > 0) {
+      let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
+
+      if(formattedPay && formattedPay.length > 0) {
+        formattedPay.forEach(x => {
+          let index = _.findLastIndex(paytypes, {_id: x._id});
+
+          if (index > -1) { //found
+            paytypes[index].value = x.value;
+            paytypes[index].additionalPay = true; //add additional pay flag to skip monthly division
+          }
+        });
+      }
+    }
+    return paytypes
+  },
   savePayrunResultIfLive: (runtype, payObj) => {
     if (runtype === 'LiveRun' && payObj.error.length === 0){
       try {
@@ -126,6 +159,8 @@ Meteor.methods({
       let payObj = {};
 
       let businessUnitConfig = BusinessUnitCustomConfigs.findOne({businessId: businessId})
+
+      // We need valid employees because some may not have been hired yet or terminated or made Not Active
       let validEmployees = null
 
       if (employees.length === 0 && paygrades.length > 0) {
@@ -162,10 +197,14 @@ function processPayroll(currentUserId, employees, includedAnnualPayments, busine
   for(let employeeIndex = 0; employeeIndex < numOfEmployees; i++) {
     let employeeData = employees[employeeIndex]
 
-    let {payrunLogsAndPayslipInfo, payrunResultForStorage, paygradesCache, hardException} =  
-      processPayrollForEmployee(employeeData, businessId, tenant, includedAnnualPayments, 
-        period, currencyRatesForPeriod, businessUnitConfig, paygradesCache)
-    
+    let employeeProcessingResult = processPayrollForEmployee(employeeData, businessId, tenant, 
+        includedAnnualPayments, period, currencyRatesForPeriod, businessUnitConfig, paygradesCache)
+
+    payrunLogsAndPayslipInfo = employeeProcessingResult.payrunLogsAndPayslipInfo
+    payrunResultForStorage = employeeProcessingResult.payrunResultForStorage
+    hardException = employeeProcessingResult.hardException
+    paygradesCache = employeeProcessingResult.paygradesCache
+
     if(hardException) {
       processingError.push(hardException);
     } else {
@@ -206,80 +245,81 @@ function processPayrollForEmployee(employeeData, businessId, tenant, includedAnn
 
     const employeePaygradeId = employeeData.employeeProfile.employment.paygrade;
     let employeeSpecificPayments = employeeData.employeeProfile.employment.paytypes;
-    //--
-    let grade, pgp;  //grade(paygrade) && pgp(paygroup);
-
+    
+    //-- Getting employee paygrade details
+    let grade;
     const gradeIndex = _.findLastIndex(paygradesCache, {_id: employeePaygradeId});
-    let empSpecificType;  //contains employee payments derived from paygrade
     if (gradeIndex !== -1) {
       grade = paygradesCache[gradeIndex];
-      empSpecificType = determineRule(employeeSpecificPayments, grade);
     } else {
       grade = getEmployeeGrade(pg);
       if (grade) {
         paygradesCache.push(grade);
-        empSpecificType = determineRule(employeeSpecificPayments, grade);
       }
     }
+    //--
 
-    if (grade && grade.hasOwnProperty('payGroups') && grade.payGroups.length > 0) {
-      pgp = grade.payGroups[0];
+    if(!grade) {
+      hardException = {
+        employee: `${employeeData.employeeProfile.employeeId} - ${employeeData.profile.fullName}`,
+        reason: `Does not have a valid PayGrade`,
+        details: `Cannot Process Payroll for Employee ... Does not have a valid PayGrade`
+      };
+    } else {
+        let paytypes = PayrunHelpers.getPaytypesForEmployee(employeeSpecificPayments, grade, 
+                businessId, employeeData._id, periodFormat)
+
+        let rules = new ruleJS();
+        rules.init();
+        //--
+        let payGroupId = ''
+        if (grade.hasOwnProperty('payGroups') && grade.payGroups.length > 0) {
+            payGroupId = grade.payGroups[0];
+        }
+        const {tax, pension} = getPaygroup(payGroupId);
+
+        let processingResult = processEmployeePayments(employeeData, paytypes, businessId, period, rules, tax, pension)
+
     }
+  }
+  
+  return {payrunLogsAndPayslipInfo, payrunResultForStorage, hardException, paygradesCache}
+}
 
-    let paytypes = empSpecificType.map(x => {
-      let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-      delete x.paytype;
-      _.extend(x, ptype);
-
-      return x;
-    });
-    //--
-    paytypes = PayrunHelpers.garnishPaytypesWithAdditionalPayments(paytypes, businessId, employeeData._id, periodFormat)
-
-    let rules = new ruleJS();
-    rules.init();
-
-    const {tax, pension} = getPaygroup(pgp);
-    //--
+function processEmployeePayments(employeeData, paytypes, businessId, period, rules, tax, pension) {
     const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
     const firsDayOfPeriodAsDate = new Date(firsDayOfPeriod);
 
-    let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(x, firsDayOfPeriodAsDate)
+    let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(employeeData, firsDayOfPeriodAsDate)
     let totalNumWeekDaysInMonth = getWeekDays(firsDayOfPeriodAsDate, moment(firsDayOfPeriodAsDate).endOf('month').toDate()).length
 
     //--Time recording things
     const projectsPayDetails = 
-        getFractionForCalcProjectsPayValue(businessId, period.month, period.year, x._id)
-    
+        getFractionForCalcProjectsPayValue(businessId, period.month, period.year, employeeData._id)
+
     const costCentersPayDetails = 
-        getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, x._id)
+        getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, employeeData._id)
 
     let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
     //--
-    let processingResult = processEmployeePayments(employeeData, paytypes, rules, tax, pension)
-  }
+    let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
+    let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
 
-  return {payrunLogsAndPayslipInfo, payrunResultForStorage, hardException}
-}
+    let empDerivedPayElements = [];
 
-function processEmployeePayments(employeeData, paytypes, rules, tax, pension) {
-  let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
-  let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
-  let empDerivedPayElements = [];
-  let benefit = [], deduction = [], others = [];
+    let benefit = [], deduction = [], others = [];
 
-  //--
-  let paymentsAccountingForCurrency = {benefit: {}, deduction: {}, others: {}}
-  // Each key in each of the above keys will be a currency code
-  // Each object for each currency code will be an array of payments
-  //--
+    let paymentsAccountingForCurrency = {benefit: {}, deduction: {}, others: {}}
+    // Each key in each of the above keys will be a currency code
+    // Each object for each currency code will be an array of payments
+    //--
 
 
-  try {
+    try {
 
-  } catch(e) {
+    } catch(e) {
 
-  }
+    }
 }
 
 
