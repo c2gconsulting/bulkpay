@@ -52,6 +52,18 @@
             </div>
         </div><!-- row -->
 
+        <div class="row">
+            {{#unless isFetchingData}}
+                {{#if hasMoreAdditionalPayments}}
+                    <div id="showMoreResults" href="#">&nbsp;</div>
+                {{/if}}
+            {{else}}
+                <div class="col-xs-12">
+                    <div class="loading">{{> spinner}}</div>
+                </div>
+            {{/unless}}
+        </div>
+
     </div><!-- contentpanel -->
 
 </template>
