@@ -50,6 +50,13 @@ Template.PayrollApprovalConfig.helpers({
     },
     'checkInitial': (index) => {
         return index === 0 ? 'checked': null;
+    },
+    payrollApprovalConfig: () => {
+        return Template.instance().payrollApprovalConfig.get()
+    },
+    isEqual: (a, b) => {
+        console.log(`a: `, )
+        return a === b;
     }
 });
 
@@ -59,11 +66,40 @@ Template.PayrollApprovalConfig.helpers({
 Template.PayrollApprovalConfig.onCreated(function () {
     let self = this;
 
+    self.payrollApprovalConfig = new ReactiveVar()
+
+    let businessUnitId = Session.get('context');
+
     self.subscribe("activeEmployees", Session.get('context'));
+    self.subscribe('PayrollApprovalConfigs', businessUnitId);
+
+
+    self.autorun(function() {
+        if (Template.instance().subscriptionsReady()){
+            let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
+            self.payrollApprovalConfig.set(payrollApprovalConfig)
+        }
+    })
 });
 
 Template.PayrollApprovalConfig.onRendered(function () {
      $('select.dropdown').dropdown();
+
+     let self = this
+
+     self.autorun(function() {
+        let payrollApprovalConfig = self.payrollApprovalConfig.get()
+        console.log(`payrollApprovalConfig: `, payrollApprovalConfig)
+
+        if(payrollApprovalConfig) {
+            let requirePayrollApproval = payrollApprovalConfig.requirePayrollApproval
+            if(requirePayrollApproval) {
+                $('input[name=requireApproval]').val("yes")
+            } else {
+                $('input[name=requireApproval]').val("no")
+            }
+        }
+    })
 });
 
 Template.PayrollApprovalConfig.onDestroyed(function () {

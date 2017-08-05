@@ -57,7 +57,15 @@
                                                 <select name="approver1" class="ui fluid search dropdown form-control">
                                                     <option value="">Please select</option>
                                                     {{#each employees}}
+                                                        {{#if payrollApprovalConfig}}
+                                                            {{#if isEqual _id payrollApprovalConfig.approvers.[0]}}
+                                                                <option value="{{_id}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                            {{else}}
+                                                                <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                            {{/if}}
+                                                        {{else}}
                                                         <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                        {{/if}}
                                                     {{/each}}
                                                 </select>
                                             {{/semanticselect}}

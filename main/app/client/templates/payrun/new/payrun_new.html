@@ -190,6 +190,12 @@
                                             </tbody>
                                         </table>
                                     </div><!-- table-responsive -->
+
+                                    {{#if showSendForApprovalButton}}
+                                        <div>
+                                            <button type="button" class="btn-primary pull-right" id="send-for-approval">Send for Approval</button>
+                                        </div>
+                                    {{/if}}
                                 </div>
                             </div>
                         {{/if}}

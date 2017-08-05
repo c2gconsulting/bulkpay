@@ -444,6 +444,12 @@ ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists = functio
 
 Template.PayrunNew.events({
     'click #startProcessing': (e,tmpl) => {
+        let payrunRunType = tmpl.payrunRunType.get()
+        if(!payrunRunType) {
+            swal("Validation Error", "Please select a runtype", "error");
+            return
+        }
+
         let payGrades = function(){
             let selected = [];
             $("input:checkbox[name=paygrades]:checked").each(function () {
@@ -468,7 +474,7 @@ Template.PayrunNew.events({
                 year: $('[name="paymentPeriod.year"]').val(),
 
             },
-            type: $('input[name=runtype]:checked').val(),
+            type: payrunRunType,
             annuals: annualPay()
         };
         //check if any valid selection is made
@@ -487,14 +493,15 @@ Template.PayrunNew.events({
             })
         } else {
             Blaze.remove(view);
-            swal("notice","A valid selection must be made", "error");
+            swal("Validation Error", "Please select a paygrade or some employees", "error");
         }
-
-
     },
     'change [name="annualPay"]': (e, tmpl) => {
         tmpl.includePay.set($(e.target).is(':checked'));
 
+    },
+    'change [name="runtype"]': (e, tmpl) => {
+        tmpl.payrunRunType.set($(e.target).val());
     },
     'change [name="employee"]': (e, tmpl) => {
         let selected = Core.returnSelection($(e.target));
@@ -549,6 +556,9 @@ Template.PayrunNew.events({
         } else {
             swal('Error', 'No payrun results', 'error')
         }
+    },
+    'click #send-for-approval': (e, tmpl) => {
+
     }
 });
 
@@ -605,6 +615,16 @@ Template.PayrunNew.helpers({
         if(Template.instance().selectedYear.get()) {
             return Template.instance().selectedYear.get() === val ? selected="selected" : '';
         }
+    },
+    showSendForApprovalButton: function() {
+        const payresult = Template.instance().dict.get('payResult');
+
+        if(!payresult.payObj.error.length) {
+            let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+            let payrunRunType = Template.instance().payrunRunType.get()
+
+            return (payrunRunType === 'LiveRun' && payrollApprovalConfig && payrollApprovalConfig.requirePayrollApproval)
+        }
     }
 });
 
@@ -613,8 +633,12 @@ Template.PayrunNew.helpers({
 /*****************************************************************************/
 Template.PayrunNew.onCreated(function () {
     let self = this;
-    self.subscribe("paygrades", Session.get('context'));
-    self.subscribe("activeEmployees", Session.get('context'));
+    let businessUnitId = Session.get('context')
+
+    self.subscribe("paygrades", businessUnitId);
+    self.subscribe("activeEmployees", businessUnitId);
+    self.subscribe('PayrollApprovalConfigs', businessUnitId);
+
     self.dict = new ReactiveDict();
     self.showPayGrade = new ReactiveVar(true);
     self.grades = new ReactiveVar([]);
@@ -629,12 +653,19 @@ Template.PayrunNew.onCreated(function () {
     self.selectedMonth.set(theMoment.format('MM'))
     self.selectedYear.set(theMoment.format('YYYY'))
     //--
+    self.payrunRunType = new ReactiveVar()
+    self.payrollApprovalConfig = new ReactiveVar()
 
     self.autorun(function(){
         let includeType = self.includePay.get();
         let selectedGrade = self.grades.get();
         if (includeType)
             self.subscribe("AdditionalPayTypes", selectedGrade, Session.get('context'));
+        
+        if (Template.instance().subscriptionsReady()) {
+            let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
+            self.payrollApprovalConfig.set(payrollApprovalConfig)
+        }
     })
 });
 
