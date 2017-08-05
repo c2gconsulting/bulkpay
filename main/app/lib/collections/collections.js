@@ -377,6 +377,14 @@ Partitioner.partitionCollection(TravelRequisitions);
 TravelRequisitions.attachSchema(Core.Schemas.TravelRequisition);
 
 
+/**
+ * Core Collections ProcurementRequisitions
+ */
+PayrollApprovalConfigs = new Mongo.Collection("payrollapprovalconfig");
+Partitioner.partitionCollection(PayrollApprovalConfigs);
+PayrollApprovalConfigs.attachSchema(Core.Schemas.PayrollApprovalConfig);
+
+
 LeaveTypes.allow({
     insert: function(userId, doc) {
         // only allow updating if you are logged in

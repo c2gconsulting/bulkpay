@@ -365,3 +365,10 @@ Router.route('/business/:_id/superadmin/reports/users', {
     action: 'getUsersWithDefaultOrRealPassword',
     where: 'client'
 });
+
+Router.route('/business/:_id/payroll/approvalconfig', {
+    name: 'payroll.approvalconfig',
+    controller: 'PayrollApprovalConfigController',
+    action: 'showConfig',
+    where: 'client'
+});
