@@ -558,7 +558,21 @@ Template.PayrunNew.events({
         }
     },
     'click #send-for-approval': (e, tmpl) => {
+        let selectedMonth = tmpl.selectedMonth.get()
+        let selectedYear = tmpl.selectedYear.get()
 
+        var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
+
+        Meteor.call("payrollApprovalConfig/sendPayrunApproveEmails", Session.get('context'), 
+            selectedMonth, selectedYear, (err, res) => {
+            if(res) {
+                swal("Success", "Notification emails were successfully sent!", "success");
+            } else {
+                console.log(`err: `, err)
+                swal("Error", err.reason, "error");
+            }
+            Blaze.remove(view);
+        })
     }
 });
 

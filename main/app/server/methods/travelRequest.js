@@ -3,13 +3,13 @@ import _ from 'underscore';
 
 
 let TravelRequestHelper = {
-    sendRequisitionCreated: function(supervisorFullName, createdByEmail, createdByFullName, 
+    sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName, 
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
         console.log(`inside sendRequisitionCreated`)
         try {
             SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
             Email.send({
-                to: createdByEmail,
+                to: supervisorEmail,
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Travel Request created!",
                 html: SSR.render("travelRequestNotification", {
@@ -126,9 +126,11 @@ Meteor.methods({
             }
             if(supervisors && supervisors.length > 0) {
                 supervisors.forEach(aSupervisor => {
+                    let supervisorEmail =  aSupervisor.emails[0].address;
+
                     TravelRequestHelper.sendRequisitionCreated(
                         aSupervisor.profile.fullName,
-                        createdByEmail, createdByFullName, 
+                        supervisorEmail, createdByFullName, 
                         travelRequestDoc.description, 
                         unitName,
                         dateRequired,
@@ -138,9 +140,11 @@ Meteor.methods({
             }
             if(alternateSupervisors && alternateSupervisors.length > 0) {
                 alternateSupervisors.forEach(aSupervisor => {
+                    let supervisorEmail =  aSupervisor.emails[0].address;
+
                     TravelRequestHelper.sendRequisitionCreated(
                         aSupervisor.profile.fullName,
-                        createdByEmail, createdByFullName, 
+                        supervisorEmail, createdByFullName, 
                         travelRequestDoc.description, 
                         unitName,
                         dateRequired,

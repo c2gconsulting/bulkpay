@@ -366,8 +366,26 @@ Meteor.methods({
         if (runtype === 'LiveRun' && payObj.error.length === 0){
             //store result in Payrun Collection.
            try {
+               let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessId})
+
+               let requirePayrollApproval;
+               let isApproved;
+               if(payrollApprovalConfig) {
+                    if(payrollApprovalConfig.requirePayrollApproval) {
+                        requirePayrollApproval = true
+                    } else {
+                        requirePayrollApproval = false
+                    }
+                    isApproved = false
+                } else {
+                    isApproved = true
+                }
+
                payObj.payrun.forEach(x => {
-                   Payruns.insert(x);
+                    x.requirePayrollApproval = requirePayrollApproval
+                    x.isApproved = false
+                    
+                    Payruns.insert(x);
                })
            } catch (e){
                console.log(e);

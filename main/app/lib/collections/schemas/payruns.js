@@ -83,6 +83,14 @@ Core.Schemas.Payrun = new SimpleSchema({
             type: Boolean,
             optional: true
         },
+        requirePayrollApproval: {
+            type: Boolean,
+            optional: true
+        },
+        isApproved: {
+            type: Boolean,
+            optional: true
+        },
       createdAt: {
         type: Date,
         autoValue: function () {

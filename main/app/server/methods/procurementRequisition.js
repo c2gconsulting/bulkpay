@@ -3,12 +3,12 @@ import _ from 'underscore';
 
 
 let ProcurementRequisitonHelper = {
-    sendRequisitionCreated: function(supervisorFullName, createdByEmail, createdByFullName, 
+    sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName, 
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
         try {
             SSR.compileTemplate("procurementRequisitionNotification", Assets.getText("emailTemplates/procurementRequisitionNotification.html"));
             Email.send({
-                to: createdByEmail,
+                to: supervisorEmail,
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Procurement Requisition created!",
                 html: SSR.render("procurementRequisitionNotification", {
@@ -130,9 +130,11 @@ Meteor.methods({
             }
             if(supervisors && supervisors.length > 0) {
                 supervisors.forEach(aSupervisor => {
+                    let supervisorEmail =  aSupervisor.emails[0].address;
+
                     ProcurementRequisitonHelper.sendRequisitionCreated(
                         aSupervisor.profile.fullName,
-                        createdByEmail, createdByFullName, 
+                        supervisorEmail, createdByFullName, 
                         procurementRequisitionDoc.description, 
                         unitName,
                         dateRequired,
@@ -142,9 +144,11 @@ Meteor.methods({
             }
             if(alternateSupervisors && alternateSupervisors.length > 0) {
                 alternateSupervisors.forEach(aSupervisor => {
+                    let supervisorEmail =  aSupervisor.emails[0].address;
+
                     ProcurementRequisitonHelper.sendRequisitionCreated(
                         aSupervisor.profile.fullName,
-                        createdByEmail, createdByFullName, 
+                        supervisorEmail, createdByFullName, 
                         procurementRequisitionDoc.description, 
                         unitName,
                         dateRequired,
