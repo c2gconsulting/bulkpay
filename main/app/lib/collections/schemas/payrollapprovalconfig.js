@@ -14,6 +14,9 @@ Core.Schemas.PayrollApprovalConfig = new SimpleSchema({
     requirePayrollApproval: {
         type: Boolean
     },
+    approvers: {
+        type: [String]
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

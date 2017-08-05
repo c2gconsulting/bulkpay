@@ -5,29 +5,39 @@
 
 Template.PayrollApprovalConfig.events({
     'click #save': (e,tmpl) => {
-
         let requireApproval = $('input[name=requireApproval]:checked').val()
-        let approver1UserId = $('[name="approver1"]').val()
-        let approver2UserId = $('[name="approver2"]').val()
-        let approver3UserId = $('[name="approver3"]').val()
+        let approver1UserId = $('[name="approver1"]').val() || ''
+        let approver2UserId = $('[name="approver2"]').val() || ''
+        let approver3UserId = $('[name="approver3"]').val() || ''
 
-        console.log(`requireApproval: `, requireApproval)
-        console.log(`approver1UserId: `, approver1UserId)
-        console.log(`approver2UserId: `, approver2UserId)
-        console.log(`approver3UserId: `, approver3UserId)
+        approver1UserId = (approver1UserId === '-') ? '' : approver1UserId
+        approver2UserId = (approver2UserId === '-') ? '' : approver2UserId
+        approver3UserId = (approver3UserId === '-') ? '' : approver3UserId
+
+        let approvers = [approver1UserId, approver2UserId, approver3UserId]
+
+        let requireApprovalAsBoolean = false
+        if(requireApproval === 'yes') {
+            requireApprovalAsBoolean = true
+        } else if(requireApproval === 'no') {
+            requireApprovalAsBoolean = false
+        }
         
-        // if (params.employees.length > 0 || params.paygrades.length > 0){
-        //     Meteor.call("payrollApprovalConfig/save",  params, Session.get('context'), (err, res) => {
-        //         if(res) {
-        //         } else {
-        //             console.log(err);
-        //         }
-        //         Blaze.remove(view);
-        //     })
-        // } else {
-        //     Blaze.remove(view);
-        //     swal("notice","A valid selection must be made", "error");
-        // }
+        let approvalDoc = {
+            requirePayrollApproval: requireApprovalAsBoolean,
+            approvers: approvers,
+            businessId: Session.get('context')
+        }
+
+        Meteor.call("payrollApprovalConfig/save",  Session.get('context'), approvalDoc, (err, res) => {
+            if(res) {
+                swal('Success', 'Config saved successfully!', 'success')
+            } else {
+                console.log(err);
+                swal("Server Error", err.message || 'An error occurred in saving the config', "error");
+            }
+            Blaze.remove(view);
+        })
     }
 });
 
@@ -36,7 +46,7 @@ Template.PayrollApprovalConfig.events({
 /*****************************************************************************/
 Template.PayrollApprovalConfig.helpers({
     'employees': () => {
-        return Meteor.users.find({"employee": true});
+        return [''].concat(Meteor.users.find({"employee": true}).fetch());
     },
     'checkInitial': (index) => {
         return index === 0 ? 'checked': null;
