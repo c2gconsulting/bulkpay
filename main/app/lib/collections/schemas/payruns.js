@@ -83,13 +83,23 @@ Core.Schemas.Payrun = new SimpleSchema({
             type: Boolean,
             optional: true
         },
+        payrunDoneBy: {
+          type: String, 
+          optional: true
+        },
         requirePayrollApproval: {
             type: Boolean,
             optional: true
         },
-        isApproved: {
-            type: Boolean,
-            optional: true
+        approvals: {
+          type: [Object],
+          optional: true
+        },
+        'approvals.$.approvedBy': {
+          type: String
+        },
+        'approvals.$.isApproved': {
+          type: Boolean
         },
       createdAt: {
         type: Date,

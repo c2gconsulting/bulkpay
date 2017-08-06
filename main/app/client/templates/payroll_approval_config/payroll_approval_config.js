@@ -55,7 +55,6 @@ Template.PayrollApprovalConfig.helpers({
         return Template.instance().payrollApprovalConfig.get()
     },
     isEqual: (a, b) => {
-        console.log(`a: `, )
         return a === b;
     }
 });
@@ -83,23 +82,7 @@ Template.PayrollApprovalConfig.onCreated(function () {
 });
 
 Template.PayrollApprovalConfig.onRendered(function () {
-     $('select.dropdown').dropdown();
-
-     let self = this
-
-     self.autorun(function() {
-        let payrollApprovalConfig = self.payrollApprovalConfig.get()
-        console.log(`payrollApprovalConfig: `, payrollApprovalConfig)
-
-        if(payrollApprovalConfig) {
-            let requirePayrollApproval = payrollApprovalConfig.requirePayrollApproval
-            if(requirePayrollApproval) {
-                $('input[name=requireApproval]').val("yes")
-            } else {
-                $('input[name=requireApproval]').val("no")
-            }
-        }
-    })
+    //  $('select.dropdown').dropdown();
 });
 
 Template.PayrollApprovalConfig.onDestroyed(function () {

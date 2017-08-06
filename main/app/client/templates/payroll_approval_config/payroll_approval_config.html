@@ -41,8 +41,18 @@
                                     <div class="col-md-9">
                                         <div class="form-group">
                                             <ul class="list-inline">
+                                                {{#with payrollApprovalConfig}}
+                                                    {{#if isEqual requirePayrollApproval true}}
+                                                        <li><input type="radio" value="yes" name="requireApproval" checked/>Yes</li>
+                                                        <li><input type="radio"  value="no" name="requireApproval"/>No</li>
+                                                    {{else}}
+                                                        <li><input type="radio" value="yes" name="requireApproval" />Yes</li>
+                                                        <li><input type="radio"  value="no" name="requireApproval" checked/>No</li>
+                                                    {{/if}}
+                                                {{else}}
                                                 <li><input type="radio" value="yes" name="requireApproval" />Yes</li>
                                                 <li><input type="radio"  value="no" name="requireApproval"/>No</li>
+                                                {{/with}}
                                             </ul>
                                         </div><!-- form-group -->
                                     </div>
@@ -58,7 +68,7 @@
                                                     <option value="">Please select</option>
                                                     {{#each employees}}
                                                         {{#if payrollApprovalConfig}}
-                                                            {{#if isEqual _id payrollApprovalConfig.approvers.[0]}}
+                                                            {{#if isEqual this._id payrollApprovalConfig.approvers.[0]}}
                                                                 <option value="{{_id}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                                             {{else}}
                                                                 <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>

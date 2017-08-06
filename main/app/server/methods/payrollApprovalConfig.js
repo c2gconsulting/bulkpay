@@ -51,8 +51,6 @@ Meteor.methods({
             throw new Meteor.Error(401, "Unauthorized");
         }
         this.unblock();
-        console.log(`periodMonth: `, periodMonth)
-        console.log(`periodYear: `, periodYear)
 
         let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId});
 

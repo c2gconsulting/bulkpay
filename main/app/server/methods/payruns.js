@@ -369,21 +369,22 @@ Meteor.methods({
                let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessId})
 
                let requirePayrollApproval;
-               let isApproved;
+               let approvals;
                if(payrollApprovalConfig) {
                     if(payrollApprovalConfig.requirePayrollApproval) {
                         requirePayrollApproval = true
                     } else {
                         requirePayrollApproval = false
                     }
-                    isApproved = false
+                    approvals = []
                 } else {
-                    isApproved = true
+                    approvals = null
                 }
 
                payObj.payrun.forEach(x => {
+                    x.payrunDoneBy = userId
                     x.requirePayrollApproval = requirePayrollApproval
-                    x.isApproved = false
+                    x.approvals = approvals
                     
                     Payruns.insert(x);
                })
