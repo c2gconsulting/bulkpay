@@ -1,3 +1,6 @@
+import _ from 'underscore'
+
+
 Template.navigator.events({
     'click #companyMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
@@ -165,6 +168,19 @@ Template.navigator.helpers({
         } else {
             return "Pay Grades"
         }
+    },
+    'canApprovePayroll': function() {
+        let userId = Meteor.userId()
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        if(payrollApprovalConfig) {
+            let approvers = payrollApprovalConfig.approvers
+            if(approvers && approvers.length > 0) {
+                let currentUserIsApprover = _.find(approvers, anApproverId => {
+                    return anApproverId === userId
+                })
+                return (currentUserIsApprover) ? true : false
+            }
+        }
     }
 });
 
@@ -174,18 +190,23 @@ Template.navigator.onCreated(function () {
     //--
     self.expandedMenu = new ReactiveVar()
     //--
-
     self.businessUnitCustomConfig = new ReactiveVar()
+    self.payrollApprovalConfig = new ReactiveVar()
+
     
     self.autorun(function(){
         let businessUnitId = Session.get('context');
         // console.log(`businessUnitId`, businessUnitId)
 
         let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
+        let payrollApprovalConfigSub = self.subscribe('PayrollApprovalConfigs', businessUnitId);
 
-        if(customConfigSub.ready()) {
+        if(customConfigSub.ready() && payrollApprovalConfigSub.ready()) {
             self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
             // console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
+
+            let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
+            self.payrollApprovalConfig.set(payrollApprovalConfig)
         }
     })
 });

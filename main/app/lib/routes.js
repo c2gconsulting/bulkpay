@@ -372,3 +372,10 @@ Router.route('/business/:_id/payroll/approvalconfig', {
     action: 'showConfig',
     where: 'client'
 });
+
+Router.route('/business/:_id/payrun/approval', {
+    name: 'payroll.approval',
+    controller: 'PayrunController',
+    action: 'showPayrunApproval',
+    where: 'client'
+});
