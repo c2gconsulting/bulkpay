@@ -136,6 +136,25 @@ Template.payruns.helpers({
     },
     'payrunResultsPostToSapErrors': function() {
         return Template.instance().payrunResultsPostToSapErrors.get();
+    },
+    'canPostToSAP': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        if(payrollApprovalConfig) {
+            let currentPayrun = Template.instance().currentPayrun.get() || []
+            let firstOne = currentPayrun[0]
+            console.log(`firstOne: `, firstOne)
+
+            if(firstOne) {
+                let isApproved = _.find(firstOne.approvals, anApproval => {
+                    return anApproval.isApproved
+                })
+                if(isApproved) {
+                    return true
+                }
+            }
+        } else {
+            return true
+        }
     }
 });
 
@@ -155,14 +174,21 @@ Template.payruns.onCreated(function () {
     self.errorMsg = new ReactiveVar();
     //self.errorMsg.set("No Payrun available");
 
+    self.payrollApprovalConfig = new ReactiveVar()
+
+
     self.autorun(() => {
         let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
         self.subscribe("Payruns", currentPayrunPeriod);
+        self.subscribe('PayrollApprovalConfigs', Session.get('context'));
 
         if (self.subscriptionsReady()) {
-          let payRun = Payruns.find({period: currentPayrunPeriod});
+          let payRun = Payruns.find({period: currentPayrunPeriod}).fetch();
+            
+          let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: Session.get('context')})
+          self.payrollApprovalConfig.set(payrollApprovalConfig)
 
-          if(payRun && payRun.count() > 0)
+          if(payRun && payRun.length > 0)
             Template.instance().currentPayrun.set(payRun);
           else
             Template.instance().currentPayrun.set(null);

@@ -87,9 +87,11 @@
                         </table>
                     </div><!-- table-responsive -->
 
+                    {{#if canPostToSAP}}
                     <div class="pull-right">
                         <button class="btn btn-primary btn-large" id="postToSap">Post results to SAP</button>
                     </div>
+                    {{/if}}
                 </div>
             {{else}}
                 <div class="col-md-12">
