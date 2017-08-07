@@ -63,23 +63,20 @@
 
                                     <div class="col-md-9">
                                         <div class="form-group">
-                                            {{#semanticselect}}
-                                                <select name="approver1" class="ui fluid search dropdown form-control">
-                                                    <option value="">Please select</option>
-                                                    {{#each employees}}
-                                                        {{#if payrollApprovalConfig}}
-                                                            {{#if isEqual this._id payrollApprovalConfig.approvers.[0]}}
-                                                                <option value="{{_id}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
-                                                            {{else}}
-                                                                <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
-                                                            {{/if}}
+                                            <select name="approver1" id="approver1" class="form-control">
+                                                <option value="">Please select</option>
+                                                {{#each employees}}
+                                                    {{#if payrollApprovalConfig}}
+                                                        {{#if isEqual this._id (payrollApprovalConfig.approvers.[0])}}
+                                                            <option value="{{_id}}" selected="selected">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                                         {{else}}
-                                                        <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                            <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                                         {{/if}}
-                                                    {{/each}}
-                                                </select>
-                                            {{/semanticselect}}
-
+                                                    {{else}}
+                                                    <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>                                                    
+                                                    {{/if}}
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -89,15 +86,20 @@
 
                                     <div class="col-md-9">
                                         <div class="form-group">
-                                            {{#semanticselect}}
-                                                <select name="approver2" class="ui fluid search dropdown form-control">
-                                                    <option value="">Please select</option>
-                                                    {{#each employees}}
-                                                        <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            {{/semanticselect}}
-
+                                            <select name="approver2" id="approver2" class="form-control">
+                                                <option value="">Please select</option>
+                                                {{#each employees}}
+                                                    {{#if payrollApprovalConfig}}
+                                                        {{#if isEqual this._id (payrollApprovalConfig.approvers.[1])}}
+                                                            <option value="{{_id}}" selected="selected">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                        {{else}}
+                                                            <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                        {{/if}}
+                                                    {{else}}
+                                                    <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>                                                    
+                                                    {{/if}}
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -108,15 +110,20 @@
 
                                     <div class="col-md-9">
                                         <div class="form-group">
-                                            {{#semanticselect}}
-                                                <select name="approver3" class="ui fluid search dropdown form-control">
-                                                    <option value="">Please select</option>
-                                                    {{#each employees}}
-                                                        <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            {{/semanticselect}}
-
+                                            <select name="approver3" id="approver3" class="form-control">
+                                                <option value="">Please select</option>
+                                                {{#each employees}}
+                                                    {{#if payrollApprovalConfig}}
+                                                        {{#if isEqual this._id (payrollApprovalConfig.approvers.[2])}}
+                                                            <option value="{{_id}}" selected="selected">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                        {{else}}
+                                                            <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                        {{/if}}
+                                                    {{else}}
+                                                    <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>                                                    
+                                                    {{/if}}
+                                                {{/each}}
+                                            </select>
                                         </div>
                                     </div>
                                 </div>

@@ -46,7 +46,7 @@ Template.PayrollApprovalConfig.events({
 /*****************************************************************************/
 Template.PayrollApprovalConfig.helpers({
     'employees': () => {
-        return [''].concat(Meteor.users.find({"employee": true}).fetch());
+        return Meteor.users.find({"employee": true}).fetch();
     },
     'checkInitial': (index) => {
         return index === 0 ? 'checked': null;
@@ -72,7 +72,6 @@ Template.PayrollApprovalConfig.onCreated(function () {
     self.subscribe("activeEmployees", Session.get('context'));
     self.subscribe('PayrollApprovalConfigs', businessUnitId);
 
-
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
             let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
@@ -82,7 +81,7 @@ Template.PayrollApprovalConfig.onCreated(function () {
 });
 
 Template.PayrollApprovalConfig.onRendered(function () {
-    //  $('select.dropdown').dropdown();
+    // $('select.dropdown').dropdown();
 });
 
 Template.PayrollApprovalConfig.onDestroyed(function () {
