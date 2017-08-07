@@ -3,32 +3,39 @@
 /* PayrunApproval: Event Handlers */
 /*****************************************************************************/
 Template.PayrunApproval.events({
-  'change [name=payrollReportPeriod]': function (e, tmpl) {
+  'change [name="paymentPeriod.month"]': function (e, tmpl) {
     let value = e.currentTarget.value;
 
     if (value && value.trim().length > 0) {
-      Session.get('payrollPeriod', value);
+        tmpl.selectedMonth.set(value)
+    }
+  },
+  'change [name="paymentPeriod.year"]': function (e, tmpl) {
+    let value = e.currentTarget.value;
+
+    if (value && value.trim().length > 0) {
+        tmpl.selectedYear.set(value)
     }
   },
    'click .getResult': (e, tmpl) => {
-    //   const month = $('[name="paymentPeriod.month"]').val();
-    //   const year = $('[name="paymentPeriod.year"]').val();
-    //   if(month && year) {
-    //       const period = month + year;
+      const month = $('[name="paymentPeriod.month"]').val();
+      const year = $('[name="paymentPeriod.year"]').val();
 
-    //       Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
-    //           console.log(res);
-    //           if(res && res.length){
-    //               console.log('logging response as ', res);
-    //               tmpl.netPayReportResults.set(res);
-    //           } else {
-    //               swal('No result found', 'Payroll Result not found for period', 'error');
-    //               tmpl.netPayReportResults.set(null);
-    //           }
-    //       });
-    //   } else {
-    //       swal('Error', 'Please select Period', 'error');
-    //   }
+      if(month && year) {
+          const period = month + year;
+
+          Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
+              if(res && res.length){
+                  tmpl.netPayReportResults.set(res);
+
+                  tmpl.processNetPayResultsData(res)
+              } else {
+                  tmpl.netPayReportResults.set(null);
+              }
+          });
+      } else {
+          swal('Error', 'Please select Period', 'error');
+      }
    }
 });
 
@@ -36,7 +43,7 @@ Template.PayrunApproval.events({
 /* PayrunApproval: Helpers */
 /*****************************************************************************/
 Template.registerHelper('formatDate', function(date) {
-  return moment(date).format('MMYYYY');
+    return moment(date).format('MMYYYY');
 });
 
 Template.PayrunApproval.helpers({
@@ -52,6 +59,9 @@ Template.PayrunApproval.helpers({
     },
     'result': () => {
         return Template.instance().netPayReportResults.get();
+    },
+    'processedNetPayResults': function() {
+        return Template.instance().processedNetPayResults.get();
     }
 });
 
@@ -61,6 +71,36 @@ Template.PayrunApproval.helpers({
 Template.PayrunApproval.onCreated(function () {
     let self = this;
     self.netPayReportResults = new ReactiveVar();
+    self.processedNetPayResults = new ReactiveVar([])
+
+    self.selectedMonth = new ReactiveVar()
+    self.selectedYear = new ReactiveVar()
+
+    self.processNetPayResultsData = function(netPayResultsData) {
+        netPayResultsData = netPayResultsData || []
+
+        let groupedByBank = _.groupBy(netPayResultsData, 'bank');
+
+        let banks = Object.keys(groupedByBank)
+        let numBanks = banks.length;        
+
+        for(let i = 0; i < numBanks; i++) {
+            let bankName = banks[i]
+            let employeePayments = groupedByBank[bankName]
+
+            var totalNetPay = _.reduce(employeePayments, function(totalNetPaySoFar, item ) {
+                return totalNetPaySoFar + item.amount
+            }, 0)
+            //--
+            let processedNetPayResults = self.processedNetPayResults.get()
+
+            processedNetPayResults.push({
+                bank: bankName,
+                totalNetPay: totalNetPay
+            })
+            self.processedNetPayResults.set(processedNetPayResults)
+        }
+    }
 });
 
 Template.PayrunApproval.onRendered(function () {
