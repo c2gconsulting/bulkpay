@@ -36,6 +36,36 @@ Template.PayrunApproval.events({
       } else {
           swal('Error', 'Please select Period', 'error');
       }
+   },
+   'click #approve': (e, tmpl) => {
+        let businessUnitId = Session.get('context')
+    
+        let selecedMonth = tmpl.selectedMonth.get()
+        let selectedYear = tmpl.selectedYear.get()
+
+       Meteor.call("payrollApproval/approveOrReject", businessUnitId, selecedMonth, selectedYear, true, (err, res) => {
+            if(res) {
+                swal('Success', 'Payrun Approved!', 'success')
+            } else {
+                console.log(err);
+                swal("Server Error", err.message || 'An error occurred in approving the payrun', "error");
+            }
+        })
+   },
+   'click #reject': (e, tmpl) => {
+        let businessUnitId = Session.get('context')
+    
+        let selecedMonth = tmpl.selectedMonth.get()
+        let selectedYear = tmpl.selectedYear.get()
+
+       Meteor.call("payrollApproval/approveOrReject", businessUnitId, selecedMonth, selectedYear, false, (err, res) => {
+            if(res) {
+                swal('Success', 'Payrun Rejected!', 'success')
+            } else {
+                console.log(err);
+                swal("Error", err.message || 'An error occurred in rejecting the payrun', "error");
+            }
+        })
    }
 });
 

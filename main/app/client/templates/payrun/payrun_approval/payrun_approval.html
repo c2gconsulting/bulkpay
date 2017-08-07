@@ -74,10 +74,20 @@
                                 </table>
                                 {{/if}}
 
+                                {{#if processedNetPayResults}}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button class="btn btn-primary mr5" id="approve">Approve</button>
+                                        <button class="btn btn-danger" id="reject">Reject</button>
+                                    </div>
+                                </div>
+                                {{/if}}
                             </div>
                         </div><!-- panel -->
                     </div>
                 </div>
+
+                
             </div>
         </div>
     </div>
