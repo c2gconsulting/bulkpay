@@ -23,7 +23,6 @@ Meteor.methods({
  
                 if(isUserAnApprover) {
                   let approvals = periodPayrun[0].approvals
-                  console.log(`approvals: `, approvals)
 
                   let doesUserApprovalExist = _.find(approvals, anApproval => {
                     return anApproval.approvedBy === userId

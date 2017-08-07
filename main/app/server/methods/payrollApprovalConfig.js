@@ -63,8 +63,9 @@ Meteor.methods({
             if(payrollApprovalConfig.requirePayrollApproval) {
                 let approvers = payrollApprovalConfig.approvers || []
                 let numApprovers = approvers.length
-
-                let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/payrun/approval`
+                const period = periodMonth + '-' + periodYear;
+                
+                let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/payrun/approval/${period}`
 
                 for(let i = 0; i < numApprovers; i++) {
                     let approverUserId = approvers[i]

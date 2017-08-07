@@ -31,6 +31,7 @@ Template.PayrunApproval.events({
                   tmpl.processNetPayResultsData(res)
               } else {
                   tmpl.netPayReportResults.set(null);
+                  tmpl.processedNetPayResults.set([])
               }
           });
       } else {
@@ -100,6 +101,9 @@ Template.PayrunApproval.helpers({
 /*****************************************************************************/
 Template.PayrunApproval.onCreated(function () {
     let self = this;
+
+    let businessUnitId = Session.get('context')
+        
     self.netPayReportResults = new ReactiveVar();
     self.processedNetPayResults = new ReactiveVar([])
 
@@ -131,10 +135,46 @@ Template.PayrunApproval.onCreated(function () {
             self.processedNetPayResults.set(processedNetPayResults)
         }
     }
+
+
+    let payrunPeriod = Router.current().params.payrunPeriod
+    if(payrunPeriod) {
+        let monthAndYear = payrunPeriod.split('-')
+
+        if(monthAndYear && monthAndYear.length === 2) {
+            let selecedMonth = monthAndYear[0]
+            let selectedYear = monthAndYear[1]
+
+            self.selectedMonth.set(selecedMonth)
+            self.selectedYear.set(selectedYear)
+
+            const period = selecedMonth + selectedYear;
+
+            Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
+                if(res && res.length){
+                    self.netPayReportResults.set(res);
+
+                    self.processNetPayResultsData(res)
+                } else {
+                    self.netPayReportResults.set(null);
+                }
+            });
+        }
+    }
 });
 
 Template.PayrunApproval.onRendered(function () {
-  	self.$('select.dropdown').dropdown();
+  	let self = this
+    
+    self.autorun(function() {
+        let selectedMonth = self.selectedMonth.get()
+        let selectedYear = self.selectedYear.get()
+
+        if(selectedMonth && selectedYear) {
+            $("[name='paymentPeriod.month']").val(selectedMonth)
+            $("[name='paymentPeriod.year']").val(selectedYear)
+        }
+    })
 });
 
 Template.PayrunApproval.onDestroyed(function () {
