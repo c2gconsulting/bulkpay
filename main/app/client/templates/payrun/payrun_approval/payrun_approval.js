@@ -93,7 +93,46 @@ Template.PayrunApproval.helpers({
     },
     'processedNetPayResults': function() {
         return Template.instance().processedNetPayResults.get();
-    }
+    },
+    'getEmployeeFullName': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.profile.fullName;
+        else
+        return ""
+    },
+    'approvalState': (approval) => {
+        if(approval === true) {
+            return 'Approved';
+        } else if(approval === false) {
+            return 'Rejected';
+        } else {
+            return ''
+        }
+    },
+    'increment': (index) => {
+        return index += 1;
+    },
+    'approvals': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        if(payrollApprovalConfig) {
+            let currentPayrun = Template.instance().currentPayrun.get() || []
+            let firstOne = currentPayrun[0]
+
+            if(firstOne) {
+                return firstOne.approvals
+            }
+        }
+    },
+    'doesRequirePayrunApproval': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        
+        if(payrollApprovalConfig) {
+            return payrollApprovalConfig.requirePayrollApproval
+        } else {
+            return false
+        }
+    },
 });
 
 /*****************************************************************************/
@@ -107,8 +146,16 @@ Template.PayrunApproval.onCreated(function () {
     self.netPayReportResults = new ReactiveVar();
     self.processedNetPayResults = new ReactiveVar([])
 
+    self.currentPayrun = new ReactiveVar();
+    self.currentPayrun.set(false);
+
+    self.errorMsg = new ReactiveVar();
+    //self.errorMsg.set("No Payrun available");
+
     self.selectedMonth = new ReactiveVar()
     self.selectedYear = new ReactiveVar()
+
+    self.payrollApprovalConfig = new ReactiveVar()
 
     self.processNetPayResultsData = function(netPayResultsData) {
         netPayResultsData = netPayResultsData || []
@@ -161,6 +208,33 @@ Template.PayrunApproval.onCreated(function () {
             });
         }
     }
+
+    self.autorun(() => {
+        let selectedMonth = self.selectedMonth.get()
+        let selectedYear = self.selectedYear.get()
+
+        const currentPayrunPeriod = selectedMonth + selectedYear
+
+        if(currentPayrunPeriod) {
+            self.subscribe("Payruns", currentPayrunPeriod);
+        }
+
+        self.subscribe('PayrollApprovalConfigs', Session.get('context'));
+
+        if (self.subscriptionsReady()) {  
+          let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: Session.get('context')})
+          self.payrollApprovalConfig.set(payrollApprovalConfig)
+
+          let payRun = Payruns.find({period: currentPayrunPeriod}).fetch();
+
+          if(payRun && payRun.length > 0)
+            Template.instance().currentPayrun.set(payRun);
+          else {
+            Template.instance().currentPayrun.set(null);
+            Template.instance().errorMsg.set("No Payrun available for that time period");
+          }
+        }
+    });
 });
 
 Template.PayrunApproval.onRendered(function () {
