@@ -63,11 +63,26 @@ Meteor.methods({
             if(employeeLeaveEntitlement) {
                 let leaveDaysLeftHistory = employeeLeaveEntitlement.leaveDaysLeft || []
                 let leaveDaysLeftForYear = _.find(leaveDaysLeftHistory, (aYear) => {
-                    return (aYear.year === currentYear)
+                    if(aYear.year === currentYear) {
+                        aYear.daysLeft = leaveEntitlement.numberOfLeaveDaysPerAnnum
+                        return true
+                    } else {
+                        return false
+                    }
                 })
-                if(leaveDaysLeftForYear) {
-                    throw new Meteor.Error(401, "Sorry, that employee already has a leave entitlement for the year");
-                }
+                // if(leaveDaysLeftForYear) {
+                //     throw new Meteor.Error(401, "Sorry, that employee already has a leave entitlement for the year");
+                // }
+                // console.log(`leaveDaysLeftHistory: `, leaveDaysLeftHistory)
+                // console.log(`employeeLeaveEntitlement._id: `, employeeLeaveEntitlement._id)
+
+                UserLeaveEntitlements.update({_id: employeeLeaveEntitlement._id}, 
+                    {$set: {
+                        leaveEntitlementId : leaveEntitlementId,
+                        leaveDaysLeft : leaveDaysLeftHistory
+                    }}
+                )
+                return true
             } else {
                 UserLeaveEntitlements.insert({
                     userId : this.userId,

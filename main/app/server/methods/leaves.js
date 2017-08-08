@@ -1,61 +1,51 @@
-/**
- *  Leave Types Methods
- */
-Meteor.methods({
 
-    // "leave/create": function(leave, currentYearAsNumber){
-    //     if (!this.userId) {
-    //         throw new Meteor.Error(401, "Unauthorized");
-    //     }
-    //     let userId = Meteor.userId();
-    //     this.unblock();
-
-    //     try {
-    //         let userLeaveEntitlement = UserLeaveEntitlements.findOne({
-    //             businessId: leave.businessId, userId: userId
-    //         })
-    //         if(!userLeaveEntitlement) {
-    //             let errMsg = "Sorry, you do not have a leave entitlement set yet. Please meet your HR admin."
-    //            throw new Meteor.Error(401, errMsg);
-    //         }
-
-    //         let leaveYear = leave.startDate
-    //         let leaveYearAsNumber = parseInt(moment(leaveYear).year())
-
-    //         let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
-    //         let indexOfFoundYear = -1
-    //         let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
-    //             if(aYearData.year === leaveYearAsNumber) {
-    //                 indexOfFoundYear = indexOfYear
-    //                 return true
-    //             }
-    //         })
-
-    //         if(!foundDaysLeftInYear) {
-    //             throw new Meteor.Error(401, "Sorry, you have no leave entitlement for the year");
-    //         }
-
-    //         if(foundDaysLeftInYear.daysLeft < 1) {
-    //             throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
-    //         }
-    //         if(foundDaysLeftInYear.daysLeft > leave.duration) {
-    //             Leaves.insert(leave);
-    //             return true
-    //         } else {
-    //             throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
-    //         }
-    //     } catch (e) {
-    //         throw new Meteor.Error(401, e.message);
-    //     }
-    // },
-    "leave/create": function(leave, currentYearAsNumber){
-        if (!this.userId) {
-            throw new Meteor.Error(401, "Unauthorized");
-        }
-        let userId = Meteor.userId();
-        this.unblock();
-
+let LeaveCreateHelpers = {
+    createByFixedEntitlement: function(userId, leave, currentYearAsNumber) {
         try {
+            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
+                businessId: leave.businessId, userId: userId
+            })
+            if(!userLeaveEntitlement) {
+                let errMsg = "Sorry, you do not have a leave entitlement set yet. Please meet your HR admin."
+               throw new Meteor.Error(401, errMsg);
+            }
+
+            let leaveYear = leave.startDate
+            let leaveYearAsNumber = parseInt(moment(leaveYear).year())
+
+            let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
+            let indexOfFoundYear = -1
+            let foundDaysLeftInYear = _.find(userDaysLeftHistory, (aYearData, indexOfYear) => {
+                if(aYearData.year === leaveYearAsNumber) {
+                    indexOfFoundYear = indexOfYear
+                    return true
+                }
+            })
+
+            if(!foundDaysLeftInYear) {
+                throw new Meteor.Error(401, "Sorry, you have no leave entitlement for the year");
+            }
+
+            if(foundDaysLeftInYear.daysLeft < 1) {
+                throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
+            }
+            if(foundDaysLeftInYear.daysLeft > leave.duration) {
+                Leaves.insert(leave);
+                return true
+            } else {
+                throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
+            }
+        } catch (e) {
+            throw new Meteor.Error(401, e.message);
+        }
+    },
+    createByNumHoursEmployed: function(userId, leave, currentYearAsNumber) {
+        try {
+            let businessUnitCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: leave.businessId})
+
+            if(businessUnitCustomConfig) {
+
+            }
             let suppLeavesForUser = SupplementaryLeaves.findOne({
                 businessId: leave.businessId, 
                 employees: {$in: [this.userId]}
@@ -97,6 +87,29 @@ Meteor.methods({
             }
         } catch (e) {
             throw new Meteor.Error(401, e.message);
+        }
+    }
+}
+
+
+/**
+ *  Leave Types Methods
+ */
+Meteor.methods({
+    "leave/create": function(leave, currentYearAsNumber){
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+
+        let businessUnitCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: leave.businessId})
+
+        if(businessUnitCustomConfig) {
+            if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
+                return LeaveCreateHelpers.createByFixedEntitlement(Meteor.userId(), leave, currentYearAsNumber)
+            } else if(businessUnitCustomConfig.leaveDaysAccrual === 'NumberOfDaysWorked') {
+                return LeaveCreateHelpers.createByNumHoursEmployed(Meteor.userId(), leave, currentYearAsNumber)
+            }
         }
     },
     "leave/delete": function(id){

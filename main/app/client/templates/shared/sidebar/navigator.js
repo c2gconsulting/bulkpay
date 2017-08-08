@@ -4,7 +4,6 @@ import _ from 'underscore'
 Template.navigator.events({
     'click #companyMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -15,7 +14,6 @@ Template.navigator.events({
     },
     'click #payRulesMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -26,7 +24,6 @@ Template.navigator.events({
     },
     'click #sapB1IntegrationMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -37,7 +34,6 @@ Template.navigator.events({
     },
     'click #administrationMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -199,20 +195,21 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar()
     self.payrollApprovalConfig = new ReactiveVar()
 
+    let businessUnitId = Session.get('context');
     
     self.autorun(function(){
-        let businessUnitId = Session.get('context');
-        // console.log(`businessUnitId`, businessUnitId)
-
-        let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
         let payrollApprovalConfigSub = self.subscribe('PayrollApprovalConfigs', businessUnitId);
 
-        if(customConfigSub.ready() && payrollApprovalConfigSub.ready()) {
-            self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
-            // console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
-
+        if(payrollApprovalConfigSub.ready()) {
             let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
             self.payrollApprovalConfig.set(payrollApprovalConfig)
+        }
+    })
+
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+        if(!err) {
+            // console.log()
+            self.businessUnitCustomConfig.set(res)
         }
     })
 });
