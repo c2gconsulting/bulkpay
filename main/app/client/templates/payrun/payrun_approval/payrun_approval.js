@@ -67,6 +67,25 @@ Template.PayrunApproval.events({
                 swal("Error", err.message || 'An error occurred in rejecting the payrun', "error");
             }
         })
+   },
+   'click .bankTotalNetPay': (e, tmpl) => {
+       let bank = $(e.currentTarget).attr('data-bank')
+
+       let netPayReportResults = tmpl.netPayReportResults.get()
+       if(netPayReportResults && netPayReportResults.length > 0) {
+           let employeePayments = _.reduce(netPayReportResults, function(employeePaysSoFar, item ) {
+               if(item.bank === bank) {
+                   return employeePaysSoFar.concat(item)
+               } else {
+                   return employeePaysSoFar
+               }
+            }, [])
+            
+            Modal.show('PayrunApprovalEmployees', {
+                bankName: bank,
+                payments: employeePayments
+            });
+       }
    }
 });
 

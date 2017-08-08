@@ -65,7 +65,7 @@
                                         </thead>
                                         <tbody>
                                         {{#each processedNetPayResults}}
-                                            <tr>
+                                            <tr class="pointer bankTotalNetPay" data-bank="{{bank}}">
                                                 <td>{{bank}}</td>
                                                 <td>{{formatMoneyD totalNetPay 'NGN'}}</td>
                                             </tr>
