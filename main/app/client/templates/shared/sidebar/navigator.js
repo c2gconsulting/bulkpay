@@ -181,6 +181,12 @@ Template.navigator.helpers({
                 return (currentUserIsApprover) ? true : false
             }
         }
+    },
+    'isLeaveAccrualByEntitlement': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement'
+        }
     }
 });
 

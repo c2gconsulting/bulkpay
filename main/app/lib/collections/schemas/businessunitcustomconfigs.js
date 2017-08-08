@@ -30,6 +30,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     checkEmployeeResumptionForPayroll: {
         type: Boolean
     },
+    isWeekendIncludedInLeaveRequests: {
+        type: Boolean
+    },
     isActive: {
         type: Boolean
     },

@@ -151,6 +151,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         },
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
+        isWeekendIncludedInLeaveRequests: false,
         isActive: true
     }
     let daarConfig = {
@@ -162,8 +163,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
-        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: false,
+        isWeekendIncludedInLeaveRequests: true,
         isActive: true
     }
 
