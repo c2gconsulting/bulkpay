@@ -117,6 +117,25 @@ Template.payruns.events({
 /* payruns: Helpers */
 /*****************************************************************************/
 Template.payruns.helpers({
+    'getEmployeeFullName': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.profile.fullName;
+        else
+        return ""
+    },
+    'approvalState': (approval) => {
+        if(approval === true) {
+            return 'Approved';
+        } else if(approval === false) {
+            return 'Rejected';
+        } else {
+            return ''
+        }
+    },
+    'increment': (index) => {
+        return index += 1;
+    },
     'month': function(){
         return Core.months()
     },
@@ -137,12 +156,31 @@ Template.payruns.helpers({
     'payrunResultsPostToSapErrors': function() {
         return Template.instance().payrunResultsPostToSapErrors.get();
     },
-    'canPostToSAP': function() {
+    'approvals': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
         if(payrollApprovalConfig) {
             let currentPayrun = Template.instance().currentPayrun.get() || []
             let firstOne = currentPayrun[0]
-            console.log(`firstOne: `, firstOne)
+
+            if(firstOne) {
+                return firstOne.approvals
+            }
+        }
+    },
+    'doesRequirePayrunApproval': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        
+        if(payrollApprovalConfig) {
+            return payrollApprovalConfig.requirePayrollApproval
+        } else {
+            return false
+        }
+    },
+    'canPostToSAP': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        if(payrollApprovalConfig && payrollApprovalConfig.requirePayrollApproval) {
+            let currentPayrun = Template.instance().currentPayrun.get() || []
+            let firstOne = currentPayrun[0]
 
             if(firstOne) {
                 let isApproved = _.find(firstOne.approvals, anApproval => {

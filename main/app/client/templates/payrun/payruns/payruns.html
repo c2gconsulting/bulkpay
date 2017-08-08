@@ -85,14 +85,49 @@
                             {{/each}}
                             </tbody>
                         </table>
-                    </div><!-- table-responsive -->
+                    </div><!-- table-responsive -->                    
+                </div>
 
-                    {{#if canPostToSAP}}
+                {{#if approvals}}
+                <div class="col-md-8">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Approver</th>
+                                <th>Approval</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {{#each approvals}}
+                                    <tr class="">
+                                        <td>{{increment @index}}</td>
+                                        <td>{{getEmployeeFullName approvedBy}}</td>
+                                        <td class="table-action-hide">
+                                            {{approvalState isApproved}}
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {{else}}
+                    {{#if doesRequirePayrunApproval}}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger text-center">
+                                <p>No approver has approved this payrun results</p>
+                            </div>
+                        </div>
+                    {{/if}}
+                {{/if}}
+
+                {{#if canPostToSAP}}
                     <div class="pull-right">
                         <button class="btn btn-primary btn-large" id="postToSap">Post results to SAP</button>
                     </div>
-                    {{/if}}
-                </div>
+                {{/if}}
             {{else}}
                 <div class="col-md-12">
                     {{#if errorMsg}}
