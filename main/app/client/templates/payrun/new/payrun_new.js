@@ -685,13 +685,6 @@ Template.PayrunNew.onCreated(function () {
 
 Template.PayrunNew.onRendered(function () {
      $('select.dropdown').dropdown();
-    // //
-    // let selected = [];
-    // $("input:checkbox[name=paygrades]:checked").each(function () {
-    //     selected.push($(this).attr("id"));
-    // });
-    // Template.instance().grades.set(selected);
-    // Show aciton upon row hover
 });
 
 Template.PayrunNew.onDestroyed(function () {

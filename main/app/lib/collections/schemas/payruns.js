@@ -41,12 +41,13 @@ Core.Schemas.Payrun = new SimpleSchema({
         },
         'payment.$.reference': {
           type: String,
-          allowedValues: ['Tax', 'Pension', 'Standard', 'Paytype', 'Standard-1'],
+          allowedValues: ['Tax', 'Pension', 'Standard', 'Paytype', 'Standard-1', 'Standard_USD', 'Standard-1_USD'],
           defaultValue: 'Paytype'
         },
         'payment.$.amountLC': { // amount in Local Currency
           type: Number,
-            decimal: true
+            decimal: true,
+            optional: true
         },
         'payment.$.type': {
             type: String,
@@ -54,7 +55,8 @@ Core.Schemas.Payrun = new SimpleSchema({
         },
         'payment.$.amountPC': { // amount in paytype Currency
             type: Number,
-            decimal: true
+            decimal: true,
+            optional: true
         },
         'payment.$.projectPayAmount': { // amount in Local Currency
           type: Number,

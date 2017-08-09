@@ -68,32 +68,60 @@ Meteor.methods({
         //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
-        if(Core.hasPayrollAccess(this.userid)){
+        
+        if(!Core.hasPayrollAccess(Meteor.userId())){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            const result =  Payruns.find({businessId: businessId, period: period}).fetch();
-            const netpay = result.map(x => {
-                const netPayIndex = _.findLastIndex(x.payment, {code: 'NMP'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
-                if(netPayIndex > -1) {
-                    const amountPC = x.payment[netPayIndex].amountPC;
-                    //get employee details
-                    let employee = Meteor.users.findOne({_id: x.employeeId});
-                    if(employee){
-                        return [
-                            employee.profile.fullName,
-                            employee.employeeProfile.payment.bank,
-                            employee.employeeProfile.payment.accountNumber,
-                            amountPC
-                        ];
-                    }
-                }
-            });
             const header = [
                 "Full Name",
                 "Bank",
                 "Account Number",
-                "Amount"
             ];
+
+            let tenantId = Core.getTenantId(Meteor.userId())
+            let tenant = Tenants.findOne(tenantId)
+
+            const result =  Payruns.find({businessId: businessId, period: period}).fetch();
+            const netpay = result.map(x => {
+                let dataRow = []
+
+                let employee = Meteor.users.findOne({_id: x.employeeId});
+                if(employee){
+                    dataRow = [
+                        employee.profile.fullName,
+                        employee.employeeProfile.payment.bank,
+                        employee.employeeProfile.payment.accountNumber,
+                        0, 0
+                    ];
+                }
+
+                let numPayments = x.payment.length
+                for(let i = 0; i < numPayments; i++) {
+                    if(x.payment[i].code === 'NMP') {// Got a net pay
+                        if(x.payment[i].reference === 'Standard') {
+                            let foundAmountHeader = _.find(header, aHeader => {
+                                return aHeader === 'Amount (' + tenant.baseCurrency.iso + ')'
+                            })
+                            if(!foundAmountHeader) {
+                                header.push('Amount (' + tenant.baseCurrency.iso + ')')
+                            }
+                            dataRow[3] = x.payment[i].amountPC
+                        } else if(x.payment[i].reference.startsWith('Standard_')) {
+                            let currency = x.payment[i].reference.substring('Standard_'.length)
+
+                            let foundAmountHeader = _.find(header, aHeader => {
+                                return aHeader === 'Amount (' + currency + ')'
+                            })
+                            if(!foundAmountHeader) {
+                                header.push('Amount (' + currency + ')')
+                            }
+                            dataRow[4] = x.payment[i].amountPC
+                        }
+                    }
+                }
+
+                return dataRow
+            });
             return {fields: header, data: netpay};
         }
     },
@@ -1030,6 +1058,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     final.payslipWithCurrencyDelineation = paymentsAccountingForCurrency
                     //--
                     let benefitsDeductionsAndOthers = Object.keys(paymentsAccountingForCurrency)
+                    let netPayWithCurrencyDelineation = {}
+                    let deductionWithCurrencyDelineation = {}
+
                     benefitsDeductionsAndOthers.forEach(aPayCategory => {
                         let payCategoryCurrencies = Object.keys(paymentsAccountingForCurrency[aPayCategory])
 
@@ -1048,28 +1079,98 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 }
                             })
                             paymentsInCurrency.total = total
+                            //--
+                            if(aPayCategory === 'benefit') {
+                                if(netPayWithCurrencyDelineation[aCurrency]) {
+                                    netPayWithCurrencyDelineation[aCurrency] = 
+                                        netPayWithCurrencyDelineation[aCurrency] + total    
+                                } else {
+                                    netPayWithCurrencyDelineation[aCurrency] = total    
+                                }
+                            } else if(aPayCategory === 'deduction') {
+                                if(netPayWithCurrencyDelineation[aCurrency]) {
+                                    netPayWithCurrencyDelineation[aCurrency] = 
+                                        netPayWithCurrencyDelineation[aCurrency] + total    
+                                } else {
+                                    netPayWithCurrencyDelineation[aCurrency] = total    
+                                }
+                                //--
+                                if(deductionWithCurrencyDelineation[aCurrency]) {
+                                    deductionWithCurrencyDelineation[aCurrency] = 
+                                        deductionWithCurrencyDelineation[aCurrency] + total    
+                                } else {
+                                    deductionWithCurrencyDelineation[aCurrency] = total    
+                                }
+                            } else if(aPayCategory === 'others') {// Do nothing
+                            }
                         })
                     })
+
                     const employeeDetails = getDetailsInPayslip(x);
                     paymentsAccountingForCurrency.employee = employeeDetails;
                     paymentsAccountingForCurrency.employee.grade = grade.code;
                     paymentsAccountingForCurrency.employee.gradeId = grade._id;
-
                     //--
+                    let netPayCurrencies = Object.keys(netPayWithCurrencyDelineation)
+                    netPayCurrencies.forEach(currency => {
+                        if(currency === tenant.baseCurrency.iso) {
+                            employeeResult.payment.push({
+                                reference: 'Standard', 
+                                amountLC: netPayWithCurrencyDelineation[currency], 
+                                amountPC: netPayWithCurrencyDelineation[currency], 
+                                code: 'NMP', 
+                                description: 'Net Payment', 
+                                type: 'netPayment'
+                            });
+                        } else {
+                            employeeResult.payment.push({
+                                reference: 'Standard_' + currency, 
+                                amountLC: netPayWithCurrencyDelineation[currency], 
+                                amountPC: netPayWithCurrencyDelineation[currency], 
+                                code: 'NMP', 
+                                description: 'Net Payment '  + currency, 
+                                type: 'netPayment'
+                            });                            
+                        }
+                    })
+                    //--
+                    let deductionCurrencies = Object.keys(deductionWithCurrencyDelineation)
+                    deductionCurrencies.forEach(currency => {
+                        if(currency === tenant.baseCurrency.iso) {
+                            employeeResult.payment.push({
+                                reference: 'Standard-1', 
+                                amountLC: deductionWithCurrencyDelineation[currency], 
+                                amountPC: deductionWithCurrencyDelineation[currency], 
+                                code: 'TDEDUCT', 
+                                description: 'Total Deduction', 
+                                type: 'totalDeduction' });
+                        } else {
+                            employeeResult.payment.push({
+                                reference: 'Standard-1_' + currency, 
+                                amountLC: deductionWithCurrencyDelineation[currency], 
+                                amountPC: deductionWithCurrencyDelineation[currency], 
+                                code: 'TDEDUCT', 
+                                description: 'Total Deduction ' + currency, 
+                                type: 'totalDeduction' });
+                        }
+                    })
+
+                    //--Deprecated method for calculating net pay
                     //calculate net payment as payment - deductions;
                     // negate and add pension to deduction
-                    const totalPayment = sumPayments(final.payslip.benefit);
-                    const totalDeduction = sumPayments(final.payslip.deduction);
-                    const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
+                    // const totalPayment = sumPayments(final.payslip.benefit);
+                    // const totalDeduction = sumPayments(final.payslip.deduction);
+                    // const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
 
                     //populate result for net payment
-                    employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: getNetPayInForeignCurrency(netPayment, grade, currencyRatesForPeriod), code: 'NMP', description: 'Net Payment', type: 'netPayment' });
-                    employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: getNetPayInForeignCurrency(totalDeduction, grade, currencyRatesForPeriod), code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
-                    final.payslip.totalPayment = totalPayment;
-                    final.payslip.totalDeduction = totalDeduction;
-                    final.payslip.netPayment = netPayment;
+                    // employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: getNetPayInForeignCurrency(netPayment, grade, currencyRatesForPeriod), code: 'NMP', description: 'Net Payment', type: 'netPayment' });
+                    // employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: getNetPayInForeignCurrency(totalDeduction, grade, currencyRatesForPeriod), code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
+                    // final.payslip.totalPayment = totalPayment;
+                    // final.payslip.totalDeduction = totalDeduction;
+                    // final.payslip.netPayment = netPayment;
+                    //--
 
                     //Add currently process employee details to final.payslip.employee
                     const employee = getDetailsInPayslip(x);

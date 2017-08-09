@@ -2,6 +2,9 @@
 /*****************************************************************************/
 /* NetPayReport: Event Handlers */
 /*****************************************************************************/
+import Ladda from 'ladda';
+
+
 Template.NetPayReport.events({
   'change [name=payrollReportPeriod]': function (e, tmpl) {
     let value = e.currentTarget.value;
@@ -39,14 +42,12 @@ Template.NetPayReport.events({
             tmpl.$('.excel').text('Preparing... ');
             tmpl.$('.excel').attr('disabled', true);
 
-
             try {
                 let l = Ladda.create(tmpl.$('.excel')[0]);
                 l.start();
             } catch(e) {
                 console.log(e);
             }
-
 
             let resetButton = function() {
                 // End button animation
@@ -72,7 +73,7 @@ Template.NetPayReport.events({
                     resetButton()
                 } else {
                     console.log(err);
-                    swal('No result found', 'Payroll Result not found for period', 'error');
+                    swal('No result found', err.reason, 'error');
                 }
             });
         } else {
