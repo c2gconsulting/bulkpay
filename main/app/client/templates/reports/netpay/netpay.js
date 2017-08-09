@@ -110,6 +110,15 @@ Template.NetPayReport.helpers({
         if(rawData && rawData.length > 0) {
             return rawData.splice(1)
         }        
+    },
+    'isEqual': (a, b) => {
+        return a === b
+    },
+    'or': (a, b) => {
+        return a || b
+    },
+    'isNumber': (value) => {
+        return !isNaN(value)
     }
 });
 

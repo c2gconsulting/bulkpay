@@ -81,7 +81,15 @@
                                                       <tr>
                                                           {{#let rowData=this}}
                                                             {{#each rowData}}
-                                                                <td>{{this}}</td>
+                                                                {{#if or (isEqual @index 3) (isEqual @index 4)}}
+                                                                    {{#if isNumber this}}
+                                                                        <td>{{formatMoneyD this}}</td>
+                                                                    {{else}}
+                                                                        <td>{{this}}</td>
+                                                                    {{/if}}
+                                                                {{else}}
+                                                                    <td>{{this}}</td>
+                                                                {{/if}}
                                                             {{/each}}
                                                           {{/let}}
                                                       </tr>
