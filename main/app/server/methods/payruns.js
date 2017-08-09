@@ -89,8 +89,8 @@ Meteor.methods({
                 if(employee){
                     dataRow = [
                         employee.profile.fullName,
-                        employee.employeeProfile.payment.bank,
-                        employee.employeeProfile.payment.accountNumber,
+                        employee.employeeProfile.payment.bank || '',
+                        employee.employeeProfile.payment.accountNumber || '',
                         0, 0
                     ];
                 }
@@ -137,25 +137,57 @@ Meteor.methods({
         if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
+            const header = [
+                "Full Name",
+                "Bank",
+                "Account Number",
+            ];
+
+            let tenantId = Core.getTenantId(Meteor.userId())
+            let tenant = Tenants.findOne(tenantId)
+
             const result =  Payruns.find({businessId: businessId, period: period}).fetch();
-            const netpay = result.map(x => {
-                const netPayIndex = _.findLastIndex(x.payment, {code: 'NMP'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
-                if(netPayIndex > -1) {
-                    const amountPC = x.payment[netPayIndex].amountPC;
-                    //get employee details
-                    let employee = Meteor.users.findOne({_id: x.employeeId});
-                    if(employee){
-                        const info = {
-                            fullName: employee.profile.fullName,
-                            bank: employee.employeeProfile.payment.bank,
-                            accountNumber: employee.employeeProfile.payment.accountNumber,
-                            amount: amountPC
-                        };
-                        return info;
+
+            const netpayData = result.map(x => {
+                let dataRow = []
+
+                let employee = Meteor.users.findOne({_id: x.employeeId});
+                if(employee){
+                    dataRow = [
+                        employee.profile.fullName,
+                        employee.employeeProfile.payment.bank,
+                        employee.employeeProfile.payment.accountNumber,
+                        0, 0
+                    ];
+                }
+
+                let numPayments = x.payment.length
+                for(let i = 0; i < numPayments; i++) {
+                    if(x.payment[i].code === 'NMP') {// Got a net pay
+                        if(x.payment[i].reference === 'Standard') {
+                            let foundAmountHeader = _.find(header, aHeader => {
+                                return aHeader === 'Amount (' + tenant.baseCurrency.iso + ')'
+                            })
+                            if(!foundAmountHeader) {
+                                header.push('Amount (' + tenant.baseCurrency.iso + ')')
+                            }
+                            dataRow[3] = x.payment[i].amountPC
+                        } else if(x.payment[i].reference.startsWith('Standard_')) {
+                            let currency = x.payment[i].reference.substring('Standard_'.length)
+
+                            let foundAmountHeader = _.find(header, aHeader => {
+                                return aHeader === 'Amount (' + currency + ')'
+                            })
+                            if(!foundAmountHeader) {
+                                header.push('Amount (' + currency + ')')
+                            }
+                            dataRow[4] = x.payment[i].amountPC
+                        }
                     }
                 }
+                return dataRow
             });
-            return netpay;
+            return [header].concat(netpayData);
         }
     },
 

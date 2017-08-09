@@ -26,7 +26,7 @@ Template.NetPayReport.events({
                   console.log('logging response as ', res);
                   tmpl.netPayReportResults.set(res);
               } else {
-                  swal('No result found', 'Payroll Result not found for period', 'error');
+                  swal('No result found', err.reason, 'error');
                   tmpl.netPayReportResults.set(null);
               }
           });
@@ -103,6 +103,13 @@ Template.NetPayReport.helpers({
     },
     'result': () => {
         return Template.instance().netPayReportResults.get();
+    },
+    'netPayData': () => {
+        let rawData = Template.instance().netPayReportResults.get();
+
+        if(rawData && rawData.length > 0) {
+            return rawData.splice(1)
+        }        
     }
 });
 

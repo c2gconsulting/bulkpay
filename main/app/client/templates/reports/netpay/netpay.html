@@ -69,19 +69,21 @@
                                               <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                                   <thead>
                                                       <tr>
-                                                          <th>Name</th>
-                                                          <th>Bank</th>
-                                                          <th>Account Number</th>
-                                                          <th>Net pay</th>
+                                                          {{#let header=result.[0]}}
+                                                            {{#each header}}
+                                                                <th>{{this}}</th>
+                                                            {{/each}}
+                                                          {{/let}}
                                                       </tr>
                                                   </thead>
                                                   <tbody>
-                                                    {{#each result}}
+                                                    {{#each netPayData}}
                                                       <tr>
-                                                          <td>{{fullName}}</td>
-                                                          <td>{{bank}}</td>
-                                                          <td>{{accountNumber}}</td>
-                                                          <td>{{formatMoneyD amount}}</td>
+                                                          {{#let rowData=this}}
+                                                            {{#each rowData}}
+                                                                <td>{{this}}</td>
+                                                            {{/each}}
+                                                          {{/let}}
                                                       </tr>
                                                     {{/each}}
                                                   </tbody>
