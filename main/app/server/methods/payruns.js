@@ -672,7 +672,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     //--    
                                     let netPayTypeAmount; //net amount used if payment type is monthly
                                     if(x.frequency === 'Monthly' && !x.additionalPay){
-                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2); 
                                         processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
                                     }
 
@@ -1188,20 +1188,21 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     })
 
                     //--Deprecated method for calculating net pay
+                    //--Using it only for paygrades without alternate currency
                     //calculate net payment as payment - deductions;
                     // negate and add pension to deduction
-                    // const totalPayment = sumPayments(final.payslip.benefit);
-                    // const totalDeduction = sumPayments(final.payslip.deduction);
-                    // const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
+                    const totalPayment = sumPayments(final.payslip.benefit);
+                    const totalDeduction = sumPayments(final.payslip.deduction);
+                    const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
 
                     //populate result for net payment
 
                     // employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: getNetPayInForeignCurrency(netPayment, grade, currencyRatesForPeriod), code: 'NMP', description: 'Net Payment', type: 'netPayment' });
                     // employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: getNetPayInForeignCurrency(totalDeduction, grade, currencyRatesForPeriod), code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
-                    // final.payslip.totalPayment = totalPayment;
-                    // final.payslip.totalDeduction = totalDeduction;
-                    // final.payslip.netPayment = netPayment;
+                    final.payslip.totalPayment = totalPayment;
+                    final.payslip.totalDeduction = totalDeduction;
+                    final.payslip.netPayment = netPayment;
                     //--
 
                     //Add currently process employee details to final.payslip.employee
