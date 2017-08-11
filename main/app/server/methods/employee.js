@@ -28,7 +28,6 @@ getActiveEmployees = (paygrade, period, businessId, businessUnitConfig) => {
 
     if(businessUnitConfig) {
         let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
-        console.log(`checkEmployeeResumptionForPayroll: `, checkEmployeeResumptionForPayroll)
 
         if(checkEmployeeResumptionForPayroll) {
             return Meteor.users.find({'employeeProfile.employment.status': 'Active',

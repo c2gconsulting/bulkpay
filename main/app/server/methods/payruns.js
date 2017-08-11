@@ -1,6 +1,64 @@
 import _ from 'underscore';
 import moment from 'moment';
 
+
+
+let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) => {
+    check(paygrade, Array);
+    const year = period.year;
+    const month = period.month;
+    const firsDayOfPeriod = `${month}-01-${year} GMT`;
+    const DateLimit = new Date(firsDayOfPeriod);
+
+    let dateLimitMonth = DateLimit.getUTCMonth()
+    let dateLimitYear = DateLimit.getUTCFullYear()
+
+    if(businessUnitConfig) {
+        let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
+
+        if(checkEmployeeResumptionForPayroll) {
+            let allUsers = Meteor.users.find({'employeeProfile.employment.status': 'Active',
+                $or: [
+                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                    {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                ],
+                'employeeProfile.employment.paygrade': {$in: paygrade},
+                'businessIds': businessId,
+                'employee': true
+            }).fetch();
+
+            let users = []
+            allUsers.forEach(aUser => {
+                let userHireDate = aUser.employeeProfile.employment.hireDate
+                console.log(`userHireDate: `, userHireDate)
+                
+                if(userHireDate) {
+                    let month = userHireDate.getUTCMonth()
+                    let year = userHireDate.getUTCFullYear();
+                    if(dateLimitMonth >= month && dateLimitYear >= year) {
+                        users.push(aUser)
+                    }
+                }
+            })
+            return users
+        } else {
+            return Meteor.users.find({'employeeProfile.employment.status': 'Active',
+                $or: [
+                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                    {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                ],
+                'employeeProfile.employment.paygrade': {$in: paygrade},
+                'businessIds': businessId,
+                'employee': true
+            }).fetch();
+        }
+    } else {
+        return []
+    }
+};
+
 /**
  *  Payruns Methods
  */
@@ -378,7 +436,7 @@ Meteor.methods({
         
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
         if (employees.length === 0 && paygrades.length > 0) {
-            res = getActiveEmployees(paygrades, period, businessId, businessUnitConfig);
+            res = getEmployeedEmployees(paygrades, period, businessId, businessUnitConfig);
             //res contains employees ready for payment processing
 
             if (res && res.length > 0) {
@@ -398,18 +456,29 @@ Meteor.methods({
                 let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
 
                 if(checkEmployeeResumptionForPayroll) {
-                    users = Meteor.users.find({_id: {$in: employees},
-                        $and: [
-                            {'employeeProfile.employment.hireDate': {$lt: DateLimit}},
-                            {$or: [
-                                {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
-                                {'employeeProfile.employment.terminationDate': null},
-                                {'employeeProfile.employment.terminationDate' : { $exists : false } }
-                            ]}
+                    let allusers = Meteor.users.find({_id: {$in: employees},
+                        $or: [
+                            {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                            {'employeeProfile.employment.terminationDate': null},
+                            {'employeeProfile.employment.terminationDate' : { $exists : false } }
                         ],
                         'employeeProfile.employment.status': 'Active',
                         'businessIds': businessId
                     }).fetch();
+                    
+                    let dateLimitMonth = DateLimit.getUTCMonth()
+                    let dateLimitYear = DateLimit.getUTCFullYear()
+
+                    allUsers.forEach(aUser => {
+                        let userHireDate = aUser.employeeProfile.employment.hireDate
+                        if(userHireDate) {
+                            let month = userHireDate.getUTCMonth()
+                            let year = userHireDate.getUTCFullYear();
+                            if(dateLimitMonth >= month && dateLimitYear >= year) {
+                                users.push(aUser)
+                            }
+                        }
+                    })
                 } else {
                     users = Meteor.users.find({_id: {$in: employees},
                         $or: [
