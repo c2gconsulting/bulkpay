@@ -2,6 +2,8 @@
 /* PayrunNew: Event Handlers */
 /*****************************************************************************/
 
+// import _ from 'underscore';
+
 let ReportUtils = {}
 
 
@@ -68,17 +70,11 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                                 }
                             }
                         } else {
-                            // if(payGrade.netPayAlternativeCurrency !== localCurrency) {
-                            //     if(anEmployeePayType.reference === 'Tax') {
-                            //         console.log(`skipping tax`)
-                            //     }
-                            // } else {
-                                payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
-                                    id: anEmployeePayType.id,
-                                    code: anEmployeePayType.code,
-                                    description: anEmployeePayType.description
-                                })
-                            // }
+                            payTypeHeaders.splice(numPaytypesBeforeSuppl - 3, 0, {
+                                id: anEmployeePayType.id,
+                                code: anEmployeePayType.code,
+                                description: anEmployeePayType.description
+                            })
                         }
                     }
                 }
@@ -110,12 +106,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         }
     })
     
-    payTypeHeaders.forEach((aColumn, index) => {
-        if(Object.keys(aColumn).length === 0) {
-            payTypeHeaders.splice(index, 1);
-        }
-    })
-
+    payTypeHeaders = _.without(payTypeHeaders, null, undefined)
 
     let supplementaryPayTypeHeaders = []
 
@@ -188,6 +179,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
 ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults, payTypeHeaders) {
     let payTypeValues = []
     // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
+    console.log(`payTypeHeaders: `, payTypeHeaders)
     
     let payGrade =  null
     let firstUserId = employeePayments[0].employeeId

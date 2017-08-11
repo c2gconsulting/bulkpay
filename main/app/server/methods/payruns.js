@@ -31,7 +31,6 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
             let users = []
             allUsers.forEach(aUser => {
                 let userHireDate = aUser.employeeProfile.employment.hireDate
-                console.log(`userHireDate: `, userHireDate)
                 
                 if(userHireDate) {
                     let month = userHireDate.getUTCMonth()
