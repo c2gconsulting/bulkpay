@@ -11,6 +11,7 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
     let tenant = Tenants.findOne(tenantId)
 
     let netPayInDiffCurrencies = []
+    let netPayTotalsInDiffCurrencies = []
             
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach(anEmployeePayType => {
@@ -25,7 +26,7 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
                     })
                 }
                 //--
-                let payTypeTotal = _.find(payTypesTotal, function(aPayType, aPayTypeTotalIndex) {
+                let payTypeTotal = _.find(payTypesTotal, function(aPayType) {
                     return aPayType.id && (aPayType.id === anEmployeePayType.id)
                 })
                 if(payTypeTotal) {
@@ -47,6 +48,17 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
                                 id: 'NetPay_' + tenant.baseCurrency.iso,
                                 description: 'NetPay (' + tenant.baseCurrency.iso + ')'
                             })
+                            netPayTotalsInDiffCurrencies.push({
+                                id: 'NetPay_' + tenant.baseCurrency.iso,
+                                total: anEmployeePayType.amountPC
+                            })
+                        } else {
+                            let payTypeTotal = _.find(netPayTotalsInDiffCurrencies, function(aPayType) {
+                                return aPayType.id === 'NetPay_' + tenant.baseCurrency.iso
+                            })
+                            if(payTypeTotal) {
+                                payTypeTotal.total += anEmployeePayType.amountPC
+                            }
                         }
                     } else if(anEmployeePayType.reference.startsWith('Standard_')) {
                         let currency = anEmployeePayType.reference.substring('Standard_'.length)
@@ -57,8 +69,19 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
                         if(!foundNetPayHeader) {
                             netPayInDiffCurrencies.push({
                                 id: 'NetPay_' + currency,
-                                description: 'NetPay (' + tenant.baseCurrency.iso + ')'
+                                description: 'NetPay (' + currency + ')'
                             })
+                            netPayTotalsInDiffCurrencies.push({
+                                id: 'NetPay_' + currency,
+                                total: anEmployeePayType.amountPC
+                            })
+                        } else {
+                            let payTypeTotal = _.find(netPayTotalsInDiffCurrencies, function(aPayType) {
+                                return aPayType.id === 'NetPay_' + currency
+                            })
+                            if(payTypeTotal) {
+                                payTypeTotal.total += anEmployeePayType.amountPC
+                            }
                         }
                     }
                 }
@@ -67,6 +90,7 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
     })
 
     payTypeHeaders = payTypeHeaders.concat(netPayInDiffCurrencies)
+    payTypesTotal = payTypesTotal.concat(netPayTotalsInDiffCurrencies)
 
     return {payTypeHeaders, payTypesTotal}
 }
