@@ -54,11 +54,19 @@ let LeaveCreateHelpers = {
             let user = Meteor.users.findOne(userId)
             let numberOfDaysSinceResumption = 0
             if(user) {
+                if(!user.employeeProfile) {
+                    new Meteor.Error(401, "Sorry, employee profile is empty");
+                }
+                if(!user.employeeProfile.employment) {
+                    new Meteor.Error(401, "Sorry, employee employment details is empty");
+                }
                 let hireDate = user.employeeProfile.employment.hireDate
                 if(hireDate) {
                     let hireDateAsMoment = moment(hireDate)
 
                     numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
+                } else {
+                    new Meteor.Error(401, "Sorry, employee hire date is not set.");
                 }
             }
             //--
