@@ -157,7 +157,7 @@ Meteor.methods({
                         employee.profile.fullName,
                         employee.employeeProfile.payment.bank,
                         employee.employeeProfile.payment.accountNumber,
-                        0, 0
+                        0
                     ];
                 }
 
@@ -173,6 +173,9 @@ Meteor.methods({
                             }
                             dataRow[3] = x.payment[i].amountPC
                         } else if(x.payment[i].reference.startsWith('Standard_')) {
+                            if(dataRow.length === 4) {
+                                dataRow.push(0)
+                            }
                             let currency = x.payment[i].reference.substring('Standard_'.length)
 
                             let foundAmountHeader = _.find(header, aHeader => {
@@ -930,9 +933,25 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
                     //populate result for employee and employer pension contribution
                     if(pension){
-                        employeeResult.payment.push({id: pension._id, reference: 'Pension', amountLC: employeePenContrib, amountPC: employeePenContrib, code: pension.code + '_EE', description: pension.name + ' Employee', type: 'Deduction'});
-                        employeeResult.payment.push({id: pension._id, reference: 'Pension', amountLC: employerPenContrib, amountPC: employerPenContrib, code: pension.code + '_ER', description: pension.name + ' Employer', type: 'Others'});
+                        employeeResult.payment.push({id: pension._id, reference: 'Pension', 
+                            amountLC: employeePenContrib, amountPC: employeePenContrib, 
+                            code: pension.code + '_EE', 
+                            description: pension.name + ' Employee', type: 'Deduction'});
+                        employeeResult.payment.push({id: pension._id, reference: 'Pension', 
+                            amountLC: employerPenContrib, amountPC: employerPenContrib, 
+                            code: pension.code + '_ER', 
+                            description: pension.name + ' Employer', type: 'Others'});
 
+                        if(!paymentsAccountingForCurrency.deduction['NGN']) {
+                            paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
+                        }
+                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                            title: pension.name + ' Employee',
+                            code: pension.code + '_EE',
+                            currency: 'NGN',
+                            reference: 'Pension',
+                            value: -1 * employeePenContrib
+                        })
                     }
                    if(pensionLog)    //add pension calculation log
                         log.push(pensionLog);
@@ -1057,7 +1076,17 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         taxLog = taxCalculationResult.taxLog
 
                         //populate result for tax
-                        employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
+                        employeeResult.payment.push({id: tax._id, reference: 'Tax', 
+                            amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, 
+                            description: tax.name, type: 'Deduction'});
+                        //--
+                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                            title: tax.name,
+                            code: tax.code,
+                            currency: 'NGN',
+                            reference: 'Tax',
+                            value: netTaxLocal * -1
+                        })
                     }
 
                     if(taxLog)
@@ -1120,12 +1149,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     netPayWithCurrencyDelineation[aCurrency] = total    
                                 }
                             } else if(aPayCategory === 'deduction') {
-                                if(netPayWithCurrencyDelineation[aCurrency]) {
-                                    netPayWithCurrencyDelineation[aCurrency] = 
-                                        netPayWithCurrencyDelineation[aCurrency] + total    
-                                } else {
-                                    netPayWithCurrencyDelineation[aCurrency] = total    
-                                }
+                                if(netPayWithCurrencyDelineation[aCurrency]) { 
+                                    netPayWithCurrencyDelineation[aCurrency] =  
+                                        netPayWithCurrencyDelineation[aCurrency] + total     
+                                } else { 
+                                    netPayWithCurrencyDelineation[aCurrency] = total     
+                                } 
                                 //--
                                 if(deductionWithCurrencyDelineation[aCurrency]) {
                                     deductionWithCurrencyDelineation[aCurrency] = 
@@ -1154,6 +1183,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 description: 'Net Payment', 
                                 type: 'netPayment'
                             });
+                            final.payslip['totalPayment'] = paymentsAccountingForCurrency.benefit[currency].total
+                            final.payslip['netPayment'] = netPayWithCurrencyDelineation[currency]
                         } else {
                             employeeResult.payment.push({
                                 reference: 'Standard_' + currency, 
@@ -1162,7 +1193,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 code: 'NMP', 
                                 description: 'Net Payment '  + currency, 
                                 type: 'netPayment'
-                            });                            
+                            });
+                            final.payslip['totalPayment_' + currency] = paymentsAccountingForCurrency.benefit[currency].total
+                            final.payslip['netPayment_' + currency] = netPayWithCurrencyDelineation[currency]
                         }
                     })
                     //--
@@ -1176,6 +1209,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 code: 'TDEDUCT', 
                                 description: 'Total Deduction', 
                                 type: 'totalDeduction' });
+                            
+                            final.payslip['totalDeduction'] = deductionWithCurrencyDelineation[currency]
                         } else {
                             employeeResult.payment.push({
                                 reference: 'Standard-1_' + currency, 
@@ -1184,25 +1219,26 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 code: 'TDEDUCT', 
                                 description: 'Total Deduction ' + currency, 
                                 type: 'totalDeduction' });
+                            
+                            final.payslip['totalDeduction_' + currency] = deductionWithCurrencyDelineation[currency]
                         }
                     })
 
                     //--Deprecated method for calculating net pay
-                    //--Using it only for paygrades without alternate currency
                     //calculate net payment as payment - deductions;
                     // negate and add pension to deduction
-                    const totalPayment = sumPayments(final.payslip.benefit);
-                    const totalDeduction = sumPayments(final.payslip.deduction);
-                    const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
+                    // const totalPayment = sumPayments(final.payslip.benefit);
+                    // const totalDeduction = sumPayments(final.payslip.deduction);
+                    // const netPayment = parseFloat(totalPayment) + parseFloat(totalDeduction);    //@@technicalPaytype
 
                     //populate result for net payment
 
                     // employeeResult.payment.push({reference: 'Standard', amountLC: netPayment, amountPC: getNetPayInForeignCurrency(netPayment, grade, currencyRatesForPeriod), code: 'NMP', description: 'Net Payment', type: 'netPayment' });
                     // employeeResult.payment.push({reference: 'Standard-1', amountLC: totalDeduction, amountPC: getNetPayInForeignCurrency(totalDeduction, grade, currencyRatesForPeriod), code: 'TDEDUCT', description: 'Total Deduction', type: 'totalDeduction' });
 
-                    final.payslip.totalPayment = totalPayment;
-                    final.payslip.totalDeduction = totalDeduction;
-                    final.payslip.netPayment = netPayment;
+                    // final.payslip.totalPayment = totalPayment;
+                    // final.payslip.totalDeduction = totalDeduction;
+                    // final.payslip.netPayment = netPayment;
                     //--
 
                     //Add currently process employee details to final.payslip.employee

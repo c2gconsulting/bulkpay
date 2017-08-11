@@ -452,7 +452,7 @@ Template.PayrunNew.events({
 
         let payGrades = function(){
             let selected = [];
-            $("input:checkbox[name=paygrades]:checked").each(function () {
+            $("input[name=paygrades]:checked").each(function () {
                 selected.push($(this).attr("id"));
             });
             return selected;
@@ -462,7 +462,6 @@ Template.PayrunNew.events({
             $("input:checkbox[name=selectAnnual]:checked").each(function () {
                 selected.push($(this).attr("id"));
             });
-            console.log(selected);
             return selected;
         };
         var view = Blaze.render(Template.Loading, document.getElementById('spinner'));

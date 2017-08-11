@@ -7,6 +7,11 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
     let payTypeHeaders = ['Employee']
     let payTypesTotal = ['Total']
 
+    let tenantId = Core.getTenantId(Meteor.userId())
+    let tenant = Tenants.findOne(tenantId)
+
+    let netPayInDiffCurrencies = []
+            
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach(anEmployeePayType => {
             if(anEmployeePayType.id) {
@@ -16,7 +21,6 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
                 if(!doesPayTypeHeaderExist) {
                     payTypeHeaders.push({
                         id: anEmployeePayType.id,
-                        // description: anEmployeePayType.description + `-${anEmployeePayType.id}`
                         description: anEmployeePayType.description
                     })
                 }
@@ -34,28 +38,44 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
                 }
             } else {
                 if(anEmployeePayType.code === 'NMP') {
-                    let payTypeTotal = _.find(payTypesTotal, function(aPayType) {
-                        return aPayType.id === 'NMP'
-                    })
-                    if(payTypeTotal) {
-                        payTypeTotal.total = payTypeTotal.total + anEmployeePayType.amountLC
-                    } else {
-                        payTypesTotal.push({
-                            id: 'NMP',
-                            total: anEmployeePayType.amountLC
+                    if(anEmployeePayType.reference === 'Standard') {
+                        let foundNetPayHeader = _.find(netPayInDiffCurrencies, aHeader => {
+                            return aHeader.id === 'NetPay_' + tenant.baseCurrency.iso
                         })
+                        if(!foundNetPayHeader) {
+                            netPayInDiffCurrencies.push({
+                                id: 'NetPay_' + tenant.baseCurrency.iso,
+                                description: 'NetPay (' + tenant.baseCurrency.iso + ')'
+                            })
+                        }
+                    } else if(anEmployeePayType.reference.startsWith('Standard_')) {
+                        let currency = anEmployeePayType.reference.substring('Standard_'.length)
+
+                        let foundNetPayHeader = _.find(netPayInDiffCurrencies, aHeader => {
+                            return aHeader.id === 'NetPay_' + currency
+                        })
+                        if(!foundNetPayHeader) {
+                            netPayInDiffCurrencies.push({
+                                id: 'NetPay_' + currency,
+                                description: 'NetPay (' + tenant.baseCurrency.iso + ')'
+                            })
+                        }
                     }
                 }
             }
         })
     })
-    payTypeHeaders.push('Net Pay')
+
+    payTypeHeaders = payTypeHeaders.concat(netPayInDiffCurrencies)
 
     return {payTypeHeaders, payTypesTotal}
 }
 
 ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
     let payTypeValues = []
+    
+    let tenantId = Core.getTenantId(Meteor.userId())
+    let tenant = Tenants.findOne(tenantId)
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
@@ -68,19 +88,25 @@ ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
             }
             //--
             let doesPayTypeExist = _.find(anEmployeeData.payment, function(aPayType) {
-                return aPayType.id && (aPaytypeHeader.id === aPayType.id)
+                let paytypeHeaderId = aPaytypeHeader.id
+
+                if(paytypeHeaderId.indexOf('NetPay_') === 0) {
+                    let currency = paytypeHeaderId.substring('NetPay_'.length)
+
+                    if(currency && currency.length > 0) {
+                        if(aPayType.reference === 'Standard') {
+                            return currency === tenant.baseCurrency.iso
+                        } else if(aPayType.reference.startsWith('Standard_')) {
+                            let paytypeReferenceCurrency = aPayType.reference.substring('Standard_'.length) || ''
+                            return paytypeReferenceCurrency === currency
+                        }
+                    }
+                } else {
+                    return (aPayType.id && (aPaytypeHeader.id === aPayType.id))
+                }
             })
             if(doesPayTypeExist) {
-                aRowOfPayTypeValues.push(doesPayTypeExist.amountLC)
-            } else if(aPaytypeHeader === 'Net Pay') {
-                let netPay = _.find(anEmployeeData.payment, function(aPayType) {
-                    return (aPayType.code === 'NMP')
-                })
-                if(netPay) {
-                    aRowOfPayTypeValues.push(netPay.amountLC)
-                } else {
-                    //console.log(`Employee payrun result doesn't have netpay. How can.`)
-                }
+                aRowOfPayTypeValues.push(doesPayTypeExist.amountPC)
             } else {
                 aRowOfPayTypeValues.push("----")
             }
@@ -219,13 +245,13 @@ Meteor.methods({
             const payRunResults =  Payruns.find({businessId: businessId, period: period}).fetch();
 
             if(payRunResults && payRunResults.length > 0){
-                //console.log(`Result: ${JSON.stringify(payRunResults)}`)
                 let payTypeHeadersAndTotal = ReportUtils.getPayTypeHeadersAndTotal(payRunResults) // paytypeId -> {total -> (value) }
-                //console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
+                console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
 
                 let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
                     return aHeader.description || aHeader
                 })
+                // console.log(`formattedHeader: `, formattedHeader)
                 //--
                 let reportData = ReportUtils.getPayTypeValues(payRunResults, payTypeHeadersAndTotal.payTypeHeaders)
 
