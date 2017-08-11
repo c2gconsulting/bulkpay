@@ -48,10 +48,10 @@ let LeaveCreateHelpers = {
             }
             let suppLeavesForUser = SupplementaryLeaves.findOne({
                 businessId: leave.businessId, 
-                employees: {$in: [this.userId]}
+                employees: {$in: [userId]}
             });
 
-            let user = Meteor.users.findOne(this.userId)
+            let user = Meteor.users.findOne(userId)
             let numberOfDaysSinceResumption = 0
             if(user) {
                 let hireDate = user.employeeProfile.employment.hireDate
@@ -65,7 +65,7 @@ let LeaveCreateHelpers = {
             let hoursOfLeaveApproved = 0
             let userApprovedLeaves = Leaves.find({
                 businessId: leave.businessId, 
-                employeeId: this.userId,
+                employeeId: userId,
                 approvalStatus: 'Approved'
             }).fetch();
             userApprovedLeaves.forEach(aLeave => {
