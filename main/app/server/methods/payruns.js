@@ -9,9 +9,10 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
     const month = period.month;
     const firsDayOfPeriod = `${month}-01-${year} GMT`;
     const DateLimit = new Date(firsDayOfPeriod);
+    let dateLimitMoment = moment(DateLimit)
 
-    let dateLimitMonth = DateLimit.getUTCMonth()
-    let dateLimitYear = DateLimit.getUTCFullYear()
+    let dateLimitMonth = dateLimitMoment.month()
+    let dateLimitYear = dateLimitMoment.year()
 
     if(businessUnitConfig) {
         let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
@@ -30,11 +31,12 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
             let users = []
             allUsers.forEach(aUser => {
-                let userHireDate = aUser.employeeProfile.employment.hireDate
-                
+                let userHireDate = aUser.employeeProfile.employment.hireDate                
                 if(userHireDate) {
-                    let month = userHireDate.getUTCMonth()
-                    let year = userHireDate.getUTCFullYear();
+                    let userHireDateMoment = moment(userHireDate)
+                    let month = userHireDateMoment.month()
+                    let year = userHireDateMoment.year()
+
                     if(dateLimitMonth >= month && dateLimitYear >= year) {
                         users.push(aUser)
                     }
