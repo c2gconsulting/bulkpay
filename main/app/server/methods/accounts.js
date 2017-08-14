@@ -264,12 +264,10 @@ Meteor.methods({
         let account =  Meteor.users.findOne(userId);
         if (account){
             let hireDate = user.employeeProfile.employment.hireDate
-            console.log(`hireDate: `, hireDate)
 
             if(hireDate) {
                 hireDate = new Date(hireDate)
             }
-            console.log(`hireDate: `, hireDate)
 
             let confirmationDate = user.employeeProfile.employment.confirmationDate
             if(confirmationDate) {

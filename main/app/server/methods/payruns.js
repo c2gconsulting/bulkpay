@@ -13,8 +13,6 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
     let dateLimitMonth = dateLimitMoment.month()
     let dateLimitYear = dateLimitMoment.year()
-    console.log(`dateLimitMonth: `, dateLimitMonth)
-    console.log(`dateLimitYear: `, dateLimitYear)
 
     if(businessUnitConfig) {
         let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
@@ -24,6 +22,7 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
                 $or: [
                     {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                     {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate' : ''},
                     {'employeeProfile.employment.terminationDate' : { $exists : false } }
                 ],
                 'employeeProfile.employment.paygrade': {$in: paygrade},
@@ -33,17 +32,14 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
             let users = []
             allUsers.forEach(aUser => {
-                let userHireDate = aUser.employeeProfile.employment.hireDate                
+                let userHireDate = aUser.employeeProfile.employment.hireDate
+
                 if(userHireDate) {
                     let userHireDateMoment = moment(userHireDate)
 
                     let month = userHireDateMoment.month()
                     let year = userHireDateMoment.year()
 
-                    if(aUser._id === 'SfqFkLiFfzFJHmXyS') {
-                        console.log(`month: `, month)
-                        console.log(`year: `, year)
-                    }
                     if(dateLimitMonth >= month && dateLimitYear >= year) {
                         users.push(aUser)
                     }

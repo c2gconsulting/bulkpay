@@ -13,12 +13,10 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let user = Template.instance().getEditUser();
 
     let hireDate = $('[data-field="employmentHireDate"]').val()
-    console.log(`hireDate: `, hireDate)
 
     if(hireDate) {
         hireDate = moment(hireDate).utcOffset(0, true).toDate().toUTCString()
     }
-    console.log(`hireDate: `, hireDate)
 
     let confirmationDate = $('[data-field="employmentConfirmationDate"]').val()
     if(confirmationDate) {

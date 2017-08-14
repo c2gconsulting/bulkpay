@@ -609,7 +609,9 @@ Template.PayrunNew.helpers({
     },
     'processingError': () => {
         const payresult = Template.instance().dict.get('payResult');
-        return payresult.payObj.error.length;
+        let errors = payresult.payObj.error || []
+        
+        return errors.length;
     },
     selectedMonth: function (val) {
         if(Template.instance().selectedMonth.get()) {
@@ -623,8 +625,9 @@ Template.PayrunNew.helpers({
     },
     showSendForApprovalButton: function() {
         const payresult = Template.instance().dict.get('payResult');
+        let errors = payresult.payObj.error || []
 
-        if(!payresult.payObj.error.length) {
+        if(!errors.length) {
             let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
             let payrunRunType = Template.instance().payrunRunType.get()
 
