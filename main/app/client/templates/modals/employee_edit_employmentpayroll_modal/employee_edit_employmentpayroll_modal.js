@@ -5,14 +5,29 @@
 import Ladda from 'ladda';
 
 import _ from 'underscore';
+import moment from 'moment';
+
 
 Template.EmployeeEditEmploymentPayrollModal.events({
   'click #saveEmployment': (e, tmpl) => {
     let user = Template.instance().getEditUser();
 
-    let hireDate = $('[data-field="employmentHireDate"]').val() ? new Date($('[data-field="employmentHireDate"]').val()) : null;
-    let confirmationDate = $('[data-field="employmentConfirmationDate"]').val() ? new Date($('[data-field="employmentConfirmationDate"]').val()) : null;
-    let terminationDate = $('[data-field="employmentTerminationDate"]').val() ? new Date($('[data-field="employmentTerminationDate"]').val()) : null;
+    let hireDate = $('[data-field="employmentHireDate"]').val()
+    console.log(`hireDate: `, hireDate)
+
+    if(hireDate) {
+        hireDate = moment(hireDate).utcOffset(0, true).toDate().toUTCString()
+    }
+    console.log(`hireDate: `, hireDate)
+
+    let confirmationDate = $('[data-field="employmentConfirmationDate"]').val()
+    if(confirmationDate) {
+        confirmationDate = moment(confirmationDate).utcOffset(0, true).toDate().toUTCString()
+    }
+    let terminationDate = $('[data-field="employmentTerminationDate"]').val()
+    if(terminationDate) {
+        terminationDate = moment(terminationDate).utcOffset(0, true).toDate().toUTCString()
+    }
 
     user.employeeProfile.employment.hireDate = hireDate;
     user.employeeProfile.employment.confirmationDate = confirmationDate;

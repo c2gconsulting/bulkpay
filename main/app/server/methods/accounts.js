@@ -263,13 +263,30 @@ Meteor.methods({
         }
         let account =  Meteor.users.findOne(userId);
         if (account){
+            let hireDate = user.employeeProfile.employment.hireDate
+            console.log(`hireDate: `, hireDate)
+
+            if(hireDate) {
+                hireDate = new Date(hireDate)
+            }
+            console.log(`hireDate: `, hireDate)
+
+            let confirmationDate = user.employeeProfile.employment.confirmationDate
+            if(confirmationDate) {
+                confirmationDate = new Date(confirmationDate)
+            }
+            let terminationDate = user.employeeProfile.employment.terminationDate
+            if(terminationDate) {
+                terminationDate = new Date(terminationDate)
+            }
+            
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.position": user.employeeProfile.employment.position,
                 "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
-              "employeeProfile.employment.hireDate": user.employeeProfile.employment.hireDate,
-              "employeeProfile.employment.confirmationDate": user.employeeProfile.employment.confirmationDate,
+              "employeeProfile.employment.hireDate": hireDate,
+              "employeeProfile.employment.confirmationDate": confirmationDate,
               "employeeProfile.employment.status": user.employeeProfile.employment.status,
-              "employeeProfile.employment.terminationDate": user.employeeProfile.employment.terminationDate
+              "employeeProfile.employment.terminationDate": terminationDate
             }});
             return true
         } else {

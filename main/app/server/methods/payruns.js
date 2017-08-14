@@ -13,6 +13,8 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
     let dateLimitMonth = dateLimitMoment.month()
     let dateLimitYear = dateLimitMoment.year()
+    console.log(`dateLimitMonth: `, dateLimitMonth)
+    console.log(`dateLimitYear: `, dateLimitYear)
 
     if(businessUnitConfig) {
         let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
@@ -34,9 +36,14 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
                 let userHireDate = aUser.employeeProfile.employment.hireDate                
                 if(userHireDate) {
                     let userHireDateMoment = moment(userHireDate)
+
                     let month = userHireDateMoment.month()
                     let year = userHireDateMoment.year()
 
+                    if(aUser._id === 'SfqFkLiFfzFJHmXyS') {
+                        console.log(`month: `, month)
+                        console.log(`year: `, year)
+                    }
                     if(dateLimitMonth >= month && dateLimitYear >= year) {
                         users.push(aUser)
                     }
