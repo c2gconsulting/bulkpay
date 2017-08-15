@@ -460,7 +460,7 @@ Meteor.methods({
                 let checkEmployeeResumptionForPayroll = businessUnitConfig.checkEmployeeResumptionForPayroll
 
                 if(checkEmployeeResumptionForPayroll) {
-                    let allusers = Meteor.users.find({_id: {$in: employees},
+                    let allUsers = Meteor.users.find({_id: {$in: employees},
                         $or: [
                             {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                             {'employeeProfile.employment.terminationDate': null},
@@ -469,16 +469,20 @@ Meteor.methods({
                         ],
                         'employeeProfile.employment.status': 'Active',
                         'businessIds': businessId
-                    }).fetch() || [];
+                    }).fetch();
                     
-                    let dateLimitMonth = DateLimit.getUTCMonth()
-                    let dateLimitYear = DateLimit.getUTCFullYear()
+                    let dateLimitMoment = moment(DateLimit)
+                    let dateLimitMonth = dateLimitMoment.month()
+                    let dateLimitYear = dateLimitMoment.year()
 
                     allUsers.forEach(aUser => {
                         let userHireDate = aUser.employeeProfile.employment.hireDate
                         if(userHireDate) {
-                            let month = userHireDate.getUTCMonth()
-                            let year = userHireDate.getUTCFullYear();
+                            let userHireDateMoment = moment(userHireDate)
+
+                            let month = userHireDateMoment.month()
+                            let year = userHireDateMoment.year()
+
                             if(dateLimitMonth >= month && dateLimitYear >= year) {
                                 users.push(aUser)
                             }
