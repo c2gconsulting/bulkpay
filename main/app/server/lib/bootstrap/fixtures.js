@@ -139,6 +139,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
 
     let deltaTexBusinessUnitId = "udrayHAGvXXDgzzGf"
     let deltaTexEngineeringBusinessUnitId = "rFk7QwSHqqhxvHLAP"
+    let deltaTexBulkPayDemoBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
 
     let customConfigs = [{
@@ -165,6 +166,20 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             requireTwoSupervisors: true
         },
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        checkEmployeeResumptionForPayroll: true,
+        isWeekendIncludedInLeaveRequests: false,
+        isActive: true
+    },
+    {
+        businessId : deltaTexBulkPayDemoBusinessUnitId,
+        payGradeLabel : 'Pay Category',
+        payGradeLabelPlural : 'Pay Categories',
+        isProcurementRequisitionActive : true,
+        isTravelRequisitionActive: true,
+        procurementRequisitionApprovalConfig: {
+            requireTwoSupervisors: true
+        },
+        leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
         isActive: true
