@@ -138,9 +138,10 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     console.log(`[fixtures.js] ... Inside 'CoreRegistry.setBusinessCustomConfigs' function`)
 
     let deltaTexBusinessUnitId = "udrayHAGvXXDgzzGf"
+    let deltaTexEngineeringBusinessUnitId = "rFk7QwSHqqhxvHLAP"
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
 
-    let deltaTekConfig = {
+    let customConfigs = [{
         businessId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
@@ -153,8 +154,22 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
         isActive: true
-    }
-    let daarConfig = {
+    },
+    {
+        businessId : deltaTexEngineeringBusinessUnitId,
+        payGradeLabel : 'Pay Category',
+        payGradeLabelPlural : 'Pay Categories',
+        isProcurementRequisitionActive : false,
+        isTravelRequisitionActive: false,
+        procurementRequisitionApprovalConfig: {
+            requireTwoSupervisors: true
+        },
+        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        checkEmployeeResumptionForPayroll: true,
+        isWeekendIncludedInLeaveRequests: false,
+        isActive: true
+    },
+    {
         businessId : daarBusinessUnitId,
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades',
@@ -167,30 +182,21 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: true,
         isActive: true
-    }
+    }]
 
     Partitioner.directOperation(function() {
-        let deltaTekBusinessUnit = BusinessUnits.findOne({_id: deltaTexBusinessUnitId})
-        if(deltaTekBusinessUnit) {
-            deltaTekConfig._groupId = deltaTekBusinessUnit._groupId
-            let deltaTekBizConfig = BusinessUnitCustomConfigs.findOne({businessId: deltaTexBusinessUnitId})
-            if(deltaTekBizConfig) {
-                BusinessUnitCustomConfigs.update(deltaTekBizConfig._id, {$set: deltaTekConfig})
-            } else {
-                BusinessUnitCustomConfigs.insert(deltaTekConfig)
+        customConfigs.forEach(aConfig => {
+            let businessUnit = BusinessUnits.findOne({_id: aConfig.businessId})
+            if(businessUnit) {
+                aConfig._groupId = businessUnit._groupId
+                let alreadyExistingBizConfig = BusinessUnitCustomConfigs.findOne({businessId: aConfig.businessId})
+                if(alreadyExistingBizConfig) {
+                    BusinessUnitCustomConfigs.update(alreadyExistingBizConfig._id, {$set: aConfig})
+                } else {
+                    BusinessUnitCustomConfigs.insert(aConfig)
+                }
             }
-        }
-        //--
-        let daarBusinessUnit = BusinessUnits.findOne({_id: daarBusinessUnitId})
-        if(daarBusinessUnit) {
-            daarConfig._groupId = daarBusinessUnit._groupId
-            let daarBizConfig = BusinessUnitCustomConfigs.findOne({businessId: daarBusinessUnitId})
-            if(daarBizConfig) {
-                BusinessUnitCustomConfigs.update(daarBizConfig._id, {$set: daarConfig})
-            } else {
-                BusinessUnitCustomConfigs.insert(daarConfig)
-            }
-        }
+        })
     })
 }
 
