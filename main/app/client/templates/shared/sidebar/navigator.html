@@ -76,7 +76,10 @@
             {{#if isTimeTypeEnabled}}
             <li><a href="{{pathFor 'timetypes'}}">Manage Time Types</a></li>
             {{/if}}
-
+            
+            {{#if isHmoSetupEnabled}}
+            <li><a href="{{pathFor 'hmoplans'}}">Manage HMO Plans</a></li>
+            {{/if}}
             <!--<li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>-->
             <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
         {{/if}}

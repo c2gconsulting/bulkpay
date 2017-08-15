@@ -320,6 +320,14 @@ Partitioner.partitionCollection(TimeTypes);
 TimeTypes.attachSchema(Core.Schemas.TimeType);
 
 /**
+ * Core Collections HmoPlans
+ */
+HmoPlans = new Mongo.Collection("hmoplans");
+Partitioner.partitionCollection(HmoPlans);
+HmoPlans.attachSchema(Core.Schemas.HmoPlan);
+
+
+/**
  * Core Collections Addtional Payments
  */
 AdditionalPayments = new Mongo.Collection("additionalpay");
@@ -404,6 +412,15 @@ LeaveTypes.allow({
 });
 
 TimeTypes.allow({
+    insert: function(userId, doc) {
+        return true
+    },
+    update: function(userId, doc){
+        return true;
+    }
+});
+
+HmoPlans.allow({
     insert: function(userId, doc) {
         return true
     },

@@ -1,0 +1,26 @@
+<template name="HmoPlansList">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li>HMO Plans</li>
+                </ul>
+                <h4>HMO Plans <span class="mb20 pull-right" id="createLeaveType"><a class="btn btn-primary">New HMO Plans</a></span></h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-sm-12">
+                {{#each timeType}}
+                    {{> HmoPlanEntry }}
+                {{/each}}
+            </div>
+        </div>
+    </div><!-- contentpanel -->
+</template>

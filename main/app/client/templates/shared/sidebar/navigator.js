@@ -186,10 +186,16 @@ Template.navigator.helpers({
     },
     'isTimeTypeEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        console.log(`Inside isTimeTypeEnabled: `, businessUnitCustomConfig)
         
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isTimeTypeEnabled
+        }
+    },
+    'isHmoSetupEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isHmoSetupEnabled
         }
     }
 });

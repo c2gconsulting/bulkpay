@@ -183,6 +183,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
         isTimeTypeEnabled: true,
+        isHmoSetupEnabled: true,
         isActive: true
     },
     {

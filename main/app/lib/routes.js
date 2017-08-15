@@ -155,6 +155,12 @@ Router.route('/business/:_id/timetypes', {
     action: 'list',
     where: 'client'
 });
+Router.route('/business/:_id/hmoplans', {
+    name: 'hmoplans',
+    controller: 'HmoPlansController',
+    action: 'list',
+    where: 'client'
+});
 
 
 Router.route('/business/:_id/paygrades', {
