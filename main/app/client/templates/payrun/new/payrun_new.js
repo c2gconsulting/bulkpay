@@ -510,6 +510,12 @@ Template.PayrunNew.events({
         });
         tmpl.grades.set(selected);
     },
+    'change [name="paymentPeriod.month"]': (e, tmpl) => {
+        tmpl.selectedMonth.set($(e.target).val());
+    },
+    'change [name="paymentPeriod.year"]': (e, tmpl) => {
+        tmpl.selectedYear.set($(e.target).val());
+    },
     'hover .table tbody tr': (e,tmpl) => {
         console.log('hover called');
     },

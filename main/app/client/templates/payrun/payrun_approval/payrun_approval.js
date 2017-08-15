@@ -70,16 +70,22 @@ Template.PayrunApproval.events({
    },
    'click .bankTotalNetPay': (e, tmpl) => {
        let bank = $(e.currentTarget).attr('data-bank')
-
+       console.log(`selected bank: `, bank)
+       
        let netPayReportResults = tmpl.netPayReportResults.get()
        if(netPayReportResults && netPayReportResults.length > 0) {
            let employeePayments = _.reduce(netPayReportResults, function(employeePaysSoFar, item ) {
-               if(item.bank === bank) {
-                   return employeePaysSoFar.concat(item)
+               console.log(`item[1]: `, item)
+
+               if(item[1] === bank) {
+                   return employeePaysSoFar.concat({
+                       fullName: item[0],
+                       amount: item[3]})
                } else {
                    return employeePaysSoFar
                }
             }, [])
+            console.log(`employeePayments: `, employeePayments)
             
             Modal.show('PayrunApprovalEmployees', {
                 bankName: bank,
@@ -111,7 +117,16 @@ Template.PayrunApproval.helpers({
         return Template.instance().netPayReportResults.get();
     },
     'processedNetPayResults': function() {
-        return Template.instance().processedNetPayResults.get();
+        let rawData = Template.instance().processedNetPayResults.get() || [];
+        let arrayToReturn = []
+
+        for(let i = 0; i < rawData.length; i++) {
+            if(i > 0) {
+                arrayToReturn.push(rawData[i])
+            }
+        }
+
+        return arrayToReturn
     },
     'getEmployeeFullName': function(employeeId) {
         let employee = Meteor.users.findOne({_id: employeeId});
@@ -178,22 +193,23 @@ Template.PayrunApproval.onCreated(function () {
 
     self.processNetPayResultsData = function(netPayResultsData) {
         netPayResultsData = netPayResultsData || []
+        self.netPayReportResults.set(netPayResultsData)
 
-        let groupedByBank = _.groupBy(netPayResultsData, 'bank');
+        let groupedByBank = _.groupBy(netPayResultsData, '1');
 
         let banks = Object.keys(groupedByBank)
         let numBanks = banks.length;        
+
+        let processedNetPayResults = self.processedNetPayResults.get()
 
         for(let i = 0; i < numBanks; i++) {
             let bankName = banks[i]
             let employeePayments = groupedByBank[bankName]
 
             var totalNetPay = _.reduce(employeePayments, function(totalNetPaySoFar, item ) {
-                return totalNetPaySoFar + item.amount
+                return totalNetPaySoFar + item[3]
             }, 0)
             //--
-            let processedNetPayResults = self.processedNetPayResults.get()
-
             processedNetPayResults.push({
                 bank: bankName,
                 totalNetPay: totalNetPay
