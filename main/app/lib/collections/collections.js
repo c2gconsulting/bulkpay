@@ -313,6 +313,13 @@ Partitioner.partitionCollection(LeaveTypes);
 LeaveTypes.attachSchema(Core.Schemas.LeaveType);
 
 /**
+ * Core Collections Leave Types
+ */
+TimeTypes = new Mongo.Collection("timetypes");
+Partitioner.partitionCollection(TimeTypes);
+TimeTypes.attachSchema(Core.Schemas.TimeType);
+
+/**
  * Core Collections Addtional Payments
  */
 AdditionalPayments = new Mongo.Collection("additionalpay");
@@ -393,6 +400,15 @@ LeaveTypes.allow({
     update: function(userId, doc){
         //only allow if user has Admin access
         return Core.hasLeaveManageAccess(Meteor.userId());
+    }
+});
+
+TimeTypes.allow({
+    insert: function(userId, doc) {
+        return true
+    },
+    update: function(userId, doc){
+        return true;
     }
 });
 

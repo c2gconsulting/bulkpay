@@ -33,6 +33,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isWeekendIncludedInLeaveRequests: {
         type: Boolean
     },
+    isTimeTypeEnabled: {
+        type: Boolean,
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

@@ -1,11 +1,11 @@
-<template name="LeaveTypeCreate">
+<template name="TimeTypeCreate">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                {{#autoForm collection="LeaveTypes" doc=this id=formType type=formAction }}
+                {{#autoForm collection="TimeTypes" doc=this id=formType type=formAction }}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{{#if data}} Update Leave Type{{else}}Create Leave Types {{/if}}</h3>
+                        <h3 class="panel-title">{{#if data}} Update Time Type{{else}}Create Time Types {{/if}}</h3>
                     </div>
                     <div class="panel-body">
 
@@ -17,21 +17,19 @@
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-3">
-                                {{> afQuickField name="gender" options=gender id="gender"}}
-                            </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3">
-                                {{> afQuickField name="maximumDuration" id="maximumDuration"}}
+                                {{> afQuickField name="valuation" id="valuation"}}
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-3">
                                 {{> afQuickField name="payGradeIds" options=payGrades class="dropdown"}}
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-3">
-                                {{> afQuickField name="deductFrom" options=leaveTypes class="dropdown"}}
+                            <div class="col-sm-3 check">
+                                {{> afQuickField name="paid"}}
                             </div><!-- col-sm-3 -->
+                        </div>
 
+                        <div class="row">
                             <div class="col-sm-3">
                                 {{> afQuickField name="positionIds" options=positions class="dropdown"}}
                             </div><!-- col-sm-3 -->
@@ -39,15 +37,10 @@
                             <div class="col-sm-3">
                                 {{> afQuickField name="status" options=status class="dropdown"}}
                             </div><!-- col-sm-3 -->
-
-                            <div class="col-sm-3 check">
-                                {{> afQuickField name="paid"}}
-                            </div><!-- col-sm-3 -->
                         </div><!-- row -->
-
                     </div>
                     <div class="panel-footer">
-                        <button type="submit" class="btn btn-primary mr5" id="LeaveTypeCreate">Save</button>
+                        <button type="submit" class="btn btn-primary mr5" id="TimeTypeCreate">Save</button>
                         <button type="reset" class="btn btn-danger" id="new-pay-type-close" data-dismiss="modal">Cancel</button>
                     </div><!-- panel-footer -->
                 </div>

@@ -1,15 +1,15 @@
 /*****************************************************************************/
-/* LeaveTypeCreate: Event Handlers */
+/* TimeTypeCreate: Event Handlers */
 /*****************************************************************************/
-Template.LeaveTypeCreate.events({
+Template.TimeTypeCreate.events({
 });
 
 /*****************************************************************************/
-/* LeaveTypeCreate: Helpers */
+/* TimeTypeCreate: Helpers */
 /*****************************************************************************/
-Template.LeaveTypeCreate.helpers({
+Template.TimeTypeCreate.helpers({
     leaveTypes: function () {
-        let leaveTypes = LeaveTypes.find().fetch();
+        let leaveTypes = TimeTypes.find().fetch();
         let returnedArray = [];
         _.each(leaveTypes, function(leave){
             returnedArray.push({label: leave.name, value: leave._id})
@@ -31,7 +31,6 @@ Template.LeaveTypeCreate.helpers({
     'businessIdHelper': () => {
         return Session.get('context')
     },
-    
     'status': () => {
         return [{label: "Active", value: "Active"},{label: "Inactive", value: "Inactive"}];
     },
@@ -45,29 +44,30 @@ Template.LeaveTypeCreate.helpers({
     },
     'formType': () => {
         if(Template.instance().data)
-            return "leavesTypesForm";
-        return "updateLeaveTypesForm";
+            return "update";
+        return "insert";
     },
     'data': () => {
-        return Template.instance().data? true:false;
+        return Template.instance().data ? true:false;
     }
 });
 
 
 
 /*****************************************************************************/
-/* LeaveTypeCreate: Lifecycle Hooks */
+/* TimeTypeCreate: Lifecycle Hooks */
 /*****************************************************************************/
-Template.LeaveTypeCreate.onCreated(function () {
+Template.TimeTypeCreate.onCreated(function () {
     let self = this;
     self.profile = new ReactiveDict();
+
     //subscribe to positions and paygrades
     self.subscribe('getPositions', Session.get('context'));
     self.subscribe('paygrades', Session.get('context'));
 
 });
 
-Template.LeaveTypeCreate.onRendered(function () {
+Template.TimeTypeCreate.onRendered(function () {
     let self = this;
     $('select.dropdown').dropdown();
 
@@ -108,5 +108,5 @@ Template.LeaveTypeCreate.onRendered(function () {
     });
 });
 
-Template.LeaveTypeCreate.onDestroyed(function () {
+Template.TimeTypeCreate.onDestroyed(function () {
 });

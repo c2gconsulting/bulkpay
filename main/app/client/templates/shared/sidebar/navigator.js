@@ -183,6 +183,14 @@ Template.navigator.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement'
         }
+    },
+    'isTimeTypeEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        console.log(`Inside isTimeTypeEnabled: `, businessUnitCustomConfig)
+        
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTimeTypeEnabled
+        }
     }
 });
 

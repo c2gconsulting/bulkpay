@@ -37,10 +37,7 @@ Core.Schemas.LeaveType = new SimpleSchema({
         defaultValue: true
     },
     businessId: {
-        type: String,
-        autoValue: function () {
-            return BusinessUnits.findOne()._id
-        }
+        type: String
     },
     status: {
         type: String,

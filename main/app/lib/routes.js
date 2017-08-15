@@ -149,6 +149,13 @@ Router.route('/business/:_id/leavetypes', {
     action: 'list',
     where: 'client'
 });
+Router.route('/business/:_id/timetypes', {
+    name: 'timetypes',
+    controller: 'TimeTypesController',
+    action: 'list',
+    where: 'client'
+});
+
 
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',
