@@ -44,8 +44,8 @@ Template.TimeTypeCreate.helpers({
     },
     'formType': () => {
         if(Template.instance().data)
-            return "update";
-        return "insert";
+            return "timeTypesForm";
+        return "updateTimeTypesForm";
     },
     'data': () => {
         return Template.instance().data ? true:false;
