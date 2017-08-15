@@ -53,6 +53,8 @@ Template.PayrunVarianceReport.helpers({
 Template.PayrunVarianceReport.onCreated(function () {
     let self = this;
     self.varianceResults = new ReactiveVar();
+
+    console.log(`Inside payrun variance report`)
 });
 
 Template.PayrunVarianceReport.onRendered(function () {
