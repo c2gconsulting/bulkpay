@@ -366,7 +366,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                             aRowOfPayTypeValues.push("---")
                         }
                     }
-                } else if(aPaytypeHeader.id.startsWith('netPayCurrencyAllocation_')) {
+                } else if(aPaytypeHeader.id && aPaytypeHeader.id.startsWith('netPayCurrencyAllocation_')) {
                     let currency = aPaytypeHeader.currency
                     let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
                     let allocation = ''

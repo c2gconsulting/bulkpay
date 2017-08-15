@@ -1,0 +1,30 @@
+<template name="PayrunVarianceReport">
+  {{#if result}}
+  <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+      <thead>
+          <tr>
+              {{#let header=result.[0]}}
+                {{#each header}}
+                    <th>{{this}}</th>
+                {{/each}}
+              {{/let}}
+          </tr>
+      </thead>
+      <tbody>
+        {{#each netPayData}}
+          <tr>
+              {{#let rowData=this}}
+                {{#each rowData}}
+                    <td>{{this}}</td>
+                {{/each}}
+              {{/let}}
+          </tr>
+        {{/each}}
+      </tbody>
+  </table>
+  {{/if}}
+
+  <div class="row" id="spinner">
+  </div>
+</template>
+

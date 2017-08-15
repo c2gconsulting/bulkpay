@@ -169,27 +169,48 @@
                                     {{else}}
                                         <div class="alert alert-success">
                                             <strong>Payment Processing Complete!</strong> Please note <a href="" class="alert-link">Payroll Result Saved</a> For processed employees.
-                                            <button type="button" class="btn-primary pull-right" id="export-to-csv">Export to csv</button>
+                                            
+                                            <button type="button" class="btn-primary pull-right" id="export-to-csv">Export Payrun to CSV</button>
+                                            <!--<span class="pull-right">&nbsp; &nbsp; &nbsp;</span>
+                                            <button type="button" class="btn-primary pull-right" id="variance-report">Variance Report</button>-->
                                         </div>
                                     {{/if}}
-                                    <div class="table-responsive">
-                                        <table class="table table-hidaction table-hover mb30">
-                                            <thead>
-                                            <tr>
-                                                <th>Employee ID</th>
-                                                <th>Full Name</th>
-                                                <th>Pay Grade</th>
-                                                <th>Status</th>
-                                                <th>Action</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {{#each employeeResult}}
-                                                {{> ResultEntry this}}
-                                            {{/each}}
-                                            </tbody>
-                                        </table>
-                                    </div><!-- table-responsive -->
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <ul class="nav nav-tabs nav-line">
+                                                <li class="active"><a href=".payrunResults" data-toggle="tab"><strong>Payrun Results</strong></a></li>
+                                                <!--<li><a href=".payrunVarianceReport" data-toggle="tab"><strong>Payrun Variance Report</strong></a></li>-->
+                                            </ul>
+                                        </div>
+
+                                        <div class="panel-body">
+                                            <div class="tab-content nopadding noborder">
+                                                <div class="table-responsive payrunResults">
+                                                    <table class="table table-hidaction table-hover mb30">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Employee ID</th>
+                                                                <th>Full Name</th>
+                                                                <th>Pay Grade</th>
+                                                                <th>Status</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {{#each employeeResult}}
+                                                                {{> ResultEntry this}}
+                                                            {{/each}}
+                                                        </tbody>
+                                                    </table>
+                                                </div><!-- table-responsive -->
+
+                                                <div class="payrunVarianceReport">
+                                                    {{> PayrunVarianceReport}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     {{#if showSendForApprovalButton}}
                                         <div>
