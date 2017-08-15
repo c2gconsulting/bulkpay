@@ -464,11 +464,12 @@ Meteor.methods({
                         $or: [
                             {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                             {'employeeProfile.employment.terminationDate': null},
+                            {'employeeProfile.employment.terminationDate': ""},
                             {'employeeProfile.employment.terminationDate' : { $exists : false } }
                         ],
                         'employeeProfile.employment.status': 'Active',
                         'businessIds': businessId
-                    }).fetch();
+                    }).fetch() || [];
                     
                     let dateLimitMonth = DateLimit.getUTCMonth()
                     let dateLimitYear = DateLimit.getUTCFullYear()
@@ -488,6 +489,7 @@ Meteor.methods({
                         $or: [
                             {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                             {'employeeProfile.employment.terminationDate': null},
+                            {'employeeProfile.employment.terminationDate': ""},
                             {'employeeProfile.employment.terminationDate' : { $exists : false } }
                         ],
                         'employeeProfile.employment.status': 'Active',
