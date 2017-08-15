@@ -200,7 +200,7 @@ Template.PayrunApproval.onCreated(function () {
         let banks = Object.keys(groupedByBank)
         let numBanks = banks.length;        
 
-        let processedNetPayResults = self.processedNetPayResults.get()
+        let processedNetPayResults = []
 
         for(let i = 0; i < numBanks; i++) {
             let bankName = banks[i]
