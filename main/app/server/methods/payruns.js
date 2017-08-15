@@ -1024,12 +1024,22 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         if(!paymentsAccountingForCurrency.deduction['NGN']) {
                             paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
                         }
+                        if(!paymentsAccountingForCurrency.others['NGN']) {
+                            paymentsAccountingForCurrency.others['NGN'] = {payments: []}
+                        }
                         paymentsAccountingForCurrency.deduction['NGN'].payments.push({
                             title: pension.name + ' Employee',
                             code: pension.code + '_EE',
                             currency: 'NGN',
                             reference: 'Pension',
                             value: -1 * employeePenContrib
+                        })
+                        paymentsAccountingForCurrency.others['NGN'].payments.push({
+                            title: pension.name + ' Employer',
+                            code: pension.code + '_ER',
+                            currency: 'NGN',
+                            reference: 'Pension',
+                            value: employerPenContrib
                         })
                     }
                    if(pensionLog)    //add pension calculation log
