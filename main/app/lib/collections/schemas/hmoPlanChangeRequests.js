@@ -2,22 +2,7 @@ Core.Schemas.HmoPlanChangeRequest = new SimpleSchema({
     _id: {
         type: String,
         optional: true
-    }, 
-    // type: {
-    //     type: String,
-    //     custom: function () {
-    //         if (Meteor.isClient && this.isSet) {
-    //             let selectedType = this.value;
-    //             let duration = parseInt(this.siblingField("duration").value);
-    //             let selectedQuota = parseInt(LeaveTypes.findOne({_id: selectedType}).maximumDuration);
-
-    //             if(duration > selectedQuota){
-    //                 Core.Schemas.Leave.namedContext('leavesForm').addInvalidKeys([{name: "type", type: "ExceededDays" }]);
-    //             }
-    //         }
-    //     }
-
-    // },
+    },
     hmoPlanType: {
         type: String,
         optional: true
@@ -35,21 +20,6 @@ Core.Schemas.HmoPlanChangeRequest = new SimpleSchema({
     },
     employeeId: {
         type: String,
-        index: 1,
-        autoform: {
-            type: "hidden",
-            label: false
-        },
-        autoValue: function() {
-            if (this.isInsert) {
-                if (this.isSet && Meteor.isServer) {
-                    return this.value;
-                } else {
-                    return this.userId;
-                }
-            }
-        },
-        optional: true,
         denyUpdate: true
     },
     approvalStatus: {

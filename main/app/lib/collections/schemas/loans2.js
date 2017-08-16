@@ -8,7 +8,7 @@ Core.Schemas.Loans2 = new SimpleSchema({
         optional: true
     },
     durationInMonths: {
-        type: String,
+        type: Number,
         optional: true
     },
     interestRate: {
@@ -33,23 +33,7 @@ Core.Schemas.Loans2 = new SimpleSchema({
         type: String
     },
     employeeId: {
-        type: String,
-        index: 1,
-        autoform: {
-            type: "hidden",
-            label: false
-        },
-        autoValue: function() {
-            if (this.isInsert) {
-                if (this.isSet && Meteor.isServer) {
-                    return this.value;
-                } else {
-                    return this.userId;
-                }
-            }
-        },
-        optional: true,
-        denyUpdate: true
+        type: String
     },
     approvalStatus: {
         type: String,

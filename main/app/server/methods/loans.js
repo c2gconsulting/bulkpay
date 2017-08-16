@@ -11,16 +11,17 @@ Meteor.methods({
 
         let user = Meteor.users.findOne(this.userId)
         if(user) {
-            let hmoPlanType = loan.hmoPlanType
-            if(hmoPlanType) {
-                let hmoPlan = Loans2.findOne(hmoPlanType)
+            let loanType = loan.loanType
+            if(loanType) {
+                let afterUpdateOrInsert = null
+                console.log(`loan: `, loan)
 
-                if(changeRequest._id) {
-                    Loans2.update(loan._id, 
-                        {$set: {hmoPlanType: loan.hmoPlanType}})
+                if(loan._id) {
+                    afterUpdateOrInsert = Loans2.update(loan._id, {$set: loan})
                 } else {
-                    Loans2.insert(loan)
+                    afterUpdateOrInsert = Loans2.insert(loan)
                 }
+
                 return true
             } else {
                 throw new Meteor.Error(401, "Validation Error. Loan type not selected");

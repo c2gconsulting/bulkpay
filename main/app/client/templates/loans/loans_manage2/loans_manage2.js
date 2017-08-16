@@ -13,7 +13,7 @@ Template.LoansList.events({
 /*****************************************************************************/
 Template.LoansList.helpers({
     theLoans: function() {
-        return Template.instance().leaves.get()
+        return Template.instance().loans.get()
     }
 });
 

@@ -30,15 +30,20 @@
                         <h4 class="panel-title">New Loan Application</h4>
                     </div>
                     <div class="panel-body">
+                        {{#if inputErrorMsg}}
+                        <div class="alert alert-danger text-center">
+                            <p>{{inputErrorMsg}}</p>
+                        </div>
+                        {{/if}}
 
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="control-label">Loan Type</label>
-                                    <select name="loanType" class="form-control" style="width: 100%">
-                                        <option value="car">Car</option>
-                                        <option value="corp">Corp</option>
-                                        <option value="cash">Cash</option>
+                                    <select name="loanType" id="loanType" class="form-control" style="width: 100%">
+                                        <option value="Car">Car</option>
+                                        <option value="Corp">Corp</option>
+                                        <option value="Cash">Cash</option>
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->

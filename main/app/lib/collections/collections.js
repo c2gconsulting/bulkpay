@@ -212,7 +212,7 @@ Loans.attachSchema(Core.Schemas.Loan);
  */
 Loans2 = new Mongo.Collection("loans2");
 Partitioner.partitionCollection(Loans2);
-Loans2.attachSchema(Core.Schemas.Loan2);
+Loans2.attachSchema(Core.Schemas.Loans2);
 
 
 /**

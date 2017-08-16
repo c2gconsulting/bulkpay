@@ -3,13 +3,12 @@
         <a href="#" class="list-group-item">
             <div class="media">
                 <div class="media-body">
-                    <h4 class="media-heading">{{name type}} <small>{{description}}</small></h4>
+                    <h4 class="media-heading">{{loanType}}</h4>
+
                     <div class="media-content">
                         <div class="pull-left">
-                            <i class="fa fa-calendar-o"></i> Duration of Leave Request <span class="leavedays">{{toTwoDecimalPlaces duration}} Day(s)</span>
+                            <i class="fa fa-calendar-o"></i> Term: <span class="leavedays">{{durationInMonths}} Months(s)</span>
                             <ul class="list-unstyled">
-                                <li><i class="fa fa-calendar-o"></i> From: {{formatTime startDate}}</li>
-                                <li><i class="fa fa-calendar"></i> To: {{formatTime endDate}}</li>
                                 <li><i class="fa fa-tasks"></i> <span class="label label-{{active approvalStatus}}">{{approvalStatus}}</span></li>
                                 <li><i class="fa fa-calendar"></i> Date Created: {{formatTime createdAt}}</li>
                             </ul>
