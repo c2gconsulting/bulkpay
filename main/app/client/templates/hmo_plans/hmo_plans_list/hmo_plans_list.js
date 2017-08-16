@@ -63,6 +63,7 @@ Template.HmoPlansList.onCreated(function () {
 });
 
 Template.HmoPlansList.onRendered(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.HmoPlansList.onDestroyed(function () {

@@ -137,6 +137,7 @@ Template.TravelRequisitionIndex.onCreated(function () {
 
 Template.TravelRequisitionIndex.onRendered(function () {
     $('select.dropdown').dropdown();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.TravelRequisitionIndex.onDestroyed(function () {

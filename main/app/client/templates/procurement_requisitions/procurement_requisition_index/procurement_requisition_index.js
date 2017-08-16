@@ -122,6 +122,7 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
 
 Template.ProcurementRequisitionIndex.onRendered(function () {
     $('select.dropdown').dropdown();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.ProcurementRequisitionIndex.onDestroyed(function () {

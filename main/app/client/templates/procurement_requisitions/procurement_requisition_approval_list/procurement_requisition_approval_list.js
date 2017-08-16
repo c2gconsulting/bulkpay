@@ -143,6 +143,7 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
 
 Template.ProcurementRequisitionApprovalList.onRendered(function () {
     $('select.dropdown').dropdown();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.ProcurementRequisitionApprovalList.onDestroyed(function () {

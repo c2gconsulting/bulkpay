@@ -158,6 +158,7 @@ Template.selfpayslips.onCreated(function () {
 
 Template.selfpayslips.onRendered(function () {
     $('select.dropdown').dropdown();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.selfpayslips.onDestroyed(function () {
