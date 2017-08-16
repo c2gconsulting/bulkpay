@@ -456,6 +456,9 @@ Template.PayrunNew.events({
             });
             return selected;
         };
+        let retroactivePayrun = $('[name="retroactivePayrun"]:checked').val()
+
+
         var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         const params = {
             employees: Core.returnSelection($('[name="employee"]')),
@@ -466,7 +469,8 @@ Template.PayrunNew.events({
 
             },
             type: payrunRunType,
-            annuals: annualPay()
+            annuals: annualPay(),
+            retroactivePayrun: retroactivePayrun,
         };
         //check if any valid selection is made
         if (params.employees.length > 0 || params.paygrades.length > 0){

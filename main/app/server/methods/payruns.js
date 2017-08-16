@@ -429,6 +429,13 @@ Meteor.methods({
         const period = obj.period;
         const runtype = obj.type;
         const annuals = obj.annuals;
+        let retroactivePayrun = obj.retroactivePayrun
+        if(retroactivePayrun === 'true') {
+            retroactivePayrun = true
+        } else {
+            retroactivePayrun = false
+        }
+
         check(employees, Array);
         check(period, Object);
         check(runtype, String);
@@ -444,7 +451,8 @@ Meteor.methods({
             //res contains employees ready for payment processing
 
             if (res && res.length > 0) {
-                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId, period, businessUnitConfig);
+                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId, 
+                    period, businessUnitConfig, retroactivePayrun, false);
             }
         } else if (employees.length > 0) {
             const year = period.year;
@@ -501,7 +509,8 @@ Meteor.methods({
                     }).fetch();
                 }
             }
-            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, period, businessUnitConfig);
+            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, 
+                period, businessUnitConfig, retroactivePayrun, false);
         }
 
         //if live run and no error then save result
@@ -551,7 +560,9 @@ Meteor.methods({
 
 // // use oop
 // instantiate payment object for employee with props for all methods required
-processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig) {
+processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig, 
+    isRetroActivePayrunEnabled, isDoingARetroActivePayrunNow) {
+    
     let paygrades = [];
     let payresult = [];  // holds result that will be sent to client
     let payrun = [];  //holds payrun for storing if not simulation
@@ -583,6 +594,33 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 processingError.push(error);
 
             } else {
+                if(isRetroActivePayrunEnabled && !isDoingARetroActivePayrunNow) {
+                    console.log(`RetroactivePayrunEnabled`)
+                    const payrunPeriodAsDate = new Date(`${period.month}-05-${period.year} GMT`);
+                    const payrunPeriodAsMoment = moment(payrunPeriodAsDate);
+                    const prevMonthMoment = payrunPeriodAsMoment.subtract(1, 'month')
+
+                    const payrunPeriodForPrevMonth = prevMonthMoment.format("MMYYYY")
+                    let prevMonth = payrunPeriodForPrevMonth.substring(0, 2)
+                    let prevMonthYear = payrunPeriodForPrevMonth.substring(2)
+                    
+                    let doesEmpHavePayrunForPrevMonth = Payruns.findOne({
+                        period: payrunPeriodForPrevMonth,
+                        employeeId: x._id
+                    })
+                    if(!doesEmpHavePayrunForPrevMonth) {
+                        let retroactivity = processEmployeePay(Meteor.userId(), [x], includedAnnuals, businessId, 
+                            {month: prevMonth, year: prevMonthYear}, 
+                            businessUnitConfig, isRetroActivePayrunEnabled, true);
+                        let retroactivityResult = retroactivity.result
+                        let retroactivityError = retroactivity.error
+                        let retroactivityPayrun = retroactivity.payrun
+
+                        payresult = payresult.concat(retroactivityResult)
+                        processingError = processingError.concat(retroactivityError)
+                        payrun = payrun.concat(retroactivityPayrun)
+                    }
+                }
                 const employeeResult = {
                     businessId: businessId, 
                     employeeId: x._id, 

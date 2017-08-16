@@ -239,11 +239,11 @@ Template.Payslip.onCreated(function () {
         '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October',
         '11': 'November', '12': 'December'
     }
-    let payrunPeriod = Session.get('currentPayrunPeriod')
+    // let payrunPeriod = Session.get('currentPayrunPeriod')
 
-    if(payrunPeriod.month) {
-        self.payrunPeriod.set(`${months[payrunPeriod.month]} ${payrunPeriod.year}`)
-    }
+    // if(payrunPeriod.month) {
+        self.payrunPeriod.set(`${months[self.data.payslip.period.month]} ${self.data.payslip.period.year}`)
+    // }
 
     self.autorun(function(){
         if(businessUnitSubscription.ready()) {
