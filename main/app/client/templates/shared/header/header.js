@@ -149,6 +149,8 @@ Template.header.onCreated(function() {
     self.leavesToApprove = new ReactiveVar()
     self.leavesApprovalStatusNotSeen = new ReactiveVar()   // By leave creator
 
+    self.businessUnitCustomConfig = new ReactiveVar()
+
     self.getIds = (users) => {
         const newUsers = [...users];
         const ids = newUsers.map(x => {
@@ -165,6 +167,12 @@ Template.header.onCreated(function() {
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
+
         self.subscribe('AllActivities', Session.get('context'));
 
         let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
@@ -176,7 +184,12 @@ Template.header.onCreated(function() {
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             self.businessUnitName.set(businessUnit.name)
-            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+            
+            let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+
+            if(businessUnitCustomConfig.displayLogoInSideBar) {
+                self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+            }
         }
 
         if(procurementsToApproveSub.ready()) {

@@ -1,13 +1,17 @@
 <template name="header">
     <div class="header-left image">
-        <a class="logo white">
+        <!--<a class="logo white">
             <span class="login-header">Bulk</span><span class="login-small-header">Pay</span>
-        </a>
+        </a>-->
 
-        <!--{{#if businessUnitLogoUrl}}
+        {{#if businessUnitLogoUrl}}
             <div class="trick"></div>
-            <img src="{{businessUnitLogoUrl}}" class="img-responsive mb10" alt="" />
-        {{/if}}-->
+            <img src="{{businessUnitLogoUrl}}" class="img-responsive mb10" alt="" style="height: 60px; position: absolute; top: 0px;"/>
+        {{else}}
+            <a class="logo white">
+                <span class="login-header">Bulk</span><span class="login-small-header">Pay</span>
+            </a>
+        {{/if}}
 
         <div class="pull-right">
             <!--<a href="" class="menu-collapse" data-toggle="collapse" data-target=".side-bar">

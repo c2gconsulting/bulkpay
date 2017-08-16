@@ -45,6 +45,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: String,
         optional: true
     },
+    displayLogoInSideBar: {
+        type: Boolean,
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

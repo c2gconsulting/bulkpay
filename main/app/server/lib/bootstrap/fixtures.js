@@ -185,6 +185,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isTimeTypeEnabled: true,
         isHmoSetupEnabled: true,
         baseColor: '#ff0000',
+        displayLogoInSideBar: true,
         isActive: true
     },
     {
