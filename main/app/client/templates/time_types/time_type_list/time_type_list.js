@@ -63,6 +63,7 @@ Template.TimeTypesList.onCreated(function () {
 });
 
 Template.TimeTypesList.onRendered(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.TimeTypesList.onDestroyed(function () {

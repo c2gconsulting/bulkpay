@@ -125,11 +125,20 @@ Template.header.helpers({
             return note
         } else 
             return "---"
+    },
+    businessUnitLogoUrl: function() {
+        let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
+        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
+
+        return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     }
 });
 
 Template.header.onCreated(function() {
     let self = this
+
+    self.businessUnitName = new ReactiveVar()
+    self.businessUnitLogoUrl = new ReactiveVar()
 
     self.procurementsToApprove = new ReactiveVar()
     self.procurementsStatusNotSeen = new ReactiveVar()
@@ -154,6 +163,8 @@ Template.header.onCreated(function() {
         if(!businessUnitId)
             return
 
+        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+        
         self.subscribe('AllActivities', Session.get('context'));
 
         let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId)
@@ -161,6 +172,12 @@ Template.header.onCreated(function() {
         //--
         let allEmployeesSub = self.subscribe('allEmployees', businessUnitId)
         let timesAndLeavesSub = self.subscribe('alltimedata', businessUnitId)  // This handles the subscription for 'times' and 'leaves'
+
+        if(businessUnitSubscription.ready()) {
+            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+            self.businessUnitName.set(businessUnit.name)
+            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+        }
 
         if(procurementsToApproveSub.ready()) {
             let currentUser = Meteor.user()
@@ -241,7 +258,11 @@ Template.header.onCreated(function() {
 })
 
 Template.header.onRendered(function () {
-
+    var logoHeight = $('#businessLogoLeftBar img').height();
+    if (logoHeight < 30) {
+        var margintop = (30 - logoHeight) / 2;
+        $('#businessLogoLeftBar img').css('margin-top', margintop);
+    }
 });
 
 Template.header.onDestroyed(function() {

@@ -41,6 +41,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    baseColor: {
+        type: String,
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

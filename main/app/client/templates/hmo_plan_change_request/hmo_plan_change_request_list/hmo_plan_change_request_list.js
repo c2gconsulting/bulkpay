@@ -38,6 +38,7 @@ Template.HmoPlanChangeRequestList.onCreated(function () {
 });
 
 Template.HmoPlanChangeRequestList.onRendered(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.HmoPlanChangeRequestList.onDestroyed(function () {
