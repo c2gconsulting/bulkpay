@@ -27,11 +27,6 @@ Core.Schemas.HmoPlan = new SimpleSchema({
         label: "Max Duration (months)",
         optional: true
     },
-    paid: {
-        type: Boolean,
-        defaultValue: true,
-        optional: true
-    },
     businessId: {
         type: String
     },

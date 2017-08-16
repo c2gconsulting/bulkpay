@@ -40,7 +40,6 @@ Template.LeaveTypeList.onCreated(function () {
         
         let subscription = Meteor.subscribe('LeaveTypes', {businessId: instance.data._id}, limit, sort);
         
-
         // if subscription is ready, set limit to newLimit
         if (subscription.ready()) {
             instance.loaded.set(limit);
@@ -62,6 +61,7 @@ Template.LeaveTypeList.onCreated(function () {
 });
 
 Template.LeaveTypeList.onRendered(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.LeaveTypeList.onDestroyed(function () {
