@@ -184,7 +184,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isWeekendIncludedInLeaveRequests: false,
         isTimeTypeEnabled: true,
         isHmoSetupEnabled: true,
-        baseColor: '#ff0000',
+        baseColor: '#ee0000',
         isActive: true
     },
     {

@@ -101,6 +101,14 @@ Template.ApplicationLayout.helpers({
     },
     currentUserEmail: function() {
         Meteor.user().emails[0].address
+    },
+    themeBackgroundColor: function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.baseColor;
+        }
     }
 });
 
@@ -191,6 +199,18 @@ Template.ApplicationLayout.onCreated(function () {
       //  */
       //}
     });
+
+    instance.businessUnitCustomConfig = new ReactiveVar()
+
+    Tracker.autorun(function () {
+        let businessUnitId = Session.get('context');
+        
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                instance.businessUnitCustomConfig.set(res)
+            }
+        })
+    })
 });
 
 Template.ApplicationLayout.onRendered(function () {
