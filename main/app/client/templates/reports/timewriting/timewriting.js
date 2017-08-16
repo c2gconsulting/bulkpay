@@ -305,6 +305,8 @@ Template.TimeWritingReport.onCreated(function () {
 Template.TimeWritingReport.onRendered(function () {
     //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.TimeWritingReport.onDestroyed(function () {

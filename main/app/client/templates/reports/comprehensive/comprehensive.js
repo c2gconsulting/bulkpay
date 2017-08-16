@@ -77,6 +77,8 @@ Template.ComprehensiveReport.onCreated(function () {
 Template.ComprehensiveReport.onRendered(function () {
     //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
+    
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.ComprehensiveReport.onDestroyed(function () {

@@ -107,6 +107,8 @@ Template.PensionReport.onCreated(function () {
 Template.PensionReport.onRendered(function () {
     //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.PensionReport.onDestroyed(function () {

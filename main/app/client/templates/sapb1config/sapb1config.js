@@ -323,6 +323,8 @@ Template.SapB1Config.onCreated(function () {
 Template.SapB1Config.onRendered(function () {
     $('select.dropdown').dropdown();
 
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+    
     var self = this;
     var oldIndex, newIndex;
     // fix a little rendering bug by clicking on step 1

@@ -235,6 +235,8 @@ Template.TimeCreate2.onCreated(function () {
 Template.TimeCreate2.onRendered(function () {
     let self = this;
 
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+    
     // $('#TimeCreate').prop('disabled', true);
 
     // self.autorun(function() {

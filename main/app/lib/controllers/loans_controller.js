@@ -49,6 +49,9 @@ LoansController = BusinessUnitController.extend({
         this.render('LoansNew');
 
     },
+    list: function() {
+        this.render('LoansList');
+    },
 
     action: function () {
         this.render();

@@ -33,6 +33,7 @@ Template.SupplementaryLeavesIndex.onCreated(function () {
 });
 
 Template.SupplementaryLeavesIndex.onRendered(function () {
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.SupplementaryLeavesIndex.onDestroyed(function () {

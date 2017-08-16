@@ -191,6 +191,8 @@ Template.TravelRequestReport.onCreated(function () {
 
 Template.TravelRequestReport.onRendered(function () {
     self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.TravelRequestReport.onDestroyed(function () {

@@ -8,7 +8,6 @@
                 <ul class="breadcrumb">
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a ui-sref="business.overview">Business</a></li>
-                    <li>{{business.name}}</li>
                     <li>Loan Application</li>
                 </ul>
                 <h4>Loan Application</h4>
@@ -35,18 +34,11 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label">Employee</label>
-                                    <select  style="width: 100%" class="form-control">
-                                        <option value="option">option2</option>
-                                    </select>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
                                     <label class="control-label">Loan Type</label>
                                     <select class="form-control" style="width: 100%">
-                                        <option value="option1">option1</option>
+                                        <option value="car">Car</option>
+                                        <option value="corp">Corp</option>
+                                        <option value="cash">Cash</option>
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
@@ -84,7 +76,7 @@
                     </div><!-- panel-body -->
                     <div class="panel-footer">
                         <button class="btn btn-primary mr5" ng-click="createLoan()">Apply</button>
-                        <button type="reset" class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                        <button type="reset" class="btn btn-warning" id="cancel">Cancel</button>
                     </div><!-- panel-footer -->
                 </div><!-- panel -->
 

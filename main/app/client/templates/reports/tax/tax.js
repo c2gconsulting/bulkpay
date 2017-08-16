@@ -115,6 +115,8 @@ Template.TaxReport.onCreated(function () {
 Template.TaxReport.onRendered(function () {
     //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.TaxReport.onDestroyed(function () {

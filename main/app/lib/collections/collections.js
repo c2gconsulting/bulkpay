@@ -208,6 +208,14 @@ Partitioner.partitionCollection(Loans);
 Loans.attachSchema(Core.Schemas.Loan);
 
 /**
+ * Core Collections Loans2
+ */
+Loans2 = new Mongo.Collection("loans2");
+Partitioner.partitionCollection(Loans2);
+Loans2.attachSchema(Core.Schemas.Loan2);
+
+
+/**
  * Core Collections OneOffs
  */
 OneOffs = new Mongo.Collection("oneoffs");

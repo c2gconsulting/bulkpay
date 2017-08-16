@@ -175,6 +175,8 @@ Template.ProcurementReport.onCreated(function () {
 
 Template.ProcurementReport.onRendered(function () {
     self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.ProcurementReport.onDestroyed(function () {

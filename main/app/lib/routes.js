@@ -245,7 +245,8 @@ Router.route('/business/:_id/loans/new', {
 Router.route('/business/:_id/loans', {
     name: 'loans.manage',
     controller: 'LoansController',
-    where: 'client'
+    where: 'client',
+    action: 'list'
 });
 
 Router.route('/business/:_id/oneoffs', {

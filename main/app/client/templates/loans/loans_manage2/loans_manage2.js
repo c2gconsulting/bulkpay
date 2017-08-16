@@ -1,32 +1,31 @@
 /*****************************************************************************/
-/* ProjectList: Event Handlers */
+/* LoansList: Event Handlers */
 /*****************************************************************************/
-Template.ProjectList.events({
-    'click #createProject': function(e){
+Template.LoansList.events({
+    'click #createLeave': function(e){
         e.preventDefault();
-        Modal.show('ProjectCreate');
+        Router.go('loans.new', {_id: Session.get('context')});
     }
 });
 
 /*****************************************************************************/
-/* ProjectList: Helpers */
+/* LoansList: Helpers */
 /*****************************************************************************/
-Template.ProjectList.helpers({
-    'project': function() {
-        return Template.instance().project();
+Template.LoansList.helpers({
+    leaves: function() {
+        return Template.instance().leaves();
     }
 });
 
 /*****************************************************************************/
-/* ProjectList: Lifecycle Hooks */
+/* LoansList: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ProjectList.onCreated(function () {
+Template.LoansList.onCreated(function () {
     
     let instance = this;
     instance.loaded = new ReactiveVar(0);
     instance.limit = new ReactiveVar(getLimit());
     instance.ready = new ReactiveVar();
-    instance.subscribe("getPositions", instance.data._id);
     
 
     instance.autorun(function () {
@@ -35,8 +34,7 @@ Template.ProjectList.onCreated(function () {
         let sortDirection =  -1;
         let sort = {};
         sort[sortBy] = sortDirection;
-        let subscription = Meteor.subscribe('projects', {businessId: instance.data._id}, limit, sort);
-        
+        let subscription = instance.subscribe('employeeLeaves', Session.get('context'), limit, sort);
 
         // if subscription is ready, set limit to newLimit
         if (subscription.ready()) {
@@ -45,7 +43,7 @@ Template.ProjectList.onCreated(function () {
     });
 
 
-    instance.project = function() {
+    instance.leaves = function() {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -53,19 +51,25 @@ Template.ProjectList.onCreated(function () {
         options.sort = {};
         options.sort[sortBy] = sortDirection;
         options.limit = instance.loaded.get();
-        
-        return Projects.find({}, options);
+
+        let currentUserId = Meteor.userId()
+
+        return Leaves.find({
+            businessId: Session.get('context'),
+            employeeId: currentUserId
+        }, options);
     };
 });
 
-Template.ProjectList.onRendered(function () {
+Template.LoansList.onRendered(function () {
+    // window.scrollTo(0, 0);
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.ProjectList.onDestroyed(function () {
+Template.LoansList.onDestroyed(function () {
 });
 
 
 function getLimit() {
-    return 20;
+    return 10;
 }

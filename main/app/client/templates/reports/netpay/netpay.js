@@ -133,6 +133,8 @@ Template.NetPayReport.onCreated(function () {
 Template.NetPayReport.onRendered(function () {
     //$('#example').DataTable();
   	self.$('select.dropdown').dropdown();
+
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.NetPayReport.onDestroyed(function () {
