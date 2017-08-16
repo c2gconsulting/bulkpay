@@ -12,8 +12,8 @@ Template.LoansList.events({
 /* LoansList: Helpers */
 /*****************************************************************************/
 Template.LoansList.helpers({
-    leaves: function() {
-        return Template.instance().leaves();
+    theLoans: function() {
+        return Template.instance().leaves.get()
     }
 });
 
@@ -23,42 +23,22 @@ Template.LoansList.helpers({
 Template.LoansList.onCreated(function () {
     
     let instance = this;
-    instance.loaded = new ReactiveVar(0);
-    instance.limit = new ReactiveVar(getLimit());
-    instance.ready = new ReactiveVar();
-    
+
+    instance.loans = new ReactiveVar()    
 
     instance.autorun(function () {
-        let limit = instance.limit.get();
-        let sortBy = "createdAt";
-        let sortDirection =  -1;
-        let sort = {};
-        sort[sortBy] = sortDirection;
-        let subscription = instance.subscribe('employeeLeaves', Session.get('context'), limit, sort);
+        let subscription = instance.subscribe('employeeLoansNoPagination', Session.get('context'));
 
         // if subscription is ready, set limit to newLimit
         if (subscription.ready()) {
-            instance.loaded.set(limit);
+            let currentUserId = Meteor.userId()
+
+            instance.loans.set(Loans2.find({
+                businessId: Session.get('context'),
+                employeeId: currentUserId
+            }).fetch());
         }
     });
-
-
-    instance.leaves = function() {
-        let sortBy = "createdAt";
-        let sortDirection = -1;
-
-        let options = {};
-        options.sort = {};
-        options.sort[sortBy] = sortDirection;
-        options.limit = instance.loaded.get();
-
-        let currentUserId = Meteor.userId()
-
-        return Leaves.find({
-            businessId: Session.get('context'),
-            employeeId: currentUserId
-        }, options);
-    };
 });
 
 Template.LoansList.onRendered(function () {

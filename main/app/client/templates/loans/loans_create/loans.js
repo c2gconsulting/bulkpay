@@ -4,6 +4,13 @@
 Template.LoansNew.events({
   'click #cancel': function(e, tmpl) {
     window.history.back();
+  },
+  'click #apply': function(e, tmpl) {
+    e.preventDefault();
+    console.log(`apply button clicked.`)
+
+
+    
   }
 });
 

@@ -1,15 +1,14 @@
 /*****************************************************************************/
-/* LeaveEntry: Event Handlers */
+/* LoansEntry: Event Handlers */
 /*****************************************************************************/
-Template.LeaveEntry.events({
+Template.LoansEntry.events({
     'click #edit': (e,tmpl) => {
-        Modal.show('LeaveCreate', tmpl.data);
-        //swal("you clicked pointer", this, "success");
+        Modal.show('LoansNew', tmpl.data);
     },
     'click #delete': (e,tmpl) => {
         swal({
                 title: "Are you sure?",
-                text: "You will not be able to recover this Leave Request!",
+                text: "You will not be able to recover this Loan Request!",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#DD6B55",
@@ -18,7 +17,7 @@ Template.LeaveEntry.events({
             },
             function(){
                 let docId = tmpl.data._id;
-                Meteor.call("leave/delete", docId, function(err,res){
+                Meteor.call("Loans/delete", docId, function(err,res){
                     if(!err){
                         swal("Deleted!", `Request Deleted`, "success");
                     } else {
@@ -31,9 +30,9 @@ Template.LeaveEntry.events({
 });
 
 /*****************************************************************************/
-/* LeaveEntry: Helpers */
+/* LoansEntry: Helpers */
 /*****************************************************************************/
-Template.LeaveEntry.helpers({
+Template.LoansEntry.helpers({
     'active': (status) => {
         if(status === "Open")
             return "warning";
@@ -41,11 +40,6 @@ Template.LeaveEntry.helpers({
             return "success";
         if(status === "Rejected")
             return "danger";
-    },
-    'name': (id) => {
-        let leave = LeaveTypes.findOne({_id: id});
-        if(leave)
-            return leave.name;
     },
     'canEdit': ()=> {
         let status = Template.instance().data.approvalStatus;
@@ -62,13 +56,13 @@ Template.LeaveEntry.helpers({
 });
 
 /*****************************************************************************/
-/* LeaveEntry: Lifecycle Hooks */
+/* LoansEntry: Lifecycle Hooks */
 /*****************************************************************************/
-Template.LeaveEntry.onCreated(function () {
+Template.LoansEntry.onCreated(function () {
 });
 
-Template.LeaveEntry.onRendered(function () {
+Template.LoansEntry.onRendered(function () {
 });
 
-Template.LeaveEntry.onDestroyed(function () {
+Template.LoansEntry.onDestroyed(function () {
 });
