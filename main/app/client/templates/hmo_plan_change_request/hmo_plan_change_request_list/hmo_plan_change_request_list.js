@@ -13,7 +13,7 @@ Template.HmoPlanChangeRequestList.events({
 /*****************************************************************************/
 Template.HmoPlanChangeRequestList.helpers({
     leaves: function() {
-        return Template.instance().leaves();
+        return Template.instance().leaves.get();
     }
 });
 
@@ -22,19 +22,19 @@ Template.HmoPlanChangeRequestList.helpers({
 /*****************************************************************************/
 Template.HmoPlanChangeRequestList.onCreated(function () {
     let instance = this;    
+    instance.leaves = new ReactiveVar()
 
     instance.autorun(function () {
         let subscription = instance.subscribe('HmoPlanChangeRequests', Session.get('context'));
+        if(subscription.ready()) {
+            let currentUserId = Meteor.userId()
+
+            instance.leaves.set(HmoPlanChangeRequests.find({
+                businessId: Session.get('context'),
+                employeeId: currentUserId
+            }).fetch());
+        }
     });
-
-    instance.leaves = function() {
-        let currentUserId = Meteor.userId()
-
-        return HmoPlanChangeRequests.find({
-            businessId: Session.get('context'),
-            employeeId: currentUserId
-        });
-    };
 });
 
 Template.HmoPlanChangeRequestList.onRendered(function () {
