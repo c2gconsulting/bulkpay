@@ -115,7 +115,9 @@
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
 
+            {{#if isHmoSetupEnabled}}
             <li><a href="{{pathFor 'hmoplans.changerequest'}}">HMO Plan</a></li>
+            {{/if}}
 
             {{#if hasLeaveApprovalAccess}}
             <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
@@ -137,7 +139,10 @@
                 {{/if}}
             {{/if}}
 
+            {{#if isHmoSetupEnabled}}
             <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
+            {{/if}}
+            
             <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         {{/if}}
 
