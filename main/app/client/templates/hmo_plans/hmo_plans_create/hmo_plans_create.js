@@ -68,42 +68,6 @@ Template.HmoPlanCreate.onCreated(function () {
 Template.HmoPlanCreate.onRendered(function () {
     let self = this;
     $('select.dropdown').dropdown();
-
-    let start = $("#startDate").val();
-    let end = $("#endDate").val();
-    if (start && end){
-        start = moment(start);
-        end = moment(end);
-        let duration = end.diff(start, 'days');
-        $("#duration").val(duration <= 0 ? 0 : duration)
-    }
-
-    self.autorun(function() {
-        if (!self.profile.get('duration')){
-            let propertyType = self.$("#duration").val();
-            self.profile.set('duration', propertyType)
-        }
-        $("#startDate").on("change", function () {
-            let start = $("#startDate").val();
-            let end = $("#endDate").val();
-            if (start && end){
-                start = moment(start);
-                end = moment(end);
-                let duration = end.diff(start, 'days');
-                $("#duration").val(duration <= 0 ? 0 : duration)
-            }
-        });
-        $("#endDate").on("change", function () {
-            let start = $("#startDate").val();
-            let end = $("#endDate").val();
-            if (start && end){
-                start = moment(start);
-                end = moment(end);
-                let duration = end.diff(start, 'days');
-                $("#duration").val(duration <= 0 ? 0 : duration)
-            }
-        });
-    });
 });
 
 Template.HmoPlanCreate.onDestroyed(function () {

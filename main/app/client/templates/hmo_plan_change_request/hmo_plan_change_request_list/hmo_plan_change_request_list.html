@@ -1,0 +1,45 @@
+<template name="HmoPlanChangeRequestList">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-users"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Self Service</a></li>
+                </ul>
+
+                <!--<h4>Leaves <span class="mb20 pull-right" id="createLeave"><a class="btn btn-primary">New Request</a></span></h4>-->
+
+                <h4>HMO Plan</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- <br>
+                <h3 class="xlg-title">All Leaves</h3> -->
+                {{#unless leaves}}
+                <div class="col-md-12">
+                    <span class="mb20 pull-right" id="createLeave"><a class="btn btn-primary">New Request</a></span>
+                </div>
+                <br/><br/>
+                {{/unless}}
+
+                {{#each leaves}}
+                    {{> HmoPlanChangeRequestEntry }}
+                {{else}}
+                <div class="col-md-12">
+                    <div class="alert alert-danger text-center">
+                        <p>You have not made an HMO change request</p>
+                    </div>
+                </div>
+                {{/each}}
+
+            </div>
+        </div>
+    </div><!-- contentpanel -->
+</template>

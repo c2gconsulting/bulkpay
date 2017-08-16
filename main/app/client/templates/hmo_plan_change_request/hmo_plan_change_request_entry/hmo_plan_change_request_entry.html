@@ -1,0 +1,30 @@
+<template name="HmoPlanChangeRequestEntry">
+    <div class="list-group contact-group pointer">
+        <a href="#" class="list-group-item">
+            <div class="media">
+                <div class="media-body">
+                    <h4 class="media-heading">{{name hmoPlanType}}</h4>
+                    <div class="media-content">
+                        <div class="pull-left">
+                            <ul class="list-unstyled">
+                                <li><i class="fa fa-tasks"></i> <span class="label label-{{active approvalStatus}}">{{approvalStatus}}</span></li>
+                                <li><i class="fa fa-calendar"></i> Date Created: {{formatTime createdAt}}</li>
+                            </ul>
+                        </div>
+
+                        {{#if canEdit}}
+                            <div class="pull-right">
+                                <div class="btn-toolbar">
+                                    <div class="btn-group">
+                                        <button class="btn btn-default btn-sm" type="button" id="edit"><i class="fa fa-pencil mr5"></i> Edit</button>
+                                        <button class="btn btn-default btn-sm" type="button" id="delete" ><i class="fa fa-trash-o mr5"></i> Delete</button>
+                                    </div>
+                                </div><!-- btn-toolbar -->
+                            </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div><!-- media -->
+        </a><!-- list-group -->
+    </div><!-- list-group -->
+</template>

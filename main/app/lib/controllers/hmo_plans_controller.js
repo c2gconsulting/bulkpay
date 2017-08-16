@@ -31,6 +31,9 @@ HmoPlansController = BusinessUnitController.extend({
     list: function(){
         this.render('HmoPlansList');
     },
+    changeRequest: function(){
+        this.render('HmoPlanChangeRequestList');
+    },
 
     onRun: function () {
         this.next();

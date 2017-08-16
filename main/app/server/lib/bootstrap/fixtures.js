@@ -153,7 +153,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         },
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
-        isWeekendIncludedInLeaveRequests: false,
+        isWeekendIncludedInLeaveRequests: false, 
         isActive: true
     },
     {

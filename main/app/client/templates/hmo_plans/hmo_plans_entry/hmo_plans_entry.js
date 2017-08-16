@@ -6,7 +6,7 @@ Template.HmoPlanEntry.events({
 
     },
     'click #edit': (e,tmpl) => {
-        Modal.show('TimeTypeCreate', tmpl.data);
+        Modal.show('HmoPlanCreate', tmpl.data);
         //swal("you clicked pointer", this, "success");
     },
     'click #delete': (e,tmpl) => {

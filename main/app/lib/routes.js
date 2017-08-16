@@ -161,6 +161,12 @@ Router.route('/business/:_id/hmoplans', {
     action: 'list',
     where: 'client'
 });
+Router.route('/business/:_id/hmoplans/changerequest', {
+    name: 'hmoplans.changerequest',
+    controller: 'HmoPlansController',
+    action: 'changeRequest',
+    where: 'client'
+});
 
 
 Router.route('/business/:_id/paygrades', {

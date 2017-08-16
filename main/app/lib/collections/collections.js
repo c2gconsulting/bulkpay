@@ -165,6 +165,12 @@ Leaves = new Mongo.Collection("leaves");
 Partitioner.partitionCollection(Leaves);
 Leaves.attachSchema(Core.Schemas.Leave);
 
+/**
+ * Core Collections HmoPlanChangeRequests
+ */
+HmoPlanChangeRequests = new Mongo.Collection("hmoplanchangerequests");
+Partitioner.partitionCollection(HmoPlanChangeRequests);
+HmoPlanChangeRequests.attachSchema(Core.Schemas.HmoPlanChangeRequest);
 
 /**
  * Core Collections LeaveEntitlements
