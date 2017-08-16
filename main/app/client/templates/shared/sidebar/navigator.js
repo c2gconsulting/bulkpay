@@ -209,22 +209,23 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar()
     self.payrollApprovalConfig = new ReactiveVar()
 
-    let businessUnitId = Session.get('context');
     
     self.autorun(function(){
+        let businessUnitId = Session.get('context');
+
         let payrollApprovalConfigSub = self.subscribe('PayrollApprovalConfigs', businessUnitId);
 
         if(payrollApprovalConfigSub.ready()) {
             let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
             self.payrollApprovalConfig.set(payrollApprovalConfig)
         }
-    })
 
-    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
-        if(!err) {
-            // console.log()
-            self.businessUnitCustomConfig.set(res)
-        }
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                // console.log()
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
     })
 });
 
