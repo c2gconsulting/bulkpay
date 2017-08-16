@@ -2,6 +2,11 @@
 /* HmoPlanChangeRequestCreate: Event Handlers */
 /*****************************************************************************/
 Template.HmoPlanChangeRequestCreate.events({
+    // 'click #dismiss-modal': (e, tmpl) => {
+    //     e.preventDefault()
+    //     //--
+    //     Modal.hide('HmoPlanChangeRequestCreate')
+    // },
     'click #HmoPlanChangeRequestCreate': (e, tmpl) => {
         e.preventDefault()
         //--
@@ -24,7 +29,11 @@ Template.HmoPlanChangeRequestCreate.events({
 
         Meteor.call('hmoPlanChangeRequests/create', hmoDoc, function(err, res) {
             if(!err) {
-                swal('Successful', "Your HMO Plan Change Request was successful", 'success')
+                if(currentHmoPlanData) {
+                    swal('Successful', "Your HMO Plan Change was successful", 'success')
+                } else {
+                    swal('Successful', "Your HMO Plan Change Request was successful", 'success')
+                }
             } else {
                 swal('Error', err.reason, 'error')
             }
@@ -44,6 +53,14 @@ Template.HmoPlanChangeRequestCreate.helpers({
     },
     'data': () => {
         return Template.instance().data ? true:false;
+    },
+    prevSelectedHmoPlan: (hmoPlan) => {
+        let data = Template.instance().data
+        if(data) {
+            return hmoPlan['_id'] === data['hmoPlanType']
+        } else {
+            return false
+        }
     }
 });
 
@@ -65,7 +82,7 @@ Template.HmoPlanChangeRequestCreate.onCreated(function () {
 Template.HmoPlanChangeRequestCreate.onRendered(function () {
     let self = this;
 
-    $('select.dropdown').dropdown();
+    // $('select.dropdown').dropdown();
 });
 
 Template.HmoPlanChangeRequestCreate.onDestroyed(function () {

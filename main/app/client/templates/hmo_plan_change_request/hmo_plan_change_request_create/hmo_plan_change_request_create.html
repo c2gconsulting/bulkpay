@@ -1,5 +1,5 @@
 <template name="HmoPlanChangeRequestCreate">
-    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade add-unit" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal">
             <div class="modal-content">
                 <div class="panel panel-default">
@@ -18,10 +18,14 @@
                             <div class="col-sm-6 col-sm-offset-3">
                                 <div class="form-group">
                                     <label class="control-label">HMO Plans</label>
-                                    <select name="hmoPlans" class="form-control dropdown" id="hmoPlans">
+                                    <select name="hmoPlans" class="form-control" id="hmoPlans">
                                         <option value=""></option>
                                         {{#each hmoPlans}}
-                                            <option value="{{_id}}">{{name}}</option>
+                                            {{#if prevSelectedHmoPlan this}}
+                                                <option value="{{_id}}" selected>{{name}}</option>
+                                            {{else}}
+                                                <option value="{{_id}}">{{name}}</option>
+                                            {{/if}}
                                         {{/each}}
                                     </select>
                                 </div>

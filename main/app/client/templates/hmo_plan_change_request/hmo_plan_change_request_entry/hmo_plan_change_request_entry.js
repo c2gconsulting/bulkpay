@@ -3,7 +3,6 @@
 /*****************************************************************************/
 Template.HmoPlanChangeRequestEntry.events({
     'click #edit': (e,tmpl) => {
-        console.log(`tmpl.data: `, tmpl.data)
         Modal.show('HmoPlanChangeRequestCreate', tmpl.data);
     },
     'click #delete': (e,tmpl) => {
