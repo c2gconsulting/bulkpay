@@ -7,9 +7,7 @@ Template.HmoPlanChangeRequestCreate.events({
     //     //--
     //     Modal.hide('HmoPlanChangeRequestCreate')
     // },
-    'click #HmoPlanChangeRequestCreate': (e, tmpl) => {
-        e.preventDefault()
-        //--
+    'click #CreateRequest': (e, tmpl) => {
         let selectedHmoPlan = $('#hmoPlans').val()
 
         if(!selectedHmoPlan || selectedHmoPlan.length === 0) {
@@ -34,6 +32,7 @@ Template.HmoPlanChangeRequestCreate.events({
                 } else {
                     swal('Successful', "Your HMO Plan Change Request was successful", 'success')
                 }
+                Modal.hide('HmoPlanChangeRequestCreate')
             } else {
                 swal('Error', err.reason, 'error')
             }

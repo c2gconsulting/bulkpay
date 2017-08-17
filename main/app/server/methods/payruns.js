@@ -596,7 +596,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
             } else {
                 if(isRetroActivePayrunEnabled && !isDoingARetroActivePayrunNow) {
                     console.log(`RetroactivePayrunEnabled`)
-                    const payrunPeriodAsDate = new Date(`${period.month}-05-${period.year} GMT`);
+                    const payrunPeriodAsDate = new Date(`${period.month}-01-${period.year} GMT`);
                     const payrunPeriodAsMoment = moment(payrunPeriodAsDate);
                     const prevMonthMoment = payrunPeriodAsMoment.subtract(1, 'month')
 
