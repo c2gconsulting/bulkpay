@@ -8,6 +8,11 @@
                     <div class="media-content">
                         <div class="pull-left">
                             <i class="fa fa-calendar-o"></i> Term: <span class="leavedays">{{durationInMonths}} Months(s)</span>
+
+                            <i class="fa"></i> Amount: <span class="leavedays">{{formatMoneyD amount "₦"}}</span>
+
+                            <i class="fa"></i> Interest rate: <span class="leavedays">{{interestRate}} %</span>
+
                             <ul class="list-unstyled">
                                 <li><i class="fa fa-tasks"></i> <span class="label label-{{active approvalStatus}}">{{approvalStatus}}</span></li>
                                 <li><i class="fa fa-calendar"></i> Date Created: {{formatTime createdAt}}</li>
