@@ -11,7 +11,6 @@ Template.NetPayReport.events({
 
     if (value && value.trim().length > 0) {
       Session.get('payrollPeriod', value);
-      console.log("payrollPeriod changed to: " + value);
     }
   },
    'click .getResult': (e, tmpl) => {
@@ -21,9 +20,7 @@ Template.NetPayReport.events({
           const period = month + year;
 
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
-              console.log(res);
-              if(res && res.length){
-                  console.log('logging response as ', res);
+              if(res) {
                   tmpl.netPayReportResults.set(res);
               } else {
                   swal('No result found', err.reason, 'error');
@@ -104,12 +101,27 @@ Template.NetPayReport.helpers({
     'result': () => {
         return Template.instance().netPayReportResults.get();
     },
-    'netPayData': () => {
+    'header': () => {
         let rawData = Template.instance().netPayReportResults.get();
+        if(rawData) {
+            return rawData.headers
+        }
+    },
+    'netPayDataWithoutEmployeeId': () => {
+        let rawData = Template.instance().netPayReportResults.get();
+        if(rawData && rawData.data) {
+            let netPayData = rawData.data
 
-        if(rawData && rawData.length > 0) {
-            return rawData.splice(1)
-        }        
+            let arrayToReturn = []
+            for(let i = 0; i < netPayData.length; i++) {
+                let dataRow = []
+                for(let j = 1; j < netPayData[i].length; j++) {
+                    dataRow.push(netPayData[i][j])
+                }
+                arrayToReturn.push(dataRow)
+            }
+            return arrayToReturn
+        }
     },
     'isEqual': (a, b) => {
         return a === b

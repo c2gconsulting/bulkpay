@@ -256,7 +256,7 @@ Template.Payslip.onCreated(function () {
 
 Template.Payslip.onRendered(function () {
     // console.log(`Pay slip data: \n${JSON.stringify(Template.instance().data)}`);
-
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.Payslip.onDestroyed(function () {

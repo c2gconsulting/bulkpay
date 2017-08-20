@@ -25,9 +25,7 @@ Template.PayrunApproval.events({
           const period = month + year;
 
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
-              if(res && res.length){
-                  tmpl.netPayReportResults.set(res);
-
+              if(res) {
                   tmpl.processNetPayResultsData(res)
               } else {
                   tmpl.netPayReportResults.set(null);
@@ -70,25 +68,29 @@ Template.PayrunApproval.events({
    },
    'click .bankTotalNetPay': (e, tmpl) => {
        let bank = $(e.currentTarget).attr('data-bank')
-       console.log(`selected bank: `, bank)
        
-       let netPayReportResults = tmpl.netPayReportResults.get()
-       if(netPayReportResults && netPayReportResults.length > 0) {
-           let employeePayments = _.reduce(netPayReportResults, function(employeePaysSoFar, item ) {
-               console.log(`item[1]: `, item)
+       let headersAndNetPayData = tmpl.netPayReportResults.get()
+       let netPayData = headersAndNetPayData.data       
 
-               if(item[1] === bank) {
+       if(netPayData && netPayData.length > 0) {
+           let userIds = []
+           let employeePayments = _.reduce(netPayData, function(employeePaysSoFar, item ) {
+               if(item[2] === bank) {
+                   userIds.push(item[0])
+
                    return employeePaysSoFar.concat({
-                       fullName: item[0],
-                       amount: item[3]})
+                        userId: item[0],
+                        fullName: item[1],
+                        amount: item[4]
+                    })
                } else {
                    return employeePaysSoFar
                }
             }, [])
-            console.log(`employeePayments: `, employeePayments)
             
             Modal.show('PayrunApprovalEmployees', {
                 bankName: bank,
+                userIds: userIds,
                 payments: employeePayments
             });
        }
@@ -116,17 +118,21 @@ Template.PayrunApproval.helpers({
     'result': () => {
         return Template.instance().netPayReportResults.get();
     },
-    'processedNetPayResults': function() {
-        let rawData = Template.instance().processedNetPayResults.get() || [];
+    'header': () => {
+        let rawData = Template.instance().netPayReportResults.get();
+        let headers = rawData.headers
+
         let arrayToReturn = []
 
-        for(let i = 0; i < rawData.length; i++) {
-            if(i > 0) {
-                arrayToReturn.push(rawData[i])
+        for(let i = 0; i < headers.length; i++) {
+            if(i > 0 && i !== 1) {
+                arrayToReturn.push(headers[i])
             }
         }
-
         return arrayToReturn
+    },
+    'processedNetPayResults': function() {
+        return Template.instance().processedNetPayResults.get() || [];
     },
     'getEmployeeFullName': function(employeeId) {
         let employee = Meteor.users.findOne({_id: employeeId});
@@ -192,10 +198,9 @@ Template.PayrunApproval.onCreated(function () {
     self.payrollApprovalConfig = new ReactiveVar()
 
     self.processNetPayResultsData = function(netPayResultsData) {
-        netPayResultsData = netPayResultsData || []
         self.netPayReportResults.set(netPayResultsData)
 
-        let groupedByBank = _.groupBy(netPayResultsData, '1');
+        let groupedByBank = _.groupBy(netPayResultsData.data, '2');
 
         let banks = Object.keys(groupedByBank)
         let numBanks = banks.length;        
@@ -207,7 +212,7 @@ Template.PayrunApproval.onCreated(function () {
             let employeePayments = groupedByBank[bankName]
 
             var totalNetPay = _.reduce(employeePayments, function(totalNetPaySoFar, item ) {
-                return totalNetPaySoFar + item[3]
+                return totalNetPaySoFar + item[4]
             }, 0)
             //--
             processedNetPayResults.push({
@@ -233,12 +238,11 @@ Template.PayrunApproval.onCreated(function () {
             const period = selecedMonth + selectedYear;
 
             Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
-                if(res && res.length){
-                    self.netPayReportResults.set(res);
-
+                if(res) {
                     self.processNetPayResultsData(res)
                 } else {
                     self.netPayReportResults.set(null);
+                    self.processedNetPayResults.set(null)
                 }
             });
         }
@@ -275,6 +279,8 @@ Template.PayrunApproval.onCreated(function () {
 Template.PayrunApproval.onRendered(function () {
   	let self = this
     
+    $("html, body").animate({ scrollTop: 0 }, "slow");
+
     self.autorun(function() {
         let selectedMonth = self.selectedMonth.get()
         let selectedYear = self.selectedYear.get()

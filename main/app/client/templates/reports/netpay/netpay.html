@@ -69,15 +69,13 @@
                                               <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                                   <thead>
                                                       <tr>
-                                                          {{#let header=result.[0]}}
-                                                            {{#each header}}
-                                                                <th>{{this}}</th>
-                                                            {{/each}}
-                                                          {{/let}}
+                                                        {{#each header}}
+                                                            <th>{{this}}</th>
+                                                        {{/each}}
                                                       </tr>
                                                   </thead>
                                                   <tbody>
-                                                    {{#each netPayData}}
+                                                    {{#each netPayDataWithoutEmployeeId}}
                                                       <tr>
                                                           {{#let rowData=this}}
                                                             {{#each rowData}}

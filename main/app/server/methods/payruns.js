@@ -152,8 +152,7 @@ Meteor.methods({
                     dataRow = [
                         employee.profile.fullName,
                         employee.employeeProfile.payment.bank || '',
-                        employee.employeeProfile.payment.accountNumber || '',
-                        0, 0
+                        employee.employeeProfile.payment.accountNumber || ''
                     ];
                 }
 
@@ -167,7 +166,7 @@ Meteor.methods({
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + tenant.baseCurrency.iso + ')')
                             }
-                            dataRow[3] = x.payment[i].amountPC
+                            dataRow.push(x.payment[i].amountPC)
                         } else if(x.payment[i].reference.startsWith('Standard_')) {
                             let currency = x.payment[i].reference.substring('Standard_'.length)
 
@@ -177,7 +176,7 @@ Meteor.methods({
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + currency + ')')
                             }
-                            dataRow[4] = x.payment[i].amountPC
+                            dataRow.push(x.payment[i].amountPC)
                         }
                     }
                 }
@@ -214,12 +213,12 @@ Meteor.methods({
                 let dataRow = []
 
                 let employee = Meteor.users.findOne({_id: x.employeeId});
-                if(employee){
+                if(employee) {
                     dataRow = [
+                        employee._id,
                         employee.profile.fullName,
                         employee.employeeProfile.payment.bank,
-                        employee.employeeProfile.payment.accountNumber,
-                        0
+                        employee.employeeProfile.payment.accountNumber || ''
                     ];
                 }
 
@@ -227,32 +226,42 @@ Meteor.methods({
                 for(let i = 0; i < numPayments; i++) {
                     if(x.payment[i].code === 'NMP') {// Got a net pay
                         if(x.payment[i].reference === 'Standard') {
-                            let foundAmountHeader = _.find(header, aHeader => {
-                                return aHeader === 'Amount (' + tenant.baseCurrency.iso + ')'
+                            let indexOfHeader = -1
+
+                            let foundAmountHeader = _.find(header, (aHeader, headerIndex) => {
+                                if(aHeader === 'Amount (' + tenant.baseCurrency.iso + ')') {
+                                    indexOfHeader = headerIndex
+                                    return true
+                                }
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + tenant.baseCurrency.iso + ')')
                             }
-                            dataRow[3] = x.payment[i].amountPC
+                            dataRow.push(x.payment[i].amountPC)
                         } else if(x.payment[i].reference.startsWith('Standard_')) {
-                            if(dataRow.length === 4) {
-                                dataRow.push(0)
-                            }
+                            let indexOfHeader = -1
                             let currency = x.payment[i].reference.substring('Standard_'.length)
 
-                            let foundAmountHeader = _.find(header, aHeader => {
-                                return aHeader === 'Amount (' + currency + ')'
+                            let foundAmountHeader = _.find(header, (aHeader, headerIndex) => {
+                                if(aHeader === 'Amount (' + currency + ')') {
+                                    indexOfHeader = headerIndex
+                                    return true
+                                }
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + currency + ')')
                             }
-                            dataRow[4] = x.payment[i].amountPC
+                            dataRow.push(x.payment[i].amountPC)
                         }
                     }
                 }
                 return dataRow
             });
-            return [header].concat(netpayData);
+
+            return {
+                headers: header,
+                data: netpayData
+            }
         }
     },
 

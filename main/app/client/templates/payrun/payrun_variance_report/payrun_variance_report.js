@@ -59,6 +59,7 @@ Template.PayrunVarianceReport.onCreated(function () {
 
 Template.PayrunVarianceReport.onRendered(function () {
   	self.$('select.dropdown').dropdown();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
 Template.PayrunVarianceReport.onDestroyed(function () {
