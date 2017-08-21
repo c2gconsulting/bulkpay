@@ -3,3 +3,12 @@
     color: #0088cc;
     font-size: x-large;
 }
+
+.panel-body {
+    max-width: 100%;
+    overflow-x: auto;
+}
+.scoll-tree {
+    width:500px;
+    height: 300px;
+}
