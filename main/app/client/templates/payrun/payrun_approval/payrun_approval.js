@@ -87,10 +87,13 @@ Template.PayrunApproval.events({
                    return employeePaysSoFar
                }
             }, [])
-            
+            let selectedMonth = tmpl.selectedMonth.get()
+            let selectedYear = tmpl.selectedYear.get()
+
             Modal.show('PayrunApprovalEmployees', {
-                bankName: bank,
-                userIds: userIds,
+                bankName: bank, 
+                userIds: userIds, 
+                periodFormat: `${selectedMonth}${selectedYear}`, 
                 payments: employeePayments
             });
        }

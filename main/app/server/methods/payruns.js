@@ -548,6 +548,13 @@ Meteor.methods({
                     
                     Payruns.insert(x);
                })
+               payObj.result.forEach(x => {
+                    x.period = `${period.month}${period.year}`
+                    x.businessId = businessId
+                    x.employeeId = x.payslip.employee.employeeUserId
+
+                    PayResults.insert(x);
+               })
            } catch (e){
                console.log(e);
            }

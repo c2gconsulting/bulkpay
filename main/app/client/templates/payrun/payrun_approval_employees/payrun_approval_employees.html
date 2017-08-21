@@ -1,5 +1,5 @@
 <template name="PayrunApprovalEmployees">
-    <div id="PayslipModal" class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-default">
@@ -9,18 +9,30 @@
                     </div>
                     
                     <div class="panel-body">
-                        <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                        <table id="tableThatFits" class="table table-responsive table-striped table-bordered result" cellspacing="0" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Employee Full Name</th>
-                                    <th>Net Pay</th>
+                                {{#each header}}
+                                    <th>{{this}}</th>
+                                {{/each}}
                                 </tr>
                             </thead>
                             <tbody>
-                            {{#each payments}}
-                                <tr class="">
-                                    <td>{{fullName}}</td>
-                                    <td>{{formatMoneyD amount 'NGN'}}</td>
+                            {{#each payrollData}}
+                                <tr>
+                                    {{#let rowData=this}}
+                                    {{#each rowData}}
+                                        {{#if isGreaterThan @index 1}}
+                                            {{#if isNumber this}}
+                                                <td>{{formatMoneyD this}}</td>
+                                            {{else}}
+                                                <td>{{this}}</td>
+                                            {{/if}}
+                                        {{else}}
+                                            <td>{{this}}</td>
+                                        {{/if}}
+                                    {{/each}}
+                                    {{/let}}
                                 </tr>
                             {{/each}}
                             </tbody>
