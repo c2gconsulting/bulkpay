@@ -156,6 +156,11 @@ Template.PayrunApproval.helpers({
     'increment': (index) => {
         return index += 1;
     },
+    'splice': (array, index) => {
+        if(array && array.length > 1) {
+            return array.splice(index)
+        }
+    },
     'approvals': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
         if(payrollApprovalConfig) {
@@ -213,15 +218,30 @@ Template.PayrunApproval.onCreated(function () {
         for(let i = 0; i < numBanks; i++) {
             let bankName = banks[i]
             let employeePayments = groupedByBank[bankName]
+            let maxNumNetPaysSoFar = 0
+            let totalNetPays = []
 
-            var totalNetPay = _.reduce(employeePayments, function(totalNetPaySoFar, item ) {
-                return totalNetPaySoFar + item[4]
-            }, 0)
-            //--
-            processedNetPayResults.push({
-                bank: bankName,
-                totalNetPay: totalNetPay
+            employeePayments.forEach(anEmployeeNetPayData => {
+                let netPaysInDiffCurrencies = anEmployeeNetPayData.splice(4)
+                let numNetPays = netPaysInDiffCurrencies.length
+
+                if(numNetPays > maxNumNetPaysSoFar) {
+                    let numExtraSlots = numNetPays - maxNumNetPaysSoFar
+                    for(let k = 0; k < numExtraSlots; k++) {
+                        totalNetPays.push(0)
+                    }
+                    maxNumNetPaysSoFar = numNetPays                    
+                }
+                netPaysInDiffCurrencies.forEach((aNetPay, netPayIndex) => {
+                    totalNetPays[netPayIndex] += aNetPay
+                })
             })
+            let bankData = [bankName]
+            totalNetPays.forEach(aNetPay => {
+                bankData.push(aNetPay)
+            })
+            processedNetPayResults.push(bankData)
+
             self.processedNetPayResults.set(processedNetPayResults)
         }
     }

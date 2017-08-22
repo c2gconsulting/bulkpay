@@ -473,6 +473,9 @@ Template.PayrunApprovalEmployees.helpers({
     },
     'isNumber': (value) => {
         return !isNaN(value)
+    },
+    'isStillFetchingData': () => {
+        return Template.instance().stillLoading.get()
     }
 });
 
@@ -484,6 +487,7 @@ Template.PayrunApprovalEmployees.onCreated(function () {
 
     self.employeePayrunForPeriod = new ReactiveVar()
     self.detailedPayrunResults = new ReactiveVar()
+    self.stillLoading = new ReactiveVar(true)
 
     self.autorun(() => {        
         let modalData = self.data
@@ -492,26 +496,14 @@ Template.PayrunApprovalEmployees.onCreated(function () {
         let businessId = Session.get('context')
         self.subscribe("paygrades", businessId);
 
-        let payrunSubs = self.subscribe('EmployeePayrunsForPeriod', userIds, periodFormat);
-        let payresultSubs = self.subscribe('EmployeePayresultsForPeriod', userIds, periodFormat);
-
-        if (payrunSubs.ready()) {
-            let employeePayrunForPeriod = Payruns.find({
-                employeeId: {$in: userIds}, 
-                period: periodFormat, 
-                businessId: businessId
-            }).fetch();
-            self.employeePayrunForPeriod.set(employeePayrunForPeriod)
-        }
-        if (payresultSubs.ready()) {
-            let detailedPayrunResults = PayResults.find({
-                employeeId: {$in: userIds}, 
-                period: periodFormat, 
-                businessId: businessId
-            }).fetch();
-
-            self.detailedPayrunResults.set(detailedPayrunResults)
-        }
+        Meteor.call('PayResults/getEmployeesPayrunAndPayresults', businessId, userIds, periodFormat, function(err, res){
+            if(res) {
+                self.employeePayrunForPeriod.set(res.payRuns)
+                self.detailedPayrunResults.set(res.payResults)
+            } else {   
+            }
+            self.stillLoading.set(false)
+        });
     });
 });
 

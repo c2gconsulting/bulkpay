@@ -56,7 +56,7 @@
                                     </div>
                                 </div>
                                 {{#if processedNetPayResults}}
-                                    <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                                    <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%" style='border: 1px solid #efefef;'>
                                         <thead>
                                             <tr>
                                                 {{#each header}}
@@ -66,10 +66,14 @@
                                         </thead>
                                         <tbody>
                                         {{#each processedNetPayResults}}
-                                            <tr class="pointer bankTotalNetPay" data-bank="{{bank}}">
-                                                <td>{{bank}}</td>
-                                                <td>{{formatMoneyD totalNetPay 'NGN'}}</td>
+                                            {{#let rowData=this}}
+                                            <tr class="pointer bankTotalNetPay" data-bank="{{rowData.[0]}}">
+                                                <td>{{rowData.[0]}}</td>
+                                                {{#each (splice rowData 1)}}
+                                                    <td>{{formatMoneyD this}}</td>
+                                                {{/each}}
                                             </tr>
+                                            {{/let}}
                                         {{/each}}
                                         </tbody>
                                     </table>

@@ -9,6 +9,10 @@
                     </div>
                     
                     <div class="panel-body">
+                        {{#if isStillFetchingData}}
+                        {{> spinner}}
+                        {{/if}}
+                        
                         <div class="scoll-tree">
                         <table id="tableThatFits" class="table table-responsive table-striped table-bordered result" cellspacing="0" width="100%">
                             <thead>
