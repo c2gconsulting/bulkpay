@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 /*****************************************************************************/
 /* LeaveCreate: Event Handlers */
 /*****************************************************************************/
@@ -107,7 +109,28 @@ Template.LeaveCreate.events({
 /*****************************************************************************/
 Template.LeaveCreate.helpers({
     'leaveTypes': function () {
-        return LeaveTypes.find()
+        let allLeaveTypes = LeaveTypes.find().fetch() || []
+        let user = Meteor.users.findOne(Meteor.userId())
+
+        if(user) {
+            let userPaygrade = user.employeeProfile.employment.paygrade
+
+            let allowedLeaveTypes = []
+    
+            allLeaveTypes.forEach(aLeaveType => {
+                let allowedPaygrades = aLeaveType.payGradeIds
+                
+                let isLeaveTypeAllowed = _.find(allowedPaygrades, aPayGrade => {
+                    return aPayGrade === userPaygrade
+                })
+                if(isLeaveTypeAllowed) {
+                    allowedLeaveTypes.push(aLeaveType)
+                }
+            })
+            return allowedLeaveTypes
+        } else {
+            return []
+        }
     },
     inputErrorMsg: function() {
         return Template.instance().inputErrorMsg.get()
