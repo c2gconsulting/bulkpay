@@ -36,11 +36,7 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
                 if(userHireDate) {
                     let userHireDateMoment = moment(userHireDate)
-
-                    let month = userHireDateMoment.month()
-                    let year = userHireDateMoment.year()
-
-                    if(dateLimitMonth >= month && dateLimitYear >= year) {
+                    if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
                         users.push(aUser)
                     }
                 }
@@ -496,11 +492,7 @@ Meteor.methods({
                         let userHireDate = aUser.employeeProfile.employment.hireDate
                         if(userHireDate) {
                             let userHireDateMoment = moment(userHireDate)
-
-                            let month = userHireDateMoment.month()
-                            let year = userHireDateMoment.year()
-
-                            if(dateLimitMonth >= month && dateLimitYear >= year) {
+                            if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
                                 users.push(aUser)
                             }
                         }

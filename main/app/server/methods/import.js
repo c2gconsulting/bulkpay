@@ -30,8 +30,8 @@ Meteor.methods({
                 errorCount += 1
             }
             //amount is string, change to number
-            let payTypeAmount = item.amount || 0
-            let payTypeAmountWithNoCommas = payTypeAmount.replace(/,/g, "").trim();
+            let payTypeAmount = item.amount || "0"
+            let payTypeAmountWithNoCommas = payTypeAmount.trim().replace(/,/g, "");
 
             item.amount = parseFloat(payTypeAmountWithNoCommas);
             //add period to item
