@@ -674,13 +674,26 @@ _.extend(Core, {
     banks: function() {
         return [
             {name: 'Access Bank', code: "Access"},
+            {name: 'Citibank', code: "CITIBANK"},
             {name: 'Diamond Bank', code: "DIAMOND"},
             {name: 'Equitorial Trust Bank', code: "ETB"},
             {name: 'Eco Bank', code: "ECO"},
             {name: 'Fidelity Bank', code: "ETB"},
             {name: 'First Bank', code: "FBN"},
+            {name: 'First City Monument Bank', code: "FIRSTCITY"},
             {name: 'Guarantee Trust Bank', code: "GTB"},
-            {name: 'Stanbic Ibtck Bank', code: "STANBIC"},
+            {name: 'Heritage Bank', code: "HERITAGE"},
+            {name: 'Keystone Bank', code: "KEYSTONE"},
+            {name: 'Providus Bank', code: "PROVIDUS"},
+            {name: 'Stanbic Ibtc Bank', code: "STANBIC"},
+            {name: 'Skye Bank', code: "SKYE"},
+            {name: 'Standard Chartered Bank', code: "STANDARDCHARTERED"},
+            {name: 'Suntrust Bank', code: "SUNTRUST"},
+            {name: 'Union Bank of Nigeria', code: "UNION"},
+            {name: 'United Bank for Africa', code: "UNITED"},
+            {name: 'Unity Bank', code: "UNITY"},
+            {name: 'Wema Bank', code: "WEMA"},
+            {name: 'Zenith Bank', code: "ZENITH"}
         ]
     },
     'months': function(){
