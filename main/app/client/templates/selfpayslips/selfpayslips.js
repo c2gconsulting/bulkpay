@@ -88,7 +88,9 @@ Template.selfpayslips.onCreated(function () {
 
     self.processSelfPayslipData = (payrunData) => {
         let benefit = []
+        let benefitsForDisplay = []
         let deduction = []
+
         let others = []
         let totalPayment = 0
         let totalDeduction = 0
@@ -122,13 +124,17 @@ Template.selfpayslips.onCreated(function () {
 
         for(var aPayment of payrunData.payment) {
             if(aPayment.type === 'Benefit') {
-                if(aPayment.displayInPayslip && aPayment.addToTotal) {
-                    benefit.push({
-                        title: aPayment.description,
-                        code: aPayment.code,
-                        value: aPayment.amountLC,
-                        valueInForeignCurrency: aPayment.amountPC
-                    })
+                let paymentData = {
+                    title: aPayment.description,
+                    code: aPayment.code,
+                    value: aPayment.amountLC,
+                    valueInForeignCurrency: aPayment.amountPC
+                }
+                if(aPayment.displayInPayslip) {
+                    benefitsForDisplay.push(paymentData)
+                }
+                if(aPayment.addToTotal) {
+                    benefit.push(paymentData)
                 }
             } else if(aPayment.type === 'Deduction') {
                 // if(aPayment.displayInPayslip && aPayment.addToTotal) {
@@ -153,7 +159,7 @@ Template.selfpayslips.onCreated(function () {
             }
         }
         totalPayment = self.sumPaymentsForPaySlip(benefit)
-        totalDeduction = self.sumPaymentsForPaySlip(deduction)
+        totalDeduction = self.sumPaymentsForPaySlip(deduction) || 0
         //--
         let employee = {
             employeeId: user.employeeProfile.employeeId,
@@ -162,7 +168,12 @@ Template.selfpayslips.onCreated(function () {
             bank: user.employeeProfile.payment.bank || "",
             grade: userPayGrade.description
         }
-        return {benefit, deduction, others, totalPayment, totalDeduction, netPayment, employee}
+        return {
+            benefit: benefitsForDisplay, deduction: deduction, 
+            others, totalPayment, 
+            totalDeduction: totalDeduction * -1, 
+            netPayment, employee
+        }
     }
 });
 
