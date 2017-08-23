@@ -600,7 +600,9 @@ Template.PayrunNew.helpers({
         return Template.instance().includePay.get();
     },
     'annualPay': () => {
-        return PayTypes.find().fetch();
+        return PayTypes.find({
+            frequency: 'Annually'
+        }).fetch();
     },
     'checkInitial': (index) => {
         return index === 0 ? 'checked': null;
@@ -656,6 +658,7 @@ Template.PayrunNew.onCreated(function () {
     self.subscribe("paygrades", businessUnitId);
     self.subscribe("activeEmployees", businessUnitId);
     self.subscribe('PayrollApprovalConfigs', businessUnitId);
+    self.subscribe("PayTypes", businessUnitId);
 
     self.dict = new ReactiveDict();
     self.showPayGrade = new ReactiveVar(true);
