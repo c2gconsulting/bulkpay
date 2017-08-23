@@ -12,8 +12,13 @@ Meteor.methods({
             period: period
         })
 
-        if(selfPayrun) {
-            return selfPayrun
+        let selfPayResults = PayResults.findOne({
+            employeeId: Meteor.userId(), 
+            period: period
+        });
+
+        if(selfPayrun && selfPayResults) {
+            return {selfPayrun, selfPayResults}
         } else {
             throw new Meteor.Error(404, 'You do not have a payslip for that period');
         }

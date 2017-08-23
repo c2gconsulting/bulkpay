@@ -13,7 +13,10 @@ Template.selfpayslips.events({
         Meteor.call('Payslip/getSelfPayslipForPeriod', businessUnitId, period, function(err, res) {
             if(!err) {
                 tmpl.errorMsg.set(null);
-                let processedPayslipData = tmpl.processSelfPayslipData(res)
+                let selfPayrun = res.selfPayrun
+                let selfPayResults = res.selfPayResults
+                
+                let processedPayslipData = tmpl.processSelfPayslipData(selfPayrun)
                 // console.log(`processedPayslipData: ${JSON.stringify(processedPayslipData)}`)
 
                 if(processedPayslipData) {
@@ -23,8 +26,15 @@ Template.selfpayslips.events({
                     }
                 }
 
+                let payLoadForPayslip = {
+                    payslip: processedPayslipData, 
+                    payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation
+                }
+
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
-                Modal.show('Payslip', processedPayslipData);
+                // Modal.show('Payslip', processedPayslipData);
+
+                Modal.show('Payslip', payLoadForPayslip);
             } else {
                 tmpl.errorMsg.set(err.message);
             }
