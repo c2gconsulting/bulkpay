@@ -8,7 +8,6 @@ Template.header.events({
     'click .requisitionRowForApproval': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -20,7 +19,6 @@ Template.header.events({
     'click .requisitionRowForEdit': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -34,7 +32,6 @@ Template.header.events({
         e.stopPropagation()
 
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
         let businessUnitId = Session.get('context')
 
         Meteor.call('ProcurementRequisition/markAsSeen', businessUnitId, requisitionId, function(err, res) {
@@ -57,7 +54,6 @@ Template.header.events({
         e.preventDefault()
 
         let leaveId = e.currentTarget.getAttribute('data-leaveId')
-        console.log(`[Inside leaveApprovalSeen] leaveId: ${leaveId}`)
         let businessUnitId = Session.get('context')
 
         Meteor.call('Leaves/markAsSeen', businessUnitId, leaveId, function(err, res) {
@@ -70,7 +66,6 @@ Template.header.events({
         e.preventDefault()
 
         let timeId = e.currentTarget.getAttribute('data-timeId')
-        console.log(`[Inside timeApprovalSeen] timeId: ${timeId}`)
         let businessUnitId = Session.get('context')
 
         Meteor.call('time/markAsSeen', businessUnitId, timeId, function(err, res) {
@@ -128,8 +123,6 @@ Template.header.helpers({
     },
     businessUnitLogoUrl: function() {
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
-        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
-
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     }
 });
@@ -187,7 +180,7 @@ Template.header.onCreated(function() {
             
             let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
 
-            if(businessUnitCustomConfig.displayLogoInSideBar) {
+            if(businessUnitCustomConfig && businessUnitCustomConfig.displayLogoInSideBar) {
                 self.businessUnitLogoUrl.set(businessUnit.logoUrl)
             }
         }

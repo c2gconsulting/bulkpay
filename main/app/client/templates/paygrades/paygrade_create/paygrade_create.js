@@ -260,9 +260,11 @@ Template.PaygradeCreate.onCreated(function () {
                 self.data.payTypes.forEach(x=>{
                     //extend all assigned paytypes with reference doc. properties
                     let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-                    delete ptype.paytype;
-                    _.extend(x, ptype);
-                    return x;
+                    if(ptype) {
+                        delete ptype.paytype;
+                        _.extend(x, ptype);
+                        return x;    
+                    }
                 });
                 self.dict.set("assigned", self.data.payTypes); //set assigned to be data
                 // console.log(self.data.payTypes);

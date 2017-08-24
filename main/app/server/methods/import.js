@@ -72,7 +72,6 @@ Meteor.methods({
         }
 
         return {skipped: skippedCount, success: successCount, failed: errorCount, errors: errors}
-
     }
 
 });

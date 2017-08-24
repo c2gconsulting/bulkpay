@@ -3,7 +3,6 @@
 /*****************************************************************************/
 Template.ApplicationLayout.events({
 	'click [name="logout"]': function(e, tmpl) {
-        console.log("you want to log out");
 	    	Meteor.logout(function(err) {
 			      if (!err) {
 			          Session.keys = {};
@@ -104,7 +103,6 @@ Template.ApplicationLayout.helpers({
     },
     themeBackgroundColor: function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
 
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.baseColor;
