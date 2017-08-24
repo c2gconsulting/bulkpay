@@ -298,7 +298,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Unauthorized");
         }
         let account =  Meteor.users.findOne(userId);
-        if (account){
+        if (account){            
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.paytypes": payTypesArray
             }});

@@ -63,9 +63,6 @@ Meteor.methods({
                         let anEmployeePayType = employeePaytypes[i]
                         
                         if(anEmployeePayType) {
-                            if(!aPayGradePayType.paytype) {
-                                console.log(`: `, anEmployee._id)
-                            }
                             if(anEmployeePayType.paytype === aPayGradePayType.paytype) {
                                 employeePayTypeWithVal = anEmployeePayType
                                 break;

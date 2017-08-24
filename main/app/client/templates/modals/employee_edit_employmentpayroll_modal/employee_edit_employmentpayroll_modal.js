@@ -395,7 +395,14 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
             return x;
           });
         }
-        Template.instance().assignedTypes.set(paytypes);
+        //-- Removed undefined
+        let assigned = []
+        paytypes.forEach(aPaytype => {
+            if(aPaytype) {
+                assigned.push(aPaytype)
+            }
+        })
+        Template.instance().assignedTypes.set(assigned);
     }
   }
 
@@ -432,17 +439,17 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
 
   self.autorun(function(){
       //rerun computation if assigned value changes
-      let assigned = self.assignedTypes.get();
+      let assigned = self.assignedTypes.get() || []
 
       let input = $('input[type=text]');
       if(assigned){
-          assigned.forEach((x,index) => {
+          assigned.forEach((x, index) => {
               if(x) {
                 let formula = x.inputed || x.value;
                 if(formula){
                     //replace all wagetypes with values
                     for (var i = 0; i < index; i++) {
-                        if(assigned[i].code){
+                        if(assigned[i] && assigned[i].code){
                             const code = assigned[i].code? assigned[i].code.toUpperCase():assigned[i].code;
                             const regex = getPayRegex(code);
                             formula = formula.replace(regex, assigned[i].parsedValue);
@@ -463,7 +470,6 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
                           x.monthly = (parsed.result / 12).toFixed(2);
                           //set default inputed as parsed value if not editable per employee
                         } else {
-                          console.log("[Autorun] x.parsed.result is NULL");
                           x.parsedValue = 0;
                           x.monthly = 0;
                         }
@@ -472,7 +478,6 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
                     if (parsed.error) {
                         x.parsedValue = parsed.error;
                         x.monthly = ""
-  
                     }
                 } else {
                     x.parsedValue = "";
