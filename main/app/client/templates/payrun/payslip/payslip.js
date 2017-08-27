@@ -40,7 +40,6 @@ Template.Payslip.helpers({
     },
     'getNetPayAlternateCurrency': function() {
         let self = Template.instance()
-
         if(self.data.payslip && self.data.payslip.employee && self.data.payslip.employee.gradeId) {
             let employeePayGradeId = self.data.payslip.employee.gradeId
             let payGrade = PayGrades.findOne(employeePayGradeId)
@@ -204,8 +203,6 @@ Template.Payslip.helpers({
     },
     paySlipBusinessLogoUrl: function() {
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
-        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
-
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     }
 });

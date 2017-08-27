@@ -15,25 +15,13 @@ Template.selfpayslips.events({
                 tmpl.errorMsg.set(null);
                 let selfPayrun = res.selfPayrun
                 let selfPayResults = res.selfPayResults
-                
-                let processedPayslipData = tmpl.processSelfPayslipData(selfPayrun)
-                // console.log(`processedPayslipData: ${JSON.stringify(processedPayslipData)}`)
-
-                if(processedPayslipData) {
-                    processedPayslipData.period = {
-                        month: paymentPeriodMonth,
-                        year: paymentPeriodYear
-                    }
-                }
 
                 let payLoadForPayslip = {
-                    payslip: processedPayslipData, 
+                    payslip: selfPayResults.payslip, 
                     payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation
                 }
 
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
-                // Modal.show('Payslip', processedPayslipData);
-
                 Modal.show('Payslip', payLoadForPayslip);
             } else {
                 tmpl.errorMsg.set(err.message);
@@ -77,104 +65,6 @@ Template.selfpayslips.onCreated(function () {
     self.subscribe("PayTypes", Session.get('context'));
 
     self.errorMsg = new ReactiveVar();
-
-    self.sumPaymentsForPaySlip = (payments) => {
-        const newPay = [...payments];
-        const sum = newPay.reduce(function(total, val) {
-            return total + parseFloat(val.value);
-        }, 0);
-        return parseFloat(sum).toFixed(2) ;
-    }
-
-    self.processSelfPayslipData = (payrunData) => {
-        let benefit = []
-        let benefitsForDisplay = []
-        let deduction = []
-
-        let others = []
-        let totalPayment = 0
-        let totalDeduction = 0
-        let netPayment = 0
-        //--
-        let user = Meteor.user()
-        let userPayGrade = PayGrades.findOne({_id: user.employeeProfile.employment.paygrade})
-        let allPayTypes = PayTypes.find({'status': 'Active'}).fetch();
-
-        payrunData.payment.forEach(aPayrunPaytype => {
-            let foundPaygradePaytype = _.find(userPayGrade.payTypes, (aPaygradePaytype) => {
-                return aPaygradePaytype.paytype === aPayrunPaytype.id
-            })
-            if(foundPaygradePaytype) {
-                _.extend(aPayrunPaytype, {
-                    displayInPayslip : foundPaygradePaytype.displayInPayslip
-                })
-            }
-            //--
-            let foundGeneralPaytype = _.find(allPayTypes, (aGeneralPaytype) => {
-                return aGeneralPaytype._id === aPayrunPaytype.id
-            })
-            if(foundGeneralPaytype) {
-                _.extend(aPayrunPaytype, {
-                    addToTotal : foundGeneralPaytype.addToTotal
-                })
-            }
-        })
-        // console.log(`payrunData.payment: ${JSON.stringify(payrunData.payment)}`)
-
-
-        for(var aPayment of payrunData.payment) {
-            if(aPayment.type === 'Benefit') {
-                let paymentData = {
-                    title: aPayment.description,
-                    code: aPayment.code,
-                    value: aPayment.amountLC,
-                    valueInForeignCurrency: aPayment.amountPC
-                }
-                if(aPayment.displayInPayslip) {
-                    benefitsForDisplay.push(paymentData)
-                }
-                if(aPayment.addToTotal) {
-                    benefit.push(paymentData)
-                }
-            } else if(aPayment.type === 'Deduction') {
-                // if(aPayment.displayInPayslip && aPayment.addToTotal) {
-                    deduction.push({
-                        title: aPayment.description,
-                        code: aPayment.code,
-                        value: aPayment.amountLC,
-                        valueInForeignCurrency: aPayment.amountPC
-                    })
-                // }
-            } else if(aPayment.type === 'Others') {
-                // if(aPayment.displayInPayslip && aPayment.addToTotal) {
-                    others.push({
-                        title: aPayment.description,
-                        code: aPayment.code,
-                        value: aPayment.amountLC,
-                        valueInForeignCurrency: aPayment.amountPC
-                    })
-                // }
-            } else if(aPayment.type === 'netPayment') {
-                netPayment = aPayment.amountLC
-            }
-        }
-        totalPayment = self.sumPaymentsForPaySlip(benefit)
-        totalDeduction = self.sumPaymentsForPaySlip(deduction) || 0
-        //--
-        let employee = {
-            employeeId: user.employeeProfile.employeeId,
-            fullname: user.profile.fullName,
-            accountNumber: user.employeeProfile.payment.accountNumber || "",
-            bank: user.employeeProfile.payment.bank || "",
-            grade: userPayGrade.description
-        }
-        return {
-            benefit: benefitsForDisplay, deduction: deduction, 
-            others, totalPayment, 
-            totalDeduction: totalDeduction * -1, 
-            netPayment, employee
-        }
-    }
 });
 
 Template.selfpayslips.onRendered(function () {
