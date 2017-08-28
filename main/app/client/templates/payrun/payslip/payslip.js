@@ -216,7 +216,7 @@ Template.Payslip.helpers({
             let allPayTypes = Template.instance().allPayTypes.get()
     
             if(employeePayGrade && allPayTypes) {
-                let payGradePaytypes = employeePayGrade.payTypes
+                let payGradePaytypes = employeePayGrade.payTypePositionIds
     
                 let foundPayTypeInPayGrade = _.find(payGradePaytypes, (aPayTypeInPaygrade) => {
                     if(aPayTypeInPaygrade) {
@@ -290,7 +290,6 @@ Template.Payslip.onCreated(function () {
             self.employeePayGrade.set(PayGrades.findOne({
                 _id: employeePayGradeId
             }))
-            console.log(`employee paygrade: `, self.employeePayGrade.get())
             self.allPayTypes.set(PayTypes.find({businessId: businessUnitId}).fetch())
         }
     })
