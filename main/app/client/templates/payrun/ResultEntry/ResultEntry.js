@@ -14,7 +14,8 @@ Template.ResultEntry.events({
 
         let payLoadForPayslip = {
             payslip: tmpl.data.payslip,
-            payslipWithCurrencyDelineation: tmpl.data.payslipWithCurrencyDelineation
+            payslipWithCurrencyDelineation: tmpl.data.payslipWithCurrencyDelineation, 
+            displayAllPaymentsUnconditionally: true
         }
 
         Modal.show('Payslip', payLoadForPayslip);

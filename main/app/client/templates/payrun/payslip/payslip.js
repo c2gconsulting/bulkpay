@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 /*****************************************************************************/
 /* Payslip: Event Handlers */
 /*****************************************************************************/
@@ -204,6 +206,33 @@ Template.Payslip.helpers({
     paySlipBusinessLogoUrl: function() {
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
+    },
+    shouldDisplayPaymentInPayslip: function(payTypeCode) {
+        let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
+        if(displayAllPaymentsUnconditionally) {
+            return true
+        } else {
+            let employeePayGrade = Template.instance().employeePayGrade.get()
+            let allPayTypes = Template.instance().allPayTypes.get()
+    
+            if(employeePayGrade && allPayTypes) {
+                let payGradePaytypes = employeePayGrade.payTypes
+    
+                let foundPayTypeInPayGrade = _.find(payGradePaytypes, (aPayTypeInPaygrade) => {
+                    if(aPayTypeInPaygrade) {
+                        let foundPayType = _.find(allPayTypes, (aPayType) => {
+                            return aPayType._id === aPayTypeInPaygrade.paytype
+                        })
+                        if(foundPayType) {
+                            return foundPayType.code === payTypeCode
+                        }
+                    }
+                })
+                if(foundPayTypeInPayGrade) {
+                    return foundPayTypeInPayGrade.displayInPayslip
+                }
+            }
+        }
     }
 });
 
@@ -213,6 +242,8 @@ Template.Payslip.helpers({
 Template.Payslip.onCreated(function () {
     let self = this;
 
+    self.displayAllPaymentsUnconditionally = self.data.displayAllPaymentsUnconditionally
+
     self.employeeData = new ReactiveVar();
     self.employeeData.set(self.data.payslip.employee);
 
@@ -221,12 +252,17 @@ Template.Payslip.onCreated(function () {
 
     self.payrunPeriod = new ReactiveVar();
 
+    self.employeePayGrade = new ReactiveVar()
+    self.allPayTypes = new ReactiveVar()
+
 
     let businessUnitId = Session.get('context')
 
     let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-    self.subscribe("paygrades", Session.get('context'));
+    let payGradesSubs = self.subscribe("paygrades", Session.get('context'));
     // console.log(`payments: `, self.data)
+
+    let payTypesSubs = self.subscribe("PayTypes", Session.get('context'));
 
     let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
     self.subscribe('currenciesForPeriod', formattedPeriod);
@@ -247,6 +283,15 @@ Template.Payslip.onCreated(function () {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             self.businessUnitName.set(businessUnit.name)
             self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+        }
+        if(payTypesSubs.ready() && payGradesSubs.ready()) {
+            let employeePayGradeId = self.data.payslip.employee.gradeId
+
+            self.employeePayGrade.set(PayGrades.findOne({
+                _id: employeePayGradeId
+            }))
+            console.log(`employee paygrade: `, self.employeePayGrade.get())
+            self.allPayTypes.set(PayTypes.find({businessId: businessUnitId}).fetch())
         }
     })
 });

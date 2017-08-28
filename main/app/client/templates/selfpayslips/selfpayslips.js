@@ -18,7 +18,8 @@ Template.selfpayslips.events({
 
                 let payLoadForPayslip = {
                     payslip: selfPayResults.payslip, 
-                    payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation
+                    payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
+                    displayAllPaymentsUnconditionally: false
                 }
 
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
