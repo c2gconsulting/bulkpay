@@ -1241,7 +1241,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                     if(pension) {
                         let valueInForeignCurrency = employeePenContrib * -1
-                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: pension.name, value: employeePenContrib * -1, valueInForeignCurrency});
+                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: `${pension.name} Employee`, value: employeePenContrib * -1, valueInForeignCurrency});
 
                         if(pension.displayEmployerInPayslip) {                         
                             valueInForeignCurrency = employerPenContrib

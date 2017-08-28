@@ -17,6 +17,7 @@ Template.selfpayslips.events({
                 let selfPayResults = res.selfPayResults
 
                 let payLoadForPayslip = {
+                    payrun: selfPayrun,
                     payslip: selfPayResults.payslip, 
                     payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
                     displayAllPaymentsUnconditionally: false

@@ -57,7 +57,7 @@
                                 </thead>
                                 <tbody>
                                 {{#each benefit}}
-                                {{#if shouldDisplayPaymentInPayslip code}}
+                                {{#if shouldDisplayPaymentInPayslip this}}
                                 <tr>
                                     <td>
                                         <h5><a href="">{{title}}</a></h5>
@@ -131,7 +131,7 @@
                                 </thead>
                                 <tbody>
                                 {{#each deduction}}
-                                    {{#if shouldDisplayPaymentInPayslip code}}
+                                    {{#if shouldDisplayPaymentInPayslip this}}
                                     <tr>
                                         <td>
                                             <h5><a href="">{{title}}</a></h5>
@@ -200,7 +200,7 @@
                                 </thead>
                                 <tbody>
                                 {{#each others}}
-                                    {{#if shouldDisplayPaymentInPayslip code}}
+                                    {{#if shouldDisplayPaymentInPayslip this}}
                                     <tr>
                                         <td>
                                             <h5><a href="">{{title}}</a></h5>

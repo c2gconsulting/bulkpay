@@ -179,6 +179,12 @@ Template.Payslip.helpers({
     addition: function(a, b) {
         return a + b
     },
+    eq: function(a, b) {
+        return a === b
+    },
+    or: function(a, b) {
+        return a || b
+    },
     totalBenefitForCurrency: function(currency) {
         let self = Template.instance()
 
@@ -207,11 +213,22 @@ Template.Payslip.helpers({
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     },
-    shouldDisplayPaymentInPayslip: function(payTypeCode) {
+    shouldDisplayPaymentInPayslip: function(paySlipPayType) {
         let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
         if(displayAllPaymentsUnconditionally) {
             return true
         } else {
+            let payrun = Template.instance().data.payrun
+
+            let foundPayType = _.find(payrun.payment, (aPayType) => {
+                return (aPayType.reference === 'Tax' || aPayType.reference === 'Pension') && aPayType.description === paySlipPayType.code
+            })
+            if(foundPayType) {
+                if(foundPayType.reference === 'Tax' || foundPayType.reference === 'Pension') {
+                    return true
+                }
+            }
+
             let employeePayGrade = Template.instance().employeePayGrade.get()
             let allPayTypes = Template.instance().allPayTypes.get()
     
@@ -224,7 +241,7 @@ Template.Payslip.helpers({
                             return aPayType._id === aPayTypeInPaygrade.paytype
                         })
                         if(foundPayType) {
-                            return foundPayType.code === payTypeCode
+                            return foundPayType.code === paySlipPayType.code
                         }
                     }
                 })
