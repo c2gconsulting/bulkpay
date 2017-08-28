@@ -256,16 +256,20 @@ Template.PaygradeCreate.onCreated(function () {
         //populate and map paytypes
         self.autorun(function(){
             if (Template.instance().subscriptionsReady()){
+                let assignedPaytypesTemp = []
                 self.data.payTypes.forEach(x=>{
-                    //extend all assigned paytypes with reference doc. properties
-                    let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-                    if(ptype) {
-                        delete ptype.paytype;
-                        _.extend(x, ptype);
-                        return x;    
+                    if(Object.keys(x).length > 0) {
+                        //extend all assigned paytypes with reference doc. properties
+                        let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+                        if(ptype) {
+                            delete ptype.paytype;
+                            _.extend(x, ptype);
+                            // return x;    
+                            assignedPaytypesTemp.push(x)
+                        }
                     }
                 });
-                self.dict.set("assigned", self.data.payTypes); //set assigned to be data
+                self.dict.set("assigned", assignedPaytypesTemp); //set assigned to be data
                 // console.log(self.data.payTypes);
                 //--
                 if(selectedPayGradeIdForEdit) {
