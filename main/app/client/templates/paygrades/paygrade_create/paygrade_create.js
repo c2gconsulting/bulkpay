@@ -211,13 +211,13 @@ Template.PaygradeCreate.helpers({
         return false;
     },
     'displayInSlip': (id) => {
-        if(Template.instance().data){
-           let index =  _.findLastIndex(Template.instance().data.payTypes, {paytype: id});
-            if(index !== -1)
-                return Template.instance().data.payTypes[index].displayInPayslip;
-        }
+        let payTypesPositionOnPayrunExport = Template.instance().payTypesPositionOnPayrunExport.get()
 
-        //return false;
+        if(payTypesPositionOnPayrunExport){
+           let index =  _.findLastIndex(payTypesPositionOnPayrunExport, {paytype: id});
+            if(index !== -1)
+                return payTypesPositionOnPayrunExport[index].displayInPayslip;
+        }
     },
     'action': () => {
         data = Template.instance().data;
@@ -280,6 +280,18 @@ Template.PaygradeCreate.onCreated(function () {
                                 if(ptype) {
                                     delete ptype.paytype;
                                     _.extend(x, ptype);
+                                }
+                            });
+                            self.data.payTypes.forEach(x => {
+                                let foundPayTypeInPaygradePaytypePositions = _.find(currentPayGrade.payTypePositionIds, y => {
+                                    return y._id === x._id
+                                })
+                                if(!foundPayTypeInPaygradePaytypePositions && Object.keys(x).length > 0) {
+                                    let newX = {...x}
+                                    newX.displayInPayslip = true
+                                    newX.paySlipPositionId = currentPayGrade.payTypePositionIds.length
+ 
+                                    currentPayGrade.payTypePositionIds.push(newX)
                                 }
                             });
                             self.payTypesPositionOnPayrunExport.set(currentPayGrade.payTypePositionIds)
