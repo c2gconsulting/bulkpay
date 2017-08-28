@@ -121,13 +121,12 @@ Template.PaygradeCreate.events({
     },
     'click .payslip': (e, tmpl) => {
         let selected = $(e.target).is(":checked");
-        let assigned = tmpl.dict.get("assigned");
+        let payTypesPositionOnPayrunExport = Template.instance().payTypesPositionOnPayrunExport.get()
         let id = $(e.target).attr('id');
 
         let index = parseInt(id);
-        assigned[index].displayInPayslip = selected;
-        //set the assigned dict;
-        tmpl.dict.set("assigned", assigned);
+        payTypesPositionOnPayrunExport[index].displayInPayslip = selected;
+        Template.instance().payTypesPositionOnPayrunExport.set(payTypesPositionOnPayrunExport)
     },
     'blur .calc': (e, tmpl) => {
         let index = $(e.target).closest('tr')[0].rowIndex;
