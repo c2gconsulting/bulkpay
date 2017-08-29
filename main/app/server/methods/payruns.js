@@ -311,15 +311,17 @@ Meteor.methods({
             const tax = result.map(x => {
                 const taxIndex = _.findLastIndex(x.payment, {reference: 'Tax'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
                 if(taxIndex > -1) {
-                    const amountLC = x.payment[taxIndex].amountLC;
+                    const taxCode = x.payment[taxIndex].code;
+                    const amountPC = x.payment[taxIndex].amountPC;
                     //get employee details
                     let employee = Meteor.users.findOne({_id: x.employeeId});
                     if(employee){
                         const info = {
                             fullName: employee.profile.fullName,
                             state: employee.employeeProfile.state,
+                            code: taxCode, 
                             taxPayerId: employee.employeeProfile.payment.taxPayerId,
-                            amount: amountLC
+                            amount: amountPC
                         };
                         return info;
                     }

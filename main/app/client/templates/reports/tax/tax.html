@@ -72,17 +72,23 @@
                                                           <th>Name</th>
                                                           <th>State</th>
                                                           <th>Tax Payer ID</th>
-                                                          <th>Amount in LC</th>
+                                                          {{#each taxHeaders}}
+                                                            <th>{{this}}</th>
+                                                          {{/each}}
                                                       </tr>
                                                   </thead>
                                                   <tbody>
                                                     {{#each result}}
+                                                    {{#let currentTaxRecord=this}}
                                                       <tr>
                                                           <td>{{fullName}}</td>
                                                           <td>{{state}}</td>
                                                           <td>{{taxPayerId}}</td>
-                                                          <td>{{formatMoneyD amount 'NGN'}}</td>
+                                                          {{#each taxHeaders}}
+                                                            <th>{{formatMoneyD (getTaxAmount currentTaxRecord this)}}</th>
+                                                          {{/each}}
                                                       </tr>
+                                                      {{/let}}
                                                     {{/each}}
                                                   </tbody>
                                               </table>

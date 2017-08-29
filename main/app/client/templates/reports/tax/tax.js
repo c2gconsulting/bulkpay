@@ -1,4 +1,6 @@
 
+import _ from 'underscore';
+
 /*****************************************************************************/
 /* TaxReport: Event Handlers */
 /*****************************************************************************/
@@ -8,7 +10,6 @@ Template.TaxReport.events({
 
     if (value && value.trim().length > 0) {
       Session.get('payrollPeriod', value);
-      console.log("payrollPeriod changed to: " + value);
     }
   },
    'click .getResult': (e, tmpl) => {
@@ -17,9 +18,11 @@ Template.TaxReport.events({
       if(month && year) {
           const period = month + year;
           Meteor.call('getTaxResult', Session.get('context'), period, function(err, res){
-              if(res && res.length){
-                  console.log('logging response as ', res);
-                  tmpl.dict.set('result', res);
+              if(res && res.length) {
+                  let taxCodes = tmpl.getTaxHeaders(res)
+                  tmpl.taxCodes.set(taxCodes);
+
+                  tmpl.taxReportData.set(res);
               } else {
                   swal('No result found', 'Payroll Result not found for period', 'error');
               }
@@ -95,11 +98,26 @@ Template.TaxReport.helpers({
     'month': function(){
         return Core.months()
     },
-    'year': function(){
+    'year': function() {
         return Core.years();
     },
     'result': () => {
-        return Template.instance().dict.get('result');
+        return Template.instance().taxReportData.get();
+    },
+    'taxHeaders': () => {
+        return Template.instance().taxCodes.get();
+    },
+    'getTaxAmount': (taxRecord, taxCode) => {
+        let taxCodes = Template.instance().taxCodes.get();
+        if(taxCodes) {
+            if(taxRecord.code === taxCode) {
+                return taxRecord.amount
+            } else {
+                return ''
+            }
+        } else {
+            return ''
+        }
     }
 });
 
@@ -108,8 +126,24 @@ Template.TaxReport.helpers({
 /*****************************************************************************/
 Template.TaxReport.onCreated(function () {
     let self = this;
-    self.dict = new ReactiveDict();
 
+    self.taxReportData = new ReactiveVar();
+    self.taxCodes = new ReactiveVar();
+
+    self.getTaxHeaders = (fullReportData) => {
+        if(fullReportData && fullReportData.length > 0) {
+            let headersList = []
+            fullReportData.forEach(aTaxRecord => {
+                let foundTaxCodeInHeadersList = _.find(headersList, aHeader => {
+                    return aHeader === aTaxRecord.code
+                })
+                if(!foundTaxCodeInHeadersList) {
+                    headersList.push(aTaxRecord.code)
+                }
+            })
+            return headersList
+        }
+    }
 });
 
 Template.TaxReport.onRendered(function () {
