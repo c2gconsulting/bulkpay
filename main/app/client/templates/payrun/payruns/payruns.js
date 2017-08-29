@@ -183,8 +183,11 @@ Template.payruns.helpers({
             let firstOne = currentPayrun[0]
 
             if(firstOne) {
-                let isApproved = _.find(firstOne.approvals, anApproval => {
-                    return anApproval.isApproved
+                let isApproved = true                
+                _.each(firstOne.approvals, anApproval => {
+                    if(!anApproval.isApproved) {
+                        isApproved = false
+                    }
                 })
                 if(isApproved) {
                     return true

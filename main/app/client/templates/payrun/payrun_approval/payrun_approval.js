@@ -2,6 +2,17 @@
 /*****************************************************************************/
 /* PayrunApproval: Event Handlers */
 /*****************************************************************************/
+
+let littleHelpers = {
+    paddArrayWithZeros: function(array, fullLengthWithZeros) {
+        let lengthOfArray = array.length
+        for(let i = 0; i < fullLengthWithZeros - lengthOfArray; i++) {
+            array.push(0)
+        }
+    }
+}
+
+
 Template.PayrunApproval.events({
   'change [name="paymentPeriod.month"]': function (e, tmpl) {
     let value = e.currentTarget.value;
@@ -23,9 +34,10 @@ Template.PayrunApproval.events({
 
       if(month && year) {
           const period = month + year;
-
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
               if(res) {
+                  console.log(`net pay report data: `, res) 
+
                   tmpl.processNetPayResultsData(res)
               } else {
                   tmpl.netPayReportResults.set(null);
@@ -161,6 +173,24 @@ Template.PayrunApproval.helpers({
             return array.splice(index)
         }
     },
+    'isGreaterThan': (a, b) => {
+        return a > b
+    },
+    'arrayLength': (array) => {
+        if(array) {
+            return array.length
+        }
+        return 0
+    },
+    'add': (a, b) => {
+        return a + b
+    },
+    'subtract': (a, b) => {
+        return a - b
+    },
+    getItemAtArrayIndex: (array, index) => {
+        return array[index]
+    },
     'approvals': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
         if(payrollApprovalConfig) {
@@ -224,16 +254,17 @@ Template.PayrunApproval.onCreated(function () {
             employeePayments.forEach(anEmployeeNetPayData => {
                 let netPaysInDiffCurrencies = anEmployeeNetPayData.splice(4)
                 let numNetPays = netPaysInDiffCurrencies.length
+                littleHelpers.paddArrayWithZeros(totalNetPays, numNetPays)
 
-                if(numNetPays > maxNumNetPaysSoFar) {
-                    let numExtraSlots = numNetPays - maxNumNetPaysSoFar
-                    for(let k = 0; k < numExtraSlots; k++) {
-                        totalNetPays.push(0)
-                    }
-                    maxNumNetPaysSoFar = numNetPays                    
-                }
+                // if(numNetPays > maxNumNetPaysSoFar) {
+                //     let numExtraSlots = numNetPays - maxNumNetPaysSoFar
+                //     for(let k = 0; k < numExtraSlots; k++) {
+                //         totalNetPays.push(0)
+                //     }
+                //     maxNumNetPaysSoFar = numNetPays                    
+                // }
                 netPaysInDiffCurrencies.forEach((aNetPay, netPayIndex) => {
-                    totalNetPays[netPayIndex] += aNetPay
+                    totalNetPays[netPayIndex] += aNetPay || 0
                 })
             })
             let bankData = [bankName]

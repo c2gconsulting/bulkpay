@@ -69,6 +69,7 @@
                                             {{#let rowData=this}}
                                             <tr class="pointer bankTotalNetPay" data-bank="{{rowData.[0]}}">
                                                 <td>{{rowData.[0]}}</td>
+
                                                 {{#each (splice rowData 1)}}
                                                     <td>{{formatMoneyD this}}</td>
                                                 {{/each}}

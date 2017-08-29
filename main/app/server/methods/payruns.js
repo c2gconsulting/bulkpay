@@ -3,6 +3,15 @@ import moment from 'moment';
 
 
 
+let littleHelpers = {
+    paddArrayWithZeros: function(array, fullLengthWithZeros) {
+        let lengthOfArray = array.length
+        for(let i = 0; i < fullLengthWithZeros - lengthOfArray; i++) {
+            array.push(0)
+        }
+    }
+}
+
 let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) => {
     check(paygrade, Array);
     const year = period.year;
@@ -216,6 +225,7 @@ Meteor.methods({
                         employee.employeeProfile.payment.bank,
                         employee.employeeProfile.payment.accountNumber || ''
                     ];
+                    littleHelpers.paddArrayWithZeros(dataRow, header.length - 1)
                 }
 
                 let numPayments = x.payment.length
@@ -232,8 +242,12 @@ Meteor.methods({
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + tenant.baseCurrency.iso + ')')
+                                dataRow.push(0)
+                                indexOfHeader = dataRow.length - 1
+                            } else {
+                                indexOfHeader += 1
                             }
-                            dataRow.push(x.payment[i].amountPC)
+                            dataRow[indexOfHeader] = x.payment[i].amountPC
                         } else if(x.payment[i].reference.startsWith('Standard_')) {
                             let indexOfHeader = -1
                             let currency = x.payment[i].reference.substring('Standard_'.length)
@@ -246,8 +260,13 @@ Meteor.methods({
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + currency + ')')
+                                dataRow.push(0)
+                                indexOfHeader = dataRow.length - 1
+                            } else {
+                                indexOfHeader += 1
                             }
-                            dataRow.push(x.payment[i].amountPC)
+                            // dataRow.push(x.payment[i].amountPC)
+                            dataRow[indexOfHeader] = x.payment[i].amountPC
                         }
                     }
                 }
