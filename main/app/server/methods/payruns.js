@@ -624,7 +624,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
             } else {
                 if(isRetroActivePayrunEnabled && !isDoingARetroActivePayrunNow) {
-                    console.log(`RetroactivePayrunEnabled`)
                     const payrunPeriodAsDate = new Date(`${period.month}-01-${period.year} GMT`);
                     const payrunPeriodAsMoment = moment(payrunPeriodAsDate);
                     const prevMonthMoment = payrunPeriodAsMoment.subtract(1, 'month')
@@ -1080,11 +1079,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     //populate result for employee and employer pension contribution
                     if(pension){
                         employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                            amountLC: employeePenContrib, amountPC: employeePenContrib, 
+                            amountLC: employeePenContrib, amountPC: '', 
                             code: pension.code + '_EE', 
                             description: pension.name + ' Employee', type: 'Deduction'});
                         employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                            amountLC: employerPenContrib, amountPC: employerPenContrib, 
+                            amountLC: employerPenContrib, amountPC: '', 
                             code: pension.code + '_ER', 
                             description: pension.name + ' Employer', type: 'Others'});
 
@@ -1141,7 +1140,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                             //populate result for tax
                             if(tenant.baseCurrency.iso === assignedTaxBucket.currency) {
-                                employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: netTaxLocal, amountPC: '', code: tax.code, description: tax.name, type: 'Deduction'  });
                             } else {
                                 employeeResult.payment.push({id: tax._id, reference: 'Tax', amountLC: '', amountPC: netTaxLocal, code: tax.code, description: tax.name, type: 'Deduction'  });
                             }
@@ -1233,7 +1232,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                         //populate result for tax
                         employeeResult.payment.push({id: tax._id, reference: 'Tax', 
-                            amountLC: netTaxLocal, amountPC: netTaxLocal, code: tax.code, 
+                            amountLC: netTaxLocal, amountPC: '', code: tax.code, 
                             description: tax.name, type: 'Deduction'});
                         //--
                         paymentsAccountingForCurrency.deduction['NGN'].payments.push({
@@ -1260,14 +1259,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }); // negate add tax to deduction
                     //--End of Tax processing
 
-                    if(pension) {
-                        let valueInForeignCurrency = employeePenContrib * -1
+                    if(pension) {                        
+                        let valueInForeignCurrency = ''
                         final.payslip.deduction.push({title: `${pension.code}_EE`, code: `${pension.name} Employee`, value: employeePenContrib * -1, valueInForeignCurrency});
-
-                        if(pension.displayEmployerInPayslip) {                         
-                            valueInForeignCurrency = employerPenContrib
+                        // if(pension.displayEmployerInPayslip) {
+                            valueInForeignCurrency = ''
                             final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib, valueInForeignCurrency}]); //if employer contribution (displayEmployerInPayslip) add to other payments
-                        }
+                        // }
                     } else {
                         final.payslip.others = others
                     }
