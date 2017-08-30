@@ -138,6 +138,12 @@ Template.LeaveCreate.helpers({
     leaveInDaysMode : function() {
         return !Template.instance().isAllowingHoursLeave.get()
     },
+    isHourLeaveRequestsEnabled: function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isHourLeaveRequestsEnabled
+        }
+    },
     numberOfLeaveDaysLeft: function() {
         return Template.instance().numberOfLeaveDaysLeft.get() || '---'
     },
@@ -161,6 +167,8 @@ Template.LeaveCreate.onCreated(function () {
     self.isAllowingHoursLeave = new ReactiveVar();
     self.isAllowingHoursLeave.set(false)
 
+    self.isHourLeaveRequestsEnabled = new ReactiveVar()
+
     self.numberOfLeaveDaysLeft = new ReactiveVar();
 
     self.businessUnitCustomConfig = new ReactiveVar()
@@ -172,7 +180,6 @@ Template.LeaveCreate.onCreated(function () {
         let endDateMoment = moment(endDate)
 
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
-        console.log(`Number of days: ${numberOfDays}`)
 
         let startDateMomentClone = moment(startDateMoment); // use a clone
         let weekDates = []

@@ -146,6 +146,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         businessId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
+        isHourLeaveRequestsEnabled: true,
         isProcurementRequisitionActive : false,
         isTravelRequisitionActive: false,
         procurementRequisitionApprovalConfig: {
@@ -160,6 +161,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         businessId : deltaTexEngineeringBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
+        isHourLeaveRequestsEnabled: true,        
         isProcurementRequisitionActive : false,
         isTravelRequisitionActive: false,
         procurementRequisitionApprovalConfig: {
@@ -174,6 +176,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         businessId : deltaTexBulkPayDemoBusinessUnitId,
         payGradeLabel : 'Pay Category',
         payGradeLabelPlural : 'Pay Categories',
+        isHourLeaveRequestsEnabled: true,         
         isProcurementRequisitionActive : true,
         isTravelRequisitionActive: true,
         procurementRequisitionApprovalConfig: {
@@ -191,7 +194,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     {
         businessId : daarBusinessUnitId,
         payGradeLabel : 'Pay Grade',
-        payGradeLabelPlural : 'Pay Grades',
+        payGradeLabelPlural : 'Pay Grades', 
+        isHourLeaveRequestsEnabled: false,         
         isProcurementRequisitionActive : true,
         isTravelRequisitionActive: true,
         procurementRequisitionApprovalConfig: {

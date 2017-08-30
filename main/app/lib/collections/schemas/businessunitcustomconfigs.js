@@ -18,6 +18,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     payGradeLabelPlural: {
         type: String
     },
+    isHourLeaveRequestsEnabled: {
+        type: Boolean        
+    },
     isProcurementRequisitionActive: {
         type: Boolean
     },
