@@ -24,7 +24,10 @@ Template.selfpayslips.events({
                 }
 
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
-                Modal.show('Payslip', payLoadForPayslip);
+
+                Session.set('currentSelectedPaySlip', payLoadForPayslip)
+        
+                // Modal.show('Payslip', payLoadForPayslip);
             } else {
                 tmpl.errorMsg.set(err.message);
             }
@@ -54,6 +57,9 @@ Template.selfpayslips.helpers({
     },
     'errorMsg': function() {
         return Template.instance().errorMsg.get();
+    },
+    getSelectedPaySlipData: function() {
+        return Session.get('currentSelectedPaySlip')
     }
 });
 
@@ -72,6 +78,7 @@ Template.selfpayslips.onCreated(function () {
 Template.selfpayslips.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
+    Session.set('currentSelectedPaySlip', null)
 });
 
 Template.selfpayslips.onDestroyed(function () {

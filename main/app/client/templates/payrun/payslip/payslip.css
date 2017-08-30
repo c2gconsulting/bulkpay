@@ -3,3 +3,14 @@
     color: #0088cc;
     font-size: x-large;
 }
+
+
+/* //Important part */
+
+/* .modal-dialog{
+    overflow-y: initial !important
+}
+.panel-body {
+    height: 550px;
+    overflow-y: auto;
+} */
