@@ -6,19 +6,18 @@ import _ from 'underscore';
 Template.SimplePayslip.events({
     'click #PayslipPrint': function(e, tmpl) {
         e.preventDefault()
-        // $("#PayslipModal").printThis({
-        // });
 
-            $("#SimplePayslipModal").printThis({
-                importCSS: true,
-                importStyle: true
-            });
+        let modalContent = tmpl.$("#SimplePayslipModal").html()
+        let currentBodyContent = document.getElementsByTagName('body')[0].innerHTML
 
-        // setTimeout(function() {
-        //     $("#SimplePayslipModal").printPage()
-        // }, 1000)
-
-        // window.print()
+        document.getElementsByTagName('body')[0].innerHTML = modalContent; 
+        window.print()
+        // document.getElementsByTagName('body')[0].innerHTML = currentBodyContent
+        
+        let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
+        if(!displayAllPaymentsUnconditionally) {
+            window.location.reload()
+        }
     }
 });
 
@@ -256,6 +255,12 @@ Template.SimplePayslip.helpers({
                     return foundPayTypeInPayGrade.displayInPayslip
                 }
             }
+        }
+    },
+    shouldShowPrintButton: function() {
+        let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
+        if(!displayAllPaymentsUnconditionally) {
+            return true
         }
     }
 });
