@@ -29,19 +29,18 @@ Template.Employees.events({
     'click .anEmployee': (e, tmpl) => {
         let employeeRowElem = e.currentTarget;
         let employeeIdToEdit = employeeRowElem.getAttribute("name");
-        console.log("Employee Id to edit: " + employeeIdToEdit);
 
         let selectedEmployee = Meteor.users.findOne({_id: employeeIdToEdit});
         Session.set("employeesList_selectedEmployee", selectedEmployee);
     },
     "keyup #search-box": _.throttle(function(e, tmpl) {
-      console.log("Inside throttle of searchbox");
       var text = $(e.target).val().trim();
-      console.log("Text enterd: " + text);
 
       if (text && text.trim().length > 0) {
         tmpl.isSearchView.set(true);
-        EmployeesSearch.search(text);
+        EmployeesSearch.search(text, {
+            businessId: Session.get('context')
+        });
       } else {
         tmpl.isSearchView.set(false);
       }

@@ -14,13 +14,13 @@ Template.Paytypes.events({
         Modal.show('PaytypeCreate');
     },
     "keyup #search-box": _.throttle(function(e, tmpl) {
-      console.log("Inside throttle of searchbox");
       var text = $(e.target).val().trim();
-      console.log("Text enterd: " + text);
 
       if (text && text.trim().length > 0) {
         tmpl.isSearchView.set(true);
-        PayTypesSearch.search(text);
+        PayTypesSearch.search(text, {
+            businessId: Session.get('context')
+        });
       } else {
         tmpl.isSearchView.set(false);
       }

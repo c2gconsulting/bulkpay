@@ -9,43 +9,65 @@
  */
 
 SearchSource.defineSource('users', function(searchText, options) {
-  var options = {sort: {isoScore: -1}, limit: 20};
+  let queryOptions = {
+    sort: {isoScore: -1}, 
+    limit: 20
+  };
 
-  if(searchText) {
+  if(searchText && options && options.businessId) {
     var regExp = buildRegExp(searchText);
-    var selector = {$or: [{
-        "profile.fullName": regExp
-      },{
-        "profile.firstname": regExp
-      }, {
-        "profile.lastname": regExp
-      }
-    ]};
+    var selector = {
+      $and: [
+        {businessIds: options.businessId}, 
+        {$or: [
+          {
+            "profile.fullName": regExp
+          },
+          {
+            "profile.firstname": regExp
+          },
+          {
+            "profile.lastname": regExp
+          }
+        ]}
+      ]};
 
-    return Meteor.users.find(selector, options).fetch();
-  } else {
-    return Meteor.users.find({}, options).fetch();
-  }
+    return Meteor.users.find(selector, queryOptions).fetch();
+  } 
+  // else {
+  //   return Meteor.users.find({}, queryOptions).fetch();
+  // }
 });
 
 SearchSource.defineSource('paytypes', function(searchText, options) {
-  var options = {sort: {isoScore: -1}, limit: 20};
+  let queryOptions = {
+    sort: {isoScore: -1}, 
+    limit: 20
+  };
 
-  if(searchText) {
+  if(searchText && options && options.businessId) {
     var regExp = buildRegExp(searchText);
-    var selector = {$or: [{
-        "code": regExp
-      },{
-        "title": regExp
-      }, {
-        "type": regExp
-      }
-    ]};
+    var selector = {
+      $and: [
+        {businessId: options.businessId}, 
+        {$or: [
+          {
+            "code": regExp
+          },
+          {
+            "title": regExp
+          }, 
+          {
+            "type": regExp
+          }
+        ]}
+      ]};
 
-    return PayTypes.find(selector, options).fetch();
-  } else {
-    return PayTypes.find({}, options).fetch();
-  }
+    return PayTypes.find(selector, queryOptions).fetch();
+  } 
+  // else {
+  //   return PayTypes.find({}, queryOptions).fetch();
+  // }
 });
 
 function buildRegExp(searchText) {
@@ -53,5 +75,3 @@ function buildRegExp(searchText) {
   var parts = searchText.trim().split(/[ \-\:]+/);
   return new RegExp("(" + parts.join('|') + ")", "ig");
 }
-
-console.log("server side search.js")
