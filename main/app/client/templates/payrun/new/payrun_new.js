@@ -519,7 +519,6 @@ Template.PayrunNew.events({
             period: {
                 month: $('[name="paymentPeriod.month"]').val(),
                 year: $('[name="paymentPeriod.year"]').val(),
-
             },
             type: payrunRunType,
             annuals: annualPay(),

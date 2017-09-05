@@ -227,7 +227,7 @@ Template.PaygradeCreate.helpers({
         }
     },
     'allCurrencies': () => {
-        return Core.currencies();
+        return [""].concat(Core.currencies());
     }
 });
 

@@ -260,8 +260,7 @@
                                                     <div class="col-sm-4">
                                                         <div class="form-group">
                                                             <label class="control-label">Net pay alternate currency</label>
-                                                            <select name="currencyCode" class="form-control dropdown" style="width: 100%">
-                                                                <option value="">None</option>
+                                                            <select name="currencyCode" class="form-control" style="width: 100%">
                                                                 {{#each allCurrencies}}
                                                                     <option value="{{this}}" {{selectedNetPayAlternateCurrency this}}>{{this}}</option>
                                                                 {{/each}}
