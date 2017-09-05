@@ -18,4 +18,4 @@
 #for mup
 mup.js
 
-main/build/
+main/build/*

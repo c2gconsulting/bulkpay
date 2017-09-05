@@ -243,6 +243,19 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         payAmount *= -1
                     }
                 }
+                if(payDetails.reference === 'Pension') {
+                    if(payDetails.amountLC) {
+                        let pensionAmount = payDetails.amountLC
+                        let pensionAmountAsNumber = parseFloat(pensionAmount)
+                        payAmount = pensionAmountAsNumber
+                        
+                        if(payDetails.code === 'STATPEN_EE') {
+                            payAmount *= -1
+                        }
+                    } else {
+                        payAmount = '---'                        
+                    }
+                }
                 aRowOfPayTypeValues.push(payAmount)
             } else if(aPaytypeHeader.id === 'netPay') {
 
@@ -260,7 +273,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                 }
             } else if(aPaytypeHeader.id === 'totalDeduction') {
                 let totalDeduction = _.find(anEmployeeData.payment, function(aPayType) {
-                    return (aPayType.code === 'TDEDUCT')    
+                    return (aPayType.code === 'TDEDUCT')
                 })
                 if(totalDeduction) {
                     let payAmount = totalDeduction.amountLC
