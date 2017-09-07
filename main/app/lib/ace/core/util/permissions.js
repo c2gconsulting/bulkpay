@@ -12,6 +12,7 @@ Core.Permissions = {
 	  "TRAVEL_REQUISITION_APPROVE": "travel_requisition/approve",
 	  "PAYROLL_REPORTS_VIEW": "payroll_reports/view",
 	  "AUDIT_REPORTS_VIEW": "audit_reports/view",
+		"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",
 
 	//"CUSTOMERS_VIEW" : ["customers/view", "customers/maintain"],
 	//"CUSTOMERS_MAINTAIN" : "customers/maintain",
@@ -45,6 +46,7 @@ Core.PermissionNames = {
     "travel_requisition/approve" : "Approve Travel Requisition",
     "payroll_reports/view" : "Payroll Reports View",
     "audit_reports/view" : "Audit Reports View",
+    "procurement_reports/view" : "Procurement Reports View",
     "ess/all" : "Employee Self Service",
 	//"customers/view" : "View Customers",
 	//"customers/maintain" : "Maintain Customers",

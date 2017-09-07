@@ -91,8 +91,6 @@ Template.ProcurementRequisitionCreate.events({
 Template.ProcurementRequisitionCreate.helpers({
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
-        console.log(`Unit id: ${unitId}`)
-
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
     }

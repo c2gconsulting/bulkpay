@@ -229,6 +229,9 @@ _.extend(Core, {
     hasAuditReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.AUDIT_REPORTS_VIEW, userId);
     },
+    hasProcurementReportsViewAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PROCUREMENT_REPORTS_VIEW, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },

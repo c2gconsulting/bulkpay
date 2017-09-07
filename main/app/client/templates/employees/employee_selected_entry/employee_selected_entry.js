@@ -210,6 +210,12 @@ Template.EmployeeSelectedEntry.helpers({
       let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(selectedEmployee._id);
 
       return hasAuditReportsViewAccess;
+  },
+  hasProcurementReportsViewAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let hasProcurementReportsViewAccess = Core.hasProcurementReportsViewAccess(selectedEmployee._id);
+
+      return hasProcurementReportsViewAccess;
   }
 });
 
@@ -241,6 +247,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
         let payrollReportsView = $("[name=payrollReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
+        let procurementReportsView = $("[name=procurementReportsView]").val();
 
 
         let arrayOfRoles = [];
@@ -277,15 +284,15 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(auditReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.AUDIT_REPORTS_VIEW)
         }
+        if(procurementReportsView === "true") {
+            arrayOfRoles.push(Core.Permissions.PROCUREMENT_REPORTS_VIEW)
+        }
 
         if(Core.hasRoleManageAccess(Meteor.userId())) {
           let shouldHaveRoleManageAccess = $("[name=roleManage]").val();
           if(shouldHaveRoleManageAccess === "true") {
             arrayOfRoles.push(Core.Permissions.ROLE_MANAGE);
           }
-          console.log("shouldHaveRoleManageAccess: " + shouldHaveRoleManageAccess);
-        } else {
-          console.log("Does current user have role manage access");
         }
 
         Meteor.call('role/setRolesForUser', selectedEmployee._id, arrayOfRoles, (err, res) => {

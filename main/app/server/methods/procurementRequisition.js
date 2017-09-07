@@ -7,6 +7,7 @@ let ProcurementRequisitonHelper = {
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
         try {
             SSR.compileTemplate("procurementRequisitionNotification", Assets.getText("emailTemplates/procurementRequisitionNotification.html"));
+            
             Email.send({
                 to: supervisorEmail,
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
@@ -52,7 +53,6 @@ Meteor.methods({
             && (userPosition.properties.supervisor || userPosition.properties.alternateSupervisor)) {
             let supervisorPositionId = userPosition.properties.supervisor || ""
             let alternateSupervisorPositionId = userPosition.properties.alternateSupervisor || ""
-            console.log(`supervisorPositionId: ${supervisorPositionId}`)
 
             procurementRequisitionDoc.createdBy = Meteor.userId()
             procurementRequisitionDoc.status = 'Draft'
