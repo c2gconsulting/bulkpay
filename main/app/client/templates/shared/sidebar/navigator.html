@@ -186,6 +186,19 @@
                         <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requisition report</a></li>
                     {{/if}}
                 {{/if}}
+            {{else}}
+                {{#if hasProcurementReportsViewAccess}}
+                    <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
+                        <a href="" id="auditReportsMenu">
+                            <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                            <span>Audit Reports</span>
+                        </a>
+                    </li>
+
+                    {{#if isMenuExpanded 'auditReportsMenu'}}
+                        <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
+                    {{/if}}
+                {{/if}}
             {{/if}}
         {{/if}}
 

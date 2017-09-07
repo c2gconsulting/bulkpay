@@ -168,6 +168,9 @@ Template.navigator.helpers({
         let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());
         return hasAuditReportsViewAccess;
     },
+    hasProcurementReportsViewAccess: function () {
+        return Core.hasProcurementReportsViewAccess(Meteor.userId());
+    },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {
