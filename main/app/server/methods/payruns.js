@@ -910,7 +910,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * 8)
                                                 let individualProjectPayAmount = fraction * value
                                                 if(tenant.baseCurrency.iso !== x.currency) {
-                                                    individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
+                                                    individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                                 }
 
                                                 projectsPay.push({
@@ -938,9 +938,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             }
                                             //--
                                             if(tenant.baseCurrency.iso !== x.currency) {
-                                                processing.push({code: `Pay from projects(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
+                                                processing.push({code: `Pay from projects(NGN)`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
 
-                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value} * currency rate`});
+                                                processing.push({code: `Pay from cost centers(NGN)`, derived: `${costCentersPayDetails.fraction} * ${value} * currency rate`});
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
                                             } else {
                                                 processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});                                                
