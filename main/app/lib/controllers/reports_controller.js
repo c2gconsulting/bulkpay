@@ -68,6 +68,9 @@ ReportsController = BusinessUnitController.extend({
     procurement: function () {
         this.render('ProcurementReport');
     },
+    leaveRequests: function () {
+        this.render('LeaveRequestsReport');
+    },
     travelRequest: function () {
         this.render('TravelRequestReport');
     },

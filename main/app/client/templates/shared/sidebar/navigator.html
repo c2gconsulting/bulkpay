@@ -126,8 +126,13 @@
             {{#if isProcurementRequisitionActive}}
                 <li><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
 
+                <!--{{#if isUserASupervisor}}
+                <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Approve Requisitions</a></li>
+                {{/if}}-->
+
                 {{#if hasProcurementRequisitionApproveAccess}}
-                <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Requisitions Approval</a></li>
+                <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Approve Requisitions</a></li>
+                <!--<li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Treat Requisitions</a></li>-->
                 {{/if}}
             {{/if}}
 
@@ -173,6 +178,8 @@
                 </li>
 
                 {{#if isMenuExpanded 'auditReportsMenu'}}
+                    <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
+
                     <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
 
                     {{#if isTravelRequisitionActive}}

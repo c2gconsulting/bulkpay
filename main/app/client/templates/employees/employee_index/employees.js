@@ -83,7 +83,6 @@ Template.Employees.helpers({
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = Meteor.users.find({"employee": true}).count()
-        console.log(`totalNum: ${totalNum}`)
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;

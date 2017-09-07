@@ -428,6 +428,39 @@ Meteor.methods({
             return biffedUpProcurements
         }
     },
+    'reports/leaveRequests': function(businessId, startDate, endDate, selectedEmployees) {
+        check(businessId, String)
+        this.unblock()
+        //--
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let queryObj = {
+                businessId: businessId, 
+                createdAt: {$gte: startDate, $lte: endDate}
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {                
+                queryObj.employeeId = {$in: selectedEmployees}
+            }
+            let leavesRequestsCreated = Leaves.find(queryObj).fetch();
+
+            let biffedUpLeaveRequests = leavesRequestsCreated.map(aLeave => {
+                let employee = Meteor.users.findOne({_id: aLeave.employeeId})
+                if(employee) {
+                    aLeave.createdByFullName = employee.profile.fullName
+                }
+                //--
+                // let unit = EntityObjects.findOne({_id: aLeave.unitId})
+                // if(unit) {
+                //     aLeave.unitName = unit.name
+                // }
+                return aLeave
+            })
+            // console.log(`biffedUpLeaveRequests: `, biffedUpLeaveRequests)
+
+            return biffedUpLeaveRequests
+        }
+    },
     'reports/travelRequest': function(businessId, startDate, endDate, selectedEmployees) {
         check(businessId, String)
         this.unblock()

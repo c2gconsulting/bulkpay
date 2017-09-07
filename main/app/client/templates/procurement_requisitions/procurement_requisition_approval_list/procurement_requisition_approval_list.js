@@ -12,7 +12,6 @@ Template.ProcurementRequisitionApprovalList.events({
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -27,7 +26,6 @@ Template.ProcurementRequisitionApprovalList.events({
         let pageNumAsInt = parseInt(pageNum)
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
-        console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getProcurementsToApprove(skip)
         Template.instance().procurementsToApprove.set(newPageOfProcurements)
@@ -65,7 +63,6 @@ Template.ProcurementRequisitionApprovalList.helpers({
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
             let totalNum = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).count();
-            console.log(`totalNum: ${totalNum}`)
 
             let result = Math.floor(totalNum/limit)
             var remainder = totalNum % limit;

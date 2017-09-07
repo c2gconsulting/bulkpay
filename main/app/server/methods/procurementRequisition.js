@@ -46,7 +46,6 @@ Meteor.methods({
         }
 
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
         if(userPosition.properties 
@@ -172,7 +171,6 @@ Meteor.methods({
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
         if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
@@ -195,7 +193,6 @@ Meteor.methods({
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
         if(procurementRequisitionDoc.supervisorPositionId === userPositionId

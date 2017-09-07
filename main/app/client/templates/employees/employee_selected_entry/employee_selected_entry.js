@@ -103,7 +103,6 @@ Template.EmployeeSelectedEntry.helpers({
   },
   selectedUserLeaveEntitlementId: function() {
       let selectedLeaveEntitlement = Template.instance().selectedUserLeaveEntitlements.get()
-      console.log(`selectedLeaveEntitlement`, selectedLeaveEntitlement)
 
       if(selectedLeaveEntitlement) {
         return selectedLeaveEntitlement.leaveEntitlementId

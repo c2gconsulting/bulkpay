@@ -128,6 +128,25 @@ Template.navigator.helpers({
             return false
         }
     },
+    isUserASupervisor: function() {
+        let currentUser = Meteor.users.findOne(Meteor.userId())
+        // let currentUser = Meteor.user()
+
+        if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+            let currentUserPosition = currentUser.employeeProfile.employment.position
+
+            let numPositionsSupervising = EntityObjects.find({
+                    otype: 'Position',
+                    $or: [{'properties.supervisor' : currentUserPosition}, 
+                        {'properties.alternateSupervisor': currentUserPosition}], 
+                    businessId: Session.get('context')
+                }).count()
+            // console.log(`numPositionsSupervising: `, numPositionsSupervising)
+            return (numPositionsSupervising > 0)
+        } else {
+            // console.log(`user employeeProfile or employment is NULL`)
+        }
+    },
     hasTravelRequisitionApproveAccess: function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
@@ -209,8 +228,9 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar()
     self.payrollApprovalConfig = new ReactiveVar()
 
-    
-    self.autorun(function(){
+    self.subscribe("getPositions", Session.get('context'));
+
+    self.autorun(function() {
         let businessUnitId = Session.get('context');
 
         let payrollApprovalConfigSub = self.subscribe('PayrollApprovalConfigs', businessUnitId);

@@ -372,6 +372,13 @@ Router.route('/business/:_id/reports/procurement', {
     where: 'client'
 });
 
+Router.route('/business/:_id/reports/leaverequests', {
+    name: 'reports.leaverequests',
+    controller: 'ReportsController',
+    action: 'leaveRequests',
+    where: 'client'
+});
+
 Router.route('/business/:_id/reports/travelrequisition', {
     name: 'reports.travelrequisition',
     controller: 'ReportsController',
