@@ -609,6 +609,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
     let currencyRatesForPeriod = Currencies.find({businessId: businessId, period: periodFormat}).fetch()
 
+    let allProjects = Projects.find({
+        businessId: businessId
+    }).fetch()
+
     let runPayrun = (counter) => {
         let x = employees[counter];
         if (x) {
@@ -665,6 +669,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(x, firsDayOfPeriodAsDate)
                 let totalNumWeekDaysInMonth = getWeekDays(firsDayOfPeriodAsDate, moment(firsDayOfPeriodAsDate).endOf('month').toDate()).length
                 
+                let employeePositionId = x.employeeProfile.employment.position
                 //--
                 //--Time recording things
                 const projectsPayDetails = 
@@ -677,7 +682,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
                 //--
-
+                let projectsAssignedToEmployee = []
+                _.each(allProjects, aProject => {
+                    const projectPositionIds = aProject.positionIds || []
+                    if(projectPositionIds.indexOf(employeePositionId) >= 0) {
+                        projectsAssignedToEmployee.push(aProject)
+                    }
+                })
+                //--
                 const pg = x.employeeProfile.employment.paygrade;  //paygrade
                 let pt = x.employeeProfile.employment.paytypes;  //paytype
 
@@ -958,16 +970,36 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     } else {
                                         // let totalWorkHoursInYear = 2080
                                         // let numberOfMonthsInYear = 12
+                                        if(projectsAssignedToEmployee.length === 0) {
+                                            costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                            value = costCenterPayAmount
 
-                                        costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                                        value = costCenterPayAmount
+                                            if(tenant.baseCurrency.iso !== x.currency) {
+                                                costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
+                                                // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
+                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            } else {
+                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            }
+                                        } else if(projectsAssignedToEmployee.length === 1) {
+                                            projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                            value = projectPayAmount
 
-                                        if(tenant.baseCurrency.iso !== x.currency) {
-                                            costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                            // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
-                                            processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            if(tenant.baseCurrency.iso !== x.currency) {
+                                                projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
+                                                // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
+                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            } else {
+                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            }
+
+                                            projectsPay.push({
+                                                projectId: projectsAssignedToEmployee[0]._id,
+                                                durationInHours: 0,
+                                                payAmount: projectPayAmount
+                                            })
                                         } else {
-                                            processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+
                                         }
                                         processing.push({code: x.code, derived: value});
                                     }
