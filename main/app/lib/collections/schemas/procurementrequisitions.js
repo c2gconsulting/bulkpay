@@ -28,7 +28,7 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
     },
     status: {
         type: String,
-        defaultValue: 'Draft'     //Draft or Pending or Rejected or Approved or Treated
+        defaultValue: 'Draft'     //Draft or Pending or Rejected or Approved or Treated or 'TreatmentRejected'
     },
     isStatusSeenByCreator: {
         type: Boolean,

@@ -197,6 +197,25 @@ Meteor.methods({
             return true;
         }
     },
+    "ProcurementRequisition/treatmentRejected": function(businessUnitId, docId){
+        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to approve a procurement requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+        if(procurementRequisitionDoc) {
+            ProcurementRequisitions.update(docId, {$set: {status: 'TreatmentRejected'}})
+            return true;
+        }
+    },
     "ProcurementRequisition/reject": function(businessUnitId, docId){
         if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
