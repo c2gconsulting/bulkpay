@@ -28,14 +28,28 @@ Core.publish("ProcurementRequisitionsToApprove", function (businessUnitId) {
     if(!user.employeeProfile || !user.employeeProfile.employment) {
         return Meteor.Error(401, "Unauthorized! You can't approve a procurement requisition");
     }
+    let userPositionId = user.employeeProfile.employment.position
+
+    return ProcurementRequisitions.find({
+        businessUnitId: businessUnitId,
+        $or: [{supervisorPositionId : userPositionId}, 
+                {alternativeSupervisorPositionId: userPositionId}]
+    });
+});
+
+Core.publish("ProcurementRequisitionsToTreat", function (businessUnitId) {
+    let user = Meteor.users.findOne({_id: this.userId})
+
+    if(!user.employeeProfile || !user.employeeProfile.employment) {
+        return Meteor.Error(401, "Unauthorized! You can't approve a procurement requisition");
+    }
 
     let userPositionId = user.employeeProfile.employment.position
 
     if (Core.hasProcurementRequisitionApproveAccess(this.userId)) {
         return ProcurementRequisitions.find({
             businessUnitId: businessUnitId,
-            $or: [{supervisorPositionId : userPositionId}, 
-                    {alternativeSupervisorPositionId: userPositionId}]
+            status: 'Approved'
         });
     } else {
         return Meteor.Error(401, "Unauthorized! You don't have the 'Procurement Requisition Approve' role");

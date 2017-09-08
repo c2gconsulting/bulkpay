@@ -73,8 +73,12 @@
                         <button class="btn btn-primary mr5 pull-right" id="requisition-save-draft">Save Draft</button>
                         {{else}}
                             {{#if isInApproveMode}}
-                            <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
+                                <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
                                 <button class="btn btn-primary mr5 pull-right" id="requisition-reject">Reject</button>
+                            {{else}}
+                                {{#if isInTreatMode}}
+                                    <button class="btn btn-primary mr5 pull-right" id="requisition-treat">Treat</button>
+                                {{/if}}
                             {{/if}}
                         {{/if}}
                     </div><!-- panel-footer -->

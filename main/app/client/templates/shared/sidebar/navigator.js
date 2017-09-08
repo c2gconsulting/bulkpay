@@ -130,8 +130,6 @@ Template.navigator.helpers({
     },
     isUserASupervisor: function() {
         let currentUser = Meteor.users.findOne(Meteor.userId())
-        // let currentUser = Meteor.user()
-
         if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
@@ -141,10 +139,7 @@ Template.navigator.helpers({
                         {'properties.alternateSupervisor': currentUserPosition}], 
                     businessId: Session.get('context')
                 }).count()
-            // console.log(`numPositionsSupervising: `, numPositionsSupervising)
             return (numPositionsSupervising > 0)
-        } else {
-            // console.log(`user employeeProfile or employment is NULL`)
         }
     },
     hasTravelRequisitionApproveAccess: function () {

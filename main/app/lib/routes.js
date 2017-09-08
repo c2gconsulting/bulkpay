@@ -316,6 +316,12 @@ Router.route('/business/:_id/employee/procurementrequisitions/approvalslist', {
     action: 'showProcurementRequisitionApprovalList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/procurementrequisitions/treatlist', {
+    name: 'procurementrequisition.treatList',
+    controller: 'RequisitionController',
+    action: 'showProcurementRequisitionTreatList',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/travelrequests', {
     name: 'travelrequests.list',

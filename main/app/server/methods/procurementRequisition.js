@@ -160,6 +160,25 @@ Meteor.methods({
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
     "ProcurementRequisition/approve": function(businessUnitId, docId){
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to approve a procurement requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+        if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
+            || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+            ProcurementRequisitions.update(docId, {$set: {status: 'Approved'}})
+            return true;
+        } else {
+            throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+        }
+    },
+    "ProcurementRequisition/treat": function(businessUnitId, docId){
         if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -173,12 +192,9 @@ Meteor.methods({
         let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
-        if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
-            || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+        if(procurementRequisitionDoc) {
             ProcurementRequisitions.update(docId, {$set: {status: 'Treated'}})
             return true;
-        } else {
-            throw new Meteor.Error(401, "Unauthorized to approve requisition.")
         }
     },
     "ProcurementRequisition/reject": function(businessUnitId, docId){

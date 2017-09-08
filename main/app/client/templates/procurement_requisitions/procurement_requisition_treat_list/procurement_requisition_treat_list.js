@@ -1,16 +1,16 @@
 /*****************************************************************************/
-/* ProcurementRequisitionApprovalList: Event Handlers */
+/* ProcurementRequisitionTreatList: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.ProcurementRequisitionApprovalList.events({
+Template.ProcurementRequisitionTreatList.events({
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
-        invokeReason.reason = 'approve'
+        invokeReason.reason = 'treat'
         invokeReason.approverId = Meteor.userId()
 
         Modal.show('ProcurementRequisitionDetail', invokeReason)
@@ -45,10 +45,10 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* ProcurementRequisitionApprovalList: Helpers */
+/* ProcurementRequisitionTreatList: Helpers */
 /*****************************************************************************/
-Template.ProcurementRequisitionApprovalList.helpers({
-    'procurementsICreated': function() {
+Template.ProcurementRequisitionTreatList.helpers({
+    'getProcureentsToTreatList': function() {
         return Template.instance().procurementsToApprove.get()
     },
     'numberOfPages': function() {
@@ -57,7 +57,9 @@ Template.ProcurementRequisitionApprovalList.helpers({
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
-            let totalNum = ProcurementRequisitions.find({supervisorPositionId: currentUserPosition}).count();
+            let totalNum = ProcurementRequisitions.find({
+                status: 'Approved'
+            }).count();
 
             let result = Math.floor(totalNum/limit)
             var remainder = totalNum % limit;
@@ -77,9 +79,9 @@ Template.ProcurementRequisitionApprovalList.helpers({
 });
 
 /*****************************************************************************/
-/* ProcurementRequisitionApprovalList: Lifecycle Hooks */
+/* ProcurementRequisitionTreatList: Lifecycle Hooks */
 /*****************************************************************************/
-Template.ProcurementRequisitionApprovalList.onCreated(function () {
+Template.ProcurementRequisitionTreatList.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -103,9 +105,7 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
             return ProcurementRequisitions.find({
-                $or: [{supervisorPositionId : currentUserPosition}, 
-                        {alternativeSupervisorPositionId: currentUserPosition}],                
-                status: 'Pending'
+                status: 'Approved'
             }, options);
         }
         return null
@@ -120,12 +120,11 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToApprove', businessUnitId, limit, sort)
+        let procurementsToApproveSub = self.subscribe('ProcurementRequisitionsToTreat', businessUnitId, limit, sort)
         //--
         if(procurementsToApproveSub.ready()) {
             let currentUser = Meteor.user()
             if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-                let currentUserPosition = currentUser.employeeProfile.employment.position
                 self.procurementsToApprove.set(self.getProcurementsToApprove(0))
             }
         }
@@ -133,10 +132,10 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
 
 });
 
-Template.ProcurementRequisitionApprovalList.onRendered(function () {
+Template.ProcurementRequisitionTreatList.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.ProcurementRequisitionApprovalList.onDestroyed(function () {
+Template.ProcurementRequisitionTreatList.onDestroyed(function () {
 });

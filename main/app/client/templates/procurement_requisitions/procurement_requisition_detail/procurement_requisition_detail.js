@@ -95,6 +95,25 @@ Template.ProcurementRequisitionDetail.events({
 
             Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
                 if(!err) {
+                    swal({title: "Success", text: "Requisition approved", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    },
+    'click #requisition-treat': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('ProcurementRequisition/treat', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
                     swal({title: "Success", text: "Requisition treated", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                     }, () => {
@@ -195,6 +214,9 @@ Template.ProcurementRequisitionDetail.helpers({
     'isInApproveMode': function() {
         return Template.instance().isInApproveMode.get()
     },
+    'isInTreatMode': function() {
+        return Template.instance().isInTreatMode.get()
+    },
     'getUnitName': function(unitId) {
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
@@ -212,14 +234,17 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
+    self.isInTreatMode = new ReactiveVar()
 
     let invokeReason = self.data;
-    console.log(`invokeReason: ${JSON.stringify(invokeReason)}`)
     if(invokeReason.reason === 'edit') {
         self.isInEditMode.set(true)
     }
     if(invokeReason.reason === 'approve') {
         self.isInApproveMode.set(true)
+    }
+    if(invokeReason.reason === 'treat') {
+        self.isInTreatMode.set(true)
     }
 
     self.businessUnitLogoUrl = new ReactiveVar()
@@ -274,7 +299,7 @@ Template.ProcurementRequisitionDetail.onRendered(function () {
             }
         } else if(procurementDetails.status === 'Pending') {
             self.isInViewMode.set(true)
-        } else if(procurementDetails.status === 'Approve') {
+        } else if(procurementDetails.status === 'Approved') {
             if(self.isInEditMode()) {
                 swal('Error', "Sorry, you can't edit this procurement requisition. It has been approved", 'error')
             }
