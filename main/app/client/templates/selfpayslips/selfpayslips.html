@@ -20,7 +20,7 @@
         <div class="row">
           <div class="col-md-12 employee-filter">
               <div class="row">
-                  <div class="col-md-8">
+                  <div class="col-md-12">
                     <div class="row">
                         <h5>Please select a period</h5>
 
@@ -57,6 +57,10 @@
                         <div class="alert alert-danger text-center">
                             <p>{{errorMsg}}</p>
                         </div>
+                        {{else}}
+                            {{#with getSelectedPaySlipData}}
+                                {{> SimplePayslip this}}
+                            {{/with}}
                         {{/if}}
                     </div>
                   </div>

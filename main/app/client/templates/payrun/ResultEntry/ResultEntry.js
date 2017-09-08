@@ -17,8 +17,14 @@ Template.ResultEntry.events({
             payslipWithCurrencyDelineation: tmpl.data.payslipWithCurrencyDelineation, 
             displayAllPaymentsUnconditionally: true
         }
+        Session.set('currentSelectedPaySlip', payLoadForPayslip)
+        $("#payrunResultsTab").removeClass( "active" )
+        $("#selectedPaySlipTab").addClass( "active" )        
 
-        Modal.show('Payslip', payLoadForPayslip);
+        $(".payrunResults").removeClass( "active" )
+        $(".selectedPaySlip").addClass( "active" )
+
+        // Modal.show('Payslip', payLoadForPayslip);
     },
     'click .log': (e, tmpl) => {
         Modal.show('Log', tmpl.data.log);

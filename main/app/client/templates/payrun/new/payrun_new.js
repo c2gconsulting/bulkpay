@@ -527,6 +527,8 @@ Template.PayrunNew.events({
         //check if any valid selection is made
         if (params.employees.length > 0 || params.paygrades.length > 0){
             Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
+                Session.set('currentSelectedPaySlip', null)
+                
                 if(res) {
                     // console.log(`Payrun results: `, res);
                     Session.set('currentPayrunPeriod', res.period);
@@ -697,6 +699,9 @@ Template.PayrunNew.helpers({
 
             return (payrunRunType === 'LiveRun' && payrollApprovalConfig && payrollApprovalConfig.requirePayrollApproval)
         }
+    },
+    getSelectedPaySlipData: function() {
+        return Session.get('currentSelectedPaySlip')
     }
 });
 
@@ -747,4 +752,5 @@ Template.PayrunNew.onRendered(function () {
 });
 
 Template.PayrunNew.onDestroyed(function () {
+    Session.set('currentSelectedPaySlip', null)
 });
