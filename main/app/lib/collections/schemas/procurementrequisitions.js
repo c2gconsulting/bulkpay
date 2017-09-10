@@ -45,6 +45,30 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
         type: String,
         optional: true
     },
+    'approvals': {
+        type: [Object],
+        optional: true   // It is optional because the business may NOT have twoStepApproval enabled
+    },
+    'approvals.$': {
+        type: Object,
+        optional: true
+    },
+    'approvals.$.approverUserId': {
+        type: String
+    },
+    'approvals.$.firstApprover': {
+        type: Boolean
+    },
+    'approvals.$.secondApprover': {
+        type: Boolean
+    },
+    'approvals.$.approvalStatus': {
+        type: String
+    },
+    'approvals.$.approvalRecommendation': {
+        type: String,
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

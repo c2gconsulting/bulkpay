@@ -63,10 +63,26 @@
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
 
+                        {{#if isTwoStepApprovalEnabled}}
+                            <br/>
+                            {{#if isFirstSupervisor}}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="control-label" for="requisitionReason">Approval recommendation</label>
+
+                                        <textarea class="form-control" rows="5" name="approvalRecommendation" id="approvalRecommendation" value=""></textarea>
+                                    </div><!-- col-sm-3 -->
+                                </div><!-- row -->
+                            {{else}}
+                            
+                            {{/if}}
+                        {{/if}}
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
+                        {{#unless isInApproveMode}}
+                            <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
+                        {{/unless}}
 
                         {{#if isInEditMode}}
                         <button class="btn btn-danger mr5 pull-right" id="requisition-create" data-dismiss="modal">Submit for Approval</button>

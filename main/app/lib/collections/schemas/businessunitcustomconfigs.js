@@ -27,6 +27,12 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isTravelRequisitionActive: {
         type: Boolean
     },
+    procurementRequisitionApprovalConfig: {
+        type: Object
+    },
+    isTwoStepApprovalEnabled: {
+        type: Boolean
+    },
     leaveDaysAccrual: {
         type: String // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
     },

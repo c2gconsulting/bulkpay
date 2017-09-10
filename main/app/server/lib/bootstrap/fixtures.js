@@ -152,6 +152,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        isTwoStepApprovalEnabled: false,
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false, 
@@ -167,6 +168,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        isTwoStepApprovalEnabled: false,
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
@@ -182,6 +184,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        isTwoStepApprovalEnabled: false,
         leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
@@ -201,6 +204,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: true
         },
+        isTwoStepApprovalEnabled: true,
         leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: true,

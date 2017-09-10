@@ -93,17 +93,31 @@ Template.ProcurementRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Requisition approved", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        Modal.hide()
-                    })
+            let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+            if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+                if(Template.instance().isFirstSupervisor()) {
+                    let approvalRecommendation = $("textarea[name=approvalRecommendation]").val()
+                    // console.log(`approvalRecommendation: `, approvalRecommendation)
+
+
+                } else if(Template.instance().isSecondSupervisor()) {
+
                 } else {
-                    swal('Validation error', err.message, 'error')
+
                 }
-            })
+            } else {
+                Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition approved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            }
         }
     },
     'click #requisition-treat': function(e, tmpl) {
@@ -239,6 +253,18 @@ Template.ProcurementRequisitionDetail.helpers({
     'getUnitName': function(unitId) {
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
+    },
+    'isTwoStepApprovalEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTwoStepApprovalEnabled
+        }
+    },
+    'isFirstSupervisor': function() {
+        return Template.instance().isFirstSupervisor()
+     },
+    'isSecondSupervisor': function() {
+        return Template.instance().isSecondSupervisor()
     }
 });
 
@@ -247,13 +273,15 @@ Template.ProcurementRequisitionDetail.helpers({
 /*****************************************************************************/
 Template.ProcurementRequisitionDetail.onCreated(function () {
     let self = this;
-    let businessUnitId = Session.get('context');
+    let businessUnitId = Session.get('context')
 
     self.procurementDetails = new ReactiveVar()
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
+
+    self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
     if(invokeReason.reason === 'edit') {
@@ -273,10 +301,13 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let procurementSub = self.subscribe('ProcurementRequisition', invokeReason.requisitionId)
 
+        self.subscribe('getCostElement', businessUnitId)
+
         if(procurementSub.ready()) {
             let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
-            
+            console.log(`procurementDetails: `, procurementDetails)
+
             if(procurementDetails.unitId) {
                 self.subscribe('getEntity', procurementDetails.unitId)
             }
@@ -286,6 +317,12 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
+
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
     })
 
     self.areInputsValid = function(description, dateRequired, requisitionReason) {
@@ -304,6 +341,44 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         }
         return true
     }
+
+    self.isFirstSupervisor = () => {
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let currentUser = Meteor.user()
+
+            let creatorUserId = procurementDetails.createdBy;
+
+            let user = Meteor.users.findOne({_id: creatorUserId})
+            if(user && user.employeeProfile && user.employeeProfile.employment) {
+                let userPositionId = user.employeeProfile.employment.position
+
+                let userPosition = EntityObjects.findOne({_id: userPositionId})
+                if(userPosition) {
+                    return userPosition.properties.supervisor
+                }
+            }
+        }
+    }
+
+    self.isSecondSupervisor = () => {
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let currentUser = Meteor.user()
+
+            let creatorUserId = procurementDetails.createdBy;
+
+            let user = Meteor.users.findOne({_id: creatorUserId})
+            if(user && user.employeeProfile && user.employeeProfile.employment) {
+                let userPositionId = user.employeeProfile.employment.position
+
+                let userPosition = EntityObjects.findOne({_id: userPositionId})
+                if(userPosition) {
+                    return userPosition.properties.alternateSupervisor
+                }
+            }
+        }
+    }
 });
 
 Template.ProcurementRequisitionDetail.onRendered(function () {
@@ -313,13 +388,13 @@ Template.ProcurementRequisitionDetail.onRendered(function () {
     let procurementDetails = self.procurementDetails.get()
     if(procurementDetails) {
         if(procurementDetails.status !== 'Draft') {
-            if(self.isInEditMode()) {
+            if(self.isInEditMode.get()) {
                 swal('Error', "Sorry, you can't edit this procurement requisition. ", 'error')
             }
         } else if(procurementDetails.status === 'Pending') {
             self.isInViewMode.set(true)
         } else if(procurementDetails.status === 'Approved') {
-            if(self.isInEditMode()) {
+            if(self.isInEditMode.get()) {
                 swal('Error', "Sorry, you can't edit this procurement requisition. It has been approved", 'error')
             }
         }
