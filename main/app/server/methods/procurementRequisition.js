@@ -127,9 +127,10 @@ Meteor.methods({
                     'employeeProfile.employment.position': alternateSupervisorPositionId
                 }).fetch()
             }
-            if(supervisors && supervisors.length > 0) {
-                supervisors.forEach(aSupervisor => {
-                    let supervisorEmail =  aSupervisor.emails[0].address;
+            let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+            if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
+                if(supervisors && supervisors.length > 0) {
+                    let supervisorEmail =  supervisors[0].emails[0].address;
 
                     ProcurementRequisitonHelper.sendRequisitionCreated(
                         aSupervisor.profile.fullName,
@@ -139,22 +140,37 @@ Meteor.methods({
                         dateRequired,
                         procurementRequisitionDoc.requisitionReason,
                         approvalsPageUrl)
-                })
+                }
+            } else {
+                if(supervisors && supervisors.length > 0) {
+                    supervisors.forEach(aSupervisor => {
+                        let supervisorEmail =  aSupervisor.emails[0].address;
+
+                        ProcurementRequisitonHelper.sendRequisitionCreated(
+                            aSupervisor.profile.fullName,
+                            supervisorEmail, createdByFullName, 
+                            procurementRequisitionDoc.description, 
+                            unitName,
+                            dateRequired,
+                            procurementRequisitionDoc.requisitionReason,
+                            approvalsPageUrl)
+                    })
+                }
+                if(alternateSupervisors && alternateSupervisors.length > 0) {
+                    alternateSupervisors.forEach(aSupervisor => {
+                        let supervisorEmail =  aSupervisor.emails[0].address;
+
+                        ProcurementRequisitonHelper.sendRequisitionCreated(
+                            aSupervisor.profile.fullName,
+                            supervisorEmail, createdByFullName, 
+                            procurementRequisitionDoc.description, 
+                            unitName,
+                            dateRequired,
+                            procurementRequisitionDoc.requisitionReason,
+                            approvalsPageUrl)
+                    })
+                }
             }
-            if(alternateSupervisors && alternateSupervisors.length > 0) {
-                alternateSupervisors.forEach(aSupervisor => {
-                    let supervisorEmail =  aSupervisor.emails[0].address;
-
-                    ProcurementRequisitonHelper.sendRequisitionCreated(
-                        aSupervisor.profile.fullName,
-                        supervisorEmail, createdByFullName, 
-                        procurementRequisitionDoc.description, 
-                        unitName,
-                        dateRequired,
-                        procurementRequisitionDoc.requisitionReason,
-                        approvalsPageUrl)
-                })
-            }            
             return true
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
@@ -170,12 +186,90 @@ Meteor.methods({
         let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
-        if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
-            || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
-            ProcurementRequisitions.update(docId, {$set: {status: 'Approved'}})
+
+        if(!procurementRequisitionDoc) {
+            throw new Meteor.Error(401, "Requisition does not exist.")            
+        }
+
+        let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+        if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
+
+        } else {
+            if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
+                || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+                ProcurementRequisitions.update(docId, {$set: {status: 'Approved'}})
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+            }
+        }
+    },
+    "ProcurementRequisition/approveWithApprovalRecommendation": function(businessUnitId, docId, 
+            approvalRecommendation) {
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to approve a procurement requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+
+        if(!procurementRequisitionDoc) {
+            throw new Meteor.Error(401, "Requisition does not exist.")            
+        }
+
+        if(procurementRequisitionDoc.supervisorPositionId === userPositionId) {
+            let approvals = procurementRequisitionDoc.approvals || []
+            approvals.push({
+                approverUserId: Meteor.userId(),
+                firstApprover: true,
+                secondApprover: false,
+                approvalStatus: true,
+                approvalRecommendation: approvalRecommendation
+            })
+            let approvalSetObject = {
+                status: 'PartiallyApproved',
+                approvals: approvals
+            }
+            ProcurementRequisitions.update(docId, {$set: approvalSetObject})
+            //--
+            try {
+                let supervisors = []
+                let alternateSupervisors = []
+
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': procurementRequisitionDoc.supervisorPositionId
+                    }).fetch()
+                }
+
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': procurementRequisitionDoc.alternativeSupervisorPositionId
+                    }).fetch()
+                }
+                //--
+                if(alternateSupervisors && alternateSupervisors.length > 0) {
+                    let supervisorEmail =  alternateSupervisors[0].emails[0].address;
+
+                    ProcurementRequisitonHelper.sendRequisitionCreated(
+                        aSupervisor.profile.fullName,
+                        supervisorEmail, createdByFullName, 
+                        procurementRequisitionDoc.description, 
+                        unitName,
+                        dateRequired,
+                        procurementRequisitionDoc.requisitionReason,
+                        approvalsPageUrl)
+                }
+            } catch(errorInSendingEmail) {
+                console.log(errorInSendingEmail)
+            }
             return true;
         } else {
-            throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+            throw new Meteor.Error(401, "Unauthorized to approve requisition with recommendation.")
         }
     },
     "ProcurementRequisition/treat": function(businessUnitId, docId){
@@ -235,7 +329,76 @@ Meteor.methods({
             ProcurementRequisitions.update(docId, {$set: {status: 'Rejected'}})
             return true;
         } else {
-            throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+            throw new Meteor.Error(401, "Unauthorized to reject requisition.")
+        }
+    },
+    "ProcurementRequisition/rejectWithApprovalRecommendation": function(businessUnitId, docId, approvalRecommendation){
+        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to reject a procurement requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+        if(!procurementRequisitionDoc) {
+            throw new Meteor.Error(401, "Requisition does not exist.")            
+        }
+
+        if(procurementRequisitionDoc.supervisorPositionId === userPositionId) {
+            let approvals = procurementRequisitionDoc.approvals || []
+            approvals.push({
+                approverUserId: Meteor.userId(),
+                firstApprover: true,
+                secondApprover: false,
+                approvalStatus: false,
+                approvalRecommendation: approvalRecommendation
+            })
+            let approvalSetObject = {
+                status: 'PartiallyRejected',
+                approvals: approvals
+            }
+            ProcurementRequisitions.update(docId, {$set: approvalSetObject})
+            //--
+            try {
+                let supervisors = []
+                let alternateSupervisors = []
+
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': procurementRequisitionDoc.supervisorPositionId
+                    }).fetch()
+                }
+
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': procurementRequisitionDoc.alternativeSupervisorPositionId
+                    }).fetch()
+                }
+                //--
+                if(alternateSupervisors && alternateSupervisors.length > 0) {
+                    let supervisorEmail =  alternateSupervisors[0].emails[0].address;
+
+                    ProcurementRequisitonHelper.sendRequisitionCreated(
+                        aSupervisor.profile.fullName,
+                        supervisorEmail, createdByFullName, 
+                        procurementRequisitionDoc.description, 
+                        unitName,
+                        dateRequired,
+                        procurementRequisitionDoc.requisitionReason,
+                        approvalsPageUrl)
+                }
+            } catch(errorInSendingEmail) {
+                console.log(errorInSendingEmail)
+            }
+            return true;
+        } else {
+            throw new Meteor.Error(401, "Unauthorized to reject requisition with recommendation.")
         }
     },
     "ProcurementRequisition/markAsSeen": function(businessUnitId, docId){

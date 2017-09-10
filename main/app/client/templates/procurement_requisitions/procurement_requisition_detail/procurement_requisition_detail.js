@@ -97,9 +97,19 @@ Template.ProcurementRequisitionDetail.events({
             if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
                 if(Template.instance().isFirstSupervisor()) {
                     let approvalRecommendation = $("textarea[name=approvalRecommendation]").val()
-                    // console.log(`approvalRecommendation: `, approvalRecommendation)
-
-
+                    
+                    Meteor.call('ProcurementRequisition/approveWithApprovalRecommendation', 
+                        businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition approved and sent for final approval", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
+                    })
                 } else if(Template.instance().isSecondSupervisor()) {
 
                 } else {
@@ -164,17 +174,41 @@ Template.ProcurementRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('ProcurementRequisition/reject', businessUnitId, procurementDetails._id, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Requisition rejected", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        Modal.hide()
+            let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+            if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+                if(Template.instance().isFirstSupervisor()) {
+                    let approvalRecommendation = $("textarea[name=approvalRecommendation]").val()
+                    
+                    Meteor.call('ProcurementRequisition/rejectWithApprovalRecommendation', 
+                        businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition rejected and sent for final approval", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
                     })
+                } else if(Template.instance().isSecondSupervisor()) {
+
                 } else {
-                    swal('Validation error', err.message, 'error')
+
                 }
-            })
+            } else {
+                Meteor.call('ProcurementRequisition/reject', businessUnitId, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition rejected", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            }
         }
     },
     'click #requisition-print': function(e, tmpl) {
