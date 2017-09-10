@@ -83,10 +83,18 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
+    self.businessUnitCustomConfig = new ReactiveVar()
+
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     self.procurementsToApprove = new ReactiveVar()
+
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
 
     self.getProcurementsToApprove = function(skip) {
         let sortBy = "createdAt";
@@ -99,14 +107,34 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         options.skip = skip
 
         let currentUser = Meteor.user()
-        if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-            let currentUserPosition = currentUser.employeeProfile.employment.position
+        let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return ProcurementRequisitions.find({
-                $or: [{supervisorPositionId : currentUserPosition}, 
-                        {alternativeSupervisorPositionId: currentUserPosition}],                
-                status: 'Pending'
-            }, options);
+                return ProcurementRequisitions.find({
+                    $or: [
+                        {
+                            alternativeSupervisorPositionId: currentUserPosition,
+                            $or: [{status : 'PartiallyApproved'}, {status: 'PartiallyRejected'}],
+                        }, 
+                        {
+                            supervisorPositionId : currentUserPosition,
+                            status: 'Pending'
+                        }
+                    ],
+                }, options);
+            }
+        } else {
+            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                let currentUserPosition = currentUser.employeeProfile.employment.position
+
+                return ProcurementRequisitions.find({
+                    $or: [{supervisorPositionId : currentUserPosition}, 
+                            {alternativeSupervisorPositionId: currentUserPosition}],                
+                    status: 'Pending'
+                }, options);
+            }
         }
         return null
     }
@@ -130,7 +158,6 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
             }
         }
     })
-
 });
 
 Template.ProcurementRequisitionApprovalList.onRendered(function () {
