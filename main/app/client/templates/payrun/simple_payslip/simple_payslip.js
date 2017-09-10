@@ -1,25 +1,30 @@
 import _ from 'underscore';
 
 /*****************************************************************************/
-/* Payslip: Event Handlers */
+/* SimplePayslip: Event Handlers */
 /*****************************************************************************/
-Template.Payslip.events({
+Template.SimplePayslip.events({
     'click #PayslipPrint': function(e, tmpl) {
         e.preventDefault()
-        // $("#PayslipModal").printThis({
-        // });
 
-        $("#PayslipModal").printThis({
-            importStyle: true
-        });
-        // window.print()
+        let modalContent = tmpl.$("#SimplePayslipModal").html()
+        let currentBodyContent = document.getElementsByTagName('body')[0].innerHTML
+
+        document.getElementsByTagName('body')[0].innerHTML = modalContent; 
+        window.print()
+        // document.getElementsByTagName('body')[0].innerHTML = currentBodyContent
+        
+        let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
+        if(!displayAllPaymentsUnconditionally) {
+            window.location.reload()
+        }
     }
 });
 
 /*****************************************************************************/
-/* Payslip: Helpers */
+/* SimplePayslip: Helpers */
 /*****************************************************************************/
-Template.Payslip.helpers({
+Template.SimplePayslip.helpers({
     'bank': function() {
         return Template.instance().employeeData.get().bank;
     },
@@ -251,19 +256,24 @@ Template.Payslip.helpers({
                 }
             }
         }
+    },
+    shouldShowPrintButton: function() {
+        let displayAllPaymentsUnconditionally = Template.instance().displayAllPaymentsUnconditionally
+        if(!displayAllPaymentsUnconditionally) {
+            return true
+        }
     }
 });
 
 /*****************************************************************************/
-/* Payslip: Lifecycle Hooks */
+/* SimplePayslip: Lifecycle Hooks */
 /*****************************************************************************/
-Template.Payslip.onCreated(function () {
+Template.SimplePayslip.onCreated(function () {
     let self = this;
 
-    self.displayAllPaymentsUnconditionally = self.data.displayAllPaymentsUnconditionally
+    let businessUnitId = Session.get('context')
 
     self.employeeData = new ReactiveVar();
-    self.employeeData.set(self.data.payslip.employee);
 
     self.businessUnitName = new ReactiveVar()
     self.businessUnitLogoUrl = new ReactiveVar()
@@ -273,51 +283,54 @@ Template.Payslip.onCreated(function () {
     self.employeePayGrade = new ReactiveVar()
     self.allPayTypes = new ReactiveVar()
 
+    if(self.data) {
+        self.displayAllPaymentsUnconditionally = self.data.displayAllPaymentsUnconditionally    
+        self.employeeData.set(self.data.payslip.employee);
 
-    let businessUnitId = Session.get('context')
-
-    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-    let payGradesSubs = self.subscribe("paygrades", Session.get('context'));
-    // console.log(`payments: `, self.data)
-
-    let payTypesSubs = self.subscribe("PayTypes", Session.get('context'));
-
-    let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
-    self.subscribe('currenciesForPeriod', formattedPeriod);
-
-    let months = {
-        '01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May',
-        '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October',
-        '11': 'November', '12': 'December'
+        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+        let payGradesSubs = self.subscribe("paygrades", Session.get('context'));
+        // console.log(`payments: `, self.data)
+    
+        let payTypesSubs = self.subscribe("PayTypes", Session.get('context'));
+    
+        let formattedPeriod = `${self.data.payslip.period.month}${self.data.payslip.period.year}`
+        self.subscribe('currenciesForPeriod', formattedPeriod);
+    
+        let months = {
+            '01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May',
+            '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October',
+            '11': 'November', '12': 'December'
+        }
+        // let payrunPeriod = Session.get('currentPayrunPeriod')
+    
+        // if(payrunPeriod.month) {
+            self.payrunPeriod.set(`${months[self.data.payslip.period.month]} ${self.data.payslip.period.year}`)
+        // }
+    
+        self.autorun(function(){
+            if(businessUnitSubscription.ready()) {
+                let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+                self.businessUnitName.set(businessUnit.name)
+                self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+            }
+            if(payTypesSubs.ready() && payGradesSubs.ready()) {
+                let employeePayGradeId = self.data.payslip.employee.gradeId
+    
+                self.employeePayGrade.set(PayGrades.findOne({
+                    _id: employeePayGradeId
+                }))
+                self.allPayTypes.set(PayTypes.find({businessId: businessUnitId}).fetch())
+            }
+        })
     }
-    // let payrunPeriod = Session.get('currentPayrunPeriod')
-
-    // if(payrunPeriod.month) {
-        self.payrunPeriod.set(`${months[self.data.payslip.period.month]} ${self.data.payslip.period.year}`)
-    // }
-
-    self.autorun(function(){
-        if(businessUnitSubscription.ready()) {
-            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-            self.businessUnitName.set(businessUnit.name)
-            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
-        }
-        if(payTypesSubs.ready() && payGradesSubs.ready()) {
-            let employeePayGradeId = self.data.payslip.employee.gradeId
-
-            self.employeePayGrade.set(PayGrades.findOne({
-                _id: employeePayGradeId
-            }))
-            self.allPayTypes.set(PayTypes.find({businessId: businessUnitId}).fetch())
-        }
-    })
 });
 
-Template.Payslip.onRendered(function () {
+Template.SimplePayslip.onRendered(function () {
     // console.log(`Pay slip data: \n${JSON.stringify(Template.instance().data)}`);
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.Payslip.onDestroyed(function () {
+Template.SimplePayslip.onDestroyed(function () {
     Session.get('currentPayrunPeriod', null)
+    Session.set('currentSelectedPaySlip', null)
 });
