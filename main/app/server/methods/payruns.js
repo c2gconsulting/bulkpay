@@ -45,7 +45,12 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
 
                 if(userHireDate) {
                     let userHireDateMoment = moment(userHireDate)
-                    if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
+                    // if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
+                    //     users.push(aUser)
+                    // }
+
+                    if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year()) 
+                        || dateLimitMoment.isAfter(userHireDateMoment)) {
                         users.push(aUser)
                     }
                 }
@@ -513,7 +518,13 @@ Meteor.methods({
                         let userHireDate = aUser.employeeProfile.employment.hireDate
                         if(userHireDate) {
                             let userHireDateMoment = moment(userHireDate)
-                            if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
+
+                            // if(dateLimitMoment.isSameOrAfter(userHireDateMoment)) {
+                            //     users.push(aUser)
+                            // }
+
+                            if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year()) 
+                                || dateLimitMoment.isAfter(userHireDateMoment)) {
                                 users.push(aUser)
                             }
                         }
