@@ -111,7 +111,17 @@ Template.ProcurementRequisitionDetail.events({
                         }
                     })
                 } else if(Template.instance().isSecondSupervisor()) {
-
+                    Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition approved", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
+                    })
                 } else {
 
                 }
@@ -192,7 +202,17 @@ Template.ProcurementRequisitionDetail.events({
                         }
                     })
                 } else if(Template.instance().isSecondSupervisor()) {
-
+                    Meteor.call('ProcurementRequisition/reject', businessUnitId, procurementDetails._id, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition rejected", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
+                    })
                 } else {
 
                 }
