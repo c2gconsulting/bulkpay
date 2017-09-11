@@ -68,13 +68,28 @@
                             {{#if isFirstSupervisor}}
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label class="control-label" for="requisitionReason">Approval recommendation</label>
+                                        <label class="control-label" for="approvalRecommendation">Approval recommendation</label>
 
                                         <textarea class="form-control" rows="5" name="approvalRecommendation" id="approvalRecommendation" value=""></textarea>
                                     </div><!-- col-sm-3 -->
                                 </div><!-- row -->
                             {{else}}
-                            
+                                {{#if isSecondSupervisor}}
+                                    {{#with firstSupervisorApproval}}
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label" for="approvalRecommendation">#1st Approver: {{approverFullName}}</label>
+                                                <br/>
+                                                <label class="control-label" for="approvalRecommendation">Recommendation</label>
+
+                                                <textarea class="form-control" rows="5" name="approvalRecommendation" id="approvalRecommendation" 
+                                                    value="{{approvalRecommendation}}" disabled></textarea>
+                                            </div>
+                                        </div>
+
+                                        <label class="label label-success" for="approvalRecommendation">{{getHumanReadableApprovalState this.approvalStatus}}</label>
+                                    {{/with}}
+                                {{/if}}
                             {{/if}}
                         {{/if}}
                     </div>

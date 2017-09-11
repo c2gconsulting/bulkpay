@@ -203,7 +203,7 @@ Template.header.onCreated(function() {
         if(procurementsStatusNotSeenSub.ready()) {
             self.procurementsStatusNotSeen.set(ProcurementRequisitions.find({
                 createdBy: Meteor.userId(),
-                $or: [{status: 'Treated'}, {status: 'Rejected'}],
+                $or: [{status: 'Approved'}, {status: 'Rejected'}],
                 isStatusSeenByCreator: {$ne: true}
             }).fetch())
         }

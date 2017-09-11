@@ -299,6 +299,33 @@ Template.ProcurementRequisitionDetail.helpers({
      },
     'isSecondSupervisor': function() {
         return Template.instance().isSecondSupervisor()
+    },
+    'firstSupervisorApproval': function() {
+        console.log(`Inside: firstSupervisorApproval`)
+        let procurement = Template.instance().procurementDetails.get()
+
+        let procurementApprovals = procurement.approvals || []
+        let firstApproval = {}
+        procurementApprovals.forEach(anApproval => {
+            if(anApproval.firstApprover) {
+                firstApproval = anApproval
+            }
+        })
+        console.log(`firstApproval: `, firstApproval)
+
+        if(firstApproval) {
+            let approverUserId = firstApproval.approverUserId
+            if(approverUserId) {
+                let approverUser = Meteor.users.findOne(approverUserId)
+                if(approverUser) {
+                    firstApproval.approverFullName = approverUser.profile.fullName
+                }
+            }
+        }
+        return firstApproval
+    },
+    'getHumanReadableApprovalState': function(boolean) {
+        return (boolean === true) ? "Approved" : "Rejected"
     }
 });
 
@@ -330,8 +357,13 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
 
     self.businessUnitLogoUrl = new ReactiveVar()
 
-
     self.autorun(function() {
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
+
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let procurementSub = self.subscribe('ProcurementRequisition', invokeReason.requisitionId)
 
@@ -340,8 +372,6 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         if(procurementSub.ready()) {
             let procurementDetails = ProcurementRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(procurementDetails)
-            console.log(`procurementDetails: `, procurementDetails)
-
             if(procurementDetails.unitId) {
                 self.subscribe('getEntity', procurementDetails.unitId)
             }
@@ -351,12 +381,6 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
             self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
-
-        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
-            if(!err) {
-                self.businessUnitCustomConfig.set(res)
-            }
-        })
     })
 
     self.areInputsValid = function(description, dateRequired, requisitionReason) {
@@ -380,16 +404,21 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         let procurementDetails = Template.instance().procurementDetails.get()
         if(procurementDetails) {
             let currentUser = Meteor.user()
+            let currentUserPositionId = null
+
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                currentUserPositionId = currentUser.employeeProfile.employment.position
+            }
 
             let creatorUserId = procurementDetails.createdBy;
 
             let user = Meteor.users.findOne({_id: creatorUserId})
             if(user && user.employeeProfile && user.employeeProfile.employment) {
                 let userPositionId = user.employeeProfile.employment.position
-
                 let userPosition = EntityObjects.findOne({_id: userPositionId})
+
                 if(userPosition) {
-                    return userPosition.properties.supervisor
+                    return userPosition.properties.supervisor === currentUserPositionId
                 }
             }
         }
@@ -399,6 +428,11 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
         let procurementDetails = Template.instance().procurementDetails.get()
         if(procurementDetails) {
             let currentUser = Meteor.user()
+            let currentUserPositionId = null
+
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                currentUserPositionId = currentUser.employeeProfile.employment.position
+            }
 
             let creatorUserId = procurementDetails.createdBy;
 
@@ -408,7 +442,7 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
 
                 let userPosition = EntityObjects.findOne({_id: userPositionId})
                 if(userPosition) {
-                    return userPosition.properties.alternateSupervisor
+                    return userPosition.properties.alternateSupervisor === currentUserPositionId
                 }
             }
         }

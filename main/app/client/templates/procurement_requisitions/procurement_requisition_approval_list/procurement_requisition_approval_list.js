@@ -152,8 +152,8 @@ Template.ProcurementRequisitionApprovalList.onCreated(function () {
         //--
         if(procurementsToApproveSub.ready()) {
             let currentUser = Meteor.user()
-            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-                let currentUserPosition = currentUser.employeeProfile.employment.position
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                
                 self.procurementsToApprove.set(self.getProcurementsToApprove(0))
             }
         }

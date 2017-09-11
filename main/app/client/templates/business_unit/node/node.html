@@ -71,12 +71,20 @@
                             <ul class="list-group">
                                 <li class="list-group-item">
                                     <div class="">
-                                        Supervisor: {{positionName properties.supervisor}}
+                                        {{#if isTwoStepApprovalEnabled}}
+                                            First Supervisor: {{positionName properties.supervisor}}
+                                        {{else}}
+                                            Supervisor: {{positionName properties.supervisor}}
+                                        {{/if}}
                                     </div>
                                 </li>
                                 <li class="list-group-item">
                                     <div class="">
-                                        Alternate Supervisor: {{positionName properties.alternateSupervisor}}
+                                        {{#if isTwoStepApprovalEnabled}}
+                                            Second Supervisor: {{positionName properties.alternateSupervisor}}
+                                        {{else}}
+                                            Alternate Supervisor: {{positionName properties.alternateSupervisor}}
+                                        {{/if}}
                                     </div>
                                 </li>
 

@@ -100,7 +100,13 @@ Template.Node.helpers({
         let userId = Meteor.userId()
 
         return Core.hasPayrollAccess(userId);
-    }
+    },
+    'isTwoStepApprovalEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTwoStepApprovalEnabled
+        }
+    },
 });
 
 /*****************************************************************************/
@@ -108,6 +114,9 @@ Template.Node.helpers({
 /*****************************************************************************/
 Template.Node.onCreated(function () {
     var self = this;
+
+    self.businessUnitCustomConfig = new ReactiveVar();
+    let businessUnitId = Session.get('context')
 
     //get session value for node and determine subscription
    self.autorun(function(){
@@ -120,7 +129,14 @@ Template.Node.onCreated(function () {
        self.subscribe("employees", node, bu);
 
        //also subscribe to all employees in the department
-
+        
+        //console.log("Member node template data: " + JSON.stringify(Template.instance().data));
+        
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
    });
 });
 
@@ -180,7 +196,6 @@ Template.MemberNode.events({
       if(Core.hasPayrollAccess(userId)) {
             let selectedNodeElement = e.currentTarget;
             let unitId = selectedNodeElement.getAttribute("name");
-            console.log(`Unit id: ${unitId}`)
 
             Modal.show('BusinessUnitActivities', unitId);
       }
@@ -191,7 +206,6 @@ Template.MemberNode.events({
       let entityId = selectedNodeElement.getAttribute("name");
 
       let nodeProp = EntityObjects.findOne({_id: entityId});
-      console.log("node properties: " + JSON.stringify(nodeProp));
 
       swal(nodeProp.name, nodeProp.otype , "success");
   }
@@ -214,14 +228,14 @@ Template.MemberNode.helpers({
           case "Person":
               return "fa-user"
       };
-  },
+  }
 });
 
 Template.MemberNode.onCreated(function () {
     var self = this;
-    //console.log("Member node template data: " + JSON.stringify(Template.instance().data));
+    
+    //console.log("Member node template data: " + JSON.stringify(Template.instance().data));    
     self.autorun(function(){
-
     });
 });
 

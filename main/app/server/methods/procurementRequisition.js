@@ -193,7 +193,12 @@ Meteor.methods({
 
         let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
         if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
-
+            if(procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+                ProcurementRequisitions.update(docId, {$set: {status: 'Approved'}})
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to perform final approval")
+            }
         } else {
             if(procurementRequisitionDoc.supervisorPositionId === userPositionId 
                 || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
@@ -322,14 +327,24 @@ Meteor.methods({
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
-
-        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
-        if(procurementRequisitionDoc.supervisorPositionId === userPositionId
-            || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
-            ProcurementRequisitions.update(docId, {$set: {status: 'Rejected'}})
-            return true;
+        
+        let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+        if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
+            if(procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+                ProcurementRequisitions.update(docId, {$set: {status: 'Rejected'}})
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to perform final approval")
+            }
         } else {
-            throw new Meteor.Error(401, "Unauthorized to reject requisition.")
+            let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+            if(procurementRequisitionDoc.supervisorPositionId === userPositionId
+                || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
+                ProcurementRequisitions.update(docId, {$set: {status: 'Rejected'}})
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to reject requisition.")
+            }
         }
     },
     "ProcurementRequisition/rejectWithApprovalRecommendation": function(businessUnitId, docId, approvalRecommendation){
