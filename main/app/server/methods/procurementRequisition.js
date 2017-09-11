@@ -1,7 +1,6 @@
 import _ from 'underscore';
 
 
-
 let ProcurementRequisitonHelper = {
     sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName, 
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
@@ -13,6 +12,30 @@ let ProcurementRequisitonHelper = {
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Procurement Requisition created!",
                 html: SSR.render("procurementRequisitionNotification", {
+                    user: supervisorFullName,
+                    createdBy: createdByFullName,
+                    description: description,
+                    unit: unitName,
+                    dateRequired: dateRequired,
+                    reason: requisitionReason,
+                    approvalsPageUrl: approvalsPageUrl
+                })
+            });
+            return true
+        } catch(e) {
+            throw new Meteor.Error(401, e.message);
+        }
+    },
+    sendRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
+        description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        try {
+            SSR.compileTemplate("procurementRequisitionNotificationForTreatment", Assets.getText("emailTemplates/procurementRequisitionNotificationForTreatment.html"));
+            
+            Email.send({
+                to: supervisorEmail,
+                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+                subject: "Procurement Requisition approved and needs to be treated",
+                html: SSR.render("procurementRequisitionNotificationForTreatment", {
                     user: supervisorFullName,
                     createdBy: createdByFullName,
                     description: description,
@@ -194,7 +217,44 @@ Meteor.methods({
         let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
         if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
             if(procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
-                ProcurementRequisitions.update(docId, {$set: {status: 'Approved'}})
+                ProcurementRequisitions.update(docId, {$set: {
+                    status: 'Approved',
+                    approvedByUserId: Meteor.userId()
+                }})
+                //--
+                let usersWithProcurementApproveRole = Meteor.users.find({
+                    businessIds: businessUnitId,
+                    'roles.__global_roles__': Core.Permissions.PROCUREMENT_REQUISITION_APPROVE
+                }).fetch()
+                // console.log(`usersWithProcurementApproveRole: `, usersWithProcurementApproveRole)
+
+                try {
+                    let createdBy = Meteor.users.findOne(procurementRequisitionDoc.createdBy)                
+                    let createdByEmail = createdBy.emails[0].address;
+                    let createdByFullName = createdBy.profile.fullName
+                    let unit = EntityObjects.findOne({_id: procurementRequisitionDoc.unitId, otype: 'Unit'})
+                    let unitName = unit.name
+                    let dateRequired = ''
+                    if(procurementRequisitionDoc.dateRequired) {
+                        dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')
+                    }
+                    let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/treatlist`
+                    //--
+                    if(usersWithProcurementApproveRole && usersWithProcurementApproveRole.length > 0) {
+                        let supervisorEmail =  usersWithProcurementApproveRole[0].emails[0].address;
+
+                        ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
+                            usersWithProcurementApproveRole[0].profile.fullName,
+                            supervisorEmail, createdByFullName, 
+                            procurementRequisitionDoc.description, 
+                            unitName,
+                            dateRequired,
+                            procurementRequisitionDoc.requisitionReason,
+                            approvalsPageUrl)
+                    }
+                } catch(errorInSendingEmail) {
+                    console.log(errorInSendingEmail)
+                }
                 return true;
             } else {
                 throw new Meteor.Error(401, "Unauthorized to perform final approval")
@@ -242,16 +302,20 @@ Meteor.methods({
             ProcurementRequisitions.update(docId, {$set: approvalSetObject})
             //--
             try {
-                let supervisors = []
+                let createdBy = Meteor.users.findOne(procurementRequisitionDoc.createdBy)                
+                let createdByEmail = createdBy.emails[0].address;
+                let createdByFullName = createdBy.profile.fullName
+                let unit = EntityObjects.findOne({_id: procurementRequisitionDoc.unitId, otype: 'Unit'})
+                let unitName = unit.name
+                let dateRequired = ''
+                if(procurementRequisitionDoc.dateRequired) {
+                    dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')
+                }
+                let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/approvalslist`
+
                 let alternateSupervisors = []
 
-                if(supervisorPositionId) {
-                    supervisors = Meteor.users.find({
-                        'employeeProfile.employment.position': procurementRequisitionDoc.supervisorPositionId
-                    }).fetch()
-                }
-
-                if(alternateSupervisorPositionId) {
+                if(procurementRequisitionDoc.alternativeSupervisorPositionId) {
                     alternateSupervisors = Meteor.users.find({
                         'employeeProfile.employment.position': procurementRequisitionDoc.alternativeSupervisorPositionId
                     }).fetch()
@@ -261,7 +325,7 @@ Meteor.methods({
                     let supervisorEmail =  alternateSupervisors[0].emails[0].address;
 
                     ProcurementRequisitonHelper.sendRequisitionCreated(
-                        aSupervisor.profile.fullName,
+                        alternateSupervisors[0].profile.fullName,
                         supervisorEmail, createdByFullName, 
                         procurementRequisitionDoc.description, 
                         unitName,

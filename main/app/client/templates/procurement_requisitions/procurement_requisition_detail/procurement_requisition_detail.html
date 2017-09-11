@@ -87,7 +87,11 @@
                                             </div>
                                         </div>
 
-                                        <label class="label label-success" for="approvalRecommendation">{{getHumanReadableApprovalState this.approvalStatus}}</label>
+                                        {{#if approvalStatus}}
+                                            <label class="label label-success" for="approvalRecommendation">{{getHumanReadableApprovalState approvalStatus}}</label>
+                                        {{else}}
+                                            <label class="label label-danger" for="approvalRecommendation">{{getHumanReadableApprovalState approvalStatus}}</label>
+                                        {{/if}}
                                     {{/with}}
                                 {{/if}}
                             {{/if}}

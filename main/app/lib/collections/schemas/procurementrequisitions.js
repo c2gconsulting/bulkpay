@@ -63,12 +63,16 @@ Core.Schemas.ProcurementRequisition = new SimpleSchema({
         type: Boolean
     },
     'approvals.$.approvalStatus': {
-        type: String
+        type: Boolean
     },
     'approvals.$.approvalRecommendation': {
         type: String,
         optional: true
     },
+    approvedByUserId: {
+        type: String,
+        optional: true
+    },    
     createdAt: {
         type: Date,
         autoValue: function () {

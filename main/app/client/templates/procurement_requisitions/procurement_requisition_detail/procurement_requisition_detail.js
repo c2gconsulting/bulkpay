@@ -321,7 +321,6 @@ Template.ProcurementRequisitionDetail.helpers({
         return Template.instance().isSecondSupervisor()
     },
     'firstSupervisorApproval': function() {
-        console.log(`Inside: firstSupervisorApproval`)
         let procurement = Template.instance().procurementDetails.get()
 
         let procurementApprovals = procurement.approvals || []
@@ -331,7 +330,6 @@ Template.ProcurementRequisitionDetail.helpers({
                 firstApproval = anApproval
             }
         })
-        console.log(`firstApproval: `, firstApproval)
 
         if(firstApproval) {
             let approverUserId = firstApproval.approverUserId
@@ -345,7 +343,7 @@ Template.ProcurementRequisitionDetail.helpers({
         return firstApproval
     },
     'getHumanReadableApprovalState': function(boolean) {
-        return (boolean === true) ? "Approved" : "Rejected"
+        return boolean ? "Approved" : "Rejected"
     }
 });
 
