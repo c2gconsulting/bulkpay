@@ -179,9 +179,7 @@
 
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        {{#unless or (isInApproveMode) (isInTreatMode)}}
-                            <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
-                        {{/unless}}
+                        <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
 
                         {{#if isInEditMode}}
                         <button class="btn btn-danger mr5 pull-right" id="requisition-create" data-dismiss="modal">Submit for Approval</button>
