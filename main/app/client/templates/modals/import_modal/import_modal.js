@@ -2,6 +2,7 @@
 /* ImportModal: Event Handlers */
 /*****************************************************************************/
 import Ladda from 'ladda';
+
 Template.ImportModal.events({
     "click #upload": function (e, tmpl) {
         e.preventDefault();
@@ -12,7 +13,7 @@ Template.ImportModal.events({
             return;
         }
         const period = month + year;
-        console.log('period', period);
+        
         let file = $("#fileupload")[0].files[0];
         if (!file){
             swal('No File to Import', 'Please specify file to import', 'error');
@@ -22,9 +23,7 @@ Template.ImportModal.events({
             Template.instance().response.set('error', undefined);
         }
         //--
-        console.log(`File type: ${file.type}`)
         let fileExtension = file.name.split('.').pop()
-        console.log(`File extension: ${fileExtension}`)
         //--
         if (file.type !== "text/csv") {
             if(fileExtension !== 'csv') {// This is important because on Windows OS, the file.type won't be 'text/csv'
@@ -34,13 +33,9 @@ Template.ImportModal.events({
         }
         Template.instance().response.set('error', undefined);
 
+        $('#upload').text('Please wait ... ')
         tmpl.$('#upload').attr('disabled', true);
-        try {
-            let l = Ladda.create(tmpl.$('#upload')[0]);
-            l.start();
-        } catch(e) {
-            console.log(e);
-        }
+
         let overwrite = $("#check-overwrite").is(":checked")
         Papa.parse( file, {
             header: true,
@@ -54,24 +49,17 @@ Template.ImportModal.events({
                         console.log(e);
                     }
                     //--
-                    if ( error ) {
-                        console.log(error.reason)
-                        swal('Error', `${error.reason}`, 'error');
-                    } else {
-                        console.log(`additional pay response`, response)
-                        let skippedCount = response.skipped
-                        let errorCount = response.failed
+                    $('#upload').text('Upload File')
+                    tmpl.$('#upload').attr('disabled', false);
+                    tmpl.isUploading.set(false)
 
-                        if((skippedCount + errorCount) > 0) {
-                            let totalNumErrors = skippedCount + errorCount
-                            swal('Error', `${totalNumErrors} error(s) exist in your upload file`, 'error');
-                        } else {
-                            swal('Success', "Upload success", 'success');
-                            Session.set("response", response)
-                            $("#fileupload").val('');
-                            $(".file-info").text("No file chosen")
-                            Modal.hide('ImportModal');
-                        }
+                    if ( error ) {
+                        swal('Server Error!', 'Sorry, a server error has occurred. Please try again later.', 'error');
+                    } else {    
+                        // $("#fileupload").val('');
+                        // $(".file-info").text("No file chosen")
+
+                        tmpl.response.set('response', response);
                     }
                 });
             }
@@ -101,6 +89,15 @@ Template.ImportModal.events({
         } else {
             $(".file-info").text("No file chosen")
         }
+    },
+    'click #recordsWithError': function(e, tmpl) {
+        e.preventDefault()
+        let fields = ['line', 'error', 'employee','paytype', 'amount']
+
+        let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
+        let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
+
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "Records With Error");
     }
 });
 
@@ -109,7 +106,7 @@ Template.ImportModal.events({
 /*****************************************************************************/
 Template.ImportModal.helpers({
     'response': () => {
-        return Session.get("response")
+        return Template.instance().response.get('response');
     },
     'error': () => {
         return Template.instance().response.get('error');
@@ -119,8 +116,21 @@ Template.ImportModal.helpers({
     },
     'years': function(){
         return Core.years();
-    }
+    },
+    'error': () => {
+        let uploadResponse = Template.instance().response.get('response');
+        if(uploadResponse) {
+            let skippedCount = uploadResponse.skippedCount
+            let errorCount = uploadResponse.failed
 
+            if((skippedCount + errorCount) > 0) {
+                return true
+            }
+        }
+    },
+    'isUploading': () => {
+        return Template.instance().isUploading.get()
+    }
 });
 
 /*****************************************************************************/
@@ -128,8 +138,12 @@ Template.ImportModal.helpers({
 /*****************************************************************************/
 Template.ImportModal.onCreated(function () {
     let self = this;
+
     self.response = new ReactiveDict();
     Session.set("response", undefined);
+
+    self.isUploading = new ReactiveVar()
+    self.isUploading.set(false)
 });
 
 Template.ImportModal.onRendered(function () {

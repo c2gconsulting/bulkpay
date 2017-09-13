@@ -6,57 +6,66 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">Additional Pay / Deduction Import</h3>
                     </div>
+
                     <div class="panel-body">
                         <div class="row">
-                            <form class="row">
-                                <div class="col-sm-12">
-                                    {{#if response}}
-                                        <p class="modal-desc"> {{response.success}} Additional Payments were imported, {{response.failed}} Additional Payment failed to import, and {{response.skipped}} Additional payment records were skipped.</p>
-                                    {{/if}}
-                                    {{#if error}}
-                                        <p class="modal-desc">{{error}}</p>
-                                    {{/if}}
-                                </div>
+                            <div class="col-sm-6">
                                 <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="control-label">Period</label>
-                                                <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
-                                                    <option value="">Select Month</option>
-                                                    {{#each month}}
-                                                        <option value="{{period}}">{{name}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div><!-- form-group -->
-                                        </div><!-- col-sm-6 -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Period</label>
+                                            <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
+                                                <option value="">Select Month</option>
+                                                {{#each month}}
+                                                    <option value="{{period}}">{{name}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div><!-- form-group -->
+                                    </div>
 
-                                        <div class="col-sm-6">
-                                            <div class="form-group">
-                                                <label class="control-label">Year</label>
-                                                <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
-                                                    <option value="">Select Year</option>
-                                                    {{#each years}}
-                                                        <option value="{{this}}">{{this}}</option>
-                                                    {{/each}}
-                                                </select>
-                                            </div><!-- form-group -->
-                                        </div><!-- col-sm-6 -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="control-label">Year</label>
+                                            <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
+                                                <option value="">Select Year</option>
+                                                {{#each years}}
+                                                    <option value="{{this}}">{{this}}</option>
+                                                {{/each}}
+                                            </select>
+                                        </div><!-- form-group -->
+                                    </div><!-- col-sm-6 -->
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12 choose-file-box">
+                                        <div class="custom-input-file">
+                                            <span class="btn btn-primary fileinput-button">Choose File
+                                                <input type="file" id="fileupload" name="upload">
+                                            </span>
+                                            <span class="file-info">No file choosen</span>
+                                        </div>
+                                        <p class="download_instruction">Download a <a href="/imports/additionalPay.csv" target="_parent" >sample CSV template</a> to see an example of the format required.</p>
+                                        <div class="overwrite">
+                                            <input class="form-cb" id="check-overwrite" type="checkbox"/><label for="check-overwrite" class="">Overwrite existing payments in a period(<a href="#">what’s this ?</a>)</label>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 choose-file-box">
-                                    <div class="custom-input-file">
-                                        <span class="btn btn-primary fileinput-button">Choose File
-                                            <input type="file" id="fileupload" name="upload">
-                                        </span>
-                                        <span class="file-info">No file choosen</span>
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                {{#if response}}
+                                    <div class="alert alert-success text-center">
+                                        <p>{{response.success}} Record(s) imported</p>
+                                        <p>{{response.failed}} Records(s) failed to import</p>
+                                        <p>{{response.skippedCount}} Records(s) skipped</p>
+
+                                        {{#if error}}
+                                            <br/>
+                                            <button class="btn btn-primary mr5 ladda-button" id="recordsWithError">Download Errors file</button>
+                                        {{/if}}
                                     </div>
-                                    <p class="download_instruction">Download a <a href="/imports/additionalPay.csv" target="_parent" >sample CSV template</a> to see an example of the format required.</p>
-                                    <div class="overwrite">
-                                        <input class="form-cb" id="check-overwrite" type="checkbox"/><label for="check-overwrite" class="">Overwrite existing payments in a period(<a href="#">what’s this ?</a>)</label>
-                                    </div>
-                                </div>
-                            </form>
+                                {{/if}}
+                            </div>
                         </div>
                     </div>
                     <div class="panel-footer">
