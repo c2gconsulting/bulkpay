@@ -211,7 +211,7 @@ Meteor.methods({
         let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
         if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
             if(travelRequestDoc.alternativeSupervisorPositionId === userPositionId) {
-                let approvals = procurementRequisitionDoc.approvals || []
+                let approvals = travelRequestDoc.approvals || []
                 approvals.push({
                     approverUserId: Meteor.userId(),
                     firstApprover: false,
