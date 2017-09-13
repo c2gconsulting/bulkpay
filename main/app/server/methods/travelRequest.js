@@ -224,7 +224,7 @@ Meteor.methods({
                     approvals: approvals
                 }
                 TravelRequisitions.update(docId, {$set: approvalSetObject})
-                
+
                 //--
                 let usersWithTravelApproveRole = Meteor.users.find({
                     businessIds: businessUnitId,
@@ -350,7 +350,7 @@ Meteor.methods({
         this.unblock()
 
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-            let errMsg = "Sorry, you have not allowed to treat a travel requisition because you are a super admin"
+            let errMsg = "Sorry, you have not allowed to treat a travel request because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
@@ -369,7 +369,7 @@ Meteor.methods({
         this.unblock()
 
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-            let errMsg = "Sorry, you have not allowed to reject a procurement requisition because you are a super admin"
+            let errMsg = "Sorry, you have not allowed to reject a travel request because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position

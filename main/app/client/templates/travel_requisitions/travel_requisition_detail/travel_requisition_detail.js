@@ -140,6 +140,44 @@ Template.TravelRequisitionDetail.events({
             }
         }
     },
+    'click #requisition-treat': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('TravelRequest/treat', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Travel request treated", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    },
+    'click #requisition-treatment-reject': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('TravelRequest/treatmentRejected', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Travel request treatment rejected", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    },
     'click #requisition-reject': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()
