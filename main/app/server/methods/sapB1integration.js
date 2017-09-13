@@ -424,8 +424,8 @@ Meteor.methods({
                 })
             }
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
-
+            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
                     let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`

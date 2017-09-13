@@ -12,7 +12,7 @@ Template.TravelRequisitionCreate.events({
     },
     "keyup input[name=flightCost]": _.throttle(function(e, tmpl) {
         var text = $(e.target).val().trim();
-
+        
         if (!text || text.trim().length === 0) {
             text = "0"
         }

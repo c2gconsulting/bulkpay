@@ -12,7 +12,6 @@ Template.ProcurementRequisitionIndex.events({
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -23,11 +22,9 @@ Template.ProcurementRequisitionIndex.events({
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        console.log(`pageNum: ${pageNum}`)
         let pageNumAsInt = parseInt(pageNum)
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
-        console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getProcurementsICreated(skip)
         Template.instance().procurementsICreated.set(newPageOfProcurements)
@@ -61,7 +58,6 @@ Template.ProcurementRequisitionIndex.helpers({
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = ProcurementRequisitions.find({createdBy: Meteor.userId()}).count()
-        console.log(`totalNum: ${totalNum}`)
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -101,7 +97,9 @@ Template.ProcurementRequisitionIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return ProcurementRequisitions.find({createdBy: Meteor.userId()}, options);
+        return ProcurementRequisitions.find({
+            createdBy: Meteor.userId()
+        }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

@@ -5,7 +5,6 @@ import _ from 'underscore';
 let TravelRequestHelper = {
     sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName, 
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
-        console.log(`inside sendRequisitionCreated`)
         try {
             SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
             Email.send({
@@ -13,6 +12,30 @@ let TravelRequestHelper = {
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Travel Request created!",
                 html: SSR.render("travelRequestNotification", {
+                    user: supervisorFullName,
+                    createdBy: createdByFullName,
+                    description: description,
+                    unit: unitName,
+                    dateRequired: dateRequired,
+                    reason: requisitionReason,
+                    approvalsPageUrl: approvalsPageUrl
+                })
+            });
+            return true
+        } catch(e) {
+            throw new Meteor.Error(401, e.message);
+        }
+    },
+    sendRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
+        description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        try {
+            SSR.compileTemplate("travelRequisitionNotificationForTreatment", Assets.getText("emailTemplates/travelRequisitionNotificationForTreatment.html"));
+            
+            Email.send({
+                to: supervisorEmail,
+                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+                subject: "Travel Request approved and needs to be treated",
+                html: SSR.render("travelRequisitionNotificationForTreatment", {
                     user: supervisorFullName,
                     createdBy: createdByFullName,
                     description: description,
@@ -46,12 +69,10 @@ Meteor.methods({
         }
 
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
         if(userPosition.properties) {
             let supervisorPositionId = userPosition.properties.supervisor
-            console.log(`supervisorPositionId: ${supervisorPositionId}`)
 
             travelRequestDoc.createdBy = Meteor.userId()
             travelRequestDoc.status = 'Draft'
@@ -168,20 +189,107 @@ Meteor.methods({
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        console.log(`userPositionId: ${userPositionId}`)
 
         let travelRequestDoc = TravelRequisitions.findOne({_id: docId})
-        if(travelRequestDoc.supervisorPositionId === userPositionId) {
-            TravelRequisitions.update(docId, {$set: {status: 'Treated'}})
-            return true;
+        if(!travelRequestDoc) {
+            throw new Meteor.Error(401, "Requisition does not exist.")
+        }
+
+        let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+        if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
+            if(travelRequestDoc.alternativeSupervisorPositionId === userPositionId) {
+                TravelRequisitions.update(docId, {$set: {
+                    status: 'Approved',
+                    approvedByUserId: Meteor.userId()
+                }})
+                //--
+                let usersWithTravelApproveRole = Meteor.users.find({
+                    businessIds: businessUnitId,
+                    'roles.__global_roles__': Core.Permissions.TRAVEL_REQUISITION_APPROVE
+                }).fetch()
+
+                try {
+                    let createdBy = Meteor.users.findOne(travelRequestDoc.createdBy)                
+                    let createdByEmail = createdBy.emails[0].address;
+                    let createdByFullName = createdBy.profile.fullName
+                    let unit = EntityObjects.findOne({_id: travelRequestDoc.unitId, otype: 'Unit'})
+                    let unitName = unit.name
+                    let dateRequired = ''
+                    if(travelRequestDoc.dateRequired) {
+                        dateRequired = moment(travelRequestDoc.dateRequired).format('DD/MM/YYYY')
+                    }
+                    let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/travelrequests/treatlist`
+                    //--
+                    if(usersWithTravelApproveRole && usersWithTravelApproveRole.length > 0) {
+                        let supervisorEmail =  usersWithTravelApproveRole[0].emails[0].address;
+
+                        TravelRequestHelper.sendRequisitionNeedsTreatment(
+                            usersWithTravelApproveRole[0].profile.fullName,
+                            supervisorEmail, createdByFullName, 
+                            travelRequestDoc.description, 
+                            unitName,
+                            dateRequired,
+                            travelRequestDoc.requisitionReason,
+                            approvalsPageUrl)
+                    }
+                } catch(errorInSendingEmail) {
+                    console.log(errorInSendingEmail)
+                }
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to perform final approval")
+            }
         } else {
-            throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+            if(travelRequestDoc.supervisorPositionId === userPositionId) {
+                TravelRequisitions.update(docId, {$set: {status: 'Approved'}})
+                return true;
+            } else {
+                throw new Meteor.Error(401, "Unauthorized to approve requisition.")
+            }
         }
     },
-    "TravelRequest/reject": function(businessUnitId, docId) {
+    "TravelRequest/treat": function(businessUnitId, docId) {
         if(!this.userId && !Core.hasTravelRequisitionApproveAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to treat a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let travelRequestDoc = TravelRequisitions.findOne({_id: docId})
+        if(travelRequestDoc) {
+            TravelRequisitions.update(docId, {$set: {status: 'Treated'}})
+            return true;
+        }
+    },
+    "TravelRequest/treatmentRejected": function(businessUnitId, docId) {
+        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to reject a procurement requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let travelRequestDoc = TravelRequisitions.findOne({_id: docId})
+        if(travelRequestDoc) {
+            TravelRequisitions.update(docId, {$set: {status: 'TreatmentRejected'}})
+            return true;
+        }
+    },
+    "TravelRequest/reject": function(businessUnitId, docId) {
+        // if(!this.userId && !Core.hasTravelRequisitionApproveAccess(this.userId)){
+        //     throw new Meteor.Error(401, "Unauthorized");
+        // }
         check(businessUnitId, String);
         this.unblock()
 
