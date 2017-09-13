@@ -72,7 +72,7 @@ Template.TravelRequisitionDetail.events({
 
                 Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
-                        swal({title: "Success", text: "Travel request is now pending treatment", type: "success",
+                        swal({title: "Success", text: "Travel request is now pending approval", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                         }, () => {
                             Modal.hide()
@@ -93,17 +93,51 @@ Template.TravelRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Travel request treated", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        Modal.hide()
+            let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+            if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+                if(Template.instance().isFirstSupervisor()) {
+                    let approvalRecommendation = $("textarea[name=approvalRecommendation]").val()
+                    
+                    Meteor.call('TravelRequest/approveWithApprovalRecommendation', 
+                        businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition approved and sent for final approval", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
+                    })
+                } else if(Template.instance().isSecondSupervisor()) {
+                    Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Requisition approved and sent for treatment approval", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
                     })
                 } else {
-                    swal('Validation error', err.message, 'error')
+
                 }
-            })
+            } else {
+                Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Travel request approved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            }
         }
     },
     'click #requisition-reject': function(e, tmpl) {
@@ -112,17 +146,51 @@ Template.TravelRequisitionDetail.events({
         if(procurementDetails) {
             let businessUnitId = Session.get('context')
 
-            Meteor.call('TravelRequest/reject', businessUnitId, procurementDetails._id, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Travel request rejected", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        Modal.hide()
+            let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+            if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+                if(Template.instance().isFirstSupervisor()) {
+                    let approvalRecommendation = $("textarea[name=approvalRecommendation]").val()
+                    
+                    Meteor.call('TravelRequest/rejectWithApprovalRecommendation', 
+                        businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Travel request rejected and sent for final approval", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
+                    })
+                } else if(Template.instance().isSecondSupervisor()) {
+                    Meteor.call('TravelRequest/reject', businessUnitId, procurementDetails._id, function(err, res) {
+                        if(!err) {
+                            swal({title: "Success", text: "Travel request rejected", type: "success",
+                                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                            }, () => {
+                                Modal.hide()
+                            })
+                        } else {
+                            swal('Validation error', err.message, 'error')
+                        }
                     })
                 } else {
-                    swal('Validation error', err.message, 'error')
+
                 }
-            })
+            } else {
+                Meteor.call('TravelRequest/reject', businessUnitId, procurementDetails._id, function(err, res) {
+                    if(!err) {
+                        swal({title: "Success", text: "Travel request rejected", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            Modal.hide()
+                        })
+                    } else {
+                        swal('Validation error', err.message, 'error')
+                    }
+                })
+            }
         }
     },
     'click #requisition-print': function(e, tmpl) {
@@ -181,12 +249,55 @@ Template.TravelRequisitionDetail.helpers({
     'isInApproveMode': function() {
         return Template.instance().isInApproveMode.get()
     },
+    'isInTreatMode': function() {
+        return Template.instance().isInTreatMode.get()
+    },
     'getUnitName': function(unitId) {
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
     },
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
+    },
+    'isTwoStepApprovalEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTwoStepApprovalEnabled
+        }
+    },
+    'isFirstSupervisor': function() {
+        return Template.instance().isFirstSupervisor()
+     },
+    'isSecondSupervisor': function() {
+        return Template.instance().isSecondSupervisor()
+    },
+    'firstSupervisorApproval': function() {
+        let procurement = Template.instance().procurementDetails.get()
+
+        let procurementApprovals = procurement.approvals || []
+        let firstApproval = {}
+        procurementApprovals.forEach(anApproval => {
+            if(anApproval.firstApprover) {
+                firstApproval = anApproval
+            }
+        })
+
+        if(firstApproval) {
+            let approverUserId = firstApproval.approverUserId
+            if(approverUserId) {
+                let approverUser = Meteor.users.findOne(approverUserId)
+                if(approverUser) {
+                    firstApproval.approverFullName = approverUser.profile.fullName
+                }
+            }
+        }
+        return firstApproval
+    },
+    'getHumanReadableApprovalState': function(boolean) {
+        return boolean ? "Approved" : "Rejected"
+    },
+    'or': (a, b) => {
+        return a || b
     }
 });
 
@@ -201,9 +312,11 @@ Template.TravelRequisitionDetail.onCreated(function () {
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
+    self.isInTreatMode = new ReactiveVar()
+
+    self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
-    console.log(`invokeReason: ${JSON.stringify(invokeReason)}`)
 
     self.totalTripCost = new ReactiveVar(0)
 
@@ -213,10 +326,19 @@ Template.TravelRequisitionDetail.onCreated(function () {
     if(invokeReason.reason === 'approve') {
         self.isInApproveMode.set(true)
     }
+    if(invokeReason.reason === 'treat') {
+        self.isInTreatMode.set(true)
+    }
 
     self.businessUnitLogoUrl = new ReactiveVar()
 
     self.autorun(function() {
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
+
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let procurementSub = self.subscribe('TravelRequest', invokeReason.requisitionId)
 
@@ -264,6 +386,54 @@ Template.TravelRequisitionDetail.onCreated(function () {
         }
         return true
     }
+
+    self.isFirstSupervisor = () => {
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let currentUser = Meteor.user()
+            let currentUserPositionId = null
+
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                currentUserPositionId = currentUser.employeeProfile.employment.position
+            }
+
+            let creatorUserId = procurementDetails.createdBy;
+
+            let user = Meteor.users.findOne({_id: creatorUserId})
+            if(user && user.employeeProfile && user.employeeProfile.employment) {
+                let userPositionId = user.employeeProfile.employment.position
+                let userPosition = EntityObjects.findOne({_id: userPositionId})
+
+                if(userPosition) {
+                    return userPosition.properties.supervisor === currentUserPositionId
+                }
+            }
+        }
+    }
+
+    self.isSecondSupervisor = () => {
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let currentUser = Meteor.user()
+            let currentUserPositionId = null
+
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                currentUserPositionId = currentUser.employeeProfile.employment.position
+            }
+
+            let creatorUserId = procurementDetails.createdBy;
+
+            let user = Meteor.users.findOne({_id: creatorUserId})
+            if(user && user.employeeProfile && user.employeeProfile.employment) {
+                let userPositionId = user.employeeProfile.employment.position
+
+                let userPosition = EntityObjects.findOne({_id: userPositionId})
+                if(userPosition) {
+                    return userPosition.properties.alternateSupervisor === currentUserPositionId
+                }
+            }
+        }
+    }
 });
 
 Template.TravelRequisitionDetail.onRendered(function () {
@@ -273,14 +443,14 @@ Template.TravelRequisitionDetail.onRendered(function () {
     let procurementDetails = self.procurementDetails.get()
     if(procurementDetails) {
         if(procurementDetails.status !== 'Draft') {
-            if(self.isInEditMode()) {
-                swal('Error', "Sorry, you can't edit this procurement requisition. ", 'error')
+            if(self.isInEditMode.get()) {
+                swal('Error', "Sorry, you can't edit this travel request. ", 'error')
             }
         } else if(procurementDetails.status === 'Pending') {
             self.isInViewMode.set(true)
         } else if(procurementDetails.status === 'Approve') {
-            if(self.isInEditMode()) {
-                swal('Error', "Sorry, you can't edit this procurement requisition. It has been approved", 'error')
+            if(self.isInEditMode.get()) {
+                swal('Error', "Sorry, you can't edit this travel request. It has been approved", 'error')
             }
         }
     }

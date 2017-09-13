@@ -15,7 +15,7 @@ Template.TravelRequisitionTreatList.events({
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
-        invokeReason.reason = 'approve'
+        invokeReason.reason = 'treat'
         invokeReason.approverId = Meteor.userId()
 
         Modal.show('TravelRequisitionDetail', invokeReason)
@@ -106,7 +106,9 @@ Template.TravelRequisitionTreatList.onCreated(function () {
         if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
             let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return TravelRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
+            return TravelRequisitions.find({
+                status: 'Approved'
+            }, options);
         }
         return null
     }
@@ -120,7 +122,7 @@ Template.TravelRequisitionTreatList.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsToApproveSub = self.subscribe('TravelRequestsToApprove', businessUnitId, limit, sort)
+        let travelRequestsToApproveSub = self.subscribe('TravelRequestsToTreat', businessUnitId, limit, sort)
         //--
         if(travelRequestsToApproveSub.ready()) {
             let currentUser = Meteor.user()

@@ -21,8 +21,22 @@ Core.publish("TravelRequest", function (requisitionId) {
     return TravelRequisitions.find({_id: requisitionId});
 });
 
-
 Core.publish("TravelRequestsToApprove", function (businessUnitId) {
+    let user = Meteor.users.findOne({_id: this.userId})
+
+    if(!user.employeeProfile || !user.employeeProfile.employment) {
+        return Meteor.Error(401, "Unauthorized! You can't approve a travel request");
+    }
+    let userPositionId = user.employeeProfile.employment.position
+
+    return TravelRequisitions.find({
+        businessId: businessUnitId,
+        $or: [{supervisorPositionId : userPositionId}, 
+                {alternativeSupervisorPositionId: userPositionId}]
+    });
+});
+
+Core.publish("TravelRequestsToTreat", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
     if(!user.employeeProfile || !user.employeeProfile.employment) {
@@ -34,9 +48,9 @@ Core.publish("TravelRequestsToApprove", function (businessUnitId) {
     if (Core.hasTravelRequisitionApproveAccess(this.userId)) {
         return TravelRequisitions.find({
             businessId: businessUnitId,
-            supervisorPositionId: userPositionId
+            status: 'Approved'
         });
     } else {
-        return Meteor.Error(401, "Unauthorized! You don't have the 'Travel Request Approve' role");
+        return Meteor.Error(401, "Unauthorized! You don't have the 'Travel Requisition Approve' role");
     }
 });

@@ -141,10 +141,45 @@
                                 </div><!-- col-sm-3 -->
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
+
+                        {{#if isTwoStepApprovalEnabled}}
+                            <br/>
+                            {{#if isFirstSupervisor}}
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label class="control-label" for="approvalRecommendation">Approval recommendation</label>
+
+                                        <textarea class="form-control" rows="5" name="approvalRecommendation" id="approvalRecommendation" value=""></textarea>
+                                    </div><!-- col-sm-3 -->
+                                </div><!-- row -->
+                            {{else}}
+                                {{#if isInApproveMode}}
+                                    {{#with firstSupervisorApproval}}
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label" for="approvalRecommendation">#1st Approver: {{approverFullName}}</label>
+                                                <br/>
+                                                <label class="control-label" for="approvalRecommendation">Recommendation</label>
+
+                                                <textarea class="form-control" rows="5" name="approvalRecommendation" id="approvalRecommendation" 
+                                                    value="{{approvalRecommendation}}" disabled></textarea>
+                                            </div>
+                                        </div>
+
+                                        {{#if approvalStatus}}
+                                            <label class="label label-success" for="approvalRecommendation">{{getHumanReadableApprovalState approvalStatus}}</label>
+                                        {{else}}
+                                            <label class="label label-danger" for="approvalRecommendation">{{getHumanReadableApprovalState approvalStatus}}</label>
+                                        {{/if}}
+                                    {{/with}}
+                                {{/if}}
+                            {{/if}}
+                        {{/if}}
                     </div>
+
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        {{#unless isInApproveMode}}
+                        {{#unless or (isInApproveMode) (isInTreatMode)}}
                             <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
                         {{/unless}}
 
@@ -153,8 +188,13 @@
                         <button class="btn btn-primary mr5 pull-right" id="requisition-save-draft">Save Draft</button>
                         {{else}}
                             {{#if isInApproveMode}}
-                            <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
-                                <button class="btn btn-primary mr5 pull-right" id="requisition-reject">Reject</button>
+                                <button class="btn btn-danger mr5 pull-right" id="requisition-reject">Reject</button>
+                                <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
+                            {{else}}
+                                {{#if isInTreatMode}}
+                                    <button class="btn btn-danger mr5 pull-right" id="requisition-treatment-reject">Reject</button>
+                                    <button class="btn btn-primary mr5 pull-right" id="requisition-treat">Treat</button>
+                                {{/if}}
                             {{/if}}
                         {{/if}}
                     </div><!-- panel-footer -->

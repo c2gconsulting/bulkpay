@@ -156,7 +156,7 @@ Meteor.methods({
                     let supervisorEmail =  supervisors[0].emails[0].address;
 
                     ProcurementRequisitonHelper.sendRequisitionCreated(
-                        aSupervisor.profile.fullName,
+                        supervisors[0].profile.fullName,
                         supervisorEmail, createdByFullName, 
                         procurementRequisitionDoc.description, 
                         unitName,
@@ -217,10 +217,19 @@ Meteor.methods({
         let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
         if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
             if(procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
-                ProcurementRequisitions.update(docId, {$set: {
+                let approvals = procurementRequisitionDoc.approvals || []
+                approvals.push({
+                    approverUserId: Meteor.userId(),
+                    firstApprover: false,
+                    secondApprover: true,
+                    approvalStatus: true
+                })
+                let approvalSetObject = {
                     status: 'Approved',
-                    approvedByUserId: Meteor.userId()
-                }})
+                    approvedByUserId: Meteor.userId(),
+                    approvals: approvals
+                }
+                ProcurementRequisitions.update(docId, {$set: approvalSetObject})
                 //--
                 let usersWithProcurementApproveRole = Meteor.users.find({
                     businessIds: businessUnitId,
@@ -275,7 +284,7 @@ Meteor.methods({
         this.unblock()
 
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-            let errMsg = "Sorry, you have not allowed to approve a procurement requisition because you are a super admin"
+            let errMsg = "Sorry, you are not allowed to approve a procurement requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
@@ -391,7 +400,8 @@ Meteor.methods({
             throw new Meteor.Error(401, errMsg);
         }
         let userPositionId = Meteor.user().employeeProfile.employment.position
-        
+        let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
+    
         let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
         if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
             if(procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
@@ -401,7 +411,6 @@ Meteor.methods({
                 throw new Meteor.Error(401, "Unauthorized to perform final approval")
             }
         } else {
-            let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
             if(procurementRequisitionDoc.supervisorPositionId === userPositionId
                 || procurementRequisitionDoc.alternativeSupervisorPositionId === userPositionId) {
                 ProcurementRequisitions.update(docId, {$set: {status: 'Rejected'}})
@@ -412,9 +421,6 @@ Meteor.methods({
         }
     },
     "ProcurementRequisition/rejectWithApprovalRecommendation": function(businessUnitId, docId, approvalRecommendation){
-        if(!this.userId && !Core.hasProcurementRequisitionApproveAccess(this.userId)){
-            throw new Meteor.Error(401, "Unauthorized");
-        }
         check(businessUnitId, String);
         this.unblock()
 

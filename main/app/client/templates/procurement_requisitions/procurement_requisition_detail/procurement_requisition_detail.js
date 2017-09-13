@@ -72,7 +72,7 @@ Template.ProcurementRequisitionDetail.events({
 
                 Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
                     if(!err) {
-                        swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
+                        swal({title: "Success", text: "Requisition is now pending approval", type: "success",
                             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                         }, () => {
                             Modal.hide()
@@ -113,7 +113,7 @@ Template.ProcurementRequisitionDetail.events({
                 } else if(Template.instance().isSecondSupervisor()) {
                     Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition approved", type: "success",
+                            swal({title: "Success", text: "Requisition approved and sent for treatment approval", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
@@ -344,6 +344,9 @@ Template.ProcurementRequisitionDetail.helpers({
     },
     'getHumanReadableApprovalState': function(boolean) {
         return boolean ? "Approved" : "Rejected"
+    },
+    'or': (a, b) => {
+        return a || b
     }
 });
 

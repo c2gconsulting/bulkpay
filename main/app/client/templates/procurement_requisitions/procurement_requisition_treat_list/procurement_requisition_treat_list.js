@@ -124,7 +124,7 @@ Template.ProcurementRequisitionTreatList.onCreated(function () {
         //--
         if(procurementsToApproveSub.ready()) {
             let currentUser = Meteor.user()
-            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
                 self.procurementsToApprove.set(self.getProcurementsToApprove(0))
             }
         }

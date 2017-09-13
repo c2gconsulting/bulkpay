@@ -12,7 +12,6 @@ Template.TravelRequisitionApprovalList.events({
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -23,11 +22,9 @@ Template.TravelRequisitionApprovalList.events({
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        console.log(`pageNum: ${pageNum}`)
         let pageNumAsInt = parseInt(pageNum)
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
-        console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getTravelRequestsToApprove(skip)
         Template.instance().travelRequestsToApprove.set(newPageOfProcurements)
@@ -65,7 +62,6 @@ Template.TravelRequisitionApprovalList.helpers({
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
             let totalNum = TravelRequisitions.find({supervisorPositionId: currentUserPosition}).count();
-            console.log(`totalNum: ${totalNum}`)
 
             let result = Math.floor(totalNum/limit)
             var remainder = totalNum % limit;
@@ -91,10 +87,18 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
+    self.businessUnitCustomConfig = new ReactiveVar()
+    
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     self.travelRequestsToApprove = new ReactiveVar()
+    
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
 
     self.getTravelRequestsToApprove = function(skip) {
         let sortBy = "createdAt";
@@ -107,10 +111,34 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
         options.skip = skip
 
         let currentUser = Meteor.user()
-        if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-            let currentUserPosition = currentUser.employeeProfile.employment.position
+        let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig && businessUnitCustomConfig.isTwoStepApprovalEnabled) {
+            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                let currentUserPosition = currentUser.employeeProfile.employment.position
 
-            return TravelRequisitions.find({supervisorPositionId: currentUserPosition, status: 'Pending'}, options);
+                return TravelRequisitions.find({
+                    $or: [
+                        {
+                            alternativeSupervisorPositionId: currentUserPosition,
+                            $or: [{status : 'PartiallyApproved'}, {status: 'PartiallyRejected'}],
+                        }, 
+                        {
+                            supervisorPositionId : currentUserPosition,
+                            status: 'Pending'
+                        }
+                    ],
+                }, options);
+            }
+        } else {
+            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+                let currentUserPosition = currentUser.employeeProfile.employment.position
+
+                return TravelRequisitions.find({
+                    $or: [{supervisorPositionId : currentUserPosition}, 
+                            {alternativeSupervisorPositionId: currentUserPosition}],                
+                    status: 'Pending'
+                }, options);
+            }
         }
         return null
     }
@@ -128,9 +156,7 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
         //--
         if(travelRequestsToApproveSub.ready()) {
             let currentUser = Meteor.user()
-            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-                let currentUserPosition = currentUser.employeeProfile.employment.position
-
+            if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
                 self.travelRequestsToApprove.set(self.getTravelRequestsToApprove(0))
             }
         }
