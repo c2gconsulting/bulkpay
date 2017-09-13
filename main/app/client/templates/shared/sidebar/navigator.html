@@ -138,8 +138,12 @@
             {{#if isTravelRequisitionActive}}
                 <li><a href="{{pathFor 'travelrequests.list'}}">Travel requests</a></li>
 
-                {{#if hasTravelRequisitionApproveAccess}}
+                {{#if isUserASupervisor}}
                 <li><a href="{{pathFor 'travelrequests.approvalList'}}">Trips Approval</a></li>
+                {{/if}}
+
+                {{#if hasTravelRequisitionApproveAccess}}
+                    <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
                 {{/if}}
             {{/if}}
 

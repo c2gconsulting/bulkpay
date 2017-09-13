@@ -335,6 +335,12 @@ Router.route('/business/:_id/employee/travelrequests/approvalslist', {
     action: 'showTravelRequestApprovalList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/travelrequests/treatlist', {
+    name: 'travelrequests.treatList',
+    controller: 'RequisitionController',
+    action: 'showTravelRequestTreatList',
+    where: 'client'
+});
 
 Router.route('/business/:_id/reports/netpay', {
     name: 'reports.netpay',

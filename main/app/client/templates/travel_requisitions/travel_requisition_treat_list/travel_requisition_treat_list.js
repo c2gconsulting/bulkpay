@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisitionApprovalList: Event Handlers */
+/* TravelRequisitionTreatList: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionApprovalList.events({
+Template.TravelRequisitionTreatList.events({
     'click #createProcurementRequisition': function(e, tmpl) {
         e.preventDefault()
 
@@ -12,7 +12,6 @@ Template.TravelRequisitionApprovalList.events({
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-        console.log(`RequisitionId: ${requisitionId}`)
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
@@ -23,11 +22,9 @@ Template.TravelRequisitionApprovalList.events({
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        console.log(`pageNum: ${pageNum}`)
         let pageNumAsInt = parseInt(pageNum)
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
-        console.log(`skip: ${skip}`)
 
         let newPageOfProcurements = Template.instance().getTravelRequestsToApprove(skip)
         Template.instance().travelRequestsToApprove.set(newPageOfProcurements)
@@ -52,9 +49,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionApprovalList: Helpers */
+/* TravelRequisitionTreatList: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionApprovalList.helpers({
+Template.TravelRequisitionTreatList.helpers({
     'travelRequestsToApprove': function() {
         return Template.instance().travelRequestsToApprove.get()
     },
@@ -65,7 +62,6 @@ Template.TravelRequisitionApprovalList.helpers({
 
             let limit = Template.instance().NUMBER_PER_PAGE.get()
             let totalNum = TravelRequisitions.find({supervisorPositionId: currentUserPosition}).count();
-            console.log(`totalNum: ${totalNum}`)
 
             let result = Math.floor(totalNum/limit)
             var remainder = totalNum % limit;
@@ -85,9 +81,9 @@ Template.TravelRequisitionApprovalList.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionApprovalList: Lifecycle Hooks */
+/* TravelRequisitionTreatList: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionApprovalList.onCreated(function () {
+Template.TravelRequisitionTreatList.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -135,13 +131,12 @@ Template.TravelRequisitionApprovalList.onCreated(function () {
             }
         }
     })
-
 });
 
-Template.TravelRequisitionApprovalList.onRendered(function () {
+Template.TravelRequisitionTreatList.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionApprovalList.onDestroyed(function () {
+Template.TravelRequisitionTreatList.onDestroyed(function () {
 });

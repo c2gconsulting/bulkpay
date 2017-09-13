@@ -69,7 +69,7 @@ Template.ProcurementRequisitionCreate.events({
 
             Meteor.call('ProcurementRequisition/create', businessUnitId, requisitionDoc, function(err, res) {
                 if(!err) {
-                    swal({title: "Success", text: "Requisition is now pending treatment", type: "success",
+                    swal({title: "Success", text: "Requisition is now pending approval", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                     }, () => {
                         Modal.hide()
@@ -103,7 +103,6 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
     let self = this;
 
     let businessUnitId = Session.get('context');
-    console.log(`businessUnit: ${businessUnitId}`)
 
     self.unitId = new ReactiveVar()
 

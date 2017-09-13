@@ -71,6 +71,14 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         type: String,
         optional: true
     },
+    alternativeSupervisorPositionId: {
+        type: String,
+        optional: true
+    },
+    'approvals': {
+        type: [Object],
+        optional: true   // It is optional because the business may NOT have twoStepApproval enabled
+    },
     'approvals.$': {
         type: Object,
         optional: true
@@ -85,9 +93,9 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         type: Boolean
     },
     'approvals.$.approvalStatus': {
-        type: String
+        type: Boolean
     },
-    'approvals.$.recommendationText': {
+    'approvals.$.approvalRecommendation': {
         type: String,
         optional: true
     },
