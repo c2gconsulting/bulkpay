@@ -19,6 +19,14 @@ Core.Schemas.TripCosts = new SimpleSchema({
         type: Number,
         decimal: true
     },
+    roadCost: {
+        type: Number,
+        decimal: true
+    },
+    feedingCost: {
+        type: Number,
+        decimal: true
+    },
     miscCosts: {
         type: Number,
         decimal: true

@@ -78,9 +78,11 @@ Template.TravelRequisitionIndex.helpers({
             let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
             let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
             let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
+            let roadCost = travelRequestDetails.tripCosts.roadCost || 0
+            let feedingCost = travelRequestDetails.tripCosts.feedingCost || 0
 
             let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-                perDiemCost + miscCosts
+                roadCost + feedingCost + perDiemCost + miscCosts
 
             return totalTripCost
         } else  {
