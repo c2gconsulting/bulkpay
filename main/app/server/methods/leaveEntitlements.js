@@ -46,7 +46,7 @@ Meteor.methods({
         }
     },
 
-    "LeaveEntitlement/setForOneEmployee": function(businessId, leaveEntitlementId, currentYear){
+    "LeaveEntitlement/setForOneEmployee": function(businessId, userId, leaveEntitlementId, currentYear){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -59,7 +59,7 @@ Meteor.methods({
                 throw new Meteor.Error(401, "Sorry, that leave entitlement does not exist");
             }
 
-            let employeeLeaveEntitlement = UserLeaveEntitlements.findOne({userId: this.userId})
+            let employeeLeaveEntitlement = UserLeaveEntitlements.findOne({userId: userId})
             if(employeeLeaveEntitlement) {
                 let leaveDaysLeftHistory = employeeLeaveEntitlement.leaveDaysLeft || []
                 let leaveDaysLeftForYear = _.find(leaveDaysLeftHistory, (aYear) => {
@@ -85,7 +85,7 @@ Meteor.methods({
                 return true
             } else {
                 UserLeaveEntitlements.insert({
-                    userId : this.userId,
+                    userId : userId,
                     leaveEntitlementId : leaveEntitlementId,
                     businessId : businessId,
                     leaveDaysLeft : [{

@@ -170,7 +170,7 @@ Template.TravelRequestReport.onCreated(function () {
                 self.getSupervisor(aDatum), self.getTotalTripCost(aDatum), aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-            `Travel Requisition Report ${startTime} - ${endTime}`);
+            `Travel Requests Report ${startTime} - ${endTime}`);
     }
 
     self.getTotalTripCost = function(travelRequestDetails) {

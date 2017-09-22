@@ -43,8 +43,9 @@ Template.EmployeeSelectedEntry.events({
       let yearAsNumber = parseInt(year)
 
       let businessId = Session.get('context')
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
-      Meteor.call('LeaveEntitlement/setForOneEmployee', businessId, allUserLeaveEntitlements, yearAsNumber, (err, res) => {
+      Meteor.call('LeaveEntitlement/setForOneEmployee', businessId, selectedEmployee._id, allUserLeaveEntitlements, yearAsNumber, (err, res) => {
           if (res){
               swal({
                   title: "Success",
