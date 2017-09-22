@@ -398,6 +398,13 @@ Router.route('/business/:_id/reports/travelrequisition', {
     where: 'client'
 });
 
+Router.route('/business/:_id/reports/employees', {
+    name: 'reports.employees',
+    controller: 'ReportsController',
+    action: 'employees',
+    where: 'client'
+});
+
 Router.route('/business/:_id/superadmin/reports/users', {
     name: 'superadmin.reports.users',
     controller: 'SuperAdminReportsController',

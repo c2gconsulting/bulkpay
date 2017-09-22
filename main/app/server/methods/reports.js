@@ -270,7 +270,7 @@ Meteor.methods({
 
             if(payRunResults && payRunResults.length > 0){
                 let payTypeHeadersAndTotal = ReportUtils.getPayTypeHeadersAndTotal(payRunResults) // paytypeId -> {total -> (value) }
-                console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
+                // console.log(`Paytype Headers and Total: ${JSON.stringify(payTypeHeadersAndTotal)}`)
 
                 let formattedHeader = payTypeHeadersAndTotal.payTypeHeaders.map(aHeader => {
                     return aHeader.description || aHeader
@@ -491,5 +491,11 @@ Meteor.methods({
             })
             return biffedUpTravelRequests
         }
+    },
+    'reports/employees': function(findCriteria) {
+        check(businessId, String)
+        this.unblock()
+        
+        return Meteor.users.find(findCriteria).fetch()
     }
 })

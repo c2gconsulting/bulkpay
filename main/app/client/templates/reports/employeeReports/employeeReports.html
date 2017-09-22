@@ -1,0 +1,166 @@
+<template name="EmployeesReport">
+  <div class="pageheader">
+      <div class="media">
+          <div class="pageicon pull-left">
+              <i class="fa fa-credit-card"></i>
+          </div>
+          <div class="media-body">
+              <ul class="breadcrumb">
+                  <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                  <li><a ui-sref="business.overview">Business</a></li>
+                  <li>{{name}}</li>
+                  <li>Reports</li>
+              </ul>
+              <h4>Employees Report</h4>
+          </div>
+      </div><!-- media -->
+  </div><!-- pageheader -->
+
+  <div class="contentpanel">
+
+      <div class="row">
+                                      <div class="panel panel-default">
+                                          <div class="panel-heading">                                              
+                                              <div class="row">
+                                                  <!-- <div class="col-md-2 text-right">
+                                                      <b>Report Type: </b>
+                                                  </div>
+
+                                                  <div class="col-md-2">
+                                                      <div class="form-group">
+                                                          <input type="radio" value="unit" name="reportType" />Unit
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-md-2">
+                                                      <div class="form-group">
+                                                          <input type="radio"  value="payGrade" name="reportType"/>Pay Grade
+                                                      </div>
+                                                  </div> -->
+
+                                                  <div class="col-md-2 text-right"><b>Report Type: </b></div>
+                                                  <div class="col-md-9">
+                                                      <div class="form-group">
+                                                          <ul class="list-inline">
+                                                              <li><input type="radio" value="unit" name="reportType" />Unit</li>
+                                                              <li><input type="radio"  value="payGrade" name="reportType"/>Pay Grade</li>
+                                                              <li><input type="radio" value="active" name="reportType" />Active</li>
+                                                              <li><input type="radio"  value="inactive" name="reportType"/>Inactive</li>
+                                                            </ul>
+                                                      </div>
+                                                  </div>
+                                              </div>
+
+                                              <div class="row">
+                                                  <div class="col-md-6">
+                                                      <div class="form-group">
+                                                          {{#semanticselect}}
+                                                              <select name="units" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                                  <option value="">Units</option>
+                                                                  {{#each units}}
+                                                                      <option value="{{_id}}">{{getNameForUnit this}}</option>
+                                                                  {{/each}}
+                                                              </select>
+                                                          {{/semanticselect}}
+                                                      </div><!-- form-group -->
+                                                  </div>
+
+                                                  <div class="col-md-3">
+                                                      <div class="form-group">
+                                                          {{#semanticselect}}
+                                                              <select name="payGrades" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                                  <option value="">Pay Grades</option>
+                                                                  {{#each paygrades}}
+                                                                      <option value="{{_id}}">{{code}}</option>
+                                                                  {{/each}}
+                                                              </select>
+                                                          {{/semanticselect}}
+                                                      </div><!-- form-group -->
+                                                  </div>
+
+                                                  <div class="col-md-3">
+                                                      <button class="btn btn-success" id="getResult"><i class="fa fa-bar-chart-o"></i> View</button>
+                                                      <button class="btn btn-primary" id="excel"> <i class="fa fa-file-excel-o"></i> Download </button>
+                                                  </div>
+                                              </div>
+
+                                              <div class="row">
+                                                  <!-- <div class="col-md-2 text-right">
+                                                      <b>Period</b>
+                                                  </div>
+
+                                                  <div class="col-md-2">
+                                                      <div class="form-group">
+                                                          {{#transformableDatepicker}}
+                                                              <input name="startTime" type="text" class="form-control datepicker" data-field="startTime" />
+                                                          {{/transformableDatepicker}}
+                                                      </div>
+                                                  </div>
+
+                                                  <div class="col-md-2">
+                                                      <div class="form-group">
+                                                          {{#transformableDatepicker}}
+                                                              <input name="endTime" type="text" class="form-control datepicker" data-field="endTime" />
+                                                          {{/transformableDatepicker}}
+                                                      </div>
+                                                  </div> -->
+
+                                                  <!-- <div class="col-md-3 col-md-offset-9">
+                                                      <button class="btn btn-success" id="getResult"><i class="fa fa-bar-chart-o"></i> View</button>
+                                                      <button class="btn btn-primary" id="excel"> <i class="fa fa-file-excel-o"></i> Download </button>
+                                                  </div> -->
+                                              </div>
+
+                                              <!-- <div class="row">
+                                                  <div class="col-md-6 col-md-offset-3">
+                                                      <div class="form-group">
+                                                          {{#semanticselect}}
+                                                              <select name="locations" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                                  <option value="">Locations</option>
+                                                                  {{#each locations}}
+                                                                      <option value="{{_id}}">{{name}}</option>
+                                                                  {{/each}}
+                                                              </select>
+                                                          {{/semanticselect}}
+                                                      </div>
+                                                  </div>
+                                              </div> -->
+
+                                          <!-- {{#if procurementReports}}
+                                          {{#if condition procurementReports.length '>' 0}}
+                                            <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Description</th>
+                                                        <th>Created By</th>
+                                                        <th>Unit</th>
+                                                        <th>Date required</th>
+                                                        <th>Approver</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {{#each procurementReports}}
+                                                    <tr title="Requisition reason: {{requisitionReason}}">
+                                                        <td nowrap>{{limitText description}}</td>
+                                                        <td>{{createdByFullName}}</td>
+                                                        <td>{{unitName}}</td>
+                                                        <td>{{formatTime createdAt}}</td>
+                                                        <td>{{getSupervisor this}}</td>
+                                                        <td>{{status}}</td>
+                                                    </tr>
+                                                  {{/each}}
+                                                </tbody>
+                                            </table>
+                                            {{/if}}
+                                            {{else}}
+                                              <div class="alert alert-danger text-center">
+                                                  <p>No procurment requisitions in the selected period</p>
+                                              </div>
+                                            {{/if}} -->
+
+                                          </div>
+                                      </div><!-- panel -->
+      </div>
+  </div>
+</template>
