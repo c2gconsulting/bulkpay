@@ -78,7 +78,6 @@ Template.TravelRequisitionDetail.events({
                             Modal.hide()
                         })
                     } else {
-                        // console.log(`Err: ${JSON.stringify(err)}`)
                         swal('Validation error', err.message, 'error')
                     }
                 })
@@ -236,7 +235,6 @@ Template.TravelRequisitionDetail.events({
         //     importStyle: true
         // });
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
-        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
 
         let procurementDetails = Template.instance().procurementDetails.get()
 
@@ -390,9 +388,11 @@ Template.TravelRequisitionDetail.onCreated(function () {
                 let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
                 let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
                 let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
+                let roadCost = travelRequestDetails.tripCosts.roadCost || 0
+                let feedingCost = travelRequestDetails.tripCosts.feedingCost || 0
 
                 let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-                    perDiemCost + miscCosts
+                    roadCost + feedingCost + perDiemCost + miscCosts
 
                 self.totalTripCost.set(totalTripCost)
             }
