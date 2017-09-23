@@ -44,8 +44,8 @@
                                                           <ul class="list-inline">
                                                               <li><input type="radio" value="unit" name="reportType" />Unit</li>
                                                               <li><input type="radio"  value="payGrade" name="reportType"/>Pay Grade</li>
-                                                              <li><input type="radio" value="active" name="reportType" />Active</li>
-                                                              <li><input type="radio"  value="inactive" name="reportType"/>Inactive</li>
+                                                              <li><input type="radio" value="activeEmployees" name="reportType" />Active employees</li>
+                                                              <li><input type="radio"  value="inactiveEmployees" name="reportType"/>Inactive employees</li>
                                                             </ul>
                                                       </div>
                                                   </div>
@@ -80,7 +80,7 @@
 
                                                   <div class="col-md-3">
                                                       <button class="btn btn-success" id="getResult"><i class="fa fa-bar-chart-o"></i> View</button>
-                                                      <button class="btn btn-primary" id="excel"> <i class="fa fa-file-excel-o"></i> Download </button>
+                                                      <!-- <button class="btn btn-primary" id="excel"> <i class="fa fa-file-excel-o"></i> Download </button> -->
                                                   </div>
                                               </div>
 
@@ -126,38 +126,33 @@
                                                   </div>
                                               </div> -->
 
-                                          <!-- {{#if procurementReports}}
-                                          {{#if condition procurementReports.length '>' 0}}
-                                            <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Description</th>
-                                                        <th>Created By</th>
-                                                        <th>Unit</th>
-                                                        <th>Date required</th>
-                                                        <th>Approver</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                  {{#each procurementReports}}
-                                                    <tr title="Requisition reason: {{requisitionReason}}">
-                                                        <td nowrap>{{limitText description}}</td>
-                                                        <td>{{createdByFullName}}</td>
-                                                        <td>{{unitName}}</td>
-                                                        <td>{{formatTime createdAt}}</td>
-                                                        <td>{{getSupervisor this}}</td>
-                                                        <td>{{status}}</td>
-                                                    </tr>
-                                                  {{/each}}
-                                                </tbody>
-                                            </table>
-                                            {{/if}}
+                                          {{#if employeesThatMeetCriteria}}
+                                            {{#if condition employeesThatMeetCriteria.length '>' 0}}
+                                                <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>S/N</th>
+                                                            <th>Employee Code</th>
+                                                            <th>Full Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {{#each employeesThatMeetCriteria}}
+                                                        <tr>
+                                                            <td>{{@index}}</td>
+                                                            <!-- <td nowrap>{{limitText description}}</td> -->
+                                                            <td>{{employmentProfile.employeeId}}</td>
+                                                            <td nowrap>{{profile.fullName}}</td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    </tbody>
+                                                </table>
+                                                {{/if}}
                                             {{else}}
                                               <div class="alert alert-danger text-center">
-                                                  <p>No procurment requisitions in the selected period</p>
+                                                  <p>No employees meet the selected report criteria</p>
                                               </div>
-                                            {{/if}} -->
+                                            {{/if}}
 
                                           </div>
                                       </div><!-- panel -->

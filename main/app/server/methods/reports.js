@@ -493,7 +493,7 @@ Meteor.methods({
         }
     },
     'reports/employees': function(findCriteria) {
-        check(businessId, String)
+        check(findCriteria.businessIds, String)
         this.unblock()
         
         return Meteor.users.find(findCriteria).fetch()

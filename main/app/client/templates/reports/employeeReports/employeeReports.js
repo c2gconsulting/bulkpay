@@ -1,97 +1,93 @@
+import _ from 'underscore';
+
 
 /*****************************************************************************/
 /* EmployeesReport: Event Handlers */
 /*****************************************************************************/
 Template.EmployeesReport.events({
+  'change [name=reportType]': (e, tmpl ) => {
+    let selectedReportType = $(e.target).val()
+
+    tmpl.selectedReportType.set(selectedReportType)
+  },
+  'change [name=units]': (e, tmpl ) => {
+    tmpl.selectedUnitIds.set(Core.returnSelection($(e.target)))
+  },
+  'change [name=payGrades]': (e, tmpl ) => {
+    tmpl.selectedPayGradeIds.set(Core.returnSelection($(e.target)))
+  },
   'click #getResult': function(e, tmpl) {
       e.preventDefault();
       const startTime = $('[name="startTime"]').val();
       const endTime = $('[name="endTime"]').val();
 
-      if(startTime && endTime) {
-          tmpl.$('#getResult').text('Preparing... ');
-          tmpl.$('#getResult').attr('disabled', true);
-          try {
-              let l = Ladda.create(tmpl.$('#getReportForPeriodForDisplay')[0]);
-              l.start();
-          } catch(e) {
-          }
-          //--
-          let resetButton = function() {
-              try {
-                  let l = Ladda.create(tmpl.$('#getResult')[0]);
-                  l.stop();
-                  l.remove();
-              } catch(e) {
-              }
+      const selectedReportType = tmpl.selectedReportType.get()
 
-              tmpl.$('#getResult').text(' View');
-              tmpl.$('#getResult').removeAttr('disabled');
-          };
-          //--
-          let startTimeAsDate = tmpl.getDateFromString(startTime)
-          let endTimeAsDate = tmpl.getDateFromString(endTime)
-
-          let selectedEmployees = tmpl.selectedEmployees.get()
-
-          Meteor.call('reports/procurement', Session.get('context'), 
-              startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
-              resetButton()
-              if(res){
-                  tmpl.procurementReports.set(res)
-              } else {
-                  swal('No result found', err.reason, 'error');
-              }
-          });
+      if(!selectedReportType) {
+        swal('No Report type', 'Please select a report type', 'error');
+        return
       }
-  },
-  'click #excel': function(e, tmpl) {
-      e.preventDefault();
-      const startTime = $('[name="startTime"]').val();
-      const endTime = $('[name="endTime"]').val();
 
-      if(startTime && endTime) {
-          tmpl.$('#excel').text('Preparing... ');
-          tmpl.$('#excel').attr('disabled', true);
-          try {
-              let l = Ladda.create(tmpl.$('#excel')[0]);
-              l.start();
-          } catch(e) {
-          }
-          //--
-          let resetButton = function() {
-              try {
-                  let l = Ladda.create(tmpl.$('#excel')[0]);
-                  l.stop();
-                  l.remove();
-              } catch(e) {
-              }
+        let selectedUnitId = ''
+        let selectedPayGradeId = ''
+        let findCriteria = null
 
-              tmpl.$('#excel').text('Export');
-              $('#excel').prepend("<i class='glyphicon glyphicon-download'></i>");
-              tmpl.$('#excel').removeAttr('disabled');
-          };
-          //--
-          let startTimeAsDate = tmpl.getDateFromString(startTime)
-          let endTimeAsDate = tmpl.getDateFromString(endTime)
+        if(selectedReportType === 'payGrade') {
+        // selectedPayGradeId = $('[name="payGrades"]').val()
+        selectedPayGradeId = tmpl.selectedPayGradeIds.get()
+        findCriteria = {
+            'employeeProfile.employment.paygrade': {$in: selectedPayGradeId},
+            businessIds: Session.get('context'),
+            "employee": true
+        }
+        } else if(selectedReportType === 'unit') {
+        selectedUnitId = tmpl.selectedUnitIds.get()
 
-          let selectedEmployees = tmpl.selectedEmployees.get()
+        let positionIds = selectedUnitId.map(aUnitId => {
+            let positions = EntityObjects.find({
+                parentId: aUnitId,
+                otype: 'Position'
+            }).fetch()
+            return _.pluck(positions, '_id')
+        })
+        const flattenedPositionIds = _.flatten(positionIds)
 
-          Meteor.call('reports/procurement', Session.get('context'), 
-              startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
-              resetButton()
-              if(res){
-                  tmpl.procurementReports.set(res)
-                  tmpl.exportProcurementReportData(res, startTime, endTime)
-              } else {
-                  swal('No result found', err.reason, 'error');
-              }
-          });            
-      }
-  },
-  'change [name="employee"]': (e, tmpl) => {
-      let selected = Core.returnSelection($(e.target));
-      tmpl.selectedEmployees.set(selected)
+        findCriteria = {
+            'employeeProfile.employment.position': {$in: flattenedPositionIds},
+            businessIds: Session.get('context'),
+            "employee": true
+        }              
+        }
+        //--
+        tmpl.$('#getResult').text('Preparing... ');
+        tmpl.$('#getResult').attr('disabled', true);
+        try {
+            let l = Ladda.create(tmpl.$('#getReportForPeriodForDisplay')[0]);
+            l.start();
+        } catch(e) {
+        }
+        //--
+        let resetButton = function() {
+            try {
+                let l = Ladda.create(tmpl.$('#getResult')[0]);
+                l.stop();
+                l.remove();
+            } catch(e) {
+            }
+
+            tmpl.$('#getResult').text(' View');
+            tmpl.$('#getResult').removeAttr('disabled');
+        };
+
+        Meteor.call('reports/employees', findCriteria, function(err, res) {
+            resetButton()
+            console.log(`res: `, res)
+            if(res) {
+            tmpl.employeesThatMeetCriteria.set(res)
+            } else {
+                swal('No result found', err.reason, 'error');
+            }
+        });
   }
 });
 
@@ -145,14 +141,11 @@ Template.EmployeesReport.helpers({
         } else return unit.name
     } else return unit.name
   },
-  'procurementReports': function() {
-      return Template.instance().procurementReports.get()
+  'employeesThatMeetCriteria': function() {
+      return Template.instance().employeesThatMeetCriteria.get()
   },
   'isLastIndex': function(array, currentIndex) {
       return (currentIndex === (array.length - 1))
-  },
-  'getSupervisor': function(procurement) {
-      return Template.instance().getSupervisor(procurement)
   },
   limitText: function(text) {
       if(text && text.length > 10) {
@@ -170,41 +163,17 @@ Template.EmployeesReport.onCreated(function () {
   // self.subscribe("getPositions", Session.get('context'));
   let businessUnitId = Session.get('context')
 
-  self.procurementReports = new ReactiveVar()
+  self.selectedReportType = new ReactiveVar()
+  self.employeesThatMeetCriteria = new ReactiveVar()
 
-  self.selectedEmployees = new ReactiveVar()
-
-  self.getDateFromString = function(str1) {
-      let theDate = moment(str1);
-      return theDate.add('hours', 1).toDate()
-  }
+  self.selectedPayGradeIds = new ReactiveVar()
+  self.selectedUnitIds = new ReactiveVar()
 
   self.subscribe("paygrades", businessUnitId)
   self.subscribe('getCostElement', businessUnitId)
+  self.subscribe('getPositions', businessUnitId)
+  
   // self.subscribe('getLocationEntity', businessUnitId)
-
-  self.getSupervisor = function(procurement) {
-      let supervisor = Meteor.users.findOne({
-          'employeeProfile.employment.position': procurement.supervisorPositionId
-      })
-      if(supervisor) {
-          return supervisor.profile.fullName || '---'
-      }
-  }
-
-  self.exportProcurementReportData = function(theData, startTime, endTime) {
-      let formattedHeader = ["Description", "Created By", "Unit", "Date required", "Approver", "Status"]
-
-      let reportData = []
-
-      theData.forEach(aDatum => {
-          reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
-              self.getSupervisor(aDatum), aDatum.status])
-      })
-      BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-          `Procurement Requisition Report ${startTime} - ${endTime}`);
-  }
-
 });
 
 Template.EmployeesReport.onRendered(function () {
