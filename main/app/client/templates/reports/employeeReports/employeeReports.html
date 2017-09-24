@@ -53,20 +53,35 @@
 
                                               <div class="row">
                                                   <div class="col-md-6">
-                                                      <div class="form-group">
-                                                          {{#semanticselect}}
-                                                              <select name="units" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
-                                                                  <option value="">Units</option>
-                                                                  {{#each units}}
-                                                                      <option value="{{_id}}">{{getNameForUnit this}}</option>
-                                                                  {{/each}}
-                                                              </select>
-                                                          {{/semanticselect}}
-                                                      </div><!-- form-group -->
+                                                    {{#if isUnitDropDownDisabled}}
+                                                    <div class="form-group">                                                                
+                                                    {{#semanticselect}}
+                                                        <select name="units" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                            <option value="">Units</option>
+                                                            {{#each units}}
+                                                                <option value="{{_id}}">{{getNameForUnit this}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                    {{/semanticselect}}
+                                                    </div>
+                                                    {{else}}
+                                                    <div class="form-group">
+                                                    {{#semanticselect}}
+                                                    <select name="units" multiple="" style="width: 100%" class="ui fluid search dropdown form-control"
+                                                        disabled>
+                                                        <option value="">Units</option>
+                                                        {{#each units}}
+                                                            <option value="{{_id}}">{{getNameForUnit this}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                    {{/semanticselect}}
+                                                    </div>
+                                                    {{/if}}
                                                   </div>
 
                                                   <div class="col-md-3">
-                                                      <div class="form-group">
+                                                          {{#if isPayGradeDropDownDisabled}}
+                                                          <div class="form-group">                                                                
                                                           {{#semanticselect}}
                                                               <select name="payGrades" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
                                                                   <option value="">Pay Grades</option>
@@ -75,7 +90,20 @@
                                                                   {{/each}}
                                                               </select>
                                                           {{/semanticselect}}
-                                                      </div><!-- form-group -->
+                                                          </div>
+                                                          {{else}}
+                                                          <div class="form-group">                                                                
+                                                          {{#semanticselect}}
+                                                            <select name="payGrades" multiple="" style="width: 100%" class="ui fluid search dropdown form-control"
+                                                                disabled>
+                                                                <option value="">Pay Grades</option>
+                                                                {{#each paygrades}}
+                                                                    <option value="{{_id}}">{{code}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                          {{/semanticselect}}
+                                                          </div>
+                                                          {{/if}}
                                                   </div>
 
                                                   <div class="col-md-3">
@@ -139,7 +167,7 @@
                                                     <tbody>
                                                     {{#each employeesThatMeetCriteria}}
                                                         <tr>
-                                                            <td>{{@index}}</td>
+                                                            <td>{{inc @index}}</td>
                                                             <!-- <td nowrap>{{limitText description}}</td> -->
                                                             <td>{{employmentProfile.employeeId}}</td>
                                                             <td nowrap>{{profile.fullName}}</td>

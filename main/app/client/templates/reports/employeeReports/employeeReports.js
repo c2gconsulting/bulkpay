@@ -33,30 +33,42 @@ Template.EmployeesReport.events({
         let findCriteria = null
 
         if(selectedReportType === 'payGrade') {
-        // selectedPayGradeId = $('[name="payGrades"]').val()
-        selectedPayGradeId = tmpl.selectedPayGradeIds.get()
-        findCriteria = {
-            'employeeProfile.employment.paygrade': {$in: selectedPayGradeId},
-            businessIds: Session.get('context'),
-            "employee": true
-        }
+            // selectedPayGradeId = $('[name="payGrades"]').val()
+            selectedPayGradeId = tmpl.selectedPayGradeIds.get() || []
+            findCriteria = {
+                'employeeProfile.employment.paygrade': {$in: selectedPayGradeId},
+                businessIds: Session.get('context'),
+                "employee": true
+            }
         } else if(selectedReportType === 'unit') {
-        selectedUnitId = tmpl.selectedUnitIds.get()
+            selectedUnitId = tmpl.selectedUnitIds.get() || []
 
-        let positionIds = selectedUnitId.map(aUnitId => {
-            let positions = EntityObjects.find({
-                parentId: aUnitId,
-                otype: 'Position'
-            }).fetch()
-            return _.pluck(positions, '_id')
-        })
-        const flattenedPositionIds = _.flatten(positionIds)
+            let positionIds = selectedUnitId.map(aUnitId => {
+                let positions = EntityObjects.find({
+                    parentId: aUnitId,
+                    otype: 'Position'
+                }).fetch()
+                return _.pluck(positions, '_id')
+            })
+            const flattenedPositionIds = _.flatten(positionIds)
 
-        findCriteria = {
-            'employeeProfile.employment.position': {$in: flattenedPositionIds},
-            businessIds: Session.get('context'),
-            "employee": true
-        }              
+            findCriteria = {
+                'employeeProfile.employment.position': {$in: flattenedPositionIds},
+                businessIds: Session.get('context'),
+                "employee": true
+            }              
+        } else if(selectedReportType === 'activeEmployees') {
+            findCriteria = {
+                'employeeProfile.employment.status': 'Active',
+                businessIds: Session.get('context'),
+                "employee": true
+            }
+        } else if(selectedReportType === 'inactiveEmployees') {
+            findCriteria = {
+                'employeeProfile.employment.status': 'Inactive',
+                businessIds: Session.get('context'),
+                "employee": true
+            }
         }
         //--
         tmpl.$('#getResult').text('Preparing... ');
@@ -81,10 +93,11 @@ Template.EmployeesReport.events({
 
         Meteor.call('reports/employees', findCriteria, function(err, res) {
             resetButton()
-            console.log(`res: `, res)
             if(res) {
-            tmpl.employeesThatMeetCriteria.set(res)
+                tmpl.employeesThatMeetCriteria.set(res)
             } else {
+                tmpl.employeesThatMeetCriteria.set([])
+
                 swal('No result found', err.reason, 'error');
             }
         });
@@ -141,6 +154,14 @@ Template.EmployeesReport.helpers({
         } else return unit.name
     } else return unit.name
   },
+  isUnitDropDownDisabled: () => {
+    const selectedReportType = Template.instance().selectedReportType.get()
+    return (selectedReportType === 'unit')
+  },
+  isPayGradeDropDownDisabled: () => {
+    const selectedReportType = Template.instance().selectedReportType.get()    
+    return (selectedReportType === 'payGrade')
+  },
   'employeesThatMeetCriteria': function() {
       return Template.instance().employeesThatMeetCriteria.get()
   },
@@ -153,6 +174,9 @@ Template.EmployeesReport.helpers({
       }
       return text
   },
+  inc: function(num) {
+      return num + 1
+  }
 });
 
 /*****************************************************************************/
