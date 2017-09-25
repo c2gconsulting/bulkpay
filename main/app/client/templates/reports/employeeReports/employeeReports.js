@@ -107,8 +107,8 @@ Template.EmployeesReport.events({
 /*****************************************************************************/
 /* EmployeesReport: Helpers */
 /*****************************************************************************/
-Template.registerHelper('formatDate', function(date) {
-return moment(date).format('MMYYYY');
+Template.registerHelper('formatDateWordy', function(date) {
+    return moment(date).format('MMM DD YYYY');
 });
 
 Template.EmployeesReport.helpers({
@@ -142,6 +142,24 @@ Template.EmployeesReport.helpers({
        businessId: Session.get('context')
      });
   },
+  'isActiveEmployeesReportType': () => {
+    const selectedReportType = Template.instance().selectedReportType.get()
+    return (selectedReportType === 'activeEmployees')
+  },
+  'isInactiveEmployeesReportType': () => {
+    const selectedReportType = Template.instance().selectedReportType.get()
+    return (selectedReportType === 'inactiveEmployees')
+  },
+  getInactiveEmployeeLastStatusChange: (user) => {
+    let statusChanges = user.employeeProfile.employment.statusChangeHistory || []
+
+    if(statusChanges.length === 0) {
+        return user.employeeProfile.employment.terminationDate
+    } else {
+        const numStatusChanges = statusChanges.length
+        return statusChanges[numStatusChanges - 1].date
+    }
+  },
   getNameForUnit: (unit) => {
     let parentsText = ""
     
@@ -153,6 +171,21 @@ Template.EmployeesReport.helpers({
           return parentsText
         } else return unit.name
     } else return unit.name
+  },
+  getNameForUnitFromEmployeePosition: (user) => {
+    let parentsText = ""
+    const positionId = user.employeeProfile.employment.position
+    
+    const position = EntityObjects.findOne({_id: positionId})
+
+    if(position && position.parentId) {
+      let possibleParent = EntityObjects.findOne({_id: position.parentId})
+
+        if(possibleParent) {
+          parentsText = possibleParent.name
+          return parentsText
+        } else return ''
+    } else return ''
   },
   isUnitDropDownDisabled: () => {
     const selectedReportType = Template.instance().selectedReportType.get()

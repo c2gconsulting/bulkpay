@@ -160,8 +160,18 @@
                                                     <thead>
                                                         <tr>
                                                             <th>S/N</th>
-                                                            <th>Employee Code</th>
+                                                            <!-- <th>Employee Code</th> -->
                                                             <th>Full Name</th>
+
+                                                            <th>Unit</th>
+                                                            
+                                                            {{#if isActiveEmployeesReportType}}
+                                                            <th>Hire Date</th>                                                            
+                                                            {{/if}}
+
+                                                            {{#if isInactiveEmployeesReportType}}
+                                                            <th>Effective Date</th>                                                            
+                                                            {{/if}}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -169,8 +179,26 @@
                                                         <tr>
                                                             <td>{{inc @index}}</td>
                                                             <!-- <td nowrap>{{limitText description}}</td> -->
-                                                            <td>{{employmentProfile.employeeId}}</td>
+                                                            <!-- <td>{{employmentProfile.employeeId}}</td> -->
+
                                                             <td nowrap>{{profile.fullName}}</td>
+                                                            <td>{{getNameForUnitFromEmployeePosition this}}</td>
+                                                            
+                                                            {{#if isActiveEmployeesReportType}}        
+                                                                {{#with employeeProfile.employment.hireDate}}
+                                                                    <th>{{formatDateWordy this}}</th>
+                                                                {{else}}
+                                                                    <th></th>
+                                                                {{/with}}
+                                                            {{/if}}
+
+                                                            {{#if isInactiveEmployeesReportType}}
+                                                                {{#with getInactiveEmployeeLastStatusChange this}}
+                                                                    <th>{{formatDateWordy this}}</th>
+                                                                {{else}}
+                                                                    <th></th>
+                                                                {{/with}}
+                                                            {{/if}}
                                                         </tr>
                                                     {{/each}}
                                                     </tbody>
