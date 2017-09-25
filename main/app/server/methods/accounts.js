@@ -277,15 +277,26 @@ Meteor.methods({
             if(terminationDate) {
                 terminationDate = new Date(terminationDate)
             }
+
+            let updateObj = {
+                "employeeProfile.employment.position": user.employeeProfile.employment.position,
+                    "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
+                "employeeProfile.employment.hireDate": hireDate,
+                "employeeProfile.employment.confirmationDate": confirmationDate,
+                "employeeProfile.employment.status": user.employeeProfile.employment.status,
+                "employeeProfile.employment.terminationDate": terminationDate
+            }
+
+            if(account.employeeProfile.employment.status !== user.employeeProfile.employment.status) {
+                updateObj['employeeProfile.employment.statusChangeHistory'] = account.employeeProfile.employment.statusChangeHistory || []
+                updateObj['employeeProfile.employment.statusChangeHistory'].push({
+                    status: user.employeeProfile.employment.status,
+                    date: new Date(),
+                    changedBy: Meteor.userId()
+                })
+            }
             
-            Meteor.users.update({_id: account._id}, {$set: {
-              "employeeProfile.employment.position": user.employeeProfile.employment.position,
-                "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
-              "employeeProfile.employment.hireDate": hireDate,
-              "employeeProfile.employment.confirmationDate": confirmationDate,
-              "employeeProfile.employment.status": user.employeeProfile.employment.status,
-              "employeeProfile.employment.terminationDate": terminationDate
-            }});
+            Meteor.users.update({_id: account._id}, {$set: updateObj});
             return true
         } else {
             throw new Meteor.Error(404, "Account Not found");
