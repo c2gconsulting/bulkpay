@@ -159,12 +159,12 @@ Template.ProcurementReport.onCreated(function () {
     }
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Description", "Created By", "Unit", "Date required", "Approver", "Status"]
+        let formattedHeader = ["Description", "Requisition reason", "Created By", "Unit", "Date required", "Approver", "Status"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
-            reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
+            reportData.push([aDatum.description, aDatum.requisitionReason, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
                 self.getSupervisor(aDatum), aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
