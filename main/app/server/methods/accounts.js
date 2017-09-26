@@ -112,6 +112,46 @@ Meteor.methods({
         }
         return false;
     },
+    "account/customLoginWithEmail": function(userEmail, hashedPassword) {
+        if(!userEmail) {
+            throw new Meteor.Error(401, "Email not specified");
+        }
+        if(!hashedPassword) {
+            throw new Meteor.Error(401, "Password not specified");
+        }
+        
+        let user = Meteor.users.findOne({'emails.address': userEmail})
+
+        if(user) {
+            let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
+            let loginResult = Accounts._checkPassword(user, myPassword);
+
+            if(loginResult.error) {
+                throw loginResult.error
+            } else {
+                if(user.employeeProfile && user.employeeProfile.employment 
+                    && user.employeeProfile.employment.status === 'Active') {    
+                    return {
+                        status: true, 
+                        loginType: 'usingEmail', 
+                        userEmail: userEmail
+                    }
+                } else {
+                    if(user.businessIds.length === 0) {
+                        return {
+                            status: true, 
+                            loginType: 'usingEmail', 
+                            userEmail: userEmail
+                        }
+                    } else {
+                        throw new Meteor.Error(401, "User is not active")
+                    }
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "Email does not exist");            
+        }
+    },
     "account/customLogin": function(usernameOrEmail, hashedPassword) {
         if(!usernameOrEmail) {
             throw new Meteor.Error(401, "Username/Email not specified");
@@ -129,23 +169,28 @@ Meteor.methods({
             if(loginResult.error) {
                 throw loginResult.error
             } else {
-                let hashedDefaultPassword = Package.sha.SHA256("123456")
-                let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
-
-                let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
-                let userEmail = user.emails[0].address || ''
-
-                if(defaultLoginResult.error) {
-                    return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
-                } else {
-                    let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
-
-                    return {
-                        status: true, 
-                        loginType: 'usingDefaultPassword', 
-                        resetPasswordToken: resetPasswordToken,
-                        userEmail: userEmail
+                if(user.employeeProfile && user.employeeProfile.employment 
+                    && user.employeeProfile.employment.status === 'Active') {
+                    let hashedDefaultPassword = Package.sha.SHA256("123456")
+                    let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'}
+    
+                    let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
+                    let userEmail = user.emails[0].address || ''
+    
+                    if(defaultLoginResult.error) {
+                        return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                    } else {
+                        let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
+    
+                        return {
+                            status: true, 
+                            loginType: 'usingDefaultPassword', 
+                            resetPasswordToken: resetPasswordToken,
+                            userEmail: userEmail
+                        }
                     }
+                } else {
+                    throw new Meteor.Error(401, "User is not active");                                
                 }
             }
         } else {

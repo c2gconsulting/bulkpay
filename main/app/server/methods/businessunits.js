@@ -49,8 +49,10 @@ Meteor.methods({
           throw new Meteor.Error(401, "Unauthorized");
       }
       if(BusinessUnits.findOne({_id: businessUnitId})){
-        let employeeCount = Meteor.users.find({businessIds: {$in: [businessUnitId]}}).count();
-        // console.log(`Employee count: ${employeeCount}`)
+        let employeeCount = Meteor.users.find({
+            businessIds: {$in: [businessUnitId]},
+            'employeeProfile.employment.status': 'Active'
+        }).count();
 
         return employeeCount
       } else
