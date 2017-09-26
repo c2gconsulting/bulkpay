@@ -205,9 +205,11 @@
                                                 </table>
                                                 {{/if}}
                                             {{else}}
+                                              {{#if displayedMessage}}
                                               <div class="alert alert-danger text-center">
-                                                  <p>No employees meet the selected report criteria</p>
+                                                  <p>{{displayedMessage}}</p>
                                               </div>
+                                              {{/if}}
                                             {{/if}}
 
                                           </div>

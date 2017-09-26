@@ -9,12 +9,14 @@ Template.EmployeesReport.events({
     let selectedReportType = $(e.target).val()
 
     tmpl.selectedReportType.set(selectedReportType)
+    tmpl.employeesThatMeetCriteria.set([])
+    tmpl.displayedMessage.set()
   },
   'change [name=units]': (e, tmpl ) => {
     tmpl.selectedUnitIds.set(Core.returnSelection($(e.target)))
   },
   'change [name=payGrades]': (e, tmpl ) => {
-    tmpl.selectedPayGradeIds.set(Core.returnSelection($(e.target)))
+    tmpl.selectedPayGradeIds.set(Core.returnSelection($(e.target)))  
   },
   'click #getResult': function(e, tmpl) {
       e.preventDefault();
@@ -58,12 +60,15 @@ Template.EmployeesReport.events({
                 "employee": true
             }              
         } else if(selectedReportType === 'activeEmployees') {
+            tmpl.isFetchingData.set(true)
             findCriteria = {
                 'employeeProfile.employment.status': 'Active',
                 businessIds: Session.get('context'),
                 "employee": true
             }
         } else if(selectedReportType === 'inactiveEmployees') {
+            tmpl.isFetchingData.set(true)
+            
             findCriteria = {
                 'employeeProfile.employment.status': 'Inactive',
                 businessIds: Session.get('context'),
@@ -92,11 +97,14 @@ Template.EmployeesReport.events({
         };
 
         Meteor.call('reports/employees', findCriteria, function(err, res) {
+            tmpl.isFetchingData.set(false)
+            
             resetButton()
             if(res) {
                 tmpl.employeesThatMeetCriteria.set(res)
             } else {
                 tmpl.employeesThatMeetCriteria.set([])
+                tmpl.displayedMessage.set('No employees meet the selected report criteria')
 
                 swal('No result found', err.reason, 'error');
             }
@@ -147,7 +155,7 @@ Template.EmployeesReport.helpers({
     return (selectedReportType === 'activeEmployees')
   },
   'isInactiveEmployeesReportType': () => {
-    const selectedReportType = Template.instance().selectedReportType.get()
+    const selectedReportType = Template.instance().selectedReportType.get()    
     return (selectedReportType === 'inactiveEmployees')
   },
   getInactiveEmployeeLastStatusChange: (user) => {
@@ -201,6 +209,9 @@ Template.EmployeesReport.helpers({
   'isLastIndex': function(array, currentIndex) {
       return (currentIndex === (array.length - 1))
   },
+  'displayedMessage': function() {
+    return Template.instance().displayedMessage.get()
+  },
   limitText: function(text) {
       if(text && text.length > 10) {
           return `${text.substring(0, 30)} ...`
@@ -225,6 +236,9 @@ Template.EmployeesReport.onCreated(function () {
 
   self.selectedPayGradeIds = new ReactiveVar()
   self.selectedUnitIds = new ReactiveVar()
+
+  self.displayedMessage = new ReactiveVar()
+  self.isFetchingData = new ReactiveVar(false)
 
   self.subscribe("paygrades", businessUnitId)
   self.subscribe('getCostElement', businessUnitId)
