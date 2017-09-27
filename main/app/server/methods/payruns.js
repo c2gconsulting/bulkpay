@@ -455,6 +455,7 @@ Meteor.methods({
         let userId = Meteor.userId();
         this.unblock();
         console.log(obj);
+
         let employees = obj.employees;
         const paygrades = obj.paygrades;
         const period = obj.period;
@@ -752,7 +753,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
                     const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: periodFormat}).fetch();
                     //include additional pay to match paytype values
-
+                    
                     if(addPay && addPay.length > 0) {
                         let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
                         if(formattedPay && formattedPay.length > 0) {
@@ -849,7 +850,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     }
 
                                     //if add to total, add wt to totalsBucket
-                                    totalsBucket += (x.addToTotal && x.taxable) ? parseFloat(x.parsedValue) : 0;
+                                    totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
                                     
                                     //--
                                     //add parsed value to defaultTax bucket if paytype is taxable
@@ -1143,6 +1144,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 empDerivedPayElements.push(x);
                                 //
                             }
+                        } else {
+                            
                         }
                     })
                     // console.log(`paymentsAccountingForCurrency: `, JSON.stringify(paymentsAccountingForCurrency))
@@ -1317,15 +1320,20 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             });
                         }
                     } else {
-                        let taxBucket = null; 
+                        let taxBucket = null;
                         if(assignedTaxBucket) {//automatically use default tax bucket if tax bucket not found
                             taxBucket = assignedTaxBucket.value
                         } else {
                             taxBucket = defaultTaxBucket
                         }
                         let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
-
                         netTaxLocal = taxCalculationResult.netTax
+
+                        let processing = taxCalculationResult.taxLog.processing
+                        processing.push({code: tax.code + " Net Tax (accounting) for resumption date)", derived: ` ${netTaxLocal} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+
+                        netTaxLocal = netTaxLocal * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+
                         taxLog = taxCalculationResult.taxLog
 
                         //populate result for tax
@@ -1532,11 +1540,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
             count++;
             runPayrun(count);
-        } else {
-            // end of recursion
-
         }
-
     };
 
     runPayrun(count);
@@ -1791,14 +1795,18 @@ function getPensionContribution(pensionBucket, pension) {
         const processing = [];
         const eerate = pension.employeeContributionRate;
         const errate = pension.employerContributionRate;
+
         const employee = (eerate / 100) * pensionBucket;
         processing.push({code: `Employee rate`, derived: `(${eerate} / 100) * ${pensionBucket}` });
         processing.push({code: `Employee rate`, derived: employee });
+
         const employer = (errate / 100) * pensionBucket;
         processing.push({code: `Employer rate`, derived: `(${errate} / 100) * ${pensionBucket}` });
         processing.push({code: `Employer rate`, derived: employer });
+
         const netee = employee / 12;
         const neter = employer / 12;
+
         //log for net employee contribution
         processing.push({code: `Employer rate`, derived: `(${employer} / 12) ` });
         processing.push({code: `Employer Net Rate`, derived: neter });
