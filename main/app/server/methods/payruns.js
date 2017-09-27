@@ -1158,9 +1158,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                 if(!skipToNextEmployee) {//further processing after evaluation of all paytypes! pension calculation and tax calculation
                     //get employee and employer contribution
-                    const {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+                    let {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
+
+                    if(pension) {
+                        processing.push({code: pension.code + "_EE - (Employer contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
+                        processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+    
+                        employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                        employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)    
+                    }
+                    
                     //populate result for employee and employer pension contribution
-                    if(pension){
+                    if(pension) {
                         employeeResult.payment.push({id: pension._id, reference: 'Pension', 
                             amountLC: employeePenContrib, amountPC: '', 
                             code: pension.code + '_EE', 
@@ -1191,8 +1200,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             value: employerPenContrib
                         })
                     }
-                   if(pensionLog)    //add pension calculation log
-                        log.push(pensionLog);
+                    
+                    if(pensionLog) {   //add pension calculation log
+                        log.push(pensionLog)
+                    }
+
                     //add employee to relief Bucket
                     reliefBucket += (grossPension || 0); //nagate employee Pension contribution and add to relief bucket
 

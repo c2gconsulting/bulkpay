@@ -6,11 +6,13 @@ Core.Schemas.ProjectPay = new SimpleSchema({
     },
     durationInHours: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     payAmount: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     }
 })
 
