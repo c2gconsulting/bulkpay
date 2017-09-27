@@ -37,8 +37,7 @@ Template.PayrunApproval.events({
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
               if(res) {
                   console.log(`net pay report data: `, res) 
-
-                  tmpl.processNetPayResultsData(res)
+                tmpl.processNetPayResultsData(res)                    
               } else {
                   tmpl.netPayReportResults.set(null);
                   tmpl.processedNetPayResults.set([])
@@ -202,6 +201,16 @@ Template.PayrunApproval.helpers({
             }
         }
     },
+    'doesPayrunExistForPeriod': function() {
+        let selectedMonth = Template.instance().selectedMonth.get()
+        let selectedYear = Template.instance().selectedYear.get()
+
+        const currentPayrunPeriod = selectedMonth + selectedYear
+
+        if(currentPayrunPeriod) {
+            return Payruns.find({period: currentPayrunPeriod}).count() > 0;
+        }
+    },
     'doesRequirePayrunApproval': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
         
@@ -315,6 +324,9 @@ Template.PayrunApproval.onCreated(function () {
         self.subscribe('PayrollApprovalConfigs', Session.get('context'));
 
         if (self.subscriptionsReady()) {  
+          self.netPayReportResults.set(null);
+          self.processedNetPayResults.set([])  
+
           let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: Session.get('context')})
           self.payrollApprovalConfig.set(payrollApprovalConfig)
 
