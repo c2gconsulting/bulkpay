@@ -752,6 +752,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
                     const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: periodFormat}).fetch();
                     //include additional pay to match paytype values
+
                     if(addPay && addPay.length > 0) {
                         let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
                         if(formattedPay && formattedPay.length > 0) {
@@ -848,7 +849,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     }
 
                                     //if add to total, add wt to totalsBucket
-                                    totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
+                                    totalsBucket += (x.addToTotal && x.taxable) ? parseFloat(x.parsedValue) : 0;
                                     
                                     //--
                                     //add parsed value to defaultTax bucket if paytype is taxable
