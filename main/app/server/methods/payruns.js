@@ -4,10 +4,10 @@ import moment from 'moment';
 
 
 let littleHelpers = {
-    paddArrayWithZeros: function(array, fullLengthWithZeros) {
+    paddArrayWith: function(array, fullLengthWithZeros, filler) {
         let lengthOfArray = array.length
         for(let i = 0; i < fullLengthWithZeros - lengthOfArray; i++) {
-            array.push(0)
+            array.push(filler)
         }
     }
 }
@@ -230,7 +230,7 @@ Meteor.methods({
                         employee.employeeProfile.payment.bank,
                         employee.employeeProfile.payment.accountNumber || ''
                     ];
-                    littleHelpers.paddArrayWithZeros(dataRow, header.length - 1)
+                    littleHelpers.paddArrayWith(dataRow, header.length - 1, 0)
                 }
 
                 let numPayments = x.payment.length
@@ -288,36 +288,54 @@ Meteor.methods({
     /* Export Tax payment
      */
     'exportTaxResult': (businessId, period) => {
-        //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
+
         if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Tax'}).fetch();
-            const tax = result.map(x => {
-                const taxIndex = _.findLastIndex(x.payment, {reference: 'Tax'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
-                if(taxIndex > -1) {
-                    const amountLC = x.payment[taxIndex].amountLC;
-                    //get employee details
-                    let employee = Meteor.users.findOne({_id: x.employeeId});
-                    if(employee){
-                        return [
-                            employee.profile.fullName,
-                            employee.employeeProfile.state,
-                            employee.employeeProfile.payment.taxPayerId,
-                            amountLC
-                        ];
-                    }
-                }
-            });
             const header = [
                 "Full Name",
-                "Resident State",
-                "Tax Payer ID",
-                "Amount"
+                "State",
+                "Tax Payer ID"
             ];
-            return {fields: header, data: tax};
+            let taxData = []
+
+            const payResults = PayResults.find({businessId: businessId, period: period}).fetch() || []
+            
+            payResults.forEach(aPayResult => {
+                let employee = Meteor.users.findOne({_id: aPayResult.employeeId});
+                if(employee) {
+                    let employeeTaxData = [
+                        employee.profile.fullName,
+                        employee.employeeProfile.state,
+                        employee.employeeProfile.payment.taxPayerId
+                    ]
+                    littleHelpers.paddArrayWith(employeeTaxData, header.length, '')
+                    //--
+                    const deductionsInDiffCurrencies = aPayResult.payslipWithCurrencyDelineation.deduction
+                    const currencies = Object.keys(deductionsInDiffCurrencies) || []
+
+                    currencies.forEach(aCurrency => {
+                        const deductions = deductionsInDiffCurrencies[aCurrency].payments || []
+                        deductions.forEach(aDeduction => {
+                            if(aDeduction.reference === 'Tax') {
+                                let foundTaxCodeIndexInHeader = header.indexOf(`${aDeduction.code}_${aCurrency}`)
+
+                                if(foundTaxCodeIndexInHeader < 0) {
+                                    header.push(`${aDeduction.code}_${aCurrency}`)
+                                    employeeTaxData.push(aDeduction.value)
+                                } else {
+                                    employeeTaxData[foundTaxCodeIndexInHeader] = aDeduction.value
+                                }
+                            }
+                        })
+                    })
+
+                    taxData.push(employeeTaxData)
+                }
+            });
+            return {fields: header, data: taxData};
         }
     },
 
@@ -325,9 +343,9 @@ Meteor.methods({
     /* Get Tax pay
      */
     'getTaxResult': (businessId, period) => {
-        //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
+
         if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
