@@ -229,19 +229,19 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         payAmount *= -1
                     }
                 }
-                // if(payDetails.reference === 'Pension') {
-                //     if(payDetails.amountLC) {
-                //         let pensionAmount = payDetails.amountLC
-                //         let pensionAmountAsNumber = parseFloat(pensionAmount)
-                //         payAmount = pensionAmountAsNumber
+                if(payDetails.reference === 'Pension') {
+                    if(payDetails.amountLC) {
+                        let pensionAmount = payDetails.amountLC
+                        let pensionAmountAsNumber = parseFloat(pensionAmount)
+                        payAmount = pensionAmountAsNumber
                         
-                //         if(payDetails.code === 'STATPEN_EE') {
-                //             payAmount *= -1
-                //         }
-                //     } else {
-                //         payAmount = '---'                        
-                //     }
-                // }
+                        if(payDetails.code === 'STATPEN_EE') {
+                            payAmount *= -1
+                        }
+                    } else {
+                        payAmount = '---'                        
+                    }
+                }
                 aRowOfPayTypeValues.push(payAmount)
             } else if(aPaytypeHeader.id === 'netPay') {
 
