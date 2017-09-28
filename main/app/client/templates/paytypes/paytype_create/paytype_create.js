@@ -36,6 +36,7 @@ Template.PaytypeCreate.events({
             editablePerEmployee: returnBool($('[name="editablePerEmployee"]').val()),
             isBase: $('[name="isBase"]').is(':checked') ? true : false,
             addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false,
+            reliefFromTax: $('[name="reliefFromTax"]').is(':checked') ? true : false,
             isTimeWritingDependent: $('#payment-depends-on-time-writing').is(':checked') ? true : false,
             includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
         };
