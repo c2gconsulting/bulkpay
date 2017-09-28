@@ -864,9 +864,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     //--
                                     //for reliefs add to relief bucket
                                     if(tenant.baseCurrency.iso === x.currency) {
-                                        reliefBucket += x.reliefFromTax ? parseFloat(x.parsedValue) : 0;
+                                        reliefBucket += x.reliefFromTax ? Math.abs(parseFloat(x.parsedValue)) : 0;
                                     } else {
-                                        reliefBucket += x.reliefFromTax ? convertForeignCurrencyToBaseCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
+                                        reliefBucket += x.reliefFromTax ? Math.abs(convertForeignCurrencyToBaseCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod)) : 0
                                     }
 
                                     //assigned bucket if one of the paytype is selected as tax bucket
