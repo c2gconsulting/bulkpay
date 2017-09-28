@@ -423,9 +423,9 @@ Meteor.methods({
                             pensionDescription = x.description;
                         const type = x.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
                         if(type === '_EE')
-                            pensionAmount.employeeContribution  = x.amountPC;
+                            pensionAmount.employeeContribution  = x.amountLC;
                         if(type === '_ER')
-                            pensionAmount.employerContribution = x.amountPC;
+                            pensionAmount.employerContribution = x.amountLC;
                     });
                     //get employee details
                     let employee = Meteor.users.findOne({_id: x.employeeId});
