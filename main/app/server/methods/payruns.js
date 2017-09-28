@@ -331,27 +331,42 @@ Meteor.methods({
         if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
-            const result =  Payruns.find({businessId: businessId, period: period, 'payment.reference': 'Tax'}).fetch();
-            const tax = result.map(x => {
-                const taxIndex = _.findLastIndex(x.payment, {reference: 'Tax'}); //get amount in paytype currency for standard paytype NMP(Net monthly pay)
-                if(taxIndex > -1) {
-                    const taxCode = x.payment[taxIndex].code;
-                    const amountPC = x.payment[taxIndex].amountPC;
-                    //get employee details
-                    let employee = Meteor.users.findOne({_id: x.employeeId});
-                    if(employee){
-                        const info = {
-                            fullName: employee.profile.fullName,
-                            state: employee.employeeProfile.state,
-                            code: taxCode, 
-                            taxPayerId: employee.employeeProfile.payment.taxPayerId,
-                            amount: amountPC
-                        };
-                        return info;
-                    }
+            let taxAmountHeaders = []
+            let taxData = []
+
+            const payResults = PayResults.find({businessId: businessId, period: period}).fetch() || []
+
+            payResults.forEach(aPayResult => {
+                let employee = Meteor.users.findOne({_id: aPayResult.employeeId});
+                if(employee) {
+                    let employeeTaxData = {
+                        fullName: employee.profile.fullName,
+                        state: employee.employeeProfile.state,
+                        taxPayerId: employee.employeeProfile.payment.taxPayerId,
+                        taxAmounts: {}
+                    };
+                    //--
+                    const deductionsInDiffCurrencies = aPayResult.payslipWithCurrencyDelineation.deduction
+                    const currencies = Object.keys(deductionsInDiffCurrencies) || []
+
+                    currencies.forEach(aCurrency => {
+                        const deductions = deductionsInDiffCurrencies[aCurrency].payments || []
+                        deductions.forEach(aDeduction => {
+                            if(aDeduction.reference === 'Tax') {
+                                let foundTaxCodeInHeadersList = _.find(taxAmountHeaders, aTaxHeader => {
+                                    return aTaxHeader === `${aDeduction.code}_${aCurrency}`
+                                })
+                                if(!foundTaxCodeInHeadersList) {
+                                    taxAmountHeaders.push(`${aDeduction.code}_${aCurrency}`)
+                                }
+                                employeeTaxData.taxAmounts[`${aDeduction.code}_${aCurrency}`] = aDeduction.value
+                            }
+                        })
+                    })
+                    taxData.push(employeeTaxData)
                 }
             });
-            return tax;
+            return {taxAmountHeaders, taxData};
         }
     },
 
@@ -375,9 +390,9 @@ Meteor.methods({
                             pensionDescription = x.description;
                         const type = x.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
                         if(type === '_EE')
-                            pensionAmount.employeeContribution  = x.amountPC;
+                            pensionAmount.employeeContribution  = x.amountLC;
                         if(type === '_ER')
-                            pensionAmount.employerContribution = x.amountPC;
+                            pensionAmount.employerContribution = x.amountLC;
                     });
                     //get employee details
                     let employee = Meteor.users.findOne({_id: x.employeeId});

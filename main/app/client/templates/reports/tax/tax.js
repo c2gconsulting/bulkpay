@@ -18,11 +18,8 @@ Template.TaxReport.events({
       if(month && year) {
           const period = month + year;
           Meteor.call('getTaxResult', Session.get('context'), period, function(err, res){
-              if(res && res.length) {
-                  let taxCodes = tmpl.getTaxHeaders(res)
-                  tmpl.taxCodes.set(taxCodes);
-
-                  tmpl.taxReportData.set(res);
+              if(res && res.taxAmountHeaders.length > 0 && res.taxData.length > 0) {
+                  tmpl.taxReportData.set(res)
               } else {
                   swal('No result found', 'Payroll Result not found for period', 'error');
               }
@@ -104,17 +101,17 @@ Template.TaxReport.helpers({
     'result': () => {
         return Template.instance().taxReportData.get();
     },
-    'taxHeaders': () => {
-        return Template.instance().taxCodes.get();
+    'taxAmountHeaders': () => {
+        const taxReportData = Template.instance().taxReportData.get()
+        return taxReportData.taxAmountHeaders
+    },
+    'taxData': () => {
+        const taxReportData = Template.instance().taxReportData.get()
+        return taxReportData.taxData
     },
     'getTaxAmount': (taxRecord, taxCode) => {
-        let taxCodes = Template.instance().taxCodes.get();
-        if(taxCodes) {
-            if(taxRecord.code === taxCode) {
-                return taxRecord.amount
-            } else {
-                return ''
-            }
+        if(taxRecord.taxAmounts[taxCode]) {
+            return taxRecord.taxAmounts[taxCode]
         } else {
             return ''
         }
@@ -129,25 +126,9 @@ Template.TaxReport.onCreated(function () {
 
     self.taxReportData = new ReactiveVar();
     self.taxCodes = new ReactiveVar();
-
-    self.getTaxHeaders = (fullReportData) => {
-        if(fullReportData && fullReportData.length > 0) {
-            let headersList = []
-            fullReportData.forEach(aTaxRecord => {
-                let foundTaxCodeInHeadersList = _.find(headersList, aHeader => {
-                    return aHeader === aTaxRecord.code
-                })
-                if(!foundTaxCodeInHeadersList) {
-                    headersList.push(aTaxRecord.code)
-                }
-            })
-            return headersList
-        }
-    }
 });
 
 Template.TaxReport.onRendered(function () {
-    //$('#example').DataTable();
     self.$('select.dropdown').dropdown();
 
     $("html, body").animate({ scrollTop: 0 }, "slow");
