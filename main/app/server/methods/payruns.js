@@ -164,33 +164,51 @@ Meteor.methods({
                         employee.employeeProfile.payment.bank || '',
                         employee.employeeProfile.payment.accountNumber || ''
                     ];
+                    littleHelpers.paddArrayWith(dataRow, header.length - 1, 0)
                 }
 
                 let numPayments = x.payment.length
                 for(let i = 0; i < numPayments; i++) {
                     if(x.payment[i].code === 'NMP') {// Got a net pay
                         if(x.payment[i].reference === 'Standard') {
-                            let foundAmountHeader = _.find(header, aHeader => {
-                                return aHeader === 'Amount (' + tenant.baseCurrency.iso + ')'
+                            let indexOfHeader = -1
+
+                            let foundAmountHeader = _.find(header, (aHeader, headerIndex) => {
+                                if(aHeader === 'Amount (' + tenant.baseCurrency.iso + ')') {
+                                    indexOfHeader = headerIndex
+                                    return true
+                                }
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + tenant.baseCurrency.iso + ')')
+                                dataRow.push(0)
+                                indexOfHeader = dataRow.length - 1
+                            } else {
+                                //indexOfHeader += 1
                             }
-                            dataRow.push(x.payment[i].amountPC)
+                            dataRow[indexOfHeader] = x.payment[i].amountPC
                         } else if(x.payment[i].reference.startsWith('Standard_')) {
+                            let indexOfHeader = -1
                             let currency = x.payment[i].reference.substring('Standard_'.length)
 
-                            let foundAmountHeader = _.find(header, aHeader => {
-                                return aHeader === 'Amount (' + currency + ')'
+                            let foundAmountHeader = _.find(header, (aHeader, headerIndex) => {
+                                if(aHeader === 'Amount (' + currency + ')') {
+                                    indexOfHeader = headerIndex
+                                    return true
+                                }
                             })
                             if(!foundAmountHeader) {
                                 header.push('Amount (' + currency + ')')
+                                dataRow.push(0)
+                                indexOfHeader = dataRow.length - 1
+                            } else {
+                                //indexOfHeader += 1
                             }
-                            dataRow.push(x.payment[i].amountPC)
+                            // dataRow.push(x.payment[i].amountPC)
+                            dataRow[indexOfHeader] = x.payment[i].amountPC
                         }
                     }
                 }
-
                 return dataRow
             });
             return {fields: header, data: netpay};
@@ -205,6 +223,7 @@ Meteor.methods({
         //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
+
         if(Core.hasPayrollAccess(this.userid)){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {

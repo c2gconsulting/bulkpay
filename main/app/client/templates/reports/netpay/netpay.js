@@ -64,8 +64,7 @@ Template.NetPayReport.events({
 
             const period = month + year;
             Meteor.call('ExportNetPayResult', Session.get('context'), period, function(err, res){
-                if(res){
-                    //call the export fo
+                if(res) {
                     BulkpayExplorer.exportAllData(res, "NetPaymentReport");
                     resetButton()
                 } else {

@@ -36,7 +36,6 @@ Template.PayrunApproval.events({
           const period = month + year;
           Meteor.call('getnetPayResult', Session.get('context'), period, function(err, res){
               if(res) {
-                  console.log(`net pay report data: `, res) 
                 tmpl.processNetPayResultsData(res)                    
               } else {
                   tmpl.netPayReportResults.set(null);
