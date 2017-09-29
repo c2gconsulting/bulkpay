@@ -139,22 +139,30 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                     })
 
                     if(!sapPayTypeDetails) {
-                        if (aPayment.reference === 'Tax') {
-                            let sapTaxDetails = _.find(businessUnitSapConfig.taxes, function (aPayType) {
-                                return aPayType.payTypeId === aPayment.id;
-                            })
+                        if (aPayment.reference === 'Tax' || aPayment.reference === 'Pension') {
+                            let sapConfigToUse = {}
+                            if(aPayment.reference === 'Tax') {
+                                sapConfigToUse = _.find(businessUnitSapConfig.taxes, function (aPayType) {
+                                    return aPayType.payTypeId === aPayment.id;
+                                })
+    
+                            } else {
+                                sapConfigToUse = _.find(businessUnitSapConfig.pensions, function (aPayType) {
+                                    return aPayType.pensionId === aPayment.id && (aPayType.pensionCode === aPayment.code);
+                                })    
+                            }
 
-                            if(sapTaxDetails) {
+                            if(sapConfigToUse) {
                                 let payTypeDebitAccountCode = ""
                                 let payTypeCreditAccountCode = ""
-                                if (sapTaxDetails.payTypeDebitAccountCode) {
-                                    payTypeDebitAccountCode = sapTaxDetails.payTypeDebitAccountCode
+                                if (sapConfigToUse.payTypeDebitAccountCode) {
+                                    payTypeDebitAccountCode = sapConfigToUse.payTypeDebitAccountCode
                                 } else {
                                     status = false
                                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Debit G/L account`)
                                 }
-                                if (sapTaxDetails.payTypeCreditAccountCode) {
-                                    payTypeCreditAccountCode = sapTaxDetails.payTypeCreditAccountCode
+                                if (sapConfigToUse.payTypeCreditAccountCode) {
+                                    payTypeCreditAccountCode = sapConfigToUse.payTypeCreditAccountCode
                                 } else {
                                     status = false
                                     errors.push(`Paytype: ${aPayment.description} does not have an SAP Credit G/L account`)
@@ -162,10 +170,16 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                 if(!payTypeDebitAccountCode || !payTypeDebitAccountCode) {
                                     return
                                 }
+                                let description = ''
+                                if(aPayment.reference === 'Tax') {
+                                    description = shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", unit.name)
+                                } else {
+                                    description = shortenMemoForSapJournalEntry(aPayment.code, " (Cost-Center: ", unit.name)
+                                }
                                 unitBulkSumPayments.push({
                                     payTypeId: aPayment.id,
                                     costCenterPayAmount: aPayment.amountLC || 0,
-                                    description: shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", unit.name),
+                                    description: description,
                                     payTypeDebitAccountCode: payTypeDebitAccountCode,
                                     payTypeCreditAccountCode: payTypeCreditAccountCode,
                                 })
@@ -426,7 +440,7 @@ Meteor.methods({
                 })
             }
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
-            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
             
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
