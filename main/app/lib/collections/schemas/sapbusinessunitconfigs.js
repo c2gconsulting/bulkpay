@@ -40,6 +40,24 @@ Core.Schemas.SapPayTypeConfig = new SimpleSchema({
     }
 });
 
+Core.Schemas.SapPensionPayTypeConfig = new SimpleSchema({
+    pensionId : {
+        type: String
+    },
+    pensionCode : {
+        type: String
+    },    
+    payTypeDebitAccountCode : {
+        type: String,
+        optional: true
+    },
+    payTypeCreditAccountCode : {
+        type: String,
+        optional: true
+    }
+});
+
+
 /**
  * SapBusinessUnitConfig Schema
  */
@@ -99,6 +117,10 @@ Core.Schemas.SapBusinessUnitConfig = new SimpleSchema({
     },
     taxes: {
         type: [Core.Schemas.SapPayTypeConfig],
+        optional: true
+    },
+    pensions: {
+        type: [Core.Schemas.SapPensionPayTypeConfig],
         optional: true
     },
     createdAt: {

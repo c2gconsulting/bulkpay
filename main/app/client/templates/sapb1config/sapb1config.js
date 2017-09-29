@@ -8,7 +8,6 @@ Template.SapB1Config.events({
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         var sapServerIpAddress = $('#sapServerIpAddress').val();
         var protocol = $("[name='protocol']:checked").val();
-        console.log(`Protocol: ${protocol}`)
 
         var sapServername = $('#sapServername').val();
         var sapUsername = $('#sapUsername').val();
@@ -64,7 +63,6 @@ Template.SapB1Config.events({
             tmpl.$('#testConnection').removeAttr('disabled');
 
             if (!err){
-                console.log(`Test connection response: ${res}`)
                 let responseAsObj = JSON.parse(res)
 
                 let dialogType = (responseAsObj.status === true) ? "success" : "error"
@@ -78,7 +76,6 @@ Template.SapB1Config.events({
         let domElem = e.currentTarget;
         let unitId = domElem.getAttribute('id')
         let unitGlAccountCode = domElem.value || ""
-        console.log(`unitGlAccountCode: ${unitGlAccountCode}`)
 
         let units = Template.instance().units.get()
 
@@ -109,7 +106,6 @@ Template.SapB1Config.events({
 
         Meteor.call("sapB1integration/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
             if(res) {
-                console.log(JSON.stringify(res));
                 swal('Success', 'Cost center codes were successfully updated', 'success')
             } else {
                 console.log(err);
@@ -124,7 +120,6 @@ Template.SapB1Config.events({
 
         Meteor.call("sapB1integration/updateProjectCodes", businessUnitId, theProjects, (err, res) => {
             if(res) {
-                console.log(JSON.stringify(res));
                 swal('Success', 'Project codes were successfully updated', 'success')
             } else{
                 console.log(err);
@@ -132,7 +127,6 @@ Template.SapB1Config.events({
         })
     },
     'click #savePayTypesGlAccounts': (e, tmpl) => {
-        console.log(`paytypes gl account button clicked`)
         let businessUnitId = Session.get('context')
 
         let payTypeCreditGlAccountCode = []
@@ -179,8 +173,28 @@ Template.SapB1Config.events({
                 payTypeDebitAccountCode: taxesDebitGlAccountCode[index],
             }
         })
+        //--
+        let pensionsCreditGlAccountCode = []
+        let pensionsDebitGlAccountCode = []
+        $('input[name=pensionsCreditGlAccountCode]').each(function(anInput) {
+            pensionsCreditGlAccountCode.push($(this).val())
+        })
+        $('input[name=pensionsDebitGlAccountCode]').each(function(anInput) {
+            pensionsDebitGlAccountCode.push($(this).val())
+        })
+        
+        let thePensions = []
+        Template.instance().pensions.get().forEach((aPension, index) => {
+            const sapPensionPaymentConfig = {
+                pensionId: aPension.pensionId,
+                pensionCode: aPension.pensionCode,
+                payTypeCreditAccountCode: pensionsCreditGlAccountCode[index],
+                payTypeDebitAccountCode: pensionsDebitGlAccountCode[index],
+            }
+            thePensions.push(sapPensionPaymentConfig)
+        })
 
-        Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, theTaxes, (err, res) => {
+        Meteor.call("sapB1integration/updatePayTypeGlAccountCodes", businessUnitId, thePayTypes, theTaxes, thePensions, (err, res) => {
             if(res) {
                 console.log(JSON.stringify(res));
                 swal('Success', 'Pay type account codes were successfully updated', 'success')
@@ -211,6 +225,9 @@ Template.SapB1Config.helpers({
     "taxes": () => {
         return Template.instance().taxes.get()
     },
+    "pensions": () => {
+        return Template.instance().pensions.get()
+    },
     "getCostCenterOrgChartParents": (unit) => {
         return Template.instance().getParentsText(unit)
     }
@@ -229,6 +246,7 @@ Template.SapB1Config.onCreated(function () {
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('employeeprojects', businessUnitId);
     self.subscribe('taxes', businessUnitId)
+    self.subscribe('pensions', businessUnitId)
 
     self.subscribe("getPositions", businessUnitId);
     self.subscribe("getLocationEntity", businessUnitId);
@@ -238,6 +256,7 @@ Template.SapB1Config.onCreated(function () {
     self.projects = new ReactiveVar()
     self.paytypes = new ReactiveVar()
     self.taxes = new ReactiveVar()
+    self.pensions = new ReactiveVar()
 
     self.getParentsText = (unit) => {// We need parents 2 levels up
         let parentsText = ''
@@ -316,6 +335,34 @@ Template.SapB1Config.onCreated(function () {
                 payType.payTypeId = payType._id
                 return payType
             }));
+
+            let thePensions = []
+            Pensions.find({}).fetch().forEach(aPension => {
+                if(sapBizUnitConfig) {
+                    let sapEmployeePensionPayment = _.find(sapBizUnitConfig.pensions, function (oldPayType) {
+                        return oldPayType.pensionId === aPension._id && oldPayType.pensionCode === aPension.code + "_EE";
+                    })
+                    let employeePension = {...aPension}
+                    if(sapEmployeePensionPayment) {
+                        _.extend(employeePension, sapEmployeePensionPayment)
+                    }
+                    employeePension.pensionId = aPension._id
+                    employeePension.pensionCode = aPension.code + "_EE"                    
+                    thePensions.push(employeePension)
+                    //--
+                    let employerPension = {...aPension}
+                    let sapEmployerPensionPayment = _.find(sapBizUnitConfig.pensions, function (oldPayType) {
+                        return oldPayType.pensionId === aPension._id && oldPayType.pensionCode === aPension.code + "_ER";
+                    })
+                    if(sapEmployerPensionPayment) {
+                        _.extend(employerPension, sapEmployerPensionPayment)
+                    }
+                    employerPension.pensionId = aPension._id
+                    employerPension.pensionCode = aPension.code + "_ER"                    
+                    thePensions.push(employerPension)                    
+                }
+            });
+            self.pensions.set(thePensions)
         }
     });
 });

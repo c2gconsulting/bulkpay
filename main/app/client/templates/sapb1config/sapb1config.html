@@ -292,6 +292,37 @@
                                                     {{/each}}
                                                 </tbody>
                                             </table>
+
+                                            <p>
+                                                <b>Pensions</b>
+                                            </p>
+
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">
+                                                    {{#each pensions}}
+                                                    <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{pensionCode}}</td>
+                                                        <td>
+                                                            <input type="text" name="pensionsCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="pensionsDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                            </table>                                            
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->

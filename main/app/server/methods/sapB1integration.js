@@ -380,7 +380,7 @@ Meteor.methods({
         }
     },
     "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray, 
-        taxesGLAccountCodesArray){
+        taxesGLAccountCodesArray, pensionGLAccountCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -392,13 +392,15 @@ Meteor.methods({
                 SapBusinessUnitConfigs.update(businessUnitSapConfig._id, 
                 {$set : {
                     payTypes: payTypesGLAccountCodesArray,
-                    taxes: taxesGLAccountCodesArray
+                    taxes: taxesGLAccountCodesArray,
+                    pensions: pensionGLAccountCodesArray
                 }});
             } else {
                 SapBusinessUnitConfigs.insert({
                     businessId: businessUnitId, 
                     payTypes: payTypesGLAccountCodesArray,
-                    taxes: taxesGLAccountCodesArray
+                    taxes: taxesGLAccountCodesArray,
+                    pensions: pensionGLAccountCodesArray
                 })
             }
             return true;
