@@ -250,7 +250,8 @@ Template.TravelRequisitionDetail.events({
         .clone()
         .remove('.panel-footer')
         .find('.panel-title')
-        .html(`Travel Request: ${employeeFullName}`)
+        // .html(`Travel Request: ${employeeFullName}`)
+        .html(`Travel Request`)        
         .end()
         .find('.panel-title')
         .prepend(`
@@ -278,6 +279,12 @@ Template.registerHelper('formatDate', function(date) {
 Template.TravelRequisitionDetail.helpers({
     'procurementDetails': function() {
         return Template.instance().procurementDetails.get()
+    },
+    getCreatedByFullName: (requisition) => {
+        const userId = requisition.createdBy
+        
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
     },
     'isInEditMode': function() {
         return Template.instance().isInEditMode.get()

@@ -71,6 +71,12 @@ Template.TravelRequisitionTreatList.helpers({
         }
         return 0;
     },
+    getCreatedByFullName: (requisition) => {
+        const userId = requisition.createdBy
+        
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
