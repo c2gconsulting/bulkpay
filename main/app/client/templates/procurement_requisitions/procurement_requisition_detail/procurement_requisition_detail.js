@@ -236,7 +236,6 @@ Template.ProcurementRequisitionDetail.events({
         //     importStyle: true
         // });
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
-        console.log('businessUnitLogoUrl: ', businessUnitLogoUrl)
 
         let procurementDetails = Template.instance().procurementDetails.get()
 
@@ -252,7 +251,8 @@ Template.ProcurementRequisitionDetail.events({
         .clone()
         .remove('.panel-footer')
         .find('.panel-title')
-        .html(`Purchase Requisition: ${employeeFullName}`)
+        // .html(`Procurement Requisition: ${employeeFullName}`)
+        .html(`Procurement Requisition`)        
         .end()
         .find('.panel-title')
         .prepend(`
@@ -294,6 +294,12 @@ Template.registerHelper('formatDate', function(date) {
 Template.ProcurementRequisitionDetail.helpers({
     'procurementDetails': function() {
         return Template.instance().procurementDetails.get()
+    },
+    getCreatedByFullName: (requisition) => {
+        const userId = requisition.createdBy
+        
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
     },
     'isInEditMode': function() {
         return Template.instance().isInEditMode.get()

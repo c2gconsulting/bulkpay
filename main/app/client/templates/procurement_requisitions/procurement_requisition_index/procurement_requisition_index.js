@@ -65,6 +65,12 @@ Template.ProcurementRequisitionIndex.helpers({
             result += 2;
         return result;
     },
+    getCreatedByFullName: (requisition) => {
+        const userId = requisition.createdBy
+        
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
