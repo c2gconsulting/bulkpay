@@ -240,12 +240,12 @@ Template.header.onCreated(function() {
             }).fetch()
             self.timesToApprove.set(timesToApprove)
             //--
-            let timesStatusNotSeen = TimeWritings.find({
-                employeeId: Meteor.userId(),
-                $or: [{status: 'Approved'}, {status: 'Rejected'}],
-                isApprovalStatusSeenByCreator : {$ne: true}
-            }).fetch()
-            self.timesStatusNotSeen.set(timesStatusNotSeen)
+            // let timesStatusNotSeen = TimeWritings.find({
+            //     employeeId: Meteor.userId(),
+            //     $or: [{status: 'Approved'}, {status: 'Rejected'}],
+            //     isApprovalStatusSeenByCreator : {$ne: true}
+            // }).fetch() || []
+            // self.timesStatusNotSeen.set(timesStatusNotSeen)
             //--
             let leavesToApprove = Leaves.find({
                 employeeId: {$in: allSuperviseeIds},
