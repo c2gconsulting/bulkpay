@@ -47,11 +47,9 @@ Template.Employees.events({
     }, 200),
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        console.log(`pageNum: ${pageNum}`)
         let pageNumAsInt = parseInt(pageNum)
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
-        console.log(`skip: ${skip}`)
 
         let newPageOfEmployees = Template.instance().getEmployees(skip)
         Template.instance().employees.set(newPageOfEmployees)
