@@ -8,7 +8,8 @@ Template.LeaveCreate.events({
         let start = $("#startDate").val();
         let end = $("#endDate").val();
         if (start && end){
-            let duration = tmpl.getNumberOfWeekDays(start, end)
+            // let duration = tmpl.getNumberOfWeekDays(start, end)
+
             let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
             $("#duration").val(durationAsDaysAndHours)
         }
@@ -17,7 +18,8 @@ Template.LeaveCreate.events({
         let start = $("#startDate").val();
         let end = $("#endDate").val();
         if (start && end){
-            let duration = tmpl.getNumberOfWeekDays(start, end)
+            // let duration = tmpl.getNumberOfWeekDays(start, end)
+
             let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
             $("#duration").val(durationAsDaysAndHours)
         }
@@ -233,15 +235,23 @@ Template.LeaveCreate.onCreated(function () {
     }
 
     self.prettifyDurationOfWeekDaysInDaysAndHours = function(startDate, endDate) {
-        let durationInHours = self.getDurationOfWeekDaysInHours(startDate, endDate)
-        let numberOfDaysInHours = Math.floor(durationInHours / 24) 
-
-        if(numberOfDaysInHours < 1) {
-            return durationInHours + ' hours'
-        } else {
-            let hoursLeft = (durationInHours - (numberOfDaysInHours * 24))
-            let durationPrettified = numberOfDaysInHours + ' day(s), ' + hoursLeft + ' hours'
-            return durationPrettified
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            if(businessUnitCustomConfig.isHourLeaveRequestsEnabled) {
+                let durationInHours = self.getDurationOfWeekDaysInHours(startDate, endDate)
+                let numberOfDaysInHours = Math.floor(durationInHours / 24) 
+        
+                if(numberOfDaysInHours < 1) {
+                    return durationInHours + ' hours'
+                } else {
+                    let hoursLeft = (durationInHours - (numberOfDaysInHours * 24))
+                    let durationPrettified = numberOfDaysInHours + ' day(s), ' + hoursLeft + ' hours'
+                    return durationPrettified
+                }
+            } else {
+                let durationInDays = self.getNumberOfWeekDays(startDate, endDate)
+                return durationInDays
+            }
         }
     }
 
@@ -266,7 +276,7 @@ Template.LeaveCreate.onCreated(function () {
                     }
                 })
                 if(foundDaysLeftInYear) {
-                    Template.instance().numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
+                    self.numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
                 }
             }
         }
@@ -304,28 +314,24 @@ Template.LeaveCreate.onCreated(function () {
         //--
         let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
 
-        Template.instance().numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft)
+        self.numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft)
     }
 
     self.subscribe('employeeLeaveTypes', businessId);
+    let employeeApprovedLeavesSub = self.subscribe('employeeApprovedLeaves', businessId)
+    let suppLeavesForUserSub = self.subscribe('supplementaryLeaveForUser', businessId, Meteor.userId())
 
     self.autorun(function() {
-        let employeeApprovedLeavesSub = self.subscribe('employeeApprovedLeaves', businessId)
-        let suppLeavesForUserSub = self.subscribe('supplementaryLeaveForUser', businessId, Meteor.userId())
-
-        let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessId, Core.getTenantId());
-
-        if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready() && customConfigSub.ready()) {
-            self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessId}))
-            
-            let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
-            if(businessUnitCustomConfig) {
+        if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready()) {
+            Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
+                self.businessUnitCustomConfig.set(businessUnitCustomConfig)
+                
                 if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
                     self.setLeaveDaysLeftBasedOnFixedEntitlement()
                 } else if(businessUnitCustomConfig.leaveDaysAccrual === 'NumberOfDaysWorked') {
                     self.setLeaveDaysLeftBasedOnDaysWorked()
                 }
-            }
+            })
         }
     })
 });
