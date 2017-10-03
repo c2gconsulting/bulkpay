@@ -240,6 +240,7 @@ Meteor.methods({
                 "profile.firstname": user.profile.firstname,
                 "profile.lastname": user.profile.lastname,
                 "profile.othernames": user.profile.othernames,
+                "employeeProfile.maidenName": user.employeeProfile.maidenName,
                 "personalEmailAddress": user.personalEmailAddress,
 
                 "employeeProfile.address": user.employeeProfile.address,

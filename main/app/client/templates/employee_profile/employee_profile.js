@@ -11,6 +11,7 @@ Template.EmployeeProfile.events({
         e.preventDefault()
         let user = Template.instance().currentEmployee.get()
 
+        const maidenName = tmpl.$('[name=maidenName]').val()
         const numberOfChildren = tmpl.$('[name=numberOfChildren]').val()
         const phone = tmpl.$('[name=personalPhone]').val()
         const address = tmpl.$('[name=personalAddress]').val()
@@ -21,6 +22,7 @@ Template.EmployeeProfile.events({
         
         user.employeeProfile = user.employeeProfile || {};
         user.employeeProfile = {
+            maidenName: maidenName,
             numberOfChildren: numberOfChildren,
             phone: phone,
             address: address,
@@ -32,7 +34,7 @@ Template.EmployeeProfile.events({
 
         Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
             if (res) {
-                tmpl.nextOfKinInEditMode.set(false)
+                tmpl.personalInfoInEditMode.set(false)
                 Session.set('employeesList_selectedEmployee', user);
                 swal({
                     title: "Success",
