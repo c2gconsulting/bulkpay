@@ -248,7 +248,11 @@ Meteor.methods({
                 "employeeProfile.maritalStatus": user.employeeProfile.maritalStatus,
                 "employeeProfile.phone": user.employeeProfile.phone,
                 "employeeProfile.nationality": user.employeeProfile.nationality,
-                "employeeProfile.state": user.employeeProfile.state
+                "employeeProfile.state": user.employeeProfile.state,
+                "employeeProfile.religion": user.employeeProfile.religion,
+                "employeeProfile.bloodGroup": user.employeeProfile.bloodGroup,
+                "employeeProfile.disability": user.employeeProfile.disability,
+                "employeeProfile.numberOfChildren": user.employeeProfile.numberOfChildren
             }});
             return true
         } else {

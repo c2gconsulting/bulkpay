@@ -3,6 +3,45 @@
 /*****************************************************************************/
 
 Template.EmployeeProfile.events({
+    'click #editPersonalInfo': (e, tmpl) => {
+        e.preventDefault()
+        Template.instance().personalInfoInEditMode.set(true)
+    },
+    'click #savePersonalInfo': (e, tmpl) => {
+        e.preventDefault()
+        let user = Template.instance().currentEmployee.get()
+
+        const numberOfChildren = tmpl.$('[name=numberOfChildren]').val()
+        const phone = tmpl.$('[name=personalPhone]').val()
+        const address = tmpl.$('[name=personalAddress]').val()
+        const religion = tmpl.$('[name=religion]').val()
+        const bloodGroup = tmpl.$('[name=bloodGroup]').val()
+        const disability = tmpl.$('[name=disability]').val()
+        
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile = {
+            numberOfChildren: numberOfChildren,
+            phone: phone,
+            address: address,
+            religion : religion,
+            bloodGroup: bloodGroup,
+            disability: disability,
+        }
+
+        Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
+            if (res) {
+                tmpl.nextOfKinInEditMode.set(false)
+                Session.set('employeesList_selectedEmployee', user);
+                swal({
+                    title: "Success",
+                    text: `Personal details updated`,
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    },
     'click #editNextOfKin': (e, tmpl) => {
         e.preventDefault()
         Template.instance().nextOfKinInEditMode.set(true)
@@ -83,7 +122,7 @@ Template.EmployeeProfile.events({
                 });
             }
         });
-    },
+    }
 });
 
 /*****************************************************************************/
@@ -101,11 +140,17 @@ Template.EmployeeProfile.helpers({
     "images": (id) => {
         return UserImages.findOne({_id: id});
     },
+    "personalInfoInEditMode": () => {
+      return Template.instance().personalInfoInEditMode.get();
+    },
     "nextOfKinInEditMode": () => {
       return Template.instance().nextOfKinInEditMode.get();
     },
     "beneficiaryInEditMode": () => {
       return Template.instance().beneficiaryInEditMode.get();
+    },
+    "disablePersonalInfoFields": () => {
+      return Template.instance().personalInfoInEditMode.get() ? '' : 'disabled'
     },
     "disableNextOfKinFields": () => {
       return Template.instance().nextOfKinInEditMode.get() ? '' : 'disabled'
@@ -149,11 +194,17 @@ Template.EmployeeProfile.onCreated(function () {
     self.currentEmployee = new ReactiveVar();
     self.currentEmployee.set(Meteor.users.findOne({_id: Meteor.userId()}));
 
+    self.personalInfoInEditMode = new ReactiveVar()
     self.nextOfKinInEditMode = new ReactiveVar()
     self.beneficiaryInEditMode = new ReactiveVar()
 });
 
 Template.EmployeeProfile.onRendered(function () {
+    let user = Template.instance().currentEmployee.get()
+
+    $('[name=religion]').val(user.employeeProfile.religion)
+    $('[name=bloodGroup]').val(user.employeeProfile.bloodGroup)
+    $('[name=disability]').val(user.employeeProfile.disability)
 });
 
 Template.EmployeeProfile.onDestroyed(function () {
