@@ -17,6 +17,7 @@ Template.EmployeeProfile.events({
         const religion = tmpl.$('[name=religion]').val()
         const bloodGroup = tmpl.$('[name=bloodGroup]').val()
         const disability = tmpl.$('[name=disability]').val()
+        const workExperiences = tmpl.$('[name=workExperiences]').val()
         
         user.employeeProfile = user.employeeProfile || {};
         user.employeeProfile = {
@@ -26,6 +27,7 @@ Template.EmployeeProfile.events({
             religion : religion,
             bloodGroup: bloodGroup,
             disability: disability,
+            workExperiences: workExperiences
         }
 
         Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
