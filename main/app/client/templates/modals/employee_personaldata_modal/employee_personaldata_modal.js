@@ -11,8 +11,6 @@ Template.EmployeePersonalDataModal.events({
       // if ($('#uploadBtn')[0].files[0]) {
       //   user.employeeProfile.photo = UserImages.insert($('#uploadBtn')[0].files[0]);
       // }
-      console.log("User to update on server: \n" + JSON.stringify(user));
-
       Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
           if (res){
               Session.set('employeesList_selectedEmployee', user);
@@ -240,6 +238,33 @@ Template.EmployeePersonalDataModal.events({
       }
       Template.instance().setEditUser(user);
     },
+    'blur [name=religion]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.religion = value;
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=bloodGroup]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.bloodGroup = value;
+      }
+      Template.instance().setEditUser(user);
+    },
+    'blur [name=disability]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.disability = value;
+      }
+      Template.instance().setEditUser(user);
+    },
 });
 
 /*****************************************************************************/
@@ -309,6 +334,10 @@ Template.EmployeePersonalDataModal.onRendered(function () {
   $('[name="maritalStatus"]').val(selectedEmployee.employeeProfile.maritalStatus);
   $('[name="nationality"]').val(selectedEmployee.employeeProfile.nationality);
   $('[name="state"]').val(selectedEmployee.employeeProfile.state);
+
+  $('[name="religion"]').val(selectedEmployee.employeeProfile.religion);
+  $('[name="bloodGroup"]').val(selectedEmployee.employeeProfile.bloodGroup);
+  $('[name="disability"]').val(selectedEmployee.employeeProfile.disability);
 });
 
 Template.EmployeePersonalDataModal.onDestroyed(function () {
