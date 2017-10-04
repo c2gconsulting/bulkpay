@@ -373,7 +373,9 @@ Template.TaxCreate.onRendered(function () {
     //       _super($item, container);
     //     }
     // })
-    self.$('select.dropdown').dropdown();
+
+    
+    // self.$('select.dropdown').dropdown();
 });
 
 Template.TaxCreate.onDestroyed(function () {
