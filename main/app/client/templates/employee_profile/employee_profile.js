@@ -1,6 +1,8 @@
 /*****************************************************************************/
 /* EmployeeProfile: Event Handlers */
 /*****************************************************************************/
+import _ from 'underscore';
+
 
 Template.EmployeeProfile.events({
     'click #editPersonalInfo': (e, tmpl) => {
@@ -19,6 +21,7 @@ Template.EmployeeProfile.events({
         const bloodGroup = tmpl.$('[name=bloodGroup]').val()
         const disability = tmpl.$('[name=disability]').val()
         const workExperiences = tmpl.$('[name=workExperiences]').val()
+        const appraisalGradeLevel = tmpl.$('[name=appraisalGradeLevel]').val()
         
         user.employeeProfile = user.employeeProfile || {};
         user.employeeProfile = {
@@ -29,7 +32,8 @@ Template.EmployeeProfile.events({
             religion : religion,
             bloodGroup: bloodGroup,
             disability: disability,
-            workExperiences: workExperiences
+            workExperiences: workExperiences,
+            appraisalGradeLevel: appraisalGradeLevel
         }
 
         Meteor.call('account/updatePersonalData', user, user._id, (err, res) => {
@@ -162,7 +166,26 @@ Template.EmployeeProfile.helpers({
     "disableBeneficiaryFields": () => {
       return Template.instance().beneficiaryInEditMode.get() ? '' : 'disabled'
     },
-    positionName: (id)=> {
+    "isEmployeePersonalDataEditableByEmployee": () => {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isEmployeePersonalDataEditableByEmployee
+        }
+    },
+    "isExtraPersonalDataFieldSupported": (employeeProfileFieldName) => {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            const extraPersonalDataEmployeeProfileFieldsSupported = 
+                businessUnitCustomConfig.extraPersonalDataEmployeeProfileFieldsSupported || []
+            const numSupportedFields = extraPersonalDataEmployeeProfileFieldsSupported.length
+            for(let i = 0; i < numSupportedFields; i++) {
+                if(extraPersonalDataEmployeeProfileFieldsSupported[i] === employeeProfileFieldName) {
+                    return true
+                }
+            }
+        }
+    },
+    positionName: (id) => {
         if(id) {
           let position = EntityObjects.findOne({_id: id});
           return position.name;
@@ -193,7 +216,9 @@ Template.EmployeeProfile.helpers({
 /*****************************************************************************/
 Template.EmployeeProfile.onCreated(function () {
     let self = this;
-    self.subscribe('getPositions', Session.get('context'))
+    const businessId = Session.get('context')
+
+    self.subscribe('getPositions', businessId)
 
     self.currentEmployee = new ReactiveVar();
     self.currentEmployee.set(Meteor.users.findOne({_id: Meteor.userId()}));
@@ -201,6 +226,14 @@ Template.EmployeeProfile.onCreated(function () {
     self.personalInfoInEditMode = new ReactiveVar()
     self.nextOfKinInEditMode = new ReactiveVar()
     self.beneficiaryInEditMode = new ReactiveVar()
+
+    self.businessUnitCustomConfig = new ReactiveVar()
+
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
 });
 
 Template.EmployeeProfile.onRendered(function () {

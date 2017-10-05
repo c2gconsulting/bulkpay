@@ -58,6 +58,14 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    isEmployeePersonalDataEditableByEmployee: {
+        type: Boolean,
+        optional: true
+    },
+    extraPersonalDataEmployeeProfileFieldsSupported: {
+        type: [String],
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

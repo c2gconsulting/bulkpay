@@ -254,7 +254,8 @@ Meteor.methods({
                 "employeeProfile.bloodGroup": user.employeeProfile.bloodGroup,
                 "employeeProfile.disability": user.employeeProfile.disability,
                 "employeeProfile.numberOfChildren": user.employeeProfile.numberOfChildren,
-                "employeeProfile.workExperiences": user.employeeProfile.workExperiences
+                "employeeProfile.workExperiences": user.employeeProfile.workExperiences,
+                "employeeProfile.appraisalGradeLevel": user.employeeProfile.appraisalGradeLevel
             }});
             return true
         } else {

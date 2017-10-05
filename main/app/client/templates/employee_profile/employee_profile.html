@@ -66,6 +66,7 @@
                                                 <h5>Personnel Details</h5>
                                             </div>
     
+                                            {{#if isEmployeePersonalDataEditableByEmployee}}
                                             <div class="col-sm-2">
                                               {{#if personalInfoInEditMode}}
                                               <button class="btn btn-primary mr5 ladda-button pull-right" id="savePersonalInfo">Save</button>
@@ -73,6 +74,7 @@
                                               <button class="btn btn-primary mr5 ladda-button pull-right" id="editPersonalInfo">Edit</button>                                                  
                                               {{/if}}
                                             </div>
+                                            {{/if}}
                                           </div>
                                       </div>
                                       <!-- panel-heading -->
@@ -119,6 +121,7 @@
                                                   </div>
                                               </div>
 
+                                              {{#if isExtraPersonalDataFieldSupported 'maidenName'}}
                                               <div class="form-group">
                                                 <label class="col-sm-4 control-label">Maiden Name</label>
                                                 <div class="col-sm-4">
@@ -127,8 +130,8 @@
                                                 <div class="col-sm-4">
                                                     &nbsp;
                                                 </div>
-                                            </div>
-
+                                              </div>
+                                              {{/if}}
 
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Date of Birth</label>
@@ -163,6 +166,7 @@
                                                   </div>
                                               </div>
 
+                                              {{#if isExtraPersonalDataFieldSupported 'numberOfChildren'}}                                              
                                               <div class="form-group">
                                                 <label class="col-sm-4 control-label">Number of children</label>
                                                 <div class="col-sm-4">
@@ -172,6 +176,7 @@
                                                     &nbsp;
                                                 </div>
                                               </div>
+                                              {{/if}}
 
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Email</label>
@@ -205,7 +210,20 @@
                                                   </div>
                                               </div>
 
+                                              {{#if isExtraPersonalDataFieldSupported 'numberOfChildren'}}
                                               <div class="form-group">
+                                                <label class="col-sm-4 control-label">Appraisal grade level</label>
+                                                <div class="col-sm-4">
+                                                    <input type="text" name="appraisalGradeLevel" placeholder="" class="form-control" value="{{employeeProfile.appraisalGradeLevel}}" {{disablePersonalInfoFields}} />
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    &nbsp;
+                                                </div>
+                                              </div>
+                                              {{/if}}
+
+                                            {{#if isExtraPersonalDataFieldSupported 'workExperiences'}}
+                                            <div class="form-group">
                                                 <label class="col-sm-4 control-label">Work experiences</label>
                                                 <div class="col-sm-6">
                                                     <textarea name="workExperiences" class="form-control" rows="5" value="{{employeeProfile.workExperiences}}" {{disablePersonalInfoFields}}></textarea>
@@ -214,6 +232,7 @@
                                                     &nbsp;
                                                 </div>
                                             </div>
+                                            {{/if}}
 
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">State</label>
@@ -225,6 +244,7 @@
                                                   </div>
                                               </div>
 
+                                              {{#if isExtraPersonalDataFieldSupported 'religion'}}
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Religion</label>
                                                     <div class="col-sm-4">
@@ -236,7 +256,9 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                
+                                                {{/if}}
+
+                                                {{#if isExtraPersonalDataFieldSupported 'bloodGroup'}}                                                
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Blood Group</label>
                                                     <div class="col-sm-4">
@@ -249,7 +271,9 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                {{/if}}
 
+                                                {{#if isExtraPersonalDataFieldSupported 'disability'}}                                                
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Disability</label>
                                                     <div class="col-sm-4">
@@ -263,12 +287,14 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                                {{/if}}
 
                                               <div class="form-group">
                                                   <div class="col-sm-10">
                                                       <h5>Next of Kin/Guarantor</h5>
                                                   </div>
 
+                                                  {{#if isEmployeePersonalDataEditableByEmployee}}
                                                   <div class="col-sm-2">
                                                     {{#if nextOfKinInEditMode}}
                                                     <button class="btn btn-primary mr5 ladda-button pull-right" id="saveNextOfKin">Save</button>
@@ -276,6 +302,7 @@
                                                     <button class="btn btn-primary mr5 ladda-button pull-right" id="editNextOfKin">Edit</button>                                                    
                                                     {{/if}}
                                                   </div>
+                                                  {{/if}}
                                               </div>
                                               <div class="form-group">
                                                   <label class="col-sm-4 control-label">Full Name</label>
@@ -344,13 +371,15 @@
                                                     <h5>Beneficiary</h5>
                                                 </div>
 
+                                                {{#if isEmployeePersonalDataEditableByEmployee}}
                                                 <div class="col-sm-2">
                                                   {{#if beneficiaryInEditMode}}
                                                   <button class="btn btn-primary mr5 ladda-button pull-right" id="saveBeneficiary">Save</button>
                                                   {{else}}
-                                                  <button class="btn btn-primary mr5 ladda-button pull-right" id="editBeneficiary">Edit</button>                                                  
+                                                  <button class="btn btn-primary mr5 ladda-button pull-right" id="editBeneficiary">Edit</button>
                                                   {{/if}}
                                                 </div>
+                                                {{/if}}
                                             </div>
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label">Full Name</label>
