@@ -396,10 +396,9 @@ Template.TravelRequisitionDetail.onCreated(function () {
                 let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
                 let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
                 let roadCost = travelRequestDetails.tripCosts.roadCost || 0
-                let feedingCost = travelRequestDetails.tripCosts.feedingCost || 0
 
                 let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-                    roadCost + feedingCost + perDiemCost + miscCosts
+                    roadCost + perDiemCost + miscCosts
 
                 self.totalTripCost.set(totalTripCost)
             }

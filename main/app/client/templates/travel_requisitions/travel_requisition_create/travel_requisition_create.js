@@ -36,19 +36,6 @@ Template.TravelRequisitionCreate.events({
         tmpl.roadCost.set(roadCostAsNumber)
         tmpl.updateTotalTripCost()        
     }, 200),
-    "keyup input[name=feedingCost]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-        
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let feedingCostAsNumber = parseFloat(text)
-        if(isNaN(feedingCostAsNumber)) {
-            feedingCostAsNumber = 0
-        }
-        tmpl.feedingCost.set(feedingCostAsNumber)
-        tmpl.updateTotalTripCost()        
-    }, 200),
     "keyup input[name=accommodationCost]": _.throttle(function(e, tmpl) {
         var text = $(e.target).val().trim();
 
@@ -115,7 +102,6 @@ Template.TravelRequisitionCreate.events({
         let perDiemCost = $("input[name=perDiemCost]").val()
         let miscCosts = $("input[name=miscCosts]").val()
         let roadCost = $("input[name=roadCost]").val()
-        let feedingCost = $("input[name=feedingCost]").val()
 
         if(description && description.length > 0) {
             let requisitionDoc = {}
@@ -155,10 +141,6 @@ Template.TravelRequisitionCreate.events({
             if(isNaN(roadCostAsNumber)) {
                 roadCostAsNumber = 0
             }
-            let feedingCostAsNumber = parseFloat(feedingCost)
-            if(isNaN(feedingCostAsNumber)) {
-                feedingCostAsNumber = 0
-            }
             requisitionDoc.tripCosts = {
                 flightCost: flightCostAsNumber,
                 accommodationCost: accomodationCostAsNumber,
@@ -166,8 +148,7 @@ Template.TravelRequisitionCreate.events({
                 perDiemCost: perDiemCostAsNumber,
                 miscCosts: miscCostAsNumber,
 
-                roadCost: roadCostAsNumber,
-                feedingCost: feedingCostAsNumber
+                roadCost: roadCostAsNumber
             }
             //--
 
@@ -200,7 +181,6 @@ Template.TravelRequisitionCreate.events({
         let perDiemCost = $("input[name=perDiemCost]").val()
         let miscCosts = $("input[name=miscCosts]").val()
         let roadCost = $("input[name=roadCost]").val()
-        let feedingCost = $("input[name=feedingCost]").val()
 
         let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
         if(validation === true) {
@@ -239,10 +219,6 @@ Template.TravelRequisitionCreate.events({
             if(isNaN(roadCostAsNumber)) {
                 roadCostAsNumber = 0
             }
-            let feedingCostAsNumber = parseFloat(feedingCost)
-            if(isNaN(feedingCostAsNumber)) {
-                feedingCostAsNumber = 0
-            }
 
             requisitionDoc.tripCosts = {
                 flightCost: flightCostAsNumber,
@@ -251,8 +227,7 @@ Template.TravelRequisitionCreate.events({
                 perDiemCost: perDiemCostAsNumber,
                 miscCosts: miscCostAsNumber,
                 
-                roadCost: roadCostAsNumber,
-                feedingCost: feedingCostAsNumber
+                roadCost: roadCostAsNumber
             }
             //--
             let businessUnitId = Session.get('context')
@@ -306,7 +281,6 @@ Template.TravelRequisitionCreate.onCreated(function () {
     self.perDiemCost = new ReactiveVar(0)
     self.miscCost = new ReactiveVar(0)
     self.roadCost = new ReactiveVar(0)
-    self.feedingCost = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
     self.autorun(function(){
@@ -346,12 +320,11 @@ Template.TravelRequisitionCreate.onCreated(function () {
         let roadCost = self.roadCost.get()
         let accommodationCost = self.accommodationCost.get()
         let localTransportCost = self.localTransportCost.get()
-        let feedingCost = self.feedingCost.get()
         let perDiemCost = self.perDiemCost.get()
         let miscCost = self.miscCost.get()
 
         let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-            roadCost + feedingCost + perDiemCost + miscCost
+            roadCost + perDiemCost + miscCost
 
         self.totalTripCost.set(totalTripCost)
     }
