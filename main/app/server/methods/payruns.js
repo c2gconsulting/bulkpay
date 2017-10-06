@@ -876,9 +876,30 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     const code = paytypes[i].code ? paytypes[i].code.toUpperCase() : paytypes[i].code;
                                     const pattern = `\\b${code}\\b`;
                                     const regex = new RegExp(pattern, "g");
-                                    formula = formula.replace(regex, paytypes[i].value);
+                                    if(paytypes[i].hourlyRate) {
+                                        let payBasedOnHours = 0
 
+                                        if(currentEmployeeInPayrunLoop.employeeProfile 
+                                            && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                        ) {
+                                            const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
+
+                                            payBasedOnHours = totalHoursWorkedInPeriod * hourlyRate
+                                        } else {
+                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
+                                            payBasedOnHours = 0
+                                        }
+
+                                        formula = formula.replace(regex, payBasedOnHours);
+                                    } else {
+                                        formula = formula.replace(regex, paytypes[i].value);
+                                    }
                                 }
+
+                                
                                 //do the same for all contansts and replace the values
                                 //will find a better way of doing this... NOTE
                                 let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
@@ -1416,6 +1437,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             amountLC: netTaxLocal, amountPC: '', code: tax.code, 
                             description: tax.name, type: 'Deduction'});
                         //--
+                        if(!paymentsAccountingForCurrency.deduction['NGN']) {
+                            paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
+                        }
                         paymentsAccountingForCurrency.deduction['NGN'].payments.push({
                             title: tax.name,
                             code: tax.code,
