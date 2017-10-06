@@ -262,6 +262,7 @@ CoreRegistry.initData = function () {
             _.each(allTenants, function(tenant) {
               Loader.loadPartitionData(DocumentNumbers, tenant._id);
             });
+            
             CoreRegistry.setBusinessCustomConfigs();
 
             // load sample data for key collections

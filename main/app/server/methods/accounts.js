@@ -376,7 +376,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
-    "account/updatePayTypesData": function (payTypesArray, userId) {
+    "account/updatePayTypesData": function (payTypesArray, userId, hourlyRate) {
         check(userId, String);
         //check(user.businessId, String);
         if (!Meteor.userId()){
@@ -385,7 +385,10 @@ Meteor.methods({
         let account =  Meteor.users.findOne(userId);
         if (account){            
             Meteor.users.update({_id: account._id}, {$set: {
-              "employeeProfile.employment.paytypes": payTypesArray
+              "employeeProfile.employment.paytypes": payTypesArray,
+              "employeeProfile.employment.hourlyRate": {
+                  NGN : hourlyRate
+              }
             }});
             return true
         } else {

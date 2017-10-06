@@ -841,7 +841,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 value: totalNumWeekDaysInMonth
                             })
 
-
                             if(x.isTimeWritingDependent) {
                                 input.push({
                                     code: 'Hours worked on projects in month',
@@ -886,7 +885,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     const pattern = `\\b${code}\\b`;
                                     const regex = new RegExp(pattern, "g");
                                     formula = formula.replace(regex, c.value);
-
                                 });
                                 processing.push({code: x.code, previous: old, derived: formula});
                                 var parsed = rules.parse(formula, '');

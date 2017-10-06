@@ -52,7 +52,20 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let user = Template.instance().getEditUser();
     let payTypesArray = tmpl.getPaytypes();
 
-    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, (err, res) => {
+    let hourlyRate = $('[name="hourlyRate"]').val()
+    let hourlyRateAsNumber = 0
+    if(hourlyRate && hourlyRate.length > 0) {
+        if(isNaN(hourlyRate)) {
+            swal('Validation error', "Hourly rate should be a number", 'error')
+            return
+        } else {
+            hourlyRateAsNumber = parseFloat(hourlyRate)            
+        }
+    } else {
+        hourlyRateAsNumber = null
+    }
+
+    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateAsNumber, (err, res) => {
         if (res){
             swal({
                 title: "Success",
@@ -299,6 +312,27 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
                 return (netPayAllocation.foreignCurrencyAmount) || ''
             }
         }
+    },
+    hourlyRate: function() {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            return (user.employeeProfile.employment 
+                && user.employeeProfile.employment.hourlyRate
+                && user.employeeProfile.employment.hourlyRate.NGN) || ''
+        }
+        return ''
+    },
+    disableHourlyRate: function() {
+        const businessId = Session.get('context')
+
+        const allPaytypes = PayTypes.find({businessId}).fetch() || []
+        const numPaytypes = allPaytypes.length
+        for(let i = 0; i < numPaytypes; i++) {
+            if(allPaytypes[i].hourlyRate) {
+                return ''
+            }
+        }
+        return 'disabled'
     }
 });
 
@@ -355,7 +389,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
         let selectedEmployee = Session.get('employeesList_selectedEmployee')
 
         if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade 
-            && (selectedEmployee.employeeProfile.employment.paytypes)) {
+            && (selectedEmployee.employeeProfile.employment.paytypes)
+            && (selectedEmployee.employeeProfile.employment.paytypes.length > 0)) {
           paytypes = selectedEmployee.employeeProfile.employment.paytypes;
 
           let paytypesFromPayGrade = grade.payTypes.map(x => {
@@ -381,8 +416,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
                 }
             }
           });
-        } else {
-          paytypes = grade.payTypes.map(x => {
+        } else {            
+            paytypes = grade.payTypes.map(x => {
               return x;
           });
 
