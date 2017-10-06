@@ -43,6 +43,11 @@ Core.Schemas.PayType = new SimpleSchema({
         defaultValue: false,
         optional: true
     },
+    hourlyRate: {
+        type: Boolean,
+        defaultValue: false,
+        optional: true
+    },
     derivative: {
         type: String,
         allowedValues: ["Fixed", "Formula"],
