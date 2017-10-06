@@ -679,6 +679,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
     let runPayrun = (counter) => {
         let x = employees[counter];
+        let currentEmployeeInPayrunLoop = employees[counter]
+
         if (x) {
             //first check if result exist for employee for that period and if not, continue processing.
             result = Payruns.findOne({employeeId: x._id, period: periodFormat, businessId: businessId});
@@ -886,7 +888,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     const regex = new RegExp(pattern, "g");
                                     formula = formula.replace(regex, c.value);
                                 });
-                                processing.push({code: x.code, previous: old, derived: formula});
+
+                                if(!x.hourlyRate) {
+                                    processing.push({code: x.code, previous: old, derived: formula});
+                                }
                                 var parsed = rules.parse(formula, '');
 
                                 if (parsed.result !== null && !isNaN(parsed.result)) {
@@ -895,8 +900,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     //--    
                                     let netPayTypeAmount; //net amount used if payment type is monthly
                                     if(x.frequency === 'Monthly' && !x.additionalPay){
-                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2); 
-                                        processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
+                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+
+                                        if(!x.hourlyRate) {
+                                            processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
+                                        }
                                     }
 
                                     //if add to total, add wt to totalsBucket
@@ -976,7 +984,24 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     let projectsPay = []
 
                                     if(x.isTimeWritingDependent) {
-                                        if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
+                                        if(totalHoursWorkedInPeriod == 0 && !x.additionalPay) {
+                                            if(x.hourlyRate) {
+                                                if(currentEmployeeInPayrunLoop.employeeProfile 
+                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                                ) {
+                                                    const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                                    processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
+
+                                                    value = (numDaysEmployeeCanWorkInMonth * 8) * hourlyRate
+                                                } else {
+                                                    processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
+                                                    
+                                                    value = 0
+                                                }
+                                            }
+
                                             let totalWorkHoursInYear = 2080
                                             let numberOfMonthsInYear = 12
                                             
@@ -1493,7 +1518,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 description: 'Net Payment', 
                                 type: 'netPayment'
                             });
-                            final.payslip['totalPayment'] = paymentsAccountingForCurrency.benefit[currency].total
+                            let totalToUse = 0
+                            if(paymentsAccountingForCurrency.benefit[currency]) {
+                                totalToUse = paymentsAccountingForCurrency.benefit[currency].total
+                            }
+                            final.payslip['totalPayment'] = totalToUse
                             final.payslip['netPayment'] = netPayWithCurrencyDelineation[currency]
                         } else {
                             employeeResult.payment.push({
@@ -1504,7 +1533,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 description: 'Net Payment '  + currency, 
                                 type: 'netPayment'
                             });
-                            final.payslip['totalPayment_' + currency] = paymentsAccountingForCurrency.benefit[currency].total
+                            let totalToUse = 0
+                            if(paymentsAccountingForCurrency.benefit[currency]) {
+                                totalToUse = paymentsAccountingForCurrency.benefit[currency].total
+                            }
+                            final.payslip['totalPayment_' + currency] = totalToUse
                             final.payslip['netPayment_' + currency] = netPayWithCurrencyDelineation[currency]
                         }
                     })
