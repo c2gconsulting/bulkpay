@@ -859,14 +859,20 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             }
 
                             let boundary = [...paytypes]; //available types as at current processing
-                            boundary.length = index + 1;
+                            // boundary.length = index + 1;
                             //format boundary for display in log
-                            let clone = boundary.map(x => {
+
+                            let clone = []
+                            for(let xx = 0; xx < boundary.length; xx++) {
                                 let b = {};
-                                b.code = x.code;
-                                b.value = x.value;
-                                return b;
-                            });
+                                b.code = boundary[xx].code;
+                                b.value = boundary[xx].value;
+                                
+                                if(!x.hourlyRate) {
+                                    clone.push(b)
+                                }
+                            }
+
                             input = input.concat(clone);
                             let formula = x.value;
                             let old = formula;
@@ -884,7 +890,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
                                             && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
                                         ) {
-                                            const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                            const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[paytypes[i].currency]
                                             processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
 
                                             payBasedOnHours = totalHoursWorkedInPeriod * hourlyRate
@@ -1005,7 +1011,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     let projectsPay = []
 
                                     if(x.isTimeWritingDependent) {
-                                        if(totalHoursWorkedInPeriod == 0 && !x.additionalPay) {
+                                        if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
                                             if(x.hourlyRate) {
                                                 if(currentEmployeeInPayrunLoop.employeeProfile 
                                                     && currentEmployeeInPayrunLoop.employeeProfile.employment
@@ -1023,8 +1029,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 }
                                             }
 
-                                            let totalWorkHoursInYear = 2080
-                                            let numberOfMonthsInYear = 12
+                                            // let totalWorkHoursInYear = 2080
+                                            // let numberOfMonthsInYear = 12
                                             
                                             projectsPayDetails.projectDurations.forEach(aProject => {
                                                 // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
@@ -1049,9 +1055,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                                 processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
 
-                                                processing.push({code: "Pay from projects(NGN)", derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
+                                                // processing.push({code: "Pay from projects(NGN)", derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
+                                                // processing.push({code: "Pay from projects(NGN)", derived: `${projectsPayDetails.fraction} * ${value} * currency rate`});
 
-                                                processing.push({code: "Pay from projects(NGN)", derived: `${projectsPayDetails.fraction} * ${value} * currency rate`});
                                                 projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
                                             } else {
                                                 projectPayAmount = projectsTotalPayInPayTypeCurrency
@@ -1059,16 +1065,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             }
                                             //--
                                             if(tenant.baseCurrency.iso !== x.currency) {
-                                                processing.push({code: `Pay from projects(NGN)`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
+                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
 
-                                                processing.push({code: `Pay from cost centers(NGN)`, derived: `${costCentersPayDetails.fraction} * ${value} * currency rate`});
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                            } else {
-                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});                                                
                                             }
-
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
+                                            // processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
+                                            
+                                            // processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
+                                            // processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
 
                                             processing.push({code: x.code, derived: `(Pay from projects(${x.currency})) + (Pay from cost-center(${x.currency}))`});
                                             processing.push({code: x.code, derived: value});
@@ -1077,7 +1082,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processing.push({code: x.code, derived: value});
                                         }
                                     } else {
-                                        processing.push({code: `Number of projects assigned to`, derived: projectsAssignedToEmployee.length});
+                                        processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
 
                                         // let totalWorkHoursInYear = 2080
                                         // let numberOfMonthsInYear = 12
@@ -1090,7 +1095,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
                                             } else {
                                                 processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
                                             }
@@ -1111,8 +1116,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 durationInHours: 0,
                                                 payAmount: projectPayAmount
                                             })
-                                        } else {
-
                                         }
                                         processing.push({code: `Pay from projects(NGN)`, derived: projectPayAmount});
                                         processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
