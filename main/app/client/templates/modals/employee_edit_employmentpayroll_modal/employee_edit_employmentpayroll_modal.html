@@ -154,8 +154,15 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <div class="form-group">
-                                                <label class="control-label">Hourly Rate(NGN)</label>
-                                                <input type="text" name="hourlyRate" value="{{hourlyRate}}" class="form-group" {{disableHourlyRate}}>
+                                                <label class="control-label">HOURLY RATE</label>
+                                                <br/>
+                                                NGN <input type="text" name="hourlyRate_NGN" value="{{hourlyRate 'NGN'}}" class="form-group" {{disableHourlyRate}}>
+                                                <br/>
+                                                
+                                                {{#if alternateCurrency}}
+                                                {{alternateCurrency}}
+                                                <input type="text" name="hourlyRate_{{alternateCurrency}}" value="{{hourlyRate (alternateCurrency)}}" class="form-group" {{disableHourlyRate}}>                                                
+                                                {{/if}}
                                             </div>
                                         </div>
                                     </div>

@@ -52,20 +52,60 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let user = Template.instance().getEditUser();
     let payTypesArray = tmpl.getPaytypes();
 
-    let hourlyRate = $('[name="hourlyRate"]').val()
-    let hourlyRateAsNumber = 0
-    if(hourlyRate && hourlyRate.length > 0) {
-        if(isNaN(hourlyRate)) {
-            swal('Validation error', "Hourly rate should be a number", 'error')
-            return
-        } else {
-            hourlyRateAsNumber = parseFloat(hourlyRate)            
+    let hourlyRateObj = {}
+
+    let hourlyRateInBaseCurrency = $('[name="hourlyRate_NGN"]').val()
+    let hourlyRateInAlternateCurrency = null
+
+    let selectedGrade = Template.instance().selectedGrade.get();        
+    if(selectedGrade) {
+        let grade = PayGrades.findOne({_id: selectedGrade})
+        if(grade && grade.netPayAlternativeCurrency) {
+            hourlyRateInAlternateCurrency = $(`[name="hourlyRate_${grade.netPayAlternativeCurrency}"]`).val()
         }
-    } else {
-        hourlyRateAsNumber = null
     }
 
-    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateAsNumber, (err, res) => {
+    if(hourlyRateInBaseCurrency && hourlyRateInBaseCurrency.length > 0) {
+        if(isNaN(hourlyRateInBaseCurrency)) {
+            swal('Validation error', `Hourly rate(NGN) should be a number`, 'error')
+            return
+        } else {
+            hourlyRateObj['NGN'] = parseFloat(hourlyRateInBaseCurrency)
+
+            let selectedGrade = Template.instance().selectedGrade.get();        
+            if(selectedGrade) {
+                let grade = PayGrades.findOne({_id: selectedGrade})
+                if(grade && grade.netPayAlternativeCurrency) {
+                    if(hourlyRateInAlternateCurrency && hourlyRateInAlternateCurrency.length > 0) {
+                        if(isNaN(hourlyRateInAlternateCurrency)) {
+                            swal('Validation error', `Hourly rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
+                            return
+                        } else {
+                            hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)                                            
+                        }                                        
+                    }
+                }
+            }        
+        }
+    } else {
+        let selectedGrade = Template.instance().selectedGrade.get();        
+        if(selectedGrade) {
+            let grade = PayGrades.findOne({_id: selectedGrade})
+            if(grade && grade.netPayAlternativeCurrency) {
+                if(hourlyRateInAlternateCurrency && hourlyRateInAlternateCurrency.length > 0) {
+                    if(isNaN(hourlyRateInAlternateCurrency)) {
+                        swal('Validation error', `Hourly rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
+                        return
+                    } else {
+                        hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)                                            
+                    }                                        
+                }
+            }
+        }
+    }
+    console.log(`hourlyRateObj: `, hourlyRateObj)
+
+    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateObj, (err, res) => {
         if (res){
             swal({
                 title: "Success",
@@ -313,14 +353,23 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
             }
         }
     },
-    hourlyRate: function() {
+    hourlyRate: function(currency) {
         let user = Template.instance().getEditUser();
         if(user) {
             return (user.employeeProfile.employment 
                 && user.employeeProfile.employment.hourlyRate
-                && user.employeeProfile.employment.hourlyRate.NGN) || ''
+                && user.employeeProfile.employment.hourlyRate[currency]) || ''
         }
         return ''
+    },
+    alternateCurrency: function() {
+        let selectedGrade = Template.instance().selectedGrade.get();        
+        if(selectedGrade) {
+            let grade = PayGrades.findOne({_id: selectedGrade})
+            if(grade) {
+                return grade.netPayAlternativeCurrency
+            }
+        }
     },
     disableHourlyRate: function() {
         const businessId = Session.get('context')

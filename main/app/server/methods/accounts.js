@@ -386,9 +386,7 @@ Meteor.methods({
         if (account){            
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.paytypes": payTypesArray,
-              "employeeProfile.employment.hourlyRate": {
-                  NGN : hourlyRate
-              }
+              "employeeProfile.employment.hourlyRate": hourlyRate
             }});
             return true
         } else {
