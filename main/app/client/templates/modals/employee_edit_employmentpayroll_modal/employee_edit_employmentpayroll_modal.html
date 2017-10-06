@@ -152,19 +152,30 @@
                                     </table>
 
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <form class="form-horizontal form-bordered">
                                             <div class="form-group">
-                                                <label class="control-label">HOURLY RATE</label>
-                                                <br/>
-                                                NGN <input type="text" name="hourlyRate_NGN" value="{{hourlyRate 'NGN'}}" class="form-group" {{disableHourlyRate}}>
-                                                <br/>
-                                                
-                                                {{#if alternateCurrency}}
-                                                {{alternateCurrency}}
-                                                <input type="text" name="hourlyRate_{{alternateCurrency}}" value="{{hourlyRate (alternateCurrency)}}" class="form-group" {{disableHourlyRate}}>                                                
-                                                {{/if}}
+                                                <label class="control-label">    HOURLY RATE</label>
                                             </div>
-                                        </div>
+                                                
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">{{baseCurrency}}</label>
+                                                <!--<br/>
+                                                <label class="col-sm-4 control-label">e.g If 350 NGN is equal is 1 USD, then enter 350</label>
+                                                <br/>-->
+                                                <div class="col-sm-4">
+                                                    <input name="hourlyRate_NGN" type="text" class="form-control" value="{{hourlyRate 'NGN'}}" {{disableHourlyRate}} />
+                                                </div>
+                                            </div>
+            
+                                            {{#if alternateCurrency}}
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">{{alternateCurrency}}</label>
+                                                <div class="col-sm-4">
+                                                    <input name="hourlyRate_{{alternateCurrency}}" type="text" class="form-control" value="{{hourlyRate (alternateCurrency)}}" {{disableHourlyRate}} />
+                                                </div>
+                                            </div>
+                                            {{/if}}
+                                        </form>
                                     </div>
                                 </div>
                             </div><!-- panel-body -->
