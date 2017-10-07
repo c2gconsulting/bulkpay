@@ -1111,9 +1111,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
+                                                // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
                                             } else {
-                                                processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                                // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
                                             }
                                         } else if(projectsAssignedToEmployee.length === 1) {
                                             projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
@@ -1125,7 +1125,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
                                             }
-                                            processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                            // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
 
                                             projectsPay.push({
                                                 projectId: projectsAssignedToEmployee[0]._id,
