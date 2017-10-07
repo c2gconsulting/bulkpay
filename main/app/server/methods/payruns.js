@@ -870,41 +870,65 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 
                                 if(!x.hourlyRate) {
                                     clone.push(b)
+                                } else {
+                                    if(currentEmployeeInPayrunLoop.employeeProfile 
+                                        && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                        && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                        && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                    ) {
+                                        const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                        b.value = hourlyRate * totalHoursWorkedInPeriod
+                                        clone.push(b)
+                                    }
                                 }
                             }
 
                             input = input.concat(clone);
                             let formula = x.value;
                             let old = formula;
+                            if(x.hourlyRate) {
+                                if(currentEmployeeInPayrunLoop.employeeProfile 
+                                    && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                ) {
+                                    const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                    // processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
+
+                                    formula = ' ' + (totalHoursWorkedInPeriod * hourlyRate)
+                                }
+                            }
+
                             if (formula) {
                                 //replace all wagetypes with values
-                                for (var i = 0; i < index; i++) {
-                                    const code = paytypes[i].code ? paytypes[i].code.toUpperCase() : paytypes[i].code;
-                                    const pattern = `\\b${code}\\b`;
-                                    const regex = new RegExp(pattern, "g");
-                                    if(paytypes[i].hourlyRate) {
-                                        let payBasedOnHours = 0
+                                if(!x.hourlyRate) {
+                                    for (var i = 0; i < index; i++) {
+                                        const code = paytypes[i].code ? paytypes[i].code.toUpperCase() : paytypes[i].code;
+                                        const pattern = `\\b${code}\\b`;
+                                        const regex = new RegExp(pattern, "g");
+                                        if(paytypes[i].hourlyRate) {
+                                            let payBasedOnHours = 0
 
-                                        if(currentEmployeeInPayrunLoop.employeeProfile 
-                                            && currentEmployeeInPayrunLoop.employeeProfile.employment
-                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
-                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
-                                        ) {
-                                            const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[paytypes[i].currency]
-                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
+                                            if(currentEmployeeInPayrunLoop.employeeProfile 
+                                                && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                                && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                                && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                            ) {
+                                                const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[paytypes[i].currency]
+                                                processing.push({code: `Hourly Rate(${paytypes[i].currency})`, derived: `${hourlyRate}`})
 
-                                            payBasedOnHours = totalHoursWorkedInPeriod * hourlyRate
+                                                payBasedOnHours = totalHoursWorkedInPeriod * hourlyRate
+                                            } else {
+                                                processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
+                                                payBasedOnHours = 0
+                                            }
+
+                                            formula = formula.replace(regex, payBasedOnHours);
                                         } else {
-                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
-                                            payBasedOnHours = 0
+                                            formula = formula.replace(regex, paytypes[i].value);
                                         }
-
-                                        formula = formula.replace(regex, payBasedOnHours);
-                                    } else {
-                                        formula = formula.replace(regex, paytypes[i].value);
                                     }
                                 }
-
                                 
                                 //do the same for all contansts and replace the values
                                 //will find a better way of doing this... NOTE
@@ -1020,7 +1044,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 ) {
                                                     const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
                                                     processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
-
+                                                    processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${numDaysEmployeeCanWorkInMonth} * 8 * ${hourlyRate}`})
+                                                    
                                                     value = (numDaysEmployeeCanWorkInMonth * 8) * hourlyRate
                                                 } else {
                                                     processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
@@ -1049,32 +1074,23 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             let projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
                                             costCenterPayAmount = costCentersPayDetails.fraction * value
 
+                                            processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
+
+                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
+
                                             value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
-                                                processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
-                                                processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
-
-                                                // processing.push({code: "Pay from projects(NGN)", derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value} * currency rate`});
-                                                // processing.push({code: "Pay from projects(NGN)", derived: `${projectsPayDetails.fraction} * ${value} * currency rate`});
-
                                                 projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
                                             } else {
                                                 projectPayAmount = projectsTotalPayInPayTypeCurrency
-                                                processing.push({code: "Pay from projects(NGN)", derived: `${projectsPayDetails.fraction} * ${value}`});
                                             }
                                             //--
                                             if(tenant.baseCurrency.iso !== x.currency) {
-                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
-                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
-
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
                                             }
-                                            // processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
-                                            
-                                            // processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
-                                            // processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
-
                                             processing.push({code: x.code, derived: `(Pay from projects(${x.currency})) + (Pay from cost-center(${x.currency}))`});
                                             processing.push({code: x.code, derived: value});
                                         } else {
