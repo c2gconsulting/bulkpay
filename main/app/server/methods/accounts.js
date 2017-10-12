@@ -129,6 +129,21 @@ Meteor.methods({
             if(loginResult.error) {
                 throw loginResult.error
             } else {
+                let hashedDefaultPassword = Package.sha.SHA256("123456")
+                let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+                let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
+    
+                if(defaultLoginResult.error) {
+                    Meteor.users.update({_id: user._id}, {$set: {
+                        isUsingDefaultPassword: false
+                    }})
+                    return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                } else {
+                    Meteor.users.update({_id: user._id}, {$set: {
+                        isUsingDefaultPassword: true
+                    }})
+                }
+                //--
                 if(user.employeeProfile && user.employeeProfile.employment 
                     && user.employeeProfile.employment.status === 'Active') {    
                     return {
@@ -178,8 +193,14 @@ Meteor.methods({
                     let userEmail = user.emails[0].address || ''
     
                     if(defaultLoginResult.error) {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: false
+                        }})
                         return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
                     } else {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: true
+                        }})
                         let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
     
                         return {
