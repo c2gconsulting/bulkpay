@@ -40,7 +40,8 @@ Meteor.methods({
         isUsingDefaultPassword: true
       }).fetch()
     
-      let payGrades = {}
+      let payGrades = PayGrades.find({businessId}).fetch()
+      let entityObjects = EntityObjects.find({businessId}).fetch()
   
       for(let i = 0; i < daarUsersWithRealPassword.length; i++) {
         let aDaarUser = daarUsersWithRealPassword[i]
@@ -50,19 +51,15 @@ Meteor.methods({
         let lastName = aDaarUser.profile.lastname
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
-        let paygrade = payGrades[paygradeId]
-        if(!paygrade) {
-            let paygradeData = PayGrades.findOne(paygradeId)
-            if(paygradeData) {
-                payGrades[paygradeId] = paygradeData
-                paygrade = paygradeData
-            }
-        }
+
+        // let paygrade = payGrades[paygradeId]
+        let paygrade =  _.findWhere(payGrades, {_id: paygradeId})
 
         let parentsText = ''
         let employeePositionId = aDaarUser.employeeProfile.employment.position
         if(employeePositionId) {
-            let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+            // let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+            let employeePosition =  _.findWhere(entityObjects, {_id: employeePositionId})
             if(employeePosition) {
                 parentsText = getPositionParentsText(employeePosition)
             }
@@ -89,19 +86,14 @@ Meteor.methods({
         let lastName = aDaarUser.profile.lastname
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
-        let paygrade = payGrades[paygradeId]
-        if(!paygrade) {
-            let paygradeData = PayGrades.findOne(paygradeId)
-            if(paygradeData) {
-                payGrades[paygradeId] = paygradeData
-                paygrade = paygradeData
-            }
-        }
+
+        // let paygrade = payGrades[paygradeId]
+        let paygrade =  _.findWhere(payGrades, {_id: paygradeId})        
 
         let parentsText = ''
         let employeePositionId = aDaarUser.employeeProfile.employment.position
         if(employeePositionId) {
-            let employeePosition = EntityObjects.findOne({_id: employeePositionId}) 
+            let employeePosition =  _.findWhere(entityObjects, {_id: employeePositionId})
             if(employeePosition) {
                 parentsText = getPositionParentsText(employeePosition)
             }
