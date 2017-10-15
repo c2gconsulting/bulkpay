@@ -109,11 +109,13 @@
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print Slip</button>
+                        <button class="btn btn-white btn-lg" id="requisition-print"><i class="fa fa-print mr5"></i> Print</button>
 
                         {{#if isInEditMode}}
                         <button class="btn btn-danger mr5 pull-right" id="requisition-create" data-dismiss="modal">Submit for Approval</button>
                         <button class="btn btn-primary mr5 pull-right" id="requisition-save-draft">Save Draft</button>
+
+                        <button class="btn btn-danger glyphicon glyphicon-trash mr5 pull-right" id="requisition-delete"></button>
                         {{else}}
                             {{#if isInApproveMode}}
                                 <button class="btn btn-danger mr5 pull-right" id="requisition-reject">Reject</button>

@@ -87,6 +87,22 @@ Template.ProcurementRequisitionDetail.events({
             }
         }
     },
+    'click #requisition-delete': (e,tmpl) => {
+        let procurementDetails = tmpl.procurementDetails.get()
+        if(procurementDetails.status === 'Draft') {
+            Meteor.call("ProcurementRequisition/delete", procurementDetails._id, function(err,res){
+                if(!err){
+                    Modal.hide();
+                    swal("Deleted!", `Procurement deleted successfully!`, "success");
+                } else {
+                    swal("Error!", err.reason, "error");
+                }
+                // window.location.reload();
+            });
+        } else {
+            swal("Error!", "You are not allowed to delete a procurement that is NOT in 'Draft' state", "error");            
+        }
+    },
     'click #requisition-approve': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()

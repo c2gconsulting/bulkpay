@@ -86,6 +86,22 @@ Template.TravelRequisitionDetail.events({
             }
         }
     },
+    'click #requisition-delete': (e,tmpl) => {
+        let travelRequestDetails = tmpl.procurementDetails.get()
+        if(travelRequestDetails.status === 'Draft') {
+            Meteor.call("TravelRequest/delete", travelRequestDetails._id, function(err,res){
+                if(!err){
+                    Modal.hide();
+                    swal("Deleted!", `Travel request deleted successfully!`, "success");
+                } else {
+                    swal("Error!", err.reason, "error");
+                }
+                // window.location.reload();
+            });
+        } else {
+            swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' state", "error");            
+        }
+    },
     'click #requisition-approve': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()

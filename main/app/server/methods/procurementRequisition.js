@@ -132,7 +132,7 @@ Meteor.methods({
             const procDoc = ProcurementRequisitions.findOne({_id: docId})
             let unit = EntityObjects.findOne({_id: procDoc.unitId, otype: 'Unit'})
             let unitName = unit.name
-            
+
             let dateRequired = ''
             if(procurementRequisitionDoc.dateRequired) {
                 dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')
@@ -200,6 +200,24 @@ Meteor.methods({
             return true
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
+    },
+    "ProcurementRequisition/delete": function(id){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        
+        let doc = ProcurementRequisitions.findOne({_id: id});
+        if(!doc) {
+        }
+        if(doc.createdBy !== this.userId) {
+            throw new Meteor.Error(401, "Unauthorized. You cannot delete a procurement you did not create.");
+        }
+        if(doc.status === "Draft" || doc.status === "Pending"){
+            ProcurementRequisitions.remove({_id: id});
+            return true;
+        } else {
+            throw new Meteor.Error(401, "You cannot delete a procurement that has already been approved or rejected.");            
+        }
     },
     "ProcurementRequisition/approve": function(businessUnitId, docId){
         check(businessUnitId, String);

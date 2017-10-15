@@ -196,6 +196,24 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you do not have a supervisor to approve your requisition");
     },
+    "TravelRequest/delete": function(id){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        
+        let doc = TravelRequisitions.findOne({_id: id});
+        if(!doc) {
+        }
+        if(doc.createdBy !== this.userId) {
+            throw new Meteor.Error(401, "Unauthorized. You cannot delete a travel request you did not create.");
+        }
+        if(doc.status === "Draft" || doc.status === "Pending"){
+            TravelRequisitions.remove({_id: id});
+            return true;
+        } else {
+            throw new Meteor.Error(401, "You cannot delete a travel request that has already been approved or rejected.");            
+        }
+    },
     "TravelRequest/approve": function(businessUnitId, docId) {
         check(businessUnitId, String);
         this.unblock()
