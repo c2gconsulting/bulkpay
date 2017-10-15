@@ -48,6 +48,14 @@ Template.LeaveCreate.events({
         let allowLeavesInHours = $('#allowLeavesInHours').is(":checked")
         let selectedLeaveType = $('#leaveTypes').val()
 
+        let reliever = Core.returnSelection($('[name="employee"]'))
+
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        let isRelieverEnabledForLeaveRequests = false;
+        if(businessUnitCustomConfig) {
+            isRelieverEnabledForLeaveRequests = businessUnitCustomConfig.isRelieverEnabledForLeaveRequests
+        }
+
         if(allowLeavesInHours) {
             let duration = $('#duration').val();
             durationAsNumber = parseInt(duration)
@@ -91,6 +99,11 @@ Template.LeaveCreate.events({
         } else {
             leaveDoc.duration = durationAsNumber
             leaveDoc.durationInHours = durationAsNumber * 24
+        }
+        if(isRelieverEnabledForLeaveRequests) {
+            if(reliever && reliever.length > 0) {
+                leaveDoc.relieverUserId = reliever[0];
+            }
         }
         //--
         let currentYear = moment().year()
@@ -154,7 +167,19 @@ Template.LeaveCreate.helpers({
     },
     endOfToday: function() {
         return moment().endOf('day').toDate()
-    }
+    },
+    isRelieverEnabledForLeaveRequests: function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isRelieverEnabledForLeaveRequests
+        }
+    },
+    'employees': () => {
+        return Meteor.users.find({
+            "employee": true,
+            'employeeProfile.employment.status': 'Active'
+        });
+    },
 });
 
 
@@ -176,6 +201,8 @@ Template.LeaveCreate.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.inputErrorMsg = new ReactiveVar()
+
+    self.subscribe("activeEmployees", businessId);
 
     self.getNumberOfWeekDays = function(startDate, endDate) {
         let startDateMoment = moment(startDate)

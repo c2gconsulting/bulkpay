@@ -45,6 +45,13 @@
                         <a href="#">{{durationInHours}}</a>
                     </address>
 
+                    {{#if isRelieverEnabledForLeaveRequests}}
+                    <address>
+                        <strong>Reliever: </strong><br>
+                        <a href="#">{{getRelieverFullName relieverUserId}}</a>
+                    </address>
+                    {{/if}}
+
                     {{#if canApproveLeave employeeId approvalStatus}}
                         <button class="btn btn-success btn-block" id="approve">Approve</button>
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>

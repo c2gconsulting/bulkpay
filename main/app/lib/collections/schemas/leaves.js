@@ -154,6 +154,10 @@ Core.Schemas.Leave = new SimpleSchema({
         optional: true,
         denyUpdate: true
     },
+    relieverUserId: {
+        type: String,
+        optional: true
+    },
     'approvals': {
         type: [Object],
         optional: true   // It is optional because the business may NOT have twoStepApproval enabled

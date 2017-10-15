@@ -15,7 +15,7 @@ Template.LeaveList.helpers({
     leaves: function() {
         return Template.instance().leaves();
     }
-});
+})
 
 /*****************************************************************************/
 /* LeaveList: Lifecycle Hooks */
@@ -26,7 +26,6 @@ Template.LeaveList.onCreated(function () {
     instance.loaded = new ReactiveVar(0);
     instance.limit = new ReactiveVar(getLimit());
     instance.ready = new ReactiveVar();
-    
 
     instance.autorun(function () {
         let limit = instance.limit.get();

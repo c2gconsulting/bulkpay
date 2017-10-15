@@ -66,6 +66,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: [String],
         optional: true
     },
+    isRelieverEnabledForLeaveRequests: {
+        type: Boolean,
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

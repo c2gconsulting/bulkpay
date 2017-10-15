@@ -7,6 +7,10 @@
                     <div class="media-content">
                         <div class="pull-left">
                             <i class="fa fa-calendar-o"></i> Duration of Leave Request <span class="leavedays">{{toTwoDecimalPlaces duration}} Day(s)</span>
+                            {{#if isRelieverEnabledForLeaveRequests}}
+                                <i class="fa"></i> Reliever: <span class="reliever">{{getRelieverFullName relieverUserId}}</span>
+                            {{/if}}
+                            
                             <ul class="list-unstyled">
                                 <li><i class="fa fa-calendar-o"></i> From: {{formatTime startDate}}</li>
                                 <li><i class="fa fa-calendar"></i> To: {{formatTime endDate}}</li>

@@ -58,6 +58,20 @@ Template.LeaveEntry.helpers({
     },
     'toTwoDecimalPlaces': function(theNumber) {
         return theNumber ? theNumber.toFixed(2) : ''
+    },
+    isRelieverEnabledForLeaveRequests: function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isRelieverEnabledForLeaveRequests
+        }
+    },
+    getRelieverFullName: function(relieverUserId) {
+        const user = Meteor.users.findOne(relieverUserId);
+        if(user && user.profile) {
+            return user.profile.fullName
+        } else {
+            return ''
+        }
     }
 });
 
@@ -65,6 +79,19 @@ Template.LeaveEntry.helpers({
 /* LeaveEntry: Lifecycle Hooks */
 /*****************************************************************************/
 Template.LeaveEntry.onCreated(function () {
+    let self = this;
+
+    let businessId = Session.get('context')
+
+    self.subscribe("activeEmployees", businessId);
+
+    self.businessUnitCustomConfig = new ReactiveVar()
+
+    self.autorun(function() {
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
+            self.businessUnitCustomConfig.set(businessUnitCustomConfig)            
+        })
+    })
 });
 
 Template.LeaveEntry.onRendered(function () {

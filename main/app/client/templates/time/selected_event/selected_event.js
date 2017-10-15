@@ -135,6 +135,20 @@ Template.selectedEvent.helpers({
     },
     'toTwoDecimalPlaces': function(theNumber) {
         return theNumber.toFixed(2)
+    },
+    isRelieverEnabledForLeaveRequests: function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isRelieverEnabledForLeaveRequests
+        }
+    },
+    getRelieverFullName: function(relieverUserId) {
+        const user = Meteor.users.findOne(relieverUserId);
+        if(user && user.profile) {
+            return user.profile.fullName
+        } else {
+            return ''
+        }
     }
 });
 
@@ -143,7 +157,19 @@ Template.selectedEvent.helpers({
 /*****************************************************************************/
 Template.selectedEvent.onCreated(function () {
     let self = this;
-    self.subscribe('AllActivities', Session.get('context'));
+
+    let businessId = Session.get('context');
+
+    self.subscribe("activeEmployees", businessId);
+    self.subscribe('AllActivities', businessId);
+
+    self.businessUnitCustomConfig = new ReactiveVar()
+    
+    self.autorun(function() {
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
+            self.businessUnitCustomConfig.set(businessUnitCustomConfig)            
+        })
+    })
 });
 
 Template.selectedEvent.onRendered(function () {

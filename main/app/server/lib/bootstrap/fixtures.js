@@ -158,6 +158,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isWeekendIncludedInLeaveRequests: false, 
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
+        isRelieverEnabledForLeaveRequests: false,
         isActive: true
     },
     {
@@ -176,6 +177,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isWeekendIncludedInLeaveRequests: false,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
+        isRelieverEnabledForLeaveRequests: false,
         isActive: true
     },
     {
@@ -198,6 +200,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         displayLogoInSideBar: true,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
+        isRelieverEnabledForLeaveRequests: false,        
         isActive: true
     },
     {
@@ -219,6 +222,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             'maidenName', 'religion', 'bloodGroup', 'disability', 
             'numberOfChildren', 'workExperiences', 'appraisalGradeLevel'
         ],
+        isRelieverEnabledForLeaveRequests: true,        
         isActive: true
     }]
 
