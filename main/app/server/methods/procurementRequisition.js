@@ -128,8 +128,11 @@ Meteor.methods({
             
             let createdByEmail = createdBy.emails[0].address;
             let createdByFullName = createdBy.profile.fullName
-            let unit = EntityObjects.findOne({_id: procurementRequisitionDoc.unitId, otype: 'Unit'})
+
+            const procDoc = ProcurementRequisitions.findOne({_id: docId})
+            let unit = EntityObjects.findOne({_id: procDoc.unitId, otype: 'Unit'})
             let unitName = unit.name
+            
             let dateRequired = ''
             if(procurementRequisitionDoc.dateRequired) {
                 dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')

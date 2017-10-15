@@ -123,8 +123,11 @@ Meteor.methods({
             
             let createdByEmail = createdBy.emails[0].address;
             let createdByFullName = createdBy.profile.fullName
-            let unit = EntityObjects.findOne({_id: travelRequestDoc.unitId, otype: 'Unit'})
+
+            const travelDoc = TravelRequisitions.findOne({_id: docId})
+            let unit = EntityObjects.findOne({_id: travelDoc.unitId, otype: 'Unit'})
             let unitName = unit.name
+
             let dateRequired = ''
             if(travelRequestDoc.dateRequired) {
                 dateRequired = moment(travelRequestDoc.dateRequired).format('DD/MM/YYYY')

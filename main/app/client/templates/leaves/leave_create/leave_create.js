@@ -314,7 +314,7 @@ Template.LeaveCreate.onCreated(function () {
         //--
         let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
 
-        self.numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft)
+        self.numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft.toFixed(2))
     }
 
     self.subscribe('employeeLeaveTypes', businessId);

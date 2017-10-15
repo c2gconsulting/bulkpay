@@ -107,17 +107,36 @@ Meteor.methods({
     "leave/create": function(leave, currentYearAsNumber){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
-        }
+        }        
         this.unblock();
 
-        let businessUnitCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: leave.businessId})
+        const leaveTypeId = leave.type;
+        const leaveType = LeaveTypes.findOne(leaveTypeId)
 
-        if(businessUnitCustomConfig) {
-            if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
-                return LeaveCreateHelpers.createByFixedEntitlement(Meteor.userId(), leave, currentYearAsNumber)
-            } else if(businessUnitCustomConfig.leaveDaysAccrual === 'NumberOfDaysWorked') {
-                return LeaveCreateHelpers.createByNumHoursEmployed(Meteor.userId(), leave, currentYearAsNumber)
+        if(leaveType) {
+            const user = Meteor.user();
+            const userPaygradeId = user.employeeProfile.employment.paygrade;
+
+            let allowedPaygrades = leaveType.payGradeIds || []
+            
+            let isLeaveTypeAllowed = _.find(allowedPaygrades, aPayGrade => {
+                return aPayGrade === userPaygradeId
+            })
+            if(isLeaveTypeAllowed) {
+                let businessUnitCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: leave.businessId})
+                
+                if(businessUnitCustomConfig) {
+                    if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
+                        return LeaveCreateHelpers.createByFixedEntitlement(Meteor.userId(), leave, currentYearAsNumber)
+                    } else if(businessUnitCustomConfig.leaveDaysAccrual === 'NumberOfDaysWorked') {
+                        return LeaveCreateHelpers.createByNumHoursEmployed(Meteor.userId(), leave, currentYearAsNumber)
+                    }
+                }
+            } else {
+                throw new Meteor.Error(401, "Sorry, the leave type is not allowed for your pay grade.");                
             }
+        } else {
+            throw new Meteor.Error(401, "Sorry, the leave type does not exist.");
         }
     },
     "leave/delete": function(id){
