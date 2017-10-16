@@ -88,7 +88,7 @@ Template.TravelRequisitionDetail.events({
     },
     'click #requisition-delete': (e,tmpl) => {
         let travelRequestDetails = tmpl.procurementDetails.get()
-        if(travelRequestDetails.status === 'Draft') {
+        if(travelRequestDetails.status === 'Draft' || travelRequestDetails.status === 'Pending') {
             Meteor.call("TravelRequest/delete", travelRequestDetails._id, function(err,res){
                 if(!err){
                     Modal.hide();
@@ -99,7 +99,7 @@ Template.TravelRequisitionDetail.events({
                 // window.location.reload();
             });
         } else {
-            swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' state", "error");            
+            swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' or 'Pending' state", "error");            
         }
     },
     'click #requisition-approve': function(e, tmpl) {

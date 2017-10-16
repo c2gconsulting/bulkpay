@@ -116,7 +116,7 @@ Meteor.methods({
             if(docId) {
                 TravelRequisitions.update(docId, {$set: travelRequestDoc})
             } else {
-                TravelRequisitions.insert(travelRequestDoc)
+                docId = TravelRequisitions.insert(travelRequestDoc)
             }
             //--
             let createdBy = Meteor.users.findOne(Meteor.userId())

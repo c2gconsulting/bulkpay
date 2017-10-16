@@ -121,8 +121,8 @@ Meteor.methods({
             if(docId) {
                 ProcurementRequisitions.update(docId, {$set: procurementRequisitionDoc})
             } else {
-                ProcurementRequisitions.insert(procurementRequisitionDoc)
-            }
+                docId = ProcurementRequisitions.insert(procurementRequisitionDoc)
+            }            
             //--
             let createdBy = Meteor.users.findOne(Meteor.userId())
             
