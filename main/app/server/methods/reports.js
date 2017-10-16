@@ -461,6 +461,49 @@ Meteor.methods({
             return biffedUpLeaveRequests
         }
     },
+    'reports/myLeaveRequestsApprovals': function(businessId, startDate, endDate) {
+        check(businessId, String)
+        this.unblock()
+        //--
+        // let user = Meteor.user()
+        
+        // if (!user || !user.employeeProfile || !user.employeeProfile.employment 
+        //     || !user.employeeProfile.employment.position){
+        //     return
+        // }
+
+        // let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
+        //     return x._id
+        // });
+        // const selector = {
+        //     businessIds: businessUnitId,
+        //     "employeeProfile.employment.position": {$in: positions}
+        // };
+
+        // let allSuperviseeIds = []
+        // Meteor.users.find().fetch().forEach(aUser => {
+        //     let userPositionId = aUser.employeeProfile.employment.position
+        //     if(positions.indexOf(userPositionId) !== -1) {
+        //         allSuperviseeIds.push(aUser._id)
+        //     }
+        // });
+        let queryObj = {
+            businessId: businessId, 
+            approvedDate: {$gte: startDate, $lte: endDate},
+            approvedBy: this.userId
+        }
+        let leavesRequestsApproved = Leaves.find(queryObj).fetch();
+
+        let biffedUpLeaveRequests = leavesRequestsApproved.map(aLeave => {
+            let employee = Meteor.users.findOne({_id: aLeave.employeeId})
+            if(employee) {
+                aLeave.createdByFullName = employee.profile.fullName
+            }
+            return aLeave
+        })
+
+        return biffedUpLeaveRequests
+    },
     'reports/travelRequest': function(businessId, startDate, endDate, selectedEmployees) {
         check(businessId, String)
         this.unblock()

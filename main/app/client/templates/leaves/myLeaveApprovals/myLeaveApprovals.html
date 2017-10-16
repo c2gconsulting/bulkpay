@@ -1,0 +1,87 @@
+<template name="MyLeaveApprovals">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-credit-card"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Report</li>
+                </ul>
+                <h4>Leave Approvals</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-md-2 text-right">
+                            <b>Period</b>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                {{#transformableDatepicker}}
+                                    <input name="startTime" type="text" class="form-control datepicker" data-field="startTime" />
+                                {{/transformableDatepicker}}
+                            </div><!-- form-group -->
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                {{#transformableDatepicker}}
+                                    <input name="endTime" type="text" class="form-control datepicker" data-field="endTime" />
+                                {{/transformableDatepicker}}
+                            </div><!-- form-group -->
+                        </div>
+
+                        <div class="col-md-6">
+                            <button class="btn btn-success" id="getResult"><i class="fa fa-bar-chart-o"></i> View</button>
+                            <button class="btn btn-primary" id="excel"> <i class="fa fa-file-excel-o"></i> Download </button>
+                        </div>
+                    </div>
+
+                {{#if reportsData}}
+                {{#if condition reportsData.length '>' 0}}
+                    <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Created By</th>
+                                <th>Description</th>
+                                <th>Date approved</th>
+                                <th>Start date</th>
+                                <th>End date</th>
+                                <th>Approval Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {{#each reportsData}}
+                            <tr>
+                                <td>{{createdByFullName}}</td>
+                                <td nowrap>{{limitText description}}</td>
+                                <td>{{formatTime approvedDate}}</td>
+                                <td>{{formatTime startDate}}</td>
+                                <td>{{formatTime endDate}}</td>
+                                
+                                <td>{{approvalStatus}}</td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                    {{/if}}
+                    {{else}}
+                    <div class="alert alert-danger text-center">
+                        <p>No leave approvals for the selected period</p>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

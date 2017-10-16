@@ -303,6 +303,13 @@ Router.route('/business/:_id/employee/leave/balances', {
     action: 'showLeaveBalancesList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/leave/approvals', {
+    name: 'leave.myapprovals',
+    controller: 'EmployeesController',
+    action: 'showMyLeaveApprovals',
+    where: 'client'
+});
+
 
 Router.route('/business/:_id/employee/procurementrequisitions', {
     name: 'procurementrequisition.list',
