@@ -103,7 +103,6 @@ Template.EmployeeEditEmploymentPayrollModal.events({
             }
         }
     }
-    console.log(`hourlyRateObj: `, hourlyRateObj)
 
     Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateObj, (err, res) => {
         if (res){
@@ -252,6 +251,57 @@ Template.EmployeeEditEmploymentPayrollModal.events({
              $(e.target).removeClass('errorValidation');
          }
       }
+  },
+  'click #newPromotion': function(e, tmpl) {
+    tmpl.isTryingToAddNewPromotion.set(true);
+  },
+  'click #confirmNewPromotion': function(e, tmpl) {
+    event.preventDefault();
+    swal({
+        title: "Are you sure?",
+        text: "Are you sure you want to promote this employee?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes!",
+        closeOnConfirm: true
+    }, () => {
+        let newPromotionPayGrade = $('[name=newPromotionPayGrade]').val()
+        if(!newPromotionPayGrade) {
+            return
+        }
+        let newPromotionPosition = $('[name=newPromotionPosition]').val()
+        
+        if(!newPromotionPosition) {
+            return
+        }
+
+        let newPromotionDate = $('[data-field="newPromotionDate"]').val()
+        if(newPromotionDate) {
+            newPromotionDate = moment(newPromotionDate).utcOffset(0, true).toDate().toUTCString()
+        } else {
+            return
+        }
+
+        const newPromotion = {
+            payGradeId: newPromotionPayGrade,
+            positionId: newPromotionPosition,
+            date: newPromotionDate
+        }
+
+        let user = tmpl.getEditUser();
+
+        Meteor.call('account/saveNewPromotion', user._id, newPromotion, (err, res) => {
+            tmpl.isTryingToAddNewPromotion.set(false);
+
+            if(!err){
+                swal("Success!", `Employee Promotion saved!`, "success");
+            }
+        });
+    });
+  },
+  'click #cancelNewPromotion': function(e, tmpl) {
+    tmpl.isTryingToAddNewPromotion.set(false);
   }
 });
 
@@ -286,11 +336,17 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       return Template.instance().selectedPosition.get();
   },
   'grades': () => {
-      let thePayGrades = PayGrades.find();
-      if(thePayGrades.count() == 1) {
-        Template.instance().selectedGrade.set(thePayGrades.fetch()[0]._id);
+      let selectedEmployee = Session.get('employeesList_selectedEmployee')
+      if(selectedEmployee) {
+        Template.instance().selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
+        return PayGrades.find({_id: selectedEmployee.employeeProfile.employment.paygrade})
       }
-      return thePayGrades;
+  }, 
+  'allPayGrades': () => {
+    return PayGrades.find({
+        businessId: Session.get('context')
+    },
+    {sort: {code: 1}})
   },
   'assignable': () => {
      return Template.instance().assignedTypes.get();
@@ -382,6 +438,27 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
             }
         }
         return 'disabled'
+    },
+    'isEmployeePromotionEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isEmployeePromotionEnabled
+        }
+    },
+    isTryingToAddNewPromotion: function() {
+        return Template.instance().isTryingToAddNewPromotion.get();
+    },
+    promotionsHistory: function() {
+        let editableUser = Template.instance().getEditUser();
+
+        if(editableUser) {
+            let user = Meteor.users.findOne({_id: editableUser._id})
+
+            if(user) {
+                return user.employeeProfile.employment.promotionsHistory
+            }
+        }
     }
 });
 
@@ -390,6 +467,8 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
 /*****************************************************************************/
 Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   var self = this;
+
+  let businessUnitId = Session.get('context');
 
   self.getEditUser = () => {
     return Session.get('employeeEmploymentDetailsData');
@@ -420,11 +499,16 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   self.selectedGrade = new ReactiveVar();
   self.selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
 
+  self.businessUnitCustomConfig = new ReactiveVar()
+
   self.assignedTypes = new ReactiveVar();
 
   self.subscribe("getPositions", Session.get('context'));
   self.subscribe("getbuconstants", Session.get('context'));
   self.subscribe("PayTypes", Session.get('context'));
+  self.subscribe("paygrades", Session.get('context'));
+  
+  self.isTryingToAddNewPromotion = new ReactiveVar();
 
   self.changePayTypesForSelectedPayGrade = (selectedGrade) => {
     let grade = PayGrades.findOne({_id: selectedGrade});
@@ -506,6 +590,12 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
           }
         }
       }
+      
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
   });
 });
 

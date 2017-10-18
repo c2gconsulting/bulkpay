@@ -397,6 +397,67 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    "account/saveNewPromotion": function (userId, newPromotion) {
+        check(userId, String);
+
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+
+        let account =  Meteor.users.findOne(userId);
+        if (account){
+            let updateObj = {}
+            updateObj['employeeProfile.employment.promotionsHistory'] = account.employeeProfile.employment.promotionsHistory;
+            
+            if(!account.employeeProfile.employment.promotionsHistory) {
+                let initialEmployeeEmploymentPosition = {
+                    payGradeId: account.employeeProfile.employment.paygrade,
+                    positionId: account.employeeProfile.employment.position,
+                    date: account.employeeProfile.employment.hireDate,
+                    _id: Random.id()
+                };
+                const employeeInitialPayGradeId = account.employeeProfile.employment.paygrade
+                const emploeeInitialPositionId = account.employeeProfile.employment.position
+
+                if(employeeInitialPayGradeId) {
+                    let employeeInitialPayGrade = PayGrades.findOne(employeeInitialPayGradeId);
+                    if(employeeInitialPayGrade) {
+                        initialEmployeeEmploymentPosition.payGradeName = employeeInitialPayGrade.code
+                    }
+                }
+                if(emploeeInitialPositionId) {
+                    let emploeeInitialPosition = EntityObjects.findOne(emploeeInitialPositionId);
+                    if(emploeeInitialPosition) {
+                        initialEmployeeEmploymentPosition.positionName = emploeeInitialPosition.name
+                    }
+                }
+
+                updateObj['employeeProfile.employment.promotionsHistory'] = [initialEmployeeEmploymentPosition]
+            }
+
+            if(newPromotion) {
+                newPromotion._id = Random.id();
+
+                if(newPromotion.payGradeId) {
+                    let newPromotionPayGrade = PayGrades.findOne(newPromotion.payGradeId);
+                    if(newPromotionPayGrade) {
+                        newPromotion.payGradeName = newPromotionPayGrade.code
+                    }
+                }
+                if(newPromotion.positionId) {
+                    let newPromotionPosition = EntityObjects.findOne(newPromotion.positionId);
+                    if(newPromotionPosition) {
+                        newPromotion.positionName = newPromotionPosition.name
+                    }
+                }
+            }
+
+            updateObj['employeeProfile.employment.promotionsHistory'].push(newPromotion)
+
+            Meteor.users.update({_id: account._id}, {$set: updateObj});
+            return true
+        }
+    },
     "account/updatePayTypesData": function (payTypesArray, userId, hourlyRate) {
         check(userId, String);
         //check(user.businessId, String);

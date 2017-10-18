@@ -159,6 +159,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
+        isEmployeePromotionEnabled: false,
         isActive: true
     },
     {
@@ -178,6 +179,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
+        isEmployeePromotionEnabled: false,        
         isActive: true
     },
     {
@@ -201,6 +203,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,        
+        isEmployeePromotionEnabled: false,        
         isActive: true
     },
     {
@@ -223,6 +226,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             'numberOfChildren', 'workExperiences', 'appraisalGradeLevel'
         ],
         isRelieverEnabledForLeaveRequests: true,        
+        isEmployeePromotionEnabled: true,        
         isActive: true
     }]
 

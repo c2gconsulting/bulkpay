@@ -70,6 +70,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    isEmployeePromotionEnabled: {
+        type: Boolean,
+        optional: true
+    },
     isActive: {
         type: Boolean
     },

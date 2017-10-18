@@ -7,6 +7,11 @@
                 <div class="panel-heading">
                   <ul class="nav nav-tabs nav-line">
                       <li class="active"><a href=".employment" data-toggle="tab"><strong>Employment Details</strong></a></li>
+                      
+                      {{#if isEmployeePromotionEnabled}}
+                      <li><a href=".promotions" data-toggle="tab"><strong>Promotions</strong></a></li>                      
+                      {{/if}}
+
                       <li><a href=".payroll" data-toggle="tab"><strong>Payroll details</strong></a></li>
                       <li><a href=".netPayAllocation" data-toggle="tab"><strong>Net Pay Currency Allocation</strong></a></li>
                   </ul>
@@ -120,6 +125,86 @@
                           <!-- panel -->
                       </div>
                     {{/each}}
+
+                    {{#if isEmployeePromotionEnabled}}
+                    <div class="tab-pane promotions" id="promotions">
+                        <div class="panel">
+                            <!-- panel-heading -->
+                            <div class="panel-body nopadding">
+                                <div class="row">
+                                  <div class="col-sm-12">
+                                        <p class="mb20 pull-right"><button id="newPromotion" class="btn btn-primary">New Promotion</button></p>
+                                    </div>
+                                </div>
+                                <br/>
+
+                                <div class="table-responsive">
+                                    <table class="table table-primary mb60 table-hover">                                                
+                                        <thead>
+                                        <tr>
+                                            <th>Pay Grade</th>
+                                            <th>Position</th>
+                                            <th>Date of Promotion</th>
+
+                                            {{#if isTryingToAddNewPromotion}}
+                                                <th></th>                                        
+                                            {{/if}}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {{#each promotionsHistory}}
+                                            <tr>
+                                                <td class="col-md-3">{{payGradeName}}</td>
+                                                <td class="col-md-3">{{positionName}}</td>
+                                                {{#if date}}
+                                                    <td class="col-md-3">{{formatDate date}}</td>
+                                                {{else}}
+                                                    <td class="col-md-3"></td>
+                                                {{/if}}
+                                                {{#if isTryingToAddNewPromotion}}
+                                                    <td class="col-md-3">
+                                                    </td>
+                                                {{/if}}
+                                            </tr>
+                                        {{/each}}
+                                        {{#if isTryingToAddNewPromotion}}
+                                            <td class="col-md-3">
+                                                <select name="newPromotionPayGrade" class="form-control dropdown">
+                                                    <option value=""></option>
+                                                    {{#each allPayGrades}}
+                                                        <option value="{{_id}}">{{code}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </td>
+                                            <td class="col-md-3">
+                                                <select name="newPromotionPosition" class="form-control dropdown">
+                                                    <option value=""></option>
+                                                    {{#each positions}}
+                                                        <option value="{{_id}}">{{name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </td>
+                                            <td class="col-md-3">
+                                                {{#datepicker}}
+                                                    <input name="newPromotionDate" type="text" class="form-control datepicker" data-field="newPromotionDate" />
+                                                {{/datepicker}}
+                                            </td>
+                                            <td class="col-md-3">
+                                                <button class="btn btn-primary mr5 ladda-button" id="confirmNewPromotion">Confirm</button>
+                                                <button type="reset" class="btn btn-danger mr5 ladda-button" id="cancelNewPromotion">Cancel</button>
+                                            </td>
+                                        {{/if}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!-- panel-body -->
+
+                            <div class="panel-footer">
+                                <button type="reset" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div><!-- panel -->
+                    </div><!-- tab-pane -->
+                    {{/if}}
 
                     <div class="tab-pane payroll" id="payroll">
                         <div class="panel">
