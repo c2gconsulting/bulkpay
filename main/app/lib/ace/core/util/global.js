@@ -232,6 +232,12 @@ _.extend(Core, {
     hasProcurementReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PROCUREMENT_REPORTS_VIEW, userId);
     },
+    hasProcurementTreatAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PROCUREMENT_REQUISITION_TREAT, userId);
+    },
+    hasTravelRequestTreatAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.TRAVEL_REQUISITION_TREAT, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },

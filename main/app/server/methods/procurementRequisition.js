@@ -252,9 +252,9 @@ Meteor.methods({
                 }
                 ProcurementRequisitions.update(docId, {$set: approvalSetObject})
                 //--
-                let usersWithProcurementApproveRole = Meteor.users.find({
+                let usersWithProcurementTreatRole = Meteor.users.find({
                     businessIds: businessUnitId,
-                    'roles.__global_roles__': Core.Permissions.PROCUREMENT_REQUISITION_APPROVE
+                    'roles.__global_roles__': Core.Permissions.PROCUREMENT_REQUISITION_TREAT
                 }).fetch()
                 // console.log(`usersWithProcurementApproveRole: `, usersWithProcurementApproveRole)
 
@@ -270,17 +270,29 @@ Meteor.methods({
                     }
                     let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/treatlist`
                     //--
-                    if(usersWithProcurementApproveRole && usersWithProcurementApproveRole.length > 0) {
-                        let supervisorEmail =  usersWithProcurementApproveRole[0].emails[0].address;
+                    if(usersWithProcurementTreatRole && usersWithProcurementTreatRole.length > 0) {
+                        _.each(usersWithProcurementTreatRole, function(procurementTreater) {
+                            let supervisorEmail =  procurementTreater.emails[0].address;
+                            
+                            ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
+                                procurementTreater.profile.fullName,
+                                supervisorEmail, createdByFullName, 
+                                procurementRequisitionDoc.description, 
+                                unitName,
+                                dateRequired,
+                                procurementRequisitionDoc.requisitionReason,
+                                approvalsPageUrl)
+                        })
+                        // let supervisorEmail =  usersWithProcurementTreatRole[0].emails[0].address;
 
-                        ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
-                            usersWithProcurementApproveRole[0].profile.fullName,
-                            supervisorEmail, createdByFullName, 
-                            procurementRequisitionDoc.description, 
-                            unitName,
-                            dateRequired,
-                            procurementRequisitionDoc.requisitionReason,
-                            approvalsPageUrl)
+                        // ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
+                        //     usersWithProcurementTreatRole[0].profile.fullName,
+                        //     supervisorEmail, createdByFullName, 
+                        //     procurementRequisitionDoc.description, 
+                        //     unitName,
+                        //     dateRequired,
+                        //     procurementRequisitionDoc.requisitionReason,
+                        //     approvalsPageUrl)
                     }
                 } catch(errorInSendingEmail) {
                     console.log(errorInSendingEmail)

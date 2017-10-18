@@ -10,6 +10,10 @@ Core.Permissions = {
     "LEAVE_MANAGE" : "leave/manage",
 	  "PROCUREMENT_REQUISITION_APPROVE": "procurement_requisition/approve",
 	  "TRAVEL_REQUISITION_APPROVE": "travel_requisition/approve",
+
+	  "PROCUREMENT_REQUISITION_TREAT": "procurement_requisition/treat",
+	  "TRAVEL_REQUISITION_TREAT": "travel_requisition/treat",
+
 	  "PAYROLL_REPORTS_VIEW": "payroll_reports/view",
 	  "AUDIT_REPORTS_VIEW": "audit_reports/view",
 		"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",
@@ -44,10 +48,15 @@ Core.PermissionNames = {
     "leave/approve" : "Approve Leave",
     "procurement_requisition/approve" : "Approve Procurement Requisition",
     "travel_requisition/approve" : "Approve Travel Requisition",
-    "payroll_reports/view" : "Payroll Reports View",
+
+		"procurement_requisition/treat" : "Treat Procurement Requisition",
+    "travel_requisition/treat" : "Treat Travel Requisition",
+
+		"payroll_reports/view" : "Payroll Reports View",
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",
-    "ess/all" : "Employee Self Service",
+
+		"ess/all" : "Employee Self Service",
 	//"customers/view" : "View Customers",
 	//"customers/maintain" : "Maintain Customers",
 	//"invoices/view" : "View Invoices",

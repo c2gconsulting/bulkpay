@@ -217,6 +217,18 @@ Template.EmployeeSelectedEntry.helpers({
       let hasProcurementReportsViewAccess = Core.hasProcurementReportsViewAccess(selectedEmployee._id);
 
       return hasProcurementReportsViewAccess;
+  },
+  hasProcurementTreatAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let hasProcurementTreatAccess = Core.hasProcurementTreatAccess(selectedEmployee._id);
+
+      return hasProcurementTreatAccess;
+  },
+  hasTravelRequestTreatAccess: () => {
+      let selectedEmployee = Session.get('employeesList_selectedEmployee');
+      let hasTravelRequestTreatAccess = Core.hasTravelRequestTreatAccess(selectedEmployee._id);
+
+      return hasTravelRequestTreatAccess;
   }
 });
 
@@ -246,6 +258,10 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManagePayroll = $("[name=payrollManage]").val();
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
+
+        let shouldProcurementRequisitionTreat = $("[name=procurementRequisitionTreat]").val();
+        let shouldTravelRequestTreat = $("[name=travelRequestTreat]").val();
+
         let payrollReportsView = $("[name=payrollReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
         let procurementReportsView = $("[name=procurementReportsView]").val();
@@ -279,6 +295,14 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(shouldTravelRequestApprove === "true") {
             arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_APPROVE)
         }
+
+        if(shouldProcurementRequisitionTreat === "true") {
+          arrayOfRoles.push(Core.Permissions.PROCUREMENT_REQUISITION_TREAT)
+        }
+        if(shouldTravelRequestTreat === "true") {
+          arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_TREAT)
+        }
+
         if(payrollReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.PAYROLL_REPORTS_VIEW)
         }

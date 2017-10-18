@@ -247,9 +247,9 @@ Meteor.methods({
                 TravelRequisitions.update(docId, {$set: approvalSetObject})
 
                 //--
-                let usersWithTravelApproveRole = Meteor.users.find({
+                let usersWithTravelTreatRole = Meteor.users.find({
                     businessIds: businessUnitId,
-                    'roles.__global_roles__': Core.Permissions.TRAVEL_REQUISITION_APPROVE
+                    'roles.__global_roles__': Core.Permissions.TRAVEL_REQUISITION_TREAT
                 }).fetch()
 
                 try {
@@ -264,17 +264,29 @@ Meteor.methods({
                     }
                     let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/travelrequests/treatlist`
                     //--
-                    if(usersWithTravelApproveRole && usersWithTravelApproveRole.length > 0) {
-                        let supervisorEmail =  usersWithTravelApproveRole[0].emails[0].address;
+                    if(usersWithTravelTreatRole && usersWithTravelTreatRole.length > 0) {
+                        _.each(usersWithTravelTreatRole, function(travelRequestTreater) {
+                            let supervisorEmail =  travelRequestTreater.emails[0].address;
+                            
+                            TravelRequestHelper.sendRequisitionNeedsTreatment(
+                                travelRequestTreater.profile.fullName,
+                                supervisorEmail, createdByFullName, 
+                                travelRequestDoc.description, 
+                                unitName,
+                                dateRequired,
+                                travelRequestDoc.requisitionReason,
+                                approvalsPageUrl)
+                        })
+                        // let supervisorEmail =  usersWithTravelTreatRole[0].emails[0].address;
 
-                        TravelRequestHelper.sendRequisitionNeedsTreatment(
-                            usersWithTravelApproveRole[0].profile.fullName,
-                            supervisorEmail, createdByFullName, 
-                            travelRequestDoc.description, 
-                            unitName,
-                            dateRequired,
-                            travelRequestDoc.requisitionReason,
-                            approvalsPageUrl)
+                        // TravelRequestHelper.sendRequisitionNeedsTreatment(
+                        //     usersWithTravelTreatRole[0].profile.fullName,
+                        //     supervisorEmail, createdByFullName, 
+                        //     travelRequestDoc.description, 
+                        //     unitName,
+                        //     dateRequired,
+                        //     travelRequestDoc.requisitionReason,
+                        //     approvalsPageUrl)
                     }
                 } catch(errorInSendingEmail) {
                     console.log(errorInSendingEmail)
