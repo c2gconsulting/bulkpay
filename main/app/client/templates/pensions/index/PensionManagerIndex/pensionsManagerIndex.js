@@ -13,8 +13,6 @@ Template.PensionManagerIndex.events({
 /*****************************************************************************/
 Template.PensionManagerIndex.helpers({
     'pfas': function(){
-      console.log("Inside pfas");
-
       let allPfas = PensionManagers.find({});
       return allPfas;
     },
@@ -38,3 +36,34 @@ Template.PensionManagerIndex.onRendered(function () {
 
 Template.PensionManagerIndex.onDestroyed(function () {
 });
+
+
+/*****************************************************************************/
+/* singlePensionFundAdministrator: Helpers */
+/*****************************************************************************/
+Template.singlePensionFundAdministrator.events({
+    'click #deletePensionManager': function(e, tmpl) {
+        event.preventDefault();
+        let self = this;
+
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this Pension Manager",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        }, () => {
+            const pensionManagerId = self.data._id;
+            const code = self.data.code;
+
+            Meteor.call('pensionManager/delete', pensionManagerId, (err, res) => {
+                if(!err){
+                    Modal.hide();
+                    swal("Deleted!", `Pension Manager: ${code} has been deleted.`, "success");
+                }
+            });
+        });
+    }
+})
