@@ -293,16 +293,14 @@ Template.EmployeeEditEmploymentPayrollModal.events({
 
         Meteor.call('account/saveNewPromotion', user._id, newPromotion, (err, res) => {
             tmpl.isTryingToAddNewPromotion.set(false);
-            console.log(`err: `, err)
             
             if(!err) {
-                // user.employeeProfile = user.employeeProfile || {};
-                // user.employeeProfile.employment = user.employeeProfile.employment || {};
-                // user.employeeProfile.employment.paygrade = newPromotionPayGrade;
-                // user.employeeProfile.employment.position = newPromotionPosition;
-
-                // tmpl.selectedGrade.set(value);
-                // tmpl.setEditUser(user);
+                let selectedEmployee = Session.get('employeesList_selectedEmployee');
+                selectedEmployee.employeeProfile = user.employeeProfile || {};
+                selectedEmployee.employeeProfile.employment = user.employeeProfile.employment || {};
+                selectedEmployee.employeeProfile.employment.paygrade = newPromotionPayGrade;
+                selectedEmployee.employeeProfile.employment.position = newPromotionPosition;
+                Session.set('employeesList_selectedEmployee', selectedEmployee);
 
                 swal("Success!", `Employee Promotion saved!`, "success");
             } else {
