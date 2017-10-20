@@ -293,9 +293,20 @@ Template.EmployeeEditEmploymentPayrollModal.events({
 
         Meteor.call('account/saveNewPromotion', user._id, newPromotion, (err, res) => {
             tmpl.isTryingToAddNewPromotion.set(false);
+            console.log(`err: `, err)
+            
+            if(!err) {
+                // user.employeeProfile = user.employeeProfile || {};
+                // user.employeeProfile.employment = user.employeeProfile.employment || {};
+                // user.employeeProfile.employment.paygrade = newPromotionPayGrade;
+                // user.employeeProfile.employment.position = newPromotionPosition;
 
-            if(!err){
+                // tmpl.selectedGrade.set(value);
+                // tmpl.setEditUser(user);
+
                 swal("Success!", `Employee Promotion saved!`, "success");
+            } else {
+                swal("Error!", err.reason, "error");
             }
         });
     });

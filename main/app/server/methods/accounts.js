@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 /**
  * Accounts handlers
  * creates a login type "anonymous"
@@ -375,7 +377,7 @@ Meteor.methods({
 
             let updateObj = {
                 "employeeProfile.employment.position": user.employeeProfile.employment.position,
-                    "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
+                "employeeProfile.employment.paygrade": user.employeeProfile.employment.paygrade,
                 "employeeProfile.employment.hireDate": hireDate,
                 "employeeProfile.employment.confirmationDate": confirmationDate,
                 "employeeProfile.employment.status": user.employeeProfile.employment.status,
@@ -405,10 +407,45 @@ Meteor.methods({
         }
 
         let account =  Meteor.users.findOne(userId);
-        if (account){
+        if (account){            
+            if(!newPromotion) {
+                throw new Meteor.Error(404, "Promotion details was not specified");
+            }
+            if(!newPromotion.payGradeId) {
+                throw new Meteor.Error(404, "Paygrade for promotion was not specified");
+            }
+
+            let newPromotionPayGrade = PayGrades.findOne(newPromotion.payGradeId);
+            if(!newPromotionPayGrade) {
+                throw new Meteor.Error(404, "Paygrade details for promotion could not be found in database");                
+            }
+
+            newPromotion.payGradeName = newPromotionPayGrade.code
+
+            if(!newPromotion.positionId) {
+                throw new Meteor.Error(404, "Position for promotion was not specified");
+            }
+
+            let positionIds = newPromotionPayGrade.positions
+            let isNewPromotionPositionAllowedForPaygrade = _.find(positionIds, function(aPositionId) {
+                return aPositionId === newPromotion.positionId
+            })
+            if(!isNewPromotionPositionAllowedForPaygrade) {
+                throw new Meteor.Error(404, "Position of promotion does not belong to selected Paygrade");
+            }
+
+            if(newPromotion.positionId) {
+                let newPromotionPosition = EntityObjects.findOne(newPromotion.positionId);
+                if(newPromotionPosition) {
+                    newPromotion.positionName = newPromotionPosition.name
+                }
+            }
+            //--
             let updateObj = {}
             updateObj['employeeProfile.employment.promotionsHistory'] = account.employeeProfile.employment.promotionsHistory;
-            
+
+            newPromotion._id = Random.id();
+
             if(!account.employeeProfile.employment.promotionsHistory) {
                 let initialEmployeeEmploymentPosition = {
                     payGradeId: account.employeeProfile.employment.paygrade,
@@ -435,26 +472,14 @@ Meteor.methods({
                 updateObj['employeeProfile.employment.promotionsHistory'] = [initialEmployeeEmploymentPosition]
             }
 
-            if(newPromotion) {
-                newPromotion._id = Random.id();
-
-                if(newPromotion.payGradeId) {
-                    let newPromotionPayGrade = PayGrades.findOne(newPromotion.payGradeId);
-                    if(newPromotionPayGrade) {
-                        newPromotion.payGradeName = newPromotionPayGrade.code
-                    }
-                }
-                if(newPromotion.positionId) {
-                    let newPromotionPosition = EntityObjects.findOne(newPromotion.positionId);
-                    if(newPromotionPosition) {
-                        newPromotion.positionName = newPromotionPosition.name
-                    }
-                }
-            }
-
             updateObj['employeeProfile.employment.promotionsHistory'].push(newPromotion)
-
             Meteor.users.update({_id: account._id}, {$set: updateObj});
+            //--
+            Meteor.users.update({_id: account._id}, {$set: {
+                "employeeProfile.employment.position": newPromotion.positionId,
+                "employeeProfile.employment.paygrade": newPromotion.payGradeId,
+            }});
+
             return true
         }
     },
