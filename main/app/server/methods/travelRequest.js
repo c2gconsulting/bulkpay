@@ -196,6 +196,30 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you do not have a supervisor to approve your requisition");
     },
+    "TravelRequest/approverSave": function(businessUnitId, travelRequestDoc, docId){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        let createdBy = Meteor.users.findOne(travelRequestDoc.createdBy);
+        if(createdBy) {
+            let userPositionId = createdBy.employeeProfile.employment.position
+            let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
+            
+            if(userPosition.properties.supervisor === this.userId || userPosition.properties.alternateSupervisor === this.userId) {
+                if(docId) {
+                    TravelRequisitions.update(docId, {$set: travelRequestDoc})
+                }
+                return true
+            } else {
+                throw new Meteor.Error(404, "Sorry, you are not allowed to edit a travel request you are not a supervisor for.");            
+            }
+        }
+
+        throw new Meteor.Error(404, "Sorry, the creator of the travel request could not be found");
+    },
     "TravelRequest/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");

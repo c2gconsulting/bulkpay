@@ -24,7 +24,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="description">Description</label>
-                                {{#if isInEditMode}}
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
                                     <input name="description" type="text" placeholder="Description" class="form-control"
                                         value="{{this.description}}"/>
                                 {{else}}
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="dateRequired">Date required</label>
-                                {{#if isInEditMode}}
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
                                     {{#datepicker dateRequired}}
                                         <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" />
                                     {{/datepicker}}
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="requisitionReason">Requisition reason</label>
-                                {{#if isInEditMode}}
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
                                     <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
                                               value="{{this.requisitionReason}}"></textarea>
                                 {{else}}
@@ -208,8 +208,14 @@
                         
                         {{else}}
                             {{#if isInApproveMode}}
-                                <button class="btn btn-danger mr5 pull-right" id="requisition-reject">Reject</button>
-                                <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
+                                {{#if isInApproverEditMode}}
+                                    <button class="btn btn-danger mr5 pull-right" id="requisition-approver-save">Save</button>
+                                {{else}}
+                                    <button class="btn btn-danger mr5 pull-right" id="requisition-reject">Reject</button>
+                                    <button class="btn btn-primary mr5 pull-right" id="requisition-approve">Approve</button>
+
+                                    <button class="btn btn-danger mr5 pull-right" id="requisition-approver-edit">Edit</button>
+                                {{/if}}
                             {{else}}
                                 {{#if isInTreatMode}}
                                     <button class="btn btn-danger mr5 pull-right" id="requisition-treatment-reject">Reject</button>

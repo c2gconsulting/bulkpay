@@ -102,6 +102,93 @@ Template.TravelRequisitionDetail.events({
             swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' or 'Pending' state", "error");            
         }
     },
+    'click #requisition-approver-edit': function(e, tmpl) {
+        let isInEditMode = Template.instance().isInEditMode.get()
+        let isInApproveMode = Template.instance().isInApproveMode.get()
+
+        if(isInApproveMode) {
+            Template.instance().isInApproverEditMode.set(true)
+        }
+        // approverSave
+    },
+    'click #requisition-approver-save': function(e, tmpl) {
+        e.preventDefault()
+
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let description = $("input[name=description]").val()
+            let dateRequired = $("input[name=dateRequired]").val()
+            let requisitionReason = $("textarea[name=requisitionReason]").val()
+
+            let flightCost = $("input[name=flightCost]").val()
+            let accommodationCost = $("input[name=accommodationCost]").val()
+            let localTransportCost = $("input[name=localTransportCost]").val()
+            let perDiemCost = $("input[name=perDiemCost]").val()
+            let miscCosts = $("input[name=miscCosts]").val()
+            let roadCost = $("input[name=roadCost]").val()
+
+            let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
+            if(validation === true) {
+                let requisitionDoc = {}
+
+                requisitionDoc.description = description
+                requisitionDoc.dateRequired = new Date(dateRequired)
+                requisitionDoc.requisitionReason = requisitionReason
+
+                let flightCostAsNumber = parseFloat(flightCost)
+                if(isNaN(flightCostAsNumber)) {
+                    flightCostAsNumber = 0
+                }
+                let accomodationCostAsNumber = parseFloat(accommodationCost)
+                if(isNaN(accomodationCostAsNumber)) {
+                    accomodationCostAsNumber = 0
+                }
+                let localTransportCostAsNumber = parseFloat(localTransportCost)
+                if(isNaN(localTransportCostAsNumber)) {
+                    localTransportCostAsNumber = 0
+                }
+                let perDiemCostAsNumber = parseFloat(perDiemCost)
+                if(isNaN(perDiemCostAsNumber)) {
+                    perDiemCostAsNumber = 0
+                }
+                let miscCostAsNumber = parseFloat(miscCosts)
+                if(isNaN(miscCostAsNumber)) {
+                    miscCostAsNumber = 0
+                }
+                let roadCostAsNumber = parseFloat(roadCost)
+                if(isNaN(roadCostAsNumber)) {
+                    roadCostAsNumber = 0
+                }
+                requisitionDoc.tripCosts = {
+                    flightCost: flightCostAsNumber,
+                    accommodationCost: accomodationCostAsNumber,
+                    localTransportCost: localTransportCostAsNumber,
+                    perDiemCost: perDiemCostAsNumber,
+                    miscCosts: miscCostAsNumber,
+
+                    roadCost: roadCostAsNumber
+                }
+                //--
+                let businessUnitId = Session.get('context')
+
+                Meteor.call('TravelRequest/approverSave', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                    tmpl.isInApproverEditMode.set(false)
+
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition edits saved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            
+                        })
+                    } else {
+                        swal('Validation error', err.reason, 'error')
+                    }
+                })
+            } else {
+                swal('Validation error', validation, 'error')
+            }
+        }
+    },
     'click #requisition-approve': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()
@@ -308,6 +395,9 @@ Template.TravelRequisitionDetail.helpers({
     'isInApproveMode': function() {
         return Template.instance().isInApproveMode.get()
     },
+    'isInApproverEditMode': function() {
+        return Template.instance().isInApproverEditMode.get()
+    },
     'isInTreatMode': function() {
         return Template.instance().isInTreatMode.get()
     },
@@ -371,6 +461,7 @@ Template.TravelRequisitionDetail.onCreated(function () {
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
+    self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
