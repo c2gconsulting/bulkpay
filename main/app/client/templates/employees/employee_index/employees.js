@@ -45,18 +45,6 @@ Template.Employees.events({
         tmpl.isSearchView.set(false);
       }
     }, 200),
-    'click .goToPage': function(e, tmpl) {
-        let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        let pageNumAsInt = parseInt(pageNum)
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let skip = limit * pageNumAsInt
-
-        let newPageOfEmployees = Template.instance().getEmployees(skip)
-        Template.instance().employees.set(newPageOfEmployees)
-
-        Template.instance().currentPage.set(pageNumAsInt)
-    },
-
 });
 
 
@@ -68,28 +56,19 @@ Template.registerHelper('repeat', function(max) {
 /* Employees: Helpers */
 /*****************************************************************************/
 Template.Employees.helpers({
-    // 'employees': function(){
-    //     return Meteor.users.find({"employee": true});
-    // },
     'doEmployeesExist': function() {
         return Meteor.users.find({employee: true}).count() > 0 ? true : false;
     },
-
     'employees': function() {
-        return Template.instance().employees.get()
-    },
-    'numberOfPages': function() {
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = Meteor.users.find({"employee": true}).count()
+        let loaded = Template.instance().loaded.get();
+        
+        let sort = {};
+        sort["profile.fullName"] = 1;
 
-        let result = Math.floor(totalNum/limit)
-        var remainder = totalNum % limit;
-        if (remainder > 0)
-            result += 2;
-        return (result > 10) ? 11 : result;
-    },
-    'currentPage': function() {
-        return Template.instance().currentPage.get()
+        return Meteor.users.find({
+            // businessIds: Session.get('context'),
+            employee: true
+        }, {limit: loaded, sort: sort}).fetch();
     },
     getEmployeeSearchResults: function() {
       return EmployeesSearch.getData({
@@ -101,7 +80,17 @@ Template.Employees.helpers({
     },
     isLoading: function() {
       return EmployeesSearch.getStatus().loading;
-    }
+    },
+    hasMoreEmployees: function () {
+        let numEmployees = Meteor.users.find({
+            // businessIds: Session.get('context'),
+            employee: true
+        }).count()
+        return numEmployees >= Template.instance().limit.get();
+    },
+    isFetchingData: function() {
+      return Template.instance().isFetchingData.get();
+    },
 });
 
 /*****************************************************************************/
@@ -111,34 +100,22 @@ Template.Employees.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
-    self.NUMBER_PER_PAGE = new ReactiveVar(5);
-    self.currentPage = new ReactiveVar(0);
-    //--
-    self.employees = new ReactiveVar()
-
-    self.getEmployees = function(skip) {
-        let sortBy = "profile.fullName";
-        let sortDirection = 1;
-
-        let options = {};
-        options.sort = {};
-        options.sort[sortBy] = sortDirection;
-        options.limit = self.NUMBER_PER_PAGE.get();
-        options.skip = skip
-
-        return Meteor.users.find({}, options);
-    }
+    self.loaded = new ReactiveVar(0);
+    self.limit = new ReactiveVar(getLimit());
+  
+    self.isFetchingData = new ReactiveVar()
+    self.isFetchingData.set(true)
 
     self.autorun(function() {
-        let limit = self.NUMBER_PER_PAGE.get();
-        let sortBy = "profile.fullName";
-        let sortDirection =  1;
+        let limit = self.limit.get();
+        
         let sort = {};
-        sort[sortBy] = sortDirection;
+        sort["profile.fullName"] = 1;
 
-        let employeesSub = self.subscribe('allEmployees', businessUnitId, limit, sort)
-        if(employeesSub.ready()) {
-            self.employees.set(self.getEmployees(0))
+        let subscription = self.subscribe('allEmployeesForInfiniteScroll', businessUnitId, limit, sort);
+        if (subscription.ready()) {
+            self.loaded.set(limit);
+            self.isFetchingData.set(false)
         }
     })
 
@@ -151,7 +128,37 @@ Template.Employees.onCreated(function () {
 });
 
 Template.Employees.onRendered(function () {
+    let self = this;
+
+    this.scrollHandler = function(e) {
+        if(!self.isSearchView.get()) {
+            let threshold, target = $("#showMoreResults");
+            if (!target.length) return;
+    
+            threshold = $(window).scrollTop() + $(window).height() - target.height();
+    
+            if (target.offset().top < threshold) {
+                if (!target.data("visible")) {
+                    target.data("visible", true);
+                    var limit = this.limit.get();
+                    limit += 20;
+                    this.limit.set(limit);
+                }
+            } else {
+                if (target.data("visible")) {
+                    target.data("visible", false);
+                }
+            }
+        }
+    }.bind(this);
+
+    $(window).on('scroll', this.scrollHandler);
 });
 
 Template.Employees.onDestroyed(function () {
+    $(window).off('scroll', this.scrollHandler);
 });
+
+function getLimit() {
+    return 10;
+}

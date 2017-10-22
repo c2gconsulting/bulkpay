@@ -63,6 +63,37 @@ Core.publish("allEmployees", function (businessId) {
     }
 
 });
+
+Core.publish("allEmployeesForInfiniteScroll", function (businessId, limit, sort) {
+    this.unblock(); // eliminate wait time impact
+
+    let selector = { "businessIds": businessId, employee: true };
+    check(businessId, String);
+
+    if (businessId){
+        //return all meteor users in that position
+        let employees = Meteor.users.find(selector, {
+            fields: {
+                "_id": true,
+                "emails": true,
+                "employee": true,
+                "profile": true,
+                "employeeProfile": true,
+                "username": true,
+                "roles": true,
+                "customUsername": true,
+                "personalEmailAddress": true
+            },
+            limit: limit, 
+            sort: sort
+        })
+        return [employees, UserImages.find({})];
+    } else {
+        return this.ready();
+    }
+});
+
+
 Core.publish("subUsers", function (businessId) {
     this.unblock(); // eliminate wait time impact
     check(businessId, String);
