@@ -201,6 +201,30 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
+    "ProcurementRequisition/approverSave": function(businessUnitId, procurementRequisitionDoc, docId){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        let createdBy = Meteor.users.findOne(procurementRequisitionDoc.createdBy);
+        if(createdBy) {
+            let userPositionId = createdBy.employeeProfile.employment.position
+            let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
+            
+            if(userPosition.properties.supervisor === this.userId || userPosition.properties.alternateSupervisor === this.userId) {
+                if(docId) {
+                    ProcurementRequisitions.update(docId, {$set: procurementRequisitionDoc})
+                }
+                return true
+            } else {
+                throw new Meteor.Error(404, "Sorry, you are not allowed to edit a procurement you are not a supervisor for.");            
+            }
+        }
+
+        throw new Meteor.Error(404, "Sorry, the creator of the requisition could not be found");
+    },
     "ProcurementRequisition/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");

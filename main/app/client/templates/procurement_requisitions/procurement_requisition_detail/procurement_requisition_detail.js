@@ -103,6 +103,52 @@ Template.ProcurementRequisitionDetail.events({
             swal("Error!", "You are not allowed to delete a procurement that is NOT in 'Draft' or 'Pending' state", "error");            
         }
     },
+    'click #requisition-approver-edit': function(e, tmpl) {
+        let isInEditMode = Template.instance().isInEditMode.get()
+        let isInApproveMode = Template.instance().isInApproveMode.get()
+
+        if(isInApproveMode) {
+            Template.instance().isInApproverEditMode.set(true)
+        }
+        // approverSave
+    },
+    'click #requisition-approver-save': function(e, tmpl) {
+        e.preventDefault()
+
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let description = $("input[name=description]").val()
+            let dateRequired = $("input[name=dateRequired]").val()
+            let requisitionReason = $("textarea[name=requisitionReason]").val()
+
+            let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
+            if(validation === true) {
+                let requisitionDoc = {}
+
+                requisitionDoc.description = description
+                requisitionDoc.dateRequired = new Date(dateRequired)
+                requisitionDoc.requisitionReason = requisitionReason
+
+                let businessUnitId = Session.get('context')
+
+                Meteor.call('ProcurementRequisition/approverSave', businessUnitId, requisitionDoc, procurementDetails._id, function(err, res) {
+                    tmpl.isInApproverEditMode.set(false)
+
+                    if(!err) {
+                        swal({title: "Success", text: "Requisition edits saved", type: "success",
+                            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                        }, () => {
+                            
+                        })
+                    } else {
+                        swal('Validation error', err.reason, 'error')
+                    }
+                })
+            } else {
+                swal('Validation error', validation, 'error')
+            }
+        }
+    },
     'click #requisition-approve': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()
@@ -323,6 +369,9 @@ Template.ProcurementRequisitionDetail.helpers({
     'isInApproveMode': function() {
         return Template.instance().isInApproveMode.get()
     },
+    'isInApproverEditMode': function() {
+        return Template.instance().isInApproverEditMode.get()
+    },
     'isInTreatMode': function() {
         return Template.instance().isInTreatMode.get()
     },
@@ -383,6 +432,7 @@ Template.ProcurementRequisitionDetail.onCreated(function () {
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
+    self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
