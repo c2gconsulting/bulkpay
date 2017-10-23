@@ -114,13 +114,15 @@
                             </div>
                         </div><!-- row -->
                         
+                        {{#if isOvertimeEnabled}}
                         <div class="row">
                             <div class="col-sm-4">
                                 <input type="checkbox" id="allowOvertime" name="allowOvertime" />
                                 <label for="allowOvertime" class="control-label">Allow overtime</label>
                             </div>
                         </div>
-
+                        {{/if}}
+                        
                         <div class="row">
                             <br/>
                             <div class="col-sm-12">

@@ -70,15 +70,28 @@ Template.TimeCreate2.events({
 
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
 
-        let allowOvertime = $('#allowOvertime').is(":checked")
-        if(allowOvertime) {
-            if(durationAsNumber > 24) {
-                swal('Validation error', "You cannot record overtime more than 24 hours on the same day", 'error')
+        let isOvertimeEnabled = false;
+        const businessUnitCustomConfig = tmpl.businessUnitCustomConfig.get();
+        if(businessUnitCustomConfig) {
+            isOvertimeEnabled = businessUnitCustomConfig.isOvertimeEnabled
+        }
+
+        if(isOvertimeEnabled) {
+            let allowOvertime = $('#allowOvertime').is(":checked")
+            if(allowOvertime) {
+                if(durationAsNumber > 24) {
+                    swal('Validation error', "You cannot record overtime more than 24 hours on the same day", 'error')
+                    return
+                }
+            } else if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+                swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
                 return
             }
-        } else if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
-            swal('Validation error', "You cannot record time more than 8 hours on the same day", 'error')
-            return
+        } else {
+            if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+                swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
+                return
+            }
         }
 
         let note = $('#note').val() || "";
@@ -178,6 +191,12 @@ Template.TimeCreate2.helpers({
     },
     'hoursToTimeWriteForCurrentDay': function() {
         return Template.instance().hoursToTimeWriteForCurrentDay.get()
+    },
+    'isOvertimeEnabled': function() {
+        const businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get();
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isOvertimeEnabled
+        }
     }
 });
 
@@ -202,7 +221,7 @@ Template.TimeCreate2.onCreated(function () {
 
     self.businessUnitCustomConfig = new ReactiveVar()
 
-    self.hoursToTimeWriteForCurrentDay = new ReactiveVar()
+    self.hoursToTimeWriteForCurrentDay = new ReactiveVar(0)
     //self.hoursToTimeWriteForCurrentDay.set(8)
 
     const businessId = Session.get('context')
@@ -232,7 +251,12 @@ Template.TimeCreate2.onCreated(function () {
         timesRecordedForDay.forEach(aTime => {
             numberOfHoursTimewritedFor += aTime.duration
         })
-        self.hoursToTimeWriteForCurrentDay.set(8 - numberOfHoursTimewritedFor)
+        
+        const businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get();
+        if(businessUnitCustomConfig) {
+            const maxHoursInDayForTimeWriting = businessUnitCustomConfig.maxHoursInDayForTimeWriting || 8
+            self.hoursToTimeWriteForCurrentDay.set(maxHoursInDayForTimeWriting - numberOfHoursTimewritedFor)
+        }
     });
 
     Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {

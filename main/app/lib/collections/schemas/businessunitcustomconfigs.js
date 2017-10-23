@@ -78,6 +78,13 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: false
     },
+    isOvertimeEnabled: {
+        type: Boolean,
+        optional: false
+    },
+    maxHoursInDayForTimeWriting: {
+        type: Number
+    },
     isActive: {
         type: Boolean
     },

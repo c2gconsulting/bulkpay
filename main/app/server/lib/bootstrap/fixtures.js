@@ -161,6 +161,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isRelieverEnabledForLeaveRequests: false,
         isEmployeePromotionEnabled: false,
         isWeekendTimeWritingEnabled: false,
+        isOvertimeEnabled: true,
+        maxHoursInDayForTimeWriting: 8,
         isActive: true
     },
     {
@@ -182,6 +184,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isRelieverEnabledForLeaveRequests: false,
         isEmployeePromotionEnabled: false,
         isWeekendTimeWritingEnabled: true,
+        isOvertimeEnabled: false,
+        maxHoursInDayForTimeWriting: 24,
         isActive: true
     },
     {
@@ -207,6 +211,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isRelieverEnabledForLeaveRequests: false,        
         isEmployeePromotionEnabled: false,        
         isWeekendTimeWritingEnabled: false,        
+        isOvertimeEnabled: true,
+        maxHoursInDayForTimeWriting: 8,
         isActive: true
     },
     {
@@ -231,6 +237,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isRelieverEnabledForLeaveRequests: true,        
         isEmployeePromotionEnabled: true,  
         isWeekendTimeWritingEnabled: false,        
+        isOvertimeEnabled: true,
+        maxHoursInDayForTimeWriting: 8,
         isActive: true
     }]
 
