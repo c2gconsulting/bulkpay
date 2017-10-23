@@ -160,6 +160,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
         isEmployeePromotionEnabled: false,
+        isWeekendTimeWritingEnabled: false,
         isActive: true
     },
     {
@@ -179,7 +180,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
-        isEmployeePromotionEnabled: false,        
+        isEmployeePromotionEnabled: false,
+        isWeekendTimeWritingEnabled: true,
         isActive: true
     },
     {
@@ -204,6 +206,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,        
         isEmployeePromotionEnabled: false,        
+        isWeekendTimeWritingEnabled: false,        
         isActive: true
     },
     {
@@ -226,7 +229,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             'numberOfChildren', 'workExperiences', 'appraisalGradeLevel'
         ],
         isRelieverEnabledForLeaveRequests: true,        
-        isEmployeePromotionEnabled: true,        
+        isEmployeePromotionEnabled: true,  
+        isWeekendTimeWritingEnabled: false,        
         isActive: true
     }]
 

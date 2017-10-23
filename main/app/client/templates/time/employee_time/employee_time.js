@@ -30,9 +30,17 @@ Template.EmployeeTime.onCreated(function () {
     let self = this;
 
     self.dict = new ReactiveDict();
+    self.businessUnitCustomConfig = new ReactiveVar()
+
     let businessId = Session.get('context')
 
     let positionsSubs = self.subscribe('getPositions', businessId)
+
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
 });
 
 Template.EmployeeTime.onRendered(function () {
@@ -81,44 +89,43 @@ Template.EmployeeTime.onRendered(function () {
             events.push(obj);
         });
 
-            if ( $('#calendar').children().length > 0 )
-                $('#calendar').fullCalendar('destroy');
+        if ( $('#calendar').children().length > 0 )
+            $('#calendar').fullCalendar('destroy');
 
-            $('#calendar').fullCalendar({
-                header: {
-                    // left: 'prev,next today',
-                    left: 'prev,next',
+        $('#calendar').fullCalendar({
+            header: {
+                // left: 'prev,next today',
+                left: 'prev,next',
 
-                    center: 'title',
-                    // right: 'month,agendaWeek,agendaDay,listMonth'
-                    right: 'month,listMonth'
-                },
-                allDay: false,
-                default: '_',
-                navLinks: true, // can click day/week names to navigate views
-                selectable: true,
-                selectHelper: true,
-                select: function(start, end) {
-                    let date = start.format('MM/DD/YYYY');
-                    let endDate = end.format('MM/DD/YYYY');
-                    Session.set('startdate', date);
-                    let theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
-                    //console.log(`The weekdays: ${JSON.stringify(theWeekDays)}`)
+                center: 'title',
+                // right: 'month,agendaWeek,agendaDay,listMonth'
+                right: 'month,listMonth'
+            },
+            allDay: false,
+            default: '_',
+            navLinks: true, // can click day/week names to navigate views
+            selectable: true,
+            selectHelper: true,
+            select: function(start, end) {
+                let date = start.format('MM/DD/YYYY');
+                let endDate = end.format('MM/DD/YYYY');
+                Session.set('startdate', date);
+                let theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
+                //console.log(`The weekdays: ${JSON.stringify(theWeekDays)}`)
 
-                    Modal.show('TimeCreate2', theWeekDays);
-                },
-                editable: true,
-                eventLimit: true, // allow "more" link when too many events
-                events: events,
-                eventClick: function(event) {
-                    if (event._id) {
-                        // self.dict.set('selected', {type: event.type, id: event._id});
-                        Modal.show('selectedEvent', {type: event.type, id: event._id})
-                        return false;
-                    }
+                Modal.show('TimeCreate2', theWeekDays);
+            },
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            events: events,
+            eventClick: function(event) {
+                if (event._id) {
+                    // self.dict.set('selected', {type: event.type, id: event._id});
+                    Modal.show('selectedEvent', {type: event.type, id: event._id})
+                    return false;
                 }
-            });
-
+            }
+        });
     });
 
     function getColor(status){
@@ -148,10 +155,17 @@ Template.EmployeeTime.onRendered(function () {
         let startDateMomentClone = moment(startDateMoment); // use a clone
         let weekDates = []
 
+        let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+
         while (numberOfDays > 0) {
-            if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
-                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+            if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
+                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
+            } else {
+                if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                    weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+                }
             }
+
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }

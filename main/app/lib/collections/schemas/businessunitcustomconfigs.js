@@ -74,6 +74,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    isWeekendTimeWritingEnabled: {
+        type: Boolean,
+        optional: false
+    },
     isActive: {
         type: Boolean
     },

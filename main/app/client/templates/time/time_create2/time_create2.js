@@ -200,8 +200,12 @@ Template.TimeCreate2.onCreated(function () {
         self.currentDayIndex.set(0)
     }
 
+    self.businessUnitCustomConfig = new ReactiveVar()
+
     self.hoursToTimeWriteForCurrentDay = new ReactiveVar()
     //self.hoursToTimeWriteForCurrentDay.set(8)
+
+    const businessId = Session.get('context')
 
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
@@ -230,6 +234,12 @@ Template.TimeCreate2.onCreated(function () {
         })
         self.hoursToTimeWriteForCurrentDay.set(8 - numberOfHoursTimewritedFor)
     });
+
+    Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
+        if(!err) {
+            self.businessUnitCustomConfig.set(res)
+        }
+    })
 });
 
 Template.TimeCreate2.onRendered(function () {
