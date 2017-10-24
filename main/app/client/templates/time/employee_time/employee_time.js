@@ -47,6 +47,8 @@ Template.EmployeeTime.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this;
 
+    let businessId = Session.get('context')
+
     self.autorun(function(){
         let events = [];
         const leaves = Leaves.find({employeeId: Meteor.userId()}).fetch();
@@ -110,10 +112,22 @@ Template.EmployeeTime.onRendered(function () {
                 let date = start.format('MM/DD/YYYY');
                 let endDate = end.format('MM/DD/YYYY');
                 Session.set('startdate', date);
-                let theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
-                //console.log(`The weekdays: ${JSON.stringify(theWeekDays)}`)
 
-                Modal.show('TimeCreate2', theWeekDays);
+                let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+                let theWeekDays = []
+                if(businessUnitCustomConfig) {
+                    theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)                    
+                    Modal.show('TimeCreate2', theWeekDays);                    
+                } else {
+                    Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
+                        if(!err) {
+                            self.businessUnitCustomConfig.set(res)
+
+                            theWeekDays = self.getWeekDaysFromFullCalender(date, endDate)
+                            Modal.show('TimeCreate2', theWeekDays);
+                        }
+                    })
+                }
             },
             editable: true,
             eventLimit: true, // allow "more" link when too many events
@@ -149,10 +163,7 @@ Template.EmployeeTime.onRendered(function () {
         let endDateMoment = moment(endDate)
         endDateMoment.add(1, 'hours');
 
-        let businessId = Session.get('context')
-        
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
-        console.log(`Number of days: ${numberOfDays}`)
 
         let startDateMomentClone = moment(startDateMoment); // use a clone
         let weekDates = []
@@ -160,34 +171,15 @@ Template.EmployeeTime.onRendered(function () {
         let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
 
         while (numberOfDays > 0) {
-            if(businessUnitCustomConfig) {
-                if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
-                    weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
-                } else {
-                    if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
-                        weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
-                    }
-                }
-                startDateMomentClone.add(1, 'days');
-                numberOfDays -= 1;
+            if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
+                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
             } else {
-                Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
-                    if(!err) {
-                        self.businessUnitCustomConfig.set(res)
-
-                        if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
-                            weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
-                        } else {
-                            if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
-                                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
-                            }
-                        }
-                        startDateMomentClone.add(1, 'days');
-                        numberOfDays -= 1;
-                    }
-                })
+                if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                    weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+                }
             }
-
+            startDateMomentClone.add(1, 'days');
+            numberOfDays -= 1;
         }
         return weekDates
     }
