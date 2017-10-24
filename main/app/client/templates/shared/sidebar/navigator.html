@@ -173,6 +173,11 @@
                 {{#if isProcurementRequisitionActive}}
                     <li><a href="{{pathFor 'reports.employees'}}">Employees report</a></li>
                 {{/if}}
+
+                {{#if isProcurementRequisitionActive}}
+                {{else}}
+                    <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>                
+                {{/if}}
             {{/if}}
         {{/if}}
 
