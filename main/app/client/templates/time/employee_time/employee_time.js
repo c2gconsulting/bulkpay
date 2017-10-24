@@ -149,6 +149,8 @@ Template.EmployeeTime.onRendered(function () {
         let endDateMoment = moment(endDate)
         endDateMoment.add(1, 'hours');
 
+        let businessId = Session.get('context')
+        
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
         console.log(`Number of days: ${numberOfDays}`)
 
@@ -158,16 +160,34 @@ Template.EmployeeTime.onRendered(function () {
         let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
 
         while (numberOfDays > 0) {
-            if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
-                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
-            } else {
-                if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
-                    weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+            if(businessUnitCustomConfig) {
+                if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
+                    weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
+                } else {
+                    if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                        weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+                    }
                 }
+                startDateMomentClone.add(1, 'days');
+                numberOfDays -= 1;
+            } else {
+                Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
+                    if(!err) {
+                        self.businessUnitCustomConfig.set(res)
+
+                        if(businessUnitCustomConfig.isWeekendTimeWritingEnabled) {
+                            weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone                
+                        } else {
+                            if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                                weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
+                            }
+                        }
+                        startDateMomentClone.add(1, 'days');
+                        numberOfDays -= 1;
+                    }
+                })
             }
 
-            startDateMomentClone.add(1, 'days');
-            numberOfDays -= 1;
         }
         return weekDates
     }
