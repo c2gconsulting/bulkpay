@@ -53,7 +53,7 @@ Meteor.methods({
 
         employeesWithPayGrade.forEach(anEmployee => {
             let employeePaytypes = anEmployee.employeeProfile.employment.paytypes
-            if(employeePaytypes || employeePaytypes.length > 0) {
+            if(employeePaytypes && employeePaytypes.length > 0) {
                 let newPayTypesToInsert = []
 
                 paygradePaytypes.forEach(function(aPayGradePayType) {
