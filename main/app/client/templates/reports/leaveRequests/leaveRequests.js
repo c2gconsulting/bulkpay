@@ -144,6 +144,8 @@ Template.LeaveRequestsReport.onCreated(function () {
 
     self.selectedEmployees = new ReactiveVar()
 
+    self.subscribe("getPositions", Session.get('context'));
+
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);
         return theDate.add('hours', 1).toDate()
