@@ -373,7 +373,6 @@ Template.LeaveCreate.onCreated(function () {
     self.autorun(function() {
         if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready()) {
             Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
-                console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
                 self.businessUnitCustomConfig.set(businessUnitCustomConfig)
                 
                 if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
