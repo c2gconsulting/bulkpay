@@ -40,7 +40,7 @@ Template.LeaveCreate.events({
             tmpl.inputErrorMsg.set("Please select a start date")
             return
         }
-        let startDateObj = moment(start).toDate()
+        let startDateObj = moment(start).startOf('day').toDate()
         let endDateObj = null
 
         let durationAsNumber = 0
@@ -75,9 +75,9 @@ Template.LeaveCreate.events({
                 tmpl.inputErrorMsg.set("Please select a end date")
                 return
             }
-            endDateObj = moment(end).toDate()
+            endDateObj = moment(end).endOf('day').toDate()
 
-            durationAsNumber = tmpl.getDurationOfWeekDaysInHours(start, end) / 24  // in days
+            durationAsNumber = tmpl.getDurationOfWeekDays(start, end) // in days
         }
         if(!selectedLeaveType || selectedLeaveType.length === 0) {
             tmpl.inputErrorMsg.set("Please select a leave type")
@@ -93,6 +93,8 @@ Template.LeaveCreate.events({
             description: description,
             businessId: Session.get('context')
         }
+        console.log(`durationAsNumber: `, durationAsNumber)
+
         if(allowLeavesInHours) {
             leaveDoc.duration = durationAsNumber / 24 
             leaveDoc.durationInHours = durationAsNumber
@@ -205,8 +207,8 @@ Template.LeaveCreate.onCreated(function () {
     self.subscribe("activeEmployees", businessId);
 
     self.getNumberOfWeekDays = function(startDate, endDate) {
-        let startDateMoment = moment(startDate)
-        let endDateMoment = moment(endDate)
+        let startDateMoment = moment(startDate).startOf('day')
+        let endDateMoment = moment(endDate).endOf('day')
 
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
 
@@ -232,8 +234,8 @@ Template.LeaveCreate.onCreated(function () {
     }
 
     self.getDurationOfWeekDaysInHours = function(startDate, endDate) {
-        let startDateMoment = moment(startDate)
-        let endDateMoment = moment(endDate)
+        let startDateMoment = moment(startDate).startOf('day')
+        let endDateMoment = moment(endDate).endOf('day')
         //--
         let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
         let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
@@ -258,7 +260,34 @@ Template.LeaveCreate.onCreated(function () {
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }
+
         return numberOfHoursInPeriodWeekDays
+    }
+
+    self.getDurationOfWeekDays = function(startDate, endDate) {
+        let startDateMoment = moment(startDate).startOf('day')
+        let endDateMoment = moment(endDate).endOf('day')
+        //--
+        let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
+        //--
+        let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
+        let numberOfLeaveDaysToAward = numberOfDays
+
+        let startDateMomentClone = moment(startDateMoment); // use a clone
+
+        while (numberOfDays >= 0) {
+            let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
+
+            if(!businessUnitCustomConfig.isWeekendIncludedInLeaveRequests) {
+                if (startDateMomentClone.isoWeekday() === 6 || startDateMomentClone.isoWeekday() === 7) {
+                    numberOfHoursInPeriodWeekDays -= 1
+                }
+            }
+            startDateMomentClone.add(1, 'days');
+            numberOfDays -= 1;
+        }
+        
+        return numberOfLeaveDaysToAward
     }
 
     self.prettifyDurationOfWeekDaysInDaysAndHours = function(startDate, endDate) {
@@ -283,14 +312,7 @@ Template.LeaveCreate.onCreated(function () {
     }
 
     self.setLeaveDaysLeftBasedOnFixedEntitlement = function() {
-        let userEntitlementSubs = self.subscribe('UserLeaveEntitlement', businessId, Meteor.userId())
-        let allLeaveEntitlements = self.subscribe('LeaveEntitlements', businessId)
-
-        if(userEntitlementSubs.ready() && allLeaveEntitlements.ready()){
-            let userLeaveEntitlement = UserLeaveEntitlements.findOne({
-                businessId: businessId, userId: Meteor.userId()
-            })
-
+        Meteor.call("userleaveentitlements/get", Meteor.userId(), function(err, userLeaveEntitlement) {            
             if(userLeaveEntitlement) {
                 let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
                 let currentYear = moment().year()
@@ -306,7 +328,7 @@ Template.LeaveCreate.onCreated(function () {
                     self.numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
                 }
             }
-        }
+        });            
     }
 
     self.setLeaveDaysLeftBasedOnDaysWorked = function() {
@@ -351,6 +373,7 @@ Template.LeaveCreate.onCreated(function () {
     self.autorun(function() {
         if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready()) {
             Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
+                console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
                 self.businessUnitCustomConfig.set(businessUnitCustomConfig)
                 
                 if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
