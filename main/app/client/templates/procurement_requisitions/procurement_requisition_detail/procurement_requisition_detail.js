@@ -163,7 +163,7 @@ Template.ProcurementRequisitionDetail.events({
                     Meteor.call('ProcurementRequisition/approveWithApprovalRecommendation', 
                         businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition approved and sent for final approval", type: "success",
+                            swal({title: "Success", text: "Requisition approved", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
@@ -175,7 +175,7 @@ Template.ProcurementRequisitionDetail.events({
                 } else if(Template.instance().isSecondSupervisor()) {
                     Meteor.call('ProcurementRequisition/approve', businessUnitId, procurementDetails._id, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition approved and sent for treatment approval", type: "success",
+                            swal({title: "Success", text: "Requisition approved", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
@@ -254,7 +254,7 @@ Template.ProcurementRequisitionDetail.events({
                     Meteor.call('ProcurementRequisition/rejectWithApprovalRecommendation', 
                         businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition rejected and sent for final approval", type: "success",
+                            swal({title: "Success", text: "Requisition rejected", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()

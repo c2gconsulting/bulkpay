@@ -614,13 +614,13 @@ Meteor.methods({
                 let supervisors = []
                 let alternateSupervisors = []
 
-                if(supervisorPositionId) {
+                if(procurementRequisitionDoc.supervisorPositionId) {
                     supervisors = Meteor.users.find({
                         'employeeProfile.employment.position': procurementRequisitionDoc.supervisorPositionId
                     }).fetch()
                 }
 
-                if(alternateSupervisorPositionId) {
+                if(procurementRequisitionDoc.alternateSupervisorPositionId) {
                     alternateSupervisors = Meteor.users.find({
                         'employeeProfile.employment.position': procurementRequisitionDoc.alternativeSupervisorPositionId
                     }).fetch()

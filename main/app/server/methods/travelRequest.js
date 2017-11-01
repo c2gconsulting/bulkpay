@@ -337,13 +337,50 @@ Meteor.methods({
             let errMsg = "Sorry, you are not allowed to approve a travel request because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
-        let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let travelRequestDoc = TravelRequisitions.findOne({_id: docId})
         if(!travelRequestDoc) {
             throw new Meteor.Error(401, "Travel request does not exist.")            
         }
 
+        let approvalStatus = 'PartiallyApproved'
+        
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let createdByUser = Meteor.users.findOne(travelRequestDoc.createdBy)
+        if(createdByUser) {
+            let createdByUserPositionId = createdByUser.employeeProfile.employment.position        
+            let createdByUserPosition = EntityObjects.findOne({_id: createdByUserPositionId, otype: 'Position'})
+            if(createdByUserPosition.properties 
+                && (createdByUserPosition.properties.supervisor || createdByUserPosition.properties.alternateSupervisor)) {
+                let supervisorPositionId = createdByUserPosition.properties.supervisor || ""
+                let alternateSupervisorPositionId = createdByUserPosition.properties.alternateSupervisor || ""
+    
+                let supervisors = []
+                let alternateSupervisors = []
+    
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': supervisorPositionId
+                    }).fetch()
+                }
+    
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': alternateSupervisorPositionId
+                    }).fetch()
+
+                    if(alternateSupervisors.length === 0) {
+                        approvalStatus = 'Approved'                        
+                    }
+                } else {
+                    approvalStatus = 'Approved'
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "The user who created the travel request could not be found.")
+        }
+        
         if(travelRequestDoc.supervisorPositionId === userPositionId) {
             let approvals = travelRequestDoc.approvals || []
             approvals.push({
@@ -354,7 +391,7 @@ Meteor.methods({
                 approvalRecommendation: approvalRecommendation
             })
             let approvalSetObject = {
-                status: 'PartiallyApproved',
+                status: approvalStatus,
                 approvals: approvals
             }
             TravelRequisitions.update(docId, {$set: approvalSetObject})
@@ -390,6 +427,43 @@ Meteor.methods({
                         dateRequired,
                         travelRequestDoc.requisitionReason,
                         approvalsPageUrl)
+                } else {
+                    if(approvalStatus === 'Approved') {
+                        let usersWithTravelTreatRole = Meteor.users.find({
+                            businessIds: businessUnitId,
+                            'roles.__global_roles__': Core.Permissions.TRAVEL_REQUISITION_TREAT
+                        }).fetch()
+        
+                        try {
+                            let createdBy = Meteor.users.findOne(travelRequestDoc.createdBy)
+                            let createdByEmail = createdBy.emails[0].address;
+                            let createdByFullName = createdBy.profile.fullName
+                            let unit = EntityObjects.findOne({_id: travelRequestDoc.unitId, otype: 'Unit'})
+                            let unitName = unit.name
+                            let dateRequired = ''
+                            if(travelRequestDoc.dateRequired) {
+                                dateRequired = moment(travelRequestDoc.dateRequired).format('DD/MM/YYYY')
+                            }
+                            let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/travelrequests/treatlist`
+                            //--
+                            if(usersWithTravelTreatRole && usersWithTravelTreatRole.length > 0) {
+                                _.each(usersWithTravelTreatRole, function(travelRequestTreater) {
+                                    let supervisorEmail =  travelRequestTreater.emails[0].address;
+                                    
+                                    TravelRequestHelper.sendRequisitionNeedsTreatment(
+                                        travelRequestTreater.profile.fullName,
+                                        supervisorEmail, createdByFullName, 
+                                        travelRequestDoc.description, 
+                                        unitName,
+                                        dateRequired,
+                                        travelRequestDoc.requisitionReason,
+                                        approvalsPageUrl)
+                                })
+                            }
+                        } catch(errorInSendingEmail) {
+                            console.log(errorInSendingEmail)
+                        }
+                    }
                 }
             } catch(errorInSendingEmail) {
                 console.log(errorInSendingEmail)
@@ -477,11 +551,48 @@ Meteor.methods({
             let errMsg = "Sorry, you have not allowed to reject a procurement requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
-        let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let travelRequestDoc = TravelRequisitions.findOne({_id: docId})
         if(!travelRequestDoc) {
             throw new Meteor.Error(401, "Requisition does not exist.")            
+        }
+
+        let approvalStatus = 'PartiallyRejected'
+        
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let createdByUser = Meteor.users.findOne(travelRequestDoc.createdBy)
+        if(createdByUser) {
+            let createdByUserPositionId = createdByUser.employeeProfile.employment.position        
+            let createdByUserPosition = EntityObjects.findOne({_id: createdByUserPositionId, otype: 'Position'})
+            if(createdByUserPosition.properties 
+                && (createdByUserPosition.properties.supervisor || createdByUserPosition.properties.alternateSupervisor)) {
+                let supervisorPositionId = createdByUserPosition.properties.supervisor || ""
+                let alternateSupervisorPositionId = createdByUserPosition.properties.alternateSupervisor || ""
+    
+                let supervisors = []
+                let alternateSupervisors = []
+    
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': supervisorPositionId
+                    }).fetch()
+                }
+    
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': alternateSupervisorPositionId
+                    }).fetch()
+
+                    if(alternateSupervisors.length === 0) {
+                        approvalStatus = 'Rejected'                        
+                    }
+                } else {
+                    approvalStatus = 'Rejected'
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "The user who created the travel request could not be found.")
         }
 
         if(travelRequestDoc.supervisorPositionId === userPositionId) {
@@ -494,7 +605,7 @@ Meteor.methods({
                 approvalRecommendation: approvalRecommendation
             })
             let approvalSetObject = {
-                status: 'PartiallyRejected',
+                status: approvalStatus,
                 approvals: approvals
             }
             TravelRequisitions.update(docId, {$set: approvalSetObject})
@@ -503,13 +614,13 @@ Meteor.methods({
                 let supervisors = []
                 let alternateSupervisors = []
 
-                if(supervisorPositionId) {
+                if(travelRequestDoc.supervisorPositionId) {
                     supervisors = Meteor.users.find({
                         'employeeProfile.employment.position': travelRequestDoc.supervisorPositionId
                     }).fetch()
                 }
 
-                if(alternateSupervisorPositionId) {
+                if(travelRequestDoc.alternateSupervisorPositionId) {
                     alternateSupervisors = Meteor.users.find({
                         'employeeProfile.employment.position': travelRequestDoc.alternativeSupervisorPositionId
                     }).fetch()

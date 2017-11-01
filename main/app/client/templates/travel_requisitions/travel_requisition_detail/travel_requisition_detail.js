@@ -203,7 +203,7 @@ Template.TravelRequisitionDetail.events({
                     Meteor.call('TravelRequest/approveWithApprovalRecommendation', 
                         businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition approved and sent for final approval", type: "success",
+                            swal({title: "Success", text: "Travel request approved", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
@@ -215,7 +215,7 @@ Template.TravelRequisitionDetail.events({
                 } else if(Template.instance().isSecondSupervisor()) {
                     Meteor.call('TravelRequest/approve', businessUnitId, procurementDetails._id, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Requisition approved and sent for treatment approval", type: "success",
+                            swal({title: "Success", text: "Travel request approved", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
@@ -294,7 +294,7 @@ Template.TravelRequisitionDetail.events({
                     Meteor.call('TravelRequest/rejectWithApprovalRecommendation', 
                         businessUnitId, procurementDetails._id, approvalRecommendation, function(err, res) {
                         if(!err) {
-                            swal({title: "Success", text: "Travel request rejected and sent for final approval", type: "success",
+                            swal({title: "Success", text: "Travel request rejected", type: "success",
                                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                             }, () => {
                                 Modal.hide()
