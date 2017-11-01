@@ -28,6 +28,7 @@ let ProcurementRequisitonHelper = {
     },
     sendRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
         description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        // console.log(`arguments: `, arguments)
         try {
             SSR.compileTemplate("procurementRequisitionNotificationForTreatment", Assets.getText("emailTemplates/procurementRequisitionNotificationForTreatment.html"));
             
@@ -307,16 +308,6 @@ Meteor.methods({
                                 procurementRequisitionDoc.requisitionReason,
                                 approvalsPageUrl)
                         })
-                        // let supervisorEmail =  usersWithProcurementTreatRole[0].emails[0].address;
-
-                        // ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
-                        //     usersWithProcurementTreatRole[0].profile.fullName,
-                        //     supervisorEmail, createdByFullName, 
-                        //     procurementRequisitionDoc.description, 
-                        //     unitName,
-                        //     dateRequired,
-                        //     procurementRequisitionDoc.requisitionReason,
-                        //     approvalsPageUrl)
                     }
                 } catch(errorInSendingEmail) {
                     console.log(errorInSendingEmail)
@@ -344,13 +335,51 @@ Meteor.methods({
             let errMsg = "Sorry, you are not allowed to approve a procurement requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
-        let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
 
         if(!procurementRequisitionDoc) {
-            throw new Meteor.Error(401, "Requisition does not exist.")            
+            throw new Meteor.Error(401, "Requisition does not exist.")
         }
+        let approvalStatus = 'PartiallyApproved'
+
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let createdByUser = Meteor.users.findOne(procurementRequisitionDoc.createdBy)
+        if(createdByUser) {
+            let createdByUserPositionId = createdByUser.employeeProfile.employment.position        
+            let createdByUserPosition = EntityObjects.findOne({_id: createdByUserPositionId, otype: 'Position'})
+            if(createdByUserPosition.properties 
+                && (createdByUserPosition.properties.supervisor || createdByUserPosition.properties.alternateSupervisor)) {
+                let supervisorPositionId = createdByUserPosition.properties.supervisor || ""
+                let alternateSupervisorPositionId = createdByUserPosition.properties.alternateSupervisor || ""
+    
+                let supervisors = []
+                let alternateSupervisors = []
+    
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': supervisorPositionId
+                    }).fetch()
+                }
+    
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': alternateSupervisorPositionId
+                    }).fetch()
+
+                    if(alternateSupervisors.length === 0) {
+                        approvalStatus = 'Approved'                        
+                    }
+                } else {
+                    approvalStatus = 'Approved'
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "The user who created the procurement could not be found.")
+        }
+
+        //--
 
         if(procurementRequisitionDoc.supervisorPositionId === userPositionId) {
             let approvals = procurementRequisitionDoc.approvals || []
@@ -362,7 +391,7 @@ Meteor.methods({
                 approvalRecommendation: approvalRecommendation
             })
             let approvalSetObject = {
-                status: 'PartiallyApproved',
+                status: approvalStatus,
                 approvals: approvals
             }
             ProcurementRequisitions.update(docId, {$set: approvalSetObject})
@@ -398,6 +427,43 @@ Meteor.methods({
                         dateRequired,
                         procurementRequisitionDoc.requisitionReason,
                         approvalsPageUrl)
+                } else {
+                    if(approvalStatus === 'Approved') {
+                        let usersWithProcurementTreatRole = Meteor.users.find({
+                            businessIds: businessUnitId,
+                            'roles.__global_roles__': Core.Permissions.PROCUREMENT_REQUISITION_TREAT
+                        }).fetch()
+        
+                        try {
+                            let createdBy = Meteor.users.findOne(procurementRequisitionDoc.createdBy)                
+                            let createdByEmail = createdBy.emails[0].address;
+                            let createdByFullName = createdBy.profile.fullName
+                            let unit = EntityObjects.findOne({_id: procurementRequisitionDoc.unitId, otype: 'Unit'})
+                            let unitName = unit.name
+                            let dateRequired = ''
+                            if(procurementRequisitionDoc.dateRequired) {
+                                dateRequired = moment(procurementRequisitionDoc.dateRequired).format('DD/MM/YYYY')
+                            }
+                            let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/treatlist`
+                            //--
+                            if(usersWithProcurementTreatRole && usersWithProcurementTreatRole.length > 0) {
+                                _.each(usersWithProcurementTreatRole, function(procurementTreater) {
+                                    let supervisorEmail =  procurementTreater.emails[0].address;
+                                    
+                                    ProcurementRequisitonHelper.sendRequisitionNeedsTreatment(
+                                        procurementTreater.profile.fullName,
+                                        supervisorEmail, createdByFullName, 
+                                        procurementRequisitionDoc.description, 
+                                        unitName,
+                                        dateRequired,
+                                        procurementRequisitionDoc.requisitionReason,
+                                        approvalsPageUrl)
+                                })
+                            }
+                        } catch(errorInSendingEmail) {
+                            console.log(errorInSendingEmail)
+                        }
+                    }
                 }
             } catch(errorInSendingEmail) {
                 console.log(errorInSendingEmail)
@@ -485,11 +551,48 @@ Meteor.methods({
             let errMsg = "Sorry, you have not allowed to reject a procurement requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
-        let userPositionId = Meteor.user().employeeProfile.employment.position
 
         let procurementRequisitionDoc = ProcurementRequisitions.findOne({_id: docId})
         if(!procurementRequisitionDoc) {
             throw new Meteor.Error(401, "Requisition does not exist.")            
+        }
+
+        let approvalStatus = 'PartiallyRejected'
+
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let createdByUser = Meteor.users.findOne(procurementRequisitionDoc.createdBy)
+        if(createdByUser) {
+            let createdByUserPositionId = createdByUser.employeeProfile.employment.position        
+            let createdByUserPosition = EntityObjects.findOne({_id: createdByUserPositionId, otype: 'Position'})
+            if(createdByUserPosition.properties 
+                && (createdByUserPosition.properties.supervisor || createdByUserPosition.properties.alternateSupervisor)) {
+                let supervisorPositionId = createdByUserPosition.properties.supervisor || ""
+                let alternateSupervisorPositionId = createdByUserPosition.properties.alternateSupervisor || ""
+    
+                let supervisors = []
+                let alternateSupervisors = []
+    
+                if(supervisorPositionId) {
+                    supervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': supervisorPositionId
+                    }).fetch()
+                }
+    
+                if(alternateSupervisorPositionId) {
+                    alternateSupervisors = Meteor.users.find({
+                        'employeeProfile.employment.position': alternateSupervisorPositionId
+                    }).fetch()
+
+                    if(alternateSupervisors.length === 0) {
+                        approvalStatus = 'Rejected'                        
+                    }
+                } else {
+                    approvalStatus = 'Rejected'
+                }
+            }
+        } else {
+            throw new Meteor.Error(401, "The user who created the procurement could not be found.")
         }
 
         if(procurementRequisitionDoc.supervisorPositionId === userPositionId) {
@@ -502,7 +605,7 @@ Meteor.methods({
                 approvalRecommendation: approvalRecommendation
             })
             let approvalSetObject = {
-                status: 'PartiallyRejected',
+                status: approvalStatus,
                 approvals: approvals
             }
             ProcurementRequisitions.update(docId, {$set: approvalSetObject})
