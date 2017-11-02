@@ -197,6 +197,222 @@ _.extend(Core, {
 
   startWebHooksJobs: function () {
     return webHookJobs.startJobServer();
+  },
+
+  sendProcurementRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
+    description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+    // console.log(`arguments: `, arguments)
+    try {
+        SSR.compileTemplate("procurementRequisitionNotificationForTreatment", Assets.getText("emailTemplates/procurementRequisitionNotificationForTreatment.html"));
+        
+        Email.send({
+            to: supervisorEmail,
+            from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+            subject: "Procurement Requisition approved and needs to be treated",
+            html: SSR.render("procurementRequisitionNotificationForTreatment", {
+                user: supervisorFullName,
+                createdBy: createdByFullName,
+                description: description,
+                unit: unitName,
+                dateRequired: dateRequired,
+                reason: requisitionReason,
+                approvalsPageUrl: approvalsPageUrl
+            })
+        });
+        return true
+    } catch(e) {
+        throw new Meteor.Error(401, e.message);
+    }
+  },
+  sendTravelRequestNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
+      description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+    try {
+        SSR.compileTemplate("travelRequisitionNotificationForTreatment", Assets.getText("emailTemplates/travelRequisitionNotificationForTreatment.html"));
+        
+        Email.send({
+            to: supervisorEmail,
+            from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+            subject: "Travel Request approved and needs to be treated",
+            html: SSR.render("travelRequisitionNotificationForTreatment", {
+                user: supervisorFullName,
+                createdBy: createdByFullName,
+                description: description,
+                unit: unitName,
+                dateRequired: dateRequired,
+                reason: requisitionReason,
+                approvalsPageUrl: approvalsPageUrl
+            })
+        });
+        return true
+    } catch(e) {
+        throw new Meteor.Error(401, e.message);
+    }
+  },
+  processPartiallyApprovedProcurements: function() {
+    let businessUnitId = 'tgC7zYJf9ceSBmoT9'
+
+    Partitioner.directOperation(function() {
+      let partiallyApprovedProcurements = ProcurementRequisitions.find({
+        $or: [{'status': 'PartiallyApproved'}, {'status': 'PartiallyRejected'}],
+        businessUnitId: businessUnitId
+      }).fetch();
+
+      let createdByUserIds = _.pluck(partiallyApprovedProcurements, 'createdBy')
+
+      let allCreators = Meteor.users.find({_id: {$in: createdByUserIds}}).fetch();
+      let creatorPositionIds = []
+
+      _.each(allCreators, aUser => {
+        let userPositionId = aUser.employeeProfile.employment.position
+        creatorPositionIds.push(userPositionId)
+      })
+
+      let creatorPositions = EntityObjects.find({_id: {$in: creatorPositionIds}}).fetch();
+
+      let numProcurementsThatShouldBeApprovedOrRejected = 0
+
+      _.each(partiallyApprovedProcurements, aProcurement => {
+        let createdByUserId = aProcurement.createdBy;
+        let user = _.find(allCreators, aCreator => aCreator._id === createdByUserId)
+        if(user) {
+          let userPosition = _.find(creatorPositions, aPosition => aPosition._id === user.employeeProfile.employment.position)
+          if(userPosition) {
+            if(userPosition.properties.alternateSupervisor) {
+              numProcurementsThatShouldBeApprovedOrRejected += 1
+
+              if(aProcurement.status === 'PartiallyApproved') {
+                ProcurementRequisitions.update(aProcurement._id, {$set: {
+                  status: 'Approved'
+                }})
+
+                let usersWithProcurementTreatRole = Meteor.users.find({
+                  businessIds: businessUnitId,
+                  'roles.__global_roles__': Core.Permissions.PROCUREMENT_REQUISITION_TREAT
+                }).fetch()
+                try {
+                    let createdBy = Meteor.users.findOne(aProcurement.createdBy)                
+                    let createdByEmail = createdBy.emails[0].address;
+                    let createdByFullName = createdBy.profile.fullName
+                    let unit = EntityObjects.findOne({_id: aProcurement.unitId, otype: 'Unit'})
+                    let unitName = unit.name
+                    let dateRequired = ''
+                    if(aProcurement.dateRequired) {
+                        dateRequired = moment(aProcurement.dateRequired).format('DD/MM/YYYY')
+                    }
+                    let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/procurementrequisitions/treatlist`
+                    //--
+                    if(usersWithProcurementTreatRole && usersWithProcurementTreatRole.length > 0) {
+                      _.each(usersWithProcurementTreatRole, function(procurementTreater) {
+                          let supervisorEmail =  procurementTreater.emails[0].address;
+                          
+                          Core.sendProcurementRequisitionNeedsTreatment(
+                              procurementTreater.profile.fullName,
+                              supervisorEmail, createdByFullName, 
+                              aProcurement.description, 
+                              unitName,
+                              dateRequired,
+                              aProcurement.requisitionReason,
+                              approvalsPageUrl)
+                      })
+                    }
+                } catch(errorInSendingEmail) {
+                    console.log(errorInSendingEmail)
+                }
+              } else if(aProcurement.status === 'PartiallyRejected') {
+                ProcurementRequisitions.update(aProcurement._id, {$set: {
+                  status: 'Rejected'
+                }})
+              }
+            }
+          }
+        }
+      })
+      console.log(`numProcurementsThatShouldBeApprovedOrRejected: `, numProcurementsThatShouldBeApprovedOrRejected)
+    })
+  },
+  processPartiallyApprovedTravelRequests: function() {
+    let businessUnitId = 'tgC7zYJf9ceSBmoT9'
+
+    Partitioner.directOperation(function() {
+      let partiallyApprovedTravelRequests = TravelRequisitions.find({
+        $or: [{'status': 'PartiallyApproved'}, {'status': 'PartiallyRejected'}],
+        businessUnitId: businessUnitId
+      }).fetch();
+
+      let createdByUserIds = _.pluck(partiallyApprovedTravelRequests, 'createdBy')
+
+      let allCreators = Meteor.users.find({_id: {$in: createdByUserIds}}).fetch();
+      let creatorPositionIds = []
+
+      _.each(allCreators, aUser => {
+        let userPositionId = aUser.employeeProfile.employment.position
+        creatorPositionIds.push(userPositionId)
+      })
+
+      let creatorPositions = EntityObjects.find({_id: {$in: creatorPositionIds}}).fetch();
+
+      let numTravelRequestsThatShouldBeApprovedOrRejected = 0
+
+      _.each(partiallyApprovedTravelRequests, travelRequestDoc => {
+        let createdByUserId = travelRequestDoc.createdBy;
+        let user = _.find(allCreators, aCreator => aCreator._id === createdByUserId)
+        if(user) {
+          let userPosition = _.find(creatorPositions, aPosition => aPosition._id === user.employeeProfile.employment.position)
+          if(userPosition) {
+            if(userPosition.properties.alternateSupervisor) {
+              numTravelRequestsThatShouldBeApprovedOrRejected += 1
+
+              if(travelRequestDoc.status === 'PartiallyApproved') {
+                // TravelRequisitions.update(travelRequestDoc._id, {$set: {
+                //   status: 'Approved'
+                // }})
+
+                let usersWithTravelTreatRole = Meteor.users.find({
+                  businessIds: businessUnitId,
+                  'roles.__global_roles__': Core.Permissions.TRAVEL_REQUISITION_TREAT
+                }).fetch()
+
+                try {
+                    let createdBy = Meteor.users.findOne(travelRequestDoc.createdBy)
+                    let createdByEmail = createdBy.emails[0].address;
+                    let createdByFullName = createdBy.profile.fullName
+                    let unit = EntityObjects.findOne({_id: travelRequestDoc.unitId, otype: 'Unit'})
+                    let unitName = unit.name
+                    let dateRequired = ''
+                    if(travelRequestDoc.dateRequired) {
+                        dateRequired = moment(travelRequestDoc.dateRequired).format('DD/MM/YYYY')
+                    }
+                    let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/travelrequests/treatlist`
+                    //--
+                    if(usersWithTravelTreatRole && usersWithTravelTreatRole.length > 0) {
+                        _.each(usersWithTravelTreatRole, function(travelRequestTreater) {
+                            let supervisorEmail =  travelRequestTreater.emails[0].address;
+                            
+                            TravelRequestHelper.sendRequisitionNeedsTreatment(
+                                travelRequestTreater.profile.fullName,
+                                supervisorEmail, createdByFullName, 
+                                travelRequestDoc.description, 
+                                unitName,
+                                dateRequired,
+                                travelRequestDoc.requisitionReason,
+                                approvalsPageUrl)
+                        })
+                    }
+                } catch(errorInSendingEmail) {
+                    console.log(errorInSendingEmail)
+                }
+              } else if(travelRequestDoc.status === 'PartiallyRejected') {
+                // TravelRequisitions.update(travelRequestDoc._id, {$set: {
+                //   status: 'Rejected'
+                // }})
+              }
+            }
+          }
+        }
+      })
+      console.log(`numTravelRequestsThatShouldBeApprovedOrRejected: `, numTravelRequestsThatShouldBeApprovedOrRejected)
+
+    })
   }
 
   /*,
@@ -248,4 +464,7 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
+
+  Core.processPartiallyApprovedProcurements();
+  //Core.processPartiallyApprovedTravelRequests();
 });
