@@ -345,11 +345,27 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       return Template.instance().selectedPosition.get();
   },
   'grades': () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee')
-      if(selectedEmployee) {
-        Template.instance().selectedGrade.set(selectedEmployee.employeeProfile.employment.paygrade);
-        return PayGrades.find({_id: selectedEmployee.employeeProfile.employment.paygrade})
-      }
+    let businessId = Session.get('context');
+    return PayGrades.find({
+        businessId
+    })
+
+    //   let selectedEmployee = Session.get('employeesList_selectedEmployee')
+    //   if(selectedEmployee) {
+    //     let employeePositionId = selectedEmployee.employeeProfile.employment.position;
+    //     console.log(`employeePositionId: `, employeePositionId)
+
+    //     if(employeePositionId) {
+    //         return PayGrades.find({
+    //             businessId,
+    //             positions: employeePositionId
+    //         })
+    //     } else {
+    //         return PayGrades.find({
+    //             businessId
+    //         })
+    //     }
+    //   }
   }, 
   'allPayGrades': () => {
     return PayGrades.find({
