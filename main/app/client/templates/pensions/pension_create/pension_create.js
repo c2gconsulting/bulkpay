@@ -87,7 +87,8 @@ Template.PensionCreate.events({
 /*****************************************************************************/
 Template.PensionCreate.helpers({
     paytypes: function(){
-        return PayTypes.find();
+        let businessId = Session.get('context')
+        return PayTypes.find({businessId});
     },
     selectedPaytypes: function () {
         let self = this;

@@ -24,15 +24,19 @@
 
                             <div class="col-sm-12">
                                 <div class="form-group">
-                                    <label class="control-label">Pay Types</label>
-                                    {{#semanticselect}}
-                                        <select name="payTypes" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
-                                            <option value="">Select Pay Type</option>
-                                            {{#each paytypes}}
-                                                <option value="{{_id}}" {{selectedPaytypes}}>{{code}}</option>
-                                            {{/each}}
-                                        </select>
-                                    {{/semanticselect}}
+                                    <label class="control-label">Pay Types</label>                                    
+                                    {{#if Template.subscriptionsReady}}
+                                        {{#semanticselect}}
+                                            <select name="payTypes" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                                <option value="">Select Pay Type</option>
+                                                {{#each paytypes}}
+                                                    <option value="{{_id}}" {{selectedPaytypes}}>{{code}}</option>
+                                                {{/each}}
+                                            </select>
+                                        {{/semanticselect}}
+                                    {{else}}
+                                        {{> spinner}}
+                                    {{/if}}
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
 
