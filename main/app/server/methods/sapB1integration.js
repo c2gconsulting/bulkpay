@@ -25,12 +25,16 @@ SapIntegration.getTaxForBulkSum = function (employeeDetailedPayrunResult, curren
                         return aCurrencyRate.code === aCurrency
                     })
                     if(currencyRate) {
-                        if(!isNaN(currencyRate.rateToBaseCurrency)) {
+                        if(!isNaN(currencyRate.rateToBaseCurrency) && !isNaN(aPayment.value)) {
+                            aPayment.value = aPayment.value.toFixed(2)
                             totalTaxInLocalCurrency += (Math.abs(aPayment.value) * currencyRate.rateToBaseCurrency)
                         }
                     }
                 } else {
-                    totalTaxInLocalCurrency += Math.abs(aPayment.value)
+                    if(!isNaN(aPayment.value)) {
+                        aPayment.value = aPayment.value.toFixed(2)
+                        totalTaxInLocalCurrency += Math.abs(aPayment.value)
+                    }
                 }
             }
         }
