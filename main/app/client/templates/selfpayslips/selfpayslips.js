@@ -10,7 +10,7 @@ Template.selfpayslips.events({
         let period = paymentPeriodMonth + paymentPeriodYear;
         let businessUnitId = Session.get('context')
 
-        Meteor.call('Payslip/getSelfPayslipForPeriod', businessUnitId, period, function(err, res) {
+        Meteor.call('Payslip/getSelfPayslipForPeriod', businessUnitId, period, Meteor.userId(), function(err, res) {
             if(!err) {
                 tmpl.errorMsg.set(null);
                 let selfPayrun = res.selfPayrun

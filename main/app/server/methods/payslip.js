@@ -1,19 +1,19 @@
 import _ from 'underscore';
 
 Meteor.methods({
-    'Payslip/getSelfPayslipForPeriod': function (businessId, period) {
+    'Payslip/getSelfPayslipForPeriod': function (businessId, period, theUserId) {
         check(period, String);
         check(businessId, String);
         this.unblock();
 
         let selfPayrun = Payruns.findOne({
-            employeeId: Meteor.userId(),
+            employeeId: theUserId,
             businessId: businessId,
             period: period
         })
 
         let selfPayResults = PayResults.findOne({
-            employeeId: Meteor.userId(), 
+            employeeId: theUserId, 
             period: period
         });
 

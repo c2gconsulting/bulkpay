@@ -267,33 +267,27 @@ Template.singlePayrunResult.helpers({
 
 Template.singlePayrunResult.events({
     'click .anEmployeePayResult': (e, tmpl) => {
-      //console.log("this context: " + JSON.stringify(Template.parentData()));
-      let thisContext = Template.parentData();
+        //console.log("this context: " + JSON.stringify(Template.parentData()));
+        let thisContext = Template.parentData();
 
-      let employee = Meteor.users.findOne({_id: thisContext.employeeId});
-      let employeeFullName = "";
-      if(employee)
-        employeeFullName = employee.profile.fullName;
-      else
-        employeeFullName = null;
-      //--
-      let monthId = thisContext.period.substring(0,2);
-      console.log("Month id: " + monthId);
+        let businessUnitId = Session.get('context')
 
-      let monthName = "";
-      let months = Core.months();
-      months.forEach((aMonth) => {
-        if(aMonth.period === monthId) {
-          monthName = aMonth.name;
-          return;
-        }
-      })
-      thisContext.monthName = monthName;
-      //--
-      thisContext.employeeFullName = employeeFullName;
-      thisContext.periodAsWords = thisContext.monthName + " " + thisContext.period.substring(2);
+        Meteor.call('Payslip/getSelfPayslipForPeriod', businessUnitId, thisContext.period, thisContext.employeeId, function(err, res) {
+            if(!err) {
+                let selfPayrun = res.selfPayrun
+                let selfPayResults = res.selfPayResults
 
-      Modal.show("PayRunResultModal", thisContext);
+                let payLoadForPayslip = {
+                    payrun: selfPayrun,
+                    payslip: selfPayResults.payslip, 
+                    payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
+                    displayAllPaymentsUnconditionally: true
+                }
+                Modal.show('Payslip', payLoadForPayslip);
+            } else {
+                tmpl.errorMsg.set(err.message);
+            }
+        })
     }
 });
 
