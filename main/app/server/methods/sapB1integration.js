@@ -4,6 +4,41 @@ import { HTTP } from 'meteor/http'
 
 let SapIntegration = {}
 
+SapIntegration.getDetailedPayrunResultForEmployee = (employeeId, detailedPayrunResults) => {
+    return _.find(detailedPayrunResults, (aDetailedPayrunResult) => {
+        return aDetailedPayrunResult.employeeId === employeeId
+    })
+}
+
+SapIntegration.getTaxForBulkSum = function (employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency) {
+    let deductionPayments = employeeDetailedPayrunResult.payslipWithCurrencyDelineation.deduction;
+    let totalTaxInLocalCurrency = 0
+
+    let currencies = Object.keys(deductionPayments)
+    for(let aCurrency of currencies) {
+        let paymentsInCurrency = deductionPayments[aCurrency].payments
+
+        for(let aPayment of paymentsInCurrency) {
+            if (aPayment.reference === 'Tax') {
+                if(aCurrency !== localCurrency.iso) {
+                    let currencyRate = _.find(currencyRatesForPeriod, (aCurrencyRate) => {
+                        return aCurrencyRate.code === aCurrency
+                    })
+                    if(currencyRate) {
+                        if(!isNaN(currencyRate.rateToBaseCurrency)) {
+                            totalTaxInLocalCurrency += (Math.abs(aPayment.value) * currencyRate.rateToBaseCurrency)
+                        }
+                    }
+                } else {
+                    totalTaxInLocalCurrency += Math.abs(aPayment.value)
+                }
+            }
+        }
+    }
+
+    return totalTaxInLocalCurrency;
+}
+
 /**
  * Goes through all employee payrun results for the period and accumulates a bulksum for each paytype
  *
@@ -11,7 +46,7 @@ let SapIntegration = {}
  * @param {Array} payRunResults -
  * @return {Object, Object, Array} Bulksum for units, Bulksum for projects, Array of employees that contribute to bulksum
  */
-SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResults) => {
+SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, payRunResults, period, localCurrency) {
     let unitsBulkSum = {}
     let projectsBulkSum = {}
     let arrayOfEmployees = []
@@ -21,6 +56,9 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
     let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
     let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
     let allProjects = Projects.find({businessId: businessUnitSapConfig.businessId}).fetch()
+    let detailedPayRunResults = PayResults.find({period: period}).fetch();
+
+    let currencyRatesForPeriod = Currencies.find({businessId: businessUnitSapConfig.businessId, period: period}).fetch()
 
     let getUnitForPosition = (entity) => {
         let possibleUnitId = entity.parentId
@@ -115,6 +153,8 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
             let unitToWorkWith = unitsBulkSum[unitId]
             let unitBulkSumPayments = unitToWorkWith.payments
             //--
+            let employeeDetailedPayrunResult = SapIntegration.getDetailedPayrunResultForEmployee(employeeId, detailedPayRunResults);
+
             aPayrunResult.payment.forEach(aPayment => {
                 if(aPayment && aPayment.id) {
                     let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
@@ -176,9 +216,17 @@ SapIntegration.processPayrunResultsForSap = (businessUnitSapConfig, payRunResult
                                 } else {
                                     description = shortenMemoForSapJournalEntry(aPayment.code, " (Cost-Center: ", unit.name)
                                 }
+
+                                let taxOrPensionAmount = 0
+                                if(aPayment.reference === 'Tax') {
+                                    taxOrPensionAmount = SapIntegration.getTaxForBulkSum(employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency)
+                                } else {
+                                    taxOrPensionAmount = aPayment.amountLC || 0
+                                }
+
                                 unitBulkSumPayments.push({
                                     payTypeId: aPayment.id,
-                                    costCenterPayAmount: aPayment.amountLC || 0,
+                                    costCenterPayAmount: taxOrPensionAmount,
                                     description: description,
                                     payTypeDebitAccountCode: payTypeDebitAccountCode,
                                     payTypeCreditAccountCode: payTypeCreditAccountCode,
@@ -439,7 +487,15 @@ Meteor.methods({
                     "message": "Your company's sap integration setup has not been done"
                 })
             }
-            let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult)
+            let user = Meteor.user();
+            let tenantId = user.group;
+            let tenant = Tenants.findOne(tenantId)        
+            let localCurrency = {}
+            if (tenant) {
+                localCurrency = tenant.baseCurrency;
+            }
+        
+            let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult, period, localCurrency)
             // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
             
             if(processingResult.status === true) {
