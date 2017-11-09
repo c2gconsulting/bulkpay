@@ -29,10 +29,14 @@ Core.Schemas.LeaveType = new SimpleSchema({
         optional: true
     },
     maximumDuration: {
-        type: String,
+        type: Number,
         optional: true
     },
     paid: {
+        type: Boolean,
+        defaultValue: true
+    },
+    deductFromAnnualLeave: {
         type: Boolean,
         defaultValue: true
     },

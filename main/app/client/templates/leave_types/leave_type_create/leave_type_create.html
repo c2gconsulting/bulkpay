@@ -28,9 +28,9 @@
                                 {{> afQuickField name="payGradeIds" options=payGrades class="dropdown"}}
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-3">
+                            <!-- <div class="col-sm-3">
                                 {{> afQuickField name="deductFrom" options=leaveTypes class="dropdown"}}
-                            </div><!-- col-sm-3 -->
+                            </div> -->
 
                             <div class="col-sm-3">
                                 {{> afQuickField name="positionIds" options=positions class="dropdown"}}
@@ -42,7 +42,11 @@
 
                             <div class="col-sm-3 check">
                                 {{> afQuickField name="paid"}}
-                            </div><!-- col-sm-3 -->
+                            </div>
+
+                            <div class="col-sm-3 check">
+                                {{> afQuickField name="deductFromAnnualLeave"}}
+                            </div>                            
                         </div><!-- row -->
 
                     </div>

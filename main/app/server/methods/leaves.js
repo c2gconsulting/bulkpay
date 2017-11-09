@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 
 let LeaveCreateHelpers = {
     createByFixedEntitlement: function(userId, leave, currentYearAsNumber) {
@@ -70,12 +72,19 @@ let LeaveCreateHelpers = {
                 }
             }
             //--
+            let leaveTypesWithoutDeduction = LeaveTypes.find({
+                deductFromAnnualLeave: false
+            }).fetch();
+            let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
+
             let hoursOfLeaveApproved = 0
             let userApprovedLeaves = Leaves.find({
                 businessId: leave.businessId, 
                 employeeId: userId,
-                approvalStatus: 'Approved'
+                approvalStatus: 'Approved',
+                type: {$nin: theLeaveTypeIds}
             }).fetch();
+
             userApprovedLeaves.forEach(aLeave => {
                 hoursOfLeaveApproved += aLeave.durationInHours
             })

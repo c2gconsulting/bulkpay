@@ -79,6 +79,8 @@ Template.LeaveCreate.events({
 
             durationAsNumber = tmpl.getDurationOfWeekDays(start, end) // in days
         }
+        // console.log(`durationAsNumber: `, durationAsNumber)
+
         if(!selectedLeaveType || selectedLeaveType.length === 0) {
             tmpl.inputErrorMsg.set("Please select a leave type")
             return
@@ -93,7 +95,6 @@ Template.LeaveCreate.events({
             description: description,
             businessId: Session.get('context')
         }
-        console.log(`durationAsNumber: `, durationAsNumber)
 
         if(allowLeavesInHours) {
             leaveDoc.duration = durationAsNumber / 24 
@@ -102,22 +103,36 @@ Template.LeaveCreate.events({
             leaveDoc.duration = durationAsNumber
             leaveDoc.durationInHours = durationAsNumber * 24
         }
-        if(isRelieverEnabledForLeaveRequests) {
-            if(reliever && reliever.length > 0) {
-                leaveDoc.relieverUserId = reliever[0];
+
+        let leaveType = LeaveTypes.findOne(selectedLeaveType)
+        if(!leaveType) {
+            tmpl.inputErrorMsg.set("Could not find leave type details on the system.")
+        } else {
+            if(!isNaN(leaveType.maximumDuration)) {
+                if(leaveDoc.duration <= leaveType.maximumDuration) {
+                    if(isRelieverEnabledForLeaveRequests) {
+                        if(reliever && reliever.length > 0) {
+                            leaveDoc.relieverUserId = reliever[0];
+                        }
+                    }
+                    //--
+                    let currentYear = moment().year()
+                    let currentYearAsNumber = parseInt(currentYear)
+            
+                    Meteor.call('leave/create', leaveDoc, currentYearAsNumber, function(err, res) {
+                        if(!err) {
+                            swal('Successful', "Leave request successful", 'success')
+                        } else {
+                            swal('Error', err.reason, 'error')
+                        }
+                    })
+                } else {
+                    tmpl.inputErrorMsg.set(`Duration is more than the maximum allowed for the leave type: ${leaveType.maximumDuration} days.`)
+                }
+            } else {
+                tmpl.inputErrorMsg.set("Maximum duration of leave type is not a number in the system")
             }
         }
-        //--
-        let currentYear = moment().year()
-        let currentYearAsNumber = parseInt(currentYear)
-
-        Meteor.call('leave/create', leaveDoc, currentYearAsNumber, function(err, res) {
-            if(!err) {
-                swal('Successful', "Leave request successful", 'success')
-            } else {
-                swal('Error', err.reason, 'error')
-            }
-        })
     }
 });
 
@@ -268,8 +283,6 @@ Template.LeaveCreate.onCreated(function () {
         let startDateMoment = moment(startDate).startOf('day')
         let endDateMoment = moment(endDate).endOf('day')
         //--
-        let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
-        //--
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
         let numberOfLeaveDaysToAward = numberOfDays
 
@@ -280,7 +293,7 @@ Template.LeaveCreate.onCreated(function () {
 
             if(!businessUnitCustomConfig.isWeekendIncludedInLeaveRequests) {
                 if (startDateMomentClone.isoWeekday() === 6 || startDateMomentClone.isoWeekday() === 7) {
-                    numberOfHoursInPeriodWeekDays -= 1
+                    numberOfLeaveDaysToAward -= 1
                 }
             }
             startDateMomentClone.add(1, 'days');
@@ -345,11 +358,17 @@ Template.LeaveCreate.onCreated(function () {
             }
         }
         //--
+        let leaveTypesWithoutDeduction = LeaveTypes.find({
+            deductFromAnnualLeave: false
+        }).fetch();
+        let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
+
         let hoursOfLeaveApproved = 0
         let userApprovedLeaves = Leaves.find({
             businessId: businessId, 
             employeeId: Meteor.userId(),
-            approvalStatus: 'Approved'
+            approvalStatus: 'Approved',
+            type: {$nin: theLeaveTypeIds}
         }).fetch();
 
         userApprovedLeaves.forEach(aLeave => {
