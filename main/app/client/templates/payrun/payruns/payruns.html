@@ -24,12 +24,12 @@
         <div class="row">
             <div class="col-md-12 employee-filter">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                       <div class="row">
                           <h5>Please select a period</h5>
 
                           <div class="row">
-                              <div class="col-md-3">
+                              <div class="col-md-2">
                                   <div class="form-group">
                                       <select name="paymentPeriodMonth" class="form-control dropdown" style="width: 100%">
                                           <option value="">Select Month</option>
@@ -39,7 +39,7 @@
                                       </select>
                                   </div><!-- form-group -->
                               </div>
-                              <div class="col-md-3">
+                              <div class="col-md-2">
                                   <div class="form-group">
                                       <select name="paymentPeriodYear" class="form-control dropdown" style="width: 100%">
                                           <option value="">Select Year </option>
@@ -50,14 +50,21 @@
                                   </div><!-- form-group -->
                               </div>
 
-                              <div class="col-md-3">
+                              <div class="col-md-2">
                                   <button class="btn btn-primary mr5 ladda-button" id="get-employee-payresults">Get Pay Results</button>
                               </div>
 
-                              <div class="col-md-3">
+                              <div class="col-md-2">
                                   <button class="btn btn-primary excel"> <i class="fa fa-file-excel-o"></i> Download </button>
                               </div>
-                          </div>
+
+                              {{#if showPayrunDeleteButton}}
+                              <div class="col-md-2 pull-right">
+                                <button class="btn btn-danger" id="payrunDelete"> Delete </button>
+                              </div>
+                              {{/if}}
+                            
+                            </div>
                       </div>
                     </div>
 

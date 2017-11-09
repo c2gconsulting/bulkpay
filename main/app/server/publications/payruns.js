@@ -2,8 +2,8 @@
  * Payruns publications
  */
 
-Core.publish("Payruns", function (period) {
-    return Payruns.find({period: period});
+Core.publish("Payruns", function (period, businessId) {
+    return Payruns.find({period: period, businessId});
 });
 
 Core.publish("SelfPayruns", function (employeeId) {

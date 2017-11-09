@@ -81,7 +81,6 @@ Template.payruns.events({
             const month = $('[name="paymentPeriodMonth"]').val();
             const year = $('[name="paymentPeriodYear"]').val();
             let period = `${month}${year}`
-            console.log(`Period for sap posting: ${period}`)
 
             Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
                 resetButton()
@@ -110,6 +109,30 @@ Template.payruns.events({
                 }
             })
         }
+    }, 
+    'click #payrunDelete': function(e, tmpl) {
+        event.preventDefault();
+        
+        const month = $('[name="paymentPeriodMonth"]').val();
+        const year = $('[name="paymentPeriodYear"]').val();
+        let period = `${month}${year}`
+        let businessId = Session.get('context')
+
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to undo this",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: true
+        }, () => {
+            Meteor.call('payrun/delete', period, businessId, function(err, res) {
+                if(!err){
+                    swal("Deleted!", `Payrun deleted successfully.`, "success");
+                }
+            })
+        });
     }
 });
 
@@ -176,6 +199,11 @@ Template.payruns.helpers({
             return false
         }
     },
+    'showPayrunDeleteButton': function() {
+        let currentPayrun = Template.instance().currentPayrun.get()
+
+        return (currentPayrun !== null) && Core.hasPayrollAccess(Meteor.userId())
+    },
     'canPostToSAP': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
         if(payrollApprovalConfig && payrollApprovalConfig.requirePayrollApproval) {
@@ -217,16 +245,18 @@ Template.payruns.onCreated(function () {
 
     self.payrollApprovalConfig = new ReactiveVar()
 
+    let businessId = Session.get('context')
+
 
     self.autorun(() => {
         let currentPayrunPeriod = Template.instance().currentPayrunPeriod.get();
-        self.subscribe("Payruns", currentPayrunPeriod);
-        self.subscribe('PayrollApprovalConfigs', Session.get('context'));
+        self.subscribe("Payruns", currentPayrunPeriod, businessId);
+        self.subscribe('PayrollApprovalConfigs', businessId);
 
         if (self.subscriptionsReady()) {
-          let payRun = Payruns.find({period: currentPayrunPeriod}).fetch();
+          let payRun = Payruns.find({period: currentPayrunPeriod, businessId}).fetch();
             
-          let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: Session.get('context')})
+          let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId})
           self.payrollApprovalConfig.set(payrollApprovalConfig)
 
           if(payRun && payRun.length > 0)

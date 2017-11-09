@@ -496,6 +496,24 @@ Meteor.methods({
             return pension;
         }
     },
+
+    "payrun/delete": function(period, businessId) {
+        if (!this.userId && Core.hasPayrollAccess(this.userId)) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        let userId = Meteor.userId();
+        this.unblock();
+
+        if(!businessId) {
+            throw new Meteor.Error(401, "Unauthorized");            
+        }
+
+        Payruns.remove({period, businessId: businessId})
+        PayResults.remove({period, businessId: businessId});
+
+        return true;
+    },
+
     /* Payment run
      */
 
