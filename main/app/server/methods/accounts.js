@@ -52,6 +52,8 @@ Accounts.onCreateUser(function (options, user) {
     user.salesProfile['salesAreas'] = options.salesAreas;
     user.roles = options.roles || {};
     user.businessIds = options.businessIds || [];
+    user.group = tenantId;
+
     // assign user to his tenant Partition
     Partitioner.setUserGroup(user._id, tenantId);
 

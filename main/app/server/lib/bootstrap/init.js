@@ -109,16 +109,15 @@ _.extend(Core, {
   getCurrentTenantCursor: function (userId) {
     if (userId){
       let tenantId = Partitioner.getUserGroup(userId);
-      console.log(`tenantId: `, tenantId)
 
       let cursor = Tenants.find({
         _id: tenantId
       });
 
-      console.log(`userId: `, userId)
-
       if (!cursor.count()) {
+        console.log(`tenantId: `, tenantId)
         Core.Log.error(`Invalid tenant info for user ${this.userId}`);
+        console.log(`userId: `, userId)
       }
       return cursor;
     }
@@ -290,5 +289,5 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
-  Core.fixPartitionProblems();
+  // Core.fixPartitionProblems();
 });
