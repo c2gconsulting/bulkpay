@@ -197,6 +197,43 @@ _.extend(Core, {
 
   startWebHooksJobs: function () {
     return webHookJobs.startJobServer();
+  },
+
+  fixPartitionProblems: function() {
+    let allUsers = Meteor.users.find({}).fetch() || []
+
+    let firstStepOfUsersWithoutGroup = 0
+    let secondStepOfUsersWithoutGroup = 0
+
+    Partitioner.directOperation(() => {
+      allUsers.forEach(aUser => {
+        if(aUser.group) {
+          if(!Partitioner.getUserGroup(aUser._id)) {
+            Partitioner.setUserGroup(aUser._id, aUser.group);
+          }
+        } else {
+          console.log(`user has no group. User _id: `, aUser._id)
+          firstStepOfUsersWithoutGroup += 1
+
+          if(aUser.businessIds && aUser.businessIds[0]) {
+            let businessUnit = BusinessUnits.findOne(aUser.businessIds[0])
+            if(businessUnit) {
+              if(businessUnit._groupId) {
+                Meteor.users.update({_id: aUser._id}, {$set: {
+                  group: businessUnit._groupId
+                }})
+                Partitioner.setUserGroup(aUser._id, businessUnit._groupId);
+              } else {
+                secondStepOfUsersWithoutGroup += 1
+              }
+            }
+          }
+        }
+      })
+    })
+
+    console.log(`firstStepOfUsersWithoutGroup: `, firstStepOfUsersWithoutGroup)
+    console.log(`secondStepOfUsersWithoutGroup: `, secondStepOfUsersWithoutGroup)    
   }
 
   /*,
@@ -248,4 +285,5 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
+  Core.fixPartitionProblems();
 });
