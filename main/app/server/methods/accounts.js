@@ -125,6 +125,10 @@ Meteor.methods({
         let user = Meteor.users.findOne({'emails.address': userEmail})
 
         if(user) {
+            if(!user.services.password || !user.services.password.bcrypt) {
+                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");                
+            }
+
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
 
@@ -180,6 +184,10 @@ Meteor.methods({
         let user = Meteor.users.findOne({customUsername: usernameOrEmail})
 
         if(user) {
+            if(!user.services.password || !user.services.password.bcrypt) {
+                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");                
+            }
+
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
 
