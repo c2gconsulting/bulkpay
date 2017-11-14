@@ -57,34 +57,34 @@
             </div><!-- col-sm-3 -->
         </div>
 
-        <div class="row">
-            <!--<h2>Listing Additional Payments / Deduction</h2>-->
-            <div class="col-md-12">
-              {{#if condition currenciesCount '>' 0}}
-                  <div class="table-responsive">
-                      <table class="table table-primary mb60 table-hover">
-                          <thead>
-                          <tr>
-                              <th>S/N</th>
-                              <th>Code</th>
-                              <th>Exchange rate to Base currency</th>
-                          </tr>
-                          </thead>
-                          <tbody>
-                          {{#each currencies}}
-                              {{> CurrencyEntry index=@index data=this}}
-                          {{/each}}
-                          </tbody>
-                      </table>
-                  </div><!-- table-responsive -->
-              {{else}}
-                  <div class="alert alert-danger text-center">
-                      <p>No currencies were created for the selected period</p>
-                  </div>
-              {{/if}}
-            </div>
-        </div><!-- row -->
-
-    </div><!-- contentpanel -->
-
+        <div class="row" style="margin-left: 10px; margin-right: 10px;">
+            {{#if condition currenciesCount 'eq' 0}}
+                <div class="col-md-6">
+                    <div class="alert alert-danger text-center">
+                        <p>No currencies were created for the selected period</p>
+                    </div>
+                </div>
+            {{else}}
+                <div class="col-md-6">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Code</th>
+                                <th>Exchange rate to Base currency</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {{#each currencies}}
+                                    {{> CurrencyEntry index=@index data=this}}
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
 </template>

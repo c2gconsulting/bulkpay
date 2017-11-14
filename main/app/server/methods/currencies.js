@@ -32,6 +32,14 @@ Meteor.methods({
         }
         Currencies.remove({_id: id});
     },
+    "currency/deleteCurrencyForPeriod": function(currencyCode, period, businessId){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        Currencies.remove({code: currencyCode, period: period, businessId: businessId});
+
+        return true;
+    },
     "currency/update": function(id, details){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
