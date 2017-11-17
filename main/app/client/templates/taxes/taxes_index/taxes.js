@@ -16,7 +16,8 @@ Template.Taxes.helpers({
         return Tax.find().count();
     },
     tax: function(){
-        return Tax.find();
+        let businessId = Session.get('context')
+        return Tax.find({businessId});
     }
 });
 

@@ -106,6 +106,7 @@ Template.PaygroupCreate.helpers({
     },
     selected(context,val) {
         let self = this;
+
         if(Template.instance().data){
             //get value of the option element
             //check and return selected if the template instce of data.context == self._id matches

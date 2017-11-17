@@ -15,9 +15,8 @@ Template.registerHelper('trimString', function(passedString, startstring, endstr
 
 Template.BusinessUnit.helpers({
     'bus': function(){
-        return BusinessUnits.find();
+        return BusinessUnits.find({}, {sort: {name: 1}});
     }
-
 });
 
 Template.BusinessUnit.onCreated(function(){
@@ -391,6 +390,19 @@ Template.singleBu.helpers({
         //console.log(`Inside businessUnitEmployeesCount: ${businessUnitId}`)
         return Template.instance().employeesCount.get()
         //return Meteor.users.find({businessIds: businessUnitId}).count();
+    },
+    getBusinessUnitDisplayName: function(fullName) {
+        let lengthOfFullName = fullName.length
+        if(lengthOfFullName > 18) {
+            let theString = fullName.substring(0, 18);
+            return new Handlebars.SafeString(theString)
+        }
+        
+        for(let i = 0; i < 18 - lengthOfFullName; i++) {
+            // fullName += "&nbsp;"
+            fullName += "  "
+        }
+        return fullName;
     }
 });
 Template.singleBu.events({
@@ -399,8 +411,6 @@ Template.singleBu.events({
         //check if permissions // route default to employee time
         Router.go('bu.details', this.data);
         //Router.go('employee.time', this.data);
-
-
     }
 });
 
@@ -415,8 +425,6 @@ Template.singleBu.onCreated(function () {
     self.employeesCount.set("")
 
     Meteor.call('businessunit/getEmployeeNumber', self.data.data._id, (err, res) => {
-        console.log("REs: " + res);
-        console.log(`Err: ${JSON.stringify(err)}`)
         if(!err)
             self.employeesCount.set(res)
     })
