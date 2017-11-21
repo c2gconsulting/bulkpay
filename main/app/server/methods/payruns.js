@@ -991,10 +991,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     //--
                                     //for reliefs add to relief bucket
                                     if(tenant.baseCurrency.iso === x.currency) {
-                                        reliefBucket += x.reliefFromTax ? Math.abs(parseFloat(x.parsedValue)) : 0;
-                                    } else {
-                                        reliefBucket += x.reliefFromTax ? Math.abs(convertForeignCurrencyToBaseCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod)) : 0
-                                    }
+                                        if(x.reliefFromTax) {
+                                            console.log(`Payment has relief from tax. x: `, x)
+                                            if(x.frequency === 'Annually') {
+                                                reliefBucket += (12 * Math.abs(parseFloat(x.parsedValue)));
+                                            } else if(x.frequency === 'Monthly') {
+                                                reliefBucket += Math.abs(parseFloat(x.parsedValue));                                                
+                                            }
+                                        }
+                                    } 
+                                    // else {
+                                    //     reliefBucket += x.reliefFromTax ? Math.abs(convertForeignCurrencyToBaseCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod)) : 0
+                                    // }
 
                                     //assigned bucket if one of the paytype is selected as tax bucket
                                     if(tenant.baseCurrency.iso === x.currency) {
@@ -1345,6 +1353,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }
 
                     //add employee to relief Bucket
+                    console.log(`relief bucket: `, reliefBucket)
+                    console.log(`grossPension: `, grossPension)
+                    
                     reliefBucket += (grossPension || 0); //nagate employee Pension contribution and add to relief bucket
 
                     //--Tax processing follows
@@ -1969,25 +1980,40 @@ function getPensionContribution(pensionBucket, pension) {
 
 //from taxable income calculate tax and return value
 function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
-    //@import taxBucket (defualt tax bucket or valuated passed bucket)
-    //@import tax (tax doc configured )
-    //calculate reliefs
-    //no checks done yet exceptions NAN undefined checkes
-    //return result {finalTax: log[] }
+    console.log(`taxBucket: `, taxBucket)
+
+    let consolidatedReliefAmount = 0;
+
+    if(0.01 * taxBucket > tax.consolidatedRelief) {
+        consolidatedReliefAmount = 0.01 * taxBucket
+    } else {
+        consolidatedReliefAmount = tax.consolidatedRelief
+    }
+    consolidatedReliefAmount += (tax.grossIncomeRelief / 100) * taxBucket
+    console.log(`consolidatedReliefAmount: `, consolidatedReliefAmount)
+
+    console.log(`relief: `, relief)
+
+    let totalRelief = consolidatedReliefAmount + relief
+
+    let taxableIncome = taxBucket - totalRelief;
+
     const input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
     const processing = [];
-    const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
-    processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
-    processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
+    // const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
+    // processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
+    // processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
 
-    const consolidatedRelief = tax.consolidatedRelief;
-    processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
+    // const consolidatedRelief = tax.consolidatedRelief;
+    // processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
     
-    const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
-    processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
-    processing.push({code: `Total Relief`, derived: totalRelief });
+    // const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
+    // processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
+    // processing.push({code: `Total Relief`, derived: totalRelief });
     
-    let taxableIncome = taxBucket - totalRelief;
+    // let taxableIncome = taxBucket - totalRelief;
+    console.log(`taxableIncome: `, taxableIncome)
+
     processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
     processing.push({code: `Taxable Income`, derived: taxableIncome });
 
@@ -2022,6 +2048,8 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
     } else {
         isTaxableIncomeLessThanFirstUpperLimit = true
     }
+    console.log(`totalTax: `, totalTax)
+
     const netTax = totalTax / 12;
     if(isTaxableIncomeLessThanFirstUpperLimit) {
         processing.push({code: `Net Tax(Total Tax / 12 ) - {Fail! Taxable income is less than first upper limit of tax rule}`, derived: `${totalTax}` / 12 });
@@ -2034,6 +2062,77 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
 
     return {netTax: parseFloat(netTax).toFixed(2), taxLog: log};
 }
+
+// function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
+//     console.log(`taxBucket: `, taxBucket)
+        
+//     //@import taxBucket (defualt tax bucket or valuated passed bucket)
+//     //@import tax (tax doc configured )
+//     //calculate reliefs
+//     //no checks done yet exceptions NAN undefined checkes
+//     //return result {finalTax: log[] }
+//     const input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
+//     const processing = [];
+//     const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
+//     processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
+//     processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
+
+//     const consolidatedRelief = tax.consolidatedRelief;
+//     processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
+    
+//     const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
+//     processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
+//     processing.push({code: `Total Relief`, derived: totalRelief });
+    
+//     let taxableIncome = taxBucket - totalRelief;
+//     console.log(`taxableIncome: `, taxableIncome)
+
+//     processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
+//     processing.push({code: `Taxable Income`, derived: taxableIncome });
+
+//     let totalTax = 0;
+//     //apply tax rules on taxable income
+//     const rules = [...tax.rules];
+
+//     let isTaxableIncomeLessThanFirstUpperLimit =  false
+
+//     //add log for debugging
+//     //deduct upper limit from taxable income
+//     //no need to calcuate tax if taxable income-
+//     if (taxableIncome >= rules[0].upperLimit) {
+//         for (let i = 0; i < rules.length; i++) {
+//             let x = rules[i];
+//             if (x.range !== 'Over') {
+//                 processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: `${x.rate} * (${taxableIncome} - ${x.upperLimit}) / 100` });
+//                 if (taxableIncome >= x.upperLimit) {
+//                     taxableIncome -= x.upperLimit;
+//                     totalTax += x.rate * (x.upperLimit / 100);
+//                 } else {
+//                     totalTax += x.rate * (taxableIncome / 100);
+//                     break;
+//                 }
+//                 processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: totalTax });
+//             } else {
+//                 processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: `${x.rate} * (${taxableIncome}) / 100` });
+//                 totalTax += x.rate * (taxableIncome / 100);
+//                 processing.push({code: `Total Tax(${x.range} ${x.upperLimit})`, derived: totalTax });
+//             }
+//         }
+//     } else {
+//         isTaxableIncomeLessThanFirstUpperLimit = true
+//     }
+//     const netTax = totalTax / 12;
+//     if(isTaxableIncomeLessThanFirstUpperLimit) {
+//         processing.push({code: `Net Tax(Total Tax / 12 ) - {Fail! Taxable income is less than first upper limit of tax rule}`, derived: `${totalTax}` / 12 });
+//         processing.push({code: `Net Tax - {Fail! Taxable income is less than first upper limit of tax rule}`, derived: netTax });
+//     } else {
+//         processing.push({code: `Net Tax(Total Tax / 12 )`, derived: `${totalTax}` / 12 });
+//         processing.push({code: `Net Tax`, derived: netTax });
+//     }
+//     const log = {paytype: tax.code, input: input, processing: processing};
+
+//     return {netTax: parseFloat(netTax).toFixed(2), taxLog: log};
+// }
 
 /*
 Sum payments in groups
