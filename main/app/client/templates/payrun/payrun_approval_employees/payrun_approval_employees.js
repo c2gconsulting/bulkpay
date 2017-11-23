@@ -103,7 +103,14 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         }
     })
     
-    payTypeHeaders = _.without(payTypeHeaders, null, undefined)
+    payTypeHeaders = _.without(payTypeHeaders, null, undefined, {})
+    payTypeHeaders = payTypeHeaders.filter(val => {
+        if(typeof val === 'object' && Object.keys(val).length === 0) {
+            return false
+        } else {
+            return true;
+        }
+    })
 
     let supplementaryPayTypeHeaders = []
 
