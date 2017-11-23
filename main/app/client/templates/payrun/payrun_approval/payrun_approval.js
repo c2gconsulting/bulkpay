@@ -200,6 +200,21 @@ Template.PayrunApproval.helpers({
             }
         }
     },
+    'doesCurrentUserApprovalExist': function() {
+        let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+        if(payrollApprovalConfig) {
+            let currentPayrun = Template.instance().currentPayrun.get() || []
+            let firstOne = currentPayrun[0]
+
+            if(firstOne) {
+                if(firstOne.approvals && firstOne.approvals.length > 0) {
+                    return _.find(firstOne.approvals, anApproval => {
+                        return anApproval.approvedBy === Meteor.userId()
+                    })
+                }
+            }
+        }
+    },
     'doesPayrunExistForPeriod': function() {
         let selectedMonth = Template.instance().selectedMonth.get()
         let selectedYear = Template.instance().selectedYear.get()
@@ -316,17 +331,12 @@ Template.PayrunApproval.onCreated(function () {
 
         const currentPayrunPeriod = selectedMonth + selectedYear
 
-        if(currentPayrunPeriod) {
-            self.subscribe("Payruns", currentPayrunPeriod);
-        }
+        let payrunSubs = self.subscribe("Payruns", currentPayrunPeriod, Session.get('context'));
+        let payrunApprovalConfigSubs = self.subscribe('PayrollApprovalConfigs', Session.get('context'));
 
-        self.subscribe('PayrollApprovalConfigs', Session.get('context'));
-
-        if (self.subscriptionsReady()) {  
-          self.netPayReportResults.set(null);
-          self.processedNetPayResults.set([])  
-
+        if (payrunSubs.ready() && payrunApprovalConfigSubs.ready()) {  
           let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: Session.get('context')})
+
           self.payrollApprovalConfig.set(payrollApprovalConfig)
 
           let payRun = Payruns.find({period: currentPayrunPeriod}).fetch();
