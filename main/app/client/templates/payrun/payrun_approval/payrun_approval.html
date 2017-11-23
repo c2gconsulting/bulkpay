@@ -55,7 +55,6 @@
                                         <button class="btn btn-success getResult"><i class="fa fa-bar-chart-o"></i> View</button>
                                     </div>
                                 </div>
-                                {{#if doesPayrunExistForPeriod}}
                                 {{#if processedNetPayResults}}
                                     <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%" style='border: 1px solid #efefef;'>
                                         <thead>
@@ -118,7 +117,6 @@
                                             </div>
                                         {{/if}}
                                     {{/if}}
-                                {{/if}}
 
                                 {{#if processedNetPayResults}}
                                     {{#if doesRequirePayrunApproval}}
