@@ -60,7 +60,10 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
     let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
     let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
     let allProjects = Projects.find({businessId: businessUnitSapConfig.businessId}).fetch()
-    let detailedPayRunResults = PayResults.find({period: period}).fetch();
+    let detailedPayRunResults = PayResults.find({
+        period: period, 
+        businessId: businessUnitSapConfig.businessId
+    }).fetch();
 
     let currencyRatesForPeriod = Currencies.find({businessId: businessUnitSapConfig.businessId, period: period}).fetch()
 
