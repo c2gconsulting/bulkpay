@@ -485,7 +485,7 @@ Meteor.methods({
 
         let errorResponse = null
         try {
-            let payRunResult = Payruns.find({period: period}).fetch();
+            let payRunResult = Payruns.find({period: period, businessId: businessUnitId}).fetch();
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId})
 
             if(!businessUnitSapConfig) {
