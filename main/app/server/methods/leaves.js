@@ -31,7 +31,7 @@ let LeaveCreateHelpers = {
             if(foundDaysLeftInYear.daysLeft < 1) {
                 throw new Meteor.Error(401, "Sorry, you have no leave days left in the year");
             }
-            if(foundDaysLeftInYear.daysLeft > leave.duration) {
+            if(foundDaysLeftInYear.daysLeft >= leave.duration) {
                 Leaves.insert(leave);
                 return true
             } else {
