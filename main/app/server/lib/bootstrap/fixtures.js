@@ -257,7 +257,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades', 
         isHourLeaveRequestsEnabled: false,         
-        isProcurementRequisitionActive : true,
+        isProcurementRequisitionActive : false,
         isTravelRequisitionActive: true,
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: false
