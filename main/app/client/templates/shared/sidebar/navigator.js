@@ -214,6 +214,13 @@ Template.navigator.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isHmoSetupEnabled
         }
+    },
+    'isLoanEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isLoanEnabled
+        }
     }
 });
 

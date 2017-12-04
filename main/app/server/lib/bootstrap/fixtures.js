@@ -157,6 +157,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false, 
+        isTimeTypeEnabled: false,
+        isHmoSetupEnabled: false,
+        isLoanEnabled: false,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
@@ -180,6 +183,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
+        isTimeTypeEnabled: false,
+        isHmoSetupEnabled: false,
+        isLoanEnabled: false,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: false,
@@ -203,8 +209,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false,
-        isTimeTypeEnabled: true,
-        isHmoSetupEnabled: true,
+        isTimeTypeEnabled: false,
+        isHmoSetupEnabled: false,
+        isLoanEnabled: false,
         baseColor: '#ff0000',
         displayLogoInSideBar: true,
         isEmployeePersonalDataEditableByEmployee: false,
@@ -230,6 +237,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: true,
+        isTimeTypeEnabled: false,
+        isHmoSetupEnabled: false,
+        isLoanEnabled: false,
         isEmployeePersonalDataEditableByEmployee: true,
         extraPersonalDataEmployeeProfileFieldsSupported: [
             'maidenName', 'religion', 'bloodGroup', 'disability', 
@@ -247,7 +257,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades', 
         isHourLeaveRequestsEnabled: false,         
-        isProcurementRequisitionActive : false,
+        isProcurementRequisitionActive : true,
         isTravelRequisitionActive: true,
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: false
@@ -256,6 +266,9 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: false,
+        isTimeTypeEnabled: false,
+        isHmoSetupEnabled: false,
+        isLoanEnabled: true,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
         isRelieverEnabledForLeaveRequests: true,        

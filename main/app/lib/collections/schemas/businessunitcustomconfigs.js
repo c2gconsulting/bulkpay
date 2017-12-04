@@ -50,6 +50,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    isLoanEnabled: {
+        type: Boolean,
+        optional: true
+    },
     baseColor: {
         type: String,
         optional: true
