@@ -141,7 +141,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     let deltaTexEngineeringBusinessUnitId = "rFk7QwSHqqhxvHLAP"
     let deltaTexBulkPayDemoBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
-
+    let integratedDairiesUnitId = "3heJnYLjFKcSTmA8y"
+    
     let customConfigs = [{
         businessId : deltaTexBusinessUnitId,
         payGradeLabel : 'Pay Category',
@@ -238,6 +239,29 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isEmployeePromotionEnabled: true,  
         isWeekendTimeWritingEnabled: false,        
         isOvertimeEnabled: true,
+        maxHoursInDayForTimeWriting: 8,
+        isActive: true
+    },
+    {
+        businessId : integratedDairiesUnitId,
+        payGradeLabel : 'Pay Grade',
+        payGradeLabelPlural : 'Pay Grades', 
+        isHourLeaveRequestsEnabled: false,         
+        isProcurementRequisitionActive : false,
+        isTravelRequisitionActive: true,
+        procurementRequisitionApprovalConfig: {
+            requireTwoSupervisors: false
+        },
+        isTwoStepApprovalEnabled: false,
+        leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        checkEmployeeResumptionForPayroll: false,
+        isWeekendIncludedInLeaveRequests: false,
+        isEmployeePersonalDataEditableByEmployee: false,
+        extraPersonalDataEmployeeProfileFieldsSupported: [],
+        isRelieverEnabledForLeaveRequests: true,        
+        isEmployeePromotionEnabled: true,  
+        isWeekendTimeWritingEnabled: false,        
+        isOvertimeEnabled: false,
         maxHoursInDayForTimeWriting: 8,
         isActive: true
     }]
