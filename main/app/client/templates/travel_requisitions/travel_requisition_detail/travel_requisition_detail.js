@@ -402,8 +402,10 @@ Template.TravelRequisitionDetail.helpers({
         return Template.instance().isInTreatMode.get()
     },
     'getUnitName': function(unitId) {
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
+        if(unitId) {
+            console.log(`unit id: `, unitId)
+            return EntityObjects.findOne({_id: unitId}).name            
+        }
     },
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
@@ -593,8 +595,9 @@ Template.TravelRequisitionDetail.onRendered(function () {
 
     let procurementDetails = self.procurementDetails.get()
     if(procurementDetails) {
-        if(procurementDetails.status !== 'Draft') {
+        if(procurementDetails.status !== 'Draft' && procurementDetails.status !== 'Pending') {
             if(self.isInEditMode.get()) {
+                Modal.hide();
                 swal('Error', "Sorry, you can't edit this travel request. ", 'error')
             }
         } else if(procurementDetails.status === 'Pending') {

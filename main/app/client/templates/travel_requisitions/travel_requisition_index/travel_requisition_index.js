@@ -130,6 +130,13 @@ Template.TravelRequisitionIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
+        let employeeProfile = Meteor.user().employeeProfile
+        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
+            let userPositionId = employeeProfile.employment.position
+
+            let positionSubscription = self.subscribe('getEntity', userPositionId)
+        }
+                                    
         let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
         if(travelRequestsCreatedSub.ready()) {
             self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))

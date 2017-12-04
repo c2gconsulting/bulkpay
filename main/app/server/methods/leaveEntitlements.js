@@ -98,5 +98,18 @@ Meteor.methods({
         } catch (e) {
             throw new Meteor.Error(401, e.message);
         }
+    },
+    "LeaveEntitlement/delete": function(id){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        
+        let doc = LeaveEntitlements.findOne({_id: id});
+        if(!doc) {
+            throw new Meteor.Error(401, "Unauthorized. You cannot delete a leave entitlement that does not exist.");            
+        }
+
+        LeaveEntitlements.remove({_id: id});
+        return true;
     }
 })

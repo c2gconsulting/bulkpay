@@ -255,8 +255,12 @@ Template.TravelRequisitionCreate.events({
 Template.TravelRequisitionCreate.helpers({
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
+        if(unitId) {
+            let unit = EntityObjects.findOne({_id: unitId});
+            if(unit) {
+                return unit.name
+            }
+        }
     },
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
@@ -283,6 +287,24 @@ Template.TravelRequisitionCreate.onCreated(function () {
     self.roadCost = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
+    self.getUnitForPosition = (entity) => {
+        let possibleUnitId = entity.parentId
+        if(possibleUnitId) {
+            let possibleUnit = EntityObjects.findOne({_id: possibleUnitId})
+            if(possibleUnit) {
+                if(possibleUnit.otype === 'Unit') {
+                    return possibleUnit
+                } else {
+                    return self.getUnitForPosition(possibleUnit)
+                }
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
+
     self.autorun(function(){
         if(unitsSubscription.ready()){
             let employeeProfile = Meteor.user().employeeProfile
@@ -292,7 +314,12 @@ Template.TravelRequisitionCreate.onCreated(function () {
 
                 if(positionSubscription.ready()){
                     let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
-                    self.unitId.set(userPosition.parentId)
+                    let unit = self.getUnitForPosition(userPosition)
+                    if(unit) {
+                        self.unitId.set(unit._id)
+                    } else {
+                        self.unitId.set(null)                        
+                    }
                 }
             }
         }

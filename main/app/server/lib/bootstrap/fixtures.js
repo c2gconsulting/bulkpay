@@ -256,8 +256,8 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         businessId : integratedDairiesUnitId,
         payGradeLabel : 'Pay Grade',
         payGradeLabelPlural : 'Pay Grades', 
-        isHourLeaveRequestsEnabled: false,         
-        isProcurementRequisitionActive : false,
+        isHourLeaveRequestsEnabled: false,
+        isProcurementRequisitionActive : true,
         isTravelRequisitionActive: true,
         procurementRequisitionApprovalConfig: {
             requireTwoSupervisors: false

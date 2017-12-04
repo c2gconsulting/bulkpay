@@ -126,6 +126,9 @@ Meteor.methods({
 
             const travelDoc = TravelRequisitions.findOne({_id: docId})
             let unit = EntityObjects.findOne({_id: travelDoc.unitId, otype: 'Unit'})
+            if(!unit) {
+                throw new Meteor.Error(404, "Sorry, the travel request does not have a unit");
+            }
             let unitName = unit.name
 
             let dateRequired = ''

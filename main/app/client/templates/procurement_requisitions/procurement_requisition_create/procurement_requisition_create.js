@@ -91,8 +91,12 @@ Template.ProcurementRequisitionCreate.events({
 Template.ProcurementRequisitionCreate.helpers({
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
+        if(unitId) {
+            let unit = EntityObjects.findOne({_id: unitId});
+            if(unit) {
+                return unit.name
+            }
+        }
     }
 });
 
@@ -108,6 +112,24 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
 
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
 
+    self.getUnitForPosition = (entity) => {
+        let possibleUnitId = entity.parentId
+        if(possibleUnitId) {
+            let possibleUnit = EntityObjects.findOne({_id: possibleUnitId})
+            if(possibleUnit) {
+                if(possibleUnit.otype === 'Unit') {
+                    return possibleUnit
+                } else {
+                    return self.getUnitForPosition(possibleUnit)
+                }
+            } else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
+
     self.autorun(function(){
         if(unitsSubscription.ready()){
             let employeeProfile = Meteor.user().employeeProfile
@@ -116,7 +138,13 @@ Template.ProcurementRequisitionCreate.onCreated(function () {
                 let positionSubscription = self.subscribe('getEntity', userPositionId)
                 if(positionSubscription.ready()){
                     let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
-                    self.unitId.set(userPosition.parentId)
+
+                    let unit = self.getUnitForPosition(userPosition)
+                    if(unit) {
+                        self.unitId.set(unit._id)
+                    } else {
+                        self.unitId.set(null)                        
+                    }
                 }
             }
         }
