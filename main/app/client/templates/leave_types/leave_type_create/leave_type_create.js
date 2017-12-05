@@ -128,11 +128,19 @@ Template.LeaveTypeCreate.onCreated(function () {
     //subscribe to positions and paygrades
     self.subscribe('getPositions', Session.get('context'));
     self.subscribe('paygrades', Session.get('context'));
+
+    self.canNowPrefittyDropdowns = new ReactiveVar();
+
+
+    self.autorun(function() {
+        if (Template.instance().subscriptionsReady()){
+            self.canNowPrefittyDropdowns.set(true)
+        }
+    })
 });
 
 Template.LeaveTypeCreate.onRendered(function () {
     let self = this;
-    $('select.dropdown').dropdown();
 
     let start = $("#startDate").val();
     let end = $("#endDate").val();
@@ -168,6 +176,15 @@ Template.LeaveTypeCreate.onRendered(function () {
                 $("#duration").val(duration <= 0 ? 0 : duration)
             }
         });
+
+        if(self.canNowPrefittyDropdowns.get()) {
+            console.log(`canNowPrefittyDropdowns: `, true)
+            setTimeout(function() {
+                $('select.dropdown').dropdown();                
+            }, 1000)
+        } else {
+            console.log(`canNowPrefittyDropdowns: `, false)            
+        }
     });
 });
 
