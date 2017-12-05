@@ -267,7 +267,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: false,
         isTimeTypeEnabled: false,
-        isHmoSetupEnabled: false,
+        isHmoSetupEnabled: true,
         isLoanEnabled: true,
         isEmployeePersonalDataEditableByEmployee: false,
         extraPersonalDataEmployeeProfileFieldsSupported: [],
