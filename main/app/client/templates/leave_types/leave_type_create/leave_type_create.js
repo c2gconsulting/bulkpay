@@ -22,12 +22,6 @@ Template.LeaveTypeCreate.events({
     
             _.each(flattenedPositionIds, anAllowedPositionId => {
                 tmpl.$("a[data-value=" + anAllowedPositionId + "]").remove();
-                
-                // $('#positionsDropDownDivRow').filter(function(){
-                //     return $(this).data('value') === anAllowedPositionId._id
-                // }).remove();
-
-                // $('#positionsDropDownDivRow').filter('[data-value="product_id"]').remove();
             })
         }
         tmpl.selectedPaygrades.set(selected);
@@ -52,29 +46,38 @@ Template.LeaveTypeCreate.helpers({
         })
     },
     'allowedPositions': () => {
-        let selectedPaygradeIds = Template.instance().selectedPaygrades.get() || [];
-        if(selectedPaygradeIds.length === 0) {
-            return []
+        if(Template.instance().data && Template.instance().data.positionIds && !Template.instance().selectedPaygrades.get()) {
+            let positionIds = Template.instance().data.positionIds || []
+            return EntityObjects.find({
+                _id: {$in: positionIds}
+            }).fetch().map(x => {
+                return {label: x.name, value: x._id}
+            })
+        } else {
+            let selectedPaygradeIds = Template.instance().selectedPaygrades.get() || [];
+            if(selectedPaygradeIds.length === 0) {
+                return []
+            }
+    
+            let businessId = Session.get('context');
+    
+            let selectedPaygrades = PayGrades.find({
+                _id: {$in: selectedPaygradeIds},
+                businessId: businessId,
+            }).fetch() || [];
+            // console.log(`selectedPaygrades: `, selectedPaygrades)
+    
+            let positionIdsInPaygrades = _.pluck(selectedPaygrades, 'positions') || []
+            let flattenedPositionIds = _.flatten(positionIdsInPaygrades)
+            // console.log(`flattenedPositionIds: `, flattenedPositionIds)
+    
+            return EntityObjects.find({
+                _id: {$in: flattenedPositionIds},
+                businessId: businessId,
+            }).fetch().map(x => {
+                return {label: x.name, value: x._id}
+            })
         }
-
-        let businessId = Session.get('context');
-
-        let selectedPaygrades = PayGrades.find({
-            _id: {$in: selectedPaygradeIds},
-            businessId: businessId,
-        }).fetch() || [];
-        // console.log(`selectedPaygrades: `, selectedPaygrades)
-
-        let positionIdsInPaygrades = _.pluck(selectedPaygrades, 'positions') || []
-        let flattenedPositionIds = _.flatten(positionIdsInPaygrades)
-        // console.log(`flattenedPositionIds: `, flattenedPositionIds)
-
-        return EntityObjects.find({
-            _id: {$in: flattenedPositionIds},
-            businessId: businessId,
-        }).fetch().map(x => {
-            return {label: x.name, value: x._id}
-        })
     },
     // 'positions': () => {
     //     return EntityObjects.find().fetch().map(x => {
@@ -119,6 +122,7 @@ Template.LeaveTypeCreate.onCreated(function () {
     self.selectedPositions = new ReactiveVar()
     
     if(Template.instance().data) {
+        // self.selectedPaygrades.set(Template.instance().data.payGradeIds || [])
         self.selectedPositions.set(Template.instance().data.positionIds || [])
     }
     //subscribe to positions and paygrades
