@@ -55,9 +55,13 @@
                     {{#if canApproveLeave employeeId approvalStatus}}
                         <button class="btn btn-success btn-block" id="approve">Approve</button>
                         <button class="btn btn-warning btn-block" id="reject">Reject</button>
-                        <button class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
                     {{else}}
                         <button class="btn {{statusStyle approvalStatus}} btn-rounded center center-block col-sm-12" data-dismiss="modal">{{approvalStatus}}</button>
+
+                        {{#if approvalStatus}}
+                            <button class="btn btn-danger btn-block btn-rounded center center-block col-sm-12" data-dismiss="modal" id="deleteLeaveBySupervisor">Cancel</button>
+                        {{/if}}
                     {{/if}}
                 {{/if}}
                 {{#if time}}

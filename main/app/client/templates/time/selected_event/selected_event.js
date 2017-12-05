@@ -92,6 +92,34 @@ Template.selectedEvent.events({
                 }
             });
         }
+    },
+    'click #deleteLeaveBySupervisor': (e, tmpl) => {
+        let selected = tmpl.data;
+        if(selected && selected.hasOwnProperty('type')){
+            swal({
+                    title: "Are you sure?",
+                    text: "This action cannot be reversed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+            },
+            function(isConfirm){
+                if (isConfirm) {
+                    Meteor.call('leave/delete', selected.id, function(err, res){
+                        if(res) {
+                            Modal.hide('selectedEvent');
+                            swal('Success', 'Successfully deleted leave record', 'success');
+                        } else {
+                            swal('Delete Error', `${err.message}`, 'error');
+                        }
+                    })
+                }
+            });
+        }
     }
 });
 

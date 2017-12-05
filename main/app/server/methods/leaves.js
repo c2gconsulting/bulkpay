@@ -105,6 +105,44 @@ let LeaveCreateHelpers = {
         } catch (e) {
             throw new Meteor.Error(401, e.message);
         }
+    },
+    getSupervisorsForLeaveRequest: function(leaveRequest) {
+        let currentUser = Meteor.users.findOne(leaveRequest.employeeId)
+
+        if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+            let userPositionId = currentUser.employeeProfile.employment.position
+
+            let userPositionObj = EntityObjects.findOne({
+                _id: userPositionId,
+                otype: 'Position'
+            })
+            
+            if(userPositionObj && userPositionObj.properties) {
+                let allSupervisors = []
+
+                let supervisorId = userPositionObj.properties.supervisor
+                let alternateSupervisorId = userPositionObj.properties.alternateSupervisor
+
+                if(supervisorId) {
+                    let supervisor = Meteor.users.findOne({
+                        'employeeProfile.employment.position': supervisorId
+                    })
+                    if(supervisor) {
+                        allSupervisors.push(supervisor)
+                    }
+                }
+                if(alternateSupervisorId) {
+                    let alternateSupervisor = Meteor.users.findOne({
+                        'employeeProfile.employment.position': alternateSupervisorId
+                    })
+                    if(alternateSupervisor) {
+                        allSupervisors.push(alternateSupervisor)
+                    }
+                }
+                return allSupervisors
+            }
+        }
+        return []
     }
 }
 
@@ -155,16 +193,25 @@ Meteor.methods({
         
         let doc = Leaves.findOne({_id: id});
         if(!doc) {
+            throw new Meteor.Error(401, "Sorry, that leave request does not exist.");            
+        }
 
-        }
         if(doc.employeeId !== this.userId) {
-            throw new Meteor.Error(401, "Unauthorized. You cannot delete a leave request you did not create.");
-        }
-        if(doc.approvalStatus === "Open"){
-            Leaves.remove({_id: id});
-            return true;
+            let supervisors = LeaveCreateHelpers.getSupervisorsForLeaveRequest(doc) || []
+            let supervisorIds = _.pluck(supervisors, '_id')
+            if(supervisorIds.indexOf(this.userId) < 0) {
+                throw new Meteor.Error(401, "Unauthorized. You cannot delete a leave request you did not create.");
+            } else {
+                Leaves.remove({_id: id});
+                return true;                
+            }
         } else {
-            throw new Meteor.Error(401, "You cannot delete a leave request that has already been approved or rejected.");            
+            if(doc.approvalStatus === "Open"){
+                Leaves.remove({_id: id});
+                return true;
+            } else {
+                throw new Meteor.Error(401, "You cannot delete a leave request that has already been approved or rejected.");
+            }
         }
     },
     'approveTimeData': function(timeObj){

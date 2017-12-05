@@ -219,3 +219,19 @@ Template.MyLeaveApprovals.onRendered(function () {
 
 Template.MyLeaveApprovals.onDestroyed(function () {
 });
+
+
+Template.MyLeaveApprovalsEntry.events({
+    'click .view': (e,tmpl) => {
+        Modal.show('selectedEvent', {type: 'Leaves', id: tmpl.data._id})
+    }
+})
+
+Template.MyLeaveApprovalsEntry.helpers({
+    limitText: function(text) {
+        if(text && text.length > 10) {
+            return `${text.substring(0, 30)} ...`
+        }
+        return text
+    },
+});

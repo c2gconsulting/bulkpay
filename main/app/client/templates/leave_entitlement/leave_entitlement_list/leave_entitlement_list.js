@@ -45,7 +45,7 @@ Template.LeaveEntitlementEntry.events({
         Modal.show('LeaveEntitlementCreate', tmpl.data);
     },
     'click #delete': (e,tmpl) => {
-        swal({
+        swal({  
                 title: "Are you sure?",
                 text: "You will not be able to recover this Leave Entitlement!",
                 type: "warning",

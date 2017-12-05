@@ -62,15 +62,7 @@
                         </thead>
                         <tbody>
                         {{#each reportsData}}
-                            <tr>
-                                <td>{{createdByFullName}}</td>
-                                <td nowrap>{{limitText description}}</td>
-                                <td>{{formatTime approvedDate}}</td>
-                                <td>{{formatTime startDate}}</td>
-                                <td>{{formatTime endDate}}</td>
-                                
-                                <td>{{approvalStatus}}</td>
-                            </tr>
+                            {{> MyLeaveApprovalsEntry }}
                         {{/each}}
                         </tbody>
                     </table>
@@ -84,4 +76,16 @@
             </div>
         </div>
     </div>
+</template>
+
+<template name="MyLeaveApprovalsEntry">
+    <tr class="view" style="cursor: pointer;">
+        <td>{{createdByFullName}}</td>
+        <td nowrap>{{limitText description}}</td>
+        <td>{{formatTime approvedDate}}</td>
+        <td>{{formatTime startDate}}</td>
+        <td>{{formatTime endDate}}</td>
+        
+        <td>{{approvalStatus}}</td>
+    </tr>
 </template>
