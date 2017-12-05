@@ -271,8 +271,6 @@ Template.TaxCreate.helpers({
         return Template.instance().dict.get("taxRules") || [];
     },
     isTaxRuleSelected : function() {
-      console.log("isTaxRuleSelected called: " + Template.instance().isATaxRuleSelectedForEdit.get());
-
       return Template.instance().isATaxRuleSelectedForEdit.get();
     },
     indexOfSelectedTaxRule : function() {

@@ -7,7 +7,6 @@ Template.LeaveTypeEntry.events({
     },
     'click #edit': (e,tmpl) => {
         Modal.show('LeaveTypeCreate', tmpl.data);
-        //swal("you clicked pointer", this, "success");
     },
     'click #delete': (e,tmpl) => {
         swal({

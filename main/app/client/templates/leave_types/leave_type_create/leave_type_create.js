@@ -2,6 +2,36 @@
 /* LeaveTypeCreate: Event Handlers */
 /*****************************************************************************/
 Template.LeaveTypeCreate.events({
+    'change [name="payGradeIds"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+
+        let oldSelected = tmpl.selectedPaygrades.get() || [];
+
+        if(selected.length < oldSelected.length) {
+            let diff = _.difference(oldSelected, selected);
+            let businessId = Session.get('context');
+
+            let selectedPaygrades = PayGrades.find({
+                _id: {$in: diff},
+                businessId: businessId,
+            }).fetch() || [];
+            // console.log(`selectedPaygrades: `, selectedPaygrades)
+    
+            let positionIdsInPaygrades = _.pluck(selectedPaygrades, 'positions') || []
+            let flattenedPositionIds = _.flatten(positionIdsInPaygrades)
+    
+            _.each(flattenedPositionIds, anAllowedPositionId => {
+                tmpl.$("a[data-value=" + anAllowedPositionId + "]").remove();
+                
+                // $('#positionsDropDownDivRow').filter(function(){
+                //     return $(this).data('value') === anAllowedPositionId._id
+                // }).remove();
+
+                // $('#positionsDropDownDivRow').filter('[data-value="product_id"]').remove();
+            })
+        }
+        tmpl.selectedPaygrades.set(selected);
+    },
 });
 
 /*****************************************************************************/
@@ -20,14 +50,37 @@ Template.LeaveTypeCreate.helpers({
         return PayGrades.find().fetch().map(x => {
             return {label: x.code, value: x._id}
         })
-
     },
-    'positions': () => {
-        return EntityObjects.find().fetch().map(x => {
+    'allowedPositions': () => {
+        let selectedPaygradeIds = Template.instance().selectedPaygrades.get() || [];
+        if(selectedPaygradeIds.length === 0) {
+            return []
+        }
+
+        let businessId = Session.get('context');
+
+        let selectedPaygrades = PayGrades.find({
+            _id: {$in: selectedPaygradeIds},
+            businessId: businessId,
+        }).fetch() || [];
+        // console.log(`selectedPaygrades: `, selectedPaygrades)
+
+        let positionIdsInPaygrades = _.pluck(selectedPaygrades, 'positions') || []
+        let flattenedPositionIds = _.flatten(positionIdsInPaygrades)
+        // console.log(`flattenedPositionIds: `, flattenedPositionIds)
+
+        return EntityObjects.find({
+            _id: {$in: flattenedPositionIds},
+            businessId: businessId,
+        }).fetch().map(x => {
             return {label: x.name, value: x._id}
         })
     },
-
+    // 'positions': () => {
+    //     return EntityObjects.find().fetch().map(x => {
+    //         return {label: x.name, value: x._id}
+    //     })
+    // },
     'businessIdHelper': () => {
         return Session.get('context')
     },
@@ -49,7 +102,7 @@ Template.LeaveTypeCreate.helpers({
         return "updateLeaveTypesForm";
     },
     'data': () => {
-        return Template.instance().data? true:false;
+        return Template.instance().data ? true:false;
     }
 });
 
@@ -61,10 +114,16 @@ Template.LeaveTypeCreate.helpers({
 Template.LeaveTypeCreate.onCreated(function () {
     let self = this;
     self.profile = new ReactiveDict();
+
+    self.selectedPaygrades = new ReactiveVar()
+    self.selectedPositions = new ReactiveVar()
+    
+    if(Template.instance().data) {
+        self.selectedPositions.set(Template.instance().data.positionIds || [])
+    }
     //subscribe to positions and paygrades
     self.subscribe('getPositions', Session.get('context'));
     self.subscribe('paygrades', Session.get('context'));
-
 });
 
 Template.LeaveTypeCreate.onRendered(function () {
