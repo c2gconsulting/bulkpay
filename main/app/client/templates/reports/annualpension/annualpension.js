@@ -20,12 +20,11 @@ Template.AnnualPensionReport.events({
     },
     'click .excel': (e, tmpl) => {
         event.preventDefault();
-        const month = $('[name="paymentPeriod.month"]').val();
         const year = $('[name="paymentPeriod.year"]').val();
-        if(month && year) {
+
+        if(year) {
             tmpl.$('.excel').text('Preparing... ');
             tmpl.$('.excel').attr('disabled', true);
-
 
             try {
                 let l = Ladda.create(tmpl.$('.excel')[0]);
@@ -34,9 +33,7 @@ Template.AnnualPensionReport.events({
                 console.log(e);
             }
 
-
             let resetButton = function() {
-                // End button animation
                 try {
                     let l = Ladda.create(tmpl.$('.excel')[0]);
                     l.stop();
@@ -51,11 +48,9 @@ Template.AnnualPensionReport.events({
                 tmpl.$('.excel').removeAttr('disabled');
             };
 
-            const period = month + year;
-            Meteor.call('exportPensionResult', Session.get('context'), period, function(err, res){
-                if(res){
-                    //call the export fo
-                    BulkpayExplorer.exportAllData(res, "Pension Report");
+            Meteor.call('exportAnnualPensionResult', Session.get('context'), year, function(err, res){
+                if(res) {
+                    BulkpayExplorer.exportAllData(res, "Pension Annual Report - " + year);
                     resetButton()
                 } else {
                     console.log(err);
@@ -63,9 +58,8 @@ Template.AnnualPensionReport.events({
                 }
             });
         } else {
-            swal('Error', 'Please select Period', 'error');
+            swal('Error', 'Please select a year', 'error');
         }
-
     }
 });
 

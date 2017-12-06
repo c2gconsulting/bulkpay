@@ -803,5 +803,96 @@ Meteor.methods({
             })
             return pensionData
         }
+    },
+
+   'exportAnnualPensionResult': (businessId, year) => {
+        check(year, String);
+        check(businessId, String);
+
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let periodsOfTheYear = _.range(12).map(aMonthIndex => {
+                aMonthIndex += 1;
+                aMonthIndex = aMonthIndex < 10 ? '0' + aMonthIndex : aMonthIndex;
+
+                return `${aMonthIndex}${year}`
+            })
+
+            const payrunResults =  Payruns.find({
+                businessId: businessId, 
+                period: {$in: periodsOfTheYear}, 
+                'payment.reference': 'Pension'
+            }).fetch();
+            
+            let employeeIds = _.pluck(payrunResults, 'employeeId')
+            let uniqueEmployeeIds = _.uniq(employeeIds)
+
+            let pensionData = uniqueEmployeeIds.map(anEmployeeId => {
+                let employeePensionData = []
+
+                let employee = Meteor.users.findOne({_id: anEmployeeId});
+                if(employee) {
+                    employeePensionData.push(employee.profile.fullName)
+                    employeePensionData.push(employee.employeeProfile.payment.pensionmanager)
+                    employeePensionData.push(employee.employeeProfile.payment.RSAPin)
+                    //--
+                    periodsOfTheYear.forEach(aPeriod => {
+                        let employeePayrunForPeriod = _.find(payrunResults, aPayrunResult => {
+                            return (aPayrunResult.period === aPeriod) && aPayrunResult.employeeId === anEmployeeId
+                        })
+
+                        const pensionAmounts = {
+                            employeeContribution: '',
+                            employerContribution: ''
+                        }
+
+                        if(employeePayrunForPeriod) {
+                            const pensionsContribution = _.where(employeePayrunForPeriod.payment, {reference: 'Pension'}); //get all pension pay)
+                            
+                            if(pensionsContribution.length) {
+                                let pensionDescription;
+
+                                pensionsContribution.forEach(pensionContrib => {
+                                    const pensionLength = pensionContrib.code.length;
+                                    
+                                    const type = pensionContrib.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
+                                    if(type === '_EE')
+                                        pensionAmounts.employeeContribution  = pensionContrib.amountLC;
+                                    if(type === '_ER')
+                                        pensionAmounts.employerContribution = pensionContrib.amountLC;
+                                });
+                            }
+                        }
+
+                        employeePensionData.push(pensionAmounts.employeeContribution)
+                        employeePensionData.push(pensionAmounts.employerContribution)
+                    })
+                }
+                return employeePensionData
+            })
+
+            let genesisRowOfExportData = ['', '', '']
+
+            periodsOfTheYear.forEach(aPeriod => {
+                genesisRowOfExportData.push("Employee Contribution")
+                genesisRowOfExportData.push("Employer Contribution")                
+            })
+            pensionData.splice(0, 0, genesisRowOfExportData)
+
+           const header = [
+                "Name",
+                "Pension Fund Administrator",
+                "RSA Number"
+            ];
+            Core.months().forEach(aMonth => {
+                header.push(aMonth.name)
+                header.push('')
+            })
+                
+            return {fields: header, data: pensionData};
+
+            // return pensionData
+        }
     }
 })
