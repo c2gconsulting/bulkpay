@@ -370,6 +370,13 @@ Router.route('/business/:_id/reports/pension', {
     where: 'client'
 });
 
+Router.route('/business/:_id/reports/annualpension', {
+    name: 'reports.annualpension',
+    controller: 'ReportsController',
+    action: 'annualPension',
+    where: 'client'
+});
+
 Router.route('/business/:_id/reports/comprehensive', {
     name: 'reports.comprehensive',
     controller: 'ReportsController',

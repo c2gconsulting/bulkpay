@@ -59,6 +59,9 @@ ReportsController = BusinessUnitController.extend({
     pension: function () {
         this.render('PensionReport');
     },
+    annualPension: function () {
+        this.render('AnnualPensionReport');
+    },
     comprehensive: function () {
         this.render('ComprehensiveReport');
     },

@@ -734,4 +734,74 @@ Meteor.methods({
            return pension;
        }
    },
+
+   'getAnnualPensionResult': (businessId, year) => {
+        check(year, String);
+        check(businessId, String);
+
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let periodsOfTheYear = _.range(12).map(aMonthIndex => {
+                aMonthIndex += 1;
+                aMonthIndex = aMonthIndex < 10 ? '0' + aMonthIndex : aMonthIndex;
+
+                return `${aMonthIndex}${year}`
+            })
+
+            const payrunResults =  Payruns.find({
+                businessId: businessId, 
+                period: {$in: periodsOfTheYear}, 
+                'payment.reference': 'Pension'
+            }).fetch();
+            
+            let employeeIds = _.pluck(payrunResults, 'employeeId')
+            let uniqueEmployeeIds = _.uniq(employeeIds)
+
+            let pensionData = uniqueEmployeeIds.map(anEmployeeId => {
+                let employeePensionData = {
+                    monthContributions: []
+                }
+
+                let employee = Meteor.users.findOne({_id: anEmployeeId});
+                if(employee) {
+                    employeePensionData.fullName = employee.profile.fullName
+                    employeePensionData.pensionManager = employee.employeeProfile.payment.pensionmanager
+                    employeePensionData.pin = employee.employeeProfile.payment.RSAPin
+                    //--
+                    employeePensionData.monthContributions = periodsOfTheYear.map(aPeriod => {
+                        let employeePayrunForPeriod = _.find(payrunResults, aPayrunResult => {
+                            return (aPayrunResult.period === aPeriod) && aPayrunResult.employeeId === anEmployeeId
+                        })
+
+                        const pensionAmounts = {
+                            employeeContribution: '',
+                            employerContribution: ''
+                        }
+
+                        if(employeePayrunForPeriod) {
+                            const pensionsContribution = _.where(employeePayrunForPeriod.payment, {reference: 'Pension'}); //get all pension pay)
+                            
+                            if(pensionsContribution.length) {
+                                let pensionDescription;
+
+                                pensionsContribution.forEach(pensionContrib => {
+                                    const pensionLength = pensionContrib.code.length;
+                                    
+                                    const type = pensionContrib.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
+                                    if(type === '_EE')
+                                        pensionAmounts.employeeContribution  = pensionContrib.amountLC;
+                                    if(type === '_ER')
+                                        pensionAmounts.employerContribution = pensionContrib.amountLC;
+                                });
+                            }
+                        }
+                        return pensionAmounts
+                    })
+                }
+                return employeePensionData
+            })
+            return pensionData
+        }
+    }
 })
