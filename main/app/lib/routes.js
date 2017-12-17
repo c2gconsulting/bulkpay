@@ -362,6 +362,12 @@ Router.route('/business/:_id/reports/tax', {
     action: 'tax',
     where: 'client'
 });
+Router.route('/business/:_id/reports/annualtax', {
+    name: 'reports.annualtax',
+    controller: 'ReportsController',
+    action: 'annualTax',
+    where: 'client'
+});
 
 Router.route('/business/:_id/reports/pension', {
     name: 'reports.pension',

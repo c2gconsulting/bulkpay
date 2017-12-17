@@ -894,5 +894,87 @@ Meteor.methods({
 
             // return pensionData
         }
+    },
+    'getAnnualTaxResult': (businessId, year) => {
+        check(year, String);
+        check(businessId, String);
+
+        if(Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let periodsOfTheYear = _.range(12).map(aMonthIndex => {
+                aMonthIndex += 1;
+                aMonthIndex = aMonthIndex < 10 ? '0' + aMonthIndex : aMonthIndex;
+
+                return `${aMonthIndex}${year}`
+            })
+
+            let taxAmountHeaders = []  // {Month: [tax headers ...]}
+
+            const payResults = PayResults.find({
+                businessId: businessId,
+                period: {$in: periodsOfTheYear}
+            }).fetch() || []
+
+            let employeeIds = _.pluck(payResults, 'employeeId')
+            let uniqueEmployeeIds = _.uniq(employeeIds)
+
+            let taxData = uniqueEmployeeIds.map(anEmployeeId => {
+                let employeeTaxData = {
+                    monthTax: []    // For each month, account for different currencies on different paygrades
+                }
+
+                let employee = Meteor.users.findOne({_id: anEmployeeId});
+                if(employee) {
+                    employeeTaxData.fullName = employee.profile.fullName
+                    employeeTaxData.state = employee.employeeProfile.state
+                    employeeTaxData.taxPayerId = employee.employeeProfile.payment.taxPayerId
+                    //--
+                    employeeTaxData.monthTax = periodsOfTheYear.map(aPeriod => {
+                        let employeePayresultsForPeriod = _.find(payResults, aPayrunResult => {
+                            return (aPayrunResult.period === aPeriod) && aPayrunResult.employeeId === anEmployeeId
+                        })
+                        let taxAmountsForMonth = {};
+
+                        if(employeePayresultsForPeriod) {
+                            let monthCode = aPeriod.substring(0, 2);
+
+                            const deductionsInDiffCurrencies = employeePayresultsForPeriod.payslipWithCurrencyDelineation.deduction
+                            const currencies = Object.keys(deductionsInDiffCurrencies) || []
+
+                            currencies.forEach(aCurrency => {
+                                const deductions = deductionsInDiffCurrencies[aCurrency].payments || []
+                                deductions.forEach(aDeduction => {
+                                    if(aDeduction.reference === 'Tax') {
+                                        let foundTaxHeaderForMonth = _.find(taxAmountHeaders, aTaxHeader => {
+                                            return aTaxHeader.monthCode === monthCode
+                                        })
+                                        if(foundTaxHeaderForMonth) {
+                                            let foundTaxCodeInHeaders = _.find(foundTaxHeaderForMonth.taxCodes, aTaxHeaderCode => {
+                                                return aTaxHeaderCode === `${aDeduction.code}_${aCurrency}`
+                                            })
+                                            if(!foundTaxCodeInHeaders) {
+                                                foundTaxHeaderForMonth.taxCodes = foundTaxHeaderForMonth.taxCodes || [];
+                                                foundTaxHeaderForMonth.taxCodes.push(`${aDeduction.code}_${aCurrency}`);
+                                            }
+                                        } else {
+                                            taxAmountHeaders.push({
+                                                monthCode: monthCode,
+                                                taxCodes: [`${aDeduction.code}_${aCurrency}`]
+                                            })
+                                        }
+                                        taxAmountsForMonth[`${aDeduction.code}_${aCurrency}`] = aDeduction.value
+                                    }
+                                })
+                            })
+                        }
+                        return taxAmountsForMonth;
+                    });
+                }
+                return employeeTaxData;
+            });
+
+            return {taxAmountHeaders, taxData};
+        }
     }
 })

@@ -56,6 +56,9 @@ ReportsController = BusinessUnitController.extend({
     tax: function () {
         this.render('TaxReport');
     },
+    annualTax: function () {
+        this.render('AnnualTaxReport');
+    },
     pension: function () {
         this.render('PensionReport');
     },
