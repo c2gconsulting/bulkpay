@@ -3,6 +3,21 @@ import _ from 'underscore';
 
 let ReportUtils = {}
 
+ReportUtils.paddArrayWith = function(array, fullLengthWithZeros, filler) {
+    let lengthOfArray = array.length
+    for(let i = 0; i < fullLengthWithZeros - lengthOfArray; i++) {
+        array.push(filler)
+    }
+}
+
+ReportUtils.getMonthNameFromCode = function(monthCode) {
+    const months = Core.months();
+    let foundMonth =_.find(months, aMonth => aMonth.period === monthCode)
+    if(foundMonth) {
+        return foundMonth.name;
+    }
+}
+
 ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
     let payTypeHeaders = ['Employee']
     let payTypesTotal = ['Total']

@@ -1,4 +1,82 @@
 import _ from 'underscore';
+import Ladda from 'ladda';
+
+let AnnualTaxReportUtils = {};
+
+AnnualTaxReportUtils.getNumberTaxCodeHeaderForMonth = (taxAmountHeaders, monthCode) => {    
+    let monthTaxHeaders = _.find(taxAmountHeaders, monthTaxHeaders => {
+        return monthTaxHeaders.monthCode === monthCode
+    })
+    if(monthTaxHeaders) {
+        let taxCodesForMonth = monthTaxHeaders.taxCodes || [];
+        return taxCodesForMonth.length;
+    } else {
+        return 0;
+    }
+}
+
+AnnualTaxReportUtils.processAnnualTaxReportData = (serverRes, year) => {
+    let taxAmountHeaders = serverRes.taxAmountHeaders;
+    let taxData = [];
+    let firstRowOfHeaders = [
+        'Name', 'State', 'Tax Payer ID'
+    ]
+    const months = Core.months();
+
+    _.each(taxAmountHeaders, taxHeader => {
+        let foundMonth =_.find(months, aMonth => aMonth.period === taxHeader.monthCode)
+        if(foundMonth) {
+            firstRowOfHeaders.push(foundMonth.name)
+            
+            let numTaxCodes = AnnualTaxReportUtils.getNumberTaxCodeHeaderForMonth(taxAmountHeaders, taxHeader.monthCode)
+            numTaxCodes = (numTaxCodes > 1) ? (numTaxCodes - 1) : 0
+
+            _.each(_.range(numTaxCodes), counter => {
+                firstRowOfHeaders.push('')
+            })
+        }
+    })
+
+    let secondRowOfHeaders = ['', '', '']
+    _.each(taxAmountHeaders, taxHeader => {
+        _.each(taxHeader.taxCodes, taxCode => {
+            secondRowOfHeaders.push(taxCode)
+        })
+    })
+
+    //--
+    _.each(serverRes.taxData, employeeTaxData => {
+        let exportDataRow = [];
+        exportDataRow.push(employeeTaxData.fullName)
+        exportDataRow.push(employeeTaxData.state)
+        exportDataRow.push(employeeTaxData.taxPayerId)
+        
+        _.each(taxAmountHeaders, taxHeader => {
+            _.each(taxHeader.taxCodes, taxCode => {
+                let monthTaxHeaders = _.find(employeeTaxData.monthTax, (monthTax, monthIndex) => {
+                    let taxMonth = taxHeader.monthCode
+                    let taxMonthAsNum = parseInt(taxMonth)
+            
+                    return taxMonthAsNum === (monthIndex + 1)
+                })
+            
+                if(monthTaxHeaders) {
+                    exportDataRow.push(monthTaxHeaders[taxCode])
+                } else {
+                    exportDataRow.push("")
+                }
+            })
+        })
+
+        taxData.push(exportDataRow)
+    })
+
+    let dataRows = [secondRowOfHeaders].concat(taxData);
+
+    BulkpayExplorer.exportAllData({
+        fields: firstRowOfHeaders, data: dataRows
+    }, "Tax Annual Report - " + year);
+}
 
 /*****************************************************************************/
 /* AnnualTaxReport: Event Handlers */
@@ -19,7 +97,7 @@ Template.AnnualTaxReport.events({
         }
     },
     'click .excel': (e, tmpl) => {
-        event.preventDefault();
+        e.preventDefault();
         const year = $('[name="paymentPeriod.year"]').val();
 
         if(year) {
@@ -42,15 +120,15 @@ Template.AnnualTaxReport.events({
                     console.log(e);
                 }
 
-                tmpl.$('.excel').text(' Export to CSV');
+                tmpl.$('.excel').text(' Download');
                 // Add back glyphicon
-                $('.excel').prepend("<i class='glyphicon glyphicon-download'></i>");
+                $('.excel').prepend("<i class='fa fa-file-excel-o'></i>");
                 tmpl.$('.excel').removeAttr('disabled');
             };
 
-            Meteor.call('exportAnnualTaxResult', Session.get('context'), year, function(err, res){
-                if(res) {
-                    BulkpayExplorer.exportAllData(res, "Pension Annual Report - " + year);
+            Meteor.call('getAnnualTaxResult', Session.get('context'), year, function(err, res){
+                if(res && res.taxAmountHeaders && res.taxAmountHeaders.length > 0) {
+                    AnnualTaxReportUtils.processAnnualTaxReportData(res, year)
                     resetButton()
                 } else {
                     console.log(err);
@@ -62,6 +140,8 @@ Template.AnnualTaxReport.events({
         }
     }
 });
+
+
 
 /*****************************************************************************/
 /* AnnualTaxReport: Helpers */
@@ -111,7 +191,7 @@ Template.AnnualTaxReport.helpers({
             let taxMonth = currentMonthTaxCodeColumn.monthCode
             let taxMonthAsNum = parseInt(taxMonth)
 
-            return taxMonthAsNum === monthIndex
+            return taxMonthAsNum === (monthIndex + 1)
         })
 
         if(monthTaxHeaders) {

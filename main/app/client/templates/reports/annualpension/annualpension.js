@@ -2,6 +2,8 @@
 /*****************************************************************************/
 /* AnnualPensionReport: Event Handlers */
 /*****************************************************************************/
+import Ladda from 'ladda';
+
 Template.AnnualPensionReport.events({
     'click .getResult': (e, tmpl) => {
         const year = $('[name="paymentPeriod.year"]').val();
