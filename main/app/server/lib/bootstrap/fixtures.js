@@ -250,7 +250,24 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isWeekendTimeWritingEnabled: false,        
         isOvertimeEnabled: true,
         maxHoursInDayForTimeWriting: 8,
-        isActive: true
+        isActive: true,
+        travelRequestConfig: {
+            fields: [
+                {label: 'Trip Description', dbFieldName: 'tripDescription', type: 'String'},
+                {label: 'From', dbFieldName: 'fromLocation', type: 'String'},
+                {label: 'To', dbFieldName: 'toLocation', type: 'String'},
+                {label: 'Date required', dbFieldName: 'dateRequired', type: 'Date'},
+                {label: 'Trip Reason', dbFieldName: 'tripReason', type: 'TextArea'}
+            ],
+            costs: [
+                {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: true},
+                {label: 'Road', dbFieldName: 'flightCost', isPayableToStaff: true},
+                {label: 'Accommodation/Feeding', dbFieldName: 'accommodationCost', isPayableToStaff: true},
+                {label: 'Local Transport', dbFieldName: 'localTransportCost', isPayableToStaff: true},
+                {label: 'Per diem', dbFieldName: 'perDiemCost', isPayableToStaff: true},
+                {label: 'Miscellaneous Costs', dbFieldName: 'miscCost', isPayableToStaff: true}
+            ]
+        }
     },
     {
         businessId : integratedDairiesUnitId,
@@ -276,7 +293,25 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isWeekendTimeWritingEnabled: false,        
         isOvertimeEnabled: false,
         maxHoursInDayForTimeWriting: 8,
-        isActive: true
+        isActive: true,
+        travelRequestConfig: {
+            fields: [
+                {label: 'Trip Description', dbFieldName: 'tripDescription', type: 'String'},
+                {label: 'From', dbFieldName: 'fromLocation', type: 'String'},
+                {label: 'To', dbFieldName: 'toLocation', type: 'String'},
+                {label: 'Departure Date', dbFieldName: 'departureDate', type: 'Date'},
+                {label: 'Return Date', dbFieldName: 'returnDate', type: 'Date'},
+                {label: 'Preferred Airline', dbFieldName: 'preferredAirline', type: 'String'},
+                {label: 'Preferred Flight Time', dbFieldName: 'preferredFlightTime', type: 'Time'},
+                {label: 'Trip Reason', dbFieldName: 'tripReason', type: 'TextArea'}
+            ],
+            costs: [
+                {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: false},
+                {label: 'Accommodation/Feeding', dbFieldName: 'accommodationCost'},
+                {label: 'Local Transport', dbFieldName: 'localTransportCost', isPayableToStaff: true},
+                {label: 'Per diem', dbFieldName: 'perDiemCost', isPayableToStaff: true},
+            ]
+        }
     }]
 
     Partitioner.directOperation(function() {
