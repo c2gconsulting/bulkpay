@@ -449,6 +449,23 @@ Template.TravelRequisitionDetail.helpers({
     },
     'or': (a, b) => {
         return a || b
+    },
+    'isEqual': (a, b) => {
+        return a === b;
+    },
+    'fields': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            return travelRequestConfig.fields
+        }
+    },
+    'costs': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            return travelRequestConfig.costs
+        }
     }
 });
 
@@ -485,9 +502,18 @@ Template.TravelRequisitionDetail.onCreated(function () {
     self.businessUnitLogoUrl = new ReactiveVar()
 
     self.autorun(function() {
-        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
             if(!err) {
-                self.businessUnitCustomConfig.set(res)
+                self.businessUnitCustomConfig.set(customConfigres)
+                if(customConfig) {
+                    let travelRequestConfig = customConfig.travelRequestConfig;
+                    if(travelRequestConfig) {
+                        let costs = travelRequestConfig.costs || [];
+                        costs.forEach(cost => {
+                            self[cost.dbFieldName] = new ReactiveVar(0)
+                        })
+                    }
+                }
             }
         })
 
