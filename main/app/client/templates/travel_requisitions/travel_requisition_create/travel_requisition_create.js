@@ -10,84 +10,19 @@ Template.TravelRequisitionCreate.events({
 
         Modal.show('TravelRequisitionCreate')
     },
-    "keyup input[name=flightCost]": _.throttle(function(e, tmpl) {
+    "keyup .costInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');        
         var text = $(e.target).val().trim();
         
         if (!text || text.trim().length === 0) {
             text = "0"
         }
-        let flightCostAsNumber = parseFloat(text)
-        if(isNaN(flightCostAsNumber)) {
-            flightCostAsNumber = 0
+        let costAsNumber = parseFloat(text)
+        if(isNaN(costAsNumber)) {
+            costAsNumber = 0
         }
-        tmpl.flightCost.set(flightCostAsNumber)
+        tmpl[fieldName].set(costAsNumber)
         tmpl.updateTotalTripCost()        
-    }, 200),
-    "keyup input[name=roadCost]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-        
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let roadCostAsNumber = parseFloat(text)
-        if(isNaN(roadCostAsNumber)) {
-            roadCostAsNumber = 0
-        }
-        tmpl.roadCost.set(roadCostAsNumber)
-        tmpl.updateTotalTripCost()        
-    }, 200),
-    "keyup input[name=accommodationCost]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let accommodationCostAsNumber = parseFloat(text)
-        if(isNaN(accommodationCostAsNumber)) {
-            accommodationCostAsNumber = 0
-        }
-        tmpl.accommodationCost.set(accommodationCostAsNumber)
-        tmpl.updateTotalTripCost()        
-    }, 200),
-    "keyup input[name=localTransportCost]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let localTransportCostAsNumber = parseFloat(text)
-        if(isNaN(localTransportCostAsNumber)) {
-            localTransportCostAsNumber = 0
-        }
-        tmpl.localTransportCost.set(localTransportCostAsNumber)
-        tmpl.updateTotalTripCost()        
-    }, 200),
-    "keyup input[name=perDiemCost]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        
-        let perDiemCostAsNumber = parseFloat(text)
-        if(isNaN(perDiemCostAsNumber)) {
-            perDiemCostAsNumber = 0
-        }
-        tmpl.perDiemCost.set(perDiemCostAsNumber)
-        tmpl.updateTotalTripCost()
-    }, 200),
-    "keyup input[name=miscCosts]": _.throttle(function(e, tmpl) {
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }        
-        let miscCostAsNumber = parseFloat(text)
-        if(isNaN(miscCostAsNumber)) {
-            miscCostAsNumber = 0
-        }
-        tmpl.miscCost.set(miscCostAsNumber)
-        tmpl.updateTotalTripCost()
     }, 200),
 
     'click #new-requisition-save-draft': function(e, tmpl) {
@@ -95,13 +30,6 @@ Template.TravelRequisitionCreate.events({
         let description = $("input[name=description]").val()
         let dateRequired = $("input[name=dateRequired]").val()
         let requisitionReason = $("textarea[name=requisitionReason]").val()
-
-        let flightCost = $("input[name=flightCost]").val()
-        let accommodationCost = $("input[name=accommodationCost]").val()
-        let localTransportCost = $("input[name=localTransportCost]").val()
-        let perDiemCost = $("input[name=perDiemCost]").val()
-        let miscCosts = $("input[name=miscCosts]").val()
-        let roadCost = $("input[name=roadCost]").val()
 
         if(description && description.length > 0) {
             let requisitionDoc = {}
@@ -117,39 +45,20 @@ Template.TravelRequisitionCreate.events({
                 requisitionDoc.unitId = currentUserUnitId
             }
             //--
-            let flightCostAsNumber = parseFloat(flightCost)
-            if(isNaN(flightCostAsNumber)) {
-                flightCostAsNumber = 0
+            requisitionDoc.tripCosts = {}
+            
+            const customConfig = tmpl.businessUnitCustomConfig.get();
+            if(customConfig) {
+                let travelRequestConfig = customConfig.travelRequestConfig;    
+                if(travelRequestConfig) {
+                    let costs = travelRequestConfig.costs || [];
+                    costs.forEach(cost => {
+                        const costAmount = tmpl[cost.dbFieldName].get();
+                        requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+                    })
+                }
             }
-            let accomodationCostAsNumber = parseFloat(accommodationCost)
-            if(isNaN(accomodationCostAsNumber)) {
-                accomodationCostAsNumber = 0
-            }
-            let localTransportCostAsNumber = parseFloat(localTransportCost)
-            if(isNaN(localTransportCostAsNumber)) {
-                localTransportCostAsNumber = 0
-            }
-            let perDiemCostAsNumber = parseFloat(perDiemCost)
-            if(isNaN(perDiemCostAsNumber)) {
-                perDiemCostAsNumber = 0
-            }
-            let miscCostAsNumber = parseFloat(miscCosts)
-            if(isNaN(miscCostAsNumber)) {
-                miscCostAsNumber = 0
-            }
-            let roadCostAsNumber = parseFloat(roadCost)
-            if(isNaN(roadCostAsNumber)) {
-                roadCostAsNumber = 0
-            }
-            requisitionDoc.tripCosts = {
-                flightCost: flightCostAsNumber,
-                accommodationCost: accomodationCostAsNumber,
-                localTransportCost: localTransportCostAsNumber,
-                perDiemCost: perDiemCostAsNumber,
-                miscCosts: miscCostAsNumber,
-
-                roadCost: roadCostAsNumber
-            }
+            console.log(`requisitionDoc: `, requisitionDoc)
             //--
 
             let businessUnitId = Session.get('context')
@@ -175,13 +84,6 @@ Template.TravelRequisitionCreate.events({
         let dateRequired = $("input[name=dateRequired]").val()
         let requisitionReason = $("textarea[name=requisitionReason]").val()
 
-        let flightCost = $("input[name=flightCost]").val()
-        let accommodationCost = $("input[name=accommodationCost]").val()
-        let localTransportCost = $("input[name=localTransportCost]").val()
-        let perDiemCost = $("input[name=perDiemCost]").val()
-        let miscCosts = $("input[name=miscCosts]").val()
-        let roadCost = $("input[name=roadCost]").val()
-
         let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
         if(validation === true) {
             let requisitionDoc = {}
@@ -195,40 +97,20 @@ Template.TravelRequisitionCreate.events({
                 requisitionDoc.unitId = currentUserUnitId
             }
             //--
-            let flightCostAsNumber = parseFloat(flightCost)
-            if(isNaN(flightCostAsNumber)) {
-                flightCostAsNumber = 0
-            }
-            let accomodationCostAsNumber = parseFloat(accommodationCost)
-            if(isNaN(accomodationCostAsNumber)) {
-                accomodationCostAsNumber = 0
-            }
-            let localTransportCostAsNumber = parseFloat(localTransportCost)
-            if(isNaN(localTransportCostAsNumber)) {
-                localTransportCostAsNumber = 0
-            }
-            let perDiemCostAsNumber = parseFloat(perDiemCost)
-            if(isNaN(perDiemCostAsNumber)) {
-                perDiemCostAsNumber = 0
-            }
-            let miscCostAsNumber = parseFloat(miscCosts)
-            if(isNaN(miscCostAsNumber)) {
-                miscCostAsNumber = 0
-            }
-            let roadCostAsNumber = parseFloat(roadCost)
-            if(isNaN(roadCostAsNumber)) {
-                roadCostAsNumber = 0
-            }
+            requisitionDoc.tripCosts = {}
 
-            requisitionDoc.tripCosts = {
-                flightCost: flightCostAsNumber,
-                accommodationCost: accomodationCostAsNumber,
-                localTransportCost: localTransportCostAsNumber,
-                perDiemCost: perDiemCostAsNumber,
-                miscCosts: miscCostAsNumber,
-                
-                roadCost: roadCostAsNumber
+            const customConfig = tmpl.businessUnitCustomConfig.get();
+            if(customConfig) {
+                let travelRequestConfig = customConfig.travelRequestConfig;    
+                if(travelRequestConfig) {
+                    let costs = travelRequestConfig.costs || [];
+                    costs.forEach(cost => {
+                        const costAmount = tmpl[cost.dbFieldName].get();
+                        requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+                    })
+                }
             }
+            console.log(`requisitionDoc: `, requisitionDoc)
             //--
             let businessUnitId = Session.get('context')
 
@@ -264,6 +146,15 @@ Template.TravelRequisitionCreate.helpers({
     },
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
+    },
+    'costs': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+            console.log(`travelRequestConfig: `, travelRequestConfig)
+
+            return travelRequestConfig.costs
+        }
     }
 });
 
@@ -276,15 +167,17 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let businessUnitId = Session.get('context');
 
     self.unitId = new ReactiveVar()
+    self.businessUnitCustomConfig = new ReactiveVar()
 
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
+    let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
-    self.flightCost = new ReactiveVar(0)
-    self.accommodationCost = new ReactiveVar(0)
-    self.localTransportCost = new ReactiveVar(0)
-    self.perDiemCost = new ReactiveVar(0)
-    self.miscCost = new ReactiveVar(0)
-    self.roadCost = new ReactiveVar(0)
+    // self.flightCost = new ReactiveVar(0)
+    // self.accommodationCost = new ReactiveVar(0)
+    // self.localTransportCost = new ReactiveVar(0)
+    // self.perDiemCost = new ReactiveVar(0)
+    // self.miscCost = new ReactiveVar(0)
+    // self.roadCost = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
     self.getUnitForPosition = (entity) => {
@@ -323,6 +216,20 @@ Template.TravelRequisitionCreate.onCreated(function () {
                 }
             }
         }
+
+        if(customConfigSub.ready()) {
+            const customConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+            self.businessUnitCustomConfig.set(customConfig)            
+            if(customConfig) {
+                let travelRequestConfig = customConfig.travelRequestConfig;
+                if(travelRequestConfig) {
+                    let costs = travelRequestConfig.costs || [];
+                    costs.forEach(cost => {
+                        self[cost.dbFieldName] = new ReactiveVar(0)
+                    })
+                }
+            }
+        }
     })
 
     self.areInputsValid = function(description, dateRequired, requisitionReason) {
@@ -343,17 +250,22 @@ Template.TravelRequisitionCreate.onCreated(function () {
     }
 
     self.updateTotalTripCost = () => {
-        let flightCost = self.flightCost.get()
-        let roadCost = self.roadCost.get()
-        let accommodationCost = self.accommodationCost.get()
-        let localTransportCost = self.localTransportCost.get()
-        let perDiemCost = self.perDiemCost.get()
-        let miscCost = self.miscCost.get()
+        const customConfig = self.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
 
-        let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-            roadCost + perDiemCost + miscCost
-
-        self.totalTripCost.set(totalTripCost)
+            if(travelRequestConfig) {
+                let costs = travelRequestConfig.costs || [];
+                let totalCosts = 0;
+                costs.forEach(cost => {
+                    const costAmount = self[cost.dbFieldName].get();
+                    totalCosts += costAmount;
+                })
+                self.totalTripCost.set(totalCosts)
+            }
+        } else {
+            self.totalTripCost.set(0)
+        }
     }
 });
 

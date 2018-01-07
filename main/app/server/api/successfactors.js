@@ -14,6 +14,9 @@ if (Meteor.isServer) {
               const postBody = this.bodyParams;
               console.log(`postBody: `, postBody);
 
+              const headers = this.request.headers;
+              console.log(`headers: `, headers)
+
               return {
                 status: 'success',
                 message: 'Got post body from successfactors'

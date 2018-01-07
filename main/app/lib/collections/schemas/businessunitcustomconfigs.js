@@ -95,6 +95,11 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     _groupId: {
         type: String
     },
+    travelRequestConfig: {
+        type: Object,
+        optional: true,
+        blackbox: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

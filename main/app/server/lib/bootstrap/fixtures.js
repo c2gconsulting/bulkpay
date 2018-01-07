@@ -261,7 +261,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             ],
             costs: [
                 {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: true},
-                {label: 'Road', dbFieldName: 'flightCost', isPayableToStaff: true},
+                {label: 'Road', dbFieldName: 'roadCost', isPayableToStaff: true},
                 {label: 'Accommodation/Feeding', dbFieldName: 'accommodationCost', isPayableToStaff: true},
                 {label: 'Local Transport', dbFieldName: 'localTransportCost', isPayableToStaff: true},
                 {label: 'Per diem', dbFieldName: 'perDiemCost', isPayableToStaff: true},
