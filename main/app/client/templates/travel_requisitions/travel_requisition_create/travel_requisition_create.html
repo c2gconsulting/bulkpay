@@ -29,24 +29,44 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     {{#if isEqual this.type "String"}}
-                                        <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                        <label class="control-label" for="{{dbFieldName}}">
+                                            {{label}}
+                                            {{#if this.isRequired}}
+                                            *
+                                            {{/if}}
+                                        </label>
                                         <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" class="form-control fieldInputField"/>
                                         <br/>
                                     {{else}}
                                         {{#if isEqual this.type "TextArea"}}
-                                            <label class="control-label" for="requisitionReason">{{label}}</label>
+                                            <label class="control-label" for="requisitionReason">
+                                                {{label}}
+                                                {{#if this.isRequired}}
+                                                *
+                                                {{/if}}    
+                                            </label>
                                             <textarea class="form-control fieldInputField" rows="5" name="{{dbFieldName}}"></textarea>
                                             <br/>
                                             {{else}}
                                             {{#if isEqual this.type "Date"}}
-                                                <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                                <label class="control-label" for="{{dbFieldName}}">
+                                                    {{label}}
+                                                    {{#if this.isRequired}}
+                                                    *
+                                                    {{/if}}        
+                                                </label>
                                                 {{#datepicker}}
                                                     <input type="text" class="form-control datepicker fieldInputField" name="{{dbFieldName}}" data-field="dateRequired" />
                                                 {{/datepicker}}
                                                 <br/>
                                             {{else}}
                                                 {{#if isEqual this.type "Time"}}
-                                                    <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                                    <label class="control-label" for="{{dbFieldName}}">
+                                                        {{label}}
+                                                        {{#if this.isRequired}}
+                                                        *
+                                                        {{/if}}
+                                                    </label>
                                                     {{#datetimepicker}}
                                                         <input type="text" class="form-control datetimepicker fieldInputField" name="{{dbFieldName}}" data-field="{{dbFieldName}}" />
                                                     {{/datetimepicker}}

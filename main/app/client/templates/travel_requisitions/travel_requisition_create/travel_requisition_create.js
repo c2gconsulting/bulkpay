@@ -68,8 +68,10 @@ Template.TravelRequisitionCreate.events({
             if(travelRequestConfig) {
                 let fields = travelRequestConfig.fields || [];
                 fields.forEach(field => {
-                    const fieldVal = tmpl[field.dbFieldName].get();
-                    requisitionDoc[field.dbFieldName] = fieldVal;
+                    if(tmpl[field.dbFieldName]) {
+                        const fieldVal = tmpl[field.dbFieldName].get();
+                        requisitionDoc[field.dbFieldName] = fieldVal;    
+                    }
                 })
 
                 requisitionDoc.tripCosts = {}
@@ -88,7 +90,7 @@ Template.TravelRequisitionCreate.events({
                 swal({title: "Success", text: "Requisition Draft saved", type: "success",
                     confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                 }, () => {
-                    Modal.hide()
+                    // Modal.hide()
                 })
             } else {
                 swal('Validation error', err.message, 'error')
@@ -135,7 +137,7 @@ Template.TravelRequisitionCreate.events({
                     swal({title: "Success", text: "Requisition is now pending approval", type: "success",
                         confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
                     }, () => {
-                        Modal.hide()
+                        //Modal.hide()
                     })
                 } else {
                     swal('Validation error', err.message, 'error')

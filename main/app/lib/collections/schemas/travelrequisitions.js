@@ -5,27 +5,33 @@
 Core.Schemas.TripCosts = new SimpleSchema({
     flightCost: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     accommodationCost: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     localTransportCost: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     perDiemCost: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     roadCost: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     },
     miscCosts: {
         type: Number,
-        decimal: true
+        decimal: true,
+        optional: true
     }
 });
 
@@ -48,6 +54,34 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         type: Date,
         optional: true
     },
+
+
+    fromLocation: {
+        type: String,
+        optional: true,
+    },
+    toLocation: {
+        type: String,
+        optional: true
+    },
+    departureDate: {
+        type: Date,
+        optional: true,
+    },
+    returnDate: {
+        type: Date,
+        optional: true
+    },
+    preferredAirline: {
+        type: String,
+        optional: true,
+    },
+    preferredFlightTime: {
+        type: Date,
+        optional: true
+    },
+
+
     unitId: {
         type: String,
         optional: true
