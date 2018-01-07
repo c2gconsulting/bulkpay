@@ -8,44 +8,64 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
+                            {{#unless Template.subscriptionsReady}}
                             <div class="col-sm-12">
-                                <label class="control-label" for="description">Trip description</label>
-                                <input name="description" type="text" placeholder="Description" class="form-control"/>
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                                {{> spinner}}
+                            </div>
+                            {{/unless}}
+                        </div>
                         <br/>
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <label class="control-label" for="unit">Unit</label>
                                 <input name="unit" type="text" placeholder="Unit" class="form-control" disabled
                                     value="{{getCurrentUserUnitName}}"/>
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                            </div>
+                        </div>
                         <br/>
 
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="control-label" for="dateRequired">Date required</label>
-                                {{#datepicker}}
-                                    <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" />
-                                {{/datepicker}}
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-                        <br/>
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="control-label" for="requisitionReason">Trip reason</label>
-                                <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"></textarea>
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                        {{#each fields}}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    {{#if isEqual this.type "String"}}
+                                        <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                        <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" class="form-control fieldInputField"/>
+                                        <br/>
+                                    {{else}}
+                                        {{#if isEqual this.type "TextArea"}}
+                                            <label class="control-label" for="requisitionReason">{{label}}</label>
+                                            <textarea class="form-control fieldInputField" rows="5" name="{{dbFieldName}}"></textarea>
+                                            <br/>
+                                            {{else}}
+                                            {{#if isEqual this.type "Date"}}
+                                                <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                                {{#datepicker}}
+                                                    <input type="text" class="form-control datepicker fieldInputField" name="{{dbFieldName}}" data-field="dateRequired" />
+                                                {{/datepicker}}
+                                                <br/>
+                                            {{else}}
+                                                {{#if isEqual this.type "Time"}}
+                                                    <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                                    {{#datetimepicker}}
+                                                        <input type="text" class="form-control datetimepicker fieldInputField" name="{{dbFieldName}}" data-field="{{dbFieldName}}" />
+                                                    {{/datetimepicker}}
+                                                    <br/>
+                                                {{else}}
+                                                {{/if}}
+                                            {{/if}}                                        
+                                        {{/if}}
+                                    {{/if}}
+                                </div>
+                            </div>
+                        {{/each}}
 
                         <div class="row">
                             <div class="col-sm-12">
                                 <br/>
                                 <label class="control-label" for="requisitionReason"><b>Travel costs</b></label>
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                            </div>
+                        </div>
 
                         {{#each costs}}
                             <div class="row">

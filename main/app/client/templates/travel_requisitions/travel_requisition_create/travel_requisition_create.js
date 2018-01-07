@@ -10,6 +10,34 @@ Template.TravelRequisitionCreate.events({
 
         Modal.show('TravelRequisitionCreate')
     },
+    "change .fieldInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        var inputVal = $(e.target).val().trim();
+        
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;    
+            if(travelRequestConfig) {
+                let fields = travelRequestConfig.fields || [];
+                fields.forEach(field => {
+                    if(field.dbFieldName === fieldName) {
+                        if(!tmpl[fieldName]) {
+                            tmpl[fieldName] = new ReactiveVar();                                
+                        }
+
+                        if(field.type === 'String' || field.type || 'TextArea') {
+                            tmpl[fieldName].set(inputVal)
+                        } else if(field.type === 'Date' || field.type === 'Time') {
+                            if(inputVal && inputVal.length > 0)
+                                tmpl[fieldName].set(new Date(inputVal))
+                            else
+                                tmpl[fieldName].set(null)                            
+                        }
+                    }
+                })
+            }
+        }   
+    }, 200),
     "keyup .costInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');        
         var text = $(e.target).val().trim();
@@ -27,82 +55,71 @@ Template.TravelRequisitionCreate.events({
 
     'click #new-requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
-        let description = $("input[name=description]").val()
-        let dateRequired = $("input[name=dateRequired]").val()
-        let requisitionReason = $("textarea[name=requisitionReason]").val()
+        let requisitionDoc = {}
 
-        if(description && description.length > 0) {
-            let requisitionDoc = {}
-            requisitionDoc.description = description
-            if(dateRequired && dateRequired.length > 0)
-                requisitionDoc.dateRequired = new Date(dateRequired)
-            else
-                requisitionDoc.dateRequired = null
-            requisitionDoc.requisitionReason = requisitionReason
-
-            let currentUserUnitId = Template.instance().unitId.get()
-            if(currentUserUnitId) {
-                requisitionDoc.unitId = currentUserUnitId
-            }
-            //--
-            requisitionDoc.tripCosts = {}
-            
-            const customConfig = tmpl.businessUnitCustomConfig.get();
-            if(customConfig) {
-                let travelRequestConfig = customConfig.travelRequestConfig;    
-                if(travelRequestConfig) {
-                    let costs = travelRequestConfig.costs || [];
-                    costs.forEach(cost => {
-                        const costAmount = tmpl[cost.dbFieldName].get();
-                        requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-                    })
-                }
-            }
-            console.log(`requisitionDoc: `, requisitionDoc)
-            //--
-
-            let businessUnitId = Session.get('context')
-
-            Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Requisition Draft saved", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        Modal.hide()
-                    })
-                } else {
-                    swal('Validation error', err.message, 'error')
-                }
-            })
-        } else {
-            swal('Validation error', "Please fill a description", 'error')
+        let currentUserUnitId = Template.instance().unitId.get()
+        if(currentUserUnitId) {
+            requisitionDoc.unitId = currentUserUnitId
         }
+        //--
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;    
+            if(travelRequestConfig) {
+                let fields = travelRequestConfig.fields || [];
+                fields.forEach(field => {
+                    const fieldVal = tmpl[field.dbFieldName].get();
+                    requisitionDoc[field.dbFieldName] = fieldVal;
+                })
+
+                requisitionDoc.tripCosts = {}
+                let costs = travelRequestConfig.costs || [];
+                costs.forEach(cost => {
+                    const costAmount = tmpl[cost.dbFieldName].get();
+                    requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+                })
+            }
+        }
+        //--
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+            if(!err) {
+                swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                    confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                }, () => {
+                    Modal.hide()
+                })
+            } else {
+                swal('Validation error', err.message, 'error')
+            }
+        })
     },
     'click #new-requisition-create': function(e, tmpl) {
         e.preventDefault()
-        let description = $("input[name=description]").val()
-        let dateRequired = $("input[name=dateRequired]").val()
-        let requisitionReason = $("textarea[name=requisitionReason]").val()
 
-        let validation = tmpl.areInputsValid(description, dateRequired, requisitionReason)
+        let validation = tmpl.areInputsValid(tmpl)
         if(validation === true) {
             let requisitionDoc = {}
-
-            requisitionDoc.description = description
-            requisitionDoc.dateRequired = new Date(dateRequired)
-            requisitionDoc.requisitionReason = requisitionReason
 
             let currentUserUnitId = Template.instance().unitId.get()
             if(currentUserUnitId) {
                 requisitionDoc.unitId = currentUserUnitId
             }
             //--
-            requisitionDoc.tripCosts = {}
-
             const customConfig = tmpl.businessUnitCustomConfig.get();
             if(customConfig) {
                 let travelRequestConfig = customConfig.travelRequestConfig;    
                 if(travelRequestConfig) {
+                    let fields = travelRequestConfig.fields || [];
+                    fields.forEach(field => {
+                        if(tmpl[field.dbFieldName]) {
+                            const fieldVal = tmpl[field.dbFieldName].get();
+                            requisitionDoc[field.dbFieldName] = fieldVal;    
+                        }
+                    })
+                    //--
+                    requisitionDoc.tripCosts = {}
                     let costs = travelRequestConfig.costs || [];
                     costs.forEach(cost => {
                         const costAmount = tmpl[cost.dbFieldName].get();
@@ -110,7 +127,6 @@ Template.TravelRequisitionCreate.events({
                     })
                 }
             }
-            console.log(`requisitionDoc: `, requisitionDoc)
             //--
             let businessUnitId = Session.get('context')
 
@@ -147,12 +163,20 @@ Template.TravelRequisitionCreate.helpers({
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
     },
+    'isEqual': (a, b) => {
+        return a === b;
+    },
+    'fields': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            return travelRequestConfig.fields
+        }
+    },
     'costs': function() {
         let customConfig = Template.instance().businessUnitCustomConfig.get()
         if(customConfig) {
-            let travelRequestConfig = customConfig.travelRequestConfig;
-            console.log(`travelRequestConfig: `, travelRequestConfig)
-
+            const travelRequestConfig = customConfig.travelRequestConfig;
             return travelRequestConfig.costs
         }
     }
@@ -172,12 +196,6 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
-    // self.flightCost = new ReactiveVar(0)
-    // self.accommodationCost = new ReactiveVar(0)
-    // self.localTransportCost = new ReactiveVar(0)
-    // self.perDiemCost = new ReactiveVar(0)
-    // self.miscCost = new ReactiveVar(0)
-    // self.roadCost = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
     self.getUnitForPosition = (entity) => {
@@ -232,21 +250,34 @@ Template.TravelRequisitionCreate.onCreated(function () {
         }
     })
 
-    self.areInputsValid = function(description, dateRequired, requisitionReason) {
-        let errMsg = null
-        if(!description || description.length < 1) {
-            errMsg = "Please fill description"
-            return errMsg
+    self.areInputsValid = function(tmpl) {
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+        let isOk = false;
+
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;    
+            if(travelRequestConfig) {
+                let fields = travelRequestConfig.fields || [];
+
+                fields.forEach(field => {
+                    if(field.isRequired) {
+                        if(tmpl[field.dbFieldName]) {
+                            const fieldVal = tmpl[field.dbFieldName].get();
+                            if(!fieldVal) {
+                                isOk = `Please fill ${field.label}`
+                            }
+                        } else {
+                            isOk = `Please fill ${field.label}`
+                        }
+                    }
+                })
+            }
         }
-        if(!dateRequired || dateRequired.length < 1) {
-            errMsg = "Please fill date required"
-            return errMsg
+        if(isOk) {
+            return isOk
+        } else {
+            return true
         }
-        if(!requisitionReason || requisitionReason.length < 1) {
-            errMsg = "Please fill requisition reason"
-            return errMsg
-        }
-        return true
     }
 
     self.updateTotalTripCost = () => {

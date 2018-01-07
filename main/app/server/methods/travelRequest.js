@@ -95,7 +95,7 @@ Meteor.methods({
         this.unblock()
 
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-            let errMsg = "Sorry, you have not allowed to create a procurement requisition because you are a super admin"
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
 
@@ -551,7 +551,7 @@ Meteor.methods({
         this.unblock()
 
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-            let errMsg = "Sorry, you are not allowed to reject a procurement requisition because you are a super admin"
+            let errMsg = "Sorry, you are not allowed to reject a travel requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
 

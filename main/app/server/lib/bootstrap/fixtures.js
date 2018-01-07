@@ -253,11 +253,11 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isActive: true,
         travelRequestConfig: {
             fields: [
-                {label: 'Trip Description', dbFieldName: 'tripDescription', type: 'String'},
+                {label: 'Trip Description', dbFieldName: 'description', type: 'String', isRequired: true},
                 {label: 'From', dbFieldName: 'fromLocation', type: 'String'},
                 {label: 'To', dbFieldName: 'toLocation', type: 'String'},
-                {label: 'Date required', dbFieldName: 'dateRequired', type: 'Date'},
-                {label: 'Trip Reason', dbFieldName: 'tripReason', type: 'TextArea'}
+                {label: 'Date required', dbFieldName: 'dateRequired', type: 'Date', isRequired: true},
+                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: true}
             ],
             costs: [
                 {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: true},
@@ -296,17 +296,17 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         isActive: true,
         travelRequestConfig: {
             fields: [
-                {label: 'Trip Description', dbFieldName: 'tripDescription', type: 'String'},
+                {label: 'Trip Description', dbFieldName: 'description', type: 'String', isRequired: true},
                 {label: 'From', dbFieldName: 'fromLocation', type: 'String'},
                 {label: 'To', dbFieldName: 'toLocation', type: 'String'},
-                {label: 'Departure Date', dbFieldName: 'departureDate', type: 'Date'},
+                {label: 'Departure Date', dbFieldName: 'departureDate', type: 'Date', isRequired: true},
                 {label: 'Return Date', dbFieldName: 'returnDate', type: 'Date'},
                 {label: 'Preferred Airline', dbFieldName: 'preferredAirline', type: 'String'},
                 {label: 'Preferred Flight Time', dbFieldName: 'preferredFlightTime', type: 'Time'},
-                {label: 'Trip Reason', dbFieldName: 'tripReason', type: 'TextArea'}
+                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: true}
             ],
             costs: [
-                {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: false},
+                {label: 'Flight', dbFieldName: 'flightCost'},
                 {label: 'Accommodation/Feeding', dbFieldName: 'accommodationCost'},
                 {label: 'Local Transport', dbFieldName: 'localTransportCost', isPayableToStaff: true},
                 {label: 'Per diem', dbFieldName: 'perDiemCost', isPayableToStaff: true},
