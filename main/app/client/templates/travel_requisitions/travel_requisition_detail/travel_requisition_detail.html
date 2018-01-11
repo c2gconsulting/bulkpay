@@ -79,88 +79,68 @@
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
 
+                        {{#each costs}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-sm-6">
-                                    <label class="control-label" for="flightCost">Flight</label>
-                                </div><!-- col-sm-3 -->
+                                    <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                </div>
                                 <div class="col-sm-6">
-                                    <input name="flightCost" type="text" placeholder="Flight" class="form-control"
-                                        value="{{tripCosts.flightCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="roadCost">Road</label>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-6">
-                                    <input name="roadCost" type="text" placeholder="Road" class="form-control"
-                                        value="{{tripCosts.roadCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                                    <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" 
+                                        class="form-control costInputField"
+                                        value="{{value}}"/>
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
 
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="accommodationCost">Accommodation/Feeding</label>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-6">
-                                    <input name="accommodationCost" type="text" placeholder="Accommodation" class="form-control"
-                                        value="{{tripCosts.accommodationCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="localTransportCost">Local transport</label>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-6">
-                                    <input name="localTransportCost" type="text" placeholder="Local transport" class="form-control"
-                                        value="{{tripCosts.localTransportCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-                        
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="perDiemCost">Per diem</label>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-6">
-                                    <input name="perDiemCost" type="text" placeholder="Per diem" class="form-control"
-                                        value="{{tripCosts.perDiemCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="miscCosts">Miscellaneous costs</label>
-                                </div><!-- col-sm-3 -->
-                                <div class="col-sm-6">
-                                    <input name="miscCosts" type="text" placeholder="Miscellaneous costs" class="form-control"
-                                        value="{{tripCosts.miscCosts}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
-
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-sm-6">
                                     <label class="control-label" for="totalCost">Total cost</label>
-                                </div><!-- col-sm-3 -->
+                                </div>
                                 <div class="col-sm-6">
                                     <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
                                         value="{{formatMoneyD totalTripCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Amount Non Payable to employee</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amountNonPaybelToEmp}}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Amount Payable to employee: </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amoutPayableToEmp}}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Total Amount</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD totalTripCost}}"/>
+                                </div>
+                            </div>
+                        </div>
 
                         {{#if isTwoStepApprovalEnabled}}
                             <br/>

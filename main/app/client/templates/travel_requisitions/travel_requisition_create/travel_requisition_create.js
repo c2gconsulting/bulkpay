@@ -162,6 +162,12 @@ Template.TravelRequisitionCreate.helpers({
             }
         }
     },
+    'amountNonPaybelToEmp': function() {
+        return Template.instance().amountNonPaybelToEmp.get()
+    },
+    'amoutPayableToEmp': function() {
+        return Template.instance().amoutPayableToEmp.get()
+    },
     'totalTripCost': function() {
         return Template.instance().totalTripCost.get()
     },
@@ -198,6 +204,8 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
+    self.amountNonPaybelToEmp = new ReactiveVar(0)
+    self.amoutPayableToEmp = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
     self.getUnitForPosition = (entity) => {
@@ -289,14 +297,27 @@ Template.TravelRequisitionCreate.onCreated(function () {
 
             if(travelRequestConfig) {
                 let costs = travelRequestConfig.costs || [];
+                let nonPayableToEmp = 0;
+                let payableToEmp = 0;
                 let totalCosts = 0;
+                
                 costs.forEach(cost => {
                     const costAmount = self[cost.dbFieldName].get();
                     totalCosts += costAmount;
+
+                    if(cost.isPayableToStaff) {
+                        payableToEmp += costAmount;
+                    } else if(!cost.isPayableToStaff) {
+                        nonPayableToEmp += costAmount;
+                    }
                 })
+                self.amountNonPaybelToEmp.set(nonPayableToEmp)
+                self.amoutPayableToEmp.set(payableToEmp)
                 self.totalTripCost.set(totalCosts)
             }
         } else {
+            self.amountNonPaybelToEmp.set(0)
+            self.amoutPayableToEmp.set(0)
             self.totalTripCost.set(0)
         }
     }

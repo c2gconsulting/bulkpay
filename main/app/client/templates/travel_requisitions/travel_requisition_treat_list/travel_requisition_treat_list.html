@@ -30,7 +30,7 @@
                                         <th>Creator</th>
                                         <th>Description</th>
                                         <th>Unit</th>
-                                        <th>Date required</th>
+                                        <th>Date created</th>
                                         <th>Status</th>
                                     </tr>
                                     </thead>
@@ -40,7 +40,7 @@
                                             <td nowrap>{{getCreatedByFullName this}}</td>
                                             <td>{{description}}</td>
                                             <td>{{getUnitName unitId}}</td>
-                                            <td nowrap>{{formatDate dateRequired}}</td>
+                                            <td nowrap>{{formatDate createdAt}}</td>
                                             <td>{{status}}</td>
                                         </tr>
                                     {{/each}}

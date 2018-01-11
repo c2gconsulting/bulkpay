@@ -407,9 +407,9 @@ Template.TravelRequisitionDetail.helpers({
             return EntityObjects.findOne({_id: unitId}).name            
         }
     },
-    'totalTripCost': function() {
-        return Template.instance().totalTripCost.get()
-    },
+    // 'totalTripCost': function() {
+    //     return Template.instance().totalTripCost.get()
+    // },
     'isTwoStepApprovalEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {
@@ -460,13 +460,38 @@ Template.TravelRequisitionDetail.helpers({
             return travelRequestConfig.fields
         }
     },
-    'costs': function() {
-        let customConfig = Template.instance().businessUnitCustomConfig.get()
-        if(customConfig) {
-            const travelRequestConfig = customConfig.travelRequestConfig;
-            return travelRequestConfig.costs
+    'costs': function() {self.procurementDetails
+        let travelRequestDetails = Template.instance().procurementDetails.get()
+
+        if(travelRequestDetails) {
+            let customConfig = Template.instance().businessUnitCustomConfig.get()
+            if(customConfig) {
+                const travelRequestConfig = customConfig.travelRequestConfig;
+                let costsConfig = travelRequestConfig.costs
+                let travelRequestCosts = travelRequestDetails.tripCosts
+
+                costsConfig.forEach(costDetails => {
+                    let actualCost = travelRequestCosts[costDetails.dbFieldName];
+
+                    if(actualCost) {
+                        costDetails.value = actualCost
+                    } else {
+                        costDetails.value = 0
+                    }
+                })
+                return costsConfig
+            }
         }
-    }
+    },
+    'amountNonPaybelToEmp': function() {
+        return Template.instance().amountNonPaybelToEmp.get()
+    },
+    'amoutPayableToEmp': function() {
+        return Template.instance().amoutPayableToEmp.get()
+    },
+    'totalTripCost': function() {
+        return Template.instance().totalTripCost.get()
+    },
 });
 
 /*****************************************************************************/
@@ -487,6 +512,9 @@ Template.TravelRequisitionDetail.onCreated(function () {
 
     let invokeReason = self.data;
 
+    // self.totalTripCost = new ReactiveVar(0)
+    self.amountNonPaybelToEmp = new ReactiveVar(0)
+    self.amoutPayableToEmp = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
     if(invokeReason.reason === 'edit') {
@@ -504,16 +532,7 @@ Template.TravelRequisitionDetail.onCreated(function () {
     self.autorun(function() {
         Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
             if(!err) {
-                self.businessUnitCustomConfig.set(customConfigres)
-                if(customConfig) {
-                    let travelRequestConfig = customConfig.travelRequestConfig;
-                    if(travelRequestConfig) {
-                        let costs = travelRequestConfig.costs || [];
-                        costs.forEach(cost => {
-                            self[cost.dbFieldName] = new ReactiveVar(0)
-                        })
-                    }
-                }
+                self.businessUnitCustomConfig.set(customConfig)
             }
         })
 
@@ -524,19 +543,7 @@ Template.TravelRequisitionDetail.onCreated(function () {
             let travelRequestDetails = TravelRequisitions.findOne({_id: invokeReason.requisitionId})
             self.procurementDetails.set(travelRequestDetails)
             //--
-            if(travelRequestDetails && travelRequestDetails.tripCosts) {
-                let flightCost = travelRequestDetails.tripCosts.flightCost || 0
-                let accommodationCost = travelRequestDetails.tripCosts.accommodationCost || 0
-                let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
-                let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
-                let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
-                let roadCost = travelRequestDetails.tripCosts.roadCost || 0
-
-                let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-                    roadCost + perDiemCost + miscCosts
-
-                self.totalTripCost.set(totalTripCost)
-            }
+            self.updateTotalTripCost();
             //--
             if(travelRequestDetails.unitId) {
                 self.subscribe('getEntity', travelRequestDetails.unitId)
@@ -611,6 +618,42 @@ Template.TravelRequisitionDetail.onCreated(function () {
                     return userPosition.properties.alternateSupervisor === currentUserPositionId
                 }
             }
+        }
+    }
+
+    self.updateTotalTripCost = () => {
+        const customConfig = self.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+
+            if(travelRequestConfig) {
+                let costs = travelRequestConfig.costs || [];
+                let nonPayableToEmp = 0;
+                let payableToEmp = 0;
+                let totalCosts = 0;
+                
+                let travelRequestDetails = Template.instance().procurementDetails.get()
+                let travelRequestCosts = travelRequestDetails.tripCosts
+                
+                costs.forEach(cost => {
+                    const costAmount = travelRequestCosts[cost.dbFieldName];
+                    if(costAmount) {
+                        totalCosts += costAmount;                        
+                        if(cost.isPayableToStaff) {
+                            payableToEmp += costAmount;
+                        } else if(!cost.isPayableToStaff) {
+                            nonPayableToEmp += costAmount;
+                        }
+                    }
+                })
+                self.amountNonPaybelToEmp.set(nonPayableToEmp)
+                self.amoutPayableToEmp.set(payableToEmp)
+                self.totalTripCost.set(totalCosts)
+            }
+        } else {
+            self.amountNonPaybelToEmp.set(0)
+            self.amoutPayableToEmp.set(0)
+            self.totalTripCost.set(0)
         }
     }
 });

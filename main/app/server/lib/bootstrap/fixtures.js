@@ -142,6 +142,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
     let deltaTexBulkPayDemoBusinessUnitId = "MkWGsoQ2nDAAJJQo6"
     let daarBusinessUnitId = "tgC7zYJf9ceSBmoT9"
     let integratedDairiesUnitId = "3heJnYLjFKcSTmA8y"
+    let hsdfDemo = 'CQdQKjkfLixpytbAN'
     
     let customConfigs = [{
         businessId : deltaTexBusinessUnitId,
@@ -257,7 +258,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
                 {label: 'From', dbFieldName: 'fromLocation', type: 'String'},
                 {label: 'To', dbFieldName: 'toLocation', type: 'String'},
                 {label: 'Date required', dbFieldName: 'dateRequired', type: 'Date', isRequired: true},
-                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: true}
+                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: false}
             ],
             costs: [
                 {label: 'Flight', dbFieldName: 'flightCost', isPayableToStaff: true},
@@ -303,13 +304,108 @@ CoreRegistry.setBusinessCustomConfigs = function () {
                 {label: 'Return Date', dbFieldName: 'returnDate', type: 'Date'},
                 {label: 'Preferred Airline', dbFieldName: 'preferredAirline', type: 'String'},
                 {label: 'Preferred Flight Time', dbFieldName: 'preferredFlightTime', type: 'Time'},
-                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: true}
+                {label: 'Trip Reason', dbFieldName: 'requisitionReason', type: 'TextArea', isRequired: false}
             ],
             costs: [
                 {label: 'Flight', dbFieldName: 'flightCost'},
                 {label: 'Accommodation/Feeding', dbFieldName: 'accommodationCost'},
                 {label: 'Local Transport', dbFieldName: 'localTransportCost', isPayableToStaff: true},
                 {label: 'Per diem', dbFieldName: 'perDiemCost', isPayableToStaff: true},
+            ]
+        }
+    },
+    {
+        "_id" : "N6v8zqcngx8ioc5oD",
+        "businessId" : hsdfDemo,
+        "payGradeLabel" : "Pay Category",
+        "payGradeLabelPlural" : "Pay Categories",
+        "isProcurementRequisitionActive" : false,
+        "isActive" : true,
+        "_groupId" : "QyPY7RY4Hc2dqZTem",
+        "createdAt" : ISODate("2017-04-24T18:53:45.085Z"),
+        "isTravelRequisitionActive" : true,
+        "leaveDaysAccrual" : "FixedLeaveEntitlement",
+        "checkEmployeeResumptionForPayroll" : true,
+        "isWeekendIncludedInLeaveRequests" : false,
+        "isTimeTypeEnabled" : true,
+        "isHmoSetupEnabled" : true,
+        "baseColor" : "#ff0000",
+        "displayLogoInSideBar" : true,
+        "isHourLeaveRequestsEnabled" : true,
+        "procurementRequisitionApprovalConfig" : {},
+        "isTwoStepApprovalEnabled" : false,
+        "isEmployeePersonalDataEditableByEmployee" : false,
+        "extraPersonalDataEmployeeProfileFieldsSupported" : [],
+        "isRelieverEnabledForLeaveRequests" : false,
+        "isEmployeePromotionEnabled" : false,
+        "isWeekendTimeWritingEnabled" : false,
+        "isOvertimeEnabled" : true,
+        "maxHoursInDayForTimeWriting" : 8.0,
+        "travelRequestConfig" : {
+            "fields" : [ 
+                {
+                    "label" : "Trip Description",
+                    "dbFieldName" : "description",
+                    "type" : "String",
+                    "isRequired" : true
+                }, 
+                {
+                    "label" : "From",
+                    "dbFieldName" : "fromLocation",
+                    "type" : "String"
+                }, 
+                {
+                    "label" : "To",
+                    "dbFieldName" : "toLocation",
+                    "type" : "String"
+                }, 
+                {
+                    "label" : "Departure Date",
+                    "dbFieldName" : "departureDate",
+                    "type" : "Date",
+                    "isRequired" : true
+                }, 
+                {
+                    "label" : "Return Date",
+                    "dbFieldName" : "returnDate",
+                    "type" : "Date"
+                }, 
+                {
+                    "label" : "Preferred Airline",
+                    "dbFieldName" : "preferredAirline",
+                    "type" : "String"
+                }, 
+                {
+                    "label" : "Preferred Flight Time",
+                    "dbFieldName" : "preferredFlightTime",
+                    "type" : "Time"
+                }, 
+                {
+                    "label" : "Trip Reason",
+                    "dbFieldName" : "requisitionReason",
+                    "type" : "TextArea",
+                    "isRequired" : false
+                }
+            ],
+            "costs" : [ 
+                {
+                    "label" : "Flight",
+                    "dbFieldName" : "flightCost"
+                }, 
+                {
+                    "label" : "Accommodation/Feeding",
+                    "dbFieldName" : "accommodationCost"
+                }, 
+                {
+                    "label" : "Local Transport",
+                    "dbFieldName" : "localTransportCost",
+                    "isPayableToStaff" : true
+                }, 
+                {
+                    "label" : "Per diem",
+                    "dbFieldName" : "perDiemCost",
+                    "isPayableToStaff" : true
+                }
             ]
         }
     }]

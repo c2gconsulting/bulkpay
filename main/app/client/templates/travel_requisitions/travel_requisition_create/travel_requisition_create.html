@@ -101,18 +101,43 @@
                                 </div>
                             </div>
                         {{/each}}
+                        <br/>
 
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-sm-6">
-                                    <label class="control-label" for="totalCost">Total cost</label>
-                                </div><!-- col-sm-3 -->
+                                    <label class="control-label" for="totalCost">Amount Non Payable to employee</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amountNonPaybelToEmp}}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Amount Payable to employee: </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amoutPayableToEmp}}"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Total Amount</label>
+                                </div>
                                 <div class="col-sm-6">
                                     <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
                                         value="{{formatMoneyD totalTripCost}}"/>
-                                </div><!-- col-sm-3 -->
-                            </div><!-- col-sm-3 -->
-                        </div><!-- row -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>

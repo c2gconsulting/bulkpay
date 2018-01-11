@@ -38,7 +38,7 @@
                                         <th>Creator</th>
                                         <th>Description</th>
                                         <th>Unit</th>
-                                        <th>Date required</th>
+                                        <th>Date created</th>
                                         <th>Status</th>
                                         <th>Total Trip Cost (NGN</th>
                                     </tr>
@@ -49,9 +49,13 @@
                                             <td nowrap>{{getCreatedByFullName this}}</td>
                                             <td>{{description}}</td>
                                             <td>{{getUnitName unitId}}</td>
-                                            <td nowrap>{{formatDate dateRequired}}</td>
+                                            {{#if createdAt}}
+                                                <td nowrap>{{formatDate createdAt}}</td>                                            
+                                            {{else}}
+                                                <td nowrap></td>                                            
+                                            {{/if}}
                                             <td>{{status}}</td>
-                                            <td>{{formatMoneyD (getTotalTripCost this)}}</td>
+                                            <td>{{formatMoneyD (totalTripCost this)}}</td>
                                         </tr>
                                     {{/each}}
                                     </tbody>

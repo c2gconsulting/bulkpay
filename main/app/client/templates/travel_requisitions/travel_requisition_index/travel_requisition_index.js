@@ -77,21 +77,17 @@ Template.TravelRequisitionIndex.helpers({
         if(unitId)
             return EntityObjects.findOne({_id: unitId}).name
     },
-    'getTotalTripCost': function(travelRequestDetails) {
-        if(travelRequestDetails && travelRequestDetails.tripCosts) {
-            let flightCost = travelRequestDetails.tripCosts.flightCost || 0
-            let accommodationCost = travelRequestDetails.tripCosts.accommodationCost || 0
-            let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
-            let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
-            let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
-            let roadCost = travelRequestDetails.tripCosts.roadCost || 0
+    'totalTripCost': function(travelRequestDetails) {
+        if(travelRequestDetails) {
+            let tripCosts = travelRequestDetails.tripCosts || [];
+            let costNames = Object.keys(tripCosts)
 
-            let totalTripCost = flightCost + accommodationCost + localTransportCost + 
-                roadCost + perDiemCost + miscCosts
-
-            return totalTripCost
-        } else  {
-            return 0
+            let totalCosts = 0;
+            
+            costNames.forEach(costName => {
+                totalCosts += tripCosts[costName];
+            })
+            return totalCosts;
         }
     }
 });
@@ -106,7 +102,9 @@ Template.TravelRequisitionIndex.onCreated(function () {
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
+    let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
+    self.businessUnitCustomConfig = new ReactiveVar()
 
     self.getTravelRequestsICreated = function(skip) {
         let sortBy = "createdAt";
@@ -140,6 +138,11 @@ Template.TravelRequisitionIndex.onCreated(function () {
         let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
         if(travelRequestsCreatedSub.ready()) {
             self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
+        }
+        //--
+        if(customConfigSub.ready()) {
+            const customConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+            self.businessUnitCustomConfig.set(customConfig)
         }
     })
 });
