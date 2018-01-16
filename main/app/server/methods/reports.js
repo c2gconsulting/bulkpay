@@ -949,11 +949,13 @@ Meteor.methods({
                         let employeePayresultsForPeriod = _.find(payResults, aPayrunResult => {
                             return (aPayrunResult.period === aPeriod) && aPayrunResult.employeeId === anEmployeeId
                         })
+                        let benefitsForMonth = {};
                         let taxAmountsForMonth = {};
 
                         if(employeePayresultsForPeriod) {
                             let monthCode = aPeriod.substring(0, 2);
 
+                            const benefitsInDiffCurrencies = employeePayresultsForPeriod.payslipWithCurrencyDelineation.benefit
                             const deductionsInDiffCurrencies = employeePayresultsForPeriod.payslipWithCurrencyDelineation.deduction
                             const currencies = Object.keys(deductionsInDiffCurrencies) || []
 
@@ -981,8 +983,30 @@ Meteor.methods({
                                         taxAmountsForMonth[`${aDeduction.code}_${aCurrency}`] = aDeduction.value
                                     }
                                 })
+                                //--
+                                let foundTaxHeaderForMonth = _.find(taxAmountHeaders, aTaxHeader => {
+                                    return aTaxHeader.monthCode === monthCode
+                                })
+                                if(foundTaxHeaderForMonth) {
+                                    let foundTaxCodeInHeaders = _.find(foundTaxHeaderForMonth.taxCodes, aTaxHeaderCode => {
+                                        return aTaxHeaderCode === `TotalBenefits_${aCurrency}`
+                                    })
+                                    if(!foundTaxCodeInHeaders) {
+                                        foundTaxHeaderForMonth.taxCodes = foundTaxHeaderForMonth.taxCodes || [];
+                                        foundTaxHeaderForMonth.taxCodes.push(`TotalBenefits_${aCurrency}`);
+                                    }
+                                } else {
+                                    taxAmountHeaders.push({
+                                        monthCode: monthCode,
+                                        taxCodes: [`TotalBenefits_${aCurrency}`]
+                                    })
+                                }
+                                const totalBenefits = benefitsInDiffCurrencies[aCurrency].total || 0
+                                benefitsForMonth[`TotalBenefits_${aCurrency}`] = totalBenefits
                             })
                         }
+                        Object.assign(taxAmountsForMonth, benefitsForMonth)
+
                         return taxAmountsForMonth;
                     });
                 }
