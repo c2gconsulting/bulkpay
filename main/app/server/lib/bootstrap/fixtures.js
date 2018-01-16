@@ -322,7 +322,6 @@ CoreRegistry.setBusinessCustomConfigs = function () {
         "isProcurementRequisitionActive" : false,
         "isActive" : true,
         "_groupId" : "QyPY7RY4Hc2dqZTem",
-        "createdAt" : ISODate("2017-04-24T18:53:45.085Z"),
         "isTravelRequisitionActive" : true,
         "leaveDaysAccrual" : "FixedLeaveEntitlement",
         "checkEmployeeResumptionForPayroll" : true,
