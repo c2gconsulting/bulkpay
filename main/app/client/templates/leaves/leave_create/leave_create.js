@@ -40,7 +40,7 @@ Template.LeaveCreate.events({
             tmpl.inputErrorMsg.set("Please select a start date")
             return
         }
-        let startDateObj = moment(start).startOf('day').toDate()
+        let startDateObj = moment(start).toDate()
         let endDateObj = null
 
         let durationAsNumber = 0
@@ -75,7 +75,7 @@ Template.LeaveCreate.events({
                 tmpl.inputErrorMsg.set("Please select a end date")
                 return
             }
-            endDateObj = moment(end).endOf('day').toDate()
+            endDateObj = moment(end).toDate()
 
             durationAsNumber = tmpl.getDurationOfWeekDays(start, end) // in days
         }
@@ -183,7 +183,7 @@ Template.LeaveCreate.helpers({
         return moment().startOf('day').toDate()
     },
     endOfToday: function() {
-        return moment().endOf('day').toDate()
+        return moment().startOf('day').toDate()
     },
     isRelieverEnabledForLeaveRequests: function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
@@ -222,8 +222,8 @@ Template.LeaveCreate.onCreated(function () {
     self.subscribe("activeEmployees", businessId);
 
     self.getNumberOfWeekDays = function(startDate, endDate) {
-        let startDateMoment = moment(startDate).startOf('day')
-        let endDateMoment = moment(endDate).endOf('day')
+        let startDateMoment = moment(startDate)
+        let endDateMoment = moment(endDate)
 
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
 
@@ -248,9 +248,9 @@ Template.LeaveCreate.onCreated(function () {
         return weekDates.length
     }
 
-    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {
-        let startDateMoment = moment(startDate).startOf('day')
-        let endDateMoment = moment(endDate).endOf('day')
+    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {        
+        let startDateMoment = moment(startDate)
+        let endDateMoment = moment(endDate)
         //--
         let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
         let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
@@ -280,8 +280,8 @@ Template.LeaveCreate.onCreated(function () {
     }
 
     self.getDurationOfWeekDays = function(startDate, endDate) {
-        let startDateMoment = moment(startDate).startOf('day')
-        let endDateMoment = moment(endDate).endOf('day')
+        let startDateMoment = moment(startDate)
+        let endDateMoment = moment(endDate)
         //--
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
         let numberOfLeaveDaysToAward = numberOfDays
