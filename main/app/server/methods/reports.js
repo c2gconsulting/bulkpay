@@ -1139,7 +1139,7 @@ Meteor.methods({
                                 benefitsForMonth[`TotalBenefits_${aCurrency}`] = totalBenefits
 
                                 const totalDeductions = deductionsInDiffCurrencies[aCurrency].total || 0
-                                netPayForMonth[`NetPay_${aCurrency}`] = totalBenefits - totalDeductions
+                                netPayForMonth[`NetPay_${aCurrency}`] = totalBenefits + totalDeductions
                             })
                         }
                         Object.assign(taxAmountsForMonth, benefitsForMonth)
