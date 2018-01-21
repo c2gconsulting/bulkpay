@@ -355,6 +355,12 @@ Router.route('/business/:_id/reports/netpay', {
     action: 'netpay',
     where: 'client'
 });
+Router.route('/business/:_id/reports/annualpay', {
+    name: 'reports.annualpay',
+    controller: 'ReportsController',
+    action: 'annualPay',
+    where: 'client'
+});
 
 Router.route('/business/:_id/reports/tax', {
     name: 'reports.tax',

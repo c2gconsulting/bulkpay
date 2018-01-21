@@ -1,4 +1,4 @@
-<template name="AnnualTaxReport">
+<template name="AnnualPayReport">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left">
@@ -11,7 +11,7 @@
                     <li>{{name}}</li>
                     <li>Reports</li>
                 </ul>
-                <h4>Annual Tax TReport</h4>
+                <h4>Annual Pay Report</h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -42,8 +42,6 @@
                             <thead>
                             <tr>
                                 <th nowrap>Name</th>
-                                <th nowrap>State</th>
-                                <th nowrap>Tax Payer ID</th>
 
                                 {{#each taxAmountHeaders}}
                                     <th colspan="{{getNumberTaxCodeHeaderForMonth monthCode}}">
@@ -53,7 +51,7 @@
                             </tr>
 
                             <tr>
-                                <th colspan="3"></th>
+                                <th colspan="1"></th>
 
                                 {{#each taxAmountHeaders}}
                                     {{#each taxCodes}}
@@ -66,8 +64,6 @@
                             {{#each taxData}}
                                 <tr>
                                     <td>{{fullName}}</td>
-                                    <td>{{state}}</td>
-                                    <td>{{taxPayerId}}</td>
 
                                     {{#let currentEmployeeTaxData=this}}
                                         {{#each taxAmountHeaders}}
