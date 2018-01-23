@@ -340,12 +340,12 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                             return aProjectPayment.payTypeId === aPayment.id
                         })
                         if(projectPaymentToAccumulate) {
-                            if(isNaN(aProjectPay.payAmount)) {
+                            if(aProjectPay.payAmount === null || isNaN(aProjectPay.payAmount)) {
                                 aProjectPay.payAmount = 0
                             }
                             projectPaymentToAccumulate.projectPayAmount += aProjectPay.payAmount
                         } else {
-                            if(isNaN(aProjectPay.payAmount)) {
+                            if(aProjectPay.payAmount === null || isNaN(aProjectPay.payAmount)) {
                                 aProjectPay.payAmount = 0
                             }
 
