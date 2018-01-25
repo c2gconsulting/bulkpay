@@ -46,7 +46,8 @@ Template.LeaveTypeCreate.helpers({
         })
     },
     'allowedPositions': () => {
-        if(Template.instance().data && Template.instance().data.positionIds && !Template.instance().selectedPaygrades.get()) {
+        if(Template.instance().data && Template.instance().data.positionIds 
+            && (!Template.instance().data.payGradeIds || !Template.instance().data.payGradeIds.length === 0)) {
             let positionIds = Template.instance().data.positionIds || []
             return EntityObjects.find({
                 _id: {$in: positionIds}
@@ -55,6 +56,7 @@ Template.LeaveTypeCreate.helpers({
             })
         } else {
             let selectedPaygradeIds = Template.instance().selectedPaygrades.get() || [];
+
             if(selectedPaygradeIds.length === 0) {
                 return []
             }
@@ -122,7 +124,7 @@ Template.LeaveTypeCreate.onCreated(function () {
     self.selectedPositions = new ReactiveVar()
     
     if(Template.instance().data) {
-        // self.selectedPaygrades.set(Template.instance().data.payGradeIds || [])
+        self.selectedPaygrades.set(Template.instance().data.payGradeIds || [])
         self.selectedPositions.set(Template.instance().data.positionIds || [])
     }
     //subscribe to positions and paygrades
