@@ -857,113 +857,116 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         value = parseFloat(x.parsedValue);
                                     }
                                     //--
+                                    if(x.hourlyRate) {
+                                        if(currentEmployeeInPayrunLoop.employeeProfile && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
+                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]) {
+                                            const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
+                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
+                                            processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${numDaysEmployeeCanWorkInMonth} * 8 * ${hourlyRate}`})
+                                            
+                                            value = (numDaysEmployeeCanWorkInMonth * 8) * hourlyRate
+                                        } else {
+                                            processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
+                                            value = 0
+                                        }
+                                    }
+                                    //--
                                     let projectPayAmount = 0
                                     let costCenterPayAmount = 0
                                     let projectsPay = []
 
+                                    //--
+                                    let processProjectAndCostCenterPay = (x) => {
+                                        projectsPayDetails.projectDurations.forEach(aProject => {
+                                            // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
+                                            const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * 8)
+                                            let individualProjectPayAmount = fraction * value
+                                            if(tenant.baseCurrency.iso !== x.currency) {
+                                                individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
+                                            }
+
+                                            projectsPay.push({
+                                                projectId: aProject.project,
+                                                durationInHours: aProject.duration,
+                                                payAmount: individualProjectPayAmount
+                                            })
+                                        })
+                                        let projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
+                                        costCenterPayAmount = costCentersPayDetails.fraction * value
+
+                                        processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                        processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
+
+                                        processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                        processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
+
+                                        value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
+
+                                        if(tenant.baseCurrency.iso !== x.currency) {
+                                            projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
+                                        } else {
+                                            projectPayAmount = projectsTotalPayInPayTypeCurrency
+                                        }
+                                        //--
+                                        if(tenant.baseCurrency.iso !== x.currency) {
+                                            costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
+                                        }
+                                        processing.push({code: x.code, derived: `(Pay from projects(${x.currency})) + (Pay from cost-center(${x.currency}))`});
+                                        processing.push({code: x.code, derived: value});
+                                    }
+                                    //--
                                     if(x.isTimeWritingDependent) {
                                         if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
-                                            if(x.hourlyRate) {
-                                                if(currentEmployeeInPayrunLoop.employeeProfile 
-                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment
-                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
-                                                    && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
-                                                ) {
-                                                    const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
-                                                    processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
-                                                    processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${numDaysEmployeeCanWorkInMonth} * 8 * ${hourlyRate}`})
-                                                    
-                                                    value = (numDaysEmployeeCanWorkInMonth * 8) * hourlyRate
-                                                } else {
-                                                    processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
-                                                    
-                                                    value = 0
-                                                }
-                                            }
-
-                                            // let totalWorkHoursInYear = 2080
-                                            // let numberOfMonthsInYear = 12
-                                            
-                                            projectsPayDetails.projectDurations.forEach(aProject => {
-                                                // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
-                                                const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * 8)
-                                                let individualProjectPayAmount = fraction * value
-                                                if(tenant.baseCurrency.iso !== x.currency) {
-                                                    individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
-                                                }
-
-                                                projectsPay.push({
-                                                    projectId: aProject.project,
-                                                    durationInHours: aProject.duration,
-                                                    payAmount: individualProjectPayAmount
-                                                })
-                                            })
-                                            let projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
-                                            costCenterPayAmount = costCentersPayDetails.fraction * value
-
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
-
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
-
-                                            value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
-
-                                            if(tenant.baseCurrency.iso !== x.currency) {
-                                                projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
-                                            } else {
-                                                projectPayAmount = projectsTotalPayInPayTypeCurrency
-                                            }
-                                            //--
-                                            if(tenant.baseCurrency.iso !== x.currency) {
-                                                costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                            }
-                                            processing.push({code: x.code, derived: `(Pay from projects(${x.currency})) + (Pay from cost-center(${x.currency}))`});
-                                            processing.push({code: x.code, derived: value});
+                                            processProjectAndCostCenterPay(x)
                                         } else {
                                             value = 0
                                             processing.push({code: x.code, derived: value});
                                         }
                                     } else {
-                                        processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
+                                        if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
+                                            processProjectAndCostCenterPay(x)
+                                        } else {
+                                            processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
 
-                                        // let totalWorkHoursInYear = 2080
-                                        // let numberOfMonthsInYear = 12
-                                        if(projectsAssignedToEmployee.length === 0) {
-                                            costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                                            value = costCenterPayAmount
-
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
-
-                                            if(tenant.baseCurrency.iso !== x.currency) {
-                                                costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
-                                                // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
-                                            } else {
+                                            // let totalWorkHoursInYear = 2080
+                                            // let numberOfMonthsInYear = 12
+                                            if(projectsAssignedToEmployee.length === 0) {
+                                                costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                                value = costCenterPayAmount
+    
+                                                processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
+                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
+    
+                                                if(tenant.baseCurrency.iso !== x.currency) {
+                                                    costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
+                                                    // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
+                                                } else {
+                                                    // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                                                }
+                                            } else if(projectsAssignedToEmployee.length === 1) {
+                                                projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                                value = projectPayAmount
+    
+                                                processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
+                                                processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
+    
+                                                if(tenant.baseCurrency.iso !== x.currency) {
+                                                    projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
+                                                }
                                                 // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+    
+                                                projectsPay.push({
+                                                    projectId: projectsAssignedToEmployee[0]._id,
+                                                    durationInHours: 0,
+                                                    payAmount: projectPayAmount
+                                                })
                                             }
-                                        } else if(projectsAssignedToEmployee.length === 1) {
-                                            projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                                            value = projectPayAmount
-
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
-
-                                            if(tenant.baseCurrency.iso !== x.currency) {
-                                                projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
-                                            }
-                                            // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-
-                                            projectsPay.push({
-                                                projectId: projectsAssignedToEmployee[0]._id,
-                                                durationInHours: 0,
-                                                payAmount: projectPayAmount
-                                            })
+                                            processing.push({code: `Pay from projects(NGN)`, derived: projectPayAmount});
+                                            processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
+    
+                                            processing.push({code: x.code, derived: value});
                                         }
-                                        processing.push({code: `Pay from projects(NGN)`, derived: projectPayAmount});
-                                        processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
-
-                                        processing.push({code: x.code, derived: value});
                                     }
                                     //--
                                     let valueInForeignCurrency = value
