@@ -155,7 +155,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             requireTwoSupervisors: true
         },
         isTwoStepApprovalEnabled: false,
-        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: true,
         isWeekendIncludedInLeaveRequests: false, 
         isTimeTypeEnabled: false,
@@ -235,7 +235,7 @@ CoreRegistry.setBusinessCustomConfigs = function () {
             requireTwoSupervisors: true
         },
         isTwoStepApprovalEnabled: true,
-        leaveDaysAccrual: 'FixedLeaveEntitlement', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
+        leaveDaysAccrual: 'NumberOfDaysWorked', // 'FixedLeaveEntitlement' or 'NumberOfDaysWorked'
         checkEmployeeResumptionForPayroll: false,
         isWeekendIncludedInLeaveRequests: true,
         isTimeTypeEnabled: false,
