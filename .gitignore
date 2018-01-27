@@ -4,8 +4,8 @@
 .meteor/dev_bundle
 
 # For npm
-# node_modules
-# npm-debug.log
+node_modules/
+**/npm-debug.log
 
 
 # Local workers

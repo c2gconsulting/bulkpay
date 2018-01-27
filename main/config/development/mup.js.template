@@ -48,8 +48,9 @@ module.exports = {
          MAIL_URL: "smtp://username:password@smtp.gmail.com:587/",
          //AWS_S3_BUCKET: "",
          MAIL_SITE_NAME: "BulkPay™",
-         MAIL_FROM: "BulkPay™ Team <no-reply@bulkpay.co>"
+         MAIL_FROM: "BulkPay™ Team <no-reply@bulkpay.co>",
 
+         JWT_SECRET=""
     },
 
     // change to 'kadirahq/meteord' if your app is not using Meteor 1.4

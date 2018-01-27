@@ -420,6 +420,14 @@ PayrollApprovalConfigs = new Mongo.Collection("payrollapprovalconfig");
 Partitioner.partitionCollection(PayrollApprovalConfigs);
 PayrollApprovalConfigs.attachSchema(Core.Schemas.PayrollApprovalConfig);
 
+SuccessFactorsIntegrationConfigs = new Mongo.Collection("successfactors_integration_configs");
+Partitioner.partitionCollection(SuccessFactorsIntegrationConfigs);
+SuccessFactorsIntegrationConfigs.attachSchema(Core.Schemas.SuccessFactorsIntegrationConfig);
+
+SuccessFactorsEvents = new Mongo.Collection("successfactors_events");
+Partitioner.partitionCollection(SuccessFactorsEvents);
+SuccessFactorsEvents.attachSchema(Core.Schemas.SuccessFactorsEvent);
+
 
 LeaveTypes.allow({
     insert: function(userId, doc) {
