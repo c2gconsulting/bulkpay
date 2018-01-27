@@ -1,0 +1,100 @@
+<template name="SuccessFactorsConfig">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-refresh"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Successfactors Setup</li>
+                </ul>
+                <h4>Successfactors Setup</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <div class="row">
+                                                <div class="col-md-4 text-right"><b>Odata Datacenter URL</b></div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" id="odataDataCenterUrl"
+                                                            placeholder="Example: api4.successfactors.com"
+                                                            title="Example: api4.successfactors.com"
+                                                            value="{{companyConnectionInfo.odataDataCenterUrl}}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 text-right" for-name="protocol"><b>Protocol</b></div>
+                                                <div class="col-sm-4">
+                                                    <label>
+                                                        <input type="radio" name="protocol" value="http" checked="checked"/>http
+                                                    </label>
+                                                    <label>
+                                                        <input type="radio" name="protocol" value="https" />https
+                                                    </label>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 text-right"><b>Successfactors Company ID</b></div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" id="companyId"
+                                                        placeholder="Successfactors companyId"
+                                                        title=""
+                                                        value="{{companyConnectionInfo.companyId}}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 text-right"><b>Successfactors Username</b></div>
+                                                <div class="col-md-3">
+                                                    <input type="text" class="form-control" id="username"
+                                                        placeholder="Successfactors Username"
+                                                        title=""
+                                                        value="{{companyConnectionInfo.username}}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-4 text-right"><b>Successfactors Password</b></div>
+                                                <div class="col-md-3">
+                                                    <input type="password" class="form-control" id="password"
+                                                        placeholder="Successfactors Password"
+                                                        title=""
+                                                        value="{{companyConnectionInfo.password}}"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div col-md-9>
+                                                    <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- panel -->
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- row -->
+                </div>
+            </div>
+    </div><!-- contentpanel -->
+</template>
+

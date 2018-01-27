@@ -1,4 +1,4 @@
-SAPConfigController = BusinessUnitController.extend({
+IntegrationsConfigController = BusinessUnitController.extend({
 
   // a place to put your subscriptions
   // this.subscribe('items');
@@ -48,8 +48,11 @@ SAPConfigController = BusinessUnitController.extend({
   // action: function () {
   //   this.render();
   // },
-  showConfig: function() {
+  showSapConfig: function() {
     this.render('SapB1Config')
+  },
+  showSuccessFactorsConfig: function() {
+    this.render('SuccessFactorsConfig')
   },
   onAfterAction: function () {
   },

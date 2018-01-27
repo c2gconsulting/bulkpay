@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 JWT = {};
 
 JWT.verifyAuthorizationToken = (request) => {  
-  const token = request.queryString['token'];
+  const token = request.urlParams['token'];
   if(!token) {
     throw new Meteor.Error(403, 'Invalid authorization');         
   }

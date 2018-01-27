@@ -269,10 +269,18 @@ Router.route('/business/:_id/payrun/new', {
 
 Router.route('/business/:_id/sap/config', {
   name: 'sap.config',
-  controller: 'SAPConfigController',
+  controller: 'IntegrationsConfigController',
   where: 'client',
-  action: 'showConfig'
+  action: 'showSapConfig'
 });
+
+Router.route('/business/:_id/successfactors/config', {
+  name: 'successfactors.config',
+  controller: 'IntegrationsConfigController',
+  where: 'client',
+  action: 'showSuccessFactorsConfig'
+});
+  
 
 Router.route('/business/:_id/payruns', {
   name: 'payruns',

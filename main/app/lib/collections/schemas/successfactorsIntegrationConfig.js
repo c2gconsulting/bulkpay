@@ -11,20 +11,20 @@ Core.Schemas.SuccessFactorsIntegrationConfig = new SimpleSchema({
       type: String
   },
   protocol: {
-    type: String,
-    optional: true
+    type: String
   },
   odataDataCenterUrl : {
       type: String,
       optional: true
   },
+  companyId : {
+      type: String
+  },
   username : {
-      type: String,
-      optional: true
+      type: String
   },
   password : {
-      type: String,
-      optional: true
+      type: String
   },
   createdAt: {
       type: Date,

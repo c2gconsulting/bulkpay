@@ -11,7 +11,7 @@ if (Meteor.isServer) {
   var Auth = {};
 
   // maps to /api/v1/successfactors/newhire
-  Api.addRoute('v1/successfactors/newhire', {
+  Api.addRoute('v1/successfactors/newhire/:token', {
       post: {
         action: function() {
           let decoded;
