@@ -2,11 +2,17 @@ import jwt from "jsonwebtoken";
 
 JWT = {};
 
-JWT.verifyAuthorizationToken = (request) => {  
-  const token = request.urlParams['token'];
-  if(!token) {
-    throw new Meteor.Error(403, 'Invalid authorization');         
+JWT.verifyAuthorizationToken = (urlParams) => {
+  console.log(`urlParams: `, urlParams)
+  if(!urlParams) {
+    throw new Meteor.Error(403, 'No authentication token specified');
   }
+
+  const token = urlParams['token'];
+  if(!token) {
+    throw new Meteor.Error(403, 'No authentication token specified');
+  }
+  console.log(`token: `, token)
 
   const jwtSecret = process.env.JWT_SECRET;
 
