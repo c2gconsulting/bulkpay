@@ -52,14 +52,18 @@
             <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
         {{/if}}
 
-        <li class="parent {{isMenuExpandedFocusClass 'successFactorsIntegrationMenu'}}">
-            <a href="" id="successFactorsIntegrationMenu">
-                <i class="fa fa-cog"></i>
-                <span>Successfactors Integration</span>
-            </a>
-        </li>
-        {{#if isMenuExpanded 'successFactorsIntegrationMenu'}}
-            <li><a href="{{pathFor route='successfactors.config'}}">Setup</a></li>
+        {{#if isSuccessfactorsEnabled}}
+            {{#if hasSuccessfactorsManageAccess}}
+                <li class="parent {{isMenuExpandedFocusClass 'successFactorsIntegrationMenu'}}">
+                    <a href="" id="successFactorsIntegrationMenu">
+                        <i class="fa fa-cog"></i>
+                        <span>Successfactors Integration</span>
+                    </a>
+                </li>
+                {{#if isMenuExpanded 'successFactorsIntegrationMenu'}}
+                    <li><a href="{{pathFor route='successfactors.config'}}">Setup</a></li>
+                {{/if}}
+            {{/if}}
         {{/if}}
 
 

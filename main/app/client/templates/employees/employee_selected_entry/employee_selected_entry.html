@@ -519,17 +519,17 @@
                                     </div>
                                     {{/if}}
 
-                                    {{#if isProcurementRequisitionActive}}
+                                    {{#if isSuccessfactorsEnabled}}
                                     <div class="row">
-                                        <label for="procurementReportsView" class="col-sm-6 control-label">Procurement Reports View</label>
+                                        <label for="successfactorsManage" class="col-sm-6 control-label">Successfactors Manage</label>
                                         <div class="col-sm-4">
-                                            {{#if hasProcurementReportsViewAccess}}
-                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="procurementReportsView">
+                                            {{#if hasSuccessfactorsManageAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="successfactorsManage">
                                                     <option value="true" selected>Yes</option>
                                                     <option value="false">No</option>
                                                 </select>
                                             {{else}}
-                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="procurementReportsView">
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="successfactorsManage">
                                                     <option value="true">Yes</option>
                                                     <option value="false" selected>No</option>
                                                 </select>

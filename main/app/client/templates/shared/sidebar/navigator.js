@@ -176,6 +176,17 @@ Template.navigator.helpers({
     hasProcurementReportsViewAccess: function () {
         return Core.hasProcurementReportsViewAccess(Meteor.userId());
     },
+    isSuccessfactorsEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSuccessFactorsIntegrationEnabled
+      } else {
+          return true
+      }
+    },
+    hasSuccessfactorsManageAccess: () => {
+      return Core.hasSuccessfactorManagesAccess(Meteor.userId());
+    },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {

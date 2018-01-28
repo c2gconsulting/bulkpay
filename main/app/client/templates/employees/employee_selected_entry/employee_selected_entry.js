@@ -173,62 +173,74 @@ Template.EmployeeSelectedEntry.helpers({
     return Core.hasEmployeeAccess(userId) || Core.hasLeaveManageAccess(userId)
   },
   hasProcurementRequisitionApproveAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(selectedEmployee._id);
 
-      return canApproveProcurement;
+    return canApproveProcurement;
   },
   isProcurementRequisitionActive: () => {
-      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-      if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
-      } else {
-          return true
-      }
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
+    } else {
+        return true
+    }
+  },
+  isSuccessfactorsEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSuccessFactorsIntegrationEnabled
+    } else {
+        return true
+    }
   },
   hasTravelRequisitionApproveAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let canApproveTrip = Core.hasTravelRequisitionApproveAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canApproveTrip = Core.hasTravelRequisitionApproveAccess(selectedEmployee._id);
 
-      return canApproveTrip;
+    return canApproveTrip;
   },
   isTravelRequisitionActive: () => {
-      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-      if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
-      } else {
-          return true
-      }
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
+    } else {
+        return true
+    }
   },
   hasPayrollReportsViewAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(selectedEmployee._id);
 
-      return hasPayrollReportsViewAccess;
+    return hasPayrollReportsViewAccess;
   },
   hasAuditReportsViewAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(selectedEmployee._id);
 
-      return hasAuditReportsViewAccess;
+    return hasAuditReportsViewAccess;
   },
   hasProcurementReportsViewAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let hasProcurementReportsViewAccess = Core.hasProcurementReportsViewAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasProcurementReportsViewAccess = Core.hasProcurementReportsViewAccess(selectedEmployee._id);
 
-      return hasProcurementReportsViewAccess;
+    return hasProcurementReportsViewAccess;
   },
   hasProcurementTreatAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let hasProcurementTreatAccess = Core.hasProcurementTreatAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasProcurementTreatAccess = Core.hasProcurementTreatAccess(selectedEmployee._id);
 
-      return hasProcurementTreatAccess;
+    return hasProcurementTreatAccess;
   },
   hasTravelRequestTreatAccess: () => {
-      let selectedEmployee = Session.get('employeesList_selectedEmployee');
-      let hasTravelRequestTreatAccess = Core.hasTravelRequestTreatAccess(selectedEmployee._id);
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasTravelRequestTreatAccess = Core.hasTravelRequestTreatAccess(selectedEmployee._id);
 
-      return hasTravelRequestTreatAccess;
+    return hasTravelRequestTreatAccess;
+  },
+  hasSuccessfactorsManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    return Core.hasSuccessfactorManagesAccess(selectedEmployee._id);
   }
 });
 
@@ -265,6 +277,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let payrollReportsView = $("[name=payrollReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
         let procurementReportsView = $("[name=procurementReportsView]").val();
+        let successfactorsManage = $("[name=successfactorsManage]").val();
 
 
         let arrayOfRoles = [];
@@ -311,6 +324,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(procurementReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.PROCUREMENT_REPORTS_VIEW)
+        }
+        if(successfactorsManage === "true") {
+            arrayOfRoles.push(Core.Permissions.SUCCESSFACTORS_MANAGE)
         }
 
         if(Core.hasRoleManageAccess(Meteor.userId())) {
