@@ -8,7 +8,7 @@ var Api = new Restivus({
   }
 });
 
-let getFailureResponse = message => {
+let failureResponse = message => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
   const response = 
@@ -30,7 +30,7 @@ let getFailureResponse = message => {
   return response
 }
 
-let getSuccessResponse = () => {
+let successResponse = () => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
   const response = 
@@ -60,30 +60,53 @@ if (Meteor.isServer) {
   Api.addRoute('successfactors/newhire/:token', {authRequired: false}, {
     post: {
       action: function() {
-        let decoded;
+        console.log(`Inside successfactors newhire event endpoint`)
 
+        let decoded;
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
         } catch (e) {
-          return getFailureResponse(e.message)
+          return failureResponse(e.message)
         }
-        console.log(`[successfactors newhire: `, decoded)
-
         let businessId = decoded.businessId;
 
-        const postBody = this.bodyParams;
-        console.log(`postBody: `, postBody);
-        
-        parseString(this.bodyParams, function (err, result) {
-          console.log(`Got request body: `, result);
+        let body = [];
+        this.request.on('data', (chunk) => {
+          body.push(chunk);
+        }).on('end', () => {
+          body = Buffer.concat(body).toString();
 
+          parseString(body, function (err, result) {  
+            let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
+              result['ns7:ExternalEvent']['ns7:events'][0] : null
 
+            if(ns7Events) {
+              let ns7Event = ns7Events['ns7:event'] ? ns7Events['ns7:event'][0] : null
+              if(ns7Event) {
+                let ns7Params = ns7Event['ns7:params'] ? ns7Event['ns7:params'][0] : null
+                if(ns7Params) {
+                  let personIdExternal = "";
+                  let perPersonUuid = "";
+
+                  _.each(ns7Params["ns7:param"], param => {
+                    if(param.name && param.name[0] === 'personIdExternal') {
+                      personIdExternal = param.value[0]
+                    } else if(param.name && param.name[0] === 'perPersonUuid') {
+                      perPersonUuid = param.value[0]
+                    }
+                  })
+                  console.log(`personIdExternal: `, personIdExternal)
+                  console.log(`perPersonUuid: `, perPersonUuid)
+                }                
+              }  
+            }
+          });
         });
-
+        
         const headers = this.request.headers;
         console.log(`headers: `, headers)
 
-        return getSuccessResponse()
+        return successResponse()
       }
     }
   });
@@ -93,31 +116,49 @@ if (Meteor.isServer) {
     post: {
       action: function() {
         console.log(`Inside successfactors termination event endpoint`)
+
         let decoded;
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
         } catch (e) {
-          return getFailureResponse(e.message)
+          return failureResponse(e.message)
         }
-        console.log(`[successfactors termination: `, decoded)
-
         let businessId = decoded.businessId;
-
-        const postBody = this.bodyParams;
-        console.log(`postBody: `, postBody);
         
-        parseString(this.bodyParams, function (err, result) {
-          console.log(`Got request body: `, result);
+        let body = [];
+        this.request.on('data', (chunk) => {
+          body.push(chunk);
+        }).on('end', () => {
+          body = Buffer.concat(body).toString();
 
+          parseString(body, function (err, result) {  
+            let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
+              result['ns7:ExternalEvent']['ns7:events'][0] : null
 
+            if(ns7Events) {
+              let ns7Event = ns7Events['ns7:event'] ? ns7Events['ns7:event'][0] : null
+              if(ns7Event) {
+                let ns7Params = ns7Event['ns7:params'] ? ns7Event['ns7:params'][0] : null
+                if(ns7Params) {
+                  let personIdExternal = "";
+                  let perPersonUuid = "";
 
+                  _.each(ns7Params["ns7:param"], param => {
+                    if(param.name && param.name[0] === 'personIdExternal') {
+                      personIdExternal = param.value[0]
+                    } else if(param.name && param.name[0] === 'perPersonUuid') {
+                      perPersonUuid = param.value[0]
+                    }
+                  })
+                  console.log(`personIdExternal: `, personIdExternal)
+                  console.log(`perPersonUuid: `, perPersonUuid)
+                }                
+              }  
+            }
+          });
         });
-
-
-        const headers = this.request.headers;
-        console.log(`headers: `, headers)
         
-        return getSuccessResponse()
+        return successResponse()
       }
     }
   });
