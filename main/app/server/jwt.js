@@ -26,5 +26,5 @@ JWT.verifyAuthorizationToken = (urlParams) => {
   if(!decoded) {
       throw new Meteor.Error(403, 'Invalid token');
   }
-  return true;
+  return decoded;
 }
