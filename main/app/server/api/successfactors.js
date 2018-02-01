@@ -11,6 +11,46 @@ var Api = new Restivus({
   }
 });
 
+let apiCall = function (apiUrl, callback) {
+  let config = this;
+  console.log(`config: `, config)
+
+  const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+  const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+  const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+  const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+
+  const companyId = config.companyId
+  const username = config.username
+  const password = config.password
+
+  let fullUsername = `${username}@${companyId}`
+  const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+
+  let requestHeaders = {
+    Authorization: `Basic ${authenticationToken}`
+  }
+
+
+  try {
+    const response = HTTP.get(apiUrl).data
+    callback(null, response)
+  } catch (error) {
+    let errorCode;
+    let errorMessage;
+    if (error.response) {
+      errorCode = error.response.data.code
+      errorMessage = error.response.data.message
+    } else {
+      errorCode = 500
+      errorMessage = 'Cannot access the API'
+    }
+    // Create an Error object and return it via callback
+    var myError = new Meteor.Error(errorCode, errorMessage)
+    callback(myError, null)
+  }
+}
+
 let failureResponse = message => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
@@ -62,25 +102,29 @@ let fetchEmployeeDetails = (businessId, personIdExternal) => {
   let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
 
   if(config) {
-    const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-    const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
-    const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
-    const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+    // const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+    // const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+    // const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+    // const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
 
-    const companyId = config.companyId
-    const username = config.username
-    const password = config.password
+    // const companyId = config.companyId
+    // const username = config.username
+    // const password = config.password
 
-    let fullUsername = `${username}@${companyId}`
-    const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+    // let fullUsername = `${username}@${companyId}`
+    // const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
 
-    let requestHeaders = {
-      Authorization: `Basic ${authenticationToken}`
-    }
+    // let requestHeaders = {
+    //   Authorization: `Basic ${authenticationToken}`
+    // }
 
-    const perPersonRes = HTTP.call('GET', perPersonQueryUrl, {headers: requestHeaders})
-    const perEmailRes = HTTP.call('GET', perEmailQueryUrl, {headers: requestHeaders})
-    const perPhoneRes = HTTP.call('GET', perPhoneQueryUrl, {headers: requestHeaders})
+    const perPersonRes = Meteor.wrapAsync(apiCall.bind(config))(perPersonQueryUrl)
+    const perEmailRes = Meteor.wrapAsync(apiCall.bind(config))(perEmailQueryUrl)
+    const perPhoneRes = Meteor.wrapAsync(apiCall.bind(config))(perPhoneQueryUrl)
+
+    // const perPersonRes = HTTP.call('GET', perPersonQueryUrl, {headers: requestHeaders})
+    // const perEmailRes = HTTP.call('GET', perEmailQueryUrl, {headers: requestHeaders})
+    // const perPhoneRes = HTTP.call('GET', perPhoneQueryUrl, {headers: requestHeaders})
     
     let bulkPayUserParams = {}
     bulkPayUserParams.tenantId = business._groupId
@@ -180,7 +224,7 @@ if (Meteor.isServer) {
             console.log(`externalEvent: `, JSON.stringify(externalEvent))
 
             let ns7Events = externalEvent['ns5:ExternalEvent'][0]['ns5:events'] ? 
-              result['ns5:ExternalEvent'][0]['ns5:events'][0] : null
+              externalEvent['ns5:ExternalEvent'][0]['ns5:events'][0] : null
 
             if(ns7Events) {
               let ns7Event = ns7Events['ns5:event'] ? ns7Events['ns5:event'][0] : null
@@ -199,12 +243,12 @@ if (Meteor.isServer) {
                   })
                   console.log(`personIdExternal: `, personIdExternal)
                   console.log(`perPersonUuid: `, perPersonUuid)
-
-                  Meteor.defer(() => {
+                  
+                  Meteor.bindEnvironment(() => {
                     fetchEmployeeDetails(businessId, personIdExternal)
                   })
-                }                
-              }  
+                }
+              }
             }
           });
         });

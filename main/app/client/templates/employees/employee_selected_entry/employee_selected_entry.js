@@ -241,7 +241,23 @@ Template.EmployeeSelectedEntry.helpers({
   hasSuccessfactorsManageAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
     return Core.hasSuccessfactorManagesAccess(selectedEmployee._id);
-  }
+  },
+  isLeaveRequestEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isLeaveRequestActive
+    } else {
+        return true
+    }
+  },
+  isTimeWritingEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTimeWritingActive
+    } else {
+        return true
+    }
+  },
 });
 
 /*****************************************************************************/

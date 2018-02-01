@@ -310,6 +310,7 @@
                                         </div>
                                     {{/if}}
 
+                                    {{#if isLeaveRequestEnabled}}
                                     <div class="row">
                                         <label for="leaveApprove" class="col-sm-6 control-label">Leave approve</label>
                                         <div class="col-sm-4">
@@ -327,7 +328,9 @@
                                             {{/if}}
                                         </div>
                                     </div>
+                                    {{/if}}
 
+                                    {{#if isLeaveRequestEnabled}}
                                     <div class="row">
                                         <label for="leaveManage" class="col-sm-6 control-label">Leave manage</label>
                                         <div class="col-sm-4">
@@ -344,7 +347,9 @@
                                             {{/if}}
                                         </div>
                                     </div>
+                                    {{/if}}
 
+                                    {{#if isTimeWritingEnabled}}
                                     <div class="row">
                                         <label for="timeApprove" class="col-sm-6 control-label">Time approve</label>
                                         <div class="col-sm-4">
@@ -361,7 +366,9 @@
                                             {{/if}}
                                         </div>
                                     </div>
+                                    {{/if}}
 
+                                    {{#if isTimeWritingEnabled}}
                                     <div class="row">
                                         <label for="timeManage" class="col-sm-6 control-label">Time manage</label>
                                         <div class="col-sm-4">
@@ -378,6 +385,7 @@
                                             {{/if}}
                                         </div>
                                     </div>
+                                    {{/if}}
 
                                     <div class="row">
                                         <label for="employeeSelfService" class="col-sm-6 control-label">Employee self service</label>
