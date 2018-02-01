@@ -1,0 +1,390 @@
+[
+  {
+      "businessId": "udrayHAGvXXDgzzGf",
+      "payGradeLabel": "Pay Category",
+      "payGradeLabelPlural": "Pay Categories",
+      "isSuccessFactorsIntegrationEnabled": false,
+      "isHourLeaveRequestsEnabled": true,
+      "isProcurementRequisitionActive": false,
+      "isTravelRequisitionActive": false,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,
+      "procurementRequisitionApprovalConfig": {
+          "requireTwoSupervisors": true
+      },
+      "isTwoStepApprovalEnabled": false,
+      "leaveDaysAccrual": "FixedLeaveEntitlement",
+      "checkEmployeeResumptionForPayroll": true,
+      "isWeekendIncludedInLeaveRequests": false,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": false,
+      "isLoanEnabled": false,
+      "isEmployeePersonalDataEditableByEmployee": false,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [],
+      "isRelieverEnabledForLeaveRequests": false,
+      "isEmployeePromotionEnabled": false,
+      "isWeekendTimeWritingEnabled": false,
+      "isOvertimeEnabled": true,
+      "maxHoursInDayForTimeWriting": 8,
+      "isActive": true,
+      "_groupId": "MNBvtuMhKfpz2Sic7"
+  },
+  {
+      "businessId": "rFk7QwSHqqhxvHLAP",
+      "payGradeLabel": "Pay Category",
+      "payGradeLabelPlural": "Pay Categories",
+      "isSuccessFactorsIntegrationEnabled": false,
+      "isHourLeaveRequestsEnabled": true,
+      "isProcurementRequisitionActive": false,
+      "isTravelRequisitionActive": false,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,
+      "procurementRequisitionApprovalConfig": {
+          "requireTwoSupervisors": true
+      },
+      "isTwoStepApprovalEnabled": false,
+      "leaveDaysAccrual": "NumberOfDaysWorked",
+      "checkEmployeeResumptionForPayroll": true,
+      "isWeekendIncludedInLeaveRequests": false,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": false,
+      "isLoanEnabled": false,
+      "isEmployeePersonalDataEditableByEmployee": false,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [],
+      "isRelieverEnabledForLeaveRequests": false,
+      "isEmployeePromotionEnabled": false,
+      "isWeekendTimeWritingEnabled": true,
+      "isOvertimeEnabled": false,
+      "maxHoursInDayForTimeWriting": 24,
+      "isActive": true,
+      "_groupId": "MNBvtuMhKfpz2Sic7"
+  },
+  {
+      "businessId": "MkWGsoQ2nDAAJJQo6",
+      "payGradeLabel": "Pay Category",
+      "payGradeLabelPlural": "Pay Categories",
+      "isSuccessFactorsIntegrationEnabled": false,
+      "isHourLeaveRequestsEnabled": true,
+      "isProcurementRequisitionActive": true,
+      "isTravelRequisitionActive": true,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,      
+      "procurementRequisitionApprovalConfig": {
+          "requireTwoSupervisors": true
+      },
+      "isTwoStepApprovalEnabled": false,
+      "leaveDaysAccrual": "FixedLeaveEntitlement",
+      "checkEmployeeResumptionForPayroll": true,
+      "isWeekendIncludedInLeaveRequests": false,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": false,
+      "isLoanEnabled": false,
+      "baseColor": "#ff0000",
+      "displayLogoInSideBar": true,
+      "isEmployeePersonalDataEditableByEmployee": false,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [],
+      "isRelieverEnabledForLeaveRequests": false,
+      "isEmployeePromotionEnabled": false,
+      "isWeekendTimeWritingEnabled": false,
+      "isOvertimeEnabled": true,
+      "maxHoursInDayForTimeWriting": 8,
+      "isActive": true,
+      "_groupId": "MNBvtuMhKfpz2Sic7"
+  },
+  {
+      "businessId": "tgC7zYJf9ceSBmoT9",
+      "payGradeLabel": "Pay Grade",
+      "payGradeLabelPlural": "Pay Grades",
+      "isSuccessFactorsIntegrationEnabled": false,
+      "isHourLeaveRequestsEnabled": false,
+      "isProcurementRequisitionActive": true,
+      "isTravelRequisitionActive": true,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,
+      "procurementRequisitionApprovalConfig": {
+          "requireTwoSupervisors": true
+      },
+      "isTwoStepApprovalEnabled": true,
+      "leaveDaysAccrual": "NumberOfDaysWorked",
+      "checkEmployeeResumptionForPayroll": false,
+      "isWeekendIncludedInLeaveRequests": true,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": false,
+      "isLoanEnabled": false,
+      "isEmployeePersonalDataEditableByEmployee": true,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [
+          "maidenName",
+          "religion",
+          "bloodGroup",
+          "disability",
+          "numberOfChildren",
+          "workExperiences",
+          "appraisalGradeLevel"
+      ],
+      "isRelieverEnabledForLeaveRequests": true,
+      "isEmployeePromotionEnabled": true,
+      "isWeekendTimeWritingEnabled": false,
+      "isOvertimeEnabled": true,
+      "maxHoursInDayForTimeWriting": 8,
+      "isActive": true,
+      "_groupId": "mYssKhxYo3mnxmoQd",
+      "travelRequestConfig": {
+          "fields": [
+              {
+                  "label": "Trip Description",
+                  "dbFieldName": "description",
+                  "type": "String",
+                  "isRequired": true
+              },
+              {
+                  "label": "From",
+                  "dbFieldName": "fromLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "To",
+                  "dbFieldName": "toLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "Date required",
+                  "dbFieldName": "dateRequired",
+                  "type": "Date",
+                  "isRequired": true
+              },
+              {
+                  "label": "Trip Reason",
+                  "dbFieldName": "requisitionReason",
+                  "type": "TextArea",
+                  "isRequired": false
+              }
+          ],
+          "costs": [
+              {
+                  "label": "Flight",
+                  "dbFieldName": "flightCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Road",
+                  "dbFieldName": "roadCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Accommodation/Feeding",
+                  "dbFieldName": "accommodationCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Local Transport",
+                  "dbFieldName": "localTransportCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Per diem",
+                  "dbFieldName": "perDiemCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Miscellaneous Costs",
+                  "dbFieldName": "miscCost",
+                  "isPayableToStaff": true
+              }
+          ]
+      }
+  },
+  {
+      "businessId": "3heJnYLjFKcSTmA8y",
+      "payGradeLabel": "Pay Grade",
+      "payGradeLabelPlural": "Pay Grades",
+      "isSuccessFactorsIntegrationEnabled": false,
+      "isHourLeaveRequestsEnabled": false,
+      "isProcurementRequisitionActive": true,
+      "isTravelRequisitionActive": true,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,
+      "procurementRequisitionApprovalConfig": {
+          "requireTwoSupervisors": false
+      },
+      "isTwoStepApprovalEnabled": false,
+      "leaveDaysAccrual": "FixedLeaveEntitlement",
+      "checkEmployeeResumptionForPayroll": false,
+      "isWeekendIncludedInLeaveRequests": false,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": true,
+      "isLoanEnabled": true,
+      "isEmployeePersonalDataEditableByEmployee": false,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [],
+      "isRelieverEnabledForLeaveRequests": true,
+      "isEmployeePromotionEnabled": true,
+      "isWeekendTimeWritingEnabled": false,
+      "isOvertimeEnabled": false,
+      "maxHoursInDayForTimeWriting": 8,
+      "isActive": true,
+      "_groupId": "FLTGdyX8jb9Yx2kXB",
+      "travelRequestConfig": {
+          "fields": [
+              {
+                  "label": "Trip Description",
+                  "dbFieldName": "description",
+                  "type": "String",
+                  "isRequired": true
+              },
+              {
+                  "label": "From",
+                  "dbFieldName": "fromLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "To",
+                  "dbFieldName": "toLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "Departure Date",
+                  "dbFieldName": "departureDate",
+                  "type": "Date",
+                  "isRequired": true
+              },
+              {
+                  "label": "Return Date",
+                  "dbFieldName": "returnDate",
+                  "type": "Date"
+              },
+              {
+                  "label": "Preferred Airline",
+                  "dbFieldName": "preferredAirline",
+                  "type": "String"
+              },
+              {
+                  "label": "Preferred Flight Time",
+                  "dbFieldName": "preferredFlightTime",
+                  "type": "Time"
+              },
+              {
+                  "label": "Trip Reason",
+                  "dbFieldName": "requisitionReason",
+                  "type": "TextArea",
+                  "isRequired": false
+              }
+          ],
+          "costs": [
+              {
+                  "label": "Flight",
+                  "dbFieldName": "flightCost"
+              },
+              {
+                  "label": "Accommodation/Feeding",
+                  "dbFieldName": "accommodationCost"
+              },
+              {
+                  "label": "Local Transport",
+                  "dbFieldName": "localTransportCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Per diem",
+                  "dbFieldName": "perDiemCost",
+                  "isPayableToStaff": true
+              }
+          ]
+      }
+  },
+  {
+      "_id": "N6v8zqcngx8ioc5oD",
+      "businessId": "CQdQKjkfLixpytbAN",
+      "payGradeLabel": "Pay Category",
+      "payGradeLabelPlural": "Pay Categories",
+      "isSuccessFactorsIntegrationEnabled": true,
+      "isProcurementRequisitionActive": false,
+      "isLeaveRequestActive": false,
+      "isTimeWritingActive": false,
+      "isActive": true,
+      "_groupId": "QyPY7RY4Hc2dqZTem",
+      "isTravelRequisitionActive": true,
+      "leaveDaysAccrual": "FixedLeaveEntitlement",
+      "checkEmployeeResumptionForPayroll": true,
+      "isWeekendIncludedInLeaveRequests": false,
+      "isTimeTypeEnabled": true,
+      "isHmoSetupEnabled": true,
+      "baseColor": "#ff0000",
+      "displayLogoInSideBar": true,
+      "isHourLeaveRequestsEnabled": true,
+      "procurementRequisitionApprovalConfig": {},
+      "isTwoStepApprovalEnabled": false,
+      "isEmployeePersonalDataEditableByEmployee": false,
+      "extraPersonalDataEmployeeProfileFieldsSupported": [],
+      "isRelieverEnabledForLeaveRequests": false,
+      "isEmployeePromotionEnabled": false,
+      "isWeekendTimeWritingEnabled": false,
+      "isOvertimeEnabled": true,
+      "maxHoursInDayForTimeWriting": 8,
+      "travelRequestConfig": {
+          "fields": [
+              {
+                  "label": "Trip Description",
+                  "dbFieldName": "description",
+                  "type": "String",
+                  "isRequired": true
+              },
+              {
+                  "label": "From",
+                  "dbFieldName": "fromLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "To",
+                  "dbFieldName": "toLocation",
+                  "type": "String"
+              },
+              {
+                  "label": "Departure Date",
+                  "dbFieldName": "departureDate",
+                  "type": "Date",
+                  "isRequired": true
+              },
+              {
+                  "label": "Return Date",
+                  "dbFieldName": "returnDate",
+                  "type": "Date"
+              },
+              {
+                  "label": "Preferred Airline",
+                  "dbFieldName": "preferredAirline",
+                  "type": "String"
+              },
+              {
+                  "label": "Preferred Flight Time",
+                  "dbFieldName": "preferredFlightTime",
+                  "type": "Time"
+              },
+              {
+                  "label": "Trip Reason",
+                  "dbFieldName": "requisitionReason",
+                  "type": "TextArea",
+                  "isRequired": false
+              }
+          ],
+          "costs": [
+              {
+                  "label": "Flight",
+                  "dbFieldName": "flightCost"
+              },
+              {
+                  "label": "Accommodation/Feeding",
+                  "dbFieldName": "accommodationCost"
+              },
+              {
+                  "label": "Local Transport",
+                  "dbFieldName": "localTransportCost",
+                  "isPayableToStaff": true
+              },
+              {
+                  "label": "Per diem",
+                  "dbFieldName": "perDiemCost",
+                  "isPayableToStaff": true
+              }
+          ]
+      }
+  }
+]

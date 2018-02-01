@@ -79,14 +79,16 @@
             <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
             <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
             
-            {{#if isLeaveAccrualByEntitlement}}
-                <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
-            {{else}}
-            <li><a href="{{pathFor 'leave.balances.list'}}">Leave Balances</a></li>
+            {{#if isLeaveRequestEnabled}}
+                {{#if isLeaveAccrualByEntitlement}}
+                    <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
+                {{else}}
+                <li><a href="{{pathFor 'leave.balances.list'}}">Leave Balances</a></li>
+                {{/if}}
+
+                <li><a href="{{pathFor 'leavetypes'}}">Manage Leave Types</a></li>
             {{/if}}
 
-            <li><a href="{{pathFor 'leavetypes'}}">Manage Leave Types</a></li>
-            
             <li><a href="{{pathFor 'timetypes'}}">Manage Time Types</a></li>
             
             <li><a href="{{pathFor 'hmoplans'}}">Manage HMO Plans</a></li>
@@ -125,17 +127,23 @@
             </a>
         </li>
         {{/if}}
+
         {{#if isMenuExpanded 'selfServiceMenu'}}
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
+
+            {{#if isLeaveRequestEnabled}}
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
+            {{/if}}
 
             {{#if isHmoSetupEnabled}}
             <li><a href="{{pathFor 'hmoplans.changerequest'}}">HMO Plan</a></li>
             {{/if}}
-
-            {{#if hasLeaveApprovalAccess}}
-            <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
-            <li><a href="{{pathFor 'leave.myapprovals'}}">My Leave Approvals</a></li>
+            
+            {{#if isLeaveRequestEnabled}}
+                {{#if hasLeaveApprovalAccess}}
+                <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
+                <li><a href="{{pathFor 'leave.myapprovals'}}">My Leave Approvals</a></li>
+                {{/if}}
             {{/if}}
 
             {{#if isProcurementRequisitionActive}}
@@ -188,15 +196,21 @@
                 <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
                 
                 <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
-                <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
+
+                {{#if isTimeWritingEnabled}}
+                    <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
+                {{/if}}
 
                 {{#if isProcurementRequisitionActive}}
                     <li><a href="{{pathFor 'reports.employees'}}">Employees report</a></li>
                 {{/if}}
 
-                {{#if isProcurementRequisitionActive}}
-                {{else}}
-                    <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>                
+
+                {{#if isLeaveRequestEnabled}}
+                    {{#if isProcurementRequisitionActive}}
+                    {{else}}
+                        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>                
+                    {{/if}}
                 {{/if}}
             {{/if}}
         {{/if}}
@@ -210,8 +224,10 @@
                     </a>
                 </li>
 
-                {{#if isMenuExpanded 'auditReportsMenu'}}
-                    <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
+                {{#if isMenuExpanded 'auditReportsMenu'}}                    
+                    {{#if isLeaveRequestEnabled}}
+                        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
+                    {{/if}}
 
                     <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
 

@@ -184,6 +184,22 @@ Template.navigator.helpers({
           return true
       }
     },
+    isLeaveRequestEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isLeaveRequestActive
+      } else {
+          return true
+      }
+    },
+    isTimeWritingEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTimeWritingActive
+      } else {
+          return true
+      }
+    },
     hasSuccessfactorsManageAccess: () => {
       return Core.hasSuccessfactorManagesAccess(Meteor.userId());
     },
