@@ -175,6 +175,67 @@ if (Meteor.isServer) {
           body = Buffer.concat(body).toString();
 
           parseString(body, function (err, result) {  
+            console.log(`result: `, result)
+            let externalEvent = result['S:Envelope']['S:Body'][0]
+            console.log(`externalEvent: `, JSON.stringify(externalEvent))
+
+            let ns7Events = externalEvent['ns5:ExternalEvent'][0]['ns5:events'] ? 
+              result['ns5:ExternalEvent'][0]['ns5:events'][0] : null
+
+            if(ns7Events) {
+              let ns7Event = ns7Events['ns5:event'] ? ns7Events['ns5:event'][0] : null
+              if(ns7Event) {
+                let ns7Params = ns7Event['ns5:params'] ? ns7Event['ns5:params'][0] : null
+                if(ns7Params) {
+                  let personIdExternal = "";
+                  let perPersonUuid = "";
+
+                  _.each(ns7Params["ns5:param"], param => {
+                    if(param.name && param.name[0] === 'personIdExternal') {
+                      personIdExternal = param.value[0]
+                    } else if(param.name && param.name[0] === 'perPersonUuid') {
+                      perPersonUuid = param.value[0]
+                    }
+                  })
+                  console.log(`personIdExternal: `, personIdExternal)
+                  console.log(`perPersonUuid: `, perPersonUuid)
+
+                  Meteor.defer(() => {
+                    fetchEmployeeDetails(businessId, personIdExternal)
+                  })
+                }                
+              }  
+            }
+          });
+        });
+        
+        // return successResponse()
+      }
+    }
+  });
+
+
+  // maps to /api/v1/successfactors/rehire
+  Api.addRoute('successfactors/rehire/:token', {authRequired: false}, {
+    post: {
+      action: function() {
+        console.log(`Inside successfactors rehire event endpoint`)
+
+        let decoded;
+        try {
+          decoded = JWT.verifyAuthorizationToken(this.urlParams)
+        } catch (e) {
+          return failureResponse(e.message)
+        }
+        let businessId = decoded.businessId;
+
+        let body = [];
+        this.request.on('data', (chunk) => {
+          body.push(chunk);
+        }).on('end', () => {
+          body = Buffer.concat(body).toString();
+
+          parseString(body, function (err, result) {  
             let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
               result['ns7:ExternalEvent']['ns7:events'][0] : null
 
@@ -205,9 +266,6 @@ if (Meteor.isServer) {
           });
         });
         
-        const headers = this.request.headers;
-        console.log(`headers: `, headers)
-
         return successResponse()
       }
     }
@@ -233,7 +291,8 @@ if (Meteor.isServer) {
         }).on('end', () => {
           body = Buffer.concat(body).toString();
 
-          parseString(body, function (err, result) {  
+          parseString(body, function (err, result) {
+            console.log(`result: `, result)
             let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
               result['ns7:ExternalEvent']['ns7:events'][0] : null
 
@@ -254,13 +313,17 @@ if (Meteor.isServer) {
                   })
                   console.log(`personIdExternal: `, personIdExternal)
                   console.log(`perPersonUuid: `, perPersonUuid)
+
+                  fetchEmployeeDetails(businessId, personIdExternal)
                 }                
               }  
             }
           });
         });
         
-        return successResponse()
+        // return successResponse()
+        // return failureResponse('Bad place ... Eleven')
+
       }
     }
   });
