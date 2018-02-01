@@ -1,4 +1,7 @@
+import _ from 'underscore';
+import { HTTP } from 'meteor/http'
 let parseString = require('xml2js').parseString;
+
 
 var Api = new Restivus({
   useDefaultAuth: false,
@@ -52,6 +55,101 @@ let successResponse = () => {
   return response
 }
 
+let fetchEmployeeDetails = (businessId, personIdExternal) => {
+  console.log(`Inside fetch employee details: `, personIdExternal)
+
+  let business = BusinessUnits.findOne({_id: businessId})
+  let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
+
+  if(config) {
+    const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+    const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+    const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+    const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+
+    const companyId = config.companyId
+    const username = config.username
+    const password = config.password
+
+    let fullUsername = `${username}@${companyId}`
+    const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+
+    let requestHeaders = {
+      Authorization: `Basic ${authenticationToken}`
+    }
+
+    const perPersonRes = HTTP.call('GET', perPersonQueryUrl, {headers: requestHeaders})
+    const perEmailRes = HTTP.call('GET', perEmailQueryUrl, {headers: requestHeaders})
+    const perPhoneRes = HTTP.call('GET', perPhoneQueryUrl, {headers: requestHeaders})
+    
+    let bulkPayUserParams = {}
+    bulkPayUserParams.tenantId = business._groupId
+    bulkPayUserParams.roles = {
+      "__global_roles__" : [ 
+          "ess/all"
+      ]
+    }
+
+    if(perPersonRes) {
+      let perPersonResAsString = perPersonRes.data.replace(/\//g, "")
+      console.log(`perPersonResAsString`, perPersonResAsString)
+      let perPersonData = JSON.parse(perPersonResAsString)
+
+      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
+        let employeeData = perPersonData.d.results[0]
+        let firstName = employeeData.firstName || ""
+        let lastName = employeeData.lastName || ""
+                
+        bulkPayUserParams.firstname = firstName
+        bulkPayUserParams.lastname =  lastName
+      }
+    }
+
+    if(perEmailRes) {
+      let perEmailResAsString = perEmailRes.data.replace(/\//g, "")
+      console.log(`perEmailResAsString`, perEmailResAsString)
+      let perPersonData = JSON.parse(perEmailResAsString)
+
+      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
+        let employeeData = perPersonData.d.results[0]
+        let emailAddress = employeeData.emailAddress
+
+        bulkPayUserParams.email = emailAddress
+      }
+    }
+
+    if(perPhoneRes) {
+      let perPhoneResAsString = perPhoneRes.data.replace(/\//g, "")
+      console.log(`perPhoneResAsString`, perPhoneResAsString)
+      let perPersonData = JSON.parse(perPhoneResAsString)
+
+      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
+        let employeeData = perPersonData.d.results[0]
+        let phoneNumber = employeeData.phoneNumber
+
+        bulkPayUserParams.phoneNumber = phoneNumber
+      }
+    }
+
+    let accountId = Accounts.createUser(bulkPayUserParams)
+    console.log(`New bulkpay user gotten from success factors: `, accountId)
+    
+    if(bulkPayUserParams.email) {
+      try {
+        Accounts.sendEnrollmentEmail(accountId, doc.email)
+      } catch (e) {
+        console.log("Unable to send a notification mail to new successfactors employee")
+      }
+    }
+
+    let user = Meteor.users.findOne(accountId)
+    Meteor.users.update({_id: user._id}, {$set: {
+      successfactors: {
+        personIdExternal: personIdExternal
+      }
+    }})
+  }
+}
 
 if (Meteor.isServer) {
   var Auth = {};
@@ -97,6 +195,10 @@ if (Meteor.isServer) {
                   })
                   console.log(`personIdExternal: `, personIdExternal)
                   console.log(`perPersonUuid: `, perPersonUuid)
+
+                  Meteor.defer(() => {
+                    fetchEmployeeDetails(businessId, personIdExternal)
+                  })
                 }                
               }  
             }
