@@ -215,6 +215,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       status: true
     }
   }
+  bpUser.employee = true
   bpUser.businessIds = [business._id]
 
   bpUser.successfactors = {
