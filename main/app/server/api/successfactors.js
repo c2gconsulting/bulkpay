@@ -87,6 +87,37 @@ let successResponse = () => {
   return response
 }
 
+let getSfEmployeeIds = (jsonPayLoad) => {
+  let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
+
+  let personIdExternal = "";
+  let perPersonUuid = "";
+
+  let ns7Events = externalEvent['ns5:ExternalEvent'][0]['ns5:events'] ? 
+    externalEvent['ns5:ExternalEvent'][0]['ns5:events'][0] : null
+
+  if(ns7Events) {
+    let ns7Event = ns7Events['ns5:event'] ? ns7Events['ns5:event'][0] : null
+    if(ns7Event) {
+      let ns7Params = ns7Event['ns5:params'] ? ns7Event['ns5:params'][0] : null
+      if(ns7Params) {
+
+        _.each(ns7Params["ns5:param"], param => {
+          if(param.name && param.name[0] === 'personIdExternal') {
+            personIdExternal = param.value[0]
+          } else if(param.name && param.name[0] === 'perPersonUuid') {
+            perPersonUuid = param.value[0]
+          }
+        })
+        console.log(`personIdExternal: `, personIdExternal)
+        console.log(`perPersonUuid: `, perPersonUuid)
+      }
+    }
+  }
+
+  return {personIdExternal, perPersonUuid}
+}
+
 let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
   const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$select=personIdExternal,firstName,lastName&$format=json`
@@ -175,12 +206,37 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   }
 
-  let user = Meteor.users.findOne(accountId)
-  Meteor.users.update({_id: user._id}, {$set: {
-    successfactors: {
-      personIdExternal: personIdExternal
+  let bpUser = Meteor.users.findOne(accountId)
+  const bpUserId = bpUser._id
+  bpUser.employeeProfile = {
+    employment: {
+      status: true
     }
-  }})
+  }
+  bpUser.successfactors = {
+    personIdExternal: personIdExternal
+  }
+  delete bpUser._id
+
+  Meteor.users.update({_id: bpUserId}, {$set: bpUser})
+}
+
+let setBPEmployeeStatus = (business, personIdExternal, status) => {
+  let tenantId = business._groupId
+
+  let bpUser = Meteor.users.findOne('successfactors.personIdExternal': personIdExternal)
+  if(bpUser) {
+    if(bpUser.group === tenantId) {
+      const bpUserId = bpUser._id
+
+      bpUser.employeeProfile = bpUser.employeeProfile || {}
+      bpUser.employeeProfile.employment = bpUser.employeeProfile.employment || {}
+      bpUser.employeeProfile.employment.status = status
+      delete bpUser._id
+
+      Meteor.users.update({_id: bpUser._id}, {$set: bpUser})
+    }
+  }
 }
 
 if (Meteor.isServer) {
@@ -220,7 +276,10 @@ if (Meteor.isServer) {
 
               let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
               if(config) {
-                fetchEmployeeDetails(business, config, '100052')
+                parseString(body, function (err, result) {
+                  const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
+                  fetchEmployeeDetails(business, config, personIdExternal)
+                })
               }
             }
           })
@@ -251,35 +310,25 @@ if (Meteor.isServer) {
         }).on('end', () => {
           body = Buffer.concat(body).toString();
 
-          parseString(body, function (err, result) {  
-            let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
-              result['ns7:ExternalEvent']['ns7:events'][0] : null
+          Partitioner.directOperation(function() {
+            let business = BusinessUnits.findOne({_id: businessId})
+            if(business) {
+              Partitioner.bindGroup(business._groupId, function() {
+                SuccessFactorsEvents.insert({
+                  businessId: businessId,
+                  eventBody: body
+                })
+              })
 
-            if(ns7Events) {
-              let ns7Event = ns7Events['ns7:event'] ? ns7Events['ns7:event'][0] : null
-              if(ns7Event) {
-                let ns7Params = ns7Event['ns7:params'] ? ns7Event['ns7:params'][0] : null
-                if(ns7Params) {
-                  let personIdExternal = "";
-                  let perPersonUuid = "";
-
-                  _.each(ns7Params["ns7:param"], param => {
-                    if(param.name && param.name[0] === 'personIdExternal') {
-                      personIdExternal = param.value[0]
-                    } else if(param.name && param.name[0] === 'perPersonUuid') {
-                      perPersonUuid = param.value[0]
-                    }
-                  })
-                  console.log(`personIdExternal: `, personIdExternal)
-                  console.log(`perPersonUuid: `, perPersonUuid)
-
-                  Meteor.defer(() => {
-                    fetchEmployeeDetails(businessId, personIdExternal)
-                  })
-                }                
-              }  
+              let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
+              if(config) {
+                parseString(body, function (err, result) {
+                  const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
+                  setBPEmployeeStatus(business, personIdExternal, true)
+                })
+              }
             }
-          });
+          })
         });
         
         return successResponse()
@@ -292,8 +341,8 @@ if (Meteor.isServer) {
     post: {
       action: function() {
         console.log(`Inside successfactors termination event endpoint`)
-
         let decoded;
+
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
         } catch (e) {
@@ -307,34 +356,26 @@ if (Meteor.isServer) {
         }).on('end', () => {
           body = Buffer.concat(body).toString();
 
-          parseString(body, function (err, result) {
-            let ns7Events = result['ns7:ExternalEvent']['ns7:events'] ? 
-              result['ns7:ExternalEvent']['ns7:events'][0] : null
+          Partitioner.directOperation(function() {
+            let business = BusinessUnits.findOne({_id: businessId})
+            if(business) {
+              Partitioner.bindGroup(business._groupId, function() {
+                SuccessFactorsEvents.insert({
+                  businessId: businessId,
+                  eventBody: body
+                })
+              })
 
-            if(ns7Events) {
-              let ns7Event = ns7Events['ns7:event'] ? ns7Events['ns7:event'][0] : null
-              if(ns7Event) {
-                let ns7Params = ns7Event['ns7:params'] ? ns7Event['ns7:params'][0] : null
-                if(ns7Params) {
-                  let personIdExternal = "";
-                  let perPersonUuid = "";
-
-                  _.each(ns7Params["ns7:param"], param => {
-                    if(param.name && param.name[0] === 'personIdExternal') {
-                      personIdExternal = param.value[0]
-                    } else if(param.name && param.name[0] === 'perPersonUuid') {
-                      perPersonUuid = param.value[0]
-                    }
-                  })
-                  console.log(`personIdExternal: `, personIdExternal)
-                  console.log(`perPersonUuid: `, perPersonUuid)
-
-                  fetchEmployeeDetails(businessId, personIdExternal)
-                }                
-              }  
+              let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
+              if(config) {
+                parseString(body, function (err, result) {
+                  const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
+                  setBPEmployeeStatus(business, personIdExternal, false)
+                })
+              }
             }
-          });
-        });        
+          })
+        });
         return successResponse()
       }
     }
