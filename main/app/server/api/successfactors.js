@@ -229,7 +229,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 let setBPEmployeeStatus = (business, personIdExternal, status) => {
   let tenantId = business._groupId
 
-  let bpUser = Meteor.users.findOne('successfactors.personIdExternal': personIdExternal)
+  let bpUser = Meteor.users.findOne({'successfactors.personIdExternal': personIdExternal})
   if(bpUser) {
     if(bpUser.group === tenantId) {
       const bpUserId = bpUser._id
@@ -239,7 +239,7 @@ let setBPEmployeeStatus = (business, personIdExternal, status) => {
       bpUser.employeeProfile.employment.status = status
       delete bpUser._id
 
-      Meteor.users.update({_id: bpUser._id}, {$set: bpUser})
+      Meteor.users.update({_id: bpUserId}, {$set: bpUser})
     }
   }
 }
@@ -312,7 +312,7 @@ if (Meteor.isServer) {
         let body = [];
         this.request.on('data', (chunk) => {
           body.push(chunk);
-        }).on('end', () => {
+        }).on('end', Meteor.bindEnvironment(function (error, result) {
           body = Buffer.concat(body).toString();
 
           Partitioner.directOperation(function() {
@@ -334,7 +334,7 @@ if (Meteor.isServer) {
               }
             }
           })
-        });
+        }));
         
         return successResponse()
       }
@@ -358,7 +358,7 @@ if (Meteor.isServer) {
         let body = [];
         this.request.on('data', (chunk) => {
           body.push(chunk);
-        }).on('end', () => {
+        }).on('end', Meteor.bindEnvironment(function (error, result) {
           body = Buffer.concat(body).toString();
 
           Partitioner.directOperation(function() {
@@ -380,7 +380,7 @@ if (Meteor.isServer) {
               }
             }
           })
-        });
+        }));
         return successResponse()
       }
     }
