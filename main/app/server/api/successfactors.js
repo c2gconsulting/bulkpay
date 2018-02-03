@@ -88,6 +88,8 @@ let successResponse = () => {
 }
 
 let getSfEmployeeIds = (jsonPayLoad) => {
+  // console.log(`jsonPayLoad: `, jsonPayLoad)
+
   let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
 
   let personIdExternal = "";
@@ -213,6 +215,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       status: true
     }
   }
+  bpUser.businessIds = [business._id]
+
   bpUser.successfactors = {
     personIdExternal: personIdExternal
   }
