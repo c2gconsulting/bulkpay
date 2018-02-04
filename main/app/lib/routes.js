@@ -100,6 +100,13 @@ Router.route('/business/:_id/payslip', {
     where: 'client'
 });
 
+Router.route('/business/:_id/payslip/:payrunPeriod', {
+    name: 'payslip.period',
+    controller: 'PayslipController',
+    action: 'showSelfPaySlips',
+    where: 'client'
+});
+
 Router.route('/business/:_id/orgchart', {
     name: 'orgchart',
     controller: 'OrgChartController',

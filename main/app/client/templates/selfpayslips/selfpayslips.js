@@ -72,7 +72,43 @@ Template.selfpayslips.onCreated(function () {
     self.subscribe("paygrades", Session.get('context'));
     self.subscribe("PayTypes", Session.get('context'));
 
+    let businessUnitId = Session.get('context')
+
     self.errorMsg = new ReactiveVar();
+
+    let payrunPeriod = Router.current().params.payrunPeriod
+    if(payrunPeriod) {
+        let monthAndYear = payrunPeriod.split('-')
+
+        if(monthAndYear && monthAndYear.length === 2) {
+            let selecedMonth = monthAndYear[0]
+            let selectedYear = monthAndYear[1]
+
+            const period = selecedMonth + selectedYear
+
+            Meteor.call('Payslip/getSelfPayslipForPeriod', businessUnitId, period, Meteor.userId(), function(err, res) {
+                if(!err) {
+                    self.errorMsg.set(null);
+                    let selfPayrun = res.selfPayrun
+                    let selfPayResults = res.selfPayResults
+    
+                    let payLoadForPayslip = {
+                        payrun: selfPayrun,
+                        payslip: selfPayResults.payslip, 
+                        payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
+                        displayAllPaymentsUnconditionally: false
+                    }
+    
+                    Session.set('currentPayrunPeriod', {month: selecedMonth, year: selectedYear})
+                    Session.set('currentSelectedPaySlip', payLoadForPayslip)
+            
+                    // Modal.show('Payslip', payLoadForPayslip);
+                } else {
+                    self.errorMsg.set(err.message);
+                }
+            })
+        }
+    }
 });
 
 Template.selfpayslips.onRendered(function () {
