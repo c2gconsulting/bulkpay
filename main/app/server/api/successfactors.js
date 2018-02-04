@@ -367,7 +367,8 @@ if (Meteor.isServer) {
               Partitioner.bindGroup(business._groupId, function() {
                 SuccessFactorsEvents.insert({
                   businessId: businessId,
-                  eventBody: body
+                  eventBody: body,
+                  _groupId: business._groupId
                 })
               })
 

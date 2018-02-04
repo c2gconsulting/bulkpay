@@ -26,6 +26,11 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "paymentHeadersForPayslip": {
+        "bank": true,
+        "accountNumber": true
+      },
+      "notifyEmployeesOnPayrollApproval": false,
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -56,6 +61,11 @@
       "isWeekendTimeWritingEnabled": true,
       "isOvertimeEnabled": false,
       "maxHoursInDayForTimeWriting": 24,
+      "paymentHeadersForPayslip": {
+        "bank": true,
+        "accountNumber": true
+      },
+      "notifyEmployeesOnPayrollApproval": false,
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -88,6 +98,11 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "paymentHeadersForPayslip": {
+        "bank": true,
+        "accountNumber": true
+      },
+      "notifyEmployeesOnPayrollApproval": false,
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -99,8 +114,8 @@
       "isHourLeaveRequestsEnabled": false,
       "isProcurementRequisitionActive": true,
       "isTravelRequisitionActive": true,
-      "isLeaveRequestActive": true,
-      "isTimeWritingActive": true,
+      "isLeaveRequestActive": false,
+      "isTimeWritingActive": false,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },
@@ -126,6 +141,11 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "paymentHeadersForPayslip": {
+        "bank": true,
+        "accountNumber": true
+      },
+      "notifyEmployeesOnPayrollApproval": false,
       "isActive": true,
       "_groupId": "mYssKhxYo3mnxmoQd",
       "travelRequestConfig": {
@@ -171,7 +191,7 @@
                   "isPayableToStaff": true
               },
               {
-                  "label": "Accommodation/Feeding",
+                  "label": "Accommodation",
                   "dbFieldName": "accommodationCost",
                   "isPayableToStaff": true
               },
@@ -220,6 +240,11 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": false,
       "maxHoursInDayForTimeWriting": 8,
+      "paymentHeadersForPayslip": {
+        "bank": true,
+        "accountNumber": true
+      },
+      "notifyEmployeesOnPayrollApproval": false,
       "isActive": true,
       "_groupId": "FLTGdyX8jb9Yx2kXB",
       "travelRequestConfig": {
@@ -291,7 +316,6 @@
       }
   },
   {
-      "_id": "N6v8zqcngx8ioc5oD",
       "businessId": "CQdQKjkfLixpytbAN",
       "payGradeLabel": "Pay Category",
       "payGradeLabelPlural": "Pay Categories",
@@ -299,14 +323,12 @@
       "isProcurementRequisitionActive": false,
       "isLeaveRequestActive": false,
       "isTimeWritingActive": false,
-      "isActive": true,
-      "_groupId": "QyPY7RY4Hc2dqZTem",
       "isTravelRequisitionActive": true,
       "leaveDaysAccrual": "FixedLeaveEntitlement",
       "checkEmployeeResumptionForPayroll": true,
       "isWeekendIncludedInLeaveRequests": false,
-      "isTimeTypeEnabled": true,
-      "isHmoSetupEnabled": true,
+      "isTimeTypeEnabled": false,
+      "isHmoSetupEnabled": false,
       "baseColor": "#ff0000",
       "displayLogoInSideBar": true,
       "isHourLeaveRequestsEnabled": true,
@@ -319,6 +341,13 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "paymentHeadersForPayslip": {
+        "bank": false,
+        "accountNumber": false
+      },
+      "notifyEmployeesOnPayrollApproval": true,
+      "isActive": true,
+      "_groupId": "QyPY7RY4Hc2dqZTem",
       "travelRequestConfig": {
           "fields": [
               {
@@ -371,7 +400,7 @@
                   "dbFieldName": "flightCost"
               },
               {
-                  "label": "Accommodation/Feeding",
+                  "label": "Accommodation",
                   "dbFieldName": "accommodationCost"
               },
               {
@@ -386,5 +415,5 @@
               }
           ]
       }
-  }
+    }
 ]

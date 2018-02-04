@@ -27,5 +27,9 @@ Core.Schemas.SuccessFactorsEvent = new SimpleSchema({
       },
       denyUpdate: true,
       optional: true
-  }
+  },
+  _groupId: {
+      type: String,
+      optional: true
+  },
 });

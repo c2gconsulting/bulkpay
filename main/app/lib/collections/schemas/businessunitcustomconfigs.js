@@ -110,6 +110,14 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         optional: true,
         blackbox: true
     },
+    paymentHeadersForPayslip: {// bank: true, accountNumber: true
+        type: Object,
+        optional: true,
+        blackbox: true
+    },
+    notifyEmployeesOnPayrollApproval: {
+        type: Boolean        
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
