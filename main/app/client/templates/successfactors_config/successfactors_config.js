@@ -67,6 +67,9 @@ Template.SuccessFactorsConfig.helpers({
     'sfPayTypes': function() {
         return Template.instance().sfPayTypes.get()
     },
+    'sfPayGrades': function() {
+        return Template.instance().sfPayGrades.get()
+    },
     'isFetchingPayTypes': function() {
         return Template.instance().isFetchingPayTypes.get()
     }
@@ -80,10 +83,13 @@ Template.SuccessFactorsConfig.onCreated(function () {
     let businessUnitId = Session.get('context');
 
     self.subscribe('SuccessFactorsIntegrationConfigs', businessUnitId);
-    
+    self.subscribe("PayTypes", businessUnitId);
+
     self.successFactorsConfig = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()
+    self.sfPayGrades = new ReactiveVar()
     self.isFetchingPayTypes = new ReactiveVar(false)
+    self.isFetchingPayGrades = new ReactiveVar(false)
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
@@ -92,16 +98,57 @@ Template.SuccessFactorsConfig.onCreated(function () {
 
             if(config) {
                 self.isFetchingPayTypes.set(true)
-                Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, res) => {
+
+                Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, sfPaytypes) => {
                     console.log(`err: `, err)
                     self.isFetchingPayTypes.set(false)
 
                     if (!err) {
-                        self.sfPayTypes.set(res)
+                        // let completePaytypes = []
+                        // let bpPaytypes = PayTypes.find({}).fetch() || []
+                        
+                        // bpPaytypes.forEach(payType => {
+                        //     let foundBpPaytype = _.find(sfPaytypes, function (sfPt) {
+                        //         return sfPt.externalCode === payType.code;
+                        //     })
+                        //     if(foundBpPaytype) {
+                        //         _.extend(payType, currentPayType)
+                        //     } else {
+
+                        //     }
+                        // });
+
+                        self.sfPayTypes.set(sfPaytypes)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");
                     }
                 });
+                //--
+                self.isFetchingPayGrades.set(true)
+                Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
+                    console.log(`err: `, err)
+                    self.sfPayGrades.set(false)
+
+                    if (!err) {
+                        // let completePaytypes = []
+                        // let bpPaytypes = PayTypes.find({}).fetch() || []
+                        
+                        // bpPaytypes.forEach(payType => {
+                        //     let foundBpPaytype = _.find(sfPaytypes, function (sfPt) {
+                        //         return sfPt.externalCode === payType.code;
+                        //     })
+                        //     if(foundBpPaytype) {
+                        //         _.extend(payType, currentPayType)
+                        //     } else {
+
+                        //     }
+                        // });
+
+                        self.sfPayGrades.set(sfPayGrades)
+                    } else {
+                        swal("Server error", `Please try again at a later time`, "error");
+                    }
+                });                
             }
         }
     });

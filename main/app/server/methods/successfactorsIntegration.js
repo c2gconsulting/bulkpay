@@ -86,5 +86,44 @@ Meteor.methods({
             }
         }
         return []
+    },
+    'successfactors/fetchPayGrades': function (businessUnitId) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }  
+        this.unblock();
+
+        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+        if(config) {
+            const companyId = config.companyId
+            const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            const password = config.password
+          
+            let fullUsername = `${username}@${companyId}`
+            const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+          
+            let requestHeaders = {
+              Authorization: `Basic ${authenticationToken}`
+            }
+            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+            const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGrade?$format=json`
+          
+            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            const payGradeRes = getToSync(foPayGradeQueryUrl, {headers: requestHeaders})
+
+            if(payGradeRes) {
+                try {
+                    let payGradeData = JSON.parse(payGradeRes.content)
+                    if(payGradeData && payGradeData.d && payGradeData.d.results && payGradeData.d.results.length > 0) {
+                        return payGradeData.d.results
+                    }
+                } catch(e) {
+                  console.log('Error in Getting SF paygrades! ', e.message)
+                }
+            } else {
+                console.log('Error in Getting SF paygrades! null response')
+            }
+        }
+        return []
     }
 })

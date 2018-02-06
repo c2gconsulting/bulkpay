@@ -24,7 +24,8 @@
                         <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Company</a></li>
-                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> Successfactors PayTypes </a></li>
+                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> PayComponents </a></li>
+                                <li><a href="#new-tab3" data-toggle="tab"><strong></strong> PayGrades </a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -112,13 +113,14 @@
                                         <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
                                         <div class="row">
                                             <div class="pull-right">
-                                                <button type="submit" class="btn btn-primary" id="saveSapCostCenterCodes">Save</button>
+                                                <button type="submit" class="btn btn-primary" id="savePaytypes">Save</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
                                             <table class="table table-hover" id="derivativeTable">
                                                 <thead>
                                                 <tr>
+                                                    <th></th>
                                                     <th>S/N</th>
                                                     <th>Code</th>
                                                     <th>Name</th>
@@ -133,6 +135,11 @@
                                                     {{else}}
                                                     {{#each sfPayTypes}}
                                                         <tr class="item" style="cursor: move;">
+                                                            <td>
+                                                                <div class="ckbox ckbox-success">
+                                                                    <input type="checkbox" name="includeSfPayComponent" />
+                                                                </div>
+                                                            </td>
                                                             <td>{{@index}}</td>
                                                             <td>{{externalCode}}</td>
                                                             <td>{{name}}</td>
@@ -146,6 +153,47 @@
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
+
+                                <div class="tab-pane" id="new-tab3">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="savePayGrades">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>S/N</th>
+                                                    <th>Code</th>
+                                                    <th>Name</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab2-data-body">
+                                                    {{#if isFetchingPayGrades}}
+                                                        <br/><br/><br/><br/><br/>
+                                                        {{> spinner}}
+                                                    {{else}}
+                                                    {{#each sfPayGrades}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>
+                                                                <div class="ckbox ckbox-success">
+                                                                    <input type="checkbox" name="includeSfPayGrade" />
+                                                                </div>
+                                                            </td>
+                                                            <td>{{@index}}</td>
+                                                            <td>{{externalCode}}</td>
+                                                            <td>{{name}}</td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->                                
                             </div>
 
                             <ul class="list-unstyled wizard">
