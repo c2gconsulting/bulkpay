@@ -220,7 +220,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         },
         employeeProfile: {
           employment: {
-            status: true
+            status: 'Active'
           }
         },
         employee: true,
@@ -251,7 +251,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const bpUserId = bpUser._id
   bpUser.employeeProfile = {
     employment: {
-      status: true
+      status: 'Active'
     }
   }
   bpUser.employee = true
@@ -368,7 +368,7 @@ if (Meteor.isServer) {
               if(config) {
                 parseString(body, function (err, result) {
                   const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
-                  setBPEmployeeStatus(business, personIdExternal, true)
+                  setBPEmployeeStatus(business, personIdExternal, 'Active')
                 })
               }
             }
@@ -415,7 +415,7 @@ if (Meteor.isServer) {
               if(config) {
                 parseString(body, function (err, result) {
                   const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
-                  setBPEmployeeStatus(business, personIdExternal, false)
+                  setBPEmployeeStatus(business, personIdExternal, 'Inactive')
                 })
               }
             }
