@@ -1,3 +1,28 @@
+
+const SFIntegrationHelper = {
+    getAuthHeader: (sfConfig) => {
+        const companyId = sfConfig.companyId
+        const username = sfConfig.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        const password = sfConfig.password
+      
+        let fullUsername = `${username}@${companyId}`
+        const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+      
+        return {
+          Authorization: `Basic ${authenticationToken}`
+        }
+    },
+    getOdataResults: (odataResponse) => {
+        if(odataResponse && odataResponse.d && odataResponse.d.results 
+            && odataResponse.d.results.length > 0) {
+            return odataResponse.d.results
+        } else {
+            return []
+        }
+    }
+}
+
+
 /**
  *  SuccessFactors Integration Methods
  */
@@ -10,17 +35,7 @@ Meteor.methods({
       //--
       if(successFactorsConfig) {
         let connectionUrl = `${successFactorsConfig.protocol}://${successFactorsConfig.odataDataCenterUrl}/odata/v2/$metadata`
-
-        let companyId = successFactorsConfig.companyId;
-        let username = successFactorsConfig.username;
-        let password = successFactorsConfig.password;
-
-        let fullUsername = `${username}@${companyId}`
-        const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
-
-        let requestHeaders = {
-            Authorization: `Basic ${authenticationToken}`
-        }
+        const requestHeaders = SFIntegrationHelper.getAuthHeader(successFactorsConfig)
 
         let errorResponse = null
         try {
@@ -45,7 +60,7 @@ Meteor.methods({
         }
         return errorResponse;
       } else {
-          return '{"status": false, "message": "SAP Config empty"}'
+          return '{"status": false, "message": "Successfactors Config empty"}'
       }
     },
     'successfactors/fetchPaytypes': function (businessUnitId) {
@@ -56,16 +71,7 @@ Meteor.methods({
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
-            const companyId = config.companyId
-            const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-            const password = config.password
-          
-            let fullUsername = `${username}@${companyId}`
-            const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
-          
-            let requestHeaders = {
-              Authorization: `Basic ${authenticationToken}`
-            }
+            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
             const foPayComponentQueryUrl = `${baseUrl}/odata/v2/FOPayComponent?$format=json`
           
@@ -75,9 +81,7 @@ Meteor.methods({
             if(payCompRes) {
                 try {
                     let payCompData = JSON.parse(payCompRes.content)
-                    if(payCompData && payCompData.d && payCompData.d.results && payCompData.d.results.length > 0) {
-                        return payCompData.d.results
-                    }
+                    return SFIntegrationHelper.getOdataResults(payCompData)
                 } catch(e) {
                   console.log('Error in Getting SF pay components! ', e.message)
                 }
@@ -95,16 +99,7 @@ Meteor.methods({
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
-            const companyId = config.companyId
-            const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-            const password = config.password
-          
-            let fullUsername = `${username}@${companyId}`
-            const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
-          
-            let requestHeaders = {
-              Authorization: `Basic ${authenticationToken}`
-            }
+            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
             const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGrade?$format=json`
           
@@ -114,9 +109,7 @@ Meteor.methods({
             if(payGradeRes) {
                 try {
                     let payGradeData = JSON.parse(payGradeRes.content)
-                    if(payGradeData && payGradeData.d && payGradeData.d.results && payGradeData.d.results.length > 0) {
-                        return payGradeData.d.results
-                    }
+                    return SFIntegrationHelper.getOdataResults(payGradeData)
                 } catch(e) {
                   console.log('Error in Getting SF paygrades! ', e.message)
                 }

@@ -26,6 +26,7 @@
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
                                 <li><a href="#new-tab2" data-toggle="tab"><strong></strong> PayComponents </a></li>
                                 <li><a href="#new-tab3" data-toggle="tab"><strong></strong> PayGrades </a></li>
+                                <li><a href="#new-tab4" data-toggle="tab"><strong></strong> Cost-Center</a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -193,7 +194,41 @@
                                             </table>
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
-                                </div><!-- tab-pane -->                                
+                                </div><!-- tab-pane -->    
+                                
+                                <div class="tab-pane" id="new-tab4">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="saveSapCostCenterCodes">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Unit</th>
+                                                    <th>Org chart parents</th>
+                                                    <th>Successfactors Cost Center</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab2-data-body">
+                                                {{#each costCenters}}
+                                                    <tr class="item" style="cursor: move;">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{name}}</td>
+                                                        <td>{{getCostCenterOrgChartParents this}}</td>
+                                                        <td>
+                                                            <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->
                             </div>
 
                             <ul class="list-unstyled wizard">

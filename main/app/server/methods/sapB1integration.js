@@ -529,7 +529,6 @@ Meteor.methods({
                         projectsBulkSum: processingResult.projectsBulkSum,
                     })
                     let requestHeaders = {'Content-Type': 'application/json'}
-
                     let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
                     let actualServerResponse = serverRes.data.replace(/\//g, "")
                     // console.log(`actualServerResponse`, actualServerResponse)

@@ -54,7 +54,21 @@ Template.SuccessFactorsConfig.events({
                 swal("Server error", `Please try again at a later time`, "error");
             }
         });
-    }
+    },
+    'blur #tab4-data-body tr input': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let unitId = domElem.getAttribute('id')
+        let unitGlAccountCode = domElem.value || ""
+
+        let units = Template.instance().units.get()
+
+        let currentUnit = _.find(units, function (o) {
+            return o._id === unitId;
+        })
+        currentUnit.costCenterCode = unitGlAccountCode
+
+        Template.instance().units.set(units);
+    },
 });
 
 /*****************************************************************************/
@@ -70,8 +84,14 @@ Template.SuccessFactorsConfig.helpers({
     'sfPayGrades': function() {
         return Template.instance().sfPayGrades.get()
     },
+    'costCenters': function () {
+        return Template.instance().units.get()
+    },
     'isFetchingPayTypes': function() {
         return Template.instance().isFetchingPayTypes.get()
+    },
+    'isFetchingPayGrades': function() {
+        return Template.instance().isFetchingPayGrades.get()
     }
 });
 
@@ -84,17 +104,32 @@ Template.SuccessFactorsConfig.onCreated(function () {
 
     self.subscribe('SuccessFactorsIntegrationConfigs', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
+    self.subscribe('getCostElement', businessUnitId);
 
     self.successFactorsConfig = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()
     self.sfPayGrades = new ReactiveVar()
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
+    self.units = new ReactiveVar()
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
             let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
             self.successFactorsConfig.set(config)
+
+            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(unit => {
+                if(successFactorsConfig) {
+                    let currentUnit = _.find(successFactorsConfig.units, function (oldUnit) {
+                        return oldUnit.unitId === unit._id;
+                    })
+                    if(currentUnit) {
+                        _.extend(unit, currentUnit)
+                    }
+                }
+                unit.unitId = unit._id
+                return unit
+            }));
 
             if(config) {
                 self.isFetchingPayTypes.set(true)
@@ -127,7 +162,7 @@ Template.SuccessFactorsConfig.onCreated(function () {
                 self.isFetchingPayGrades.set(true)
                 Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
                     console.log(`err: `, err)
-                    self.sfPayGrades.set(false)
+                    self.isFetchingPayGrades.set(false)
 
                     if (!err) {
                         // let completePaytypes = []
