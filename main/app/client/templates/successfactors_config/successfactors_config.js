@@ -119,8 +119,8 @@ Template.SuccessFactorsConfig.onCreated(function () {
             self.successFactorsConfig.set(config)
 
             self.units.set(EntityObjects.find({otype: 'Unit'}).fetch().map(unit => {
-                if(successFactorsConfig) {
-                    let currentUnit = _.find(successFactorsConfig.units, function (oldUnit) {
+                if(config) {
+                    let currentUnit = _.find(config.units, function (oldUnit) {
                         return oldUnit.unitId === unit._id;
                     })
                     if(currentUnit) {
