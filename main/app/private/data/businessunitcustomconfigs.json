@@ -330,7 +330,7 @@
       "isTimeTypeEnabled": false,
       "isHmoSetupEnabled": false,
       "baseColor": "#ff0000",
-      "displayLogoInSideBar": true,
+      "displayLogoInSideBar": false,
       "isHourLeaveRequestsEnabled": true,
       "procurementRequisitionApprovalConfig": {},
       "isTwoStepApprovalEnabled": false,

@@ -88,7 +88,7 @@ let successResponse = () => {
 }
 
 let getSfEmployeeIds = (jsonPayLoad) => {
-  // console.log(`jsonPayLoad: `, jsonPayLoad)
+  console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
 
   let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
 
@@ -198,7 +198,46 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   }
 
-  let accountId = Accounts.createUser(bulkPayUserParams)
+  let accountId;
+  try {
+    accountId = Accounts.createUser(bulkPayUserParams)
+  } catch(e) {
+    try {
+      let userFirstName = bulkPayUserParams.firstname || ""
+      let userLastName = bulkPayUserParams.lastname || ""
+      //--
+      userFirstName = userFirstName.trim()
+      userLastName = userLastName.trim()
+      //--
+      let defaultUsername = userFirstName + "." + userLastName
+      defaultUsername = defaultUsername.toLowerCase()
+  
+      accountId = Meteor.users.insert({
+        profile: {
+          firstname: bulkPayUserParams.firstname,
+          lastname: bulkPayUserParams.lastname,
+          fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
+        },
+        employeeProfile: {
+          employment: {
+            status: true
+          }
+        },
+        employee: true,
+        businessIds: [business._id],
+        group: business._groupId,
+        roles: {
+          "__global_roles__" : [ 
+              "ess/all"
+          ]
+        }
+      })
+      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
+      Accounts.setPassword({_id: accountId}, "123456")
+    } catch(err1) {
+      console.log(`Error in alternative user creation! `, err1.message)
+    }
+  }
   
   if(bulkPayUserParams.email) {
     try {
