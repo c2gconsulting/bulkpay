@@ -20,77 +20,142 @@
             <div class="panel">
                 <div class="panel-body">
                     <div class="row">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-8">
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            <div class="row">
-                                                <div class="col-md-4 text-right"><b>Odata Datacenter URL</b></div>
-                                                <div class="col-md-3">
-                                                    <input type="text" class="form-control" id="odataDataCenterUrl"
-                                                            placeholder="Example: api4.successfactors.com"
-                                                            title="Example: api4.successfactors.com"
-                                                            value="{{companyConnectionInfo.odataDataCenterUrl}}"/>
-                                                </div>
-                                            </div>
+                        <!-- PROGRESS WIZARD -->
+                        <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
+                            <ul class="nav nav-justified nav-wizard nav-disabled-click">
+                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Company</a></li>
+                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> Successfactors PayTypes </a></li>
+                            </ul>
 
-                                            <div class="row">
-                                                <div class="col-md-4 text-right" for-name="protocol"><b>Protocol</b></div>
-                                                <div class="col-sm-4">
-                                                    <label>
-                                                        <input type="radio" name="protocol" value="http" checked="checked"/>http
-                                                    </label>
-                                                    <label>
-                                                        <input type="radio" name="protocol" value="https" />https
-                                                    </label>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div>
+                            <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="tab-content">
+                                <div class="tab-pane" id="new-tab1">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Odata Datacenter URL</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="odataDataCenterUrl"
+                                                                        placeholder="Example: api4.successfactors.com"
+                                                                        title="Example: api4.successfactors.com"
+                                                                        value="{{companyConnectionInfo.odataDataCenterUrl}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right" for-name="protocol"><b>Protocol</b></div>
+                                                            <div class="col-sm-4">
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="http" checked="checked"/>http
+                                                                </label>
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="https" />https
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Successfactors Company ID</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="companyId"
+                                                                    placeholder="Successfactors companyId"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.companyId}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Successfactors Username</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="text" class="form-control" id="username"
+                                                                    placeholder="Successfactors Username"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.username}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Successfactors Password</b></div>
+                                                            <div class="col-md-3">
+                                                                <input type="password" class="form-control" id="password"
+                                                                    placeholder="Successfactors Password"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.password}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div col-md-9>
+                                                                <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right"><b>Successfactors Company ID</b></div>
-                                                <div class="col-md-3">
-                                                    <input type="text" class="form-control" id="companyId"
-                                                        placeholder="Successfactors companyId"
-                                                        title=""
-                                                        value="{{companyConnectionInfo.companyId}}"/>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right"><b>Successfactors Username</b></div>
-                                                <div class="col-md-3">
-                                                    <input type="text" class="form-control" id="username"
-                                                        placeholder="Successfactors Username"
-                                                        title=""
-                                                        value="{{companyConnectionInfo.username}}"/>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-4 text-right"><b>Successfactors Password</b></div>
-                                                <div class="col-md-3">
-                                                    <input type="password" class="form-control" id="password"
-                                                        placeholder="Successfactors Password"
-                                                        title=""
-                                                        value="{{companyConnectionInfo.password}}"/>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div col-md-9>
-                                                    <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
-                                                </div>
+                                                </div><!-- panel -->
                                             </div>
                                         </div>
-                                    </div><!-- panel -->
+                                    </div>
                                 </div>
+
+                                <div class="tab-pane" id="new-tab2">
+                                    <div class="form-group">
+                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="saveSapCostCenterCodes">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Code</th>
+                                                    <th>Name</th>
+                                                    <th>Frequency</th>
+                                                    <th>Currency</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab2-data-body">
+                                                    {{#if isFetchingPayTypes}}
+                                                        <br/><br/><br/><br/><br/>
+                                                        {{> spinner}}
+                                                    {{else}}
+                                                    {{#each sfPayTypes}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>{{@index}}</td>
+                                                            <td>{{externalCode}}</td>
+                                                            <td>{{name}}</td>
+                                                            <td>{{frequencyCode}}</td>
+                                                            <td>{{currency}}</td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->
                             </div>
+
+                            <ul class="list-unstyled wizard">
+                                <li class="pull-left previous">
+                                    <button type="button" class="btn btn-default">Previous</button>
+                                </li>
+                                <li class="pull-right next">
+                                    <button type="button" class="btn btn-primary">Next</button>
+                                </li>
+                            </ul>
                         </div>
                     </div><!-- row -->
                 </div>

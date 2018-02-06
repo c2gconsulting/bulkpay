@@ -94,17 +94,23 @@ let getSfEmployeeIds = (jsonPayLoad) => {
 
   let personIdExternal = "";
   let perPersonUuid = "";
+  let nsPrefix = ''
+  if(externalEvent['ns5:ExternalEvent'] && externalEvent['ns5:ExternalEvent'].length > 0) {
+    nsPrefix = 'ns5'
+  } else if(externalEvent['ns7:ExternalEvent'] && externalEvent['ns7:ExternalEvent'].length > 0) {
+    nsPrefix = 'ns7'    
+  }
 
-  let ns7Events = externalEvent['ns5:ExternalEvent'][0]['ns5:events'] ? 
-    externalEvent['ns5:ExternalEvent'][0]['ns5:events'][0] : null
+  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ? 
+    externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`][0] : null
 
   if(ns7Events) {
-    let ns7Event = ns7Events['ns5:event'] ? ns7Events['ns5:event'][0] : null
+    let ns7Event = ns7Events[`${nsPrefix}:event`] ? ns7Events[`${nsPrefix}:event`][0] : null
     if(ns7Event) {
-      let ns7Params = ns7Event['ns5:params'] ? ns7Event['ns5:params'][0] : null
+      let ns7Params = ns7Event[`${nsPrefix}:params`] ? ns7Event[`${nsPrefix}:params`][0] : null
       if(ns7Params) {
-
-        _.each(ns7Params["ns5:param"], param => {
+                                                                                                                                                                                                                                                                              
+        _.each(ns7Params[`${nsPrefix}:param`], param => {
           if(param.name && param.name[0] === 'personIdExternal') {
             personIdExternal = param.value[0]
           } else if(param.name && param.name[0] === 'perPersonUuid') {
@@ -127,7 +133,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
 
   const companyId = config.companyId
-  const username = config.username
+  const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
   const password = config.password
 
   let fullUsername = `${username}@${companyId}`
@@ -373,8 +379,7 @@ if (Meteor.isServer) {
               }
             }
           })
-        }));
-        
+        }));        
         return successResponse()
       }
     }

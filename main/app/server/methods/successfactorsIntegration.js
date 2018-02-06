@@ -47,5 +47,44 @@ Meteor.methods({
       } else {
           return '{"status": false, "message": "SAP Config empty"}'
       }
-  }
+    },
+    'successfactors/fetchPaytypes': function (businessUnitId) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }  
+        this.unblock();
+
+        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+        if(config) {
+            const companyId = config.companyId
+            const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            const password = config.password
+          
+            let fullUsername = `${username}@${companyId}`
+            const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
+          
+            let requestHeaders = {
+              Authorization: `Basic ${authenticationToken}`
+            }
+            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+            const foPayComponentQueryUrl = `${baseUrl}/odata/v2/FOPayComponent?$format=json`
+          
+            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            const payCompRes = getToSync(foPayComponentQueryUrl, {headers: requestHeaders})
+
+            if(payCompRes) {
+                try {
+                    let payCompData = JSON.parse(payCompRes.content)
+                    if(payCompData && payCompData.d && payCompData.d.results && payCompData.d.results.length > 0) {
+                        return payCompData.d.results
+                    }
+                } catch(e) {
+                  console.log('Error in Getting SF pay components! ', e.message)
+                }
+            } else {
+                console.log('Error in Getting SF pay components! null response')
+            }
+        }
+        return []
+    }
 })
