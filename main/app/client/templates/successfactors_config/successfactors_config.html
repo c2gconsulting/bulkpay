@@ -46,7 +46,7 @@
                                                             <div class="col-md-3">
                                                                 <input type="text" class="form-control" id="odataDataCenterUrl"
                                                                         placeholder="Example: api4.successfactors.com"
-                                                                        title="Example: api4.successfactors.com"
+                                                                        title="{{companyConnectionInfo.odataDataCenterUrl}}"
                                                                         value="{{companyConnectionInfo.odataDataCenterUrl}}"/>
                                                             </div>
                                                         </div>
@@ -174,7 +174,7 @@
                                                     <th>Name</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="tab2-data-body">
+                                                <tbody id="tab3-data-body">
                                                     {{#if isFetchingPayGrades}}
                                                         <br/><br/><br/><br/><br/>
                                                         {{> spinner}}
@@ -202,7 +202,7 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
-                                                <button type="submit" class="btn btn-primary" id="saveSapCostCenterCodes">Save</button>
+                                                <button type="submit" class="btn btn-primary" id="saveCostCenterCodes">Save</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
@@ -215,24 +215,30 @@
                                                     <th>Successfactors Cost Center</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="tab2-data-body">
-                                                {{#each costCenters}}
-                                                    <tr class="item" style="cursor: move;">
-                                                        <td>{{@index}}</td>
-                                                        <td>{{name}}</td>
-                                                        <td>{{getCostCenterOrgChartParents this}}</td>
-                                                        <td>
-                                                            <div class="form-group">
-                                                                <select name="sfCostCenterCode" class="form-control dropdown">
-                                                                    {{#each sfCostCenters}}
-                                                                        <option value="{{externalCode}}">{{externalCode}} {{description}}</option>
-                                                                    {{/each}}
-                                                                </select>
-                                                            </div>
-                                                            <!-- <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/> -->
-                                                        </td>
-                                                    </tr>
-                                                {{/each}}
+                                                <tbody id="tab4-data-body">                                                
+                                                {{#if isFetchingCostCenters}}
+                                                    <br/><br/><br/><br/><br/>
+                                                    {{> spinner}}
+                                                {{else}}
+                                                    {{#each costCenters}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>{{@index}}</td>
+                                                            <td>{{name}}</td>
+                                                            <td>{{getCostCenterOrgChartParents this}}</td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <select name="sfCostCenterCode" class="form-control dropdown" data-unitId="{{_id}}">
+                                                                        <option value="">Select a cost center</option>
+
+                                                                        {{#each sfCostCenters}}
+                                                                            <option value="{{externalCode}}">{{externalCode}} {{description}}</option>
+                                                                        {{/each}}
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {{/each}}
+                                                {{/if}}
                                                 </tbody>
                                             </table>
                                         </div><!-- table-responsive -->

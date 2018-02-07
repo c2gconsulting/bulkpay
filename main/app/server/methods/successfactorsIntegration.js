@@ -146,5 +146,28 @@ Meteor.methods({
             }
         }
         return []
-    }
+    },
+    "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){
+        console.log(`unitCostCenters: `, unitCostCenters)
+        if(!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        let unitCostCenterCodes = Object.keys(unitCostCenters) || []
+        let unitsData = []
+        unitCostCenterCodes.forEach(code => {
+            const unitCostCenter = unitCostCenters[code]
+            unitsData.push(unitCostCenter)
+        })
+
+        let sfConfig = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId});
+        if(sfConfig) {
+            SuccessFactorsIntegrationConfigs.update(sfConfig._id, {$set : {units: unitsData}});
+        } else {
+            SuccessFactorsIntegrationConfigs.insert({businessId: businessUnitId, units: unitsData})
+        }
+        return true;
+    },
 })

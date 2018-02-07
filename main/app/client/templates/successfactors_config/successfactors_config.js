@@ -55,19 +55,20 @@ Template.SuccessFactorsConfig.events({
             }
         });
     },
-    'blur #tab4-data-body tr input': (e, tmpl) => {
+    'blur #tab4-data-body tr select': (e, tmpl) => {
         let domElem = e.currentTarget;
-        let unitId = domElem.getAttribute('id')
-        let unitGlAccountCode = domElem.value || ""
+        const dataset = domElem.dataset;
+        let unitId = dataset.unitid
+        let sfCostCenterCode = domElem.value
+        console.log(`sfCostCenterCode: `, sfCostCenterCode)
 
-        let units = Template.instance().units.get()
+        let selectedUnits = Template.instance().selectedUnits.get()
+        selectedUnits[unitId] = {
+            unitId: unitId,
+            costCenterCode: sfCostCenterCode
+        }
 
-        let currentUnit = _.find(units, function (o) {
-            return o._id === unitId;
-        })
-        currentUnit.costCenterCode = unitGlAccountCode
-
-        Template.instance().units.set(units);
+        Template.instance().selectedUnits.set(selectedUnits);
     },
     'click [name="includeSfPayComponent"]': (e, tmpl) => {
         let selected = $(e.target).is(":checked");
@@ -143,7 +144,21 @@ Template.SuccessFactorsConfig.events({
                 swal("Server error", `Please try again at a later time`, "error");
             }
         });
-    }
+    },
+    'click #saveCostCenterCodes': (e, tmpl) => {
+        e.preventDefault();
+        let businessUnitId = Session.get('context')
+        let theUnits = Template.instance().selectedUnits.get()
+
+        Meteor.call("successfactors/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
+            if(res) {
+                swal('Success', 'Cost center codes were successfully updated', 'success')
+            } else {
+                console.log(err);
+                swal('Error', err.reason, 'error')
+            }
+        })
+    },
 });
 
 /*****************************************************************************/
@@ -171,9 +186,18 @@ Template.SuccessFactorsConfig.helpers({
     'isFetchingPayGrades': function() {
         return Template.instance().isFetchingPayGrades.get()
     },
+    'isFetchingCostCenters': function() {
+        return Template.instance().isFetchingCostCenters.get()
+    },
     "getCostCenterOrgChartParents": (unit) => {
         return Template.instance().getParentsText(unit)
-    }
+    },
+    // selectedCostCenter: function (context, val) {
+    //     if(Template.instance().units.get()){
+    //         // let units = Template.instance().units.get();
+    //         units.code === val ? selected="selected" : '';
+    //     }
+    // },
 });
 
 /*****************************************************************************/
@@ -200,6 +224,25 @@ Template.SuccessFactorsConfig.onCreated(function () {
 
     self.selectedSfPaytypes = new ReactiveVar({})
     self.selectedSfPaygrades = new ReactiveVar({})
+    self.selectedUnits = new ReactiveVar({})
+
+    self.getParentsText = (unit) => {// We need parents 2 levels up
+        let parentsText = ''
+        if(unit.parentId) {
+            let possibleParent = EntityObjects.findOne({_id: unit.parentId})
+            if(possibleParent) {
+                parentsText += possibleParent.name
+
+                if(possibleParent.parentId) {
+                    let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
+                    if(possibleParent2) {
+                        parentsText += ' >> ' + possibleParent2.name
+                        return parentsText
+                    } return ''
+                } else return parentsText
+            } else return ''
+        } else return ''
+    }
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){
@@ -265,6 +308,17 @@ Template.SuccessFactorsConfig.onCreated(function () {
                     self.isFetchingCostCenters.set(false)
 
                     if (!err) {
+                        // let units = self.units.get() || [];
+                        // units.forEach(unit => {
+                        //     let foundSfCostCenter = _.find(sfCostCenters, function (sfCostCenter) {
+                        //         return unit.code === sfCostCenter.externalCode;
+                        //     })
+                        //     if(foundSfCostCenter) {
+                        //         _.extend(unit, foundSfCostCenter)
+                        //     }
+                        // });
+                        // self.units.set(units)
+
                         self.sfCostCenters.set(sfCostCenters)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");
