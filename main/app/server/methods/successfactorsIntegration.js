@@ -118,5 +118,33 @@ Meteor.methods({
             }
         }
         return []
+    },
+    'successfactors/fetchCostCenters': function (businessUnitId) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }  
+        this.unblock();
+
+        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+        if(config) {
+            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
+            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+            const foCostCenterUrl = `${baseUrl}/odata/v2/FOCostCenter?$format=json`
+          
+            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            const costCenterRes = getToSync(foCostCenterUrl, {headers: requestHeaders})
+
+            if(costCenterRes) {
+                try {
+                    let costCenterData = JSON.parse(costCenterRes.content)
+                    return SFIntegrationHelper.getOdataResults(costCenterData)
+                } catch(e) {
+                  console.log('Error in Getting SF paygrades! ', e.message)
+                }
+            } else {
+                console.log('Error in Getting SF paygrades! null response')
+            }
+        }
+        return []
     }
 })

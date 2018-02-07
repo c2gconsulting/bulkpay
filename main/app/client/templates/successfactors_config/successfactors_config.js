@@ -159,6 +159,9 @@ Template.SuccessFactorsConfig.helpers({
     'sfPayGrades': function() {
         return Template.instance().sfPayGrades.get()
     },
+    'sfCostCenters': function() {
+        return Template.instance().sfCostCenters.get()
+    },
     'costCenters': function () {
         return Template.instance().units.get()
     },
@@ -167,6 +170,9 @@ Template.SuccessFactorsConfig.helpers({
     },
     'isFetchingPayGrades': function() {
         return Template.instance().isFetchingPayGrades.get()
+    },
+    "getCostCenterOrgChartParents": (unit) => {
+        return Template.instance().getParentsText(unit)
     }
 });
 
@@ -184,8 +190,12 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.successFactorsConfig = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()
     self.sfPayGrades = new ReactiveVar()
+    self.sfCostCenters = new ReactiveVar()
+
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
+    self.isFetchingCostCenters = new ReactiveVar(false)
+
     self.units = new ReactiveVar()
 
     self.selectedSfPaytypes = new ReactiveVar({})
@@ -243,25 +253,23 @@ Template.SuccessFactorsConfig.onCreated(function () {
                     self.isFetchingPayGrades.set(false)
 
                     if (!err) {
-                        // let completePaytypes = []
-                        // let bpPaytypes = PayTypes.find({}).fetch() || []
-                        
-                        // bpPaytypes.forEach(payType => {
-                        //     let foundBpPaytype = _.find(sfPaytypes, function (sfPt) {
-                        //         return sfPt.externalCode === payType.code;
-                        //     })
-                        //     if(foundBpPaytype) {
-                        //         _.extend(payType, currentPayType)
-                        //     } else {
-
-                        //     }
-                        // });
-
                         self.sfPayGrades.set(sfPayGrades)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");
                     }
-                });                
+                });
+                //--
+                self.isFetchingCostCenters.set(true)
+                Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
+                    console.log(`err: `, err)
+                    self.isFetchingCostCenters.set(false)
+
+                    if (!err) {
+                        self.sfCostCenters.set(sfCostCenters)
+                    } else {
+                        swal("Server error", `Please try again at a later time`, "error");
+                    }
+                });
             }
         }
     });

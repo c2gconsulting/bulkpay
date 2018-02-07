@@ -222,7 +222,14 @@
                                                         <td>{{name}}</td>
                                                         <td>{{getCostCenterOrgChartParents this}}</td>
                                                         <td>
-                                                            <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/>
+                                                            <div class="form-group">
+                                                                <select name="sfCostCenterCode" class="form-control dropdown">
+                                                                    {{#each sfCostCenters}}
+                                                                        <option value="{{externalCode}}">{{externalCode}} {{description}}</option>
+                                                                    {{/each}}
+                                                                </select>
+                                                            </div>
+                                                            <!-- <input type="text" id="{{_id}}" class="form-control calc" value="{{costCenterCode}}"/> -->
                                                         </td>
                                                     </tr>
                                                 {{/each}}
