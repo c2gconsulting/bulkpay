@@ -25,12 +25,28 @@ Meteor.methods({
 
         let payTypeId = PayTypes.insert(paytype);
         return {_id: payTypeId};
-        //let newBu = BusinessUnits.findOne(buId);
-        ////sendOrderNotification("order.created", newOrder, userId);
-        //return { _id: orderId, orderNumber: newOrder.orderNumber };
-        //} else {
-        //    throw new Meteor.Error(403, "You are not authorized to create an order for this location");
-        //}
+    },
+    "paytype/createFromSuccessfactors": function(paytypes) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        let userId = Meteor.userId();
+        this.unblock();
+
+        let payGradeCodes = Object.keys(paytypes) || []
+        payGradeCodes.forEach(code => {
+            const payType = paytypes[code]
+
+            const foundPaytype = PayTypes.findOne({code: code})
+            if(foundPaytype) {
+                PayTypes.update({_id: foundPaytype._id}, {$set: {
+                    description: payType.description
+                }})
+            } else {
+                PayTypes.insert(payType);
+            }
+        })
+        return true;
     },
     "paytype/delete": function(id){
         if(!this.userId){

@@ -69,6 +69,81 @@ Template.SuccessFactorsConfig.events({
 
         Template.instance().units.set(units);
     },
+    'click [name="includeSfPayComponent"]': (e, tmpl) => {
+        let selected = $(e.target).is(":checked");
+        let selectedSfPaytypes = Template.instance().selectedSfPaytypes.get()
+
+        let dataset = e.currentTarget.dataset;
+        const businessId = Session.get('context')
+
+        let frequency = dataset.frequencycode
+        if(frequency === 'MON' || frequency === 'Monthly') {
+            frequency = "Monthly"
+        } else if(frequency === 'ANN') {
+            frequency = "Annually"
+        }
+
+        const sfPaytype = {
+            code: dataset.externalcode,
+            title: dataset.name,
+            frequencyCode: frequency,
+            currency: dataset.currency,
+            businessId: businessId,
+            addToTotal: true,
+            editablePerEmployee: true,
+            isTimeWritingDependent: false,
+            includeWithSapIntegration: false,
+            type: 'Benefit',
+            status: "Active"
+        }
+
+        selectedSfPaytypes[sfPaytype.code] = sfPaytype
+
+        Template.instance().selectedSfPaytypes.set(selectedSfPaytypes)
+    },
+    'click [name="includeSfPayGrade"]': (e, tmpl) => {
+        let selected = $(e.target).is(":checked");
+        let selectedSfPaygrades = Template.instance().selectedSfPaygrades.get()
+
+        let dataset = e.currentTarget.dataset;
+        const businessId = Session.get('context')
+
+        const sfPaygrade = {
+            code: dataset.externalcode,
+            description: dataset.name,
+            positions: [],
+            payGroups: [],
+            businessId: businessId,
+            payTypes: [],
+            status: 'Active'
+        }
+
+        selectedSfPaygrades[sfPaygrade.code] = sfPaygrade
+
+        Template.instance().selectedSfPaygrades.set(selectedSfPaygrades)
+    },
+    'click #savePaytypes': (e, tmpl) => {
+        let selectedSfPaytypes = Template.instance().selectedSfPaytypes.get()
+        
+        Meteor.call('paytype/createFromSuccessfactors', selectedSfPaytypes, (err, res) => {
+            if (!err) {
+                swal('Success', 'Paytypes saved!', 'success')
+            } else {
+                swal("Server error", `Please try again at a later time`, "error");
+            }
+        });
+    },
+    'click #savePayGrades': (e, tmpl) => {
+        let selectedSfPaygrades = Template.instance().selectedSfPaygrades.get()
+        
+        Meteor.call('paygrade/createFromSuccessfactors', selectedSfPaygrades, (err, res) => {
+            if (!err) {
+                swal('Success', 'Paygrades saved!', 'success')
+            } else {
+                swal("Server error", `Please try again at a later time`, "error");
+            }
+        });
+    }
 });
 
 /*****************************************************************************/
@@ -112,6 +187,9 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
     self.units = new ReactiveVar()
+
+    self.selectedSfPaytypes = new ReactiveVar({})
+    self.selectedSfPaygrades = new ReactiveVar({})
 
     self.autorun(function() {
         if (Template.instance().subscriptionsReady()){

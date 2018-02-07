@@ -137,9 +137,11 @@
                                                     {{#each sfPayTypes}}
                                                         <tr class="item" style="cursor: move;">
                                                             <td>
-                                                                <div class="ckbox ckbox-success">
-                                                                    <input type="checkbox" name="includeSfPayComponent" />
-                                                                </div>
+                                                                <input type="checkbox" name="includeSfPayComponent"
+                                                                    data-externalCode="{{externalCode}}"
+                                                                    data-name="{{name}}"
+                                                                    data-frequency="{{frequencyCode}}"
+                                                                    data-currency="{{currency}}" />
                                                             </td>
                                                             <td>{{@index}}</td>
                                                             <td>{{externalCode}}</td>
@@ -180,9 +182,9 @@
                                                     {{#each sfPayGrades}}
                                                         <tr class="item" style="cursor: move;">
                                                             <td>
-                                                                <div class="ckbox ckbox-success">
-                                                                    <input type="checkbox" name="includeSfPayGrade" />
-                                                                </div>
+                                                                <input type="checkbox" name="includeSfPayGrade"
+                                                                    data-externalCode="{{externalCode}}"
+                                                                    data-name="{{name}}" />
                                                             </td>
                                                             <td>{{@index}}</td>
                                                             <td>{{externalCode}}</td>

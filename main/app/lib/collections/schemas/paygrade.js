@@ -16,10 +16,12 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: String
     },
     positions: {
-        type: [String]
+        type: [String],
+        optional: true
     },
     payGroups: {
-        type: [String]
+        type: [String],
+        optional: true
     },
     status: {
         type: String,
@@ -28,11 +30,13 @@ Core.Schemas.PayGrade = new SimpleSchema({
     },
     payTypes: {
         type: [Object],
-        blackbox: true
+        blackbox: true,
+        optional: true
     },
     payTypePositionIds: {// One of the keys each object has payTypePositionId
         type: [Object],
-        blackbox: true
+        blackbox: true,
+        optional: true
     },
     netPayAlternativeCurrency: {
         type: String,

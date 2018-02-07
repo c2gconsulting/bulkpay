@@ -26,6 +26,28 @@ Meteor.methods({
         let pgId = PayGrades.insert(paygrade);
         return {_id: pgId};
     },
+    "paygrade/createFromSuccessfactors": function(paygrades) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        let userId = Meteor.userId();
+        this.unblock();
+
+        let payGradeCodes = Object.keys(paygrades) || []
+        payGradeCodes.forEach(code => {
+            const payGrade = paygrades[code]
+
+            const foundPayGrade = PayGrades.findOne({code: code})
+            if(foundPayGrade) {
+                PayGrades.update({_id: foundPayGrade._id}, {$set: {
+                    description: payGrade.description
+                }})
+            } else {
+                PayGrades.insert(payGrade);
+            }
+        })
+        return true;
+    },
     "paygrade/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
