@@ -46,8 +46,14 @@ Accounts.onCreateUser(function (options, user) {
     user.profile['fullName'] = fullName.join(" ");
     user.profile['firstname'] = options.firstname;
     user.profile['lastname'] = options.lastname;
+
+
     user.employee = options.employee;
     user.employeeProfile = options.employeeProfile || {};
+    if(options.phoneNumber) {
+        user.employeeProfile.phone = options.phoneNumber
+    }
+
     user.salesProfile = options.salesProfile || {};
     user.salesProfile['salesAreas'] = options.salesAreas;
     user.roles = options.roles || {};

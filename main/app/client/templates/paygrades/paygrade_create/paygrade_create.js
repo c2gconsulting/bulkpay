@@ -5,7 +5,7 @@ import Ladda from 'ladda';
 import _ from 'underscore'
 Template.PaygradeCreate.events({
     'click #PayGradeButton': (e, tmpl) => {
-        event.preventDefault();
+        e.preventDefault();
         let l = Ladda.create(tmpl.$('#PayGradeButton')[0]);
         l.start();
         const details = {

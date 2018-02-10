@@ -214,7 +214,6 @@ Template.EmployeePersonalDataModal.events({
       if (value && value.trim().length > 0) {
         user.employeeProfile = user.employeeProfile || {};
         user.employeeProfile.phone = value;
-        console.log("user maritalStatus changed to: " + value);
       }
       Template.instance().setEditUser(user);
     },

@@ -66,7 +66,7 @@ Meteor.methods({
     'successfactors/fetchPaytypes': function (businessUnitId) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
-        }  
+        }
         this.unblock();
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
@@ -94,16 +94,16 @@ Meteor.methods({
     'successfactors/fetchPayGrades': function (businessUnitId) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
-        }  
+        }
         this.unblock();
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGrade?$format=json`
+            const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGroup?$format=json`
           
-            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            let getToSync = Meteor.wrapAsync(HTTP.get);
             const payGradeRes = getToSync(foPayGradeQueryUrl, {headers: requestHeaders})
 
             if(payGradeRes) {
@@ -111,10 +111,10 @@ Meteor.methods({
                     let payGradeData = JSON.parse(payGradeRes.content)
                     return SFIntegrationHelper.getOdataResults(payGradeData)
                 } catch(e) {
-                  console.log('Error in Getting SF paygrades! ', e.message)
+                  console.log('Error in Getting SF paygroups! ', e.message)
                 }
             } else {
-                console.log('Error in Getting SF paygrades! null response')
+                console.log('Error in Getting SF paygroups! null response')
             }
         }
         return []
@@ -122,7 +122,7 @@ Meteor.methods({
     'successfactors/fetchCostCenters': function (businessUnitId) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
-        }  
+        }
         this.unblock();
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
@@ -148,7 +148,6 @@ Meteor.methods({
         return []
     },
     "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){
-        console.log(`unitCostCenters: `, unitCostCenters)
         if(!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }

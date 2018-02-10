@@ -77,12 +77,13 @@ Template.SuccessFactorsConfig.events({
         let dataset = e.currentTarget.dataset;
         const businessId = Session.get('context')
 
-        let frequency = dataset.frequencycode
+        let frequency = dataset.frequency
         if(frequency === 'MON' || frequency === 'Monthly') {
             frequency = "Monthly"
         } else if(frequency === 'ANN') {
             frequency = "Annually"
         }
+        console.log(`frequency: `, frequency)
 
         const sfPaytype = {
             code: dataset.externalcode,
@@ -158,7 +159,7 @@ Template.SuccessFactorsConfig.events({
                 swal('Error', err.reason, 'error')
             }
         })
-    },
+    }
 });
 
 /*****************************************************************************/

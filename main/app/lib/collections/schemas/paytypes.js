@@ -73,6 +73,15 @@ Core.Schemas.PayType = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
+
+    "successFactors": {
+        label: "Success Factors PayType Config",
+        optional: true,
+        type: Object
+    },
+    'successFactors.externalCode': {
+        type: String
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

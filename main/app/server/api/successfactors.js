@@ -95,10 +95,11 @@ let getSfEmployeeIds = (jsonPayLoad) => {
   let personIdExternal = "";
   let perPersonUuid = "";
   let nsPrefix = ''
-  if(externalEvent['ns5:ExternalEvent'] && externalEvent['ns5:ExternalEvent'].length > 0) {
-    nsPrefix = 'ns5'
-  } else if(externalEvent['ns7:ExternalEvent'] && externalEvent['ns7:ExternalEvent'].length > 0) {
-    nsPrefix = 'ns7'    
+  for(let i = 1; i < 10; i++) {//We need this because we are not sure what prefix successfactors will use
+    if(externalEvent[`ns${i}:ExternalEvent`] && externalEvent[`ns${i}:ExternalEvent`].length > 0) {
+      nsPrefix = `ns${i}`
+      break;
+    }
   }
 
   let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ? 
@@ -108,8 +109,7 @@ let getSfEmployeeIds = (jsonPayLoad) => {
     let ns7Event = ns7Events[`${nsPrefix}:event`] ? ns7Events[`${nsPrefix}:event`][0] : null
     if(ns7Event) {
       let ns7Params = ns7Event[`${nsPrefix}:params`] ? ns7Event[`${nsPrefix}:params`][0] : null
-      if(ns7Params) {
-                                                                                                                                                                                                                                                                              
+      if(ns7Params) {                                                                                                                                                                                                                                                              
         _.each(ns7Params[`${nsPrefix}:param`], param => {
           if(param.name && param.name[0] === 'personIdExternal') {
             personIdExternal = param.value[0]
@@ -131,6 +131,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$select=personIdExternal,firstName,lastName&$format=json`
   const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
   const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+  const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,currencyCode,frequency&$format=json`
+
 
   const companyId = config.companyId
   const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
@@ -148,6 +150,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPersonRes = getToSync(perPersonQueryUrl, {headers: requestHeaders})
   const perEmailRes = getToSync(perEmailQueryUrl, {headers: requestHeaders})
   const perPhoneRes = getToSync(perPhoneQueryUrl, {headers: requestHeaders})
+  const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
 
   let bulkPayUserParams = {}
   bulkPayUserParams.tenantId = business._groupId
@@ -156,6 +159,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         "ess/all"
     ]
   }
+  let paymentsData = []
 
   if(perPersonRes) {
     try {
@@ -176,11 +180,12 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   if(perEmailRes) {
     try {
-      let perPersonData = JSON.parse(perEmailRes.content)
+      let perEmailData = JSON.parse(perEmailRes.content)
 
-      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
-        let employeeData = perPersonData.d.results[0]
+      if(perEmailData && perEmailData.d && perEmailData.d.results && perEmailData.d.results.length > 0) {
+        let employeeData = perEmailData.d.results[0]
         let emailAddress = employeeData.emailAddress
+        console.log(`emailAddress: `, JSON.stringify(emailAddress))
 
         bulkPayUserParams.email = emailAddress
       }
@@ -191,10 +196,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   if(perPhoneRes) {
     try {
-      let perPersonData = JSON.parse(perPhoneRes.content)
+      let perPhoneData = JSON.parse(perPhoneRes.content)
 
-      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
-        let employeeData = perPersonData.d.results[0]
+      if(perPhoneData && perPhoneData.d && perPhoneData.d.results && perPhoneData.d.results.length > 0) {
+        let employeeData = perPhoneData.d.results[0]
         let phoneNumber = employeeData.phoneNumber
 
         bulkPayUserParams.phoneNumber = phoneNumber
@@ -203,6 +208,73 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log('Error! ', e.message)
     }
   }
+
+  if(empPayCompRecurringRes) {
+    try {
+      let empPayCompRecurringData = JSON.parse(empPayCompRecurringRes.content)
+
+      if(empPayCompRecurringData && empPayCompRecurringData.d 
+          && empPayCompRecurringData.d.results && empPayCompRecurringData.d.results.length > 0) {        
+        paymentsData = empPayCompRecurringData.d.results
+      }
+    } catch(e) {
+      console.log('Error! ', e.message)
+    }
+  }
+
+  let persistNewPaytypeFromSF = (payCompCode, businessId) => {
+    const payComponentQueryUrl = `${baseUrl}/odata/v2/FOPayComponent?$filter=externalCode eq '${payCompCode}'&$format=json`
+    console.log(`payComponentQueryUrl: `, payComponentQueryUrl)
+    console.log(``)
+
+    const payComponentRes = getToSync(payComponentQueryUrl, {headers: requestHeaders})
+    if(payComponentRes) {
+      try {
+        console.log(`payComponentRes: `, payComponentRes)
+        let payComponentData = JSON.parse(payComponentRes.content)
+        console.log(`payComponentData: `, JSON.stringify(payComponentData, null, 4))
+
+        if(payComponentData) {
+          if(payComponentData.d && payComponentData.d.results && payComponentData.d.results.length > 0) {
+            let payComponentData = payComponentData.d.results[0]
+
+            let frequency = payComponentData.frequencyCode
+            if(frequency === 'MON' || frequency === 'Monthly') {
+                frequency = "Monthly"
+            } else if(frequency === 'ANN') {
+                frequency = "Annually"
+            }
+            //--
+            return PayTypes.insert({
+              code: payComponentData.externalcode,
+              title: payComponentData.name,
+              frequencyCode: frequency,
+              currency: payComponentData.currency,
+              businessId: businessId,
+              addToTotal: true,
+              editablePerEmployee: true,
+              isTimeWritingDependent: false,
+              includeWithSapIntegration: false,
+              successFactors: {
+                externalCode: payCompCode
+              },
+              type: 'Benefit',
+              status: "Active"
+            })
+          } else {
+            console.log(`payComponentData ... no results`)
+          }
+        } else {
+          console.log(`payComponentData is null`)
+        }
+      } catch(e) {
+        console.log('Error! ', e.message)
+      }
+    }
+  }
+
+  console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
+  console.log(``)
 
   let accountId;
   try {
@@ -267,6 +339,41 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     personIdExternal: personIdExternal
   }
   delete bpUser._id
+
+  try {
+    let empBpPaytypeAmounts = []
+
+    paymentsData.forEach(payment => {
+      if(payment.payComponent) {
+        const payType = PayTypes.findOne({code: payment.payComponent})
+        if(payType) {
+          empBpPaytypeAmounts.push({
+            paytype: payType._id,
+            value: payment.paycompvalue
+          })
+        } else {
+          let bpPayTypeId = persistNewPaytypeFromSF(payment.payComponent, business._id)
+          if(bpPayTypeId) {
+            empBpPaytypeAmounts.push({
+              paytype: bpPayTypeId,
+              value: payment.paycompvalue
+            })
+          } else {
+            console.log(`Error in insert SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
+          }
+        }
+      }
+    })
+    //--
+    if(empBpPaytypeAmounts.length > 0) {
+      bpUser.employeeProfile.employment.paytypes = empBpPaytypeAmounts
+    } else {
+      console.log(`No payments to add for employee`)
+    }
+  } catch(e) {
+    console.log(`Error in fetching employee paycomponents data`)
+  }
+  console.log(`bpUser with paytypes: `, JSON.stringify(bpUser))
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
 }
@@ -334,7 +441,7 @@ if (Meteor.isServer) {
             }
           })
         }))
-        return successResponse()
+        // return successResponse()
       }
     }
   });

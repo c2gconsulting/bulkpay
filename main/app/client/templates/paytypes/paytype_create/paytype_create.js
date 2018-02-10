@@ -89,7 +89,7 @@ Template.PaytypeCreate.events({
         }
     },
     'click #deletePaytype': (e, tmpl) => {
-        event.preventDefault();
+        e.preventDefault();
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this Paytype",
