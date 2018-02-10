@@ -221,58 +221,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log('Error! ', e.message)
     }
   }
-
-  let persistNewPaytypeFromSF = (payCompCode, businessId) => {
-    const payComponentQueryUrl = `${baseUrl}/odata/v2/FOPayComponent?$filter=externalCode eq '${payCompCode}'&$format=json`
-    console.log(`payComponentQueryUrl: `, payComponentQueryUrl)
-    console.log(``)
-
-    const payComponentRes = getToSync(payComponentQueryUrl, {headers: requestHeaders})
-    if(payComponentRes) {
-      try {
-        console.log(`payComponentRes: `, payComponentRes)
-        let payComponentData = JSON.parse(payComponentRes.content)
-        console.log(`payComponentData: `, JSON.stringify(payComponentData, null, 4))
-
-        if(payComponentData) {
-          if(payComponentData.d && payComponentData.d.results && payComponentData.d.results.length > 0) {
-            let payComponentData = payComponentData.d.results[0]
-
-            let frequency = payComponentData.frequencyCode
-            if(frequency === 'MON' || frequency === 'Monthly') {
-                frequency = "Monthly"
-            } else if(frequency === 'ANN') {
-                frequency = "Annually"
-            }
-            //--
-            return PayTypes.insert({
-              code: payComponentData.externalcode,
-              title: payComponentData.name,
-              frequencyCode: frequency,
-              currency: payComponentData.currency,
-              businessId: businessId,
-              addToTotal: true,
-              editablePerEmployee: true,
-              isTimeWritingDependent: false,
-              includeWithSapIntegration: false,
-              successFactors: {
-                externalCode: payCompCode
-              },
-              type: 'Benefit',
-              status: "Active"
-            })
-          } else {
-            console.log(`payComponentData ... no results`)
-          }
-        } else {
-          console.log(`payComponentData is null`)
-        }
-      } catch(e) {
-        console.log('Error! ', e.message)
-      }
-    }
-  }
-
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
   console.log(``)
 
@@ -342,6 +290,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   try {
     let empBpPaytypeAmounts = []
+    console.log(`paymentsData length: `, paymentsData.length)
 
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
@@ -352,7 +301,31 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             value: payment.paycompvalue
           })
         } else {
-          let bpPayTypeId = persistNewPaytypeFromSF(payment.payComponent, business._id)
+          let frequency = payment.frequency
+          if(frequency === 'MON' || frequency === 'Monthly') {
+              frequency = "Monthly"
+          } else if(frequency === 'ANN') {
+              frequency = "Annually"
+          }
+          //--
+          const bpPayTypeId = PayTypes.insert({
+            code: payment.payComponent,
+            title: payment.payComponent,
+            frequencyCode: frequency,
+            currency: payment.currencyCode,
+            businessId: business._id,
+            addToTotal: true,
+            editablePerEmployee: true,
+            isTimeWritingDependent: false,
+            includeWithSapIntegration: false,
+            successFactors: {
+              externalCode: payment.payComponent
+            },
+            type: 'Benefit',
+            status: "Active"
+          })
+          // let bpPayTypeId = persistNewPaytypeFromSF(payment.payComponent, business._id)
+
           if(bpPayTypeId) {
             empBpPaytypeAmounts.push({
               paytype: bpPayTypeId,
@@ -364,6 +337,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         }
       }
     })
+    console.log(`empBpPaytypeAmounts: `, JSON.stringify(empBpPaytypeAmounts, null, 4))
     //--
     if(empBpPaytypeAmounts.length > 0) {
       bpUser.employeeProfile.employment.paytypes = empBpPaytypeAmounts
@@ -371,6 +345,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log(`No payments to add for employee`)
     }
   } catch(e) {
+    console.log(`Error: `, e.message)
     console.log(`Error in fetching employee paycomponents data`)
   }
   console.log(`bpUser with paytypes: `, JSON.stringify(bpUser))
