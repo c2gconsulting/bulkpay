@@ -77,29 +77,33 @@ Template.SuccessFactorsConfig.events({
         let dataset = e.currentTarget.dataset;
         const businessId = Session.get('context')
 
-        let frequency = dataset.frequency
-        if(frequency === 'MON' || frequency === 'Monthly') {
-            frequency = "Monthly"
-        } else if(frequency === 'ANN') {
-            frequency = "Annually"
+        if(selected) {
+            let frequency = dataset.frequency
+            if(frequency === 'MON' || frequency === 'Monthly') {
+                frequency = "Monthly"
+            } else if(frequency === 'ANN') {
+                frequency = "Annually"
+            }
+    
+            const sfPaytype = {
+                code: dataset.externalcode,
+                title: dataset.name,
+                frequencyCode: frequency,
+                currency: dataset.currency,
+                businessId: businessId,
+                addToTotal: true,
+                editablePerEmployee: true,
+                isTimeWritingDependent: false,
+                includeWithSapIntegration: false,
+                type: 'Benefit',
+                status: "Active"
+            }
+            selectedSfPaytypes[sfPaytype.code] = sfPaytype    
+        } else {
+            if(selectedSfPaytypes[dataset.externalcode]) {
+                delete selectedSfPaytypes[dataset.externalcode]
+            }
         }
-        console.log(`frequency: `, frequency)
-
-        const sfPaytype = {
-            code: dataset.externalcode,
-            title: dataset.name,
-            frequencyCode: frequency,
-            currency: dataset.currency,
-            businessId: businessId,
-            addToTotal: true,
-            editablePerEmployee: true,
-            isTimeWritingDependent: false,
-            includeWithSapIntegration: false,
-            type: 'Benefit',
-            status: "Active"
-        }
-
-        selectedSfPaytypes[sfPaytype.code] = sfPaytype
 
         Template.instance().selectedSfPaytypes.set(selectedSfPaytypes)
     },
@@ -123,6 +127,31 @@ Template.SuccessFactorsConfig.events({
         selectedSfPaygrades[sfPaygrade.code] = sfPaygrade
 
         Template.instance().selectedSfPaygrades.set(selectedSfPaygrades)
+    },
+    'click [name="includeSfProject"]': (e, tmpl) => {
+        let selected = $(e.target).is(":checked");
+        let selectedSfProjects = Template.instance().selectedSfProjects.get()
+
+        let dataset = e.currentTarget.dataset;
+        console.log(`dataset: `, dataset)
+        const businessId = Session.get('context')
+
+        if(selected) {
+            const sfProject = {
+                name: dataset.externalcode,
+                description: dataset.description,
+                positionIds: [],
+                activities: [],
+                businessId: businessId,
+                status: 'Active'
+            }
+            selectedSfProjects[sfProject.name] = sfProject
+        } else {
+            if(selectedSfProjects[dataset.externalcode]) {
+                delete selectedSfProjects[dataset.externalcode]               
+            }
+        }
+        Template.instance().selectedSfProjects.set(selectedSfProjects)
     },
     'click #savePaytypes': (e, tmpl) => {
         let selectedSfPaytypes = Template.instance().selectedSfPaytypes.get()
@@ -159,6 +188,20 @@ Template.SuccessFactorsConfig.events({
                 swal('Error', err.reason, 'error')
             }
         })
+    },
+    'click #saveProjects': (e, tmpl) => {
+        e.preventDefault();
+        let businessUnitId = Session.get('context')
+        let theProjects = Template.instance().selectedSfProjects.get()
+
+        Meteor.call("project/createFromSuccessfactors", theProjects, (err, res) => {
+            if(res) {
+                swal('Success', 'Projects were successfully added!', 'success')
+            } else {
+                console.log(err);
+                swal('Error', err.reason, 'error')
+            }
+        })
     }
 });
 
@@ -176,7 +219,20 @@ Template.SuccessFactorsConfig.helpers({
         return Template.instance().sfPayGrades.get()
     },
     'sfCostCenters': function() {
-        return Template.instance().sfCostCenters.get()
+        const sfCostCenters = Template.instance().sfCostCenters.get()
+        if(sfCostCenters && sfCostCenters.length > 0) {
+            return _.filter(sfCostCenters, cCenter => {
+                return (cCenter.externalCode.match(/^\d/)) 
+            })
+        }
+    },
+    'sfProjects': function() {
+        const sfCostCenters = Template.instance().sfCostCenters.get()
+        if(sfCostCenters && sfCostCenters.length > 0) {
+            return _.filter(sfCostCenters, cCenter => {
+                return (cCenter.externalCode.match(/^[A-Z]/i)) 
+            })
+        }
     },
     'costCenters': function () {
         return Template.instance().units.get()
@@ -226,6 +282,7 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.selectedSfPaytypes = new ReactiveVar({})
     self.selectedSfPaygrades = new ReactiveVar({})
     self.selectedUnits = new ReactiveVar({})
+    self.selectedSfProjects = new ReactiveVar({})
 
     self.getParentsText = (unit) => {// We need parents 2 levels up
         let parentsText = ''
@@ -307,19 +364,7 @@ Template.SuccessFactorsConfig.onCreated(function () {
                 Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
                     console.log(`err: `, err)
                     self.isFetchingCostCenters.set(false)
-
                     if (!err) {
-                        // let units = self.units.get() || [];
-                        // units.forEach(unit => {
-                        //     let foundSfCostCenter = _.find(sfCostCenters, function (sfCostCenter) {
-                        //         return unit.code === sfCostCenter.externalCode;
-                        //     })
-                        //     if(foundSfCostCenter) {
-                        //         _.extend(unit, foundSfCostCenter)
-                        //     }
-                        // });
-                        // self.units.set(units)
-
                         self.sfCostCenters.set(sfCostCenters)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");

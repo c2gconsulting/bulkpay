@@ -27,6 +27,7 @@
                                 <li><a href="#new-tab2" data-toggle="tab"><strong></strong> PayComponents </a></li>
                                 <li><a href="#new-tab3" data-toggle="tab"><strong></strong> PayGrades </a></li>
                                 <li><a href="#new-tab4" data-toggle="tab"><strong></strong> Cost-Center</a></li>
+                                <li><a href="#new-tab5" data-toggle="tab"><strong></strong> Projects</a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -231,11 +232,52 @@
                                                                         <option value="">Select a cost center</option>
 
                                                                         {{#each sfCostCenters}}
-                                                                            <option value="{{externalCode}}">{{externalCode}} {{description}}</option>
+                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
                                                                         {{/each}}
                                                                     </select>
                                                                 </div>
                                                             </td>
+                                                        </tr>
+                                                    {{/each}}
+                                                {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->
+
+                                <div class="tab-pane" id="new-tab5">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="saveProjects">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>S/N</th>
+                                                    <th>Code</th>
+                                                    <th>Description</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">                                                
+                                                {{#if isFetchingCostCenters}}
+                                                    <br/><br/><br/><br/><br/>
+                                                    {{> spinner}}
+                                                {{else}}
+                                                    {{#each sfProjects}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>
+                                                                <input type="checkbox" name="includeSfProject"
+                                                                    data-externalCode="{{externalCode}}"
+                                                                    data-description="{{description}}" />
+                                                            </td>
+                                                            <td>{{@index}}</td>
+                                                            <td>{{externalCode}}</td>
+                                                            <td>{{description}}</td>
                                                         </tr>
                                                     {{/each}}
                                                 {{/if}}

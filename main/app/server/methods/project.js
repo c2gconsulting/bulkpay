@@ -3,6 +3,31 @@
  */
 Meteor.methods({
 
+    "project/createFromSuccessfactors": function(projects) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        let userId = Meteor.userId();
+        this.unblock();
+
+        let projectCodes = Object.keys(projects) || []
+        projectCodes.forEach(code => {
+            const project = projects[code]
+            console.log(`project: `, project)
+
+            const foundProject = Projects.findOne({name: code})
+            if(foundProject) {
+                if(project.description) {
+                    Projects.update({_id: foundProject._id}, {$set: {
+                        description: project.description
+                    }})
+                }
+            } else {
+                Projects.insert(project);
+            }
+        })
+        return true;
+    },
     "project/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");

@@ -322,7 +322,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
               externalCode: payment.payComponent
             },
             type: 'Benefit',
-            status: "Active"
+            status: "Active",
+            _groupId: business._groupId
           })
           // let bpPayTypeId = persistNewPaytypeFromSF(payment.payComponent, business._id)
 
