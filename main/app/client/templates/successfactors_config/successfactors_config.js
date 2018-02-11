@@ -133,13 +133,16 @@ Template.SuccessFactorsConfig.events({
         let selectedSfProjects = Template.instance().selectedSfProjects.get()
 
         let dataset = e.currentTarget.dataset;
-        console.log(`dataset: `, dataset)
         const businessId = Session.get('context')
+        let description = dataset.description;
+        if(!description || description.length === 0) {
+            description = dataset.externalcode
+        }
 
         if(selected) {
             const sfProject = {
                 name: dataset.externalcode,
-                description: dataset.description,
+                description: description,
                 positionIds: [],
                 activities: [],
                 businessId: businessId,
