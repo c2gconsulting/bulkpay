@@ -81,12 +81,28 @@ Template.TravelRequisitionCreate.events({
     }, 200),
     "change .costCenterField": _.throttle(function(e, tmpl) {
         var val = $(e.target).val().trim();
+        console.log(`val: `, val)
         
         if (!val || val.trim().length === 0) {
             tmpl.selectdCostCenter.set(val)
         } else {
             tmpl.selectdCostCenter.set(null)
         }
+    }, 200),
+    "change .costInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');        
+        var text = $(e.target).val().trim();
+        
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let costAsNumber = parseFloat(text)
+        if(isNaN(costAsNumber)) {
+            costAsNumber = 0
+        }
+
+        tmpl[fieldName].set(costAsNumber)
+        tmpl.updateTotalTripCost()
     }, 200),
     "keyup .costInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');        
@@ -99,6 +115,7 @@ Template.TravelRequisitionCreate.events({
         if(isNaN(costAsNumber)) {
             costAsNumber = 0
         }
+
         tmpl[fieldName].set(costAsNumber)
         tmpl.updateTotalTripCost()
     }, 200),
