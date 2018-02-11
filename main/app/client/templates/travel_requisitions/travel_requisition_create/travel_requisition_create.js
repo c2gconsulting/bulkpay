@@ -77,16 +77,16 @@ Template.TravelRequisitionCreate.events({
         if(isNaN(daysAsNumber)) {
             daysAsNumber = 0
         }
+
         tmpl.selectedNumDays.set(daysAsNumber)
     }, 200),
     "change .costCenterField": _.throttle(function(e, tmpl) {
         var val = $(e.target).val().trim();
-        console.log(`val: `, val)
         
         if (!val || val.trim().length === 0) {
-            tmpl.selectdCostCenter.set(val)
+            tmpl.selectedCostCenter.set(null)
         } else {
-            tmpl.selectdCostCenter.set(null)
+            tmpl.selectedCostCenter.set(val)
         }
     }, 200),
     "change .costInputField": _.throttle(function(e, tmpl) {
@@ -150,7 +150,7 @@ Template.TravelRequisitionCreate.events({
 
                 requisitionDoc.currency = tmpl.selectedCurrency.get()
                 requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-                requisitionDoc.costCenterCode = tmpl.selectdCostCenter.get()
+                requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
             }
         }
         //--
@@ -201,7 +201,7 @@ Template.TravelRequisitionCreate.events({
 
                     requisitionDoc.currency = tmpl.selectedCurrency.get()
                     requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-                    requisitionDoc.costCenterCode = tmpl.selectdCostCenter.get()
+                    requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
                 }
             }
             //--
@@ -346,7 +346,7 @@ Template.TravelRequisitionCreate.onCreated(function () {
     //--
     self.selectedCurrency = new ReactiveVar()
     self.selectedNumDays = new ReactiveVar()
-    self.selectdCostCenter = new ReactiveVar()
+    self.selectedCostCenter = new ReactiveVar()
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)
