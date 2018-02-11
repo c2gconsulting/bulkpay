@@ -170,6 +170,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perPersonRes) {
     try {
       let perPersonData = JSON.parse(perPersonRes.content)
+      console.log(`perPersonData: `, perPersonData)
 
       if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
         let employeeData = perPersonData.d.results[0]
@@ -187,6 +188,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perEmailRes) {
     try {
       let perEmailData = JSON.parse(perEmailRes.content)
+      console.log(`perEmailData: `, perEmailData)
 
       if(perEmailData && perEmailData.d && perEmailData.d.results && perEmailData.d.results.length > 0) {
         let employeeData = perEmailData.d.results[0]
@@ -202,6 +204,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perPhoneRes) {
     try {
       let perPhoneData = JSON.parse(perPhoneRes.content)
+      console.log(`perPhoneData: `, perPhoneData)
 
       if(perPhoneData && perPhoneData.d && perPhoneData.d.results && perPhoneData.d.results.length > 0) {
         let employeeData = perPhoneData.d.results[0]
@@ -241,6 +244,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   }
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
+  console.log(`positionData: `, JSON.stringify(positionData))
   console.log(``)
 
   let accountId;
@@ -389,6 +393,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
     bpUser.employeeProfile.employment.position = positionId
   }
+  console.log(`bpUserId: `, bpUserId)
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
 }
@@ -552,6 +557,39 @@ if (Meteor.isServer) {
             }
           })
         }));
+        return successResponse()
+      }
+    }
+  });
+
+  // maps to /api/v1/successfactors/test
+  Api.addRoute('successfactors/test/:token', {authRequired: false}, {
+    post: {
+      action: function() {
+        console.log(`Inside successfactors test event endpoint`)
+
+        let decoded;
+        try {
+          decoded = JWT.verifyAuthorizationToken(this.urlParams)
+        } catch (e) {
+          return failureResponse(e.message)
+        }
+        let businessId = decoded.businessId;
+
+        let body = [];
+        this.request.on('data', (chunk) => {
+          body.push(chunk);
+        }).on('end', Meteor.bindEnvironment(function (error, result) {
+          body = Buffer.concat(body).toString();
+
+          Partitioner.directOperation(function() {
+            let business = BusinessUnits.findOne({_id: businessId})
+            let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
+            if(config) {
+              fetchEmployeeDetails(business, config, '103234')
+            }
+          })
+        }));        
         return successResponse()
       }
     }

@@ -35,17 +35,11 @@ Core.Schemas.EntityObject = new SimpleSchema({
     },
     createdBy: {
         type: String,
-        autoValue: function(){
-            return Meteor.userId();
-        },
         //denyUpdate: true,
         optional: true
     },
     lastEditedBy: {
         type: String,
-        autoValue: function(){
-            return Meteor.userId();
-        },
         optional: true
     },
     properties: {

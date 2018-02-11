@@ -24,7 +24,8 @@ Template.EntityCreate.events({
             parentId: getParent($('[name="level"]:checked').val()),
             otype: $('[name="otype"]').val(),
             status: $('[name="status"]').val(),
-            properties: getProp()
+            properties: getProp(),
+            createdBy: Meteor.userId()
         };
         function getParent(val) {
             if (!Template.instance().isroot.get()) {
