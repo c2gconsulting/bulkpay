@@ -101,7 +101,7 @@ Meteor.methods({
         if(config) {
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGroup?$format=json`
+            const foPayGradeQueryUrl = `${baseUrl}/odata/v2/FOPayGroup?select=externalCode,name&$format=json`
           
             let getToSync = Meteor.wrapAsync(HTTP.get);
             const payGradeRes = getToSync(foPayGradeQueryUrl, {headers: requestHeaders})
@@ -129,7 +129,7 @@ Meteor.methods({
         if(config) {
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const foCostCenterUrl = `${baseUrl}/odata/v2/FOCostCenter?$format=json`
+            const foCostCenterUrl = `${baseUrl}/odata/v2/FOCostCenter?$select=externalCode,description&$format=json`
           
             let getToSync = Meteor.wrapAsync(HTTP.get);  
             const costCenterRes = getToSync(foCostCenterUrl, {headers: requestHeaders})

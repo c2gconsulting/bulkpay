@@ -119,6 +119,7 @@ let getSfEmployeeIds = (jsonPayLoad) => {
         })
         console.log(`personIdExternal: `, personIdExternal)
         console.log(`perPersonUuid: `, perPersonUuid)
+        console.log(``)
       }
     }
   }
@@ -132,6 +133,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
   const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,currencyCode,frequency&$format=json`
+  const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
+  // const positionQueryUrl = `${baseUrl}/odata/v2/Position?$filter=code eq '${personIdExternal}'&$select=code,userId,jobTitle,positionTitle&$format=json`
 
 
   const companyId = config.companyId
@@ -151,6 +154,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perEmailRes = getToSync(perEmailQueryUrl, {headers: requestHeaders})
   const perPhoneRes = getToSync(perPhoneQueryUrl, {headers: requestHeaders})
   const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
+  const empJobRes = getToSync(empJobQueryUrl, {headers: requestHeaders})
 
   let bulkPayUserParams = {}
   bulkPayUserParams.tenantId = business._groupId
@@ -160,6 +164,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     ]
   }
   let paymentsData = []
+  let positionData = {}
+  //----------
 
   if(perPersonRes) {
     try {
@@ -174,7 +180,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         bulkPayUserParams.lastname =  lastName
       }
     } catch(e) {
-      console.log('Error! ', e.message)
+      console.log('PerPerson Error! ', e.message)
     }
   }
 
@@ -185,12 +191,11 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       if(perEmailData && perEmailData.d && perEmailData.d.results && perEmailData.d.results.length > 0) {
         let employeeData = perEmailData.d.results[0]
         let emailAddress = employeeData.emailAddress
-        console.log(`emailAddress: `, JSON.stringify(emailAddress))
 
         bulkPayUserParams.email = emailAddress
       }
     } catch(e) {
-      console.log('Error! ', e.message)
+      console.log('PerEmail Error! ', e.message)
     }
   }
 
@@ -205,7 +210,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         bulkPayUserParams.phoneNumber = phoneNumber
       }
     } catch(e) {
-      console.log('Error! ', e.message)
+      console.log('PerPhone Error! ', e.message)
     }
   }
 
@@ -218,7 +223,21 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         paymentsData = empPayCompRecurringData.d.results
       }
     } catch(e) {
-      console.log('Error! ', e.message)
+      console.log('EmpPayCompRecurring Error! ', e.message)
+    }
+  }
+  
+  if(empJobRes) {
+    try {
+      let empJobData = JSON.parse(empJobRes.content)
+
+      if(empJobData && empJobData.d && empJobData.d.results && empJobData.d.results.length > 0) {
+        let employeeData = empJobData.d.results[0]
+        positionData.positionCode = employeeData.position
+        positionData.positionName = employeeData.jobTitle
+      }
+    } catch(e) {
+      console.log('EmpJob Error! ', e.message)
     }
   }
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
@@ -282,7 +301,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
   bpUser.employee = true
   bpUser.businessIds = [business._id]
-
   bpUser.successfactors = {
     personIdExternal: personIdExternal
   }
@@ -290,8 +308,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   try {
     let empBpPaytypeAmounts = []
-    console.log(`paymentsData length: `, paymentsData.length)
-
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
         const payType = PayTypes.findOne({code: payment.payComponent})
@@ -325,15 +341,13 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             status: "Active",
             _groupId: business._groupId
           })
-          // let bpPayTypeId = persistNewPaytypeFromSF(payment.payComponent, business._id)
-
           if(bpPayTypeId) {
             empBpPaytypeAmounts.push({
               paytype: bpPayTypeId,
               value: payment.paycompvalue
             })
           } else {
-            console.log(`Error in insert SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
+            console.log(`Error inserting SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
           }
         }
       }
@@ -346,10 +360,35 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log(`No payments to add for employee`)
     }
   } catch(e) {
-    console.log(`Error: `, e.message)
     console.log(`Error in fetching employee paycomponents data`)
+    console.log(`Error: `, e.message)
   }
-  console.log(`bpUser with paytypes: `, JSON.stringify(bpUser))
+
+  if(positionData.positionCode) {
+    const positionEntity = EntityObjects.findOne({
+      'successfactors.externalCode': positionData.positionCode
+    })
+    let positionId;
+
+    if(positionEntity) {
+      positionId = positionEntity._id
+    } else {
+      positionId = EntityObjects.insert({
+        parentId: '',
+        name: positionData.positionName,
+        otype: 'Position',
+        properties: {},
+        createdBy: '',
+        businessId: business._id,
+        status: 'Active',
+        _groupId: business._groupId,
+        successfactors: {
+          externalCode: positionData.positionCode
+        }
+      })
+    }
+    bpUser.employeeProfile.employment.position = positionId
+  }
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
 }
@@ -366,6 +405,10 @@ let setBPEmployeeStatus = (business, personIdExternal, status) => {
       bpUser.employeeProfile.employment = bpUser.employeeProfile.employment || {}
       bpUser.employeeProfile.employment.status = status
       delete bpUser._id
+
+      if(status === 'Inactive') {
+        bpUser.employeeProfile.employment.terminationDate = new Date()        
+      }
 
       Meteor.users.update({_id: bpUserId}, {$set: bpUser})
     }
@@ -417,7 +460,7 @@ if (Meteor.isServer) {
             }
           })
         }))
-        // return successResponse()
+        return successResponse()
       }
     }
   });
