@@ -105,7 +105,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     _groupId: {
         type: String
     },
-    travelRequestConfig: {// fields, costs, allowDatesInPast
+    // fields, costs, allowDatesInPast, isCurrencyEnabled, allowedCurrencies, 
+    // isNumberOfDaysEnabled, isCostCenterEnabled
+    travelRequestConfig: {
         type: Object,
         optional: true,
         blackbox: true

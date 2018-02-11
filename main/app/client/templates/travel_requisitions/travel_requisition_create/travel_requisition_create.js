@@ -58,19 +58,35 @@ Template.TravelRequisitionCreate.events({
             }
         }   
     }, 200),
-    "change .costInputField": _.throttle(function(e, tmpl) {
+    "change .currencyField": _.throttle(function(e, tmpl) {
+        var currency = $(e.target).val().trim();
+        
+        tmpl.selectedCurrency.set(currency)
+        Meteor.defer(function() {
+            $('.costInputField').selectpicker('refresh');
+        });
+    }, 200),
+    "change .numberOfDaysField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');        
         var text = $(e.target).val().trim();
         
         if (!text || text.trim().length === 0) {
             text = "0"
         }
-        let costAsNumber = parseFloat(text)
-        if(isNaN(costAsNumber)) {
-            costAsNumber = 0
+        let daysAsNumber = parseFloat(text)
+        if(isNaN(daysAsNumber)) {
+            daysAsNumber = 0
         }
-        tmpl[fieldName].set(costAsNumber)
-        tmpl.updateTotalTripCost()        
+        tmpl.selectedNumDays.set(daysAsNumber)
+    }, 200),
+    "change .costCenterField": _.throttle(function(e, tmpl) {
+        var val = $(e.target).val().trim();
+        
+        if (!val || val.trim().length === 0) {
+            tmpl.selectdCostCenter.set(val)
+        } else {
+            tmpl.selectdCostCenter.set(null)
+        }
     }, 200),
     "keyup .costInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');        
@@ -84,7 +100,7 @@ Template.TravelRequisitionCreate.events({
             costAsNumber = 0
         }
         tmpl[fieldName].set(costAsNumber)
-        tmpl.updateTotalTripCost()        
+        tmpl.updateTotalTripCost()
     }, 200),
 
     'click #new-requisition-save-draft': function(e, tmpl) {
@@ -114,6 +130,10 @@ Template.TravelRequisitionCreate.events({
                     const costAmount = tmpl[cost.dbFieldName].get();
                     requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
                 })
+
+                requisitionDoc.currency = tmpl.selectedCurrency.get()
+                requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                requisitionDoc.costCenterCode = tmpl.selectdCostCenter.get()
             }
         }
         //--
@@ -161,6 +181,10 @@ Template.TravelRequisitionCreate.events({
                         const costAmount = tmpl[cost.dbFieldName].get();
                         requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
                     })
+
+                    requisitionDoc.currency = tmpl.selectedCurrency.get()
+                    requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                    requisitionDoc.costCenterCode = tmpl.selectdCostCenter.get()
                 }
             }
             //--
@@ -222,6 +246,42 @@ Template.TravelRequisitionCreate.helpers({
             return travelRequestConfig.costs
         }
     },
+    'currencyEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isCurrencyEnabled
+            }
+        }
+    },
+    'allowedCurrencies': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.allowedCurrencies
+            }
+        }
+    },
+    'numberDaysEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isNumberOfDaysEnabled
+            }
+        }
+    },
+    'costCenterEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isCostCenterEnabled
+            }
+        }
+    },
     'costHasAllowedValues': function(dbFieldName) {
         let customConfig = Template.instance().businessUnitCustomConfig.get()
         if(customConfig) {
@@ -240,10 +300,16 @@ Template.TravelRequisitionCreate.helpers({
             const costs = travelRequestConfig.costs || []
             const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
             if(fieldCost) {
-                return fieldCost.allowedValues;
+                const selectedCurrency = Template.instance().selectedCurrency.get()                
+                if(selectedCurrency) {
+                    return fieldCost.allowedValues[selectedCurrency];
+                }
             }
         }
-    }
+    },
+    'units': function () {
+        return Template.instance().units.get()
+    },
 });
 
 /*****************************************************************************/
@@ -255,11 +321,16 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let businessUnitId = Session.get('context');
 
     self.unitId = new ReactiveVar()
+    self.units = new ReactiveVar([])
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
+    self.selectedCurrency = new ReactiveVar()
+    self.selectedNumDays = new ReactiveVar()
+    self.selectdCostCenter = new ReactiveVar()
+
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
@@ -284,6 +355,8 @@ Template.TravelRequisitionCreate.onCreated(function () {
 
     self.autorun(function(){
         if(unitsSubscription.ready()){
+            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch())
+
             let employeeProfile = Meteor.user().employeeProfile
             if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
                 let userPositionId = employeeProfile.employment.position
@@ -311,6 +384,12 @@ Template.TravelRequisitionCreate.onCreated(function () {
                     costs.forEach(cost => {
                         self[cost.dbFieldName] = new ReactiveVar(0)
                     })
+                    //--
+                    if(travelRequestConfig.isCurrencyEnabled) {
+                        self.selectedCurrency.set(travelRequestConfig.allowedCurrencies[0])
+                    } else {
+                        self.selectedCurrency = "NGN"
+                    }
                 }
             }
         }

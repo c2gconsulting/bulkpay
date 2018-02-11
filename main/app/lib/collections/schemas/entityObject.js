@@ -54,6 +54,21 @@ Core.Schemas.EntityObject = new SimpleSchema({
         blackbox: true
     },
 
+    "successFactors": {
+        label: "Success Factors Config",
+        optional: true,
+        type: Object
+    },
+    'successFactors.costCenter': {
+        type: Object
+    },
+    'successFactors.costCenter.code': {
+        type: String
+    },
+    'successFactors.costCenter.name': {
+        type: String
+    },
+
     createdAt: {
         type: Date,
         autoValue: function () {

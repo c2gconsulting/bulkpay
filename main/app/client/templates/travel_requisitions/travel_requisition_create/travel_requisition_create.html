@@ -87,6 +87,74 @@
                             </div>
                         </div>
 
+                        {{#if currencyEnabled}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="currency">Currency</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select name="currency" placeholder="currency"
+                                        style="width: 100%" 
+                                        class="ui fluid search dropdown form-control currencyField">
+                                        <option value="0">No currency selected</option>
+                                        {{#each allowedCurrencies}}
+                                            <option value="{{this}}">{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if numberDaysEnabled}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="numberOfDays">Number of days</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select name="numberOfDays" placeholder="Number of days"
+                                        style="width: 100%" 
+                                        class="ui fluid search dropdown form-control numberOfDaysField">
+                                        <option value="0">None selected</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if costCenterEnabled}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="costCenter">Cost-Center</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <select name="costCenter" placeholder="Cost Center"
+                                        style="width: 100%" 
+                                        class="ui fluid search dropdown form-control costCenterField">
+                                        <option value="0">No cost center selected</option>
+                                        {{#each units}}
+                                            <option value="{{_id}}">{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+                        <hr/>
+
                         {{#each costs}}
                             <div class="row">
                                 <div class="col-sm-12">
@@ -104,15 +172,14 @@
                                             {{/each}}
                                         </select>
                                         {{else}}
-                                            <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" 
-                                                class="form-control costInputField"
+                                            <input name="{{dbFieldName}}" type="text" class="form-control costInputField"
                                                 value=""/>
                                         {{/if}}
                                     </div>
                                 </div>
                             </div>
                         {{/each}}
-                        <br/>
+                        <hr/>
 
                         <div class="row">
                             <div class="col-sm-12">

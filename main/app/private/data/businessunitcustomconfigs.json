@@ -397,15 +397,30 @@
                   "isRequired": false
               }
           ],
+          "isCurrencyEnabled": true,
+          "allowedCurrencies": ["NGN", "USD"],
+          "isNumberOfDaysEnabled": true,
+          "isCostCenterEnabled": true,
           "costs": [
               {
                   "label": "Flight",
                   "dbFieldName": "flightCost",
-                  "hasAllowedValues": false
+                  "hasAllowedValues": true,
+                  "allowedValues": {
+                      "NGN": [20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
+                      "USD": [300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,
+                                1700,1800,1900,2000,2100,2200,2300,2400,2500,2600,2700,2800,
+                                2900,3000,3100,3200,3300,3400,3500,3600,3700,3800,3900,4000]
+                  }
               },
               {
                   "label": "Accommodation",
-                  "dbFieldName": "accommodationCost"
+                  "dbFieldName": "accommodationCost",
+                  "hasAllowedValues": true,
+                  "allowedValues": {
+                      "NGN": [20000,30000,40000,50000,60000,70000,80000,90000,100000,110000,120000,130000,140000],
+                      "USD": [100,150,200,250,300,350]
+                  }
               },
               {
                   "label": "Local Transport",
@@ -417,7 +432,9 @@
                   "dbFieldName": "perDiemCost",
                   "isPayableToStaff": true,
                   "hasAllowedValues": true,
-                  "allowedValues": [30000, 50000, 100000]
+                  "allowedValues": {
+                      "NGN": [15000, 10000, 7500, 5000, 100, 5]
+                  }
               }
           ]
       }

@@ -55,6 +55,18 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
         optional: true
     },
 
+    currency: {
+        type: String,
+        optional: true,
+    },
+    numberOfDays: {
+        type: Number,
+        optional: true,
+    },
+    costCenterCode: {
+        type: String,
+        optional: true,
+    },
 
     fromLocation: {
         type: String,

@@ -63,6 +63,15 @@ Meteor.methods({
         check(businessUnitId, String);
         this.unblock()
 
+        // travelRequestDoc.createdBy = Meteor.userId()
+        // travelRequestDoc.status = 'Draft'
+        // travelRequestDoc.businessId = businessUnitId
+        // if(docId) {
+        //     TravelRequisitions.update(docId, {$set: travelRequestDoc})
+        // } else{
+        //     TravelRequisitions.insert(travelRequestDoc)
+        // }
+
         if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
             let errMsg = "Sorry, you are not allowed to create a travel request because you are a super admin"
             throw new Meteor.Error(401, errMsg);
