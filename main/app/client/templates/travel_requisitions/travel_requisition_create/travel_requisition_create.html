@@ -94,9 +94,20 @@
                                         <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
                                     </div>
                                     <div class="col-sm-6">
-                                        <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" 
-                                            class="form-control costInputField"
-                                            value=""/>
+                                        {{#if costHasAllowedValues dbFieldName}}
+                                        <select name="{{dbFieldName}}" placeholder="{{label}}"
+                                            style="width: 100%" 
+                                            class="ui fluid search dropdown form-control costInputField">
+                                            <option value="0">No cost value selected</option>
+                                            {{#each costAllowedValues dbFieldName}}
+                                                <option value="{{this}}">{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                        {{else}}
+                                            <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" 
+                                                class="form-control costInputField"
+                                                value=""/>
+                                        {{/if}}
                                     </div>
                                 </div>
                             </div>

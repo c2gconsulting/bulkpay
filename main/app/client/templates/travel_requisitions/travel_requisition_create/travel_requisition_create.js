@@ -12,15 +12,13 @@ Template.TravelRequisitionCreate.events({
     },
     "change .fieldInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');
-        var inputVal = $(e.target).val().trim();        
+        let inputVal = $(e.target).val().trim();
         const customConfig = tmpl.businessUnitCustomConfig.get();
 
         if(customConfig) {
             let travelRequestConfig = customConfig.travelRequestConfig;    
             if(travelRequestConfig) {
                 let fields = travelRequestConfig.fields || [];
-                console.log(`inputVal: `, inputVal)
-
                 fields.forEach(field => {
                     if(field.dbFieldName === fieldName) {
                         if(!tmpl[fieldName]) {
@@ -59,6 +57,20 @@ Template.TravelRequisitionCreate.events({
                 })
             }
         }   
+    }, 200),
+    "change .costInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');        
+        var text = $(e.target).val().trim();
+        
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let costAsNumber = parseFloat(text)
+        if(isNaN(costAsNumber)) {
+            costAsNumber = 0
+        }
+        tmpl[fieldName].set(costAsNumber)
+        tmpl.updateTotalTripCost()        
     }, 200),
     "keyup .costInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');        
@@ -208,6 +220,28 @@ Template.TravelRequisitionCreate.helpers({
         if(customConfig) {
             const travelRequestConfig = customConfig.travelRequestConfig;
             return travelRequestConfig.costs
+        }
+    },
+    'costHasAllowedValues': function(dbFieldName) {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            const costs = travelRequestConfig.costs || []
+            const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
+            if(fieldCost) {
+                return fieldCost.hasAllowedValues;
+            }
+        }
+    },
+    'costAllowedValues': function(dbFieldName) {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            const costs = travelRequestConfig.costs || []
+            const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
+            if(fieldCost) {
+                return fieldCost.allowedValues;
+            }
         }
     }
 });
