@@ -13,7 +13,6 @@ Meteor.methods({
         let projectCodes = Object.keys(projects) || []
         projectCodes.forEach(code => {
             const project = projects[code]
-            console.log(`project: `, project)
 
             const foundProject = Projects.findOne({name: code})
             if(foundProject) {

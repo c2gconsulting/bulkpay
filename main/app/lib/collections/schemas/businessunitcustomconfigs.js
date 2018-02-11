@@ -105,7 +105,7 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     _groupId: {
         type: String
     },
-    travelRequestConfig: {
+    travelRequestConfig: {// fields, costs, allowDatesInPast
         type: Object,
         optional: true,
         blackbox: true
@@ -118,6 +118,22 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     notifyEmployeesOnPayrollApproval: {
         type: Boolean        
     },
+
+    "payrun": {
+        label: "Payrun",
+        optional: true,
+        type: Object
+    },
+    'payrun.startFromPrevMonth': {
+        type: Boolean
+    },
+    'payrun.monthStartDay': {
+        type: Number
+    },
+    'payrun.monthEndDay': {
+        type: Number
+    },
+    
     createdAt: {
         type: Date,
         autoValue: function () {

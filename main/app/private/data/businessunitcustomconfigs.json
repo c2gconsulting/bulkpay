@@ -370,11 +370,13 @@
                   "label": "Departure Date",
                   "dbFieldName": "departureDate",
                   "type": "Date",
+                  "allowDatesInPast": false,
                   "isRequired": true
               },
               {
                   "label": "Return Date",
                   "dbFieldName": "returnDate",
+                  "allowDatesInPast": false,
                   "type": "Date"
               },
               {
@@ -385,6 +387,7 @@
               {
                   "label": "Preferred Flight Time",
                   "dbFieldName": "preferredFlightTime",
+                  "allowDatesInPast": false,
                   "type": "Time"
               },
               {

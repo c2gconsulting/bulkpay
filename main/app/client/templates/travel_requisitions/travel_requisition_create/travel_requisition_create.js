@@ -12,26 +12,48 @@ Template.TravelRequisitionCreate.events({
     },
     "change .fieldInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');
-        var inputVal = $(e.target).val().trim();
-        
+        var inputVal = $(e.target).val().trim();        
         const customConfig = tmpl.businessUnitCustomConfig.get();
+
         if(customConfig) {
             let travelRequestConfig = customConfig.travelRequestConfig;    
             if(travelRequestConfig) {
                 let fields = travelRequestConfig.fields || [];
+                console.log(`inputVal: `, inputVal)
+
                 fields.forEach(field => {
                     if(field.dbFieldName === fieldName) {
                         if(!tmpl[fieldName]) {
-                            tmpl[fieldName] = new ReactiveVar();                                
+                            tmpl[fieldName] = new ReactiveVar();
                         }
 
-                        if(field.type === 'String' || field.type || 'TextArea') {
+                        if(field.type === 'String' || field.type === 'TextArea') {
                             tmpl[fieldName].set(inputVal)
                         } else if(field.type === 'Date' || field.type === 'Time') {
-                            if(inputVal && inputVal.length > 0)
-                                tmpl[fieldName].set(new Date(inputVal))
-                            else
-                                tmpl[fieldName].set(null)                            
+                            if(inputVal && inputVal.length > 0) {
+                                const date = new Date(inputVal)
+                                const momentObj = moment(date)
+
+                                if(momentObj.isBefore(moment())) {
+                                    if(!field.allowDatesInPast) {
+                                        tmpl[fieldName].set(null)
+                                        $(e.target).val(null)
+                                    } else {
+                                        if(inputVal && inputVal.length > 0)
+                                            tmpl[fieldName].set(new Date(inputVal))
+                                        else
+                                            tmpl[fieldName].set(null)
+                                    }
+                                } else {
+                                    if(inputVal && inputVal.length > 0)
+                                        tmpl[fieldName].set(new Date(inputVal))
+                                    else
+                                        tmpl[fieldName].set(null)
+                                }
+                            } else {
+                                tmpl[fieldName].set(null)
+                                $(e.target).val(null)
+                            }
                         }
                     }
                 })

@@ -43,6 +43,14 @@ Core.Schemas.Project = new SimpleSchema({
         allowedValues: ['Active', 'Inactive'],
         optional: true
     },
+    "successFactors": {
+        label: "Success Factors PayType Config",
+        optional: true,
+        type: Object
+    },
+    'successFactors.externalCode': {
+        type: String
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
