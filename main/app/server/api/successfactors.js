@@ -134,6 +134,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,currencyCode,frequency&$format=json`
   const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
+  const empPayGroupQueryUrl = `${baseUrl}/odata/v2/EmpCompensation?$filter=userId eq '${personIdExternal}'&$format=json`
   // const positionQueryUrl = `${baseUrl}/odata/v2/Position?$filter=code eq '${personIdExternal}'&$select=code,userId,jobTitle,positionTitle&$format=json`
 
 
@@ -155,6 +156,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPhoneRes = getToSync(perPhoneQueryUrl, {headers: requestHeaders})
   const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
   const empJobRes = getToSync(empJobQueryUrl, {headers: requestHeaders})
+  const empPayGroupRes = getToSync(empPayGroupQueryUrl, {headers: requestHeaders})
 
   let bulkPayUserParams = {}
   bulkPayUserParams.tenantId = business._groupId
@@ -165,6 +167,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
   let paymentsData = []
   let positionData = {}
+  let payGroupData = {}
   //----------
 
   if(perPersonRes) {
@@ -243,8 +246,41 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log('EmpJob Error! ', e.message)
     }
   }
+
+  if(empPayGroupRes) {
+    try {
+      let empPayGroupData = JSON.parse(empPayGroupRes.content)
+      if(empPayGroupData && empPayGroupData.d && empPayGroupData.d.results && empPayGroupData.d.results.length > 0) {
+        let employeeData = empPayGroupData.d.results[0]
+        const payGroupCode = employeeData.payGroup
+        payGroupData.code = payGroupCode
+
+        if(payGroupCode) {
+          const empPayGroupDetailQueryUrl = `${baseUrl}/odata/v2/FOPayGroup?$filter=externalCode eq '${payGroupCode}'&$format=json`
+          const empPayGrouDetailspRes = getToSync(empPayGroupDetailQueryUrl, {headers: requestHeaders})
+          if(empPayGrouDetailspRes) {
+            let data = JSON.parse(empPayGrouDetailspRes.content)
+            if(data && data.d && data.d.results && data.d.results.length > 0) {
+              let employeeData = empJobData.d.results[0]
+              const payGroupDesc = employeeData.description;
+
+              payGroupData.code = payGroupCode
+              payGroupData.description = payGroupDesc
+            }
+          }
+        } else {
+          console.log(`Could not find pay group`)
+        }
+      }
+    } catch(e) {
+      console.log('EmpJob Error! ', e.message)
+    }
+  }
+
+
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
   console.log(`positionData: `, JSON.stringify(positionData))
+  console.log(`payGroupData: `, JSON.stringify(payGroupData))
   console.log(``)
 
   let accountId;
@@ -370,9 +406,11 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   if(positionData.positionCode) {
     const positionEntity = EntityObjects.findOne({
-      'successfactors.externalCode': positionData.positionCode
+      'successfactors.externalCode': positionData.positionCode,
+      businessId: business._id
     })
     let positionId;
+    let payGradeId;
 
     if(positionEntity) {
       positionId = positionEntity._id
@@ -391,7 +429,38 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         }
       })
     }
+    //--
+    if(payGroupData.code) {
+      let payGrade = PayGrades.findOne({
+        'successfactors.externalCode': payGroupData.code,
+        businessId: business._id
+      })
+      if(payGrade) {
+        payGradeId = payGrade._id
+      } else {
+        empBpPaytypeAmounts = empBpPaytypeAmounts || []
+        const paytypesWithNoVals = empBpPaytypeAmounts.map(paytype => {
+          paytype.value = ""
+          return paytype
+        })
+
+        payGradeId = PayGrades.insert({
+          code: payGroupData.code,
+          description: payGroupData.description,
+          positions: [positionId],
+          payGroups: [],
+          payTypes: paytypesWithNoVals,
+          status: 'Active',
+          businessId: business._id,
+          _groupId: business._groupId,
+          successfactors: {
+            externalCode: payGroupData.code
+          }
+        })
+      }
+    }
     bpUser.employeeProfile.employment.position = positionId
+    bpUser.employeeProfile.employment.paygrade = payGradeId
   }
   console.log(`bpUserId: `, bpUserId)
 

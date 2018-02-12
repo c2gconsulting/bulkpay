@@ -42,6 +42,14 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: String,
         optional: true
     },
+    "successFactors": {
+        label: "Success Factors PayGroup Config",
+        optional: true,
+        type: Object
+    },
+    'successFactors.externalCode': {
+        type: String
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
