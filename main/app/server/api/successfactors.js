@@ -327,7 +327,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   
   if(bulkPayUserParams.email) {
     try {
-      // Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
+      Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
     } catch (e) {
       console.log("Unable to send a notification mail to new successfactors employee")
     }
