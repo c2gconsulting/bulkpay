@@ -258,6 +258,9 @@ Template.navigator.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isLoanEnabled
         }
+    },
+    'showSideBarLinks': function() {
+        return Session.get('context')
     }
 });
 
