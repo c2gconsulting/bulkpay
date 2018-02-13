@@ -169,4 +169,68 @@ Meteor.methods({
         }
         return true;
     },
+    "successfactors/fetchEmployeeTimeSheets": function(businessUnitId, month, year) {
+        console.log(`Inside fetchEmployeeTimeSheets method`)
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+
+        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+        if(config) {
+            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
+            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+            const empTimeSheetUrl = `${baseUrl}/odata/v2/EmployeeTimeSheet?$select=userId,externalCode,approvalStatus,plannedWorkingTime,recordedWorkingTime,startDate&$format=json`
+          
+            let getToSync = Meteor.wrapAsync(HTTP.get);
+            const timeSheetRes = getToSync(empTimeSheetUrl, {headers: requestHeaders})
+
+            if(timeSheetRes) {
+                try {
+                    let timeSheetData = JSON.parse(timeSheetRes.content)
+                    let timeSheetResults = SFIntegrationHelper.getOdataResults(timeSheetData)
+                    let timeSheets = _.groupBy(timeSheetResults, 'userId');
+                    // console.log(`timeSheets: `, timeSheets)
+                    let queue = new PowerQueue({
+                      isPaused: true
+                    });
+
+                    let timeSheetsWithEntries = []
+                    Object.keys(timeSheets).map(function(userId, index) {
+                        queue.add(function(done) {
+                            console.log('Task: ', index);
+                            let empTimeSheets = timeSheets[userId]
+                            empTimeSheets.entries = []
+    
+                            empTimeSheets.map(time => {
+                                try {
+                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeSheetEntry?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,startDate,quantityInHours,startTime,endTime&$format=json`
+                                    const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
+                                    // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
+    
+                                    if(timeSheetEntryRes) {
+                                        let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
+                                        empTimeSheets.entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
+                                    }
+                                } catch(err) {
+                                    console.log('Error in Getting SF timesheet entries! ', err.message)
+                                }
+                            })
+                            console.log(`Task Done!`)
+                            // Insert into db.
+                            // timeSheetsWithEntries.push(empTimeSheets)    
+                            done();
+                        });
+                     });
+
+                     queue.run();
+                } catch(e) {
+                  console.log('Error in Getting SF timesheets! ', e.message)
+                }
+            } else {
+                console.log('SF Timesheets null response')
+            }
+        }
+        return []
+    },
 })

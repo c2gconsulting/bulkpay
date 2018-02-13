@@ -28,6 +28,7 @@
                                 <li><a href="#new-tab3" data-toggle="tab"><strong></strong> PayGrades </a></li>
                                 <li><a href="#new-tab4" data-toggle="tab"><strong></strong> Cost-Center</a></li>
                                 <li><a href="#new-tab5" data-toggle="tab"><strong></strong> Projects</a></li>
+                                <li><a href="#new-tab6" data-toggle="tab"><strong></strong> Time Sheets</a></li>                                
                             </ul>
 
                             <div class="progress progress-xs">
@@ -286,6 +287,72 @@
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
+
+                                <div class="tab-pane" id="new-tab6">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <select name="periodMonth" class="form-control dropdown" style="width: 100%">
+                                                        <option value="">Select Month</option>
+                                                        {{#each month}}
+                                                            <option value="{{period}}">{{name}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div><!-- form-group -->
+                                            </div>
+                                            
+                                            <div class="col-sm-1">
+                                            </div>
+                                            
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <select name="periodYear" class="form-control dropdown" style="width: 100%">
+                                                        <option value="">Select Year </option>
+                                                        {{#each year}}
+                                                            <option value="{{this}}">{{this}}</option>
+                                                        {{/each}}
+                                                    </select>
+                                                </div><!-- form-group -->
+                                            </div>
+                                            <!-- <div class="col-md-2">
+                                                <div class="form-group">
+                                                    {{#transformableDatepicker}}
+                                                        <input name="startTime" type="text" class="form-control datepicker" data-field="startTime" />
+                                                    {{/transformableDatepicker}}
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    {{#transformableDatepicker}}
+                                                        <input name="endTime" type="text" class="form-control datepicker" data-field="endTime" />
+                                                    {{/transformableDatepicker}}
+                                                </div>
+                                            </div> -->
+
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="fetchEmployeeTimeSheets">Sync</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Employee</th>
+                                                    <th>Day</th>
+                                                    <th>Total Hours</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">                                                
+                                                    <br/><br/><br/><br/><br/>
+                                                    {{> spinner}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->                                
                             </div>
 
                             <ul class="list-unstyled wizard">

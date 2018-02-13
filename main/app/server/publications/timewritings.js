@@ -42,6 +42,16 @@ Core.publish("timewritings", function (businessId, superviseeUserIds) {
     ];
 });
 
+Core.publish("timewritingsformonth", function (businessId, month, year) {
+    this.unblock();
+    check(businessId, String);
+
+    return TimeWritings.find({
+        
+    });
+});
+
+
 Core.publish("timesForDay", function (businessId, dayAsDate) {
     this.unblock();
     check(businessId, String);

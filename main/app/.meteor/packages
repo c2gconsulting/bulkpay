@@ -87,3 +87,4 @@ peppelg:bootstrap-3-modal
 shell-server@0.2.1
 reywood:publish-composite
 meteorhacks:search-source
+cfs:power-queue

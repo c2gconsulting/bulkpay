@@ -214,6 +214,26 @@ Template.SuccessFactorsConfig.events({
                 swal('Error', err.reason, 'error')
             }
         })
+    },
+    'click #fetchEmployeeTimeSheets': (e, tmpl) => {
+        e.preventDefault();
+        let businessUnitId = Session.get('context')
+
+        const month = $('[name="periodMonth"]').val();
+        const year = $('[name="periodYear"]').val();
+        if(month && year) {
+            console.log(`month: `, month)
+            console.log(`year: `, year)
+            
+            Meteor.call("successfactors/fetchEmployeeTimeSheets", businessUnitId, month, year, (err, res) => {
+                console.log(`Res: `, res)
+
+                if(!res) {
+                    console.log(err);
+                    swal('Error', err.reason, 'error')
+                }
+            })
+        }
     }
 });
 
@@ -267,6 +287,16 @@ Template.SuccessFactorsConfig.helpers({
     //         units.code === val ? selected="selected" : '';
     //     }
     // },
+    'month': function(){
+        return Core.months()
+    },
+    'year': function(){
+        let years = [];
+        for (let x = new Date().getFullYear() - 10; x < new Date().getFullYear() + 50; x++) {
+            years.push(String(x));
+        }
+        return years;
+    },
 });
 
 /*****************************************************************************/
@@ -284,10 +314,12 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.sfPayTypes = new ReactiveVar()
     self.sfPayGrades = new ReactiveVar()
     self.sfCostCenters = new ReactiveVar()
+    self.sfTimeSheets = new ReactiveVar()
 
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
     self.isFetchingCostCenters = new ReactiveVar(false)
+    self.isFetchingTimeSheet = new ReactiveVar(false)
 
     self.units = new ReactiveVar()
 
@@ -340,20 +372,6 @@ Template.SuccessFactorsConfig.onCreated(function () {
                     self.isFetchingPayTypes.set(false)
 
                     if (!err) {
-                        // let completePaytypes = []
-                        // let bpPaytypes = PayTypes.find({}).fetch() || []
-                        
-                        // bpPaytypes.forEach(payType => {
-                        //     let foundBpPaytype = _.find(sfPaytypes, function (sfPt) {
-                        //         return sfPt.externalCode === payType.code;
-                        //     })
-                        //     if(foundBpPaytype) {
-                        //         _.extend(payType, currentPayType)
-                        //     } else {
-
-                        //     }
-                        // });
-
                         self.sfPayTypes.set(sfPaytypes)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");
