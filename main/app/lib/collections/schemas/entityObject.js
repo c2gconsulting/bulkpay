@@ -48,22 +48,15 @@ Core.Schemas.EntityObject = new SimpleSchema({
         blackbox: true
     },
 
-    "successFactors": {
+    "successFactors": {//externalCode, costCenter.code, costCenter.name
         label: "Success Factors Config",
         optional: true,
-        type: Object
+        type: Object,
+        blackbox: true
     },
-    'successFactors.externalCode': {
-        type: String
-    },
-    'successFactors.costCenter': {
-        type: Object
-    },
-    'successFactors.costCenter.code': {
-        type: String
-    },
-    'successFactors.costCenter.name': {
-        type: String
+    _groupId: {
+        type: String,
+        optional: true
     },
 
     createdAt: {

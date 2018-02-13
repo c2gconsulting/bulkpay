@@ -39,9 +39,11 @@ Meteor.methods({
 
             const foundPaytype = PayTypes.findOne({code: code})
             if(foundPaytype) {
-                PayTypes.update({_id: foundPaytype._id}, {$set: {
-                    description: payType.description
-                }})
+                if(payType.description) {
+                    PayTypes.update({_id: foundPaytype._id}, {$set: {
+                        description: payType.description
+                    }})
+                }
             } else {
                 PayTypes.insert(payType);
             }

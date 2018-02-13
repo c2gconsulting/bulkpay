@@ -50,9 +50,6 @@ Accounts.onCreateUser(function (options, user) {
 
     user.employee = options.employee;
     user.employeeProfile = options.employeeProfile || {};
-    if(options.phoneNumber) {
-        user.employeeProfile.phone = options.phoneNumber
-    }
 
     user.salesProfile = options.salesProfile || {};
     user.salesProfile['salesAreas'] = options.salesAreas;

@@ -167,6 +167,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
   let paymentsData = []
   let positionData = {}
+  let empBpPaytypeAmounts = []
   let payGroupData = {}
   //----------
 
@@ -261,7 +262,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           if(empPayGrouDetailspRes) {
             let data = JSON.parse(empPayGrouDetailspRes.content)
             if(data && data.d && data.d.results && data.d.results.length > 0) {
-              let employeeData = empJobData.d.results[0]
+              let employeeData = data.d.results[0]
               const payGroupDesc = employeeData.description;
 
               payGroupData.code = payGroupCode
@@ -326,7 +327,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   
   if(bulkPayUserParams.email) {
     try {
-      Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
+      // Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
     } catch (e) {
       console.log("Unable to send a notification mail to new successfactors employee")
     }
@@ -341,13 +342,12 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
   bpUser.employee = true
   bpUser.businessIds = [business._id]
-  bpUser.successfactors = {
+  bpUser.successFactors = {
     personIdExternal: personIdExternal
   }
   delete bpUser._id
 
   try {
-    let empBpPaytypeAmounts = []
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
         const payType = PayTypes.findOne({code: payment.payComponent})
@@ -424,7 +424,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         businessId: business._id,
         status: 'Active',
         _groupId: business._groupId,
-        successfactors: {
+        successFactors: {
           externalCode: positionData.positionCode
         }
       })
@@ -438,22 +438,23 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       if(payGrade) {
         payGradeId = payGrade._id
       } else {
-        empBpPaytypeAmounts = empBpPaytypeAmounts || []
         const paytypesWithNoVals = empBpPaytypeAmounts.map(paytype => {
-          paytype.value = ""
-          return paytype
+          return {paytype: paytype.paytype, value: ""}
         })
-
+        let desc = payGroupData.description;
+        if(!payGroupData.description) {
+          desc = payGroupData.code
+        }
         payGradeId = PayGrades.insert({
           code: payGroupData.code,
-          description: payGroupData.description,
+          description: desc,
           positions: [positionId],
           payGroups: [],
           payTypes: paytypesWithNoVals,
           status: 'Active',
           businessId: business._id,
           _groupId: business._groupId,
-          successfactors: {
+          successFactors: {
             externalCode: payGroupData.code
           }
         })
@@ -462,6 +463,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     bpUser.employeeProfile.employment.position = positionId
     bpUser.employeeProfile.employment.paygrade = payGradeId
   }
+  bpUser.employeeProfile.phone = bulkPayUserParams.phoneNumber
   console.log(`bpUserId: `, bpUserId)
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
@@ -470,7 +472,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 let setBPEmployeeStatus = (business, personIdExternal, status) => {
   let tenantId = business._groupId
 
-  let bpUser = Meteor.users.findOne({'successfactors.personIdExternal': personIdExternal})
+  let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': personIdExternal})
   if(bpUser) {
     if(bpUser.group === tenantId) {
       const bpUserId = bpUser._id
@@ -481,7 +483,9 @@ let setBPEmployeeStatus = (business, personIdExternal, status) => {
       delete bpUser._id
 
       if(status === 'Inactive') {
-        bpUser.employeeProfile.employment.terminationDate = new Date()        
+        bpUser.employeeProfile.employment.terminationDate = new Date()
+      } else {
+        bpUser.employeeProfile.employment.hireDate = new Date()
       }
 
       Meteor.users.update({_id: bpUserId}, {$set: bpUser})
@@ -655,7 +659,7 @@ if (Meteor.isServer) {
             let business = BusinessUnits.findOne({_id: businessId})
             let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
             if(config) {
-              fetchEmployeeDetails(business, config, '103234')
+              fetchEmployeeDetails(business, config, '103239')
             }
           })
         }));        

@@ -95,6 +95,9 @@ Template.SuccessFactorsConfig.events({
                 editablePerEmployee: true,
                 isTimeWritingDependent: false,
                 includeWithSapIntegration: false,
+                successFactors: {
+                  externalCode: dataset.externalcode
+                },
                 type: 'Benefit',
                 status: "Active"
             }
@@ -120,6 +123,9 @@ Template.SuccessFactorsConfig.events({
             positions: [],
             payGroups: [],
             businessId: businessId,
+            successFactors: {
+              externalCode: dataset.externalcode
+            },
             payTypes: [],
             status: 'Active'
         }
@@ -146,6 +152,9 @@ Template.SuccessFactorsConfig.events({
                 positionIds: [],
                 activities: [],
                 businessId: businessId,
+                successFactors: {
+                  externalCode: dataset.externalcode
+                },
                 status: 'Active'
             }
             selectedSfProjects[sfProject.name] = sfProject

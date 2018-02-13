@@ -43,13 +43,11 @@ Core.Schemas.Project = new SimpleSchema({
         allowedValues: ['Active', 'Inactive'],
         optional: true
     },
-    "successFactors": {
-        label: "Success Factors PayType Config",
+    "successFactors": {// externalCode
+        label: "Success Factors project Config",
         optional: true,
-        type: Object
-    },
-    'successFactors.externalCode': {
-        type: String
+        type: Object,
+        blackbox: true
     },
     createdAt: {
         type: Date,

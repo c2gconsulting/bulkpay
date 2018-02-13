@@ -39,9 +39,11 @@ Meteor.methods({
 
             const foundPayGrade = PayGrades.findOne({code: code})
             if(foundPayGrade) {
-                PayGrades.update({_id: foundPayGrade._id}, {$set: {
-                    description: payGrade.description
-                }})
+                if(payGrade.description) {
+                    PayGrades.update({_id: foundPayGrade._id}, {$set: {
+                        description: payGrade.description
+                    }})
+                }
             } else {
                 PayGrades.insert(payGrade);
             }

@@ -42,13 +42,15 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: String,
         optional: true
     },
-    "successFactors": {
+    "successFactors": {// externalCode
         label: "Success Factors PayGroup Config",
         optional: true,
-        type: Object
+        type: Object,
+        blackbox: true
     },
-    'successFactors.externalCode': {
-        type: String
+    _groupId: {
+        type: String,
+        optional: true
     },
     createdAt: {
         type: Date,
