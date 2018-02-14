@@ -64,7 +64,17 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                        
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>HANA Company ID</b></div>
+                                                            <div class="col-md-5">
+                                                                <input type="text" class="form-control" id="companyId"
+                                                                    placeholder="HANA companyId"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.companyId}}"/>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row">
                                                             <div class="col-md-4 text-right"><b>HANA Username</b></div>
                                                             <div class="col-md-5">
@@ -116,7 +126,7 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab2-data-body">
-                                                    {{#if isFetchingPayTypes}}
+                                                    {{#if isFetchingHanaGlAccounts}}
                                                         <br/><br/><br/><br/><br/>
                                                         {{> spinner}}
                                                     {{else}}
@@ -130,9 +140,9 @@
                                                                     <select name="hanaCreditGLAccountCode" class="form-control dropdown" data-paytypeId="{{_id}}">
                                                                         <option value="">Select a G/L Account</option>
 
-                                                                        <!-- {{#each sfCostCenters}}
-                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
-                                                                        {{/each}} -->
+                                                                        {{#each hanaGlAccounts}}
+                                                                            <option value="{{SAKNR}}">{{SAKNR}} - {{TXT50}}</option>
+                                                                        {{/each}}
                                                                     </select>
                                                                 </div>
                                                             </td>
@@ -141,9 +151,9 @@
                                                                     <select name="hanaDebitGLAccountCode" class="form-control dropdown" data-paytypeId="{{_id}}">
                                                                         <option value="">Select a G/L Account</option>
 
-                                                                        <!-- {{#each sfCostCenters}}
-                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
-                                                                        {{/each}} -->
+                                                                        {{#each hanaGlAccounts}}
+                                                                            <option value="{{SAKNR}}">{{SAKNR}} - {{TXT50}}</option>
+                                                                        {{/each}}
                                                                     </select>
                                                                 </div>
                                                             </td>

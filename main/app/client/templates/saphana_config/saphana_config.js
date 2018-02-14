@@ -8,11 +8,12 @@ Template.SapHanaConfig.events({
         //var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
         var serverHostUrl = $('#serverHostUrl').val();
         var protocol = $("[name='protocol']:checked").val();
+        var companyId = $('#companyId').val();
         var username = $('#username').val();
         var password = $('#password').val();
 
         if(serverHostUrl.length < 1) {
-            swal("Validation error", `Please enter the URL for your successfactors OData data center`, "error");
+            swal("Validation error", `Please enter the IP Address & Port of your SAP HANA instance`, "error");
             return
         } else if(username.length < 1) {
             swal("Validation error", `Please enter the Successfactors username`, "error");
@@ -27,6 +28,7 @@ Template.SapHanaConfig.events({
         let hanaConfig = {
             serverHostUrl : serverHostUrl,
             protocol : protocol,
+            companyId : companyId,
             businessId: businessUnitId,
             username : username,
             password : password,
@@ -35,7 +37,7 @@ Template.SapHanaConfig.events({
         tmpl.$('#testConnection').text('Connecting ... ');
         tmpl.$('#testConnection').attr('disabled', true);
         //--
-        Meteor.call('successfactorsIntegration/testConnection', businessUnitId, hanaConfig, (err, res) => {
+        Meteor.call('hanaIntegration/testConnection', businessUnitId, hanaConfig, (err, res) => {
             tmpl.$('#testConnection').text('Test Connection');
             tmpl.$('#testConnection').removeAttr('disabled');
 
@@ -131,6 +133,21 @@ Template.SapHanaConfig.onCreated(function () {
             self.payTypes.set(PayTypes.find({
                 businessId: businessUnitId
             }).fetch())
+
+            if(config) {
+                self.isFetchingSapHanaGlAccounts.set(true)
+
+                Meteor.call('hanaIntegration/fetchGlAccounts', businessUnitId, (err, glAccounts) => {
+                    console.log(`err: `, err)
+                    self.isFetchingSapHanaGlAccounts.set(false)
+
+                    if (!err) {
+                        self.hanaGlAccounts.set(glAccounts)
+                    } else {
+                        swal("Server error", `Please try again at a later time`, "error");
+                    }
+                });
+            }
         }
     });
 });

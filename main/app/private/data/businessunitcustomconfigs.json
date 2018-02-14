@@ -322,8 +322,8 @@
   },
   {
       "businessId": "CQdQKjkfLixpytbAN",
-      "payGradeLabel": "Pay Category",
-      "payGradeLabelPlural": "Pay Categories",
+      "payGradeLabel": "Pay Grades",
+      "payGradeLabelPlural": "Pay Grades",
       "isSuccessFactorsIntegrationEnabled": true,
       "isSapHanaIntegrationEnabled": true,
       "isProcurementRequisitionActive": false,

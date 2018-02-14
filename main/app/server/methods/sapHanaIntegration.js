@@ -32,7 +32,12 @@ Meteor.methods({
     this.unblock()
     //--
     if(hanaConfig) {
-      let connectionUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}/odata/v2/$metadata`
+      //http://34.232.137.239:8000/JournalEntryOdataService/journalentry.xsodata?$metadata&$format=json
+      //   let connectionUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}/JournalEntryOdataService/journalentry.xsodata?$metadata&$format=json`
+
+      const baseUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}`
+      const connectionUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=1&$format=json`
+
       const requestHeaders = HanaIntegrationHelper.getAuthHeader(hanaConfig)
 
       let errorResponse = null
@@ -60,5 +65,34 @@ Meteor.methods({
     } else {
         return '{"status": false, "message": "Successfactors Config empty"}'
     }
+  },
+  'hanaIntegration/fetchGlAccounts': function (businessUnitId) {
+      if (!this.userId) {
+          throw new Meteor.Error(401, "Unauthorized");
+      }
+      this.unblock();
+
+      let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
+      if(config) {
+          const requestHeaders = HanaIntegrationHelper.getAuthHeader(config)
+          const baseUrl = `${config.protocol}://${config.serverHostUrl}`
+          const glAccountsQueryUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json`
+        //   http://34.232.137.239:8000/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json
+
+          let getToSync = Meteor.wrapAsync(HTTP.get);
+          const glAccountsRes = getToSync(glAccountsQueryUrl, {headers: requestHeaders})
+
+          if(glAccountsRes) {
+              try {
+                  let glAccountsData = JSON.parse(glAccountsRes.content)
+                  return HanaIntegrationHelper.getOdataResults(glAccountsData)
+              } catch(e) {
+                console.log('Error in Getting Hana G/L Accounts! ', e.message)
+              }
+          } else {
+              console.log('Error in Getting Hana G/L Accounts! null response')
+          }
+      }
+      return []
   }
 })

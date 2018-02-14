@@ -199,6 +199,10 @@ Core.Schemas.SapHanaIntegrationConfig = new SimpleSchema({
         type: String,
         optional: true
     },
+    companyId : {
+        type: String,
+        optional: true
+    },
     username : {
         type: String
     },
