@@ -108,7 +108,6 @@
                                             <table class="table table-hover" id="derivativeTable">
                                                 <thead>
                                                 <tr>
-                                                    <th></th>
                                                     <th>S/N</th>
                                                     <th>Code</th>
                                                     <th>Name</th>
@@ -123,13 +122,9 @@
                                                     {{else}}
                                                     {{#each payTypes}}
                                                         <tr class="item" style="cursor: move;">
-                                                            <td>
-                                                                <input type="checkbox" name="includeSfPayComponent"
-                                                                    data-externalCode="{{externalCode}}" />
-                                                            </td>
                                                             <td>{{@index}}</td>
-                                                            <td>{{externalCode}}</td>
-                                                            <td>{{name}}</td>
+                                                            <td>{{code}}</td>
+                                                            <td>{{title}}</td>
                                                             <td>
                                                                 <div class="form-group">
                                                                     <select name="hanaCreditGLAccountCode" class="form-control dropdown" data-paytypeId="{{_id}}">

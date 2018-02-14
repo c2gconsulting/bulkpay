@@ -117,7 +117,7 @@ Template.SapHanaConfig.onCreated(function () {
     self.subscribe("PayTypes", businessUnitId);
     
     self.sapHanaConfig = new ReactiveVar()
-    self.sfPayTypes = new ReactiveVar()
+    self.payTypes = new ReactiveVar()
     self.hanaGlAccounts = new ReactiveVar()
 
     self.isFetchingPayTypes = new ReactiveVar(false)
