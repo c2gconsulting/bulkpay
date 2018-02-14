@@ -345,11 +345,9 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab4-data-body">                                                
-                                                    <br/><br/><br/><br/><br/>
-                                                    {{> spinner}}
                                                     {{#each timeWritingRecords}}
-                                                        <tr class="item" style="cursor: move;">
-                                                            <td>----</td>
+                                                        <tr class="item">
+                                                            <td>{{getEmployeeFullName employeeId}}</td>
                                                             <td>{{formatTime day}}</td>
                                                             <td>{{duration}}</td>
                                                         </tr>

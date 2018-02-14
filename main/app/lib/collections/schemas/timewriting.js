@@ -30,24 +30,27 @@ Core.Schemas.TimeWriting = new SimpleSchema({
     },
     activity:{
         type: String,
+        optional: true,
         custom: function () {
             let employeeId = this.siblingField("employeeId").value;
             let duration = this.siblingField("duration").value;
             let activity = this.siblingField("activity").value;
 
-            let dayAsDate = this.siblingField("day").value;
+            if(activity) {
+                let dayAsDate = this.siblingField("day").value;
 
-            var dayStart = moment(dayAsDate).startOf('day').toDate();
-            var dayEnd = moment(dayAsDate).endOf('day').toDate();
-
-            return TimeWritings.find({
-                activity: activity,
-                employeeId: employeeId,
-                day: {
-                    $gte: dayStart,
-                    $lt: dayEnd
-                }
-            }).count() > 0 ? "duplicateActivityOnSameDayNotAllowed" : true
+                var dayStart = moment(dayAsDate).startOf('day').toDate();
+                var dayEnd = moment(dayAsDate).endOf('day').toDate();
+    
+                return TimeWritings.find({
+                    activity: activity,
+                    employeeId: employeeId,
+                    day: {
+                        $gte: dayStart,
+                        $lt: dayEnd
+                    }
+                }).count() > 0 ? "duplicateActivityOnSameDayNotAllowed" : true
+            }
         }
     },
     costCenter: {

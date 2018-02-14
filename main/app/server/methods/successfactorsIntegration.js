@@ -19,6 +19,17 @@ const SFIntegrationHelper = {
         } else {
             return []
         }
+    },
+    getJsDateFromOdataDate(date) {
+        if(date) {
+          date = date + ""
+          const numChars = date.length;
+          const timestamp = date.substring(6, numChars - 2)// /Date(xxxxxxx)/
+          console.log(`timestamp: `, timestamp)
+          const timestampAsNum = Number(timestamp)
+
+          return new Date(timestampAsNum)
+        }
     }
 }
 
@@ -202,9 +213,18 @@ Meteor.methods({
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
+            const monthAsNum = Number(month -1)
+            const yearAsNum = Number(year)
+
+            const monthMoment = moment().month(monthAsNum).year(yearAsNum)
+            const monthStart = monthMoment.clone().startOf('month').format('YYYY-MM-DDTHH:mm:ss')
+            const monthEnd = monthMoment.clone().endOf('month').format('YYYY-MM-DDTHH:mm:ss')
+            console.log(`monthStart! `, monthStart)
+            console.log(`monthEnd!`, monthEnd)
+
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const empTimeSheetUrl = `${baseUrl}/odata/v2/EmployeeTimeSheet?$select=userId,externalCode,approvalStatus,plannedWorkingTime,recordedWorkingTime,startDate&$format=json`
+            const empTimeSheetUrl = `${baseUrl}/odata/v2/EmployeeTimeSheet?$filter=startDate ge datetimeoffset'${monthStart}Z' and startDate le datetimeoffset'${monthEnd}Z'&$select=userId,externalCode,approvalStatus,plannedWorkingTime,recordedWorkingTime,startDate&$format=json`
           
             let getToSync = Meteor.wrapAsync(HTTP.get);
             const timeSheetRes = getToSync(empTimeSheetUrl, {headers: requestHeaders})
@@ -227,39 +247,49 @@ Meteor.methods({
                         queue.add(function(done) {
                             console.log('Task: ', index);
                             let empTimeSheets = timeSheets[userId]
-    
-                            empTimeSheets.forEach(time => {
-                                try {
-                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeSheetEntry?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,startDate,quantityInHours,startTime,endTime&$format=json`
-                                    const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
-                                    // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
-    
-                                    if(timeSheetEntryRes) {
-                                        let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
-                                        const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
-                                        entries.forEach(entry => {
-                                            if(entry.costCenter && entry.quantityInHours > 0) {
-                                                console.log(`Got timesheet entry with hours more than zero`)
+                            let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': userId})
 
-                                                TimeWritings.insert({
-                                                    employeeId: userId,
-                                                    costCenter: null,
-                                                    duration: entry.quantityInHours,
-                                                    businessId: config.businessId,
-                                                    isStatusSeenByCreator: false,
-                                                    approvedBy: null,
-                                                    approvedDate: null,
-                                                    isApprovalStatusSeenByCreator: false
-                                                })
-                                            } else {
-                                                console.log(`Got timesheet entry with hours more than zero`)
-                                            }
-                                        })
+                            if(bpUser) {
+                                console.log(`bpUser: `, bpUser)
+                                empTimeSheets.forEach(time => {
+                                    try {
+                                        const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeSheetEntry?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,startDate,quantityInHours,startTime,endTime&$format=json`
+                                        const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
+                                        // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
+        
+                                        if(timeSheetEntryRes) {
+                                            let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
+                                            const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
+                                            entries.forEach(entry => {
+                                                // if(entry.costCenter && entry.quantityInHours > 0) {
+                                                    console.log(`Got timesheet entry with hours more than zero`)
+                                                    console.log(`entry.quantityInHours: `, entry.quantityInHours)
+                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(time.startDate)                                                    
+                                                    console.log(``)
+    
+                                                    TimeWritings.insert({
+                                                        employeeId: bpUser._id,
+                                                        costCenter: null,
+                                                        day: startDate,
+                                                        duration: entry.quantityInHours || 0,
+                                                        businessId: config.businessId,
+                                                        isStatusSeenByCreator: false,
+                                                        approvedBy: null,
+                                                        approvedDate: null,
+                                                        isApprovalStatusSeenByCreator: false
+                                                    })
+                                                // } else {
+                                                //     console.log(`Got timesheet entry with null hours`)
+                                                // }
+                                            })
+                                        }
+                                    } catch(err) {
+                                        console.log('Error in Getting SF timesheet entries! ', err.message)
                                     }
-                                } catch(err) {
-                                    console.log('Error in Getting SF timesheet entries! ', err.message)
-                                }
-                            })
+                                })    
+                            } else {
+                                console.log(`Could not find the bulkpay user! `, userId)
+                            }
                             console.log(`Task Done!`)
                             done();
                         });

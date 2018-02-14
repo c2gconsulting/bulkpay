@@ -302,6 +302,12 @@ Template.SuccessFactorsConfig.helpers({
         }
         return years;
     },
+    'getEmployeeFullName': (userId) => {
+        let user = Meteor.users.findOne({_id: userId})
+        if(user && user.profile) {
+            return `${user.profile.firstname} ${user.profile.lastname}`
+        } 
+    }
 });
 
 /*****************************************************************************/
@@ -315,6 +321,7 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('getCostElement', businessUnitId);
     self.subscribe('timewritingsformonth', businessUnitId)
+    self.subscribe('allEmployees', businessUnitId)
 
     self.successFactorsConfig = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()
