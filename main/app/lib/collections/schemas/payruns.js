@@ -87,6 +87,10 @@ Core.Schemas.Payrun = new SimpleSchema({
             type: Boolean,
             optional: true
         },
+        isPostedToSAPHANA: {
+            type: Boolean,
+            optional: true
+        },
         payrunDoneBy: {
           type: String, 
           optional: true

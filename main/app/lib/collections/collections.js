@@ -424,6 +424,10 @@ SuccessFactorsIntegrationConfigs = new Mongo.Collection("successfactors_integrat
 Partitioner.partitionCollection(SuccessFactorsIntegrationConfigs);
 SuccessFactorsIntegrationConfigs.attachSchema(Core.Schemas.SuccessFactorsIntegrationConfig);
 
+SapHanaIntegrationConfigs = new Mongo.Collection("sap_hana_integration_configs");
+Partitioner.partitionCollection(SapHanaIntegrationConfigs);
+SapHanaIntegrationConfigs.attachSchema(Core.Schemas.SapHanaIntegrationConfig);
+
 SuccessFactorsEvents = new Mongo.Collection("successfactors_events");
 Partitioner.partitionCollection(SuccessFactorsEvents);
 SuccessFactorsEvents.attachSchema(Core.Schemas.SuccessFactorsEvent);

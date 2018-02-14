@@ -67,6 +67,19 @@
             {{/if}}
         {{/if}}
 
+        {{#if isSapHanaEnabled}}
+            {{#if hasSapHanaManageAccess}}
+                <li class="parent {{isMenuExpandedFocusClass 'sapHanaIntegrationMenu'}}">
+                    <a href="" id="sapHanaIntegrationMenu">
+                        <i class="fa fa-cog"></i>
+                        <span>SAP HANA Integration</span>
+                    </a>
+                </li>
+                {{#if isMenuExpanded 'sapHanaIntegrationMenu'}}
+                    <li><a href="{{pathFor route='saphana.config'}}">Setup</a></li>
+                {{/if}}
+            {{/if}}
+        {{/if}}
 
         {{#if hasEmployeeAccess}}
             <li class="parent {{isMenuExpandedFocusClass 'administrationMenu'}}">

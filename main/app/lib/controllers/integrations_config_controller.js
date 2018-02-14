@@ -54,6 +54,9 @@ IntegrationsConfigController = BusinessUnitController.extend({
   showSuccessFactorsConfig: function() {
     this.render('SuccessFactorsConfig')
   },
+  showSapHanaConfig: function() {
+    this.render('SapHanaConfig')
+  },
   onAfterAction: function () {
   },
   onStop: function () {

@@ -287,6 +287,13 @@ Router.route('/business/:_id/successfactors/config', {
   where: 'client',
   action: 'showSuccessFactorsConfig'
 });
+
+Router.route('/business/:_id/saphana/config', {
+    name: 'saphana.config',
+    controller: 'IntegrationsConfigController',
+    where: 'client',
+    action: 'showSapHanaConfig'
+  });
   
 
 Router.route('/business/:_id/payruns', {

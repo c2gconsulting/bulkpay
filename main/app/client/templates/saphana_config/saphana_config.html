@@ -1,0 +1,179 @@
+<template name="SapHanaConfig">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left">
+                <i class="fa fa-refresh"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>SAP HANA Setup</li>
+                </ul>
+                <h4>SAP HANA Setup</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row">
+                        <!-- PROGRESS WIZARD -->
+                        <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
+                            <ul class="nav nav-justified nav-wizard nav-disabled-click">
+                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
+                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> G/L Accounts </a></li>
+                            </ul>
+
+                            <div class="progress progress-xs">
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="tab-content">
+                                <div class="tab-pane" id="new-tab1">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>Server Host Url</b></div>
+                                                            <div class="col-md-5">
+                                                                <input type="text" class="form-control" id="serverHostUrl"
+                                                                        placeholder="Example: 34.232.137.239"
+                                                                        title="{{companyConnectionInfo.serverHostUrl}}"
+                                                                        value="{{companyConnectionInfo.serverHostUrl}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right" for-name="protocol"><b>Protocol</b></div>
+                                                            <div class="col-sm-3">
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="http" checked="checked"/>http
+                                                                </label>
+                                                                <label>
+                                                                    <input type="radio" name="protocol" value="https" />https
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                        
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>HANA Username</b></div>
+                                                            <div class="col-md-5">
+                                                                <input type="text" class="form-control" id="username"
+                                                                    placeholder="HANA Username"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.username}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div class="col-md-4 text-right"><b>HANA Password</b></div>
+                                                            <div class="col-md-5">
+                                                                <input type="password" class="form-control" id="password"
+                                                                    placeholder="HANA Password"
+                                                                    title=""
+                                                                    value="{{companyConnectionInfo.password}}"/>
+                                                            </div>
+                                                        </div>
+            
+                                                        <div class="row">
+                                                            <div col-md-9>
+                                                                <button class="btn btn-primary pull-right" id="testConnection">Test Connection</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- panel -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane" id="new-tab2">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="savePaytypes">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>S/N</th>
+                                                    <th>Code</th>
+                                                    <th>Name</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab2-data-body">
+                                                    {{#if isFetchingPayTypes}}
+                                                        <br/><br/><br/><br/><br/>
+                                                        {{> spinner}}
+                                                    {{else}}
+                                                    {{#each payTypes}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>
+                                                                <input type="checkbox" name="includeSfPayComponent"
+                                                                    data-externalCode="{{externalCode}}" />
+                                                            </td>
+                                                            <td>{{@index}}</td>
+                                                            <td>{{externalCode}}</td>
+                                                            <td>{{name}}</td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <select name="hanaCreditGLAccountCode" class="form-control dropdown" data-paytypeId="{{_id}}">
+                                                                        <option value="">Select a G/L Account</option>
+
+                                                                        <!-- {{#each sfCostCenters}}
+                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
+                                                                        {{/each}} -->
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <select name="hanaDebitGLAccountCode" class="form-control dropdown" data-paytypeId="{{_id}}">
+                                                                        <option value="">Select a G/L Account</option>
+
+                                                                        <!-- {{#each sfCostCenters}}
+                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
+                                                                        {{/each}} -->
+                                                                    </select>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    {{/each}}
+                                                    {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul class="list-unstyled wizard">
+                                <li class="pull-left previous">
+                                    <button type="button" class="btn btn-default">Previous</button>
+                                </li>
+                                <li class="pull-right next">
+                                    <button type="button" class="btn btn-primary">Next</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!-- row -->
+                </div>
+            </div>
+    </div><!-- contentpanel -->
+</template>
+

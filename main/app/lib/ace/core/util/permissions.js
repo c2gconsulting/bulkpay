@@ -18,6 +18,7 @@ Core.Permissions = {
 	  "AUDIT_REPORTS_VIEW": "audit_reports/view",
 		"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",
 	  "SUCCESSFACTORS_MANAGE": "successfactors/manage",
+	  "SAP_HANA_MANAGE": "sap_hana/manage",
 
 	//"CUSTOMERS_VIEW" : ["customers/view", "customers/maintain"],
 	//"CUSTOMERS_MAINTAIN" : "customers/maintain",
@@ -57,6 +58,7 @@ Core.PermissionNames = {
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",
     "successfactors/manage" : "Successfactors Manage",
+    "sap_hana/manage" : "Sap Hana Manage",
 
 		"ess/all" : "Employee Self Service",
 	//"customers/view" : "View Customers",

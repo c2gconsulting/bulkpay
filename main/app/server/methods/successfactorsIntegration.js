@@ -192,7 +192,10 @@ Meteor.methods({
                     let timeSheets = _.groupBy(timeSheetResults, 'userId');
                     // console.log(`timeSheets: `, timeSheets)
                     let queue = new PowerQueue({
-                      isPaused: true
+                      isPaused: true,
+                      onEnded: () => {
+                        console.log(`Queue finally done!`)
+                      }
                     });
 
                     let timeSheetsWithEntries = []
@@ -202,7 +205,7 @@ Meteor.methods({
                             let empTimeSheets = timeSheets[userId]
                             empTimeSheets.entries = []
     
-                            empTimeSheets.map(time => {
+                            empTimeSheets.forEach(time => {
                                 try {
                                     const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeSheetEntry?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,startDate,quantityInHours,startTime,endTime&$format=json`
                                     const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
@@ -210,7 +213,14 @@ Meteor.methods({
     
                                     if(timeSheetEntryRes) {
                                         let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
-                                        empTimeSheets.entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
+                                        const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
+                                        entries.forEach(entry => {
+                                            if(entry.costCenter && entry.quantityInHours > 0) {
+                                                TimeWritings.insert({
+                                                    
+                                                })
+                                            }
+                                        })
                                     }
                                 } catch(err) {
                                     console.log('Error in Getting SF timesheet entries! ', err.message)

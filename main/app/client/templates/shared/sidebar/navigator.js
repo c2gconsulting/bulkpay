@@ -42,6 +42,16 @@ Template.navigator.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #sapHanaIntegrationMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
     'click #administrationMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
 
@@ -54,7 +64,6 @@ Template.navigator.events({
     },
     'click #payrunsMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -65,7 +74,6 @@ Template.navigator.events({
     },
     'click #selfServiceMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -76,7 +84,6 @@ Template.navigator.events({
     },
     'click #reportsMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
-        console.log(`menuId: `, menuId)
 
         let currentExpandedMenu = tmpl.expandedMenu.get()
         if(menuId === currentExpandedMenu) {
@@ -184,6 +191,14 @@ Template.navigator.helpers({
           return true
       }
     },
+    isSapHanaEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+      } else {
+          return true
+      }
+    },
     isLeaveRequestEnabled: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
       if(businessUnitCustomConfig) {
@@ -202,6 +217,9 @@ Template.navigator.helpers({
     },
     hasSuccessfactorsManageAccess: () => {
       return Core.hasSuccessfactorManagesAccess(Meteor.userId());
+    },
+    hasSapHanaManageAccess: () => {
+      return Core.hasSapHanaManageAccess(Meteor.userId());
     },
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()

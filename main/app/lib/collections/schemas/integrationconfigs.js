@@ -182,5 +182,45 @@ Core.Schemas.SuccessFactorsIntegrationConfig = new SimpleSchema({
         denyUpdate: true,
         optional: true
     }
-  });
-  
+});
+
+Core.Schemas.SapHanaIntegrationConfig = new SimpleSchema({
+    _id: {
+        type: String,
+        optional: true
+    },
+    businessId: {
+        type: String
+    },
+    protocol: {
+      type: String
+    },
+    serverHostUrl : {
+        type: String,
+        optional: true
+    },
+    username : {
+        type: String
+    },
+    password : {
+        type: String
+    },
+    payTypes: {
+        type: [Core.Schemas.SapPayTypeConfig],
+        optional: true
+    },
+    createdAt: {
+        type: Date,
+        autoValue: function () {
+            if (this.isInsert) {
+                return new Date;
+            } else if (this.isUpsert) {
+                return {
+                    $setOnInsert: new Date
+                };
+            }
+        },
+        denyUpdate: true,
+        optional: true
+    }
+});

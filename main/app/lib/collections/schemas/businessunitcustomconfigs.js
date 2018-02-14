@@ -21,6 +21,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isSuccessFactorsIntegrationEnabled: {
         type: Boolean
     },
+    isSapHanaIntegrationEnabled: {
+        type: Boolean
+    },
     isHourLeaveRequestsEnabled: {
         type: Boolean        
     },

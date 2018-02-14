@@ -241,6 +241,9 @@ _.extend(Core, {
     hasSuccessfactorManagesAccess: function (userId) {
         return this.hasPermission(Core.Permissions.SUCCESSFACTORS_MANAGE, userId);
     },
+    hasSapHanaManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.SAP_HANA_MANAGE, userId);
+    },
     hasSelfServiceAccess: function (userId) {
         return this.hasPermission(Core.Permissions.EMPLOYEE_SS, userId);
     },
