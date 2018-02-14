@@ -25,7 +25,7 @@
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
                                 <li><a href="#new-tab2" data-toggle="tab"><strong></strong> PayComponents </a></li>
-                                <li><a href="#new-tab3" data-toggle="tab"><strong></strong> PayGrades </a></li>
+                                <li><a href="#new-tab3" data-toggle="tab"><strong></strong> Pay Groups </a></li>
                                 <li><a href="#new-tab4" data-toggle="tab"><strong></strong> Cost-Center</a></li>
                                 <li><a href="#new-tab5" data-toggle="tab"><strong></strong> Projects</a></li>
                                 <li><a href="#new-tab6" data-toggle="tab"><strong></strong> Time Sheets</a></li>                                
@@ -339,15 +339,21 @@
                                             <table class="table table-hover" id="derivativeTable">
                                                 <thead>
                                                 <tr>
-                                                    <th></th>
                                                     <th>Employee</th>
                                                     <th>Day</th>
-                                                    <th>Total Hours</th>
+                                                    <th>Duration(In Hours)</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab4-data-body">                                                
                                                     <br/><br/><br/><br/><br/>
                                                     {{> spinner}}
+                                                    {{#each timeWritingRecords}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>----</td>
+                                                            <td>{{formatTime day}}</td>
+                                                            <td>{{duration}}</td>
+                                                        </tr>
+                                                    {{/each}}
                                                 </tbody>
                                             </table>
                                         </div><!-- table-responsive -->

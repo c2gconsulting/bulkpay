@@ -266,6 +266,11 @@ Template.SuccessFactorsConfig.helpers({
             })
         }
     },
+    'timeWritingRecords': function() {
+        let businessUnitId = Session.get('context');
+
+        return TimeWritings.find({businessId: businessUnitId})
+    },
     'costCenters': function () {
         return Template.instance().units.get()
     },
@@ -309,6 +314,7 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.subscribe('SuccessFactorsIntegrationConfigs', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('getCostElement', businessUnitId);
+    self.subscribe('timewritingsformonth', businessUnitId)
 
     self.successFactorsConfig = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()

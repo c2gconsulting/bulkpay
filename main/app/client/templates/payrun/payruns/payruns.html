@@ -83,12 +83,16 @@
                                 <th>#</th>
                                 <th>Employee Id</th>
                                 <th>Employee Full Name</th>
-                                <th>Posted to SAP</th>
+                                <th>Posted to SAP B1</th>
+
+                                {{#if isSapHanaEnabled}}
+                                    <th>Posted to SAP HANA</th>
+                                {{/if}}
                             </tr>
                             </thead>
                             <tbody>
                             {{#each payrun}}
-                              {{> singlePayrunResult index=@index data=this}}
+                              {{> singlePayrunResult index=@index data=this isSapHanaEnabled=(isSapHanaEnabled)}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -130,10 +134,20 @@
                     {{/if}}
                 {{/if}}
 
+                {{#if isSapHanaEnabled}}
+                    <div class="pull-right">
+                        <button class="btn btn-primary btn-large" id="postToSapHana">Post to SAP HANA</button>
+                    </div>
+                {{/if}}
+
+                <div class="pull-right">
+                    <div class="col-sm-2"></div>
+                </div>
+
                 {{#if canPostToSAP}}
                     <div class="pull-right">
-                        <button class="btn btn-primary btn-large" id="postToSap">Post results to SAP</button>
-                    </div>
+                        <button class="btn btn-primary btn-large" id="postToSap">Post to SAP B1</button>
+                    </div>                    
                 {{/if}}
             {{else}}
                 <div class="col-md-12">
@@ -161,6 +175,16 @@
               <i class="fa  fa-check-square-o"></i>
           {{/unless}}
       </td>
+
+      {{#if isSapHanaEnabled}}
+      <td class="table-action-hide">
+            {{#unless data.isPostedToSAPHANA}}
+                <i class="fa   fa-times-circle-o"></i>
+            {{else}}
+                <i class="fa  fa-check-square-o"></i>
+            {{/unless}}
+       </td>
+      {{/if}}
   </tr>
 </template>
 

@@ -224,6 +224,23 @@ Template.payruns.helpers({
         } else {
             return true
         }
+    },
+    isSapBusinessOneEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+      } else {
+          return true
+      }
+    },
+    isSapHanaEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+      } else {
+          return true
+      }
     }
 });
 
@@ -243,9 +260,11 @@ Template.payruns.onCreated(function () {
     self.errorMsg = new ReactiveVar();
     //self.errorMsg.set("No Payrun available");
 
+    let businessUnitId = Session.get('context');
     self.payrollApprovalConfig = new ReactiveVar()
 
     let businessId = Session.get('context')
+    self.businessUnitCustomConfig = new ReactiveVar()
 
 
     self.autorun(() => {
@@ -265,6 +284,13 @@ Template.payruns.onCreated(function () {
             Template.instance().currentPayrun.set(null);
             Template.instance().errorMsg.set("No Payrun available for that time period");
         }
+
+        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                // console.log()
+                self.businessUnitCustomConfig.set(res)
+            }
+        })
     });
 });
 
@@ -292,8 +318,11 @@ Template.singlePayrunResult.helpers({
       return employee.employeeProfile.employeeId;
     else
       return ""
-  }
+  },
 });
+
+Template.singlePayrunResult.onCreated(function () {
+})
 
 Template.singlePayrunResult.events({
     'click .anEmployeePayResult': (e, tmpl) => {

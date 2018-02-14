@@ -46,9 +46,7 @@ Core.publish("timewritingsformonth", function (businessId, month, year) {
     this.unblock();
     check(businessId, String);
 
-    return TimeWritings.find({
-        
-    });
+    return TimeWritings.find({businessId: businessId});
 });
 
 

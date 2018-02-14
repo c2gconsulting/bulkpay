@@ -147,28 +147,52 @@ Meteor.methods({
         }
         return []
     },
-    "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){
-        if(!this.userId) {
-            throw new Meteor.Error(401, "Unauthorized");
+    "successfactors/setSfCostCenterOnUnits": function(businessUnitId, unitCostCenters) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized")
         }
-        check(businessUnitId, String);
-        this.unblock()
+        let userId = Meteor.userId();
+        this.unblock();
 
         let unitCostCenterCodes = Object.keys(unitCostCenters) || []
-        let unitsData = []
-        unitCostCenterCodes.forEach(code => {
-            const unitCostCenter = unitCostCenters[code]
-            unitsData.push(unitCostCenter)
-        })
+        payGradeCodes.forEach(code => {
+            const payType = paytypes[code]
 
-        let sfConfig = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId});
-        if(sfConfig) {
-            SuccessFactorsIntegrationConfigs.update(sfConfig._id, {$set : {units: unitsData}});
-        } else {
-            SuccessFactorsIntegrationConfigs.insert({businessId: businessUnitId, units: unitsData})
-        }
+            const foundPaytype = PayTypes.findOne({code: code})
+            if(foundPaytype) {
+                if(payType.description) {
+                    PayTypes.update({_id: foundPaytype._id}, {$set: {
+                        description: payType.description
+                    }})
+                }
+            } else {
+                PayTypes.insert(payType);
+            }
+        })
         return true;
     },
+    // "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){
+    //     if(!this.userId) {
+    //         throw new Meteor.Error(401, "Unauthorized");
+    //     }
+    //     check(businessUnitId, String);
+    //     this.unblock()
+
+    //     let unitCostCenterCodes = Object.keys(unitCostCenters) || []
+    //     let unitsData = []
+    //     unitCostCenterCodes.forEach(code => {
+    //         const unitCostCenter = unitCostCenters[code]
+    //         unitsData.push(unitCostCenter)
+    //     })
+
+    //     let sfConfig = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId});
+    //     if(sfConfig) {
+    //         SuccessFactorsIntegrationConfigs.update(sfConfig._id, {$set : {units: unitsData}});
+    //     } else {
+    //         SuccessFactorsIntegrationConfigs.insert({businessId: businessUnitId, units: unitsData})
+    //     }
+    //     return true;
+    // },
     "successfactors/fetchEmployeeTimeSheets": function(businessUnitId, month, year) {
         console.log(`Inside fetchEmployeeTimeSheets method`)
         if (!this.userId) {
@@ -203,7 +227,6 @@ Meteor.methods({
                         queue.add(function(done) {
                             console.log('Task: ', index);
                             let empTimeSheets = timeSheets[userId]
-                            empTimeSheets.entries = []
     
                             empTimeSheets.forEach(time => {
                                 try {
@@ -216,9 +239,20 @@ Meteor.methods({
                                         const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
                                         entries.forEach(entry => {
                                             if(entry.costCenter && entry.quantityInHours > 0) {
+                                                console.log(`Got timesheet entry with hours more than zero`)
+
                                                 TimeWritings.insert({
-                                                    
+                                                    employeeId: userId,
+                                                    costCenter: null,
+                                                    duration: entry.quantityInHours,
+                                                    businessId: config.businessId,
+                                                    isStatusSeenByCreator: false,
+                                                    approvedBy: null,
+                                                    approvedDate: null,
+                                                    isApprovalStatusSeenByCreator: false
                                                 })
+                                            } else {
+                                                console.log(`Got timesheet entry with hours more than zero`)
                                             }
                                         })
                                     }
@@ -227,8 +261,6 @@ Meteor.methods({
                                 }
                             })
                             console.log(`Task Done!`)
-                            // Insert into db.
-                            // timeSheetsWithEntries.push(empTimeSheets)    
                             done();
                         });
                      });
