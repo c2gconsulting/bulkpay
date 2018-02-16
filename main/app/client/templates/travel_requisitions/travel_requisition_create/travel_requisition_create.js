@@ -133,6 +133,10 @@ Template.TravelRequisitionCreate.events({
         if(customConfig) {
             let travelRequestConfig = customConfig.travelRequestConfig;    
             if(travelRequestConfig) {
+                requisitionDoc.currency = tmpl.selectedCurrency.get()
+                requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
+
                 let fields = travelRequestConfig.fields || [];
                 fields.forEach(field => {
                     if(tmpl[field.dbFieldName]) {
@@ -144,13 +148,13 @@ Template.TravelRequisitionCreate.events({
                 requisitionDoc.tripCosts = {}
                 let costs = travelRequestConfig.costs || [];
                 costs.forEach(cost => {
-                    const costAmount = tmpl[cost.dbFieldName].get();
+                    let costAmount = tmpl[cost.dbFieldName].get();
+                    if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                        const selectedNumDays = tmpl.selectedNumDays.get()
+                        costAmount = costAmount * selectedNumDays
+                    }
                     requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
                 })
-
-                requisitionDoc.currency = tmpl.selectedCurrency.get()
-                requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-                requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
             }
         }
         //--
@@ -184,6 +188,10 @@ Template.TravelRequisitionCreate.events({
             if(customConfig) {
                 let travelRequestConfig = customConfig.travelRequestConfig;    
                 if(travelRequestConfig) {
+                    requisitionDoc.currency = tmpl.selectedCurrency.get()
+                    requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                    requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
+
                     let fields = travelRequestConfig.fields || [];
                     fields.forEach(field => {
                         if(tmpl[field.dbFieldName]) {
@@ -195,13 +203,16 @@ Template.TravelRequisitionCreate.events({
                     requisitionDoc.tripCosts = {}
                     let costs = travelRequestConfig.costs || [];
                     costs.forEach(cost => {
-                        const costAmount = tmpl[cost.dbFieldName].get();
+                        let costAmount = tmpl[cost.dbFieldName].get();
+
+                        if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                            const selectedNumDays = tmpl.selectedNumDays.get()
+                            costAmount = costAmount * selectedNumDays
+                        }
+
                         requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
                     })
 
-                    requisitionDoc.currency = tmpl.selectedCurrency.get()
-                    requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-                    requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
                 }
             }
             //--
@@ -454,7 +465,11 @@ Template.TravelRequisitionCreate.onCreated(function () {
                 let totalCosts = 0;
                 
                 costs.forEach(cost => {
-                    const costAmount = self[cost.dbFieldName].get();
+                    let costAmount = self[cost.dbFieldName].get();
+                    if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                        const selectedNumDays = self.selectedNumDays.get()
+                        costAmount = costAmount * selectedNumDays
+                    }
                     totalCosts += costAmount;
 
                     if(cost.isPayableToStaff) {

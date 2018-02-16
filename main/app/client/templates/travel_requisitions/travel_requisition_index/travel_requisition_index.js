@@ -89,6 +89,13 @@ Template.TravelRequisitionIndex.helpers({
             })
             return totalCosts;
         }
+    },
+    'getTravelRequestCurrency': function(requisition) {
+        if(requisition.currency) {
+            return requisition.currency
+        } else {
+            return 'NGN'
+        }
     }
 });
 

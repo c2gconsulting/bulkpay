@@ -39,12 +39,15 @@ const SFIntegrationHelper = {
  */
 Meteor.methods({
   'successfactorsIntegration/testConnection': function (businessId, successFactorsConfig) {
-      if (!this.userId) {
-          throw new Meteor.Error(401, "Unauthorized");
-      }
-      this.unblock()
-      //--
-      if(successFactorsConfig) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock()
+        //--
+        if(!successFactorsConfig) {
+            return '{"status": false, "message": "Successfactors Config empty"}'
+        }
+
         let connectionUrl = `${successFactorsConfig.protocol}://${successFactorsConfig.odataDataCenterUrl}/odata/v2/$metadata`
         const requestHeaders = SFIntegrationHelper.getAuthHeader(successFactorsConfig)
 
@@ -70,9 +73,6 @@ Meteor.methods({
             errorResponse = `{"status": false, "message": "${e.message}"}`
         }
         return errorResponse;
-      } else {
-          return '{"status": false, "message": "Successfactors Config empty"}'
-      }
     },
     'successfactors/fetchPaytypes': function (businessUnitId) {
         if (!this.userId) {
@@ -164,22 +164,23 @@ Meteor.methods({
         }
         let userId = Meteor.userId();
         this.unblock();
+        console.log(`unitCostCenters: `, unitCostCenters)
 
         let unitCostCenterCodes = Object.keys(unitCostCenters) || []
-        payGradeCodes.forEach(code => {
-            const payType = paytypes[code]
+        // unitCostCenterCodes.forEach(code => {
+        //     const payType = paytypes[code]
 
-            const foundPaytype = PayTypes.findOne({code: code})
-            if(foundPaytype) {
-                if(payType.description) {
-                    PayTypes.update({_id: foundPaytype._id}, {$set: {
-                        description: payType.description
-                    }})
-                }
-            } else {
-                PayTypes.insert(payType);
-            }
-        })
+        //     const foundUnit = EntityObjects.findOne({code: code})
+        //     if(foundUnit) {
+        //         EntityObjects.update({_id: foundPaytype._id}, {$set: {
+        //             successFactors: {
+
+        //             }
+        //         }})
+        //     } else {
+        //         EntityObjects.insert(payType);
+        //     }
+        // })
         return true;
     },
     // "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){

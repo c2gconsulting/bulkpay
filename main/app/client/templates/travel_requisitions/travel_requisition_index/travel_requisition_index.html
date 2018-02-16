@@ -40,7 +40,7 @@
                                         <th>Unit</th>
                                         <th>Date created</th>
                                         <th>Status</th>
-                                        <th>Total Trip Cost (NGN</th>
+                                        <th>Total Trip Cost</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -55,7 +55,7 @@
                                                 <td nowrap></td>                                            
                                             {{/if}}
                                             <td>{{status}}</td>
-                                            <td>{{formatMoneyD (totalTripCost this)}}</td>
+                                            <td>{{formatMoneyD (totalTripCost this) (getTravelRequestCurrency this)}}</td>
                                         </tr>
                                     {{/each}}
                                     </tbody>
