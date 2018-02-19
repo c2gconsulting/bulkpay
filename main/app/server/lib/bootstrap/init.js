@@ -50,7 +50,9 @@ _.extend(Core, {
     } catch (error) {
       Core.Log.error("initData: ", error.message);
     }
-
+    
+    Meteor.users._dropIndex("emails.address_1");
+    Meteor.users._ensureIndex({"emails.address":1}, {unique:false});
 
     return true;
   },
