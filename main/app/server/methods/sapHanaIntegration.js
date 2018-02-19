@@ -94,5 +94,36 @@ Meteor.methods({
           }
       }
       return []
-  }
+  },
+  'hanaIntegration/postPayrunResults': function (businessUnitId, period) {
+      if (!this.userId && Core.hasPayrollAccess(this.userId)) {
+          throw new Meteor.Error(401, "Unauthorized");
+      }
+      this.unblock()
+
+      let errorResponse = null
+      try {
+            let payRunResult = Payruns.find({period: period, businessId: businessUnitId}).fetch();
+            let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
+
+            if(!config) {
+                return JSON.stringify({
+                    "status": false,
+                    "message": "Your company's SAP HANA integration setup has not been done"
+                })
+            }
+            let user = Meteor.user();
+            let tenantId = user.group;
+            let tenant = Tenants.findOne(tenantId)        
+            let localCurrency = {}
+            if (tenant) {
+                localCurrency = tenant.baseCurrency;
+            }
+
+
+
+      } catch(e) {
+        errorResponse = '{"status": false, "message": "Could not connect to SAP Integration service"}'
+      }
+    }
 })

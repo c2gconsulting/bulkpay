@@ -124,7 +124,7 @@
           "requireTwoSupervisors": true
       },
       "isTwoStepApprovalEnabled": true,
-      "leaveDaysAccrual": "NumberOfDaysWorked",
+      "leaveDaysAccrual": "FixedLeaveEntitlement",
       "checkEmployeeResumptionForPayroll": false,
       "isWeekendIncludedInLeaveRequests": true,
       "isTimeTypeEnabled": false,

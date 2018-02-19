@@ -406,7 +406,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   if(positionData.positionCode) {
     const positionEntity = EntityObjects.findOne({
-      'successfactors.externalCode': positionData.positionCode,
+      'successFactors.externalCode': positionData.positionCode,
       businessId: business._id
     })
     let positionId;
@@ -432,7 +432,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     //--
     if(payGroupData.code) {
       let payGrade = PayGrades.findOne({
-        'successfactors.externalCode': payGroupData.code,
+        'successFactors.externalCode': payGroupData.code,
         businessId: business._id
       })
       if(payGrade) {
@@ -659,7 +659,8 @@ if (Meteor.isServer) {
             let business = BusinessUnits.findOne({_id: businessId})
             let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
             if(config) {
-              fetchEmployeeDetails(business, config, '103239')
+              // fetchEmployeeDetails(business, config, '103239')
+              fetchEmployeeDetails(business, config, 'chris.tester')
             }
           })
         }));        
