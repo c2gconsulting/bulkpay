@@ -295,8 +295,9 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       userFirstName = userFirstName.trim()
       userLastName = userLastName.trim()
       //--
-      let defaultUsername = userFirstName + "." + userLastName
-      defaultUsername = defaultUsername.toLowerCase()
+      // let defaultUsername = userFirstName + "." + userLastName
+      // defaultUsername = defaultUsername.toLowerCase()
+      let defaultUsername = personIdExternal;
   
       accountId = Meteor.users.insert({
         profile: {
