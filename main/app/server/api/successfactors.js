@@ -335,6 +335,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   let bpUser = Meteor.users.findOne(accountId)
   const bpUserId = bpUser._id
+  bpUser.emails = [{
+    address: bulkPayUserParams.email,
+    verified: false
+  }]
   bpUser.employeeProfile = {
     employment: {
       status: 'Active'
@@ -661,6 +665,7 @@ if (Meteor.isServer) {
             if(config) {
               // fetchEmployeeDetails(business, config, '103239')
               fetchEmployeeDetails(business, config, 'chris.tester')
+              // fetchEmployeeDetails(business, config, 'Zek')
             }
           })
         }));        
