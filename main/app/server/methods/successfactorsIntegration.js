@@ -214,14 +214,22 @@ Meteor.methods({
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
-            const monthAsNum = Number(month -1)
+            const monthAsNum = Number(month - 1)
             const yearAsNum = Number(year)
 
             const monthMoment = moment().month(monthAsNum).year(yearAsNum)
-            const monthStart = monthMoment.clone().startOf('month').format('YYYY-MM-DDTHH:mm:ss')
-            const monthEnd = monthMoment.clone().endOf('month').format('YYYY-MM-DDTHH:mm:ss')
+            const monthStartMoment = monthMoment.clone().startOf('month')
+            const monthEndMoment = monthMoment.clone().endOf('month')
+            
+            const monthStart = monthStartMoment.format('YYYY-MM-DDTHH:mm:ss')
+            const monthEnd = monthEndMoment.format('YYYY-MM-DDTHH:mm:ss')
             console.log(`monthStart! `, monthStart)
             console.log(`monthEnd!`, monthEnd)
+
+            TimeWritings.remove({
+                businessId: config.businessId, 
+                day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
+            });
 
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
@@ -265,12 +273,13 @@ Meteor.methods({
                                                 // if(entry.costCenter && entry.quantityInHours > 0) {
                                                     console.log(`Got timesheet entry with hours more than zero`)
                                                     console.log(`entry.quantityInHours: `, entry.quantityInHours)
-                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(time.startDate)                                                    
+                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(time.startDate)
+                                                    console.log(`time.startDate: `, startDate)
                                                     console.log(``)
     
                                                     TimeWritings.insert({
                                                         employeeId: bpUser._id,
-                                                        costCenter: null,
+                                                        costCenter: entry.costCenter,
                                                         day: startDate,
                                                         duration: entry.quantityInHours || 0,
                                                         businessId: config.businessId,
