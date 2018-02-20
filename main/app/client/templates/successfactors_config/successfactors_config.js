@@ -232,6 +232,18 @@ Template.SuccessFactorsConfig.events({
             }
         })
     },
+    'change [name="periodMonth"]': function(e){
+      let selectedMonth = e.currentTarget.value;
+      console.log("Selected month: " + selectedMonth);
+
+      Template.instance().selectedMonth.set(selectedMonth);
+    },
+    'change [name="periodYear"]': function(e){
+      let selectedYear = e.currentTarget.value;
+      console.log("Selected year: " + selectedYear);
+
+      Template.instance().selectedYear.set(selectedYear);
+    },
     'click #fetchEmployeeTimeSheets': (e, tmpl) => {
         e.preventDefault();
         let businessUnitId = Session.get('context')
@@ -241,6 +253,9 @@ Template.SuccessFactorsConfig.events({
         if(month && year) {
             console.log(`month: `, month)
             console.log(`year: `, year)
+
+            // This is bad! Needs better way.
+            tmpl.subscribe('timewritingsformonth', businessUnitId, month, year)
             
             Meteor.call("successfactors/fetchEmployeeTimeSheets", businessUnitId, month, year, (err, res) => {
                 console.log(`Res: `, res)
@@ -288,8 +303,20 @@ Template.SuccessFactorsConfig.helpers({
     },
     'timeWritingRecords': function() {
         let businessUnitId = Session.get('context');
+        const month = Template.instance().selectedMonth.get()
+        const year = Template.instance().selectedYear.get()
 
-        return TimeWritings.find({businessId: businessUnitId})
+        const monthAsNum = Number(month - 1)
+        const yearAsNum = Number(year)
+
+        const monthMoment = moment().month(monthAsNum).year(yearAsNum)
+        const monthStartMoment = monthMoment.clone().startOf('month')
+        const monthEndMoment = monthMoment.clone().endOf('month')
+
+        return TimeWritings.find({
+            businessId: businessUnitId,        
+            day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
+        }, {$sort: {day: -1}})
     },
     'costCenters': function () {
         return Template.instance().units.get()
@@ -343,7 +370,6 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.subscribe('SuccessFactorsIntegrationConfigs', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('getCostElement', businessUnitId);
-    self.subscribe('timewritingsformonth', businessUnitId)
     self.subscribe('allEmployees', businessUnitId)
 
     self.successFactorsConfig = new ReactiveVar()
@@ -365,6 +391,8 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.selectedSfPaygrades = new ReactiveVar({})
     self.selectedUnits = new ReactiveVar({})
     self.selectedSfProjects = new ReactiveVar({})
+    self.selectedMonth = new ReactiveVar()
+    self.selectedYear = new ReactiveVar()
 
     self.getParentsText = (unit) => {// We need parents 2 levels up
         let parentsText = ''

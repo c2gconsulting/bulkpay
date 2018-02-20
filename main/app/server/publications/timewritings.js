@@ -46,7 +46,24 @@ Core.publish("timewritingsformonth", function (businessId, month, year) {
     this.unblock();
     check(businessId, String);
 
-    return TimeWritings.find({businessId: businessId});
+    // const monthAsNum = Number(month - 1)
+    // const yearAsNum = Number(year)
+
+    // const monthMoment = moment().month(monthAsNum).year(yearAsNum)
+    // const monthStartMoment = monthMoment.clone().startOf('month')
+    // const monthEndMoment = monthMoment.clone().endOf('month')
+    
+    // const monthStart = monthStartMoment.format('YYYY-MM-DDTHH:mm:ss')
+    // const monthEnd = monthEndMoment.format('YYYY-MM-DDTHH:mm:ss')
+
+    // return TimeWritings.find({
+    //     businessId: businessId,
+    //     day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
+    // });
+
+    return TimeWritings.find({
+        businessId: businessId
+    });
 });
 
 

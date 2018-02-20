@@ -284,8 +284,6 @@ Meteor.methods({
                         }
                         return position
                     })
-                    console.log(`results: `, positionResults)
-
                     return positionResults
                 } catch(e) {
                   console.log('Error in Getting SF positions! ', e.message)
@@ -353,7 +351,7 @@ Meteor.methods({
                                 console.log(`bpUser: `, bpUser)
                                 empTimeSheets.forEach(time => {
                                     try {
-                                        const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeSheetEntry?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,startDate,quantityInHours,startTime,endTime&$format=json`
+                                        const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
                                         const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
                                         // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
         
@@ -361,27 +359,39 @@ Meteor.methods({
                                             let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
                                             const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
                                             entries.forEach(entry => {
-                                                // if(entry.costCenter && entry.quantityInHours > 0) {
+                                                if(entry.hours > 0) {
                                                     console.log(`Got timesheet entry with hours more than zero`)
-                                                    console.log(`entry.quantityInHours: `, entry.quantityInHours)
-                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(time.startDate)
+                                                    console.log(`entry.hours: `, entry.hours)
+                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
                                                     console.log(`time.startDate: `, startDate)
                                                     console.log(``)
+                                                    let hoursAsNum = parseFloat(entry.hours)
+
+                                                    let unitId = '';
+                                                    if(entry.costCenter) {
+                                                        const foundUnit = EntityObjects.findOne({
+                                                            'successFactors.externalCode': entry.costCenter,
+                                                            businessId: config.businessId
+                                                        })
+                                                        if(foundUnit) {
+                                                            unitId = foundUnit._id
+                                                        }
+                                                    }
     
                                                     TimeWritings.insert({
                                                         employeeId: bpUser._id,
-                                                        costCenter: entry.costCenter,
+                                                        costCenter: unitId,
                                                         day: startDate,
-                                                        duration: entry.quantityInHours || 0,
+                                                        duration: hoursAsNum || 0,
                                                         businessId: config.businessId,
                                                         isStatusSeenByCreator: false,
                                                         approvedBy: null,
                                                         approvedDate: null,
                                                         isApprovalStatusSeenByCreator: false
                                                     })
-                                                // } else {
-                                                //     console.log(`Got timesheet entry with null hours`)
-                                                // }
+                                                } else {
+                                                    console.log(`Got timesheet entry with null hours`)
+                                                }
                                             })
                                         }
                                     } catch(err) {
