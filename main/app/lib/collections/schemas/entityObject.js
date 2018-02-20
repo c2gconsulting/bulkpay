@@ -48,7 +48,7 @@ Core.Schemas.EntityObject = new SimpleSchema({
         blackbox: true
     },
 
-    "successFactors": {//externalCode
+    "successFactors": {//externalCode, costCenter.code
         label: "Success Factors Config",
         optional: true,
         type: Object,

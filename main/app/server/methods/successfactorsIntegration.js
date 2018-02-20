@@ -181,6 +181,121 @@ Meteor.methods({
         })
         return true;
     },
+    "successfactors/fetchOrgChart": function(businessUnitId) {
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+
+        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+        if(config) {
+            let business = BusinessUnits.findOne({_id: businessUnitId})
+                
+            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
+            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+            const positionsUrl = `${baseUrl}/odata/v2/Position?$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
+          
+            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            const positionsRes = getToSync(positionsUrl, {headers: requestHeaders})
+
+            if(positionsRes) {
+                try {
+                    let positionsData = JSON.parse(positionsRes.content)
+                    let positionResults =  SFIntegrationHelper.getOdataResults(positionsData)
+
+                    positionResults.map(position => {
+                        try {
+                            let createPosition = (parentId) => {
+                                const foundPosition = EntityObjects.findOne({
+                                    'successFactors.externalCode': position.code,
+                                    otype: 'Position',
+                                    businessId: businessUnitId
+                                })
+                                if(!foundPosition) {
+                                    EntityObjects.insert({
+                                        parentId: parentId,
+                                        name: position.jobTitle,
+                                        otype: 'Position',
+                                        properties: {},
+                                        status: 'Active',
+                                        createdBy: null,
+                                        properties: null,
+                                        businessId: businessUnitId,
+                                        _groupId: business._groupId,
+                                        successFactors: {
+                                          externalCode: position.code,
+                                          costCenter: {
+                                              code: null // I know positions have cost centers on SF. 
+                                          }
+                                        }
+                                    })
+                                }
+                            }
+
+                            if(position.department) {
+                                const departmentUrl = `${baseUrl}/odata/v2/FODepartment?$filter=externalCode eq '${position.department}'&$select=costCenter,name,description,externalCode,parent&$format=json`
+          
+                                let getToSync = Meteor.wrapAsync(HTTP.get);  
+                                const departmentRes = getToSync(departmentUrl, {headers: requestHeaders})
+                                if(departmentRes) {
+                                    let departmentData = JSON.parse(departmentRes.content)
+                                    let departmentResults =  SFIntegrationHelper.getOdataResults(departmentData)
+                                    if(departmentResults.length > 0) {
+                                        const department = departmentResults[0]
+                                        position.departmentDetails = department
+
+                                        const foundDepartment = EntityObjects.findOne({
+                                            'successFactors.externalCode': department.externalCode,
+                                            otype: 'Position',
+                                            businessId: businessUnitId
+                                        })
+                                        let unitId = ''
+                                        if(!foundDepartment) {
+                                            unitId = EntityObjects.insert({
+                                                parentId: null,
+                                                name: department.name,
+                                                otype: 'Unit',
+                                                properties: {},
+                                                status: 'Active',
+                                                createdBy: null,
+                                                properties: null,
+                                                businessId: businessUnitId,
+                                                _groupId: business._groupId,
+                                                successFactors: {
+                                                  externalCode: department.externalCode,
+                                                  costCenter: {
+                                                      code: department.costCenter
+                                                  }
+                                                }
+                                            })
+                                        } else {
+                                            unitId = foundDepartment._id
+                                        }
+                                        createPosition(unitId)
+                                    }
+                                } else {
+                                    createPosition(null)
+                                }
+                            } else {
+                                createPosition(null)
+                            }
+                        } catch(e) {
+                            console.log('Error in Getting SF position department! ', e.message)
+                        }
+                        return position
+                    })
+                    console.log(`results: `, positionResults)
+
+                    return positionResults
+                } catch(e) {
+                  console.log('Error in Getting SF positions! ', e.message)
+                }
+            } else {
+                console.log('Error in Getting SF positions! null response')
+            }
+        }
+        return true
+    },
     "successfactors/fetchEmployeeTimeSheets": function(businessUnitId, month, year) {
         console.log(`Inside fetchEmployeeTimeSheets method`)
         if (!this.userId) {

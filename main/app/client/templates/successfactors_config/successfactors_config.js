@@ -215,6 +215,23 @@ Template.SuccessFactorsConfig.events({
             }
         })
     },
+    'click #fetchPositions': (e, tmpl) => {
+        e.preventDefault();
+        let businessUnitId = Session.get('context')
+        tmpl.isFetchingSfPositions.set(true)
+
+        Meteor.call("successfactors/fetchOrgChart", businessUnitId, (err, res) => {
+            tmpl.isFetchingSfPositions.set(false)
+
+            if(res) {
+                swal('Success', 'Positions were successfully synced!', 'success')
+                tmpl.sfPositions.set(res)
+            } else {
+                console.log(err);
+                swal('Error', err.reason, 'error')
+            }
+        })
+    },
     'click #fetchEmployeeTimeSheets': (e, tmpl) => {
         e.preventDefault();
         let businessUnitId = Session.get('context')
@@ -243,6 +260,9 @@ Template.SuccessFactorsConfig.events({
 Template.SuccessFactorsConfig.helpers({
     'companyConnectionInfo': function() {
         return Template.instance().successFactorsConfig.get()
+    },
+    'sfPositions': function() {
+        return Template.instance().sfPositions.get()
     },
     'sfPayTypes': function() {
         return Template.instance().sfPayTypes.get()
@@ -273,6 +293,9 @@ Template.SuccessFactorsConfig.helpers({
     },
     'costCenters': function () {
         return Template.instance().units.get()
+    },
+    'isFetchingSfPositions': function() {
+        return Template.instance().isFetchingSfPositions.get()
     },
     'isFetchingPayTypes': function() {
         return Template.instance().isFetchingPayTypes.get()
@@ -324,11 +347,13 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.subscribe('allEmployees', businessUnitId)
 
     self.successFactorsConfig = new ReactiveVar()
+    self.sfPositions = new ReactiveVar()
     self.sfPayTypes = new ReactiveVar()
     self.sfPayGrades = new ReactiveVar()
     self.sfCostCenters = new ReactiveVar()
     self.sfTimeSheets = new ReactiveVar()
 
+    self.isFetchingSfPositions = new ReactiveVar(false)
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
     self.isFetchingCostCenters = new ReactiveVar(false)

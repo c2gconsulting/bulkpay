@@ -430,7 +430,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         status: 'Active',
         _groupId: business._groupId,
         successFactors: {
-          externalCode: positionData.positionCode
+          externalCode: positionData.positionCode,
+          costCenter: {
+            code: null // I know positions have cost centers on SF.
+          }
         }
       })
     }

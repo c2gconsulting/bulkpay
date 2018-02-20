@@ -24,11 +24,15 @@
                         <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
-                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> PayComponents </a></li>
-                                <li><a href="#new-tab3" data-toggle="tab"><strong></strong> Pay Groups </a></li>
-                                <li><a href="#new-tab4" data-toggle="tab"><strong></strong> Cost-Center</a></li>
-                                <li><a href="#new-tab5" data-toggle="tab"><strong></strong> Projects</a></li>
-                                <li><a href="#new-tab6" data-toggle="tab"><strong></strong> Time Sheets</a></li>                                
+
+                                <li><a href="#new-tab2" data-toggle="tab" id="step2"><strong></strong> Positions </a></li>
+
+                                <li><a href="#new-tab3" data-toggle="tab" id="step3"><strong></strong> PayComponents </a></li>
+                                <li><a href="#new-tab4" data-toggle="tab" id="step4"><strong></strong> Pay Groups </a></li>
+                                <li><a href="#new-tab5" data-toggle="tab" id="step5"><strong></strong> Cost-Center</a></li>
+                                <li><a href="#new-tab6" data-toggle="tab" id="step6"><strong></strong> Projects</a></li>
+
+                                <li><a href="#new-tab7" data-toggle="tab" id="step7"><strong></strong> Time Sheets</a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -113,6 +117,43 @@
 
                                 <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="fetchPositions">Sync</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Code</th>
+                                                    <th>Job Title</th>
+                                                    <th>Department</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">                                                
+                                                {{#if isFetchingSfPositions}}
+                                                    <br/><br/><br/><br/><br/>
+                                                    {{> spinner}}
+                                                {{else}}
+                                                    {{#each sfPositions}}
+                                                        <tr class="item" style="cursor: move;">
+                                                            <td>{{@index}}</td>
+                                                            <td>{{code}}</td>
+                                                            <td>{{jobTitle}}</td>
+                                                            <td>{{departmentDetails.name}}</td>
+                                                        </tr>
+                                                    {{/each}}
+                                                {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->
+
+                                <div class="tab-pane" id="new-tab3">
+                                    <div class="form-group">
                                         <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
                                         <div class="row">
                                             <div class="pull-right">
@@ -159,7 +200,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
-                                <div class="tab-pane" id="new-tab3">
+                                <div class="tab-pane" id="new-tab4">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -200,7 +241,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->    
                                 
-                                <div class="tab-pane" id="new-tab4">
+                                <div class="tab-pane" id="new-tab5">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -247,7 +288,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
-                                <div class="tab-pane" id="new-tab5">
+                                <div class="tab-pane" id="new-tab6">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -288,7 +329,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->
 
-                                <div class="tab-pane" id="new-tab6">
+                                <div class="tab-pane" id="new-tab7">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-2">
@@ -356,7 +397,7 @@
                                             </table>
                                         </div><!-- table-responsive -->
                                     </div><!-- form-group -->
-                                </div><!-- tab-pane -->                                
+                                </div><!-- tab-pane -->
                             </div>
 
                             <ul class="list-unstyled wizard">
