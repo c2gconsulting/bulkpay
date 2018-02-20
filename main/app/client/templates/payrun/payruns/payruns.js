@@ -110,6 +110,50 @@ Template.payruns.events({
             })
         }
     }, 
+    'click #postToSapHana': (e,tmpl) => {
+        let currentPayrun = Template.instance().currentPayrun.get();
+
+        if(currentPayrun) {
+            tmpl.$('#postToSap').text('Please wait ... ');
+            tmpl.$('#postToSap').attr('disabled', true);
+            //--
+            let resetButton = function() {
+                tmpl.$('#postToSap').text('Post results to SAP');
+                tmpl.$('#postToSap').removeAttr('disabled');
+            };
+            //--
+            const month = $('[name="paymentPeriodMonth"]').val();
+            const year = $('[name="paymentPeriodYear"]').val();
+            let period = `${month}${year}`
+
+            Meteor.call("hanaIntegration/postPayrunResults", Session.get('context'), period, (err, res) => {
+                resetButton()
+                console.log(`res: ${JSON.stringify(res)}`)
+                if (!err) {
+                    if(res) {
+                        let responseAsObj = JSON.parse(res)
+                        if(responseAsObj.status === true) {
+                            swal("Payrun Post Status", responseAsObj["message"], "success");
+                        } else {
+                            if(responseAsObj.errors) {
+                                let errors = responseAsObj.errors
+                                console.log(`Errors: ${JSON.stringify(errors)}`)
+                                Modal.show('PayrunResultsPostToSapErrors', errors)
+                            } else if(responseAsObj.message) {
+                                swal("Payrun Post Status", responseAsObj.message, "error");
+                            } else {
+                                swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                            }
+                        }
+                    } else {
+                        swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                    }
+                } else {
+                    swal("Payrun Post Status", err.message, "error");
+                }
+            })
+        }
+    },
     'click #payrunDelete': function(e, tmpl) {
         event.preventDefault();
         

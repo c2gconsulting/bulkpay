@@ -1,3 +1,6 @@
+let soap = require('soap');
+let sapHanaWsdl = 'https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/post_gl/215/post_gl/post_gl?sap-client=215';
+
 
 const HanaIntegrationHelper = {
   getAuthHeader: (sfConfig) => {
@@ -95,23 +98,23 @@ Meteor.methods({
       }
       return []
   },
-  'hanaIntegration/postPayrunResults': function (businessUnitId, period) {
-      if (!this.userId && Core.hasPayrollAccess(this.userId)) {
-          throw new Meteor.Error(401, "Unauthorized");
-      }
-      this.unblock()
+    'hanaIntegration/postPayrunResults': function (businessUnitId, period) {
+        if (!this.userId && Core.hasPayrollAccess(this.userId)) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock()
 
-      let errorResponse = null
-      try {
+        let errorResponse = null
+        try {
             let payRunResult = Payruns.find({period: period, businessId: businessUnitId}).fetch();
-            let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
+            // let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
 
-            if(!config) {
-                return JSON.stringify({
-                    "status": false,
-                    "message": "Your company's SAP HANA integration setup has not been done"
-                })
-            }
+            // if(!config) {
+            //     return JSON.stringify({
+            //         "status": false,
+            //         "message": "Your company's SAP HANA integration setup has not been done"
+            //     })
+            // }
             let user = Meteor.user();
             let tenantId = user.group;
             let tenant = Tenants.findOne(tenantId)        
@@ -119,11 +122,29 @@ Meteor.methods({
             if (tenant) {
                 localCurrency = tenant.baseCurrency;
             }
+            
+            const authHeaders = HanaIntegrationHelper.getAuthHeader({
+                username: 'SAP_INSTALL', password: 'Awnkg0akm'
+            })
 
+            // soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, function(err, client) {
+            //     console.log(`err: `, err);
+            //     console.log(`client: `, client)
+            // });
 
-
-      } catch(e) {
-        errorResponse = '{"status": false, "message": "Could not connect to SAP Integration service"}'
-      }
+            soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
+            .then((client) => {
+                console.log(`client: `, client)
+                
+                // return client.AccDocumentPost(args);
+                // return {}
+            }).then((result) => {
+                console.log('Result: ', result);
+            }).catch((error) => {
+                console.log(`error: `, error)
+            })
+        } catch(e) {
+            errorResponse = '{"status": false, "message": "Could not connect to SAP Integration service"}'
+        }
     }
 })
