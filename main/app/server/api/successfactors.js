@@ -132,7 +132,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$select=personIdExternal,firstName,lastName&$format=json`
   const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
   const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
-  const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,currencyCode,frequency&$format=json`
+  const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
   const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
   const empPayGroupQueryUrl = `${baseUrl}/odata/v2/EmpCompensation?$filter=userId eq '${personIdExternal}'&$format=json`
   // const positionQueryUrl = `${baseUrl}/odata/v2/Position?$filter=code eq '${personIdExternal}'&$select=code,userId,jobTitle,positionTitle&$format=json`
@@ -359,7 +359,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         if(payType) {
           empBpPaytypeAmounts.push({
             paytype: payType._id,
-            value: payment.paycompvalue
+            value: payment.calculatedAmount // payment.paycompvalue
           })
         } else {
           let frequency = payment.frequency
