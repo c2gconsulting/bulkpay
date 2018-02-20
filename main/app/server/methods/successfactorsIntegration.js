@@ -166,21 +166,19 @@ Meteor.methods({
         this.unblock();
         console.log(`unitCostCenters: `, unitCostCenters)
 
-        let unitCostCenterCodes = Object.keys(unitCostCenters) || []
-        // unitCostCenterCodes.forEach(code => {
-        //     const payType = paytypes[code]
+        let unitIds = Object.keys(unitCostCenters) || []
+        unitIds.forEach(unitId => {
+            const unitCoster = unitCostCenters[unitId]
 
-        //     const foundUnit = EntityObjects.findOne({code: code})
-        //     if(foundUnit) {
-        //         EntityObjects.update({_id: foundPaytype._id}, {$set: {
-        //             successFactors: {
-
-        //             }
-        //         }})
-        //     } else {
-        //         EntityObjects.insert(payType);
-        //     }
-        // })
+            const foundUnit = EntityObjects.findOne({_id: unitId})
+            if(foundUnit) {
+                EntityObjects.update({_id: foundUnit._id}, {$set: {
+                    successFactors: {
+                        externalCode: unitCoster.costCenterCode
+                    }
+                }})
+            }
+        })
         return true;
     },
     // "successfactors/updateUnitCostCenters": function(businessUnitId, unitCostCenters){

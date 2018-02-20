@@ -192,7 +192,7 @@ Template.SuccessFactorsConfig.events({
         let businessUnitId = Session.get('context')
         let theUnits = Template.instance().selectedUnits.get()
 
-        Meteor.call("successfactors/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
+        Meteor.call("successfactors/setSfCostCenterOnUnits", businessUnitId, theUnits, (err, res) => {
             if(res) {
                 swal('Success', 'Cost center codes were successfully updated', 'success')
             } else {
