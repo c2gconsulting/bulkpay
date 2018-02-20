@@ -408,9 +408,7 @@ Meteor.methods({
                         day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
                     }},
                     { $group: {
-                      _id: {
-                        "employeeId": "$employeeId",
-                      }, 
+                      _id: "$employeeId",
                       duration: { $sum: "$duration" }
                     } }
                 ]);

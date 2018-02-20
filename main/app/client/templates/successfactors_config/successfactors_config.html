@@ -29,7 +29,7 @@
 
                                 <li><a href="#new-tab3" data-toggle="tab" id="step3"><strong></strong> PayComponents </a></li>
                                 <li><a href="#new-tab4" data-toggle="tab" id="step4"><strong></strong> Pay Groups </a></li>
-                                <li><a href="#new-tab5" data-toggle="tab" id="step5"><strong></strong> Cost-Center</a></li>
+                                <!-- <li><a href="#new-tab5" data-toggle="tab" id="step5"><strong></strong> Cost-Center</a></li> -->
                                 <li><a href="#new-tab6" data-toggle="tab" id="step6"><strong></strong> Projects</a></li>
 
                                 <li><a href="#new-tab7" data-toggle="tab" id="step7"><strong></strong> Time Sheets</a></li>
@@ -241,7 +241,7 @@
                                     </div><!-- form-group -->
                                 </div><!-- tab-pane -->    
                                 
-                                <div class="tab-pane" id="new-tab5">
+                                <!-- <div class="tab-pane" id="new-tab5">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -284,9 +284,9 @@
                                                 {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div> -->
 
                                 <div class="tab-pane" id="new-tab6">
                                     <div class="form-group">
@@ -366,18 +366,17 @@
                                                 <thead>
                                                 <tr>
                                                     <th>Employee</th>
-                                                    <th>Day</th>
                                                     <th>Duration(In Hours)</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab4-data-body">
                                                     {{#if isFetchingTimeSheet}}
+                                                        <br/><br/><br/><br/><br/>
                                                         {{> spinner}}
                                                     {{else}}
                                                         {{#each timeWritingRecords}}
                                                             <tr class="item">
-                                                                <td>{{getEmployeeFullName employeeId}}</td>
-                                                                <td>{{formatTime day}}</td>
+                                                                <td>{{getEmployeeFullName _id}}</td>
                                                                 <td>{{duration}}</td>
                                                             </tr>
                                                         {{/each}}
