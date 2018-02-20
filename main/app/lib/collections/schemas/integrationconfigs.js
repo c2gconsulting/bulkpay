@@ -164,10 +164,6 @@ Core.Schemas.SuccessFactorsIntegrationConfig = new SimpleSchema({
     password : {
         type: String
     },
-    units: {
-        type: [Core.Schemas.SapUnitConfig],
-        optional: true
-    },
     createdAt: {
         type: Date,
         autoValue: function () {
