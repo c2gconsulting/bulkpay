@@ -300,6 +300,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Unauthorized");
         }
         this.unblock();
+        let results = [];
 
         let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
         if(config) {
@@ -333,87 +334,90 @@ Meteor.methods({
                     let timeSheetResults = SFIntegrationHelper.getOdataResults(timeSheetData)
                     let timeSheets = _.groupBy(timeSheetResults, 'userId');
                     // console.log(`timeSheets: `, timeSheets)
-                    let queue = new PowerQueue({
-                      isPaused: true,
-                      onEnded: () => {
-                        console.log(`Queue finally done!`)
-                      }
-                    });
 
                     let timeSheetsWithEntries = []
                     Object.keys(timeSheets).map(function(userId, index) {
-                        queue.add(function(done) {
-                            console.log('Task: ', index);
-                            let empTimeSheets = timeSheets[userId]
-                            let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': userId})
+                        let empTimeSheets = timeSheets[userId]
+                        let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': userId})
 
-                            if(bpUser) {
-                                console.log(`bpUser: `, bpUser)
-                                empTimeSheets.forEach(time => {
-                                    try {
-                                        const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
-                                        const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
-                                        // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
-        
-                                        if(timeSheetEntryRes) {
-                                            let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
-                                            const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
-                                            entries.forEach(entry => {
-                                                if(entry.hours > 0) {
-                                                    console.log(`Got timesheet entry with hours more than zero`)
-                                                    console.log(`entry.hours: `, entry.hours)
-                                                    const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
-                                                    console.log(`time.startDate: `, startDate)
-                                                    console.log(``)
-                                                    let hoursAsNum = parseFloat(entry.hours)
-
-                                                    let unitId = '';
-                                                    if(entry.costCenter) {
-                                                        const foundUnit = EntityObjects.findOne({
-                                                            'successFactors.externalCode': entry.costCenter,
-                                                            businessId: config.businessId
-                                                        })
-                                                        if(foundUnit) {
-                                                            unitId = foundUnit._id
-                                                        }
-                                                    }
+                        if(bpUser) {
+                            console.log(`bpUser: `, bpUser)
+                            empTimeSheets.forEach(time => {
+                                try {
+                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
+                                    const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
+                                    // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
     
-                                                    TimeWritings.insert({
-                                                        employeeId: bpUser._id,
-                                                        costCenter: unitId,
-                                                        day: startDate,
-                                                        duration: hoursAsNum || 0,
-                                                        businessId: config.businessId,
-                                                        isStatusSeenByCreator: false,
-                                                        approvedBy: null,
-                                                        approvedDate: null,
-                                                        isApprovalStatusSeenByCreator: false
-                                                    })
-                                                } else {
-                                                    console.log(`Got timesheet entry with null hours`)
-                                                }
-                                            })
-                                        }
-                                    } catch(err) {
-                                        console.log('Error in Getting SF timesheet entries! ', err.message)
-                                    }
-                                })    
-                            } else {
-                                console.log(`Could not find the bulkpay user! `, userId)
-                            }
-                            console.log(`Task Done!`)
-                            done();
-                        });
-                     });
+                                    if(timeSheetEntryRes) {
+                                        let timeSheetEntryData = JSON.parse(timeSheetEntryRes.content)
+                                        const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
+                                        entries.forEach(entry => {
+                                            if(entry.hours > 0) {
+                                                console.log(`Got timesheet entry with hours more than zero`)
+                                                console.log(`entry.hours: `, entry.hours)
+                                                const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
+                                                console.log(`time.startDate: `, startDate)
+                                                console.log(``)
+                                                let hoursAsNum = parseFloat(entry.hours)
 
-                     queue.run();
+                                                let unitId = '';
+                                                if(entry.costCenter) {
+                                                    const foundUnit = EntityObjects.findOne({
+                                                        'successFactors.externalCode': entry.costCenter,
+                                                        businessId: config.businessId
+                                                    })
+                                                    if(foundUnit) {
+                                                        unitId = foundUnit._id
+                                                    }
+                                                }
+                                                let status = '';
+
+                                                const timeSheetEntry = {
+                                                    employeeId: bpUser._id,
+                                                    costCenter: unitId,
+                                                    day: startDate,
+                                                    duration: hoursAsNum || 0,
+                                                    businessId: config.businessId,
+                                                    isStatusSeenByCreator: false,
+                                                    approvedBy: null,
+                                                    approvedDate: null,
+                                                    isApprovalStatusSeenByCreator: false
+                                                }
+                                                TimeWritings.insert(timeSheetEntry)
+                                                results.push(timeSheetEntry)
+                                            } else {
+                                                console.log(`Got timesheet entry with null hours`)
+                                            }
+                                        })
+                                    }
+                                } catch(err) {
+                                    console.log('Error in Getting SF timesheet entries! ', err.message)
+                                }
+                            })
+                        } else {
+                            console.log(`Could not find the bulkpay user! `, userId)
+                        }
+                     });
                 } catch(e) {
                   console.log('Error in Getting SF timesheets! ', e.message)
                 }
+
+                results = TimeWritings.aggregate([
+                    {$match: {
+                        businessId: config.businessId, 
+                        day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
+                    }},
+                    { $group: {
+                      _id: {
+                        "employeeId": "$employeeId",
+                      }, 
+                      duration: { $sum: "$duration" }
+                    } }
+                ]);
             } else {
                 console.log('SF Timesheets null response')
             }
         }
-        return []
+        return results
     },
 })

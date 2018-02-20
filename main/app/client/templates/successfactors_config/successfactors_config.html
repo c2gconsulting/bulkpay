@@ -305,7 +305,7 @@
                                                     <th>Description</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="tab4-data-body">                                                
+                                                <tbody id="tab4-data-body">
                                                 {{#if isFetchingCostCenters}}
                                                     <br/><br/><br/><br/><br/>
                                                     {{> spinner}}
@@ -356,21 +356,6 @@
                                                     </select>
                                                 </div><!-- form-group -->
                                             </div>
-                                            <!-- <div class="col-md-2">
-                                                <div class="form-group">
-                                                    {{#transformableDatepicker}}
-                                                        <input name="startTime" type="text" class="form-control datepicker" data-field="startTime" />
-                                                    {{/transformableDatepicker}}
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-2">
-                                                <div class="form-group">
-                                                    {{#transformableDatepicker}}
-                                                        <input name="endTime" type="text" class="form-control datepicker" data-field="endTime" />
-                                                    {{/transformableDatepicker}}
-                                                </div>
-                                            </div> -->
 
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-primary" id="fetchEmployeeTimeSheets">Sync</button>
@@ -385,14 +370,18 @@
                                                     <th>Duration(In Hours)</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody id="tab4-data-body">                                                
-                                                    {{#each timeWritingRecords}}
-                                                        <tr class="item">
-                                                            <td>{{getEmployeeFullName employeeId}}</td>
-                                                            <td>{{formatTime day}}</td>
-                                                            <td>{{duration}}</td>
-                                                        </tr>
-                                                    {{/each}}
+                                                <tbody id="tab4-data-body">
+                                                    {{#if isFetchingTimeSheet}}
+                                                        {{> spinner}}
+                                                    {{else}}
+                                                        {{#each timeWritingRecords}}
+                                                            <tr class="item">
+                                                                <td>{{getEmployeeFullName employeeId}}</td>
+                                                                <td>{{formatTime day}}</td>
+                                                                <td>{{duration}}</td>
+                                                            </tr>
+                                                        {{/each}}
+                                                    {{/if}}
                                                 </tbody>
                                             </table>
                                         </div><!-- table-responsive -->

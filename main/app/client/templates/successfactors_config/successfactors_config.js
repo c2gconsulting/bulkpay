@@ -253,16 +253,17 @@ Template.SuccessFactorsConfig.events({
         if(month && year) {
             console.log(`month: `, month)
             console.log(`year: `, year)
-
-            // This is bad! Needs better way.
-            tmpl.subscribe('timewritingsformonth', businessUnitId, month, year)
+            tmpl.isFetchingTimeSheet.set(true)
             
-            Meteor.call("successfactors/fetchEmployeeTimeSheets", businessUnitId, month, year, (err, res) => {
+            Meteor.call("successfactors/fetchEmployeeTimeSheets", businessUnitId, month, year, function(err, res) {
                 console.log(`Res: `, res)
+                tmpl.isFetchingTimeSheet.set(false)
 
                 if(!res) {
                     console.log(err);
                     swal('Error', err.reason, 'error')
+                } else {
+                    tmpl.sfTimeSheets.set(res)
                 }
             })
         }
@@ -302,21 +303,7 @@ Template.SuccessFactorsConfig.helpers({
         }
     },
     'timeWritingRecords': function() {
-        let businessUnitId = Session.get('context');
-        const month = Template.instance().selectedMonth.get()
-        const year = Template.instance().selectedYear.get()
-
-        const monthAsNum = Number(month - 1)
-        const yearAsNum = Number(year)
-
-        const monthMoment = moment().month(monthAsNum).year(yearAsNum)
-        const monthStartMoment = monthMoment.clone().startOf('month')
-        const monthEndMoment = monthMoment.clone().endOf('month')
-
-        return TimeWritings.find({
-            businessId: businessUnitId,        
-            day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
-        }, {$sort: {day: -1}})
+        return Template.instance().sfTimeSheets.get()
     },
     'costCenters': function () {
         return Template.instance().units.get()
@@ -332,6 +319,9 @@ Template.SuccessFactorsConfig.helpers({
     },
     'isFetchingCostCenters': function() {
         return Template.instance().isFetchingCostCenters.get()
+    },
+    'isFetchingTimeSheet': function() {
+        return Template.instance().isFetchingTimeSheet.get()
     },
     "getCostCenterOrgChartParents": (unit) => {
         return Template.instance().getParentsText(unit)
@@ -458,9 +448,9 @@ Template.SuccessFactorsConfig.onCreated(function () {
                 //--
                 self.isFetchingCostCenters.set(true)
                 Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
-                    console.log(`err: `, err)
                     self.isFetchingCostCenters.set(false)
                     if (!err) {
+                        console.log(`err: `, err)
                         self.sfCostCenters.set(sfCostCenters)
                     } else {
                         swal("Server error", `Please try again at a later time`, "error");
