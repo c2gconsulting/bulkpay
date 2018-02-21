@@ -134,8 +134,38 @@ Meteor.methods({
 
             soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
             .then((client) => {
-                console.log(`client: `, client)
-                
+                // console.log(`client: `, client)
+                // console.log(`client: `, client.describe())
+                // console.log(`client: `, JSON.stringify(client.describe(), null, 4))
+                const journal = {
+                    Accountgl: {
+                        'item[]': [{
+                            ItemnoAcc: '2344000000',
+                            GlAccount: '63005000',
+                            FiscYear: 2018,
+                            Costcenter: '9000',
+                            PstngDate: '2017-02-21'
+                        }]
+                    },
+                    Currencyamount: {
+                        'item[]': [{
+                            Currency: 'NGN',
+                            AmtBase: 5000000
+                        }]
+                    },
+                    Documentheader: {
+                        PstngDate: '2017-02-21',
+                        FiscYear: 2018
+                    }
+                }
+
+                return client.AccDocumentPost(journal, function(err, result, rawResponse, soapHeader, rawRequest) {
+                    console.log(`err: `, err)
+                    console.log(`result: `, result)
+                    console.log(`rawResponse: `, rawResponse)
+                    console.log(`soapHeader: `, soapHeader)
+                })
+
                 // return client.AccDocumentPost(args);
                 // return {}
             }).then((result) => {
