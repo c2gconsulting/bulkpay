@@ -342,6 +342,7 @@ Meteor.methods({
 
                         if(bpUser) {
                             console.log(`bpUser: `, bpUser)
+                            // console.log(`empTimeSheets: `, empTimeSheets)
                             empTimeSheets.forEach(time => {
                                 try {
                                     const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
@@ -353,24 +354,28 @@ Meteor.methods({
                                         const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
                                         entries.forEach(entry => {
                                             if(entry.hours > 0) {
-                                                console.log(`Got timesheet entry with hours more than zero`)
-                                                console.log(`entry.hours: `, entry.hours)
+                                                // console.log(`entry: `, entry)
                                                 const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
-                                                console.log(`time.startDate: `, startDate)
-                                                console.log(``)
                                                 let hoursAsNum = parseFloat(entry.hours)
 
                                                 let unitId = '';
                                                 if(entry.costCenter) {
                                                     const foundUnit = EntityObjects.findOne({
-                                                        'successFactors.externalCode': entry.costCenter,
+                                                        'successFactors.costCenter.code': entry.costCenter,
                                                         businessId: config.businessId
                                                     })
                                                     if(foundUnit) {
                                                         unitId = foundUnit._id
                                                     }
                                                 }
-                                                let status = '';
+                                                let status;
+                                                if(time.approvalStatus === 'PENDING' || time.approvalStatus === 'PENDING_APPROVAL') {
+                                                    status = 'Open'
+                                                } else if(time.approvalStatus === 'CANCELLED') {
+                                                    status = 'Rejected'
+                                                } else if(time.approvalStatus === 'APPROVED') {
+                                                    status = 'Approved'
+                                                }
 
                                                 const timeSheetEntry = {
                                                     employeeId: bpUser._id,
@@ -379,6 +384,7 @@ Meteor.methods({
                                                     duration: hoursAsNum || 0,
                                                     businessId: config.businessId,
                                                     isStatusSeenByCreator: false,
+                                                    status: status,
                                                     approvedBy: null,
                                                     approvedDate: null,
                                                     isApprovalStatusSeenByCreator: false
@@ -409,6 +415,7 @@ Meteor.methods({
                     }},
                     { $group: {
                       _id: "$employeeId",
+                      status: {$first: "$status"},
                       duration: { $sum: "$duration" }
                     } }
                 ]);
