@@ -139,16 +139,17 @@ Meteor.methods({
                 // console.log(`client: `, JSON.stringify(client.describe(), null, 4))
                 const journal = {
                     Accountgl: {
-                        'item[]': [{
+                        'item': [{
                             ItemnoAcc: '2344000000',
                             GlAccount: '63005000',
+                            ItemText: '',
                             FiscYear: 2018,
                             Costcenter: '9000',
                             PstngDate: '2017-02-21'
                         }]
                     },
                     Currencyamount: {
-                        'item[]': [{
+                        'item': [{
                             Currency: 'NGN',
                             AmtBase: 5000000
                         }]

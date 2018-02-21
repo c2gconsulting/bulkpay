@@ -924,7 +924,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processing.push({code: x.code, derived: value});
                                         }
                                     } else {
-                                        if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
+                                        if(x.hourlyRate && totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
                                             processProjectAndCostCenterPay(x)
                                         } else {
                                             processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
