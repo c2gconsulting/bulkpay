@@ -136,22 +136,29 @@ Meteor.methods({
             .then((client) => {
                 // console.log(`client: `, client)
                 // console.log(`client: `, client.describe())
-                // console.log(`client: `, JSON.stringify(client.describe(), null, 4))
+                console.log(`client: `, JSON.stringify(client.describe(), null, 4))
                 const journal = {
                     Accountgl: {
                         'item': [{
-                            ItemnoAcc: '2344000000',
-                            GlAccount: '63005000',
-                            ItemText: '',
-                            FiscYear: 2018,
-                            Costcenter: '9000',
-                            PstngDate: '2017-02-21'
+                            ItemnoAcc: '1',
+                            GlAccount: '0063005000',
+                            ItemText: 'Payroll Journal',
+                            PstngDate: '2017-01-01',
+                            ValueDate: '2017-01-01',
+                            FmArea: '1000',
+                            TaxCode: 'V0',
+                            Costcenter: '0017101101',
+                            Orderid: '',
+                            Fund: '10000000',
+                            FundsCtr: '17101101',
+                            GrantNbr: 'NOT-RELEVANT'
                         }]
                     },
                     Currencyamount: {
                         'item': [{
+                            ItemnoAcc: 1,
                             Currency: 'NGN',
-                            AmtBase: 5000000
+                            AmtDoccur: '2100'
                         }]
                     },
                     Documentheader: {

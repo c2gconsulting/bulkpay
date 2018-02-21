@@ -272,7 +272,7 @@ Template.payruns.helpers({
     isSapBusinessOneEnabled: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
       if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapBusinessOneIntegrationEnabled
       } else {
           return true
       }

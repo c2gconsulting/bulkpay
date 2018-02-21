@@ -83,7 +83,10 @@
                                 <th>#</th>
                                 <th>Employee Id</th>
                                 <th>Employee Full Name</th>
-                                <th>Posted to SAP B1</th>
+
+                                {{#if isSapBusinessOneEnabled}}
+                                    <th>Posted to SAP B1</th>
+                                {{/if}}
 
                                 {{#if isSapHanaEnabled}}
                                     <th>Posted to SAP HANA</th>
@@ -92,7 +95,7 @@
                             </thead>
                             <tbody>
                             {{#each payrun}}
-                              {{> singlePayrunResult index=@index data=this isSapHanaEnabled=(isSapHanaEnabled)}}
+                              {{> singlePayrunResult index=@index data=this isSapBusinessOneEnabled=(isSapBusinessOneEnabled) isSapHanaEnabled=(isSapHanaEnabled)}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -144,10 +147,12 @@
                     <div class="col-sm-2"></div>
                 </div>
 
-                {{#if canPostToSAP}}
-                    <div class="pull-right">
-                        <button class="btn btn-primary btn-large" id="postToSap">Post to SAP B1</button>
-                    </div>                    
+                {{#if isSapBusinessOneEnabled}}
+                    {{#if canPostToSAP}}
+                        <div class="pull-right">
+                            <button class="btn btn-primary btn-large" id="postToSap">Post to SAP B1</button>
+                        </div>                    
+                    {{/if}}
                 {{/if}}
             {{else}}
                 <div class="col-md-12">
@@ -168,6 +173,8 @@
       <td>{{index}}</td>
       <td>{{getEmployeeRealId data.employeeId}}</td>
       <td>{{getEmployeeFullName data.employeeId}}</td>
+
+      {{#if isSapBusinessOneEnabled}}
       <td class="table-action-hide">
           {{#unless data.isPostedToSAP}}
               <i class="fa   fa-times-circle-o"></i>
@@ -175,6 +182,7 @@
               <i class="fa  fa-check-square-o"></i>
           {{/unless}}
       </td>
+      {{/if}}
 
       {{#if isSapHanaEnabled}}
       <td class="table-action-hide">
