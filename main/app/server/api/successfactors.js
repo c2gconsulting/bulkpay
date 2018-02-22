@@ -307,8 +307,11 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         },
         employeeProfile: {
           employment: {
-            status: 'Active'
-          }
+            status: 'Active',
+            hireDate: new Date(),
+            terminationDate: null
+          },
+          payment: {}
         },
         employee: true,
         businessIds: [business._id],
