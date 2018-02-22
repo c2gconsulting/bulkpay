@@ -4,8 +4,6 @@ let sapHanaWsdl = "https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A1
 let GLPostEndpoint = "https://sandbox.hsdf.systems:8001/sap/bc/srt/rfc/sap/post_gl_1/215/post_gl/post_gl"
 
 
-// https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
 if (!String.prototype.padStart) {
     String.prototype.padStart = function padStart(targetLength,padString) {
         targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
@@ -23,16 +21,13 @@ if (!String.prototype.padStart) {
     };
 }
 
-const HanaIntegrationHelper = {
+const HanaIntegration = {
   getAuthHeader: (sfConfig) => {
       const username = sfConfig.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
       const password = sfConfig.password
-
-      const authenticationToken = new Buffer(`${username}:${password}`).toString('base64')
+      const authToken = new Buffer(`${username}:${password}`).toString('base64')
     
-      return {
-        Authorization: `Basic ${authenticationToken}`
-      }
+      return {Authorization: `Basic ${authToken}`}
   },
   getOdataResults: (odataResponse) => {
       if(odataResponse && odataResponse.d && odataResponse.d.results 
@@ -71,7 +66,7 @@ const HanaIntegrationHelper = {
     let itemNoCounter = 1
     unitIds.forEach(unitId => {
         const costCenterCode = unitsBulkSum[unitId].costCenterCode
-        let payments = unitsBulkSum[unitId].payments;
+        const payments = unitsBulkSum[unitId].payments;
 
         payments.forEach(payment => {
             glItems.push({
@@ -148,13 +143,13 @@ const HanaIntegrationHelper = {
   }
 }
 
-HanaIntegrationHelper.getDetailedPayrunResultForEmployee = (employeeId, detailedPayrunResults) => {
+HanaIntegration.getEmpPayresults = (employeeId, detailedPayrunResults) => {
     return _.find(detailedPayrunResults, (aDetailedPayrunResult) => {
         return aDetailedPayrunResult.employeeId === employeeId
     })
 }
 
-HanaIntegrationHelper.getTaxForBulkSum = function (employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency) {
+HanaIntegration.getTaxForBulkSum = function (employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency) {
     let deductionPayments = employeeDetailedPayrunResult.payslipWithCurrencyDelineation.deduction;
     let totalTaxInLocalCurrency = 0
 
@@ -194,7 +189,7 @@ HanaIntegrationHelper.getTaxForBulkSum = function (employeeDetailedPayrunResult,
  * @param {Array} payRunResults -
  * @return {Object, Object, Array} Bulksum for units, Bulksum for projects, Array of employees that contribute to bulksum
  */
-HanaIntegrationHelper.processPayrunResultsForSap = function (businessUnitSapConfig, payRunResults, period, localCurrency) {
+HanaIntegration.processPayrun = function (businessUnitSapConfig, payRunResults, period, localCurrency) {
     let unitsBulkSum = {}
     let projectsBulkSum = {}
     let arrayOfEmployees = []
@@ -284,27 +279,25 @@ HanaIntegrationHelper.processPayrunResultsForSap = function (businessUnitSapConf
                 errors.push(`Employee: ${employee.profile.fullName} does not have a unit`)
                 continue
             }
-            //--
-            let unitId = unit._id
-
-            let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
-                return aUnit.unitId === unitId;
-            })
-            if(!sapUnitCostCenterDetails  || 
-                (!sapUnitCostCenterDetails.costCenterCode || sapUnitCostCenterDetails.costCenterCode.length === 0)) {
+            let unitCostCenterCode;
+            if(unit.successFactors && unit.successFactors.costCenter && unit.successFactors.costCenter.code) {
+                unitCostCenterCode = unit.successFactors.costCenterCode.code;
+            } else {
                 status = false
-                errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
+                errors.push(`Employee: '${employee.profile.fullName}' unit: '${unit.name}' does not have Successfactors cost center`)
+                continue
             }
+            let unitId = unit._id
             //--
             if(!unitsBulkSum[unitId]) {
                 unitsBulkSum[unitId] = {}
-                unitsBulkSum[unitId]['costCenterCode'] = sapUnitCostCenterDetails.costCenterCode.padStart(10, "0");
+                unitsBulkSum[unitId]['costCenterCode'] = unitCostCenterCode.padStart(10, "0");
                 unitsBulkSum[unitId]['payments'] = []
             }
             let unitToWorkWith = unitsBulkSum[unitId]
             let unitBulkSumPayments = unitToWorkWith.payments
             //--
-            let employeeDetailedPayrunResult = HanaIntegrationHelper.getDetailedPayrunResultForEmployee(employeeId, detailedPayRunResults);
+            let employeeDetailedPayrunResult = HanaIntegration.getEmpPayresults(employeeId, detailedPayRunResults);
 
             aPayrunResult.payment.forEach(aPayment => {
                 if(aPayment && aPayment.id) {
@@ -363,7 +356,7 @@ HanaIntegrationHelper.processPayrunResultsForSap = function (businessUnitSapConf
 
                                 let taxOrPensionAmount = 0
                                 if(aPayment.reference === 'Tax') {
-                                    taxOrPensionAmount = HanaIntegrationHelper.getTaxForBulkSum(employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency)
+                                    taxOrPensionAmount = HanaIntegration.getTaxForBulkSum(employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency)
                                 } else {
                                     taxOrPensionAmount = aPayment.amountLC || 0
                                 }
@@ -396,13 +389,13 @@ HanaIntegrationHelper.processPayrunResultsForSap = function (businessUnitSapConf
                             payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
                         } else {
                             status = false
-                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Debit G/L account`)
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP HANA Debit G/L account`)
                         }
                         if (sapPayTypeDetails.payTypeCreditAccountCode) {
                             payTypeCreditAccountCode = sapPayTypeDetails.payTypeCreditAccountCode
                         } else {
                             status = false
-                            errors.push(`Paytype: ${aPayment.description} does not have an SAP Cost-Center Credit G/L account`)
+                            errors.push(`Paytype: ${aPayment.description} does not have an SAP HANA Credit G/L account`)
                         }
                         if(!payTypeDebitAccountCode || !payTypeDebitAccountCode) {
                             return
@@ -506,7 +499,7 @@ HanaIntegrationHelper.processPayrunResultsForSap = function (businessUnitSapConf
         }
     }
 
-    // console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
+    console.log(`Number of employees affected: ${arrayOfEmployees.length}`)
     if(status) {
         return {status, unitsBulkSum, projectsBulkSum, employees: arrayOfEmployees}
     } else {
@@ -532,7 +525,7 @@ Meteor.methods({
     //         const baseUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}`
     //         const connectionUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=1&$format=json`
 
-    //         const requestHeaders = HanaIntegrationHelper.getAuthHeader(hanaConfig)
+    //         const requestHeaders = HanaIntegration.getAuthHeader(hanaConfig)
 
     //         let errorResponse = null
     //         try {
@@ -568,7 +561,7 @@ Meteor.methods({
 
     //     let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
     //     if(config) {
-    //         const requestHeaders = HanaIntegrationHelper.getAuthHeader(config)
+    //         const requestHeaders = HanaIntegration.getAuthHeader(config)
     //         const baseUrl = `${config.protocol}://${config.serverHostUrl}`
     //         const glAccountsQueryUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json`
     //         //   http://34.232.137.239:8000/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json
@@ -579,7 +572,7 @@ Meteor.methods({
     //         if(glAccountsRes) {
     //             try {
     //                 let glAccountsData = JSON.parse(glAccountsRes.content)
-    //                 return HanaIntegrationHelper.getOdataResults(glAccountsData)
+    //                 return HanaIntegration.getOdataResults(glAccountsData)
     //             } catch(e) {
     //                 console.log('Error in Getting Hana G/L Accounts! ', e.message)
     //             }
@@ -629,12 +622,10 @@ Meteor.methods({
         try {
             let payRunResult = Payruns.find({period: period, businessId: businessUnitId}).fetch();
             let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
-            // console.log(`config: `, config)
-
             if(!config) {
                 return {
-                    "status": false,
-                    "message": "Your company's SAP HANA integration setup has not been done"
+                    status: false,
+                    message: "Your company's SAP HANA integration setup has not been done"
                 }
             }
             let user = Meteor.user();
@@ -644,33 +635,31 @@ Meteor.methods({
             if (tenant) {
                 localCurrency = tenant.baseCurrency;
             }
-            console.log(`localCurrency: `, localCurrency)
 
-            // let processingResult = HanaIntegrationHelper.processPayrunResultsForSap(config, payRunResult, period, localCurrency)
-            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
-            let costCenterCode = '0017101101';
-            let processingResult = {
-                status: true,
-                employees: ['', '', ''],
-                unitsBulkSum: {
-                    "xyx": {
-                        costCenterCode: '0017101101',
-                        payments: [
-                            {
-                                payTypeDebitAccountCode: '0063005000',
-                                payTypeCreditAccountCode: '0011001010',
-                                description: "BASIC PAY",
-                                Costcenter: costCenterCode,
-                                costCenterPayAmount: `4000000`,
-                            }
-                        ]
-                    }
-                }
-              }
-              console.log(`processingResult: `, processingResult)
+            let processingResult = HanaIntegration.processPayrun(config, payRunResult, period, localCurrency)
+            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            // let costCenterCode = '0017101101';
+            // let processingResult = {
+            //     status: true,
+            //     employees: ['', '', ''],
+            //     unitsBulkSum: {
+            //         "xyx": {
+            //             costCenterCode: '0017101101',
+            //             payments: [
+            //                 {
+            //                     payTypeDebitAccountCode: '0063005000',
+            //                     payTypeCreditAccountCode: '0011001010',
+            //                     description: "BASIC PAY",
+            //                     Costcenter: costCenterCode,
+            //                     costCenterPayAmount: `4000000`,
+            //                 }
+            //             ]
+            //         }
+            //     }
+            //   }
 
             //   Meteor.bindEnvironment(function (error, result) {
-            //     const journalEntryPost = HanaIntegrationHelper.getJournalPostData(processingResult, period, month, year, localCurrency)
+            //     const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
             //     console.log(`journalEntryPost: `, journalEntryPost)
   
             //     let createClientSync = Meteor.wrapAsync(soap.createClient);
@@ -687,11 +676,11 @@ Meteor.methods({
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
-                    const authHeaders = HanaIntegrationHelper.getAuthHeader({
+                    const authHeaders = HanaIntegration.getAuthHeader({
                         username: 'SAP_INSTALL', password: 'Awnkg0akm'
                     })
 
-                    const journalEntryPost = HanaIntegrationHelper.getJournalPostData(processingResult, period, month, year, localCurrency)
+                    const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
 
                     // soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, function(err, client) {
                     //     console.log(`err: `, err);
@@ -712,7 +701,6 @@ Meteor.methods({
                         console.log(`About to post journal entry`)
         
                         return client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
-                            console.log(`err: `, err)
                             console.log(`result: `, JSON.stringify(result, null, 4))
                             if(result.statusCode === 500) {
                                 console.log(`Severe server error`)
