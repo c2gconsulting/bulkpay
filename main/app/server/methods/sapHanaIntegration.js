@@ -43,16 +43,16 @@ const HanaIntegrationHelper = {
       }
   },
 
-  getJournalPostData: (processingResult, period, localCurrency) => {
+  getJournalPostData: (processingResult, period, month, year, localCurrency) => {
     const documentHeader = {
         Username: '0odir01',
         HeaderTxt: 'Journal for Payroll',
         CompCode: '1710',
         DocDate: `${moment().format('YYYY-MM-DD')}`,
-        PstngDate: '2017-01-01',
-        TransDate: '2017-01-01',
-        FiscYear: `${moment().year()}`,
-        FisPeriod: `${moment().month()}`,
+        PstngDate: `${moment().format('YYYY-MM-DD')}`,
+        TransDate: `${moment().format('YYYY-MM-DD')}`,
+        FiscYear: year,
+        FisPeriod: month,
         DocType: 'SA',
         DocStatus: '2'
     }
@@ -611,7 +611,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Empty GL accounts data for pay types");
         }
     },
-    'hanaIntegration/postPayrunResults': function (businessUnitId, period) {
+    'hanaIntegration/postPayrunResults': function (businessUnitId, period, month, year) {
         console.log(`Inside hana postPayrunResults`)
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
@@ -622,14 +622,14 @@ Meteor.methods({
         try {
             let payRunResult = Payruns.find({period: period, businessId: businessUnitId}).fetch();
             let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
-            console.log(`config: `, config)
+            // console.log(`config: `, config)
 
-            if(!config) {
-                return JSON.stringify({
-                    "status": false,
-                    "message": "Your company's SAP HANA integration setup has not been done"
-                })
-            }
+            // if(!config) {
+            //     return JSON.stringify({
+            //         "status": false,
+            //         "message": "Your company's SAP HANA integration setup has not been done"
+            //     })
+            // }
             let user = Meteor.user();
             let tenantId = user.group;
             let tenant = Tenants.findOne(tenantId)        
@@ -637,10 +637,54 @@ Meteor.methods({
             if (tenant) {
                 localCurrency = tenant.baseCurrency;
             }
+            console.log(`localCurrency: `, localCurrency)
 
-            let processingResult = HanaIntegrationHelper.processPayrunResultsForSap(config, payRunResult, period, localCurrency)
-            console.log(`processingResult: ${JSON.stringify(processingResult)}`)
-            
+            // let processingResult = HanaIntegrationHelper.processPayrunResultsForSap(config, payRunResult, period, localCurrency)
+            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            let costCenterCode = '0017101101';
+            let processingResult = {
+                status: true,
+                employees: ['', '', ''],
+                unitsBulkSum: {
+                    "xyx": {
+                        costCenterCode: '0017101101',
+                        payments: [
+                            {
+                                GlAccount: '0011001010',
+                                ItemText: "description",
+                                Costcenter: costCenterCode,
+                                Fund: `4000000`,
+                            },
+                            {
+                                GlAccount: '0011001010',
+                                ItemText: "description",
+                                Costcenter: costCenterCode,
+                                Fund: `4000000`,
+                            }                
+                        ]
+                    }
+                }
+              }
+              console.log(`processingResult: `, processingResult)
+
+            //   Meteor.bindEnvironment(function (error, result) {
+            //     const journalEntryPost = HanaIntegrationHelper.getJournalPostData(processingResult, period, month, year, localCurrency)
+            //     console.log(`journalEntryPost: `, journalEntryPost)
+  
+            //     let createClientSync = Meteor.wrapAsync(soap.createClient);
+            //     const client = createClientSync(sapHanaWsdl, { wsdl_headers: authHeaders })
+            //     client.setEndpoint(GLPostEndpoint)
+  
+            //     const accountPostSync = Meteor.wrapAsync(client.AccDocumentPost1)
+            //     const errAndResult = accountPostSync(journalEntryPost)
+            //     console.log(`errAndResult: `, errAndResult)
+            //   })
+
+            //   return 'All done!'
+
+
+
+
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
                     const authHeaders = HanaIntegrationHelper.getAuthHeader({
@@ -654,28 +698,28 @@ Meteor.methods({
                     //     console.log(`client: `, client)
                     // });
 
-                    let createClientSync = Meteor.wrapAsync(soap.createClientAsync);
-                    const client = createClientSync(sapHanaWsdl, { wsdl_headers: authHeaders })
-                    client.setEndpoint(GLPostEndpoint)
+                    // let createClientSync = Meteor.wrapAsync(soap.createClientAsync);
+                    // const client = createClientSync(sapHanaWsdl, { wsdl_headers: authHeaders })
+                    // client.setEndpoint(GLPostEndpoint)
 
-                    const accountPostSync = Meteor.wrapAsync(client.AccDocumentPost1)
-                    const errAndResult = accountPostSync(journalEntryPost)
-                    console.log(`errAndResult: `, errAndResult)
+                    // const accountPostSync = Meteor.wrapAsync(client.AccDocumentPost1)
+                    // const errAndResult = accountPostSync(journalEntryPost)
+                    // console.log(`errAndResult: `, errAndResult)
 
-                    // soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
-                    // .then((client) => {
-                    //     client.setEndpoint(GLPostEndpoint)
-                    //     console.log(`About to post journal entry`)
+                    soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
+                    .then((client) => {
+                        client.setEndpoint(GLPostEndpoint)
+                        console.log(`About to post journal entry`)
         
-                    //     return client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
-                    //         console.log(`err: `, err)
-                    //         console.log(`result: `, JSON.stringify(result, null, 4))
-                    //     })
-                    // }).catch((error) => {
-                    //     console.log(`Soap Error: `, error)
-                    // })
+                        return client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
+                            console.log(`err: `, err)
+                            console.log(`result: `, JSON.stringify(result, null, 4))
+                        })
+                    }).catch((error) => {
+                        console.log(`Soap Error: `, error)
+                    })
                 }
-            } 
+            }
         } catch(e) {
             errorResponse = `{"status": false, "message": "${e.message}"}`
         }

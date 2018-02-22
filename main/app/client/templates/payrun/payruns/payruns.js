@@ -126,9 +126,10 @@ Template.payruns.events({
             const year = $('[name="paymentPeriodYear"]').val();
             let period = `${month}${year}`
 
-            Meteor.call("hanaIntegration/postPayrunResults", Session.get('context'), period, (err, res) => {
+            Meteor.call("hanaIntegration/postPayrunResults", Session.get('context'), period, month, year, (err, res) => {
                 resetButton()
                 console.log(`res: ${JSON.stringify(res)}`)
+                
                 if (!err) {
                     if(res) {
                         let responseAsObj = JSON.parse(res)
