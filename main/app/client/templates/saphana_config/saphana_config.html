@@ -23,8 +23,8 @@
                         <!-- PROGRESS WIZARD -->
                         <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
-                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
-                                <li><a href="#new-tab2" data-toggle="tab"><strong></strong> G/L Accounts </a></li>
+                                <!-- <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li> -->
+                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> G/L Accounts </a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -32,7 +32,7 @@
                             </div>
 
                             <div class="tab-content">
-                                <div class="tab-pane" id="new-tab1">
+                                <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-2"></div>
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
 
-                                <div class="tab-pane" id="new-tab2">
+                                <!-- <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -160,6 +160,106 @@
                                                         </tr>
                                                     {{/each}}
                                                     {{/if}}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                                <div class="tab-pane" id="new-tab1">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="savePayTypesGlAccounts">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">
+                                                    {{#each payTypes}}
+                                                    <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{title}}</td>
+                                                        <td>
+                                                            <input type="text" name="payTypeCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="payTypeDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeDebitAccountCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                            </table><br/><br/>
+
+                                            <p>
+                                                <b>Taxes</b>
+                                            </p>
+
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">
+                                                    {{#each taxes}}
+                                                    <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{code}} - {{name}}</td>
+                                                        <td>
+                                                            <input type="text" name="taxesCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="taxesDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeDebitAccountCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
+                                                </tbody>
+                                            </table><br/><br/>
+
+                                            <p>
+                                                <b>Pensions</b>
+                                            </p>
+
+                                            <table class="table table-hover">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>PayType</th>
+                                                    <th>Credit G/L Account Code</th>
+                                                    <th>Debit G/L Account Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab4-data-body">
+                                                    {{#each pensions}}
+                                                    <tr class="item" style="cursor: move;" id="{{_id}}">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{pensionCode}}</td>
+                                                        <td>
+                                                            <input type="text" name="pensionsCreditGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeCreditAccountCode}}" />
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="pensionsDebitGlAccountCode" class="form-control calc"
+                                                                   value="{{payTypeDebitAccountCode}}"/>
+                                                        </td>
+                                                    </tr>
+                                                    {{/each}}
                                                 </tbody>
                                             </table>
                                         </div>

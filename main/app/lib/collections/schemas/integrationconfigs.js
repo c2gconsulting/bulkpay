@@ -209,6 +209,14 @@ Core.Schemas.SapHanaIntegrationConfig = new SimpleSchema({
         type: [Core.Schemas.SapPayTypeConfig],
         optional: true
     },
+    taxes: {
+        type: [Core.Schemas.SapPayTypeConfig],
+        optional: true
+    },
+    pensions: {
+        type: [Core.Schemas.SapPensionPayTypeConfig],
+        optional: true
+    },
     createdAt: {
         type: Date,
         autoValue: function () {
