@@ -44,13 +44,18 @@ const HanaIntegrationHelper = {
   },
 
   getJournalPostData: (processingResult, period, month, year, localCurrency) => {
+    // const now = moment().format('YYYY-MM-DD')
+    const now = moment().year(2017).month(0).date(1).format('YYYY-MM-DD')    
+    year = '2017'
+    month = '1'
+
     const documentHeader = {
         Username: '0odir01',
         HeaderTxt: 'Journal for Payroll',
         CompCode: '1710',
-        DocDate: `${moment().format('YYYY-MM-DD')}`,
-        PstngDate: `${moment().format('YYYY-MM-DD')}`,
-        TransDate: `${moment().format('YYYY-MM-DD')}`,
+        DocDate: `${now}`,
+        PstngDate: `${now}`,
+        TransDate: `${now}`,
         FiscYear: year,
         FisPeriod: month,
         DocType: 'SA',
@@ -63,28 +68,29 @@ const HanaIntegrationHelper = {
     let unitsBulkSum = processingResult.unitsBulkSum
     let unitIds = Object.keys(unitsBulkSum)
 
+    let itemNoCounter = 1
     unitIds.forEach(unitId => {
         const costCenterCode = unitsBulkSum[unitId].costCenterCode
         let payments = unitsBulkSum[unitId].payments;
-        payments.forEach((payment, index) => {
-            console.log(`Index: `, index)
+
+        payments.forEach(payment => {
             glItems.push({
-                ItemnoAcc: `${index + 1}`,
+                ItemnoAcc: `${itemNoCounter}`,
                 GlAccount: payment.payTypeDebitAccountCode,
                 ItemText: payment.description,
-                PstngDate: '2017-01-01',
-                ValueDate: '2017-01-01',
+                PstngDate: `${now}`,
+                ValueDate: `${now}`,
                 FmArea: '1000',
                 TaxCode: 'V0',
                 Costcenter: costCenterCode,
                 Orderid: '',
-                Fund: `${payment.costCenterPayAmount}`,
+                Fund: `10000000`,
                 FundsCtr: '17101101',
-                GrantNbr: 'NOT-RELEVANT'    
+                GrantNbr: 'NOT-RELEVANT'
             })
             currencyItems.push({
-                ItemnoAcc: `${index + 1}`,
-                Currency: localCurrency,
+                ItemnoAcc: `${itemNoCounter}`,
+                Currency: localCurrency.iso,
                 CurrType: '',
                 CurrencyIso: '',
                 AmtDoccur: `${payment.costCenterPayAmount}`,
@@ -92,27 +98,28 @@ const HanaIntegrationHelper = {
             })
 
             glItems.push({
-                ItemnoAcc: `${index + 1}`,
-                GlAccount: payment.payTypeDebitAccountCode,
+                ItemnoAcc: `${itemNoCounter + 1}`,
+                GlAccount: payment.payTypeCreditAccountCode,
                 ItemText: payment.description,
-                PstngDate: '2017-01-01',
-                ValueDate: '2017-01-01',
+                PstngDate: `${now}`,
+                ValueDate: `${now}`,
                 FmArea: '1000',
                 TaxCode: 'V0',
                 Costcenter: costCenterCode,
                 Orderid: '',
-                Fund: `${payment.payTypeCreditAccountCode}`,
+                Fund: `10000000`,
                 FundsCtr: '17101101',
-                GrantNbr: 'NOT-RELEVANT'    
+                GrantNbr: 'NOT-RELEVANT'
             })
             currencyItems.push({
-                ItemnoAcc: `${index + 1}`,
-                Currency: localCurrency,
+                ItemnoAcc: `${itemNoCounter + 1}`,
+                Currency: localCurrency.iso,
                 CurrType: '',
                 CurrencyIso: '',
                 AmtDoccur: `${payment.costCenterPayAmount}`,
                 ExchRate: '1'
             })
+            itemNoCounter += 2
         })
     })
 
@@ -624,12 +631,12 @@ Meteor.methods({
             let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
             // console.log(`config: `, config)
 
-            // if(!config) {
-            //     return JSON.stringify({
-            //         "status": false,
-            //         "message": "Your company's SAP HANA integration setup has not been done"
-            //     })
-            // }
+            if(!config) {
+                return {
+                    "status": false,
+                    "message": "Your company's SAP HANA integration setup has not been done"
+                }
+            }
             let user = Meteor.user();
             let tenantId = user.group;
             let tenant = Tenants.findOne(tenantId)        
@@ -650,17 +657,12 @@ Meteor.methods({
                         costCenterCode: '0017101101',
                         payments: [
                             {
-                                GlAccount: '0011001010',
-                                ItemText: "description",
+                                payTypeDebitAccountCode: '0063005000',
+                                payTypeCreditAccountCode: '0011001010',
+                                description: "BASIC PAY",
                                 Costcenter: costCenterCode,
-                                Fund: `4000000`,
-                            },
-                            {
-                                GlAccount: '0011001010',
-                                ItemText: "description",
-                                Costcenter: costCenterCode,
-                                Fund: `4000000`,
-                            }                
+                                costCenterPayAmount: `4000000`,
+                            }
                         ]
                     }
                 }
@@ -683,15 +685,13 @@ Meteor.methods({
             //   return 'All done!'
 
 
-
-
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
                     const authHeaders = HanaIntegrationHelper.getAuthHeader({
                         username: 'SAP_INSTALL', password: 'Awnkg0akm'
                     })
 
-                    const journalEntryPost = HanaIntegrationHelper.getJournalPostData(processingResult, period, localCurrency)
+                    const journalEntryPost = HanaIntegrationHelper.getJournalPostData(processingResult, period, month, year, localCurrency)
 
                     // soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, function(err, client) {
                     //     console.log(`err: `, err);
@@ -706,16 +706,20 @@ Meteor.methods({
                     // const errAndResult = accountPostSync(journalEntryPost)
                     // console.log(`errAndResult: `, errAndResult)
 
-                    soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
-                    .then((client) => {
+                    return soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
+                    .then(client => {
                         client.setEndpoint(GLPostEndpoint)
                         console.log(`About to post journal entry`)
         
                         return client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
                             console.log(`err: `, err)
                             console.log(`result: `, JSON.stringify(result, null, 4))
+                            if(result.statusCode === 500) {
+                                console.log(`Severe server error`)
+                            }
+                            return result
                         })
-                    }).catch((error) => {
+                    }).catch(error => {
                         console.log(`Soap Error: `, error)
                     })
                 }
@@ -723,5 +727,6 @@ Meteor.methods({
         } catch(e) {
             errorResponse = `{"status": false, "message": "${e.message}"}`
         }
+        return errorResponse;
     }
 })

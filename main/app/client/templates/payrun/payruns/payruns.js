@@ -280,7 +280,6 @@ Template.payruns.helpers({
     },
     isSapHanaEnabled: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-      console.log(`businessUnitCustomConfig: `, businessUnitCustomConfig)
       if(businessUnitCustomConfig) {
           return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
       } else {
