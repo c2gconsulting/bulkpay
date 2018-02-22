@@ -1,5 +1,9 @@
 let soap = require('soap');
-let sapHanaWsdl = 'https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/post_gl/215/post_gl/post_gl?sap-client=215';
+
+// let sapHanaWsdl = 'https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/post_gl/215/post_gl/post_gl?sap-client=215';
+// let sapHanaWsdl = 'https://sandbox.hsdf.systems:8001/sap/bc/srt/rfc/sap/post_gl/215/post_gl/post_gl'
+let sapHanaWsdl = "https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/post_gl_1/215/post_gl/post_gl?sap-client=215"
+let GLPostEndpoint = "https://sandbox.hsdf.systems:8001/sap/bc/srt/rfc/sap/post_gl_1/215/post_gl/post_gl"
 
 
 const HanaIntegrationHelper = {
@@ -136,7 +140,7 @@ Meteor.methods({
             .then((client) => {
                 // console.log(`client: `, client)
                 // console.log(`client: `, client.describe())
-                console.log(`client: `, JSON.stringify(client.describe(), null, 4))
+                // console.log(`client: `, JSON.stringify(client.describe(), null, 4))
                 const journal = {
                     Accountgl: {
                         'item': [{
@@ -152,34 +156,86 @@ Meteor.methods({
                             Fund: '10000000',
                             FundsCtr: '17101101',
                             GrantNbr: 'NOT-RELEVANT'
+                        },{
+                            ItemnoAcc: '2',
+                            GlAccount: '0011001010',
+                            ItemText: 'Journal',
+                            PstngDate: '2017-01-01',
+                            ValueDate: '2017-01-01',
+                            FmArea: '1000',
+                            TaxCode: 'V0',
+                            Costcenter: '0017101101',
+                            Orderid: '',
+                            Fund: '10000000',
+                            FundsCtr: '17101101',
+                            GrantNbr: 'NOT-RELEVANT'
                         }]
                     },
                     Currencyamount: {
                         'item': [{
-                            ItemnoAcc: 1,
+                            ItemnoAcc: '1',
                             Currency: 'NGN',
-                            AmtDoccur: '2100'
+                            CurrType: '',
+                            CurrencyIso: '',
+                            AmtDoccur: '2100.00',
+                            ExchRate: '1'
+                        },{ 
+                            ItemnoAcc: '2',
+                            Currency: 'NGN',
+                            CurrType: '',
+                            CurrencyIso: '',
+                            AmtDoccur: '2100.00',
+                            ExchRate: '1'
                         }]
                     },
                     Documentheader: {
-                        PstngDate: '2017-02-21',
-                        FiscYear: 2018
-                    }
+                        Username: '0odir01',
+                        HeaderTxt: 'Journal for Payroll',
+                        CompCode: '1710',
+                        DocDate: '2017-01-01',
+                        PstngDate: '2017-01-01',
+                        TransDate: '2017-01-01',
+                        FiscYear: '2017',
+                        FisPeriod: '01',
+                        DocType: 'SA',
+                        DocStatus: '2'
+                    },
+                    Return: {
+                        'item': [{
+                            Type: 'S',
+                            Id: 'String 743',
+                            Message: 'String 745',
+                            LogNo: 'String 746',
+                            LogMsgNo: '747',
+                            MessageV1: 'String 748',
+                            MessageV2: 'String 748',
+                            MessageV3: 'String 748',
+                            MessageV4: 'String 748',
+                            Row: '753',
+                            Field: 'String 754',
+                            System: 'String 755'
+                        }]
+                    },
                 }
 
-                return client.AccDocumentPost(journal, function(err, result, rawResponse, soapHeader, rawRequest) {
+                client.setEndpoint(GLPostEndpoint)
+
+                // return client.AccDocumentPost(journal, function(err, result, rawResponse, soapHeader, rawRequest) {
+                return client.AccDocumentPost1(journal, function(err, result, rawResponse, soapHeader, rawRequest) {
                     console.log(`err: `, err)
-                    console.log(`result: `, result)
-                    console.log(`rawResponse: `, rawResponse)
-                    console.log(`soapHeader: `, soapHeader)
+                    // console.log(`result: `, result)
+                    console.log(`result: `, JSON.stringify(result, null, 4))
+
+                    // console.log(`rawResponse: `, rawResponse)
+                    // console.log(`soapHeader: `, soapHeader)
                 })
 
                 // return client.AccDocumentPost(args);
                 // return {}
             }).then((result) => {
-                console.log('Result: ', result);
+                // console.log('Result: ', result);
             }).catch((error) => {
-                console.log(`error: `, error)
+                console.log(`Soap Error: `, error)
             })
         } catch(e) {
             errorResponse = '{"status": false, "message": "Could not connect to SAP Integration service"}'
