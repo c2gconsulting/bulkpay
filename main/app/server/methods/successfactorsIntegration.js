@@ -219,7 +219,6 @@ Meteor.methods({
                                         properties: {},
                                         status: 'Active',
                                         createdBy: null,
-                                        properties: null,
                                         businessId: businessUnitId,
                                         _groupId: business._groupId,
                                         successFactors: {
@@ -246,7 +245,7 @@ Meteor.methods({
 
                                         const foundDepartment = EntityObjects.findOne({
                                             'successFactors.externalCode': department.externalCode,
-                                            otype: 'Position',
+                                            otype: 'Unit',
                                             businessId: businessUnitId
                                         })
                                         let unitId = ''

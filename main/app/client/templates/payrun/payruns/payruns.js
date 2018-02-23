@@ -131,23 +131,19 @@ Template.payruns.events({
                 console.log(`res: ${JSON.stringify(res)}`)
                 
                 if (!err) {
-                    if(res) {
-                        let responseAsObj = JSON.parse(res)
-                        if(responseAsObj.status === true) {
-                            swal("Payrun Post Status", responseAsObj["message"], "success");
-                        } else {
-                            if(responseAsObj.errors) {
-                                let errors = responseAsObj.errors
-                                console.log(`Errors: ${JSON.stringify(errors)}`)
-                                Modal.show('PayrunResultsPostToSapErrors', errors)
-                            } else if(responseAsObj.message) {
-                                swal("Payrun Post Status", responseAsObj.message, "error");
-                            } else {
-                                swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
-                            }
-                        }
+                    if(res.status === true) {
+                        swal("Payrun Post Status", res["message"], "success");
                     } else {
-                        swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                        if(res.errors) {
+                            let errors = res.errors
+                            console.log(`Errors: ${JSON.stringify(errors)}`)
+
+                            Modal.show('PayrunResultsPostToSapErrors', errors)
+                        } else if(res.message) {
+                            swal("Payrun Post Status", res.message, "error");
+                        } else {
+                            swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                        }
                     }
                 } else {
                     swal("Payrun Post Status", err.message, "error");

@@ -149,8 +149,8 @@ HanaIntegration.getEmpPayresults = (employeeId, detailedPayrunResults) => {
     })
 }
 
-HanaIntegration.getTaxForBulkSum = function (employeeDetailedPayrunResult, currencyRatesForPeriod, localCurrency) {
-    let deductionPayments = employeeDetailedPayrunResult.payslipWithCurrencyDelineation.deduction;
+HanaIntegration.getTaxForBulkSum = function (empPayResult, currencyRatesForPeriod, localCurrency) {
+    let deductionPayments = empPayResult.payslipWithCurrencyDelineation.deduction;
     let totalTaxInLocalCurrency = 0
 
     let currencies = Object.keys(deductionPayments)
@@ -281,7 +281,7 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, payRunResults, 
             }
             let unitCostCenterCode;
             if(unit.successFactors && unit.successFactors.costCenter && unit.successFactors.costCenter.code) {
-                unitCostCenterCode = unit.successFactors.costCenterCode.code;
+                unitCostCenterCode = unit.successFactors.costCenter.code;
             } else {
                 status = false
                 errors.push(`Employee: '${employee.profile.fullName}' unit: '${unit.name}' does not have Successfactors cost center`)
@@ -657,22 +657,6 @@ Meteor.methods({
             //         }
             //     }
             //   }
-
-            //   Meteor.bindEnvironment(function (error, result) {
-            //     const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
-            //     console.log(`journalEntryPost: `, journalEntryPost)
-  
-            //     let createClientSync = Meteor.wrapAsync(soap.createClient);
-            //     const client = createClientSync(sapHanaWsdl, { wsdl_headers: authHeaders })
-            //     client.setEndpoint(GLPostEndpoint)
-  
-            //     const accountPostSync = Meteor.wrapAsync(client.AccDocumentPost1)
-            //     const errAndResult = accountPostSync(journalEntryPost)
-            //     console.log(`errAndResult: `, errAndResult)
-            //   })
-
-            //   return 'All done!'
-
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {

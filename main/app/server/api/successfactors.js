@@ -11,6 +11,16 @@ var Api = new Restivus({
   }
 });
 
+
+const getOdataResults = (odataResponse) => {
+  if(odataResponse && odataResponse.d && odataResponse.d.results 
+      && odataResponse.d.results.length > 0) {
+      return odataResponse.d.results
+  } else {
+      return []
+  }
+}
+
 let apiCall = function (apiUrl, callback, config) {
   const companyId = config.companyId
   const username = config.username
@@ -380,8 +390,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             businessId: business._id,
             addToTotal: true,
             editablePerEmployee: true,
-            isTimeWritingDependent: false,
-            includeWithSapIntegration: false,
+            isTimeWritingDependent: true,
+            includeWithSapIntegration: true,
             successFactors: {
               externalCode: payment.payComponent
             },
@@ -413,34 +423,104 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
 
   if(positionData.positionCode) {
-    const positionEntity = EntityObjects.findOne({
-      'successFactors.externalCode': positionData.positionCode,
-      businessId: business._id
-    })
     let positionId;
     let payGradeId;
 
-    if(positionEntity) {
-      positionId = positionEntity._id
-    } else {
-      positionId = EntityObjects.insert({
-        parentId: '',
-        name: positionData.positionName,
+    let createPosition = (parentId) => {
+      const foundPosition = EntityObjects.findOne({
+        'successFactors.externalCode': positionData.positionCode,
         otype: 'Position',
-        properties: {},
-        createdBy: '',
-        businessId: business._id,
-        status: 'Active',
-        _groupId: business._groupId,
-        successFactors: {
-          externalCode: positionData.positionCode,
-          costCenter: {
-            code: null // I know positions have cost centers on SF.
+        businessId: business._id
+      })
+      if(!foundPosition) {
+        return EntityObjects.insert({
+          parentId: parentId,
+          name: positionData.positionName,
+          otype: 'Position',
+          properties: {},
+          status: 'Active',
+          createdBy: null,
+          businessId: business._id,
+          _groupId: business._groupId,
+          successFactors: {
+            externalCode: positionData.positionCode,
+            costCenter: {
+              code: null // I know positions have cost centers on SF. 
+            }
+          }
+        })
+      } else {
+        return foundPosition._id
+      }
+    }
+
+    let positionParentId;
+    const positionsUrl = `${baseUrl}/odata/v2/Position?$filter= code eq ${positionData.positionCode}&$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
+          
+    let getToSync = Meteor.wrapAsync(HTTP.get);  
+    const positionsRes = getToSync(positionsUrl, {headers: requestHeaders})
+    if(positionsRes) {
+      try {
+        let positionsData = JSON.parse(positionsRes.content)
+        let positionResults = getOdataResults(positionsData)
+        if(positionResults[0]) {
+          let position = positionResults[0]
+
+          if(position.department) {
+            const departmentUrl = `${baseUrl}/odata/v2/FODepartment?$filter=externalCode eq '${position.department}'&$select=costCenter,name,description,externalCode,parent&$format=json`
+
+            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            const departmentRes = getToSync(departmentUrl, {headers: requestHeaders})
+            if(departmentRes) {
+                let departmentData = JSON.parse(departmentRes.content)
+                let departmentResults =  getOdataResults(departmentData)
+                if(departmentResults.length > 0) {
+                    const department = departmentResults[0]
+                    position.departmentDetails = department
+
+                    const foundDepartment = EntityObjects.findOne({
+                        'successFactors.externalCode': department.externalCode,
+                        otype: 'Unit',
+                        businessId: business._id
+                    })
+                    let unitId = ''
+                    if(!foundDepartment) {
+                        unitId = EntityObjects.insert({
+                            parentId: null,
+                            name: department.name,
+                            otype: 'Unit',
+                            properties: {},
+                            status: 'Active',
+                            createdBy: null,
+                            properties: null,
+                            businessId: businessUnitId,
+                            _groupId: business._groupId,
+                            successFactors: {
+                              externalCode: department.externalCode,
+                              costCenter: {
+                                  code: department.costCenter
+                              }
+                            }
+                        })
+                    } else {
+                        unitId = foundDepartment._id
+                    }
+                    positionId = createPosition(unitId)
+                }
+            } else {
+              positionId = createPosition(null)
+            }
+          } else {
+            positionId = createPosition(null)
           }
         }
-      })
+      } catch(e) {
+        console.log('Error in Getting employee position!', e.message)
+      }
     }
+    
     //--
+    
     if(payGroupData.code) {
       let payGrade = PayGrades.findOne({
         'successFactors.externalCode': payGroupData.code,
