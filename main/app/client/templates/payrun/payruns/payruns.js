@@ -128,21 +128,25 @@ Template.payruns.events({
 
             Meteor.call("hanaIntegration/postPayrunResults", Session.get('context'), period, month, year, (err, res) => {
                 resetButton()
-                console.log(`res: ${JSON.stringify(res)}`)
                 
                 if (!err) {
-                    if(res.status === true) {
-                        swal("Payrun Post Status", res["message"], "success");
+                    if(res.statusCode === 500) {
+                        swal("Payrun Post Status", 'Severe post error.', "error");
                     } else {
-                        if(res.errors) {
-                            let errors = res.errors
-                            console.log(`Errors: ${JSON.stringify(errors)}`)
+                        if(res.Return && res.Return.item && res.Return.item.length > 0) {
+                            const returnMessage = res.Return.item[0].Message
+                            console.log(`returnMessage: `, returnMessage)
 
-                            Modal.show('PayrunResultsPostToSapErrors', errors)
-                        } else if(res.message) {
-                            swal("Payrun Post Status", res.message, "error");
-                        } else {
-                            swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                            if(returnMessage.indexOf('successfully') > 0) {
+                                swal("Payrun Post Status", returnMessage, "success");
+                            } else {
+                                let items = res.Return.item
+                                let errorMsg = ''
+                                items.forEach((item, index) => {
+                                    errorMsg += "\n" + item.Message
+                                })
+                                swal("Payrun Post Status", errorMsg, "error");
+                            }
                         }
                     }
                 } else {

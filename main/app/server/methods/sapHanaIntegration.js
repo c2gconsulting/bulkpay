@@ -1,4 +1,6 @@
 let soap = require('soap');
+Future = Npm.require('fibers/future');
+
 
 let sapHanaWsdl = "https://sandbox.hsdf.systems:8001/sap/bc/srt/wsdl/flv_10002A111AD1/bndg_url/sap/bc/srt/rfc/sap/post_gl_1/215/post_gl/post_gl?sap-client=215"
 let GLPostEndpoint = "https://sandbox.hsdf.systems:8001/sap/bc/srt/rfc/sap/post_gl_1/215/post_gl/post_gl"
@@ -612,11 +614,11 @@ Meteor.methods({
         }
     },
     'hanaIntegration/postPayrunResults': function (businessUnitId, period, month, year) {
-        console.log(`Inside hana postPayrunResults`)
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         this.unblock()
+        let future = new Future();
 
         let errorResponse = null
         try {
@@ -638,67 +640,40 @@ Meteor.methods({
 
             let processingResult = HanaIntegration.processPayrun(config, payRunResult, period, localCurrency)
             console.log(`processingResult: ${JSON.stringify(processingResult)}`)
-            // let costCenterCode = '0017101101';
-            // let processingResult = {
-            //     status: true,
-            //     employees: ['', '', ''],
-            //     unitsBulkSum: {
-            //         "xyx": {
-            //             costCenterCode: '0017101101',
-            //             payments: [
-            //                 {
-            //                     payTypeDebitAccountCode: '0063005000',
-            //                     payTypeCreditAccountCode: '0011001010',
-            //                     description: "BASIC PAY",
-            //                     Costcenter: costCenterCode,
-            //                     costCenterPayAmount: `4000000`,
-            //                 }
-            //             ]
-            //         }
-            //     }
-            //   }
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
                     const authHeaders = HanaIntegration.getAuthHeader({
                         username: 'SAP_INSTALL', password: 'Awnkg0akm'
                     })
-
                     const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
 
-                    // soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, function(err, client) {
-                    //     console.log(`err: `, err);
-                    //     console.log(`client: `, client)
-                    // });
-
-                    // let createClientSync = Meteor.wrapAsync(soap.createClientAsync);
-                    // const client = createClientSync(sapHanaWsdl, { wsdl_headers: authHeaders })
-                    // client.setEndpoint(GLPostEndpoint)
-
-                    // const accountPostSync = Meteor.wrapAsync(client.AccDocumentPost1)
-                    // const errAndResult = accountPostSync(journalEntryPost)
-                    // console.log(`errAndResult: `, errAndResult)
-
-                    return soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
+                    soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
                     .then(client => {
                         client.setEndpoint(GLPostEndpoint)
                         console.log(`About to post journal entry`)
         
-                        return client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
+                        client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
                             console.log(`result: `, JSON.stringify(result, null, 4))
                             if(result.statusCode === 500) {
                                 console.log(`Severe server error`)
                             }
-                            return result
+                            future["return"](result)
                         })
                     }).catch(error => {
                         console.log(`Soap Error: `, error)
                     })
+                } else {
+                    future["return"]({status: false, message: 'No employee payrun to POST'})
                 }
+            } else {
+                future["return"]({status: false, errors: processingResult.errors, message: 'Sorry, could not process payrun for posting'})
             }
         } catch(e) {
             errorResponse = `{"status": false, "message": "${e.message}"}`
+            future["return"](errorResponse)
         }
-        return errorResponse;
+
+        return future.wait()
     }
 })
