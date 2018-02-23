@@ -657,6 +657,25 @@ Meteor.methods({
                             console.log(`result: `, JSON.stringify(result, null, 4))
                             if(result.statusCode === 500) {
                                 console.log(`Severe server error`)
+                            } else {
+                                if(result.Return && result.Return.item && result.Return.item.length > 0) {
+                                    const returnMessage = result.Return.item[0].Message
+                                    console.log(`returnMessage: `, returnMessage)
+        
+                                    if(returnMessage.indexOf('successfully') > 0) {
+                                        // const payrunsToUpdate = Payruns.find({
+                                        //     businessId: businessUnitId,
+                                        //     period: period,
+                                        //     employeeId: {$in: processingResult.employees}
+                                        // }).fetch()
+                                        // const payrunIds = _.pluck(payrunsToUpdate, '_id')
+                                        // console.log(`payrunIds: `, payrunIds)
+
+                                        // if(payrunIds && payrunIds.length > 0) {
+                                        //     Payruns.update({$in: payrunIds}, {$set: {isPostedToSAPHANA: true}})
+                                        // }
+                                    }
+                                }
                             }
                             future["return"](result)
                         })
