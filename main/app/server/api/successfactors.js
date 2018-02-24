@@ -355,7 +355,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }]
   bpUser.employeeProfile = {
     employment: {
-      status: 'Active'
+      status: 'Active',
+      hireDate: new Date()
     }
   }
   bpUser.employee = true
@@ -390,7 +391,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             businessId: business._id,
             addToTotal: true,
             editablePerEmployee: true,
-            isTimeWritingDependent: true,
+            isTimeWritingDependent: false,
             includeWithSapIntegration: true,
             successFactors: {
               externalCode: payment.payComponent
@@ -455,7 +456,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
 
     let positionParentId;
-    const positionsUrl = `${baseUrl}/odata/v2/Position?$filter= code eq ${positionData.positionCode}&$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
+    const positionsUrl = `${baseUrl}/odata/v2/Position?$filter= code eq '${positionData.positionCode}'&$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
           
     let getToSync = Meteor.wrapAsync(HTTP.get);  
     const positionsRes = getToSync(positionsUrl, {headers: requestHeaders})
@@ -751,7 +752,9 @@ if (Meteor.isServer) {
             let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
             if(config) {
               // fetchEmployeeDetails(business, config, '103239')
-              fetchEmployeeDetails(business, config, 'chris.tester')
+              // fetchEmployeeDetails(business, config, 'chris.tester')
+              fetchEmployeeDetails(business, config, 'balogun.integrator')
+              
               // fetchEmployeeDetails(business, config, 'Zek')
             }
           })

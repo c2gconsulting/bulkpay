@@ -681,6 +681,7 @@ Meteor.methods({
                         })
                     }).catch(error => {
                         console.log(`Soap Error: `, error)
+                        future["return"]({statusCode: 500})
                     })
                 } else {
                     future["return"]({status: false, message: 'No employee payrun to POST'})

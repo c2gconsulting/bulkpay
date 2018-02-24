@@ -114,12 +114,12 @@ Template.payruns.events({
         let currentPayrun = Template.instance().currentPayrun.get();
 
         if(currentPayrun) {
-            tmpl.$('#postToSap').text('Please wait ... ');
-            tmpl.$('#postToSap').attr('disabled', true);
+            tmpl.$('#postToSapHana').text('Please wait ... ');
+            tmpl.$('#postToSapHana').attr('disabled', true);
             //--
             let resetButton = function() {
-                tmpl.$('#postToSap').text('Post results to SAP');
-                tmpl.$('#postToSap').removeAttr('disabled');
+                tmpl.$('#postToSapHana').text('Post to SAP HANA');
+                tmpl.$('#postToSapHana').removeAttr('disabled');
             };
             //--
             const month = $('[name="paymentPeriodMonth"]').val();
@@ -130,7 +130,17 @@ Template.payruns.events({
                 resetButton()
                 
                 if (!err) {
-                    if(res.statusCode === 500) {
+                    if(!res.status) {
+                        if(res.errors) {
+                            let errors = res.errors
+                            console.log(`Errors: ${JSON.stringify(errors)}`)
+                            Modal.show('PayrunResultsPostToSapErrors', errors)
+                        } else if(res.message) {
+                            swal("Payrun Post Status", res.message, "error");
+                        } else {
+                            swal("Payrun Post Status", "A server error occurred. Please try again later", "error");
+                        }
+                    } else if(res.statusCode === 500) {
                         swal("Payrun Post Status", 'Severe post error.', "error");
                     } else {
                         if(res.Return && res.Return.item && res.Return.item.length > 0) {

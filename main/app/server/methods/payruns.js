@@ -1869,6 +1869,10 @@ function getDetailsInPayslip(employee){
     details.employeeUserId = employee._id;
     details.employeeId = employee.employeeProfile.employeeId;
     details.fullname = employee.profile.fullName;
+
+    employee.employeeProfile = employee.employeeProfile || {}
+    employee.employeeProfile.payment = employee.employeeProfile.payment || {}
+
     details.accountNumber = employee.employeeProfile.payment.accountNumber || "";
     details.bank = employee.employeeProfile.payment.bank || "";
     // add other details
