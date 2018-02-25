@@ -514,76 +514,6 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, payRunResults, 
 *  SuccessFactors Integration Methods
 */
 Meteor.methods({
-    // 'hanaIntegration/testConnection': function (businessId, hanaConfig) {
-    //     if (!this.userId) {
-    //         throw new Meteor.Error(401, "Unauthorized");
-    //     }
-    //     this.unblock()
-    //     //--
-    //     if(hanaConfig) {
-    //         //http://34.232.137.239:8000/JournalEntryOdataService/journalentry.xsodata?$metadata&$format=json
-    //         //   let connectionUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}/JournalEntryOdataService/journalentry.xsodata?$metadata&$format=json`
-
-    //         const baseUrl = `${hanaConfig.protocol}://${hanaConfig.serverHostUrl}`
-    //         const connectionUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=1&$format=json`
-
-    //         const requestHeaders = HanaIntegration.getAuthHeader(hanaConfig)
-
-    //         let errorResponse = null
-    //         try {
-    //             let connectionTestResponse = HTTP.call('GET', connectionUrl, {headers: requestHeaders});
-    //             // console.log(`connectionTestResponse: `, connectionTestResponse)
-
-    //             if(connectionTestResponse && connectionTestResponse.statusCode === 200) {
-    //                 let config = SapHanaIntegrationConfigs.findOne({businessId: businessId});
-    //                 if(config) {
-    //                     SapHanaIntegrationConfigs.update(config._id, {$set : hanaConfig});
-    //                 } else {
-    //                     hanaConfig.businessId = businessId
-    //                     SapHanaIntegrationConfigs.insert(hanaConfig)
-    //                 }
-    //                 return '{"status": true, "message": "All good here!"}'
-    //             } else {
-    //                 errorResponse = '{"status": false, "message": "An error occurred in testing connection. Please be sure of the details."}'
-    //             }
-    //         } catch(e) {
-    //             console.log(`Error: `, e)
-    //             errorResponse = `{"status": false, "message": "${e.message}"}`
-    //         }
-    //         return errorResponse;
-    //     } else {
-    //         return '{"status": false, "message": "Successfactors Config empty"}'
-    //     }
-    // },
-    // 'hanaIntegration/fetchGlAccounts': function (businessUnitId) {
-    //     if (!this.userId) {
-    //         throw new Meteor.Error(401, "Unauthorized");
-    //     }
-    //     this.unblock();
-
-    //     let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
-    //     if(config) {
-    //         const requestHeaders = HanaIntegration.getAuthHeader(config)
-    //         const baseUrl = `${config.protocol}://${config.serverHostUrl}`
-    //         const glAccountsQueryUrl = `${baseUrl}/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json`
-    //         //   http://34.232.137.239:8000/JournalEntryOdataService/journalentry.xsodata/GLAccounts?$top=300&$format=json
-
-    //         let getToSync = Meteor.wrapAsync(HTTP.get);
-    //         const glAccountsRes = getToSync(glAccountsQueryUrl, {headers: requestHeaders})
-
-    //         if(glAccountsRes) {
-    //             try {
-    //                 let glAccountsData = JSON.parse(glAccountsRes.content)
-    //                 return HanaIntegration.getOdataResults(glAccountsData)
-    //             } catch(e) {
-    //                 console.log('Error in Getting Hana G/L Accounts! ', e.message)
-    //             }
-    //         } else {
-    //             console.log('Error in Getting Hana G/L Accounts! null response')
-    //         }
-    //     }
-    //   return []
-    // },
     "hanaIntegration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray, 
         taxesGLAccountCodesArray, pensionGLAccountCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
@@ -648,41 +578,47 @@ Meteor.methods({
                     })
                     const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
 
-                    soap.createClientAsync(sapHanaWsdl, { wsdl_headers: authHeaders })
-                    .then(client => {
-                        client.setEndpoint(GLPostEndpoint)
-                        console.log(`About to post journal entry`)
-        
-                        client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
-                            console.log(`result: `, JSON.stringify(result, null, 4))
-                            if(result.statusCode === 500) {
-                                console.log(`Severe server error`)
-                            } else {
-                                if(result.Return && result.Return.item && result.Return.item.length > 0) {
-                                    const returnMessage = result.Return.item[0].Message
-                                    console.log(`returnMessage: `, returnMessage)
-        
-                                    if(returnMessage.indexOf('successfully') > 0) {
-                                        // const payrunsToUpdate = Payruns.find({
-                                        //     businessId: businessUnitId,
-                                        //     period: period,
-                                        //     employeeId: {$in: processingResult.employees}
-                                        // }).fetch()
-                                        // const payrunIds = _.pluck(payrunsToUpdate, '_id')
-                                        // console.log(`payrunIds: `, payrunIds)
-
-                                        // if(payrunIds && payrunIds.length > 0) {
-                                        //     Payruns.update({$in: payrunIds}, {$set: {isPostedToSAPHANA: true}})
-                                        // }
+                    soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, Meteor.bindEnvironment(function (error, client) {
+                        console.log(`error: `, error)
+                        if(client) {
+                            client.setEndpoint(GLPostEndpoint)
+                            console.log(`About to post journal entry`)
+            
+                            try {
+                                client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
+                                    console.log(`result: `, JSON.stringify(result, null, 4))
+                                    if(result.statusCode === 500) {
+                                        console.log(`Severe server error`)
+                                    } else {
+                                        if(result.Return && result.Return.item && result.Return.item.length > 0) {
+                                            const returnMessage = result.Return.item[0].Message
+                                            console.log(`returnMessage: `, returnMessage)
+                
+                                            if(returnMessage.indexOf('successfully') > 0) {
+                                                const payrunsToUpdate = Payruns.find({
+                                                    businessId: businessUnitId,
+                                                    period: period,
+                                                    employeeId: {$in: processingResult.employees}
+                                                }).fetch()
+                                                const payrunIds = _.pluck(payrunsToUpdate, '_id')
+                                                console.log(`payrunIds: `, payrunIds)
+    
+                                                if(payrunIds && payrunIds.length > 0) {
+                                                    Payruns.update({_id: {$in: payrunIds}}, {$set: {isPostedToSAPHANA: true}})
+                                                }
+                                            }
+                                        }
                                     }
-                                }
+                                    future["return"](result)
+                                })
+                            } catch(error) {
+                                console.log(`Soap Error: `, error)
+                                future["return"]({statusCode: 500})
                             }
-                            future["return"](result)
-                        })
-                    }).catch(error => {
-                        console.log(`Soap Error: `, error)
-                        future["return"]({statusCode: 500})
-                    })
+                        } else {
+                            future["return"]({statusCode: 503})
+                        }
+                    }));
                 } else {
                     future["return"]({status: false, message: 'No employee payrun to POST'})
                 }

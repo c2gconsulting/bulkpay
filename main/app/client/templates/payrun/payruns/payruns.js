@@ -128,12 +128,13 @@ Template.payruns.events({
 
             Meteor.call("hanaIntegration/postPayrunResults", Session.get('context'), period, month, year, (err, res) => {
                 resetButton()
+                console.log(`err: `, err)
+                console.log(`res: `, res)
                 
                 if (!err) {
-                    if(!res.status) {
+                    if(res.status === false) {
                         if(res.errors) {
                             let errors = res.errors
-                            console.log(`Errors: ${JSON.stringify(errors)}`)
                             Modal.show('PayrunResultsPostToSapErrors', errors)
                         } else if(res.message) {
                             swal("Payrun Post Status", res.message, "error");
@@ -142,6 +143,8 @@ Template.payruns.events({
                         }
                     } else if(res.statusCode === 500) {
                         swal("Payrun Post Status", 'Severe post error.', "error");
+                    } else if(res.statusCode === 503) {
+                        swal("Payrun Post Status", 'The HANA server is down at the moment. \nPlease try again later.', "error");
                     } else {
                         if(res.Return && res.Return.item && res.Return.item.length > 0) {
                             const returnMessage = res.Return.item[0].Message
