@@ -514,6 +514,28 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, payRunResults, 
 *  SuccessFactors Integration Methods
 */
 Meteor.methods({
+    "hanaIntegration/updateUnitCostCenters": function(businessUnitId, unitCostCenterCodesArray){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+        //--
+        if(unitCostCenterCodesArray && unitCostCenterCodesArray.length > 0) {
+            unitCostCenterCodesArray.forEach(unit => {
+                unit.successFactors = unit.successFactors || {}
+                unit.successFactors.costCenter = unit.successFactors.costCenter || {}
+                unit.successFactors.costCenter.code = unit.successFactors.costCenter.code || ""
+                
+                EntityObjects.update({_id: unit._id}, {$set: {
+                    'successFactors.costCenter.code': unit.successFactors.costCenter.code
+                }})
+            })
+            return true;
+        } else {
+            throw new Meteor.Error(404, "Empty cost centers data for units");
+        }
+    },
     "hanaIntegration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray, 
         taxesGLAccountCodesArray, pensionGLAccountCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){

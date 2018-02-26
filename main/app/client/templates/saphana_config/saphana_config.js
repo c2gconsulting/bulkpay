@@ -51,6 +51,24 @@ Template.SapHanaConfig.events({
             }
         });
     },
+    'blur #tab1-data-body tr input': (e, tmpl) => {
+        let domElem = e.currentTarget;
+        let unitId = domElem.getAttribute('id')
+        let unitGlAccountCode = domElem.value || ""
+
+        let units = Template.instance().units.get()
+
+        let currentUnit = _.find(units, function (o) {
+            return o._id === unitId;
+        })
+        // currentUnit.costCenterCode = unitGlAccountCode
+        currentUnit.successFactors = currentUnit.successFactors || {}
+        currentUnit.successFactors.costCenter = currentUnit.successFactors.costCenter || {}
+        currentUnit.successFactors.costCenter.code = unitGlAccountCode
+        
+        Template.instance().units.set(units);
+
+    },
     'blur #tab2-data-body tr input': (e, tmpl) => {
         let domElem = e.currentTarget;
         let paytypeId = domElem.getAttribute('id')
@@ -64,6 +82,20 @@ Template.SapHanaConfig.events({
         currentPaytype.creditGLAccountCode = creditGlAccountCode
 
         Template.instance().payTypes.set(payTypes);
+    },
+    'click #saveSapCostCenterCodes': (e, tmpl) => {
+        let businessUnitId = Session.get('context')
+
+        let theUnits = Template.instance().units.get()
+
+        Meteor.call("hanaIntegration/updateUnitCostCenters", businessUnitId, theUnits, (err, res) => {
+            if(res) {
+                swal('Success', 'Cost center codes were successfully updated', 'success')
+            } else {
+                console.log(err);
+                swal('Error', err.reason, 'error')
+            }
+        })
     },
     // 'click #savePaytypes': (e, tmpl) => {
     //     let businessUnitId = Session.get('context')
@@ -165,6 +197,9 @@ Template.SapHanaConfig.helpers({
     'companyConnectionInfo': function() {
         return Template.instance().sapHanaConfig.get()
     },
+    'costCenters': function () {
+        return Template.instance().units.get()
+    },
     'payTypes': function () {
         return Template.instance().payTypes.get()
     },
@@ -183,6 +218,9 @@ Template.SapHanaConfig.helpers({
     "pensions": () => {
         return Template.instance().pensions.get()
     },
+    "getCostCenterOrgChartParents": (unit) => {
+        return Template.instance().getParentsText(unit)
+    }
     // 'isFetchingHanaGlAccounts': function() {
     //     return Template.instance().isFetchingSapHanaGlAccounts.get()
     // },
@@ -202,11 +240,13 @@ Template.SapHanaConfig.onCreated(function () {
     let businessUnitId = Session.get('context');
 
     self.subscribe('SapHanaIntegrationConfigs', businessUnitId);
+    self.subscribe('getCostElement', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
     self.subscribe('taxes', businessUnitId)
     self.subscribe('pensions', businessUnitId)
     
     self.sapHanaConfig = new ReactiveVar()
+    self.units = new ReactiveVar()
     self.payTypes = new ReactiveVar()
     self.taxes = new ReactiveVar()
     self.pensions = new ReactiveVar()
@@ -214,6 +254,24 @@ Template.SapHanaConfig.onCreated(function () {
 
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingSapHanaGlAccounts = new ReactiveVar(false)
+
+    self.getParentsText = (unit) => {// We need parents 2 levels up
+        let parentsText = ''
+        if(unit.parentId) {
+            let possibleParent = EntityObjects.findOne({_id: unit.parentId})
+            if(possibleParent) {
+                parentsText += possibleParent.name
+
+                if(possibleParent.parentId) {
+                    let possibleParent2 = EntityObjects.findOne({_id: possibleParent.parentId})
+                    if(possibleParent2) {
+                        parentsText += ' >> ' + possibleParent2.name
+                        return parentsText
+                    } return ''
+                } else return parentsText
+            } else return ''
+        } else return ''
+    }
 
     // self.autorun(function() {
     //     if (Template.instance().subscriptionsReady()){
@@ -245,6 +303,8 @@ Template.SapHanaConfig.onCreated(function () {
         if (Template.instance().subscriptionsReady()){
             let config = SapHanaIntegrationConfigs.findOne({businessId: businessUnitId})
             self.sapHanaConfig.set(config)
+
+            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch());
 
             self.payTypes.set(PayTypes.find({'status': 'Active'}).fetch().map(payType => {
                 if(config) {

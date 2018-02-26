@@ -24,7 +24,8 @@
                         <div id="progress-wizard-new" class="panel-wizard form-horizontal form-bordered">
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <!-- <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li> -->
-                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> G/L Accounts </a></li>
+                                <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Unit Cost centers</a></li>
+                                <li><a href="#new-tab2" data-toggle="tab" id="step2"><strong></strong> G/L Accounts </a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -32,7 +33,7 @@
                             </div>
 
                             <div class="tab-content">
-                                <div class="tab-pane" id="new-tab2">
+                                <!-- <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-2"></div>
@@ -101,11 +102,11 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div><!-- panel -->
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <!-- <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
@@ -167,6 +168,41 @@
                                 </div> -->
 
                                 <div class="tab-pane" id="new-tab1">
+                                    <div class="form-group">
+                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
+                                        <div class="row">
+                                            <div class="pull-right">
+                                                <button type="submit" class="btn btn-primary" id="saveSapCostCenterCodes">Save</button>
+                                            </div>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="derivativeTable">
+                                                <thead>
+                                                <tr>
+                                                    <th>S/N</th>
+                                                    <th>Unit</th>
+                                                    <th>Org chart parents</th>
+                                                    <th>Cost Center Code</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="tab1-data-body">
+                                                {{#each costCenters}}
+                                                    <tr class="item" style="cursor: move;">
+                                                        <td>{{@index}}</td>
+                                                        <td>{{name}}</td>
+                                                        <td>{{getCostCenterOrgChartParents this}}</td>
+                                                        <td>
+                                                            <input type="text" id="{{_id}}" class="form-control calc" value="{{successFactors.costCenter.code}}"/>
+                                                        </td>
+                                                    </tr>
+                                                {{/each}}
+                                                </tbody>
+                                            </table>
+                                        </div><!-- table-responsive -->
+                                    </div><!-- form-group -->
+                                </div><!-- tab-pane -->
+
+                                <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
