@@ -14,6 +14,7 @@ Template.PaygradeCreate.events({
             description: $('[name="description"]').val(),
             positions: Core.returnSelection($('[name="positions"]')),
             payGroups: Core.returnSelection($('[name="paygroups"]')),
+            leaveRequest: $('[name="leaveRequest"]').val(),
             status: $('[name="status"]').val(),
             payTypes: getPaytypes(),
             payTypePositionIds: payTypesPositionOnPayrunExport()

@@ -197,6 +197,20 @@ Template.LeaveCreate.helpers({
             'employeeProfile.employment.status': 'Active'
         });
     },
+    'showAccruedDays': () => {
+        let user = Meteor.users.findOne(Meteor.userId())
+        if(user) {
+            let userPaygrade = user.employeeProfile.employment.paygrade
+            let payGrade = PayGrades.findOne({_id: userPaygrade})
+            if(payGrade) {
+                if(!payGrade.leaveRequest) {
+                    return true
+                } else {
+                    return payGrade.leaveRequest === 'Limited'
+                }
+            }
+        }
+    }
 });
 
 
@@ -220,6 +234,7 @@ Template.LeaveCreate.onCreated(function () {
     self.inputErrorMsg = new ReactiveVar()
 
     self.subscribe("activeEmployees", businessId);
+    self.subscribe("paygrades", businessId);
 
     self.getNumberOfWeekDays = function(startDate, endDate) {
         let startDateMoment = moment(startDate)

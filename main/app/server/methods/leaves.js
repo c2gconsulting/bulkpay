@@ -71,36 +71,50 @@ let LeaveCreateHelpers = {
                     new Meteor.Error(401, "Sorry, employee hire date is not set.");
                 }
             }
-            //--
-            let leaveTypesWithoutDeduction = LeaveTypes.find({
-                deductFromAnnualLeave: false
-            }).fetch();
-            let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
-
-            let hoursOfLeaveApproved = 0
-            let userApprovedLeaves = Leaves.find({
-                businessId: leave.businessId, 
-                employeeId: userId,
-                approvalStatus: 'Approved',
-                type: {$nin: theLeaveTypeIds}
-            }).fetch();
-
-            userApprovedLeaves.forEach(aLeave => {
-                hoursOfLeaveApproved += aLeave.durationInHours
-            })
-            //--
-            let numSupplementaryLeaveDays = 0
-            if(suppLeavesForUser) {
-                numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
+            const employeePaygradeId = user.employeeProfile.employment.paygrade;
+            if(!employeePaygradeId) {
+                new Meteor.Error(401, "Sorry, employee does not have Pay Grade");
             }
-            //--
-            let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+            const payGrade = PayGrades.findOne({_id: employeePaygradeId})
+            let payGradeLeaveConfig;
+            if(payGrade) {
+                payGradeLeaveConfig = payGrade.leaveRequest
+            }
 
-            if(numberOfLeaveDaysLeft > leave.duration) {
-                Leaves.insert(leave);
-                return true
+            if(!payGradeLeaveConfig || payGradeLeaveConfig === 'Limited') {
+                let leaveTypesWithoutDeduction = LeaveTypes.find({
+                    deductFromAnnualLeave: false
+                }).fetch();
+                let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
+    
+                let hoursOfLeaveApproved = 0
+                let userApprovedLeaves = Leaves.find({
+                    businessId: leave.businessId, 
+                    employeeId: userId,
+                    approvalStatus: 'Approved',
+                    type: {$nin: theLeaveTypeIds}
+                }).fetch();
+    
+                userApprovedLeaves.forEach(aLeave => {
+                    hoursOfLeaveApproved += aLeave.durationInHours
+                })
+                //--
+                let numSupplementaryLeaveDays = 0
+                if(suppLeavesForUser) {
+                    numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
+                }
+                //--
+                let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+    
+                if(numberOfLeaveDaysLeft > leave.duration) {
+                    Leaves.insert(leave);
+                    return true
+                } else {
+                    throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
+                }
             } else {
-                throw new Meteor.Error(401, "Sorry, you do not have enough leave days for this leave request");
+                Leaves.insert(leave);
+                return true            
             }
         } catch (e) {
             throw new Meteor.Error(401, e.message);

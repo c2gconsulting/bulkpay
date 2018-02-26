@@ -66,7 +66,7 @@ Meteor.methods({
         check(id, String);
         const selector = {
             _id: id
-        };
+        };        
         let result = PayGrades.update(selector, {$set: details});
 
         //--We need to update employee paytypes in case new paytypes were added to the paygrade
