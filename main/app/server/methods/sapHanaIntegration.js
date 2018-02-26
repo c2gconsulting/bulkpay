@@ -607,7 +607,7 @@ Meteor.methods({
                             console.log(`About to post journal entry`)
             
                             try {
-                                client.AccDocumentPost1(journalEntryPost, function(err, result, rawResponse, soapHeader, rawRequest) {
+                                client.AccDocumentPost1(journalEntryPost, Meteor.bindEnvironment(function (error, result) {
                                     console.log(`result: `, JSON.stringify(result, null, 4))
                                     if(result.statusCode === 500) {
                                         console.log(`Severe server error`)
@@ -632,7 +632,7 @@ Meteor.methods({
                                         }
                                     }
                                     future["return"](result)
-                                })
+                                }))
                             } catch(error) {
                                 console.log(`Soap Error: `, error)
                                 future["return"]({statusCode: 500})
