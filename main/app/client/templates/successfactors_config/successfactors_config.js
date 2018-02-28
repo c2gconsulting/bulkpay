@@ -232,19 +232,49 @@ Template.SuccessFactorsConfig.events({
             }
         })
     },
-    'change [name="periodMonth"]': function(e){
-      let selectedMonth = e.currentTarget.value;
-      console.log("Selected month: " + selectedMonth);
+    'change [name="periodMonth"]': function(e, tmpl){
+        let selectedMonth = e.currentTarget.value;
+        console.log("Selected month: " + selectedMonth);
 
-      Template.instance().selectedMonth.set(selectedMonth);
+        Template.instance().selectedMonth.set(selectedMonth);
+
+        Template.instance().selectedMonth.set(selectedMonth);
+        let selectedYear = Template.instance().selectedYear.get();
+      
+        let businessUnitId = Session.get('context')
+        if(selectedMonth && selectedYear) {
+            tmpl.isFetchingTimeSheet.set(true)
+            Meteor.call("successfactors/savedEmployeeTimeSheets", businessUnitId, selectedMonth, selectedYear, function(err, res) {
+                tmpl.isFetchingTimeSheet.set(false)
+                if(!res) {
+                    swal('Error', err.reason, 'error')
+                } else {
+                    tmpl.sfTimeSheets.set(res)
+                }
+            })
+        }
     },
-    'change [name="periodYear"]': function(e){
+    'change [name="periodYear"]': function(e, tmpl){
       let selectedYear = e.currentTarget.value;
       console.log("Selected year: " + selectedYear);
 
       Template.instance().selectedYear.set(selectedYear);
+      let selectedMonth = Template.instance().selectedMonth.get();
+      
+      let businessUnitId = Session.get('context')
+      if(selectedMonth && selectedYear) {
+          tmpl.isFetchingTimeSheet.set(true)
+          Meteor.call("successfactors/savedEmployeeTimeSheets", businessUnitId, selectedMonth, selectedYear, function(err, res) {
+              tmpl.isFetchingTimeSheet.set(false)
+              if(!res) {
+                  swal('Error', err.reason, 'error')
+              } else {
+                  tmpl.sfTimeSheets.set(res)
+              }
+          })
+      }
     },
-    'click #fetchEmployeeTimeSheets': (e, tmpl) => {
+    'click #syncEmployeeTimeSheets': (e, tmpl) => {
         e.preventDefault();
         let businessUnitId = Session.get('context')
 
@@ -255,7 +285,7 @@ Template.SuccessFactorsConfig.events({
             console.log(`year: `, year)
             tmpl.isFetchingTimeSheet.set(true)
             
-            Meteor.call("successfactors/fetchEmployeeTimeSheets", businessUnitId, month, year, function(err, res) {
+            Meteor.call("successfactors/syncEmployeeTimeSheets", businessUnitId, month, year, function(err, res) {
                 console.log(`Res: `, res)
                 tmpl.isFetchingTimeSheet.set(false)
 
@@ -419,44 +449,42 @@ Template.SuccessFactorsConfig.onCreated(function () {
                 unit.unitId = unit._id
                 return unit
             }));
+        }
+    })
 
-            if(config) {
-                self.isFetchingPayTypes.set(true)
+    self.isFetchingPayTypes.set(true)
 
-                Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, sfPaytypes) => {
-                    console.log(`err: `, err)
-                    self.isFetchingPayTypes.set(false)
+    Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, sfPaytypes) => {
+        console.log(`err: `, err)
+        self.isFetchingPayTypes.set(false)
 
-                    if (!err) {
-                        self.sfPayTypes.set(sfPaytypes)
-                    } else {
-                        swal("Server error", `Please try again at a later time`, "error");
-                    }
-                });
-                //--
-                self.isFetchingPayGrades.set(true)
-                Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
-                    console.log(`err: `, err)
-                    self.isFetchingPayGrades.set(false)
+        if (!err) {
+            self.sfPayTypes.set(sfPaytypes)
+        } else {
+            swal("Server error", `Please try again at a later time`, "error");
+        }
+    });
+    //--
+    self.isFetchingPayGrades.set(true)
+    Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
+        console.log(`err: `, err)
+        self.isFetchingPayGrades.set(false)
 
-                    if (!err) {
-                        self.sfPayGrades.set(sfPayGrades)
-                    } else {
-                        swal("Server error", `Please try again at a later time`, "error");
-                    }
-                });
-                //--
-                self.isFetchingCostCenters.set(true)
-                Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
-                    self.isFetchingCostCenters.set(false)
-                    if (!err) {
-                        console.log(`err: `, err)
-                        self.sfCostCenters.set(sfCostCenters)
-                    } else {
-                        swal("Server error", `Please try again at a later time`, "error");
-                    }
-                });
-            }
+        if (!err) {
+            self.sfPayGrades.set(sfPayGrades)
+        } else {
+            swal("Server error", `Please try again at a later time`, "error");
+        }
+    });
+    //--
+    self.isFetchingCostCenters.set(true)
+    Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
+        self.isFetchingCostCenters.set(false)
+        if (!err) {
+            console.log(`err: `, err)
+            self.sfCostCenters.set(sfCostCenters)
+        } else {
+            swal("Server error", `Please try again at a later time`, "error");
         }
     });
 });

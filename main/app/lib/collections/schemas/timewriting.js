@@ -90,6 +90,10 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
+    "successFactorsCostCenter": {
+        type: String,
+        optional: true,
+    },
     createdAt: {
         type: Date,
         autoValue: function () {

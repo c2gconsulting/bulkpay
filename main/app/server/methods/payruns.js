@@ -856,6 +856,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     } else {
                                         value = parseFloat(x.parsedValue);
                                     }
+                                    console.log(`value: `, value)
                                     //--
                                     if(x.hourlyRate) {
                                         if(currentEmployeeInPayrunLoop.employeeProfile && currentEmployeeInPayrunLoop.employeeProfile.employment
@@ -928,6 +929,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processProjectAndCostCenterPay(x)
                                         } else {
                                             processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
+                                            console.log(`projectsAssignedToEmployee: `, projectsAssignedToEmployee)
 
                                             // let totalWorkHoursInYear = 2080
                                             // let numberOfMonthsInYear = 12
@@ -945,9 +947,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
                                                 }
                                             } else if(projectsAssignedToEmployee.length === 1) {
+                                                console.log(`value: `, value)
+                                                console.log(`numDaysEmployeeCanWorkInMonth: `, numDaysEmployeeCanWorkInMonth)
+                                                console.log(`totalNumWeekDaysInMonth: `, totalNumWeekDaysInMonth)
+
                                                 projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                                                 value = projectPayAmount
-    
+
                                                 processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
                                                 processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
     

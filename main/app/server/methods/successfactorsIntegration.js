@@ -293,8 +293,50 @@ Meteor.methods({
         }
         return true
     },
-    "successfactors/fetchEmployeeTimeSheets": function(businessUnitId, month, year) {
-        console.log(`Inside fetchEmployeeTimeSheets method`)
+    "successfactors/savedEmployeeTimeSheets": function(businessUnit, month, year) {
+        console.log(`Inside savedEmployeeTimeSheets method`)
+        if (!this.userId) {
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+        let results = [];
+
+        const monthAsNum = Number(month - 1)
+        const yearAsNum = Number(year)
+
+        const monthMoment = moment().month(monthAsNum).year(yearAsNum)
+        const monthStartMoment = monthMoment.clone().startOf('month')
+        const monthEndMoment = monthMoment.clone().endOf('month')
+        
+        const monthStart = monthStartMoment.format('YYYY-MM-DDTHH:mm:ss')
+        const monthEnd = monthEndMoment.format('YYYY-MM-DDTHH:mm:ss')
+
+        const aggregatedTimeSheet = TimeWritings.aggregate([
+            {$match: {
+                businessId: businessUnit, 
+                day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
+            }},
+            { $group: {
+                _id: {
+                    _id: "$employeeId",
+                    successFactorsCostCenter: "$successFactorsCostCenter",
+                },
+                status: {$first: "$status"},
+                duration: { $sum: "$duration" }
+            } }
+        ]);
+        results = aggregatedTimeSheet.map(timeSheet => {
+            return {
+                _id: timeSheet._id._id,
+                successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                status: timeSheet.status,
+                duration: timeSheet.duration
+            }
+        })
+        return results
+    },
+    "successfactors/syncEmployeeTimeSheets": function(businessUnitId, month, year) {
+        console.log(`Inside syncEmployeeTimeSheets method`)
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -357,16 +399,6 @@ Meteor.methods({
                                                 const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
                                                 let hoursAsNum = parseFloat(entry.hours)
 
-                                                let unitId = '';
-                                                if(entry.costCenter) {
-                                                    const foundUnit = EntityObjects.findOne({
-                                                        'successFactors.costCenter.code': entry.costCenter,
-                                                        businessId: config.businessId
-                                                    })
-                                                    if(foundUnit) {
-                                                        unitId = foundUnit._id
-                                                    }
-                                                }
                                                 let status;
                                                 if(time.approvalStatus === 'PENDING' || time.approvalStatus === 'PENDING_APPROVAL') {
                                                     status = 'Open'
@@ -378,7 +410,7 @@ Meteor.methods({
 
                                                 const timeSheetEntry = {
                                                     employeeId: bpUser._id,
-                                                    costCenter: unitId,
+                                                    costCenter: null,
                                                     day: startDate,
                                                     duration: hoursAsNum || 0,
                                                     businessId: config.businessId,
@@ -386,7 +418,8 @@ Meteor.methods({
                                                     status: status,
                                                     approvedBy: null,
                                                     approvedDate: null,
-                                                    isApprovalStatusSeenByCreator: false
+                                                    isApprovalStatusSeenByCreator: false,
+                                                    successFactorsCostCenter: entry.costCenter
                                                 }
                                                 TimeWritings.insert(timeSheetEntry)
                                                 results.push(timeSheetEntry)
@@ -407,17 +440,28 @@ Meteor.methods({
                   console.log('Error in Getting SF timesheets! ', e.message)
                 }
 
-                results = TimeWritings.aggregate([
+                const aggregatedTimeSheet = TimeWritings.aggregate([
                     {$match: {
                         businessId: config.businessId, 
                         day: {$gte: monthStartMoment.toDate(), $lte: monthEndMoment.toDate()}
                     }},
                     { $group: {
-                      _id: "$employeeId",
-                      status: {$first: "$status"},
-                      duration: { $sum: "$duration" }
+                        _id: {
+                            _id: "$employeeId",
+                            successFactorsCostCenter: "$successFactorsCostCenter",
+                        },
+                        status: {$first: "$status"},
+                        duration: { $sum: "$duration" }
                     } }
                 ]);
+                results = aggregatedTimeSheet.map(timeSheet => {
+                    return {
+                        _id: timeSheet._id._id,
+                        successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                        status: timeSheet.status,
+                        duration: timeSheet.duration
+                    }
+                })
             } else {
                 console.log('SF Timesheets null response')
             }

@@ -358,7 +358,7 @@
                                             </div>
 
                                             <div class="pull-right">
-                                                <button type="submit" class="btn btn-primary" id="fetchEmployeeTimeSheets">Sync</button>
+                                                <button type="submit" class="btn btn-primary" id="syncEmployeeTimeSheets">Sync</button>
                                             </div>
                                         </div>
                                         <div class="table-responsive">
@@ -367,6 +367,7 @@
                                                 <tr>
                                                     <th>Employee</th>
                                                     <th>Duration(In Hours)</th>
+                                                    <th>Cost Center</th>
                                                     <th>Status</th>
                                                 </tr>
                                                 </thead>
@@ -379,6 +380,7 @@
                                                             <tr class="item">
                                                                 <td>{{getEmployeeFullName _id}}</td>
                                                                 <td>{{duration}}</td>
+                                                                <td>{{successFactorsCostCenter}}</td>
                                                                 <td>{{status}}</td>
                                                             </tr>
                                                         {{/each}}
