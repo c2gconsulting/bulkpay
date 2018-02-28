@@ -122,8 +122,8 @@
       "isHourLeaveRequestsEnabled": false,
       "isProcurementRequisitionActive": true,
       "isTravelRequisitionActive": true,
-      "isLeaveRequestActive": false,
-      "isTimeWritingActive": false,
+      "isLeaveRequestActive": true,
+      "isTimeWritingActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },

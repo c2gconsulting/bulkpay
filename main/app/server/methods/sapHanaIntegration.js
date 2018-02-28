@@ -79,13 +79,12 @@ const HanaIntegration = {
     let glItems = []
     let currencyItems = []
     //--
-    let unitsBulkSum = processingResult.unitsBulkSum
-    let unitIds = Object.keys(unitsBulkSum)
+    let costCentersBulkSum = processingResult.costCentersBulkSum
+    let costCenters = Object.keys(costCentersBulkSum)
 
     let itemNoCounter = 1
-    unitIds.forEach(unitId => {
-        const costCenterCode = unitsBulkSum[unitId].costCenterCode
-        const payments = unitsBulkSum[unitId].payments;
+    costCenters.forEach(costCenterCode => {
+        const payments = costCentersBulkSum[costCenterCode].payments;
 
         payments.forEach(payment => {
             glItems.push({
@@ -177,7 +176,7 @@ HanaIntegration.getTaxForBulkSum = function (empPayResult, currencyRatesForPerio
         let paymentsInCurrency = deductionPayments[aCurrency].payments
 
         for(let aPayment of paymentsInCurrency) {
-            if (aPayment.reference === 'Tax') {
+            if (aPayment.reference === 'Tax') {                
                 if(aCurrency !== localCurrency.iso) {
                     let currencyRate = _.find(currencyRatesForPeriod, (aCurrencyRate) => {
                         return aCurrencyRate.code === aCurrency
@@ -220,12 +219,10 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
 
     let payRunResults = Payruns.find({period: period, businessId: businessUnitId}).fetch();
     let detailedPayRunResults = PayResults.find({period: period, businessId: businessUnitId}).fetch();
+
+    let currencyRatesForPeriod = Currencies.find({businessId: businessUnitId, period: period}).fetch()
+    const businessConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
     //--
-
-    let currencyRatesForPeriod = Currencies.find({
-        businessId: businessUnitSapConfig.businessId, period: period
-    }).fetch()
-
     let shortenMemoForSapJournalEntry = (paytypeDesc, memoTag, unitName) => {
         if(paytypeDesc && unitName) {
             let defaultMemo = paytypeDesc + memoTag + unitName + ")"
@@ -258,7 +255,7 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
     const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
-    const numWeekDays = HanaIntegration.weekDates(startDate, endDate).length;
+    const numWeekDays = HanaIntegration.getWeekDays(startDate, endDate).length;
 
 
     //--Main processing happens here
@@ -275,15 +272,13 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
             errors.push(`An employee record for payrun could not be found`)
             continue
         }
-        try {
-        
+        try {        
             let queryObj = {
                 businessId: businessUnitId, 
                 day: {$gte: startDate, $lt: endDate},
                 employeeId: employeeId,
                 // status: 'Approved'
             }
-            console.log(`queryObj: `, queryObj)
         
             const empTimeSheet = TimeWritings.aggregate([
                 { $match: queryObj},
@@ -315,7 +310,6 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
                     let payTypeFullDetails = _.find(allPaytypes, function (aPayType) {
                         return (aPayType._id && (aPayType._id === aPayment.id));
                     })
-                    //--
                     if(payTypeFullDetails) {
                         if(!payTypeFullDetails.includeWithSapIntegration || payTypeFullDetails.includeWithSapIntegration === false) {
                             return // Go to next iteration
@@ -336,7 +330,7 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
                             } else {
                                 sapConfigToUse = _.find(businessUnitSapConfig.pensions, function (aPayType) {
                                     return aPayType.pensionId === aPayment.id && (aPayType.pensionCode === aPayment.code);
-                                })    
+                                })
                             }
 
                             if(sapConfigToUse) {
@@ -367,45 +361,56 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
 
                                 if(numWeekDays > 0 && totalDuration > 0) {
                                     empTimeSheet.forEach(time => {
-                                        if(time.successFactorsCostCenter && !costCentersBulkSum[time.successFactorsCostCenter]) {
-                                            if(time.duration > 0) {
-                                                const amountForCostCenter = (time.duration / totalDuration) * (totalDuration/numWeekDays) * taxOrPensionAmount
+                                        const tSfCc = time._id;
+                                        if(time.duration > 0) {
+                                            const amountForCostCenter = 
+                                                (time.duration / totalDuration) * (totalDuration/(numWeekDays * businessConfig.maxHoursInDayForTimeWriting))
+                                                    * taxOrPensionAmount
 
+                                            if(tSfCc) {
                                                 let description = ''
                                                 if(aPayment.reference === 'Tax') {
-                                                    description = shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", time.successFactorsCostCenter)
+                                                    description = shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", tSfCc)
                                                 } else {
-                                                    description = shortenMemoForSapJournalEntry(aPayment.code, " (Cost-Center: ", time.successFactorsCostCenter)
+                                                    description = shortenMemoForSapJournalEntry(aPayment.code, " (Cost-Center: ", tSfCc)
                                                 }
 
-                                                costCentersBulkSum[time.successFactorsCostCenter].payments.push({
-                                                    payTypeId: aPayment.id,
-                                                    costCenterPayAmount: amountForCostCenter,
-                                                    description: description,
-                                                    payTypeDebitAccountCode: payTypeDebitAccountCode,
-                                                    payTypeCreditAccountCode: payTypeCreditAccountCode,
-                                                })                
+                                                if(!costCentersBulkSum[tSfCc]) {
+                                                    costCentersBulkSum[tSfCc] = {}
+                                                    costCentersBulkSum[tSfCc].payments = []
+    
+                                                    costCentersBulkSum[tSfCc].payments.push({
+                                                        payTypeId: aPayment.id,
+                                                        costCenterPayAmount: amountForCostCenter,
+                                                        description: description,
+                                                        payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                                        payTypeCreditAccountCode: payTypeCreditAccountCode,
+                                                    })
+                                                } else {
+                                                    let gotPay = _.find(costCentersBulkSum[tSfCc].payments, pay => {
+                                                        return pay.payTypeId === aPayment.id
+                                                    })
+                                                    if(gotPay) {
+                                                        gotPay.costCenterPayAmount += amountForCostCenter
+                                                    } else {
+                                                        costCentersBulkSum[tSfCc].payments.push({
+                                                            payTypeId: aPayment.id,
+                                                            costCenterPayAmount: amountForCostCenter,
+                                                            description: description,
+                                                            payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                                            payTypeCreditAccountCode: payTypeCreditAccountCode,
+                                                        })
+                                                    }
+                                                }
                                             }
                                         }
-                                    })    
+                                    })
                                 }
                             }
                         } else {
                             return
                         }
-                    }
-                    //--
-                    let paymentToAccumulate = _.find(unitBulkSumPayments, (aUnitPayment) => {
-                        return aUnitPayment.payTypeId === aPayment.id
-                    })
-
-                    //--
-                    if(paymentToAccumulate) {
-                        paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
                     } else {
-                        let payTypeDebitAccountCode = null
-                        let payTypeCreditAccountCode = null
-
                         if (sapPayTypeDetails.payTypeDebitAccountCode) {
                             payTypeDebitAccountCode = sapPayTypeDetails.payTypeDebitAccountCode
                         } else {
@@ -421,14 +426,55 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
                         if(!payTypeDebitAccountCode || !payTypeDebitAccountCode) {
                             return
                         }
-                        if (sapPayTypeDetails.payTypeDebitAccountCode && sapPayTypeDetails.payTypeCreditAccountCode) {
-                            unitBulkSumPayments.push({
-                                payTypeId: aPayment.id,
-                                costCenterPayAmount: aPayment.costCenterPayAmount || 0,
-                                description: shortenMemoForSapJournalEntry(aPayment.description, " (Cost-Center: ", unit.name),
-                                payTypeDebitAccountCode: payTypeDebitAccountCode,
-                                payTypeCreditAccountCode: payTypeCreditAccountCode
-                            })
+                        if (sapPayTypeDetails.payTypeDebitAccountCode && sapPayTypeDetails.payTypeCreditAccountCode) {                            
+                            if(numWeekDays > 0 && totalDuration > 0) {
+                                empTimeSheet.forEach(time => {
+                                    const tSfCc = time._id;
+                                    if(tSfCc) {
+                                        let description = shortenMemoForSapJournalEntry(aPayment.code, " (Cost-Center: ", tSfCc)
+                                        // console.log(`aPayment.amountLC: `, aPayment.amountLC)
+                                        // console.log(`time.duration: `, time.duration)
+                                        // console.log(`totalDuration: `, totalDuration)
+                                        // console.log(`numWeekDays: `, numWeekDays)
+                                        
+                                        const amountForCostCenter = 
+                                            (time.duration / totalDuration) * (totalDuration/(numWeekDays * businessConfig.maxHoursInDayForTimeWriting))
+                                                * (aPayment.amountLC || 0)
+                                        // console.log(`amountForCostCenter: `, amountForCostCenter)
+
+                                        if(!costCentersBulkSum[tSfCc]) {
+                                            if(time.duration > 0 ) {
+                                                costCentersBulkSum[tSfCc] = {}
+                                                costCentersBulkSum[tSfCc].payments = []
+    
+                                                costCentersBulkSum[tSfCc].payments.push({
+                                                    payTypeId: aPayment.id,
+                                                    costCenterPayAmount: amountForCostCenter,
+                                                    description: description,
+                                                    payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                                    payTypeCreditAccountCode: payTypeCreditAccountCode,
+                                                })                
+                                            }
+                                        } else {
+                                            let gotPay = _.find(costCentersBulkSum[tSfCc].payments, pay => {
+                                                return pay.payTypeId === aPayment.id
+                                            })
+                                            if(gotPay) {
+                                                gotPay.costCenterPayAmount += amountForCostCenter
+                                                console.log(`gotPay.costCenterPayAmount: `, gotPay.costCenterPayAmount)
+                                            } else {
+                                                costCentersBulkSum[tSfCc].payments.push({
+                                                    payTypeId: aPayment.id,
+                                                    costCenterPayAmount: amountForCostCenter,
+                                                    description: description,
+                                                    payTypeDebitAccountCode: payTypeDebitAccountCode,
+                                                    payTypeCreditAccountCode: payTypeCreditAccountCode,
+                                                })
+                                            }
+                                        }
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -545,47 +591,47 @@ Meteor.methods({
 
             const journalEntryPost = HanaIntegration.getJournalPostData(processingResult, period, month, year, localCurrency)
 
-            // soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, Meteor.bindEnvironment(function (error, client) {
-            //     console.log(`error: `, error)
-            //     if(client) {
-            //         client.setEndpoint(GLPostEndpoint)
-            //         console.log(`About to post journal entry`)
+            soap.createClient(sapHanaWsdl, { wsdl_headers: authHeaders }, Meteor.bindEnvironment(function (error, client) {
+                console.log(`error: `, error)
+                if(client) {
+                    client.setEndpoint(GLPostEndpoint)
+                    console.log(`About to post journal entry`)
     
-            //         try {
-            //             client.AccDocumentPost1(journalEntryPost, Meteor.bindEnvironment(function (error, result) {
-            //                 console.log(`result: `, JSON.stringify(result, null, 4))
-            //                 if(result.statusCode === 500) {
-            //                     console.log(`Severe server error`)
-            //                 } else {
-            //                     if(result.Return && result.Return.item && result.Return.item.length > 0) {
-            //                         const returnMessage = result.Return.item[0].Message
-            //                         console.log(`returnMessage: `, returnMessage)
+                    try {
+                        client.AccDocumentPost1(journalEntryPost, Meteor.bindEnvironment(function (error, result) {
+                            console.log(`result: `, JSON.stringify(result, null, 4))
+                            if(result.statusCode === 500) {
+                                console.log(`Severe server error`)
+                            } else {
+                                if(result.Return && result.Return.item && result.Return.item.length > 0) {
+                                    const returnMessage = result.Return.item[0].Message
+                                    console.log(`returnMessage: `, returnMessage)
         
-            //                         if(returnMessage.indexOf('successfully') > 0) {
-            //                             const payrunsToUpdate = Payruns.find({
-            //                                 businessId: businessUnitId,
-            //                                 period: period,
-            //                                 employeeId: {$in: processingResult.employees}
-            //                             }).fetch()
-            //                             const payrunIds = _.pluck(payrunsToUpdate, '_id')
-            //                             console.log(`payrunIds: `, payrunIds)
+                                    if(returnMessage.indexOf('successfully') > 0) {
+                                        const payrunsToUpdate = Payruns.find({
+                                            businessId: businessUnitId,
+                                            period: period,
+                                            employeeId: {$in: processingResult.employees}
+                                        }).fetch()
+                                        const payrunIds = _.pluck(payrunsToUpdate, '_id')
+                                        console.log(`payrunIds: `, payrunIds)
 
-            //                             if(payrunIds && payrunIds.length > 0) {
-            //                                 Payruns.update({_id: {$in: payrunIds}}, {$set: {isPostedToSAPHANA: true}})
-            //                             }
-            //                         }
-            //                     }
-            //                 }
-            //                 future["return"](result)
-            //             }))
-            //         } catch(error) {
-            //             console.log(`Soap Error: `, error)
-            //             future["return"]({statusCode: 500})
-            //         }
-            //     } else {
-            //         future["return"]({statusCode: 503})
-            //     }
-            // }));
+                                        if(payrunIds && payrunIds.length > 0) {
+                                            Payruns.update({_id: {$in: payrunIds}}, {$set: {isPostedToSAPHANA: true}})
+                                        }
+                                    }
+                                }
+                            }
+                            future["return"](result)
+                        }))
+                    } catch(error) {
+                        console.log(`Soap Error: `, error)
+                        future["return"]({statusCode: 500})
+                    }
+                } else {
+                    future["return"]({statusCode: 503})
+                }
+            }));
         } catch(e) {
             errorResponse = `{"status": false, "message": "${e.message}"}`
             future["return"](errorResponse)
