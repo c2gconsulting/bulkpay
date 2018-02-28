@@ -137,6 +137,51 @@ let getSfEmployeeIds = (jsonPayLoad) => {
   return {personIdExternal, perPersonUuid}
 }
 
+let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
+  console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
+
+  let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
+
+  let personIds = []
+  let personIdExternal = "";
+  let perPersonUuid = "";
+
+  let nsPrefix = ''
+  for(let i = 1; i < 10; i++) {//We need this because we are not sure what prefix successfactors will use
+    if(externalEvent[`ns${i}:ExternalEvent`] && externalEvent[`ns${i}:ExternalEvent`].length > 0) {
+      nsPrefix = `ns${i}`
+      break;
+    }
+  }
+
+  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ? 
+    externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`][0] : null
+
+  if(ns7Events) {
+    let ns7Event = ns7Events[`${nsPrefix}:event`]
+    if(ns7Event) {
+      ns7Event.forEach(event => {
+        let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
+        if(ns7Params) {                                                                                                                                                                                                                                                              
+          _.each(ns7Params[`${nsPrefix}:param`], param => {
+            if(param.name && param.name[0] === 'personIdExternal') {
+              personIdExternal = param.value[0]
+            } else if(param.name && param.name[0] === 'perPersonUuid') {
+              perPersonUuid = param.value[0]
+            }
+          })
+          console.log(`personIdExternal: `, personIdExternal)
+          console.log(`perPersonUuid: `, perPersonUuid)
+          console.log(``)
+          personIds.push({personIdExternal, perPersonUuid})
+
+          fetchEmployeeDetails(business, config, personIdExternal)
+        }
+      })
+    }
+  }
+}
+
 let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
   const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$select=personIdExternal,firstName,lastName&$format=json`
@@ -623,8 +668,8 @@ if (Meteor.isServer) {
               let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
               if(config) {
                 parseString(body, function (err, result) {
-                  const {personIdExternal, perPersonUuid} = getSfEmployeeIds(result)
-                  fetchEmployeeDetails(business, config, personIdExternal)
+                  getSfEmployeeIds2(business, config, result)
+                  // fetchEmployeeDetails(business, config, personIdExternal)
                 })
               }
             }
