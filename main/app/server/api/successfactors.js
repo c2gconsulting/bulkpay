@@ -406,6 +406,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     Meteor.users.update({
       'successFactors.personIdExternal': personIdExternal
     }, {$set: {
+      customUsername: personIdExternal,
       profile: {
         firstname: bulkPayUserParams.firstname,
         lastname: bulkPayUserParams.lastname,
@@ -622,7 +623,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       if(payGrade) {
         payGradeId = payGrade._id
 
-        payGradeId = PayGrades.update({_id: payGrade._id}, {$set: {
+        PayGrades.update({_id: payGrade._id}, {$set: {
           code: payGroupData.code,
           description: desc,
           // positions: [positionId],
@@ -684,6 +685,7 @@ if (Meteor.isServer) {
   Api.addRoute('successfactors/newhire/:token', {authRequired: false}, {
     post: {
       action: function() {
+        console.log(`10: 17pm GMT Current deployment`)
         console.log(`Inside successfactors newhire event endpoint`)
 
         let decoded;
