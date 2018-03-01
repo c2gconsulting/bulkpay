@@ -59,12 +59,14 @@ Template.login.events({
 						} else {
 							$('div #login_error').addClass('hide');
 							$('div #login_error').html('');
+							console.log(`res: `, res)
 
 							if(res.status === true) {
 								if(res.loginType === 'usingDefaultPassword') {
 									Router.go('reset.password', {token: res.resetPasswordToken})
 								} else {
 									Meteor.loginWithPassword(res.userEmail, password, function(err){
+										console.log(`err 1: `, err)
 										if (!err) {
 											var currentRoute = Router.current().route.getName();
 

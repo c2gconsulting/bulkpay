@@ -136,6 +136,7 @@ Meteor.methods({
 
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
+            console.log(`loginResult: `, loginResult)
 
             if(loginResult.error) {
                 throw loginResult.error
@@ -195,6 +196,7 @@ Meteor.methods({
 
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
+            console.log(`loginResult: `, loginResult)
 
             if(loginResult.error) {
                 throw loginResult.error
@@ -205,18 +207,33 @@ Meteor.methods({
                     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'}
     
                     let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
-                    let userEmail = user.emails[0].address || ''
-    
-                    if(defaultLoginResult.error) {
-                        Meteor.users.update({_id: user._id}, {$set: {
-                            isUsingDefaultPassword: false
-                        }})
-                        return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                    let userEmail = user.emails[0].address
+                    console.log(`userEmail: `, userEmail)
+
+                    if(userEmail) {
+                        if(defaultLoginResult.error) {
+                            Meteor.users.update({_id: user._id}, {$set: {
+                                isUsingDefaultPassword: false
+                            }})
+                            return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                        } else {
+                            Meteor.users.update({_id: user._id}, {$set: {
+                                isUsingDefaultPassword: true
+                            }})
+                            let resetPasswordToken = getPasswordResetToken(user, user._id, userEmail)
+        
+                            return {
+                                status: true, 
+                                loginType: 'usingDefaultPassword', 
+                                resetPasswordToken: resetPasswordToken,
+                                userEmail: userEmail
+                            }
+                        }
                     } else {
                         Meteor.users.update({_id: user._id}, {$set: {
                             isUsingDefaultPassword: true
                         }})
-                        let resetPasswordToken = getPasswordResetToken(user, user._id, user.emails[0].address || '')
+                        let resetPasswordToken = getPasswordResetToken(user, user._id, usernameOrEmail)
     
                         return {
                             status: true, 

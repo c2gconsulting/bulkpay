@@ -229,7 +229,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perPersonRes) {
     try {
       let perPersonData = JSON.parse(perPersonRes.content)
-      console.log(`perPersonData: `, perPersonData)
+      console.log(`perPersonData: `, JSON.stringify(perPersonData))
 
       if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
         let employeeData = perPersonData.d.results[0]
@@ -247,7 +247,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perEmailRes) {
     try {
       let perEmailData = JSON.parse(perEmailRes.content)
-      console.log(`perEmailData: `, perEmailData)
+      console.log(`perEmailData: `, JSON.stringify(perEmailData))
 
       if(perEmailData && perEmailData.d && perEmailData.d.results && perEmailData.d.results.length > 0) {
         let employeeData = perEmailData.d.results[0]
@@ -263,7 +263,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(perPhoneRes) {
     try {
       let perPhoneData = JSON.parse(perPhoneRes.content)
-      console.log(`perPhoneData: `, perPhoneData)
+      console.log(`perPhoneData: `, JSON.stringify(perPhoneData))
 
       if(perPhoneData && perPhoneData.d && perPhoneData.d.results && perPhoneData.d.results.length > 0) {
         let employeeData = perPhoneData.d.results[0]
@@ -292,6 +292,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(empJobRes) {
     try {
       let empJobData = JSON.parse(empJobRes.content)
+      console.log(`empJobData: `, JSON.stringify(empJobData))
 
       if(empJobData && empJobData.d && empJobData.d.results && empJobData.d.results.length > 0) {
         let employeeData = empJobData.d.results[0]
@@ -339,58 +340,80 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   console.log(`payGroupData: `, JSON.stringify(payGroupData))
   console.log(``)
 
+
+  let existingUser = Meteor.users.findOne({
+    'successFactors.personIdExternal': personIdExternal
+  })
+
   let accountId;
-  try {
-    accountId = Accounts.createUser(bulkPayUserParams)
-  } catch(e) {
+  if(!existingUser) {
     try {
-      let userFirstName = bulkPayUserParams.firstname || ""
-      let userLastName = bulkPayUserParams.lastname || ""
-      //--
-      userFirstName = userFirstName.trim()
-      userLastName = userLastName.trim()
-      //--
-      // let defaultUsername = userFirstName + "." + userLastName
-      // defaultUsername = defaultUsername.toLowerCase()
-      let defaultUsername = personIdExternal;
-  
-      accountId = Meteor.users.insert({
-        profile: {
-          firstname: bulkPayUserParams.firstname,
-          lastname: bulkPayUserParams.lastname,
-          fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
-        },
-        employeeProfile: {
-          employment: {
-            status: 'Active',
-            hireDate: new Date(),
-            terminationDate: null
+      accountId = Accounts.createUser(bulkPayUserParams)
+    } catch(e) {
+      try {
+        let userFirstName = bulkPayUserParams.firstname || ""
+        let userLastName = bulkPayUserParams.lastname || ""
+        //--
+        userFirstName = userFirstName.trim()
+        userLastName = userLastName.trim()
+        //--
+        // let defaultUsername = userFirstName + "." + userLastName
+        // defaultUsername = defaultUsername.toLowerCase()
+        let defaultUsername = personIdExternal;
+    
+        accountId = Meteor.users.insert({
+          profile: {
+            firstname: bulkPayUserParams.firstname,
+            lastname: bulkPayUserParams.lastname,
+            fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
           },
-          payment: {}
-        },
-        employee: true,
-        businessIds: [business._id],
-        group: business._groupId,
-        roles: {
-          "__global_roles__" : [ 
-              "ess/all"
-          ]
-        }
-      })
-      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
-      Accounts.setPassword({_id: accountId}, "123456")
-    } catch(err1) {
-      console.log(`Error in alternative user creation! `, err1.message)
+          employeeProfile: {
+            employment: {
+              status: 'Active',
+              hireDate: new Date(),
+              terminationDate: null
+            },
+            payment: {}
+          },
+          employee: true,
+          businessIds: [business._id],
+          group: business._groupId,
+          roles: {
+            "__global_roles__" : [ 
+                "ess/all"
+            ]
+          }
+        })
+        Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
+        Accounts.setPassword({_id: accountId}, "123456")
+        
+        Partitioner.setUserGroup(accountId, business._groupId);
+      } catch(err1) {
+        console.log(`Error in alternative user creation! `, err1.message)
+      }
     }
-  }
-  
-  if(bulkPayUserParams.email) {
-    try {
-      Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
-    } catch (e) {
-      console.log("Unable to send a notification mail to new successfactors employee")
+    
+    if(bulkPayUserParams.email) {
+      try {
+        Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
+      } catch (e) {
+        console.log("Unable to send a notification mail to new successfactors employee")
+      }
     }
+  } else {
+    accountId = existingUser._id
+
+    Meteor.users.update({
+      'successFactors.personIdExternal': personIdExternal
+    }, {$set: {
+      profile: {
+        firstname: bulkPayUserParams.firstname,
+        lastname: bulkPayUserParams.lastname,
+        fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
+      }}
+    })
   }
+
 
   let bpUser = Meteor.users.findOne(accountId)
   const bpUserId = bpUser._id
@@ -414,20 +437,28 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   try {
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
-        const payType = PayTypes.findOne({code: payment.payComponent})
+        let frequency = payment.frequency
+        if(frequency === 'MON' || frequency === 'Monthly') {
+            frequency = "Monthly"
+        } else if(frequency === 'ANN') {
+            frequency = "Annually"
+        }
+
+        const payType = PayTypes.findOne({'successFactors.externalCode': payment.payComponent})
         if(payType) {
           empBpPaytypeAmounts.push({
             paytype: payType._id,
             value: payment.calculatedAmount // payment.paycompvalue
           })
+
+          PayTypes.update({_id: payType._id}, {$set: {
+            code: payment.payComponent,
+            title: payment.payComponent,
+            frequencyCode: frequency,
+            currency: payment.currencyCode,
+            editablePerEmployee: true,
+          }})
         } else {
-          let frequency = payment.frequency
-          if(frequency === 'MON' || frequency === 'Monthly') {
-              frequency = "Monthly"
-          } else if(frequency === 'ANN') {
-              frequency = "Annually"
-          }
-          //--
           const bpPayTypeId = PayTypes.insert({
             code: payment.payComponent,
             title: payment.payComponent,
@@ -436,7 +467,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             businessId: business._id,
             addToTotal: true,
             editablePerEmployee: true,
-            isTimeWritingDependent: false,
+            isTimeWritingDependent: true,
             includeWithSapIntegration: true,
             successFactors: {
               externalCode: payment.payComponent
@@ -448,7 +479,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           if(bpPayTypeId) {
             empBpPaytypeAmounts.push({
               paytype: bpPayTypeId,
-              value: payment.paycompvalue
+              value: payment.calculatedAmount
             })
           } else {
             console.log(`Error inserting SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
@@ -496,6 +527,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           }
         })
       } else {
+        EntityObjects.update({_id: foundPosition._id}, {$set: {
+          parentId: parentId,
+          name: positionData.positionName
+        }})
         return foundPosition._id
       }
     }
@@ -549,7 +584,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                             }
                         })
                     } else {
-                        unitId = foundDepartment._id
+                      EntityObjects.update({_id: foundDepartment._id}, {$set: {
+                        name: department.name
+                      }})
+                      unitId = foundDepartment._id
                     }
                     positionId = createPosition(unitId)
                 }
@@ -572,16 +610,25 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         'successFactors.externalCode': payGroupData.code,
         businessId: business._id
       })
+
+      const paytypesWithNoVals = empBpPaytypeAmounts.map(paytype => {
+        return {paytype: paytype.paytype, value: ""}
+      })
+      let desc = payGroupData.description;
+      if(!payGroupData.description) {
+        desc = payGroupData.code
+      }
+
       if(payGrade) {
         payGradeId = payGrade._id
+
+        payGradeId = PayGrades.update({_id: payGrade._id}, {$set: {
+          code: payGroupData.code,
+          description: desc,
+          // positions: [positionId],
+          // payTypes: paytypesWithNoVals
+        }})
       } else {
-        const paytypesWithNoVals = empBpPaytypeAmounts.map(paytype => {
-          return {paytype: paytype.paytype, value: ""}
-        })
-        let desc = payGroupData.description;
-        if(!payGroupData.description) {
-          desc = payGroupData.code
-        }
         payGradeId = PayGrades.insert({
           code: payGroupData.code,
           description: desc,
