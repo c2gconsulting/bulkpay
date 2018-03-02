@@ -979,8 +979,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             }
                                         }
                                     } else {
-                                        if(totalHoursWorkedInPeriod > 0) {
-                                        } else {
+                                        if(totalHoursWorkedInPeriod === 0) {
                                             value = 0;
                                         }
                                         processing.push({code: x.code, derived: value});

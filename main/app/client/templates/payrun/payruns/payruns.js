@@ -169,7 +169,7 @@ Template.payruns.events({
         }
     },
     'click #payrunDelete': function(e, tmpl) {
-        event.preventDefault();
+        e.preventDefault();
         
         const month = $('[name="paymentPeriodMonth"]').val();
         const year = $('[name="paymentPeriodYear"]').val();
