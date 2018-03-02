@@ -357,9 +357,9 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         userFirstName = userFirstName.trim()
         userLastName = userLastName.trim()
         //--
-        // let defaultUsername = userFirstName + "." + userLastName
-        // defaultUsername = defaultUsername.toLowerCase()
-        let defaultUsername = personIdExternal;
+        let defaultUsername = userFirstName + "." + userLastName
+        defaultUsername = defaultUsername.toLowerCase()
+        // let defaultUsername = personIdExternal;
     
         accountId = Meteor.users.insert({
           profile: {
@@ -368,6 +368,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
           },
           employeeProfile: {
+            employeeId: personIdExternal,
             employment: {
               status: 'Active',
               hireDate: new Date(),
@@ -423,6 +424,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     verified: false
   }]
   bpUser.employeeProfile = {
+    employeeId: personIdExternal,
     employment: {
       status: 'Active',
       hireDate: new Date()

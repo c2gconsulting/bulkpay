@@ -89,7 +89,7 @@ Template.SuccessFactorsConfig.events({
                 code: dataset.externalcode,
                 title: dataset.name,
                 frequencyCode: frequency,
-                currency: dataset.currency,
+                currency: dataset.currency || "NGN",
                 businessId: businessId,
                 addToTotal: true,
                 editablePerEmployee: true,
