@@ -141,6 +141,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     'payrun.monthEndDay': {
         type: Number
     },
+    'payrun.fullPayOnTimeRecorded': {
+        type: Boolean
+    },
     
     createdAt: {
         type: Date,
