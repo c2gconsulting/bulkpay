@@ -407,7 +407,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     Meteor.users.update({
       'successFactors.personIdExternal': personIdExternal
     }, {$set: {
-      customUsername: personIdExternal,
       profile: {
         firstname: bulkPayUserParams.firstname,
         lastname: bulkPayUserParams.lastname,
@@ -447,7 +446,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             frequency = "Annually"
         }
 
-        const payType = PayTypes.findOne({'successFactors.externalCode': payment.payComponent})
+        const payType = PayTypes.findOne({
+          'successFactors.externalCode': payment.payComponent,
+          businessId: business._id
+        })
         if(payType) {
           empBpPaytypeAmounts.push({
             paytype: payType._id,
