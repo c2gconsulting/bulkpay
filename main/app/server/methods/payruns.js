@@ -878,7 +878,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     let costCenterPayAmount = 0
                                     let projectsPay = []
 
-                                    if(!businessUnitConfig.fullPayOnTimeRecorded) {
+                                    businessUnitConfig.payrun = businessUnitConfig.payrun || {}
+                                    businessUnitConfig.payrun.fullPayOnTimeRecorded = businessUnitConfig.payrun.fullPayOnTimeRecorded || false                                    
+
+                                    if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
                                         let processProjectAndCostCenterPay = (x) => {
                                             projectsPayDetails.projectDurations.forEach(aProject => {
                                                 // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
