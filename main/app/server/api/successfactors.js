@@ -440,10 +440,19 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
         let frequency = payment.frequency
+        let calcAmount = '0'
+
         if(frequency === 'MON' || frequency === 'Monthly') {
-            frequency = "Monthly"
+          frequency = "Monthly"
+          
+          if(payment.calculatedAmount) {
+            if(!isNaN(payment.calculatedAmount)) {
+              calcAmount = (parseFloat(payment.calculatedAmount) * 12) + ''
+            }
+          }
         } else if(frequency === 'ANN') {
-            frequency = "Annually"
+          frequency = "Annually"
+          calcAmount = payment.calculatedAmount
         }
 
         const payType = PayTypes.findOne({
@@ -453,7 +462,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         if(payType) {
           empBpPaytypeAmounts.push({
             paytype: payType._id,
-            value: payment.calculatedAmount // payment.paycompvalue
+            value: calcAmount // payment.paycompvalue
           })
 
           PayTypes.update({_id: payType._id}, {$set: {
@@ -469,6 +478,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             title: payment.payComponent,
             frequencyCode: frequency,
             currency: payment.currencyCode,
+            taxable: true,
             businessId: business._id,
             addToTotal: true,
             editablePerEmployee: true,
@@ -484,7 +494,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           if(bpPayTypeId) {
             empBpPaytypeAmounts.push({
               paytype: bpPayTypeId,
-              value: payment.calculatedAmount
+              value: calcAmount
             })
           } else {
             console.log(`Error inserting SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
