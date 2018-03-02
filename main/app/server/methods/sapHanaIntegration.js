@@ -363,9 +363,7 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
                                     empTimeSheet.forEach(time => {
                                         const tSfCc = time._id;
                                         if(time.duration > 0) {
-                                            const amountForCostCenter = 
-                                                (time.duration / totalDuration) * (totalDuration/(numWeekDays * businessConfig.maxHoursInDayForTimeWriting))
-                                                    * taxOrPensionAmount
+                                            const amountForCostCenter = (time.duration / totalDuration) * taxOrPensionAmount
 
                                             if(tSfCc) {
                                                 let description = ''
@@ -438,8 +436,7 @@ HanaIntegration.processPayrun = function (businessUnitSapConfig, businessUnitId,
                                         // console.log(`numWeekDays: `, numWeekDays)
                                         
                                         const amountForCostCenter = 
-                                            (time.duration / totalDuration) * (totalDuration/(numWeekDays * businessConfig.maxHoursInDayForTimeWriting))
-                                                * (aPayment.amountLC || 0)
+                                            (time.duration / totalDuration) * (aPayment.amountLC || 0)
                                         // console.log(`amountForCostCenter: `, amountForCostCenter)
 
                                         if(!costCentersBulkSum[tSfCc]) {
