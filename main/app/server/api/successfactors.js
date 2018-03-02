@@ -238,6 +238,9 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                 
         bulkPayUserParams.firstname = firstName
         bulkPayUserParams.lastname =  lastName
+      } else {
+        console.log(`Halting further processing of this event.`)
+        return
       }
     } catch(e) {
       console.log('PerPerson Error! ', e.message)
