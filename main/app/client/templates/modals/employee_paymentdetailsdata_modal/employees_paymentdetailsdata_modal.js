@@ -108,9 +108,10 @@ Template.EmployeePaymentDetailsDataModal.helpers({
       let allPfas = PensionManagers.find({});
       return allPfas;
     },
-    banks: function() {
-      return Core.banks();
-    }
+    // banks: function() {
+    //   return Core.banks();
+    //   // return Banks.find()
+    // }
 });
 
 /*****************************************************************************/

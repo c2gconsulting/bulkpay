@@ -29,11 +29,14 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Bank</label>
                         <div class="col-sm-4">
-                            <select name="bank" style="width: 100%" class="form-control dropdown">
+                            <input name="bank" type="text" class="form-control"
+                              value="{{employeeProfile.payment.bank}}"/>
+
+                            <!-- <select name="bank" style="width: 100%" class="form-control dropdown">
                                 {{#each banks}}
                                     <option value="{{name}}">{{name}}</option>
                                 {{/each}}
-                            </select>
+                            </select> -->
                         </div>
                         <div class="col-sm-4">
                             &nbsp;

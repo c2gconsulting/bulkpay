@@ -190,6 +190,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
   const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
   const empPayGroupQueryUrl = `${baseUrl}/odata/v2/EmpCompensation?$filter=userId eq '${personIdExternal}'&$format=json`
+  const empBankInfoQueryUrl = `${baseUrl}/odata/v2/PaymentInformationDetailV3?$filter=PaymentInformationV3_worker eq '${personIdExternal}'&$format=json`
 
   const companyId = config.companyId
   const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
@@ -208,6 +209,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
   const empJobRes = getToSync(empJobQueryUrl, {headers: requestHeaders})
   const empPayGroupRes = getToSync(empPayGroupQueryUrl, {headers: requestHeaders})
+  const empBankInfoRes = getToSync(empBankInfoQueryUrl, {headers: requestHeaders})
 
   let bulkPayUserParams = {}
   bulkPayUserParams.tenantId = business._groupId
@@ -220,6 +222,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   let positionData = {}
   let empBpPaytypeAmounts = []
   let payGroupData = {}
+  let bankAccountData = {}
   //----------
 
   if(userRes) {
@@ -312,6 +315,37 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       console.log('EmpJob Error! ', e.message)
     }
   }
+
+  if(empBankInfoRes) {
+    try {
+      let empBankInfoData = JSON.parse(empBankInfoRes.content)
+      if(empBankInfoData && empBankInfoData.d && empBankInfoData.d.results && empBankInfoData.d.results.length > 0) {
+        let employeeData = empBankInfoData.d.results[0]
+        bankAccountData.accountNumber = employeeData.accountNumber
+        bankAccountData.accountOwner = employeeData.accountOwner
+
+        const bankCode = employeeData.bank
+        if(bankCode) {
+          const bankDetailQueryUrl = `${baseUrl}/odata/v2/Bank?$filter=externalCode eq '${bankCode}'&$format=json`
+          const bankDetailRes = getToSync(bankDetailQueryUrl, {headers: requestHeaders})
+          if(bankDetailRes) {
+            let data = JSON.parse(bankDetailRes.content)
+            if(data && data.d && data.d.results && data.d.results.length > 0) {
+              let bankData = data.d.results[0]
+
+              // bankAccountData.code = bankData.businssIndentifierCode
+              bankAccountData.bankName = bankData.bankName;
+            }
+          }
+        } else {
+          console.log(`Could not find pay group`)
+        }
+      }
+    } catch(e) {
+      console.log('EmpJob Error! ', e.message)
+    }
+  }
+
 
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
   console.log(`positionData: `, JSON.stringify(positionData))
@@ -638,6 +672,14 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     bpUser.employeeProfile.employment.position = positionId
     bpUser.employeeProfile.employment.paygrade = payGradeId
   }
+
+  if(bankAccountData) {
+    bpUser.employeeProfile.payment = {
+      bank: bankAccountData.bankName,
+      accountNumber: bankAccountData.accountNumber,
+      accountName: bankAccountData.accountOwner
+    }
+  }
   console.log(`bpUserId: `, bpUserId)
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
@@ -841,7 +883,8 @@ if (Meteor.isServer) {
               
               // fetchEmployeeDetails(business, config, 'Zek')
 
-              fetchEmployeeDetails(business, config, 'C00007T')              
+              // fetchEmployeeDetails(business, config, 'C00007T')
+              fetchEmployeeDetails(business, config, 'E00054')
             }
           })
         }));        
