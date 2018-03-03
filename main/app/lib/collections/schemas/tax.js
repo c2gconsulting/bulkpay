@@ -25,6 +25,15 @@ Core.Schemas.Tax = new SimpleSchema({
         optional: true,
         decimal: true
     },
+    usingSuccessFactorsWithholdingTaxRate: {
+        type: Boolean,
+        optional: true
+    },
+    successFactorsTaxRate: {
+        type: Number,
+        optional: true,
+        decimal: true
+    },
     employees: {
         type: [String],
         optional: true
@@ -54,6 +63,10 @@ Core.Schemas.Tax = new SimpleSchema({
     },
     rules: {
         type: Array,
+        optional: true
+    },
+    successFactorsConsultancyTax: {
+        type: Boolean,
         optional: true
     },
     "rules.$": {

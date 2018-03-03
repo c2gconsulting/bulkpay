@@ -1184,6 +1184,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     let taxLog = null
                     
                     const effectiveTaxDetails = Tax.findOne({isUsingEffectiveTaxRate: true, employees: x._id, status: 'Active'});
+                    const sfWithholdingTaxDetails = Tax.findOne({usingSuccessFactorsWithholdingTaxRate: true, employees: x._id, status: 'Active'});
+                    
                     if(effectiveTaxDetails) {
                         const taxComputationInput = [
                             {code: 'Effective Tax Rate', value: effectiveTaxDetails.effectiveTaxRate}, 
@@ -1282,6 +1284,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 type: 'Deduction'
                             });
                         }
+                    } else if(sfWithholdingTaxDetails) {
+
                     } else {
                         let taxBucket = null;
                         if(assignedTaxBucket) {//automatically use default tax bucket if tax bucket not found
@@ -1292,10 +1296,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
                         netTaxLocal = taxCalculationResult.netTax
 
-                        let processing = taxCalculationResult.taxLog.processing
-                        processing.push({code: tax.code + " Net Tax (accounting) for resumption date)", derived: ` ${netTaxLocal} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-
-                        netTaxLocal = netTaxLocal * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                        if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
+                            taxCalculationResult.taxLog.processing.push({code: tax.code + " Net Tax (accounting) for resumption date)", derived: ` ${netTaxLocal} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+                            netTaxLocal = netTaxLocal * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                        }
 
                         taxLog = taxCalculationResult.taxLog
 

@@ -681,6 +681,12 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   }
   console.log(`bpUserId: `, bpUserId)
+  //--
+  if(personIdExternal.startsWith('E')) {
+
+  } else if(personIdExternal.startsWith('C')) {
+    
+  }
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
 }
