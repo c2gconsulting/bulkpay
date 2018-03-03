@@ -1126,15 +1126,20 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 if(!skipToNextEmployee) {//further processing after evaluation of all paytypes! pension calculation and tax calculation
                     //get employee and employer contribution
                     let {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
-
+                    
                     if(pension) {
                         let processing = pensionLog.processing
 
-                        processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
-                        processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-    
-                        employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                        employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)    
+                        if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
+                            processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
+                            processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+        
+                            employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                            employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                        } else {
+                            processing.push({code: pension.code + "_EE - (Employee contribution)", derived: ` ${employeePenContrib}`});                    
+                            processing.push({code: pension.code + "_ER - (Employer contribution)", derived: ` ${employerPenContrib}`});
+                        }
                     }
                     
                     //populate result for employee and employer pension contribution
@@ -1184,7 +1189,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     let taxLog = null
                     
                     const effectiveTaxDetails = Tax.findOne({isUsingEffectiveTaxRate: true, employees: x._id, status: 'Active'});
-                    const sfWithholdingTaxDetails = Tax.findOne({usingSuccessFactorsWithholdingTaxRate: true, employees: x._id, status: 'Active'});
+
+                    const sfWithholdingTaxDetails = Tax.findOne({
+                        usingSuccessFactorsWithholdingTaxRate: true, 
+                        employees: currentEmployeeInPayrunLoop._id, 
+                        status: 'Active'
+                    });
                     
                     if(effectiveTaxDetails) {
                         const taxComputationInput = [
@@ -1285,7 +1295,66 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             });
                         }
                     } else if(sfWithholdingTaxDetails) {
+                        const taxBucketId = sfWithholdingTaxDetails.SuccessFactorsWithholdingTaxBucketPayTypeId
+                        const taxBucket = PayTypes.findOne({_id: taxBucketId})
+                        const taxComputationInput = [
+                            {code: 'Consultation Tax', value: ''}
+                        ];
 
+                        if(taxBucket) {
+                            currentEmployeeInPayrunLoop.employeeProfile = currentEmployeeInPayrunLoop.employeeProfile || {}
+                            currentEmployeeInPayrunLoop.employeeProfile.employment = currentEmployeeInPayrunLoop.employeeProfile.employment || {}
+                            const empPaytypes = currentEmployeeInPayrunLoop.employeeProfile.employment.paytypes || []
+                            const taxBucketEmployeePaytype = _.find(empPaytypes, p => {
+                                return p.paytype === taxBucketId
+                            })
+                            if(taxBucketEmployeePaytype) {
+                                let value = taxBucketEmployeePaytype.value;
+                                if(value) {
+                                    let valueAsNum = parseFloat(value)
+                                    if(taxBucket.frequency === 'Monthly') {
+                                        valueAsNum = (valueAsNum / 12)
+                                        taxComputationInput.push({
+                                            code: `TaxBucket(${taxBucket.currency})`, 
+                                            value: `${valueAsNum} / 12`
+                                        })
+    
+                                        netTaxLocal = valueAsNum * sfWithholdingTaxDetails.successFactorsTaxRate
+                                    } else {
+                                        taxComputationInput.push({
+                                            code: `TaxBucket(${taxBucket.currency})`, 
+                                            value: `${valueAsNum} `
+                                        })    
+                                    }
+
+                                    taxComputationInput.push({
+                                        code: `TaxBucket(${taxBucket.currency})`, 
+                                        value: valueAsNum
+                                    })
+                                }
+                            }
+                        }
+
+                        const taxProcessing = [];
+                        taxProcessing.push({code: `Tax(NGN)`, derived: '(TaxBucket)'});
+                        taxProcessing.push({code: `Tax(NGN)`, derived: netTaxLocal});
+                        taxLog = {paytype: sfWithholdingTaxDetails.code, input: taxComputationInput, processing: taxProcessing};
+
+                        //populate result for tax
+                        employeeResult.payment.push({id: taxBucketId, reference: 'Tax', 
+                            amountLC: netTaxLocal, amountPC: '', code: taxBucketId.code, 
+                            description: taxBucketId.name, type: 'Deduction'});
+                        //--
+                        if(!paymentsAccountingForCurrency.deduction['NGN']) {
+                            paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
+                        }
+                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                            title: taxBucketId.name,
+                            code: taxBucketId.code,
+                            currency: 'NGN',
+                            reference: 'Tax',
+                            value: netTaxLocal * -1
+                        })
                     } else {
                         let taxBucket = null;
                         if(assignedTaxBucket) {//automatically use default tax bucket if tax bucket not found

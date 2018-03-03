@@ -25,7 +25,7 @@ Core.Schemas.PayGrade = new SimpleSchema({
     },
     leaveRequest: {
         type: String,
-        defaultValue: "Unlimited",
+        defaultValue: "Limited",
         allowedValues: ["Limited", "Unlimited"]
     },
     status: {

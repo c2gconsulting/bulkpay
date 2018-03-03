@@ -10,6 +10,10 @@ Core.Schemas.Tax = new SimpleSchema({
     businessId: {
         type: String
     },
+    _groupId: {
+        type: String,
+        optional: true
+    },
     code: {
         type: String
     },
@@ -29,6 +33,10 @@ Core.Schemas.Tax = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    SuccessFactorsWithholdingTaxBucketPayTypeId: {
+        type: String,
+        optional: true
+    },    
     successFactorsTaxRate: {
         type: Number,
         optional: true,

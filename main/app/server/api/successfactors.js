@@ -682,10 +682,57 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
   console.log(`bpUserId: `, bpUserId)
   //--
-  if(personIdExternal.startsWith('E')) {
+  if(payGroupData.code && payGroupData.code.indexOf('CON') >= 0) {
+    let withHoldingTaxId;
+    const withHoldingTax = Tax.findOne({
+      businessId: business._id,
+      code: `${payGroupData.code}_TAX`,
+      name: `${payGroupData.code}_TAX`,
+      usingSuccessFactorsWithholdingTaxRate: true
+    })
 
-  } else if(personIdExternal.startsWith('C')) {
-    
+    let consultancyFeePc = _.find(paymentsData, payment => {
+      return payment.payComponent === 'CON_FEE'
+    })
+    if(consultancyFeePc) {
+      const consultancyPayType = PayTypes.findOne({
+        'successFactors.externalCode': consultancyFeePc.payComponent,
+        businessId: business._id
+      })
+      if(consultancyPayType) {
+        if(!withHoldingTax) {
+          withHoldingTaxId = Tax.insert({
+            businessId: business._id,
+            _groupId: business._groupId,
+            code: `${payGroupData.code}_TAX`,
+            name: `${payGroupData.code}_TAX`,
+            usingSuccessFactorsWithholdingTaxRate: true,
+            SuccessFactorsWithholdingTaxBucketPayTypeId: consultancyPayType._id,
+            
+            successFactorsTaxRate: 0.05,
+            employees: [bpUserId],
+            status: 'Active'
+          })
+        } else {
+          withHoldingTaxId = withHoldingTax._id
+          withHoldingTax.employees = withHoldingTax.employees || []
+          withHoldingTax.employees.push(bpUserId)
+          withHoldingTax.employees = _.uniq(withHoldingTax.employees)
+
+          Tax.update({_id: withHoldingTax._id}, {$set: {
+            businessId: business._id,
+            code: `${payGroupData.code}_TAX`,
+            name: `${payGroupData.code}_TAX`,
+            usingSuccessFactorsWithholdingTaxRate: true,
+            SuccessFactorsWithholdingTaxBucketPayTypeId: consultancyPayType._id,
+            successFactorsTaxRate: 0.05,
+            employees: withHoldingTax.employees,
+            status: 'Active'
+          }})
+        }
+      }
+    }
+    console.log(`withHoldingTaxId: `, withHoldingTaxId)
   }
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
@@ -890,7 +937,9 @@ if (Meteor.isServer) {
               // fetchEmployeeDetails(business, config, 'Zek')
 
               // fetchEmployeeDetails(business, config, 'C00007T')
-              fetchEmployeeDetails(business, config, 'E00054')
+              // fetchEmployeeDetails(business, config, 'E00054')
+
+              fetchEmployeeDetails(business, config, 'efe.rambo')
             }
           })
         }));        

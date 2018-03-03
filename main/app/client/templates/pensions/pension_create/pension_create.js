@@ -4,7 +4,7 @@ import Ladda from 'ladda';
 /*****************************************************************************/
 Template.PensionCreate.events({
     'click #Pension': (e, tmpl) => {
-        event.preventDefault();
+        e.preventDefault();
         let l = Ladda.create(tmpl.$('#Pension')[0]);
         l.start();
         const details = {
@@ -57,7 +57,7 @@ Template.PensionCreate.events({
         }
     },
     'click #deletePension': (e, tmpl) => {
-        event.preventDefault();
+        e.preventDefault();
         swal({
             title: "Are you sure?",
             text: "You will not be able to recover this Pension Rule",
