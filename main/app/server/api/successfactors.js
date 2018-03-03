@@ -184,14 +184,12 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
 
 let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-  const perPersonQueryUrl = `${baseUrl}/odata/v2/PerPersonal?$filter=personIdExternal eq '${personIdExternal}'&$select=personIdExternal,firstName,lastName&$format=json`
-  const perEmailQueryUrl = `${baseUrl}/odata/v2/PerEmail?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
-  const perPhoneQueryUrl = `${baseUrl}/odata/v2/PerPhone?$filter=personIdExternal eq '${personIdExternal}'&$format=json`
+  const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$select=firstName,lastName,email,businessPhone,homePhone,cellPhone,addressLine1,addressLine2,addressLine3&$format=json`
+  // const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$format=json`
+
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
   const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
   const empPayGroupQueryUrl = `${baseUrl}/odata/v2/EmpCompensation?$filter=userId eq '${personIdExternal}'&$format=json`
-  // const positionQueryUrl = `${baseUrl}/odata/v2/Position?$filter=code eq '${personIdExternal}'&$select=code,userId,jobTitle,positionTitle&$format=json`
-
 
   const companyId = config.companyId
   const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
@@ -206,9 +204,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   let getToSync = Meteor.wrapAsync(HTTP.get);
   
-  const perPersonRes = getToSync(perPersonQueryUrl, {headers: requestHeaders})
-  const perEmailRes = getToSync(perEmailQueryUrl, {headers: requestHeaders})
-  const perPhoneRes = getToSync(perPhoneQueryUrl, {headers: requestHeaders})
+  const userRes = getToSync(userQueryUrl, {headers: requestHeaders})
   const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
   const empJobRes = getToSync(empJobQueryUrl, {headers: requestHeaders})
   const empPayGroupRes = getToSync(empPayGroupQueryUrl, {headers: requestHeaders})
@@ -226,56 +222,37 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   let payGroupData = {}
   //----------
 
-  if(perPersonRes) {
+  if(userRes) {
     try {
-      let perPersonData = JSON.parse(perPersonRes.content)
-      console.log(`perPersonData: `, JSON.stringify(perPersonData))
+      let userData = JSON.parse(userRes.content)
+      console.log(`userRes.content: `, userRes.content)
 
-      if(perPersonData && perPersonData.d && perPersonData.d.results && perPersonData.d.results.length > 0) {
-        let employeeData = perPersonData.d.results[0]
-        let firstName = employeeData.firstName || ""
-        let lastName = employeeData.lastName || ""
+      if(userData && userData.d && userData.d.results && userData.d.results.length > 0) {
+        let employeeData = userData.d.results[0]
                 
-        bulkPayUserParams.firstname = firstName
-        bulkPayUserParams.lastname =  lastName
+        bulkPayUserParams.firstname = employeeData.firstName || ""
+        bulkPayUserParams.lastname = employeeData.lastName || ""
+        bulkPayUserParams.email = employeeData.email || ""
+
+        if(employeeData.gender === 'm') {
+          bulkPayUserParams.gender = 'Male'
+        } else if(employeeData.gender === 'f') {
+          bulkPayUserParams.gender = 'Female'
+        }
+
+        bulkPayUserParams.phoneNumber = ''
+        let phoneNumber = employeeData.businessPhone || employeeData.homePhone || employeeData.cellPhone || ""
+        if(phoneNumber) {
+          bulkPayUserParams.phoneNumber = `${parseFloat(phoneNumber)}`
+        }
+        //--
+        bulkPayUserParams.address = employeeData.addressLine1 || employeeData.addressLine2 || employeeData.addressLine3 || ""
       } else {
         console.log(`Halting further processing of this event.`)
         return
       }
     } catch(e) {
-      console.log('PerPerson Error! ', e.message)
-    }
-  }
-
-  if(perEmailRes) {
-    try {
-      let perEmailData = JSON.parse(perEmailRes.content)
-      console.log(`perEmailData: `, JSON.stringify(perEmailData))
-
-      if(perEmailData && perEmailData.d && perEmailData.d.results && perEmailData.d.results.length > 0) {
-        let employeeData = perEmailData.d.results[0]
-        let emailAddress = employeeData.emailAddress
-
-        bulkPayUserParams.email = emailAddress
-      }
-    } catch(e) {
       console.log('PerEmail Error! ', e.message)
-    }
-  }
-
-  if(perPhoneRes) {
-    try {
-      let perPhoneData = JSON.parse(perPhoneRes.content)
-      console.log(`perPhoneData: `, JSON.stringify(perPhoneData))
-
-      if(perPhoneData && perPhoneData.d && perPhoneData.d.results && perPhoneData.d.results.length > 0) {
-        let employeeData = perPhoneData.d.results[0]
-        let phoneNumber = employeeData.phoneNumber
-
-        bulkPayUserParams.phoneNumber = phoneNumber
-      }
-    } catch(e) {
-      console.log('PerPhone Error! ', e.message)
     }
   }
 
@@ -295,7 +272,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(empJobRes) {
     try {
       let empJobData = JSON.parse(empJobRes.content)
-      console.log(`empJobData: `, JSON.stringify(empJobData))
+      console.log(`empJobData: `, empJobRes.content)
 
       if(empJobData && empJobData.d && empJobData.d.results && empJobData.d.results.length > 0) {
         let employeeData = empJobData.d.results[0]
@@ -322,10 +299,9 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             let data = JSON.parse(empPayGrouDetailspRes.content)
             if(data && data.d && data.d.results && data.d.results.length > 0) {
               let employeeData = data.d.results[0]
-              const payGroupDesc = employeeData.description;
 
               payGroupData.code = payGroupCode
-              payGroupData.description = payGroupDesc
+              payGroupData.description = employeeData.description;
             }
           }
         } else {
@@ -337,15 +313,14 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   }
 
-
   console.log(`bulkPayUserParams: `, JSON.stringify(bulkPayUserParams))
   console.log(`positionData: `, JSON.stringify(positionData))
   console.log(`payGroupData: `, JSON.stringify(payGroupData))
   console.log(``)
 
-
   let existingUser = Meteor.users.findOne({
-    'successFactors.personIdExternal': personIdExternal
+    'successFactors.personIdExternal': personIdExternal,
+    businessIds: business._id
   })
 
   let accountId;
@@ -372,6 +347,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           },
           employeeProfile: {
             employeeId: personIdExternal,
+            phone: bulkPayUserParams.phoneNumber,
             employment: {
               status: 'Active',
               hireDate: new Date(),
@@ -390,7 +366,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         })
         Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
         Accounts.setPassword({_id: accountId}, "123456")
-        
         Partitioner.setUserGroup(accountId, business._groupId);
       } catch(err1) {
         console.log(`Error in alternative user creation! `, err1.message)
@@ -406,31 +381,29 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     }
   } else {
     accountId = existingUser._id
-
-    Meteor.users.update({
-      'successFactors.personIdExternal': personIdExternal
-    }, {$set: {
-      profile: {
-        firstname: bulkPayUserParams.firstname,
-        lastname: bulkPayUserParams.lastname,
-        fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
-      }}
-    })
   }
 
 
   let bpUser = Meteor.users.findOne(accountId)
   const bpUserId = bpUser._id
+
+  bpUser.profile = {
+    firstname: bulkPayUserParams.firstname,
+    lastname: bulkPayUserParams.lastname,
+    fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
+  }
   bpUser.emails = [{
     address: bulkPayUserParams.email,
     verified: false
   }]
   bpUser.employeeProfile = {
     employeeId: personIdExternal,
+    phone: bulkPayUserParams.phoneNumber,
     employment: {
       status: 'Active',
       hireDate: new Date()
-    }
+    },
+    address: bulkPayUserParams.address
   }
   bpUser.employee = true
   bpUser.businessIds = [business._id]
@@ -665,7 +638,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
     bpUser.employeeProfile.employment.position = positionId
     bpUser.employeeProfile.employment.paygrade = payGradeId
   }
-  bpUser.employeeProfile.phone = bulkPayUserParams.phoneNumber
   console.log(`bpUserId: `, bpUserId)
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
@@ -864,10 +836,12 @@ if (Meteor.isServer) {
             if(config) {
               // fetchEmployeeDetails(business, config, '103239')
               // fetchEmployeeDetails(business, config, 'chris.tester')
-              fetchEmployeeDetails(business, config, 'balogun.integrator')
+              // fetchEmployeeDetails(business, config, 'balogun.integrator')
               // fetchEmployeeDetails(business, config, 'black.panther')
               
               // fetchEmployeeDetails(business, config, 'Zek')
+
+              fetchEmployeeDetails(business, config, 'C00007T')              
             }
           })
         }));        
