@@ -449,65 +449,75 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   try {
     paymentsData.forEach(payment => {
       if(payment.payComponent) {
-        let frequency = payment.frequency
-        let calcAmount = '0'
+        const foPayComponentQueryUrl = `${baseUrl}/odata/v2/FOPayComponent?$filter=externalCode eq '${payment.payComponent}'&$format=json`
+        const foPayComponentRes = getToSync(foPayComponentQueryUrl, {headers: requestHeaders})
+        if(foPayComponentRes) {
+          let data = JSON.parse(foPayComponentRes.content)
+          if(data && data.d && data.d.results && data.d.results.length > 0) {
+            let payCompData = data.d.results[0]
 
-        if(frequency === 'MON' || frequency === 'Monthly') {
-          frequency = "Monthly"
-          
-          if(payment.calculatedAmount) {
-            if(!isNaN(payment.calculatedAmount)) {
-              calcAmount = (parseFloat(payment.calculatedAmount) * 12) + ''
+            let frequency = payment.frequency
+            let calcAmount = '0'
+    
+            if(frequency === 'MON' || frequency === 'Monthly') {
+              frequency = "Monthly"
+              
+              if(payment.calculatedAmount) {
+                if(!isNaN(payment.calculatedAmount)) {
+                  calcAmount = (parseFloat(payment.calculatedAmount) * 12) + ''
+                }
+              }
+            } else if(frequency === 'ANN') {
+              frequency = "Annually"
+              calcAmount = payment.calculatedAmount
             }
-          }
-        } else if(frequency === 'ANN') {
-          frequency = "Annually"
-          calcAmount = payment.calculatedAmount
-        }
-
-        const payType = PayTypes.findOne({
-          'successFactors.externalCode': payment.payComponent,
-          businessId: business._id
-        })
-        if(payType) {
-          empBpPaytypeAmounts.push({
-            paytype: payType._id,
-            value: calcAmount // payment.paycompvalue
-          })
-
-          PayTypes.update({_id: payType._id}, {$set: {
-            code: payment.payComponent,
-            title: payment.payComponent,
-            frequencyCode: frequency,
-            currency: payment.currencyCode,
-            editablePerEmployee: true,
-          }})
-        } else {
-          const bpPayTypeId = PayTypes.insert({
-            code: payment.payComponent,
-            title: payment.payComponent,
-            frequencyCode: frequency,
-            currency: payment.currencyCode,
-            taxable: true,
-            businessId: business._id,
-            addToTotal: true,
-            editablePerEmployee: true,
-            isTimeWritingDependent: true,
-            includeWithSapIntegration: true,
-            successFactors: {
-              externalCode: payment.payComponent
-            },
-            type: 'Benefit',
-            status: "Active",
-            _groupId: business._groupId
-          })
-          if(bpPayTypeId) {
-            empBpPaytypeAmounts.push({
-              paytype: bpPayTypeId,
-              value: calcAmount
+    
+            const payType = PayTypes.findOne({
+              'successFactors.externalCode': payment.payComponent,
+              businessId: business._id
             })
-          } else {
-            console.log(`Error inserting SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
+            if(payType) {
+              empBpPaytypeAmounts.push({
+                paytype: payType._id,
+                value: calcAmount // payment.paycompvalue
+              })
+    
+              PayTypes.update({_id: payType._id}, {$set: {
+                code: payment.payComponent,
+                title: payCompData.name,
+                frequencyCode: frequency,
+                type: payCompData.isEarning ? 'Benefit' : 'Deduction',
+                currency: payment.currencyCode,
+                editablePerEmployee: true,
+              }})
+            } else {
+              const bpPayTypeId = PayTypes.insert({
+                code: payment.payComponent,
+                title: payCompData.name,
+                frequencyCode: frequency,
+                currency: payment.currencyCode,
+                taxable: true,
+                businessId: business._id,
+                addToTotal: true,
+                editablePerEmployee: true,
+                isTimeWritingDependent: true,
+                includeWithSapIntegration: true,
+                successFactors: {
+                  externalCode: payment.payComponent
+                },
+                type: payCompData.isEarning ? 'Benefit' : 'Deduction',
+                status: "Active",
+                _groupId: business._groupId
+              })
+              if(bpPayTypeId) {
+                empBpPaytypeAmounts.push({
+                  paytype: bpPayTypeId,
+                  value: calcAmount
+                })
+              } else {
+                console.log(`Error inserting SF paycomponent into bulkpay PayType: `, JSON.stringify(payment))
+              }
+            }
           }
         }
       }
