@@ -656,15 +656,20 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
       if(payGrade) {
         payGradeId = payGrade._id
-
-        PayGrades.update({_id: payGrade._id}, {$set: {
+        let payGradeUpdateObj = {
           code: payGroupData.code,
           description: desc,
           // positions: [positionId],
           // payTypes: paytypesWithNoVals
-        }})
+        }
+        if(payGroupData.code && payGroupData.code.indexOf('CON') >= 0) {
+          payGradeUpdateObj.noDefaultPension = true
+          payGradeUpdateObj.noDefaultTax = true
+        }
+
+        PayGrades.update({_id: payGrade._id}, {$set: payGradeUpdateObj})
       } else {
-        payGradeId = PayGrades.insert({
+        let payGradeObj = {
           code: payGroupData.code,
           description: desc,
           positions: [positionId],
@@ -676,13 +681,19 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           successFactors: {
             externalCode: payGroupData.code
           }
-        })
+        }
+
+        if(payGroupData.code && payGroupData.code.indexOf('CON') >= 0) {
+          payGradeObj.noDefaultPension = true
+          payGradeObj.noDefaultTax = true
+        }
+        payGradeId = PayGrades.insert(payGradeObj)
       }
     }
     bpUser.employeeProfile.employment.position = positionId
     bpUser.employeeProfile.employment.paygrade = payGradeId
   }
-
+  noDefaultPension
   if(bankAccountData) {
     bpUser.employeeProfile.payment = {
       bank: bankAccountData.bankName,

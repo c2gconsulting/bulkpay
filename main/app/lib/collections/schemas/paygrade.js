@@ -53,6 +53,15 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: Object,
         blackbox: true
     },
+    "noDefaultTax": {
+        optional: true,
+        type: Boolean
+    },
+    "noDefaultPension": {
+        optional: true,
+        type: Boolean
+    },
+    
     _groupId: {
         type: String,
         optional: true
