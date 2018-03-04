@@ -588,6 +588,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                 let grade, pgp;  //grade(paygrade) && pgp(paygroup);
                 const gradeIndex = _.findLastIndex(paygrades, {_id: pg});
+
                 let empSpecificType;  //contains employee payments derived from paygrade
                 if (gradeIndex !== -1) {
                     grade = paygrades[gradeIndex];
@@ -621,16 +622,16 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 // Each object for each currency code will be an array of payments
                 //--
 
+                //let formular = x.value
+                let paytypes = empSpecificType.map(x => {    //changes paygrades of currently processed employee to include paytypes
+                    let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
+                    delete x.paytype;
+                    _.extend(x, ptype);
+
+                    return x;
+                });
+
                 try {
-                    //let formular = x.value
-                    let paytypes = empSpecificType.map(x => {    //changes paygrades of currently processed employee to include paytypes
-                        let ptype = PayTypes.findOne({_id: x.paytype, 'status': 'Active'});
-                        delete x.paytype;
-                        _.extend(x, ptype);
-
-                        return x;
-                    });
-
                     //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
                     const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: periodFormat}).fetch();
                     //include additional pay to match paytype values
@@ -1362,7 +1363,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         } else {
                             taxBucket = defaultTaxBucket
                         }
-                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax);  //@@technicalPaytype
+                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId);  //@@technicalPaytype
                         netTaxLocal = taxCalculationResult.netTax
 
                         if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
@@ -1871,28 +1872,72 @@ function getPensionContribution(pensionBucket, pension) {
 }
 
 //from taxable income calculate tax and return value
-function calculateTax(relief, taxBucket, grossIncomeBucket, tax) {
+function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, businessId) {
     //@import taxBucket (defualt tax bucket or valuated passed bucket)
     //@import tax (tax doc configured )
     //calculate reliefs
     //no checks done yet exceptions NAN undefined checkes
     //return result {finalTax: log[] }
-    const input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
     const processing = [];
-    const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
-    processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
-    processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
+    let input = []
 
-    const consolidatedRelief = tax.consolidatedRelief;
-    processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
+    let taxableIncome;
+    if(tax.usingCustomTaxableIncomeFormula) {
+        console.log(`using custome taxable income formula`)
+        // console.log(`paytypes: `, paytypes)
+        if(tax.taxableIncomeFormula) {
+            let formula = tax.taxableIncomeFormula;
+            processing.push({code: `Taxable Income`, derived: tax.taxableIncomeFormula });
+
+            let rules = new ruleJS();
+            rules.init();
     
-    const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
-    processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
-    processing.push({code: `Total Relief`, derived: totalRelief });
+            console.log(`paytypes.length: `, paytypes.length)
+            for (var i = 0; i < paytypes.length; i++) {
+                const code = paytypes[i].code;
+                console.log(`code: `, code)
+                const pattern = `\\b${code}\\b`;
+                const regex = new RegExp(pattern, "g");
     
-    let taxableIncome = taxBucket - totalRelief;
-    processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
-    processing.push({code: `Taxable Income`, derived: taxableIncome });
+                formula = formula.replace(regex, paytypes[i].value);
+            }
+
+            let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+            k.forEach(c => {
+                const code = c.code ? c.code.toUpperCase() : c.code;
+                const pattern = `\\b${code}\\b`;
+                const regex = new RegExp(pattern, "g");
+                formula = formula.replace(regex, c.value);
+            });
+            console.log(`formula: `, formula)
+    
+            var parsed = rules.parse(formula, '');
+            console.log(`taxable income = `, parsed)
+
+            if (parsed.result !== null && !isNaN(parsed.result)) {
+                taxableIncome = parsed.result.toFixed(2)
+                processing.push({code: `Taxable Income`, derived: taxableIncome });
+            }
+        }
+    } else {
+        input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
+        const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
+        processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
+        processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
+    
+        const consolidatedRelief = tax.consolidatedRelief;
+        processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
+        
+        const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
+        processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
+        processing.push({code: `Total Relief`, derived: totalRelief });
+
+    
+        taxableIncome = taxBucket - totalRelief;        
+
+        processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
+        processing.push({code: `Taxable Income`, derived: taxableIncome });    
+    }
 
     let totalTax = 0;
     //apply tax rules on taxable income

@@ -481,16 +481,20 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                 paytype: payType._id,
                 value: calcAmount // payment.paycompvalue
               })
+              const addTotal = (payment.payComponent === 'NTI') ? false : true;
     
               PayTypes.update({_id: payType._id}, {$set: {
                 code: payment.payComponent,
                 title: payCompData.name,
                 frequencyCode: frequency,
                 type: payCompData.isEarning ? 'Benefit' : 'Deduction',
+                addToTotal: addTotal,
                 currency: payment.currencyCode,
                 editablePerEmployee: true,
               }})
             } else {
+              const addTotal = (payment.payComponent === 'NTI') ? false : true;
+
               const bpPayTypeId = PayTypes.insert({
                 code: payment.payComponent,
                 title: payCompData.name,
@@ -498,7 +502,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                 currency: payment.currencyCode,
                 taxable: true,
                 businessId: business._id,
-                addToTotal: true,
+                addToTotal: addTotal,
                 editablePerEmployee: true,
                 isTimeWritingDependent: true,
                 includeWithSapIntegration: true,
@@ -654,21 +658,28 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
         desc = payGroupData.code
       }
 
+      const pgroup = PayGroups.findOne({businessId: business._id})
+      const pgroupId = pgroup ? pgroup._id: ""
+
+      // const mergedPayTypes = _.uniq(paytypesWithNoVals.concat(payGrade.payTypes))
+
       if(payGrade) {
         payGradeId = payGrade._id
 
         PayGrades.update({_id: payGrade._id}, {$set: {
           code: payGroupData.code,
           description: desc,
+          payGroups: [pgroupId],
+          // payTypes: mergedPayTypes,
           // positions: [positionId],
-          // payTypes: paytypesWithNoVals
+          payTypes: paytypesWithNoVals
         }})
       } else {
         payGradeId = PayGrades.insert({
           code: payGroupData.code,
           description: desc,
           positions: [positionId],
-          payGroups: [],
+          payGroups: [pgroupId],
           payTypes: paytypesWithNoVals,
           status: 'Active',
           businessId: business._id,
@@ -949,7 +960,9 @@ if (Meteor.isServer) {
               // fetchEmployeeDetails(business, config, 'C00007T')
               // fetchEmployeeDetails(business, config, 'E00054')
 
-              fetchEmployeeDetails(business, config, 'efe.rambo')
+              // fetchEmployeeDetails(business, config, 'efe.rambo')
+              
+              fetchEmployeeDetails(business, config, 'ishawuru.johnson')
             }
           })
         }));        

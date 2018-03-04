@@ -29,6 +29,15 @@ Core.Schemas.Tax = new SimpleSchema({
         optional: true,
         decimal: true
     },
+    usingCustomTaxableIncomeFormula: {
+        type: Boolean,
+        optional: true
+    },
+    taxableIncomeFormula: {
+        type: String,
+        optional: true
+    },
+    
     usingSuccessFactorsWithholdingTaxRate: {
         type: Boolean,
         optional: true
