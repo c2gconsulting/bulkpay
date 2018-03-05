@@ -481,7 +481,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                 paytype: payType._id,
                 value: calcAmount // payment.paycompvalue
               })
-              const addTotal = (payment.payComponent === 'NTI') ? false : true;
+              const noAddTotal = ['NTI', 'HMO', 'Life Assurance', 'PayCompValue', 'Pay20% of Gross', 'Less Consolidated Relief', 'Gross_Pay']
+              const addTotal = !_.contains(noAddTotal, payment.payComponent)
     
               PayTypes.update({_id: payType._id}, {$set: {
                 code: payment.payComponent,
@@ -493,7 +494,8 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
                 editablePerEmployee: true,
               }})
             } else {
-              const addTotal = (payment.payComponent === 'NTI') ? false : true;
+              const noAddTotal = ['NTI', 'HMO', 'Life Assurance', 'PayCompValue', 'Pay20% of Gross', 'Less Consolidated Relief', 'Gross_Pay']
+              const addTotal = !_.contains(noAddTotal, payment.payComponent)
 
               const bpPayTypeId = PayTypes.insert({
                 code: payment.payComponent,
