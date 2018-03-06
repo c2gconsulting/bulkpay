@@ -138,8 +138,7 @@ let getSfEmployeeIds = (jsonPayLoad) => {
 }
 
 let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
-  console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
-
+  // console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
   let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
 
   let personIds = []
@@ -178,6 +177,8 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
           fetchEmployeeDetails(business, config, personIdExternal)
         }
       })
+    } else {
+      console.log(`ns7Event null: `)
     }
   }
 }
@@ -185,8 +186,6 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
 let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
   const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$select=firstName,lastName,email,businessPhone,homePhone,cellPhone,addressLine1,addressLine2,addressLine3&$format=json`
-  // const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$format=json`
-
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
   const empJobQueryUrl = `${baseUrl}/odata/v2/EmpJob?$filter=userId eq '${personIdExternal}'&$select=userId,position,jobTitle&$format=json`
   const empPayGroupQueryUrl = `${baseUrl}/odata/v2/EmpCompensation?$filter=userId eq '${personIdExternal}'&$format=json`
@@ -228,7 +227,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(userRes) {
     try {
       let userData = JSON.parse(userRes.content)
-      console.log(`userRes.content: `, userRes.content)
 
       if(userData && userData.d && userData.d.results && userData.d.results.length > 0) {
         let employeeData = userData.d.results[0]
@@ -275,7 +273,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   if(empJobRes) {
     try {
       let empJobData = JSON.parse(empJobRes.content)
-      console.log(`empJobData: `, empJobRes.content)
 
       if(empJobData && empJobData.d && empJobData.d.results && empJobData.d.results.length > 0) {
         let employeeData = empJobData.d.results[0]
@@ -338,7 +335,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
             }
           }
         } else {
-          console.log(`Could not find pay group`)
+          console.log(`Could not find bank info`)
         }
       }
     } catch(e) {
@@ -359,6 +356,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   let accountId;
   if(!existingUser) {
+    console.log(`user with personIdExternal: ${personIdExternal} for business id: ${business._id} NOT EXISTS`)
     try {
       accountId = Accounts.createUser(bulkPayUserParams)
     } catch(e) {
@@ -399,7 +397,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
           }
         })
         Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
-        Accounts.setPassword({_id: accountId}, "123456")
+        Accounts.setPassword(accountId, "123456")
         Partitioner.setUserGroup(accountId, business._groupId);
       } catch(err1) {
         console.log(`Error in alternative user creation! `, err1.message)
@@ -410,10 +408,12 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
       try {
         Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
       } catch (e) {
+        console.log(`Enrollment email error: `, e.message)
         console.log("Unable to send a notification mail to new successfactors employee")
       }
     }
   } else {
+    console.log(`user with personIdExternal: ${personIdExternal}for business id: ${business._id} EXISTS`)
     accountId = existingUser._id
   }
 
@@ -810,6 +810,7 @@ if (Meteor.isServer) {
         })
         .on('end', Meteor.bindEnvironment(function (error, result) {
           body = Buffer.concat(body).toString();
+          console.log(`Got event body: `)
 
           Partitioner.directOperation(function() {
             let business = BusinessUnits.findOne({_id: businessId})
@@ -822,10 +823,10 @@ if (Meteor.isServer) {
               })
 
               let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessId})
+
               if(config) {
                 parseString(body, function (err, result) {
                   getSfEmployeeIds2(business, config, result)
-                  // fetchEmployeeDetails(business, config, personIdExternal)
                 })
               }
             }
