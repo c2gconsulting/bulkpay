@@ -21,38 +21,6 @@ const getOdataResults = (odataResponse) => {
   }
 }
 
-let apiCall = function (apiUrl, callback, config) {
-  const companyId = config.companyId
-  const username = config.username
-  const password = config.password
-
-  let fullUsername = `${username}@${companyId}`
-  const authenticationToken = new Buffer(`${fullUsername}:${password}`).toString('base64')
-
-  let requestHeaders = {
-    Authorization: `Basic ${authenticationToken}`
-  }
-
-  try {
-    const response = HTTP.get(apiUrl).data
-    callback(null, response)
-  } catch (error) {
-    let errorCode;
-    let errorMessage;
-
-    if (error.response) {
-      errorCode = error.response.data.code
-      errorMessage = error.response.data.message
-    } else {
-      errorCode = 500
-      errorMessage = 'Cannot access the API'
-    }
-    // Create an Error object and return it via callback
-    var myError = new Meteor.Error(errorCode, errorMessage)
-    callback(myError, null)
-  }
-}
-
 let failureResponse = message => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
