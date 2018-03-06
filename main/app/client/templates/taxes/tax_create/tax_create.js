@@ -23,14 +23,6 @@ Template.TaxCreate.events({
         l.start();
         let details = null;
         
-        let taxableIncomeFormula = $('[name="taxableIncomeFormula"]').val().trim();
-        let usingCustomTaxableIncomeFormula;
-        if(taxableIncomeFormula && taxableIncomeFormula.length > 0) {
-            usingCustomTaxableIncomeFormula = true;
-        } else {
-            usingCustomTaxableIncomeFormula = false
-        }
-
         if(tmpl.isUsingEffectiveTaxRate.get()) {
             let effectiveTaxRate = $('#effectiveTaxRate').val()
             let effectiveTaxRateAsNumber = parseFloat(effectiveTaxRate)
@@ -60,9 +52,18 @@ Template.TaxCreate.events({
             if(grossIncomeBucket && grossIncomeBucket.length > 0) {
                 details.grossIncomeBucket = grossIncomeBucket
             }
+            //--
+            let taxableIncomeFormula = $('[name="taxableIncomeFormula"]').val().trim();
+            let usingCustomTaxableIncomeFormula;
+            if(taxableIncomeFormula && taxableIncomeFormula.length > 0) {
+                usingCustomTaxableIncomeFormula = true;
+            } else {
+                usingCustomTaxableIncomeFormula = false
+            }
+    
+            details.usingCustomTaxableIncomeFormula = usingCustomTaxableIncomeFormula
+            details.taxableIncomeFormula = taxableIncomeFormula
         }
-        details.usingCustomTaxableIncomeFormula = usingCustomTaxableIncomeFormula
-        details.taxableIncomeFormula = taxableIncomeFormula        
         //--
 
         if(tmpl.data){//edit action for updating tax
