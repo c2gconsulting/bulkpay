@@ -794,7 +794,7 @@ if (Meteor.isServer) {
 
               if(config) {
                 parseString(body, function (err, result) {
-                  const waitTime = 1 + Math.floor(Math.random() * 2)
+                  const waitTime = Math.floor(Math.random() * 5)
 
                   Meteor.setTimeout(function() {
                     getSfEmployeeIds2(business, config, result)
