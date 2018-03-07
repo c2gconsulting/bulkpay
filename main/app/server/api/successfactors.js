@@ -794,7 +794,11 @@ if (Meteor.isServer) {
 
               if(config) {
                 parseString(body, function (err, result) {
-                  getSfEmployeeIds2(business, config, result)
+                  const waitTime = 1 + Math.floor(Math.random() * 2)
+
+                  Meteor.setTimeout(function() {
+                    getSfEmployeeIds2(business, config, result)
+                  }, waitTime * 1000)
                 })
               }
             }
@@ -933,7 +937,7 @@ if (Meteor.isServer) {
 
               // fetchEmployeeDetails(business, config, 'efe.rambo')
               
-              fetchEmployeeDetails(business, config, 'ishawuru.johnson')
+              // fetchEmployeeDetails(business, config, 'ishawuru.johnson')
             }
           })
         }));        
