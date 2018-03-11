@@ -26,6 +26,29 @@ Template.LeaveTypeCreate.events({
         }
         tmpl.selectedPaygrades.set(selected);
     },
+    // 'click #selectAllPositions': (e, tmpl) => {
+    //     e.preventDefault();
+    //     console.log(`clicky clicky`)
+
+    //     const businessId = Session.get('context')
+
+    //     if(tmpl.$('.positions div.hidden').length < 1) {
+    //         tmpl.$('.positions').append('<div class="menu transition hidden" tabindex="-1"></div>')
+    //     }
+
+    //     EntityObjects.find({
+    //         otype: 'Position',
+    //         businessId: businessId,
+    //     }).fetch().forEach(position => {
+    //         tmpl.$('.positions').append(`<a class="ui label transition visible" data-value="${position._id}" style="display: inline-block !important;">${position.name}<i class="delete icon"></i></a>`)
+
+    //         tmpl.$('.positions div.hidden').append(`<div class="item" data-value="${position._id}">${position.name}</div>`)
+    //     })
+
+    //     tmpl.$('.positions i.delete').click(() => {
+    //         $(this).closest('a').remove();
+    //     })
+    // }
 });
 
 /*****************************************************************************/

@@ -32,9 +32,14 @@
                             <!-- <div class="col-sm-3">
                                 {{> afQuickField name="deductFrom" options=leaveTypes class="dropdown"}}
                             </div> -->
+                        </div>
 
+                        <div class="row">
                             <div class="col-sm-3">
-                                {{> afQuickField name="positionIds" options=allowedPositions class="dropdown"}}
+                                {{> afQuickField name="positionIds" options=allowedPositions class="dropdown positions"}}
+                                <!-- <div id="selectAllPositions" style="cursor: pointer;">
+                                    <span><a>Select all positions</a></span>
+                                </div> -->
                             </div><!-- col-sm-3 -->
 
                             <div class="col-sm-3">
@@ -48,8 +53,7 @@
                             <div class="col-sm-3 check">
                                 {{> afQuickField name="deductFromAnnualLeave"}}
                             </div>                            
-                        </div><!-- row -->
-
+                        </div>
                     </div>
                     <div class="panel-footer">
                         <button type="submit" class="btn btn-primary mr5" id="LeaveTypeCreate">Save</button>
