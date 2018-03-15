@@ -129,7 +129,7 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
     if(ns7Event) {
       ns7Event.forEach(event => {
         let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
-        if(ns7Params) {                                                                                                                                                                                                                                                              
+        if(ns7Params) {
           _.each(ns7Params[`${nsPrefix}:param`], param => {
             if(param.name && param.name[0] === 'personIdExternal') {
               personIdExternal = param.value[0]
@@ -142,7 +142,11 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
           console.log(``)
           personIds.push({personIdExternal, perPersonUuid})
 
-          fetchEmployeeDetails(business, config, personIdExternal)
+          //--
+          const waitTime = Math.floor(Math.random() * 10)
+          Meteor.setTimeout(Meteor.bindEnvironment(function (error, result) {
+            fetchEmployeeDetails(business, config, personIdExternal)
+          }), waitTime * 1000)
         }
       })
     } else {
@@ -794,7 +798,7 @@ if (Meteor.isServer) {
 
               if(config) {
                 parseString(body, function (err, result) {
-                  const waitTime = Math.floor(Math.random() * 5)
+                  const waitTime = Math.floor(Math.random() * 10)
 
                   Meteor.setTimeout(function() {
                     getSfEmployeeIds2(business, config, result)
@@ -937,7 +941,7 @@ if (Meteor.isServer) {
 
               // fetchEmployeeDetails(business, config, 'efe.rambo')
               
-              // fetchEmployeeDetails(business, config, 'ishawuru.johnson')
+              fetchEmployeeDetails(business, config, 'ishawuru.johnson')
             }
           })
         }));        
