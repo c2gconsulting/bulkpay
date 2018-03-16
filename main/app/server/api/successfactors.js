@@ -127,35 +127,45 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
   if(ns7Events) {
     let ns7Event = ns7Events[`${nsPrefix}:event`]
     if(ns7Event) {
-      ns7Event.forEach(event => {
-        let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
-        if(ns7Params) {
-          _.each(ns7Params[`${nsPrefix}:param`], param => {
-            if(param.name && param.name[0] === 'personIdExternal') {
-              personIdExternal = param.value[0]
-            } else if(param.name && param.name[0] === 'perPersonUuid') {
-              perPersonUuid = param.value[0]
-            }
-          })
-          console.log(`personIdExternal: `, personIdExternal)
-          console.log(`perPersonUuid: `, perPersonUuid)
-          console.log(``)
-          personIds.push({personIdExternal, perPersonUuid})
-
-          //--
-          const waitTime = Math.floor(Math.random() * 10)
-          Meteor.setTimeout(Meteor.bindEnvironment(function (error, result) {
-            fetchEmployeeDetails(business, config, personIdExternal)
-          }), waitTime * 1000)
+      let queue = new PowerQueue({ 
+        isPaused: true,
+        onEnded: () => { 
+          console.log(`Queue event processing done!`) 
         }
+      });
+
+      ns7Event.forEach(event => {
+        queue.add(function(pQueueDone) {
+          let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
+          if(ns7Params) {
+            _.each(ns7Params[`${nsPrefix}:param`], param => {
+              if(param.name && param.name[0] === 'personIdExternal') {
+                personIdExternal = param.value[0]
+              } else if(param.name && param.name[0] === 'perPersonUuid') {
+                perPersonUuid = param.value[0]
+              }
+            })
+            console.log(`personIdExternal: `, personIdExternal)
+            console.log(`perPersonUuid: `, perPersonUuid)
+            console.log(``)
+            personIds.push({personIdExternal, perPersonUuid})
+
+            //--
+            fetchEmployeeDetails(business, config, personIdExternal, pQueueDone)
+          }
+        })
       })
+
+      queue.run();
     } else {
       console.log(`ns7Event null: `)
     }
   }
 }
 
-let fetchEmployeeDetails = (business, config, personIdExternal) => {
+let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
+  console.log(`Inside fetchEmployeeDetails ... `)
+
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
   const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$select=firstName,lastName,email,businessPhone,homePhone,cellPhone,addressLine1,addressLine2,addressLine3&$format=json`
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
@@ -198,6 +208,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
 
   if(userRes) {
     try {
+      console.log(`userRes.content: `, userRes.content)
       let userData = JSON.parse(userRes.content)
 
       if(userData && userData.d && userData.d.results && userData.d.results.length > 0) {
@@ -329,63 +340,60 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   let accountId;
   if(!existingUser) {
     console.log(`user with personIdExternal: ${personIdExternal} for business id: ${business._id} NOT EXISTS`)
+
     try {
-      accountId = Accounts.createUser(bulkPayUserParams)
-    } catch(e) {
-      try {
-        let userFirstName = bulkPayUserParams.firstname || ""
-        let userLastName = bulkPayUserParams.lastname || ""
-        //--
-        userFirstName = userFirstName.trim()
-        userLastName = userLastName.trim()
-        //--
-        let defaultUsername = userFirstName + "." + userLastName
-        defaultUsername = defaultUsername.toLowerCase()
-        // let defaultUsername = personIdExternal;
-    
-        accountId = Meteor.users.insert({
-          profile: {
-            firstname: bulkPayUserParams.firstname,
-            lastname: bulkPayUserParams.lastname,
-            fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
+      let userFirstName = bulkPayUserParams.firstname || ""
+      let userLastName = bulkPayUserParams.lastname || ""
+      //--
+      userFirstName = userFirstName.trim()
+      userLastName = userLastName.trim()
+      //--
+      let defaultUsername = userFirstName + "." + userLastName
+      defaultUsername = defaultUsername.toLowerCase()
+      // let defaultUsername = personIdExternal;
+  
+      accountId = Meteor.users.insert({
+        profile: {
+          firstname: bulkPayUserParams.firstname,
+          lastname: bulkPayUserParams.lastname,
+          fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
+        },
+        employeeProfile: {
+          employeeId: personIdExternal,
+          phone: bulkPayUserParams.phoneNumber,
+          employment: {
+            status: 'Active',
+            hireDate: new Date(),
+            terminationDate: null
           },
-          employeeProfile: {
-            employeeId: personIdExternal,
-            phone: bulkPayUserParams.phoneNumber,
-            employment: {
-              status: 'Active',
-              hireDate: new Date(),
-              terminationDate: null
-            },
-            payment: {}
-          },
-          employee: true,
-          businessIds: [business._id],
-          group: business._groupId,
-          roles: {
-            "__global_roles__" : [ 
-                "ess/all"
-            ]
-          }
-        })
-        Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
-        Accounts.setPassword(accountId, "123456")
-        Partitioner.setUserGroup(accountId, business._groupId);
-      } catch(err1) {
-        console.log(`Error in alternative user creation! `, err1.message)
-      }
+          payment: {}
+        },
+        employee: true,
+        businessIds: [business._id],
+        group: business._groupId,
+        roles: {
+          "__global_roles__" : [ 
+              "ess/all"
+          ]
+        }
+      })
+      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
+      Accounts.setPassword(accountId, "123456")
+      Partitioner.setUserGroup(accountId, business._groupId);
+    } catch(err1) {
+      console.log(`Error in alternative user creation! `, err1.message)
     }
     
-    if(bulkPayUserParams.email) {
-      try {
-        Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
-      } catch (e) {
-        console.log(`Enrollment email error: `, e.message)
-        console.log("Unable to send a notification mail to new successfactors employee")
-      }
-    }
+    // if(bulkPayUserParams.email) {
+    //   try {
+    //     Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
+    //   } catch (e) {
+    //     console.log(`Enrollment email error: `, e.message)
+    //     console.log("Unable to send a notification mail to new successfactors employee")
+    //   }
+    // }
   } else {
-    console.log(`user with personIdExternal: ${personIdExternal}for business id: ${business._id} EXISTS`)
+    console.log(`user with personIdExternal: ${personIdExternal} for business id: ${business._id} EXISTS`)
     accountId = existingUser._id
   }
 
@@ -731,6 +739,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal) => {
   }
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
+  pQueueDone();
 }
 
 let setBPEmployeeStatus = (business, personIdExternal, status) => {
@@ -798,11 +807,7 @@ if (Meteor.isServer) {
 
               if(config) {
                 parseString(body, function (err, result) {
-                  const waitTime = Math.floor(Math.random() * 10)
-
-                  Meteor.setTimeout(function() {
-                    getSfEmployeeIds2(business, config, result)
-                  }, waitTime * 1000)
+                  getSfEmployeeIds2(business, config, result)
                 })
               }
             }
