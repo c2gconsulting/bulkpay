@@ -35,6 +35,13 @@ Core.Log = logger.bunyan.createLogger({
   level: "debug"
 });
 
+Core.PowerQueue = new PowerQueue({ 
+  isPaused: true,
+  onEnded: () => { 
+    console.log(`Queue event processing done!`) 
+  }
+});
+
 // set logging level
 Core.Log.level(isDebug);
 

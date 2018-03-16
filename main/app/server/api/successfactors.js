@@ -2,6 +2,12 @@ import _ from 'underscore';
 import { HTTP } from 'meteor/http'
 let parseString = require('xml2js').parseString;
 
+// PowerQueue = new PowerQueue({ 
+//   isPaused: true,
+//   onEnded: () => { 
+//     console.log(`Queue event processing done!`) 
+//   }
+// });
 
 var Api = new Restivus({
   useDefaultAuth: false,
@@ -127,15 +133,8 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
   if(ns7Events) {
     let ns7Event = ns7Events[`${nsPrefix}:event`]
     if(ns7Event) {
-      let queue = new PowerQueue({ 
-        isPaused: true,
-        onEnded: () => { 
-          console.log(`Queue event processing done!`) 
-        }
-      });
-
       ns7Event.forEach(event => {
-        queue.add(function(pQueueDone) {
+        Core.PowerQueue.add(function(pQueueDone) {
           let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
           if(ns7Params) {
             _.each(ns7Params[`${nsPrefix}:param`], param => {
@@ -156,7 +155,7 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
         })
       })
 
-      queue.run();
+      Core.PowerQueue.run();
     } else {
       console.log(`ns7Event null: `)
     }
