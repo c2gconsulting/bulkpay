@@ -332,6 +332,9 @@ Template.SuccessFactorsConfig.helpers({
             })
         }
     },
+    'sfCustProjects': function() {
+        return Template.instance().sfCustProjects.get()
+    },
     'timeWritingRecords': function() {
         return Template.instance().sfTimeSheets.get()
     },
@@ -349,6 +352,9 @@ Template.SuccessFactorsConfig.helpers({
     },
     'isFetchingCostCenters': function() {
         return Template.instance().isFetchingCostCenters.get()
+    },
+    'isFetchingCustProjects': function() {
+        return Template.instance().isFetchingCustProjects.get()
     },
     'isFetchingTimeSheet': function() {
         return Template.instance().isFetchingTimeSheet.get()
@@ -397,12 +403,14 @@ Template.SuccessFactorsConfig.onCreated(function () {
     self.sfPayTypes = new ReactiveVar()
     self.sfPayGrades = new ReactiveVar()
     self.sfCostCenters = new ReactiveVar()
+    self.sfCustProjects = new ReactiveVar()
     self.sfTimeSheets = new ReactiveVar()
 
     self.isFetchingSfPositions = new ReactiveVar(false)
     self.isFetchingPayTypes = new ReactiveVar(false)
     self.isFetchingPayGrades = new ReactiveVar(false)
     self.isFetchingCostCenters = new ReactiveVar(false)
+    self.isFetchingCustProjects = new ReactiveVar(false)
     self.isFetchingTimeSheet = new ReactiveVar(false)
 
     self.units = new ReactiveVar()
@@ -452,37 +460,47 @@ Template.SuccessFactorsConfig.onCreated(function () {
         }
     })
 
-    self.isFetchingPayTypes.set(true)
+    // self.isFetchingPayTypes.set(true)
+    // Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, sfPaytypes) => {
+    //     console.log(`err: `, err)
+    //     self.isFetchingPayTypes.set(false)
 
-    Meteor.call('successfactors/fetchPaytypes', businessUnitId, (err, sfPaytypes) => {
-        console.log(`err: `, err)
-        self.isFetchingPayTypes.set(false)
+    //     if (!err) {
+    //         self.sfPayTypes.set(sfPaytypes)
+    //     } else {
+    //         swal("Server error", `Please try again at a later time`, "error");
+    //     }
+    // });
+    // //--
+    // self.isFetchingPayGrades.set(true)
+    // Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
+    //     console.log(`err: `, err)
+    //     self.isFetchingPayGrades.set(false)
 
-        if (!err) {
-            self.sfPayTypes.set(sfPaytypes)
-        } else {
-            swal("Server error", `Please try again at a later time`, "error");
-        }
-    });
-    //--
-    self.isFetchingPayGrades.set(true)
-    Meteor.call('successfactors/fetchPayGrades', businessUnitId, (err, sfPayGrades) => {
-        console.log(`err: `, err)
-        self.isFetchingPayGrades.set(false)
+    //     if (!err) {
+    //         self.sfPayGrades.set(sfPayGrades)
+    //     } else {
+    //         swal("Server error", `Please try again at a later time`, "error");
+    //     }
+    // });
+    // //--
+    // self.isFetchingCostCenters.set(true)
+    // Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
+    //     self.isFetchingCostCenters.set(false)
+    //     if (!err) {
+    //         console.log(`err: `, err)
+    //         self.sfCostCenters.set(sfCostCenters)
+    //     } else {
+    //         swal("Server error", `Please try again at a later time`, "error");
+    //     }
+    // });
 
-        if (!err) {
-            self.sfPayGrades.set(sfPayGrades)
-        } else {
-            swal("Server error", `Please try again at a later time`, "error");
-        }
-    });
-    //--
-    self.isFetchingCostCenters.set(true)
-    Meteor.call('successfactors/fetchCostCenters', businessUnitId, (err, sfCostCenters) => {
-        self.isFetchingCostCenters.set(false)
+    self.isFetchingCustProjects.set(true)
+    Meteor.call('successfactors/fetchSfCustProjects', businessUnitId, (err, sfCustProjects) => {
+        self.isFetchingCustProjects.set(false)
         if (!err) {
             console.log(`err: `, err)
-            self.sfCostCenters.set(sfCostCenters)
+            self.sfCustProjects.set(sfCustProjects)
         } else {
             swal("Server error", `Please try again at a later time`, "error");
         }

@@ -253,20 +253,20 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody id="tab4-data-body">
-                                                {{#if isFetchingCostCenters}}
+                                                {{#if isFetchingCustProjects}}
                                                     <br/><br/><br/><br/><br/>
                                                     {{> spinner}}
                                                 {{else}}
-                                                    {{#each sfProjects}}
+                                                    {{#each sfCustProjects}}
                                                         <tr class="item" style="cursor: move;">
                                                             <td>
                                                                 <input type="checkbox" name="includeSfProject"
                                                                     data-externalCode="{{externalCode}}"
-                                                                    data-description="{{description}}" />
+                                                                    data-description="{{cust_projectName_en_US}}" />
                                                             </td>
                                                             <td>{{@index}}</td>
                                                             <td>{{externalCode}}</td>
-                                                            <td>{{description}}</td>
+                                                            <td>{{cust_projectName_en_US}}</td>
                                                         </tr>
                                                     {{/each}}
                                                 {{/if}}
