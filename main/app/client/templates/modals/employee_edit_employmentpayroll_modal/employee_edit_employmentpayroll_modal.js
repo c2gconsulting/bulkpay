@@ -30,6 +30,9 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     user.employeeProfile.employment.hireDate = hireDate;
     user.employeeProfile.employment.confirmationDate = confirmationDate;
     user.employeeProfile.employment.terminationDate = terminationDate;
+    user.directSupervisorId = $('[name="directSupervisorId"]').val()
+    user.directAlternateSupervisorId = $('[name="directAlternateSupervisorId"]').val()
+
     Template.instance().setEditUser(user);
     //--
     Meteor.call('account/updateEmploymentData', user, user._id, (err, res) => {
@@ -373,6 +376,11 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
     },
     {sort: {code: 1}})
   },
+  'allEmployees': () => {
+    return Meteor.users.find({
+        'employeeProfile.employment.status': 'Active'
+    })
+  },
   'assignable': () => {
      return Template.instance().assignedTypes.get();
   },
@@ -471,6 +479,22 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
             return businessUnitCustomConfig.isEmployeePromotionEnabled
         }
     },
+    'directEmployeeManagerEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.directEmployeeManagerEnabled
+        }
+    },
+    'showFirstTabSpinner': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        
+        if(businessUnitCustomConfig) {
+            if(businessUnitCustomConfig.directEmployeeManagerEnabled) {
+                return Template.instance().showFirstTabSpinner.get();
+            }
+        }
+    },
     isTryingToAddNewPromotion: function() {
         return Template.instance().isTryingToAddNewPromotion.get();
     },
@@ -494,6 +518,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   var self = this;
 
   let businessUnitId = Session.get('context');
+
+  self.showFirstTabSpinner = new ReactiveVar(true)
 
   self.getEditUser = () => {
     return Session.get('employeeEmploymentDetailsData');
@@ -532,6 +558,8 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   self.subscribe("getbuconstants", Session.get('context'));
   self.subscribe("PayTypes", Session.get('context'));
   self.subscribe("paygrades", Session.get('context'));
+  self.subscribe('employees', Session.get('context'));
+
   
   self.isTryingToAddNewPromotion = new ReactiveVar();
 
@@ -625,14 +653,21 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 });
 
 Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
+  let self = this;
   let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
-  $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
+  $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);     
 
-  $('select.dropdown').dropdown();
+//   $('select.dropdown').dropdown();
+    setTimeout(function() {
+        $('[name="directSupervisorId"]').val(selectedEmployee.directSupervisorId);
+        $('[name="directAlternateSupervisorId"]').val(selectedEmployee.directAlternateSupervisorId);
 
-  let self = this;
+        $('select.dropdown').dropdown();
+        self.showFirstTabSpinner.set(false)
+    }, 2000)
+
   let rules = new ruleJS('calc');
   rules.init();
 

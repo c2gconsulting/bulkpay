@@ -24,7 +24,6 @@
                           <div class="panel panel-default">
                               <div class="panel-body nopadding">
                                   <form class="form-horizontal form-bordered">
-
                                       <div class="form-group">
                                           <label class="col-sm-4 control-label">Position</label>
                                           <div class="col-sm-4">
@@ -61,6 +60,64 @@
                                               </div>
                                           </div>
                                       {{/if}}
+                                    
+                                    
+                                    {{#if directEmployeeManagerEnabled}}
+                                        <div class="form-group">
+                                            {{#if showFirstTabSpinner}}
+                                            <div class="row">
+                                                <div class="col-sm-offset-5 col-sm-2">
+                                                    {{> spinner}}
+                                                </div>
+                                            </div>
+                                            {{/if}}
+
+                                            <div class="row">
+                                                <label class="col-sm-4 control-label">Supervisor</label>
+                                                <div class="col-sm-4">
+                                                    <select name="directSupervisorId" style="width: 100%" class="form-control dropdown">
+                                                        <option value=""></option>
+                                                        {{#each allEmployees}}
+                                                            <option value="{{_id}}">{{profile.fullName}}</option>
+
+                                                            <!-- {{#if isEqual ../directSupervisorId this.directSupervisorId}}
+                                                                <option value="{{_id}}" checked="checked"> {{profile.fullName}}</option>
+                                                            {{else}}
+                                                                <option value="{{_id}}">{{profile.fullName}}</option>
+                                                            {{/if}} -->
+                                                        {{/each}}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-sm-4">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Alternate Supervisor</label>
+                                            <div class="col-sm-4">
+                                                <select name="directAlternateSupervisorId" style="width: 100%" class="form-control dropdown">
+                                                    <option value=""></option>
+                                                    {{#each allEmployees}}
+                                                        <option value="{{_id}}">{{profile.fullName}}</option>
+
+                                                        <!-- {{#if isEqual ../directAlternateSupervisorId this.directAlternateSupervisorId}}
+                                                            <option value="{{_id}}" checked="checked"> {{profile.fullName}}</option>
+                                                        {{else}}
+                                                            <option value="{{_id}}">{{profile.fullName}}</option>
+                                                        {{/if}} -->
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {{/if}}
 
                                       <div class="form-group">
                                           <label class="col-sm-4 control-label">Hire Date</label>

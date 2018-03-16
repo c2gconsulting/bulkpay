@@ -404,6 +404,9 @@ Meteor.methods({
             if(terminationDate) {
                 terminationDate = new Date(terminationDate)
             }
+            let directSupervisorId = user.directSupervisorId;
+            let directAlternateSupervisorId = user.directAlternateSupervisorId;
+
 
             let updateObj = {
                 "employeeProfile.employment.position": user.employeeProfile.employment.position,
@@ -411,7 +414,9 @@ Meteor.methods({
                 "employeeProfile.employment.hireDate": hireDate,
                 "employeeProfile.employment.confirmationDate": confirmationDate,
                 "employeeProfile.employment.status": user.employeeProfile.employment.status,
-                "employeeProfile.employment.terminationDate": terminationDate
+                "employeeProfile.employment.terminationDate": terminationDate,
+                "directSupervisorId": directSupervisorId,
+                "directAlternateSupervisorId": directAlternateSupervisorId
             }
 
             if(account.employeeProfile.employment.status !== user.employeeProfile.employment.status) {
