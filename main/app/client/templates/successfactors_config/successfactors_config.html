@@ -25,14 +25,9 @@
                             <ul class="nav nav-justified nav-wizard nav-disabled-click">
                                 <li><a href="#new-tab1" data-toggle="tab" id="step1"><strong></strong> Authentication</a></li>
 
-                                <li><a href="#new-tab2" data-toggle="tab" id="step2"><strong></strong> Positions </a></li>
-
-                                <li><a href="#new-tab3" data-toggle="tab" id="step3"><strong></strong> PayComponents </a></li>
-                                <li><a href="#new-tab4" data-toggle="tab" id="step4"><strong></strong> Pay Groups </a></li>
                                 <!-- <li><a href="#new-tab5" data-toggle="tab" id="step5"><strong></strong> Cost-Center</a></li> -->
-                                <li><a href="#new-tab6" data-toggle="tab" id="step6"><strong></strong> Projects</a></li>
-
-                                <li><a href="#new-tab7" data-toggle="tab" id="step7"><strong></strong> Time Sheets</a></li>
+                                <li><a href="#new-tab2" data-toggle="tab" id="step2"><strong></strong> Projects</a></li>
+                                <li><a href="#new-tab3" data-toggle="tab" id="step3"><strong></strong> Time Sheets</a></li>
                             </ul>
 
                             <div class="progress progress-xs">
@@ -109,13 +104,13 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div><!-- panel -->
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="tab-pane" id="new-tab2">
+                                <!-- <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -148,13 +143,12 @@
                                                 {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="tab-pane" id="new-tab3">
                                     <div class="form-group">
-                                        <!--<h5 class="lg-title">Define Pay Types Values and derivations </h5><br/>-->
                                         <div class="row">
                                             <div class="pull-right">
                                                 <button type="submit" class="btn btn-primary" id="savePaytypes">Save</button>
@@ -196,9 +190,9 @@
                                                     {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="tab-pane" id="new-tab4">
                                     <div class="form-group">
@@ -237,58 +231,11 @@
                                                     {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->    
-                                
-                                <!-- <div class="tab-pane" id="new-tab5">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="pull-right">
-                                                <button type="submit" class="btn btn-primary" id="saveCostCenterCodes">Save</button>
-                                            </div>
-                                        </div>
-                                        <div class="table-responsive">
-                                            <table class="table table-hover" id="derivativeTable">
-                                                <thead>
-                                                <tr>
-                                                    <th>S/N</th>
-                                                    <th>Unit</th>
-                                                    <th>Org chart parents</th>
-                                                    <th>Successfactors Cost Center</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody id="tab4-data-body">                                                
-                                                {{#if isFetchingCostCenters}}
-                                                    <br/><br/><br/><br/><br/>
-                                                    {{> spinner}}
-                                                {{else}}
-                                                    {{#each costCenters}}
-                                                        <tr class="item" style="cursor: move;">
-                                                            <td>{{@index}}</td>
-                                                            <td>{{name}}</td>
-                                                            <td>{{getCostCenterOrgChartParents this}}</td>
-                                                            <td>
-                                                                <div class="form-group">
-                                                                    <select name="sfCostCenterCode" class="form-control dropdown" data-unitId="{{_id}}">
-                                                                        <option value="">Select a cost center</option>
-
-                                                                        {{#each sfCostCenters}}
-                                                                            <option value="{{externalCode}}">{{externalCode}} - {{description}}</option>
-                                                                        {{/each}}
-                                                                    </select>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    {{/each}}
-                                                {{/if}}
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
                                 </div> -->
-
-                                <div class="tab-pane" id="new-tab6">
+                                
+                                <div class="tab-pane" id="new-tab2">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="pull-right">
@@ -325,11 +272,11 @@
                                                 {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div>
 
-                                <div class="tab-pane" id="new-tab7">
+                                <div class="tab-pane" id="new-tab3">
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-2">
@@ -340,7 +287,7 @@
                                                             <option value="{{period}}">{{name}}</option>
                                                         {{/each}}
                                                     </select>
-                                                </div><!-- form-group -->
+                                                </div>
                                             </div>
                                             
                                             <div class="col-sm-1">
@@ -354,7 +301,7 @@
                                                             <option value="{{this}}">{{this}}</option>
                                                         {{/each}}
                                                     </select>
-                                                </div><!-- form-group -->
+                                                </div>
                                             </div>
 
                                             <div class="pull-right">
@@ -387,9 +334,9 @@
                                                     {{/if}}
                                                 </tbody>
                                             </table>
-                                        </div><!-- table-responsive -->
-                                    </div><!-- form-group -->
-                                </div><!-- tab-pane -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <ul class="list-unstyled wizard">
@@ -401,9 +348,9 @@
                                 </li>
                             </ul>
                         </div>
-                    </div><!-- row -->
+                    </div>
                 </div>
             </div>
-    </div><!-- contentpanel -->
+    </div>
 </template>
 

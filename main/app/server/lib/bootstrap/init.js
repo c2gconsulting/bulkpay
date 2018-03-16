@@ -53,7 +53,7 @@ _.extend(Core, {
     
     // Commented this to help ensure employees with same email are not inserted
     // Meteor.users._dropIndex("emails.address_1");
-    // Meteor.users._ensureIndex({"emails.address":1}, {unique:true});
+    Meteor.users._ensureIndex({"emails.address":1}, {unique:true});
 
     return true;
   },

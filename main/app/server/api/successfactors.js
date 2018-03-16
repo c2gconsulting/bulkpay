@@ -406,10 +406,13 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     lastname: bulkPayUserParams.lastname,
     fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
   }
-  bpUser.emails = [{
-    address: bulkPayUserParams.email,
-    verified: false
-  }]
+  if(bulkPayUserParams.email) {
+    bpUser.emails = [{
+      address: bulkPayUserParams.email,
+      verified: false
+    }]    
+  }
+
   bpUser.employeeProfile = {
     employeeId: personIdExternal,
     phone: bulkPayUserParams.phoneNumber,
