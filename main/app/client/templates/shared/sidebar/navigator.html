@@ -93,9 +93,10 @@
             <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
             <li><a href="{{pathFor 'budgets'}}">Travels Budget Code</a></li>
             <li><a href="{{pathFor 'travelcities'}}">Travelcities</a></li>
-            <li><a href="{{pathFor 'flightroutes'}}">Flightroutes</a></li>
-            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
             <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
+            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
+            <li><a href="{{pathFor 'flightroutes'}}">Flightroutes</a></li>
+          
             <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
 
             {{#if isLeaveRequestEnabled}}
@@ -208,6 +209,7 @@
             {{#if isLoanEnabled}}
             <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
             {{/if}}
+            
           
             <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         {{/if}}
