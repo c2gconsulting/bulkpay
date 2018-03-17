@@ -2,7 +2,7 @@
 /**
 * Flight Routes  Schema
 */
-Core.Schemas.FlightRoute = new SimpleSchema({
+Core.Schemas.Flightroute = new SimpleSchema({
     _id: {
         type: String,
         optional: true

@@ -6,14 +6,14 @@ Meteor.methods({
     /* pension Manger
      */
 
-    "state/create": function(state){
+    "travelcity/create": function(travelcity){
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         let userId = Meteor.userId();
 
         try {
-            check(state, Core.Schemas.State);
+            check(travelcity, Core.Schemas.Travelcity);
         } catch (e) {
             console.log(e);
             throw new Meteor.Error(401, "There's invalid data in the hotel. Please correct and retry");
@@ -23,8 +23,8 @@ Meteor.methods({
         //    // must have orders/manage permissions
         this.unblock();
 
-        let stateId = States.insert(state);
-        return {_id: stateId};
+        let travelcityId = Travelcities.insert(travelcity);
+        return {_id: travelcityId};
         //let newBu = BusinessUnits.findOne(buId);
         ////sendOrderNotification("order.created", newOrder, userId);
         //return { _id: orderId, orderNumber: newOrder.orderNumber };
@@ -32,15 +32,15 @@ Meteor.methods({
         //    throw new Meteor.Error(403, "You are not authorized to create an order for this location");
         //}
     },
-    "state/delete": function(id){
+    "travelcity/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
         // check if user has permission to delete
-        States.remove({_id: id});
+        Travelcities.remove({_id: id});
         return true;
     },
-    "state/update": function(id, details){
+    "travelcity/update": function(id, details){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -49,7 +49,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = States.update(selector, {$set: details} );
+        const result = Travelcities.update(selector, {$set: details} );
         return result;
     }
 

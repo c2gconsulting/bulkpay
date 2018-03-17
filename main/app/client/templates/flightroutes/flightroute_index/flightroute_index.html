@@ -1,29 +1,35 @@
-<template name="StateIndex">
+
+<template name="FlightrouteIndex">
     <div class="col-md-12">
         <div class="tab-pane" id="followers">
 
-            <div class="row" ng-show="!singleStateView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+            <div class="row" ng-show="!singleFlightrouteView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12">
-                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New State</button></p>
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Flightroutes</button></p>
                 </div>
             </div>
 
             <div class="row" style="margin-left: 10px; margin-right: 10px;">
-                <div class="col-md-12" ng-if="states.length > 0">
+                <div class="col-md-12" ng-if="flightroutes.length > 0">
                     <div class="table-responsive">
                         <table class="table table-primary mb60 table-hover">
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Per Diem Cost</th>
-                                <th>State Name</th>
+                            
+                                <th>from</th>
+                                <th>to</th>
+                                <th>airline</th>
+                                <th>Currency</th>
+                                <th>Cost</th>
                                 <th>Status</th>
+                              
                                 <th></th>
                             </tr>
                             </thead>
                             <tbody>
                             {{#each pfas}}
-                                {{> singleState index=@index data=this}}
+                                {{> singleFlightroute index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -35,11 +41,16 @@
     </div>
 </template>
 
-<template name="singleState">
+<template name="singleFlightroute">
     <tr>
         <td class="pointer">{{index}}</td>
-        <td>{{data.code}}</td>
-        <td>{{data.name}}</td>
+       
+        <td>{{getTravelcityName data.travelcityId}}</td>
+        <td>{{getTravelcityName data.travelcityId}}</td>
+        <td>{{getAirlineName data.airlineId}}</td>
+        <td>{{data.currency}}</td>
+        <td>{{data.cost}}</td>
+      
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>
@@ -48,7 +59,7 @@
           {{/if}}
         </td>
         <td>
-            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteState">Delete</button>
+            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteFlightroute">Delete</button>
         </td>
     </tr>
 </template>

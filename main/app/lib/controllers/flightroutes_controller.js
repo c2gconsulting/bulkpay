@@ -1,4 +1,4 @@
-StatesController = BusinessUnitController.extend({
+FlightroutesController = BusinessUnitController.extend({
   
     // a place to put your subscriptions
     // this.subscribe('items');
@@ -47,7 +47,7 @@ StatesController = BusinessUnitController.extend({
     //  action: 'myActionFunction'
     
     action: function () {
-      this.render("StateIndex");
+      this.render("FlightrouteIndex");
     },
     onAfterAction: function () {
     },

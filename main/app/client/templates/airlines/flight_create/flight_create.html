@@ -1,0 +1,34 @@
+<template name="AirlineCreate">
+    <div class="modal fade add-airline" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New airline</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                          
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="airline-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="airline-name" class="form-control" placeholder="Name" ng-model="airline.name"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+                        
+                      
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" id="new-airline-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="save">Create</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

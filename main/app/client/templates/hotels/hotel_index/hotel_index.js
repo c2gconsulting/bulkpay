@@ -1,69 +1,80 @@
 /*****************************************************************************/
 /* HotelIndex: Event Handlers */
-/**************************************************************************/
-Template.StateIndex.events({
+/*****************************************************************************/
+Template.HotelIndex.events({
     'click #newPFA': (e,tmpl) => {
         e.preventDefault();
-        Modal.show('StateCreate');
+        Modal.show('HotelCreate');
     }
 });
 
 /*****************************************************************************/
 /* Hotels: Helpers */
 /*****************************************************************************/
-Template.StateIndex.helpers({
+Template.HotelIndex.helpers({
     'pfas': function(){
-      let allPfas = States.find({});
+      let allPfas = Hotels.find({});
       return allPfas;
     },
     'pfaCount': function(){
-        return States.find().count();
-    }
-
+        return Hotels.find().count();
+    },
+    
 });
 
 /*****************************************************************************/
 /* Hotels: Lifecycle Hooks */
 /*****************************************************************************/
-Template.StateIndex.onCreated(function () {
+Template.HotelIndex.onCreated(function () {
     let self = this;
-    self.subscribe("states", Session.get('context'));
+    self.subscribe("hotels", Session.get('context'));
+    self.subscribe("travelcities", Session.get('context'));
 });
 
-Template.StateIndex.onRendered(function () {
+Template.HotelIndex.onRendered(function () {
     //UI.insert( UI.render( Template.PensionManagerIndex ), $('#pensionContext').get(0) );
 });
 
-Template.StateIndex.onDestroyed(function () {
+Template.HotelIndex.onDestroyed(function () {
 });
 
 
 /*****************************************************************************/
 /* singleHotel: Helpers */
 /*****************************************************************************/
-Template.singleState.events({
-    'click #deleteState': function(e, tmpl) {
+Template.singleHotel.events({
+    'click #deleteHotel': function(e, tmpl) {
         event.preventDefault();
         let self = this;
 
         swal({
             title: "Are you sure?",
-            text: "You will not be able to recover this State",
+            text: "You will not be able to recover this Pension Manager",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         }, () => {
-            const stateId = self.data._id;
+            const hotelId = self.data._id;
             const code = self.data.code;
 
-            Meteor.call('state/delete', stateId, (err, res) => {
+            Meteor.call('hotel/delete', hotelId, (err, res) => {
                 if(!err){
                     Modal.hide();
-                    swal("Deleted!", `State: ${code} has been deleted.`, "success");
+                    swal("Deleted!", `Pension Manager: ${code} has been deleted.`, "success");
                 }
             });
         });
     }
 })
+Template.singleHotel.helpers({
+   
+    
+    'getTravelcityName': function(travelcityId) {
+        const travelcity = Travelcities.findOne({_id: travelcityId})
+        if(travelcity) {
+            return travelcity.name
+        }
+    }
+});

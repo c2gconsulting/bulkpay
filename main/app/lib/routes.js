@@ -179,9 +179,9 @@ Router.route('/business/:_id/hotels', {
     controller: 'HotelsController',
     where: 'client'
 });
-Router.route('/business/:_id/states', {
-    name: 'states',
-    controller: 'StatesController',
+Router.route('/business/:_id/travelcities', {
+    name: 'travelcities',
+    controller: 'TravelcitiesController',
     where: 'client'
 });
 Router.route('/business/:_id/budgets', {
@@ -189,9 +189,14 @@ Router.route('/business/:_id/budgets', {
     controller: 'BudgetsController',
     where: 'client'
 });
-Router.route('/business/:_id/flights', {
-    name: 'flights',
-    controller: 'FlightsController',
+Router.route('/business/:_id/airlines', {
+    name: 'airlines',
+    controller: 'AirlinesController',
+    where: 'client'
+});
+Router.route('/business/:_id/flightroutes', {
+    name: 'flightroutes',
+    controller: 'FlightroutesController',
     where: 'client'
 });
 

@@ -1,4 +1,4 @@
-FlightsController = BusinessUnitController.extend({
+AirlinesController = BusinessUnitController.extend({
   
     // a place to put your subscriptions
     // this.subscribe('items');
@@ -47,7 +47,7 @@ FlightsController = BusinessUnitController.extend({
     //  action: 'myActionFunction'
     
     action: function () {
-      this.render("FlightIndex");
+      this.render("AirlineIndex");
     },
     onAfterAction: function () {
     },

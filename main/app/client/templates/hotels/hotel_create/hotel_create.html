@@ -23,11 +23,11 @@
                         </div><!-- row -->
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="state-name" class="control-label">States</label>
-                                <select name="state" style="width: 100%" class="form-control">
-                                    <option value="" {{selected "state" nil}}>None</option>
-                                    {{#each stateList}}
-                                        <option value="{{_id}}" {{selected "state" _id}}>{{name}}</option>
+                                <label for="travelcity-name" class="control-label">travelcity</label>
+                                <select name="travelcity" style="width: 100%" class="form-control">
+                                    <option value="" {{selected "travelcity" nil}}>None</option>
+                                    {{#each travelcityList}}
+                                        <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
                                     {{/each}}
                                 </select>
                             </div><!-- form-group -->

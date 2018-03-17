@@ -1,50 +1,58 @@
 /*****************************************************************************/
 /* HotelCreate: Event Handlers */
 /*****************************************************************************/
-Template.HotelCreate.events({
-    'click #new-hotel-close': (e, tmpl) => {
-      Modal.hide('HotelCreate');
+Template.FlightrouteCreate.events({
+    'click #new-flightroute-close': (e, tmpl) => {
+      Modal.hide('FlightrouteCreate');
     },
     'click #save': (e, tmpl) => {
-      let hotelCode = $('[name=hotel-code]').val();
-      let hotelName = $('[name=hotel-name]').val();
-      let hotelTravelcity =  $('[name="travelcity"]').val()
-      console.log('hotelTravelcity :', hotelTravelcity);
   
-      if (!hotelCode || hotelCode.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the hotel code");
-      } else if(!hotelName || hotelName.trim().length === 0) {
-          Template.instance().errorMessage.set("Please enter the hotel name");
+      let fromId =  $('[name="fromId"]').val()
+      let toId =  $('[name="toId"]').val()
+      let airlineId =  $('[name="airlineId"]').val()
+      let currency= $('[name="currency"]').val();
+      let cost = $('[name=cost]').val();
+
+      console.log('flightrouteTravelcity :', flightrouteTravelcity);
+  
+      if (!flightrouteCost || flightrouteCost.trim().length === 0) {
+        Template.instance().errorMessage.set("Please enter the flightroute cost");
+    //   } 
       } 
       else {
         Template.instance().errorMessage.set(null);
   
-        let newHotel = {
+        let newFlightroute = {
           businessId: Session.get('context'),
-          code : hotelCode,
-          name : hotelName,
-          travelcityId : hotelTravelcity
-        };
+          fromId: fromId,
+          toId : toId,
+          airlineId : airlineId,
+          currency : currency,
+          cost :cost
+          
 
-        let hotelContext = Core.Schemas.Hotel.namedContext("hotelForm");
-        hotelContext.validate(newHotel);
-        if (hotelContext.isValid()) {
-            console.log('Hotel is Valid!');
-        } else {
-            console.log('Hotel is not Valid!');
-        }
-        console.log(hotelContext._invalidKeys);
+        };
+   
+
+        // let hotelContext = Core.Schemas.Hotel.namedContext("hotelForm");
+        // hotelContext.validate(newHotel);
+        // if (hotelContext.isValid()) {
+        //     console.log('Hotel is Valid!');
+        // } else {
+        //     console.log('Hotel is not Valid!');
+        // }
+        // console.log(hotelContext._invalidKeys);
   
-        Meteor.call('hotel/create', newHotel, (err, res) => {
+        Meteor.call('flightroute/create', newFlightroute, (err, res) => {
             if (res){
                 swal({
                     title: "Success",
-                    text: `New hotel added`,
+                    text: `New flightroute added`,
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
                 });
-                Modal.hide('HotelCreate');
+                Modal.hide('FlightrouteCreate');
             } else {
                 console.log(err);
             }
@@ -56,10 +64,13 @@ Template.HotelCreate.events({
   /*****************************************************************************/
   /* HotelCreate: Helpers */
   /*****************************************************************************/
-  Template.HotelCreate.helpers({
+  Template.FlightrouteCreate.helpers({
     travelcityList() {
         return  Travelcities.find();
    },
+   airlineList() {
+    return  Airlines.find();
+},
    selected(context,val) {
     let self = this;
 
@@ -80,17 +91,22 @@ Template.HotelCreate.events({
   /*****************************************************************************/
   /* HotelCreate: Lifecycle Hooks */
   /*****************************************************************************/
-  Template.HotelCreate.onCreated(function () {
+  Template.FlightrouteCreate.onCreated(function () {
     let self = this;
   
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null)
     self.subscribe("travelcities", Session.get('context'));
+    self.subscribe("flightroutes", Session.get('context'));
+    self.subscribe("airlines", Session.get('context'));
+    
+
+
   });
   
-  Template.HotelCreate.onRendered(function () {
+  Template.FlightrouteCreate.onRendered(function () {
   });
   
-  Template.HotelCreate.onDestroyed(function () {
+  Template.FlightrouteCreate.onDestroyed(function () {
   });
   

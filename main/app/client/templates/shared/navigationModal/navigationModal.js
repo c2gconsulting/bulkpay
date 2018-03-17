@@ -109,18 +109,23 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
-    'click #states': function(event, tmpl) {
-        Router.go('states', {_id: Session.get('context')})
+    'click #travelcities': function(event, tmpl) {
+        Router.go('travelcities', {_id: Session.get('context')})
         Modal.hide('navigationModal');
         event.preventDefault();
       },
-      'click #flights': function(event, tmpl) {
-        Router.go('flights', {_id: Session.get('context')})
+      'click #flightroutes': function(event, tmpl) {
+        Router.go('flightroutes', {_id: Session.get('context')})
         Modal.hide('navigationModal');
         event.preventDefault();
       },
       'click #hotels': function(event, tmpl) {
         Router.go('hotels', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
+      'click #airlines': function(event, tmpl) {
+        Router.go('airlines', {_id: Session.get('context')})
         Modal.hide('navigationModal');
         event.preventDefault();
       },

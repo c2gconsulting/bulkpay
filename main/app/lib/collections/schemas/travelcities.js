@@ -2,7 +2,7 @@
 /**
 * TravelCity Schema
 */
-Core.Schemas.TravelCity = new SimpleSchema({
+Core.Schemas.Travelcity = new SimpleSchema({
   _id: {
     type: String,
     optional: true
@@ -14,7 +14,7 @@ Core.Schemas.TravelCity = new SimpleSchema({
     type: String
   },
   perdiem: {
-    type: Number
+    type: String
   },
   currency: {
     type: String,

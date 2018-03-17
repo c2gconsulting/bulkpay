@@ -1,31 +1,31 @@
 /*****************************************************************************/
 /* HotelCreate: Event Handlers */
 /*****************************************************************************/
-Template.FlightCreate.events({
-    'click #new-flight-close': (e, tmpl) => {
-      Modal.hide('FlightCreate');
+Template.AirlineCreate.events({
+    'click #new-airline-close': (e, tmpl) => {
+      Modal.hide('AirlineCreate');
     },
     'click #save': (e, tmpl) => {
-      let flightCode = $('[name=flight-code]').val();
-      let flightName = $('[name=flight-name]').val();
+   //   let airlineCode = $('[name=airline-code]').val();
+      let airlineName = $('[name=airline-name]').val();
       
      
     
      // employees: Core.returnSelection($('[name="employee"]')),
  
   
-      if (!flightCode || flightCode.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the flight code");
-      } else if(!flightName || flightName.trim().length === 0) {
-          Template.instance().errorMessage.set("Please enter the flight name");
+     // if (!airlineCode || airlineCode.trim().length === 0) {
+       // Template.instance().errorMessage.set("Please enter the Airline code");
+    /*} else */if(!airlineName || airlineName.trim().length === 0) {
+          Template.instance().errorMessage.set("Please enter the Airline name");
       } 
       else {
         Template.instance().errorMessage.set(null);
   
-        let newFlight = {
+        let newAirline = {
           businessId: Session.get('context'),
-          code : flightCode,
-          name : flightName,
+        //   code : airlineCode,
+          name : airlineName,
        
       
         };
@@ -39,7 +39,7 @@ Template.FlightCreate.events({
         }
         console.log(flightContext._invalidKeys);*/
   
-        Meteor.call('flight/create', newFlight, (err, res) => {
+        Meteor.call('airline/create', newAirline, (err, res) => {
             if (res){
                 swal({
                     title: "Success",
@@ -48,7 +48,7 @@ Template.FlightCreate.events({
                     type: "success",
                     confirmButtonText: "OK"
                 });
-                Modal.hide('FlightCreate');
+                Modal.hide('AirlineCreate');
             } else {
                 console.log(err);
             }
@@ -60,7 +60,7 @@ Template.FlightCreate.events({
   /*****************************************************************************/
   /* HotelCreate: Helpers */
   /*****************************************************************************/
-  Template.FlightCreate.helpers({  
+  Template.AirlineCreate.helpers({  
  
    selected(context,val) {
     let self = this;
@@ -82,7 +82,7 @@ Template.FlightCreate.events({
   /*****************************************************************************/
   /* HotelCreate: Lifecycle Hooks */
   /*****************************************************************************/
-  Template.FlightCreate.onCreated(function () {
+  Template.AirlineCreate.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
   
@@ -92,9 +92,9 @@ Template.FlightCreate.events({
  
   });
   
-  Template.FlightCreate.onRendered(function () {
+  Template.AirlineCreate.onRendered(function () {
   });
   
-  Template.FlightCreate.onDestroyed(function () {
+  Template.AirlineCreate.onDestroyed(function () {
   });
   

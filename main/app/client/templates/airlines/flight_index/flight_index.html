@@ -1,15 +1,15 @@
-<template name="FlightIndex">
+<template name="AirlineIndex">
     <div class="col-md-12">
         <div class="tab-pane" id="followers">
 
-            <div class="row" ng-show="!singleFlightView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+            <div class="row" ng-show="!singleAirlineView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12">
-                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Flight</button></p>
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Airline</button></p>
                 </div>
             </div>
 
             <div class="row" style="margin-left: 10px; margin-right: 10px;">
-                <div class="col-md-12" ng-if="flights.length > 0">
+                <div class="col-md-12" ng-if="airlines.length > 0">
                     <div class="table-responsive">
                         <table class="table table-primary mb60 table-hover">
                             <thead>
@@ -27,7 +27,7 @@
                             </thead>
                             <tbody>
                             {{#each pfas}}
-                                {{> singleFlight index=@index data=this}}
+                                {{> singleAirline index=@index data=this}}
                             {{/each}}
                             </tbody>
                         </table>
@@ -39,7 +39,7 @@
     </div>
 </template>
 
-<template name="singleFlight">
+<template name="singleAirline">
     <tr>
         <td class="pointer">{{index}}</td>
         <td>{{data.code}}</td>
@@ -54,7 +54,7 @@
           {{/if}}
         </td>
         <td>
-            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteFlight">Delete</button>
+            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteAirline">Delete</button>
         </td>
     </tr>
 </template>

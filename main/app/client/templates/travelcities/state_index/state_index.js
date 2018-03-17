@@ -1,23 +1,23 @@
 /*****************************************************************************/
 /* HotelIndex: Event Handlers */
-/*****************************************************************************/
-Template.FlightIndex.events({
+/**************************************************************************/
+Template.TravelCityIndex.events({
     'click #newPFA': (e,tmpl) => {
         e.preventDefault();
-        Modal.show('FlightCreate');
+        Modal.show('TravelCityCreate');
     }
 });
 
 /*****************************************************************************/
 /* Hotels: Helpers */
-/***************************************************************************/
-Template.FlightIndex.helpers({
+/*****************************************************************************/
+Template.TravelCityIndex.helpers({
     'pfas': function(){
-      let allPfas = Flights.find({});
+      let allPfas = Travelcities.find({});
       return allPfas;
     },
     'pfaCount': function(){
-        return Flights.find().count();
+        return Travelcities.find().count();
     }
 
 });
@@ -25,43 +25,43 @@ Template.FlightIndex.helpers({
 /*****************************************************************************/
 /* Hotels: Lifecycle Hooks */
 /*****************************************************************************/
-Template.FlightIndex.onCreated(function () {
+Template.TravelCityIndex.onCreated(function () {
     let self = this;
-    self.subscribe("flights", Session.get('context'));
+    self.subscribe("travelcities", Session.get('context'));
 });
 
-Template.FlightIndex.onRendered(function () {
+Template.TravelCityIndex.onRendered(function () {
     //UI.insert( UI.render( Template.PensionManagerIndex ), $('#pensionContext').get(0) );
 });
 
-Template.FlightIndex.onDestroyed(function () {
+Template.TravelCityIndex.onDestroyed(function () {
 });
 
 
 /*****************************************************************************/
 /* singleHotel: Helpers */
 /*****************************************************************************/
-Template.singleFlight.events({
-    'click #deleteFlight': function(e, tmpl) {
+Template.singleTravelcity.events({
+    'click #deleteTravelcity': function(e, tmpl) {
         event.preventDefault();
         let self = this;
 
         swal({
             title: "Are you sure?",
-            text: "You will not be able to recover this Pension Manager",
+            text: "You will not be able to recover this Travel city",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         }, () => {
-            const flightId = self.data._id;
-            const code = self.data.code;
+            const travelcityId = self.data._id;
+            const perdiem = self.data.perdiem;
 
-            Meteor.call('flight/delete', flightId, (err, res) => {
+            Meteor.call('travelcity/delete', travelcityId, (err, res) => {
                 if(!err){
                     Modal.hide();
-                    swal("Deleted!", `Pension Manager: ${code} has been deleted.`, "success");
+                    swal("Deleted!", `Travelcity: ${perdiem} has been deleted.`, "success");
                 }
             });
         });

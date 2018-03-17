@@ -1,49 +1,48 @@
 /*****************************************************************************/
 /* HotelIndex: Event Handlers */
 /*****************************************************************************/
-Template.HotelIndex.events({
+Template.AirlineIndex.events({
     'click #newPFA': (e,tmpl) => {
         e.preventDefault();
-        Modal.show('HotelCreate');
+        Modal.show('AirlineCreate');
     }
 });
 
 /*****************************************************************************/
 /* Hotels: Helpers */
-/*****************************************************************************/
-Template.HotelIndex.helpers({
+/***************************************************************************/
+Template.AirlineIndex.helpers({
     'pfas': function(){
-      let allPfas = Hotels.find({});
+      let allPfas = Airlines.find({});
       return allPfas;
     },
     'pfaCount': function(){
-        return Hotels.find().count();
-    },
-    
+        return Airlines.find().count();
+    }
+
 });
 
 /*****************************************************************************/
 /* Hotels: Lifecycle Hooks */
 /*****************************************************************************/
-Template.HotelIndex.onCreated(function () {
+Template.AirlineIndex.onCreated(function () {
     let self = this;
-    self.subscribe("hotels", Session.get('context'));
-    self.subscribe("states", Session.get('context'));
+    self.subscribe("airlines", Session.get('context'));
 });
 
-Template.HotelIndex.onRendered(function () {
+Template.AirlineIndex.onRendered(function () {
     //UI.insert( UI.render( Template.PensionManagerIndex ), $('#pensionContext').get(0) );
 });
 
-Template.HotelIndex.onDestroyed(function () {
+Template.AirlineIndex.onDestroyed(function () {
 });
 
 
 /*****************************************************************************/
 /* singleHotel: Helpers */
 /*****************************************************************************/
-Template.singleHotel.events({
-    'click #deleteHotel': function(e, tmpl) {
+Template.singleAirline.events({
+    'click #deleteAirline': function(e, tmpl) {
         event.preventDefault();
         let self = this;
 
@@ -56,10 +55,10 @@ Template.singleHotel.events({
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         }, () => {
-            const hotelId = self.data._id;
+            const airlineId = self.data._id;
             const code = self.data.code;
 
-            Meteor.call('hotel/delete', hotelId, (err, res) => {
+            Meteor.call('airline/delete', airlineId, (err, res) => {
                 if(!err){
                     Modal.hide();
                     swal("Deleted!", `Pension Manager: ${code} has been deleted.`, "success");
@@ -68,13 +67,3 @@ Template.singleHotel.events({
         });
     }
 })
-Template.singleHotel.helpers({
-   
-    
-    'getStateName': function(stateId) {
-        const state = States.findOne({_id: stateId})
-        if(state) {
-            return state.name
-        }
-    }
-});
