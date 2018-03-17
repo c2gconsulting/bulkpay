@@ -5,11 +5,29 @@
 import _ from 'underscore';
 
 Template.TravelRequisitionCreate.events({
+    "change [name='destination_state']": function(e, tmpl){
+        e.preventDefault()
+       
+     //   $('#state-name').val('MOTHERFUCKER!');
+        console.log("mudafucker!!!!!!!!!!!!!!!Showwwwwwwwwwwwwww")
+        const selectedStateId = $(e.currentTarget).val();
+        console.log(`selectedStateId: `, selectedStateId)
+
+        tmpl.selectedstateId.set(selectedStateId);
+    },
+   
+       
+        //includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
+  
     'click #createProcurementRequisition': function(e, tmpl) {
         e.preventDefault()
 
         Modal.show('TravelRequisitionCreate')
     },
+    //'change .calculate': function(e, tmpl) {
+      //  e.preventDefault();
+        //$('#pay-type-title').val('populate automatically!');
+    //},
     "change .fieldInputField": _.throttle(function(e, tmpl) {
         const fieldName = $(e.target).attr('name');
         let inputVal = $(e.target).val().trim();
@@ -239,6 +257,42 @@ Template.TravelRequisitionCreate.events({
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionCreate.helpers({
+    // 'calculate':function(){
+    //     Session.get('selectedstateId');
+       
+         
+    //      },
+    'checked': (prop) => {
+        if(Template.instance().data)
+            return Template.instance().data[prop];
+        return false;
+    },
+    stateList() {
+        return States.find();
+   },
+  
+   hotelList() {
+    const selectedstateId = Template.instance().selectedstateId.get();
+    if(selectedstateId) {
+        return Hotels.find({stateId: selectedstateId});
+    }
+},
+
+flightList() {
+    return Flights.find();
+},
+   selected(context,val) {
+    let self = this;
+
+    if(Template.instance().data){
+        //get value of the option element
+        //check and return selected if the template instce of data.context == self._id matches
+        if(val){
+            return Template.instance().data[context] === val ? selected="selected" : '';
+        }
+        return Template.instance().data[context] === self._id ? selected="selected" : '';
+    }
+},
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
         if(unitId) {
@@ -338,6 +392,11 @@ Template.TravelRequisitionCreate.helpers({
     'units': function () {
         return Template.instance().units.get()
     },
+  
+
+
+
+
 });
 
 /*****************************************************************************/
@@ -347,7 +406,9 @@ Template.TravelRequisitionCreate.onCreated(function () {
     let self = this;
 
     let businessUnitId = Session.get('context');
-
+    self.subscribe("states", Session.get('context'));
+    self.subscribe("hotels", Session.get('context'));
+    self.subscribe("flights", Session.get('context'));
     self.unitId = new ReactiveVar()
     self.units = new ReactiveVar([])
     self.businessUnitCustomConfig = new ReactiveVar()
@@ -358,6 +419,7 @@ Template.TravelRequisitionCreate.onCreated(function () {
     self.selectedCurrency = new ReactiveVar()
     self.selectedNumDays = new ReactiveVar()
     self.selectedCostCenter = new ReactiveVar()
+    self.selectedstateId = new ReactiveVar()
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)
@@ -492,6 +554,13 @@ Template.TravelRequisitionCreate.onCreated(function () {
 
 Template.TravelRequisitionCreate.onRendered(function () {
     $('select.dropdown').dropdown();
+
+        this.$('.datetimepicker').datetimepicker(
+           
+         {  format: 'YYYY-MM-DD'}
+        );
+       
+  
 });
 
 Template.TravelRequisitionCreate.onDestroyed(function () {

@@ -380,6 +380,21 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisitionDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionDetail.helpers({
+    budgetList() {
+        return States.find();
+   },
+   selected(context,val) {
+    let self = this;
+
+    if(Template.instance().data){
+        //get value of the option element
+        //check and return selected if the template instce of data.context == self._id matches
+        if(val){
+            return Template.instance().data[context] === val ? selected="selected" : '';
+        }
+        return Template.instance().data[context] === self._id ? selected="selected" : '';
+    }
+},
     'procurementDetails': function() {
         return Template.instance().procurementDetails.get()
     },
@@ -500,6 +515,7 @@ Template.TravelRequisitionDetail.helpers({
 Template.TravelRequisitionDetail.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
+    self.subscribe("budgets", Session.get('context'));
 
     self.procurementDetails = new ReactiveVar()
     self.isInEditMode = new ReactiveVar()

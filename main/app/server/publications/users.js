@@ -54,9 +54,7 @@ Core.publish("allEmployees", function (businessId) {
                 "username": true,
                 "roles": true,
                 "customUsername": true,
-                "personalEmailAddress": true,
-                "directSupervisorId": true,
-                "directAlternateSupervisorId": true
+                "personalEmailAddress": true
             }
         })
         return [employees, UserImages.find({})];
@@ -84,9 +82,7 @@ Core.publish("allEmployeesForInfiniteScroll", function (businessId, limit, sort)
                 "username": true,
                 "roles": true,
                 "customUsername": true,
-                "personalEmailAddress": true,
-                "directSupervisorId": true,
-                "directAlternateSupervisorId": true
+                "personalEmailAddress": true
             },
             limit: limit, 
             sort: sort

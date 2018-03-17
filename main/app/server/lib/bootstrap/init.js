@@ -35,13 +35,6 @@ Core.Log = logger.bunyan.createLogger({
   level: "debug"
 });
 
-Core.PowerQueue = new PowerQueue({ 
-  isPaused: true,
-  onEnded: () => { 
-    console.log(`Queue event processing done!`) 
-  }
-});
-
 // set logging level
 Core.Log.level(isDebug);
 
@@ -58,9 +51,8 @@ _.extend(Core, {
       Core.Log.error("initData: ", error.message);
     }
     
-    // Commented this to help ensure employees with same email are not inserted
-    // Meteor.users._dropIndex("emails.address_1");
-    Meteor.users._ensureIndex({"emails.address":1}, {unique:true});
+    Meteor.users._dropIndex("emails.address_1");
+    Meteor.users._ensureIndex({"emails.address":1}, {unique:false});
 
     return true;
   },

@@ -1,0 +1,57 @@
+<template name="HotelIndex">
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singleHotelView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New hotel</button></p>
+                </div>
+            </div>
+
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="hotels.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cost of Hotel</th>
+                                <th>Name of hotel</th>
+                                <th>States</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pfas}}
+                                {{> singleHotel index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+<template name="singleHotel">
+    <tr>
+        <td class="pointer">{{index}}</td>
+        <td>{{data.code}}</td>
+        <td>{{data.name}}</td>
+        <td>{{getStateName data.stateId}}</td>
+      
+        <td>
+          {{#if condition data.status "eq" "Active"}}
+            <span class="label label-success">{{data.status}}</span>
+          {{else}}
+            <span class="label label-danger">{{data.status}}</span>
+          {{/if}}
+        </td>
+        <td>
+            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteHotel">Delete</button>
+        </td>
+    </tr>
+</template>

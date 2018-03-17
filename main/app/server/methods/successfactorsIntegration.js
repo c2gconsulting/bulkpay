@@ -158,34 +158,6 @@ Meteor.methods({
         }
         return []
     },
-    'successfactors/fetchSfCustProjects': function (businessUnitId) {
-        if (!this.userId) {
-            throw new Meteor.Error(401, "Unauthorized");
-        }
-        this.unblock();
-
-        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
-        if(config) {
-            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
-            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const custProjectUrl = `${baseUrl}/odata/v2/cust_project?$select=externalCode,cust_projectName_en_US&$format=json`
-          
-            let getToSync = Meteor.wrapAsync(HTTP.get);  
-            const custProjectRes = getToSync(custProjectUrl, {headers: requestHeaders})
-
-            if(custProjectRes) {
-                try {
-                    let custProjectData = JSON.parse(custProjectRes.content)
-                    return SFIntegrationHelper.getOdataResults(custProjectData)
-                } catch(e) {
-                  console.log('Error in Getting SF custProjects! ', e.message)
-                }
-            } else {
-                console.log('Error in Getting SF custProjects! null response')
-            }
-        }
-        return []
-    },
     "successfactors/setSfCostCenterOnUnits": function(businessUnitId, unitCostCenters) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized")
@@ -328,7 +300,6 @@ Meteor.methods({
         }
         this.unblock();
         let results = [];
-        console.log(`businessUnit: `, businessUnit)
 
         const monthAsNum = Number(month - 1)
         const yearAsNum = Number(year)
@@ -349,17 +320,16 @@ Meteor.methods({
                 _id: {
                     _id: "$employeeId",
                     successFactorsCostCenter: "$successFactorsCostCenter",
-                    status: "$status"
                 },
+                status: {$first: "$status"},
                 duration: { $sum: "$duration" }
             } }
         ]);
         results = aggregatedTimeSheet.map(timeSheet => {
             return {
-                employeeId: timeSheet._id._id,
-                // successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
-                successFactorsCustProject: timeSheet._id.successFactorsCustProject,
-                status: timeSheet._id.status,
+                _id: timeSheet._id._id,
+                successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                status: timeSheet.status,
                 duration: timeSheet.duration
             }
         })
@@ -409,17 +379,14 @@ Meteor.methods({
                     let timeSheetsWithEntries = []
                     Object.keys(timeSheets).map(function(userId, index) {
                         let empTimeSheets = timeSheets[userId]
-                        let bpUser = Meteor.users.findOne({
-                            'successFactors.personIdExternal': userId,
-                            businessIds: config.businessId
-                        })
+                        let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': userId})
 
                         if(bpUser) {
                             console.log(`bpUser: `, bpUser)
                             // console.log(`empTimeSheets: `, empTimeSheets)
                             empTimeSheets.forEach(time => {
                                 try {
-                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,cust_Project,hours,bookingDate&$format=json`
+                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
                                     const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
                                     // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
     
@@ -428,7 +395,7 @@ Meteor.methods({
                                         const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
                                         entries.forEach(entry => {
                                             if(entry.hours > 0) {
-                                                console.log(`entry: `, entry)
+                                                // console.log(`entry: `, entry)
                                                 const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
                                                 let hoursAsNum = parseFloat(entry.hours)
 
@@ -452,8 +419,7 @@ Meteor.methods({
                                                     approvedBy: null,
                                                     approvedDate: null,
                                                     isApprovalStatusSeenByCreator: false,
-                                                    successFactorsCostCenter: entry.costCenter,
-                                                    successFactorsCustProject: entry.cust_Project
+                                                    successFactorsCostCenter: entry.costCenter
                                                 }
                                                 TimeWritings.insert(timeSheetEntry)
                                                 results.push(timeSheetEntry)
@@ -482,17 +448,17 @@ Meteor.methods({
                     { $group: {
                         _id: {
                             _id: "$employeeId",
-                            successFactorsCustProject: "$successFactorsCustProject",
-                            status: "$status"
+                            successFactorsCostCenter: "$successFactorsCostCenter",
                         },
+                        status: {$first: "$status"},
                         duration: { $sum: "$duration" }
                     } }
                 ]);
                 results = aggregatedTimeSheet.map(timeSheet => {
                     return {
-                        employeeId: timeSheet._id._id,
-                        successFactorsCustProject: timeSheet._id.successFactorsCustProject,
-                        status: timeSheet._id.status,
+                        _id: timeSheet._id._id,
+                        successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                        status: timeSheet.status,
                         duration: timeSheet.duration
                     }
                 })

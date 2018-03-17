@@ -352,7 +352,6 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
-      "directEmployeeManagerEnabled": true,
       "paymentHeadersForPayslip": {
         "bank": false,
         "accountNumber": false
@@ -481,7 +480,6 @@
     "isWeekendTimeWritingEnabled" : false,
     "isOvertimeEnabled" : true,
     "maxHoursInDayForTimeWriting" : 8,
-    "directEmployeeManagerEnabled": true,
     "paymentHeadersForPayslip" : {
         "bank" : false,
         "accountNumber" : false

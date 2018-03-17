@@ -1,0 +1,56 @@
+<template name="BudgetCreate">
+    <div class="modal fade add-budget" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Budget Holder</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="budget-code" class="control-label">Code <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="budget-code" class="form-control" placeholder="Code" ng-model="budget.code" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="budget-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="budget-name" class="form-control" placeholder="Name" ng-model="budget.name"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                        </div><!-- row -->
+                        
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">Employee</label>
+                                {{#semanticselect}}
+                                    <select name="employee" style="width: 100%" class="ui fluid search dropdown form-control">
+                                        <option value="">Employees</option>
+                                        {{#each employees}}
+                                            {{#if isEqual employeeProfile.employeeId (checked 'employee')}}
+                                            <option value="{{employeeProfile.employeeId}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            {{else}}
+                                            <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            {{/if}}
+                                        {{/each}}
+                                    </select>
+                                {{/semanticselect}}
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-6 -->
+                       
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" id="new-budget-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="save">Create</button>
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

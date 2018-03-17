@@ -2,12 +2,6 @@ import _ from 'underscore';
 import { HTTP } from 'meteor/http'
 let parseString = require('xml2js').parseString;
 
-// PowerQueue = new PowerQueue({ 
-//   isPaused: true,
-//   onEnded: () => { 
-//     console.log(`Queue event processing done!`) 
-//   }
-// });
 
 var Api = new Restivus({
   useDefaultAuth: false,
@@ -134,37 +128,30 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
     let ns7Event = ns7Events[`${nsPrefix}:event`]
     if(ns7Event) {
       ns7Event.forEach(event => {
-        Core.PowerQueue.add(function(pQueueDone) {
-          let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
-          if(ns7Params) {
-            _.each(ns7Params[`${nsPrefix}:param`], param => {
-              if(param.name && param.name[0] === 'personIdExternal') {
-                personIdExternal = param.value[0]
-              } else if(param.name && param.name[0] === 'perPersonUuid') {
-                perPersonUuid = param.value[0]
-              }
-            })
-            console.log(`personIdExternal: `, personIdExternal)
-            console.log(`perPersonUuid: `, perPersonUuid)
-            console.log(``)
-            personIds.push({personIdExternal, perPersonUuid})
+        let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
+        if(ns7Params) {                                                                                                                                                                                                                                                              
+          _.each(ns7Params[`${nsPrefix}:param`], param => {
+            if(param.name && param.name[0] === 'personIdExternal') {
+              personIdExternal = param.value[0]
+            } else if(param.name && param.name[0] === 'perPersonUuid') {
+              perPersonUuid = param.value[0]
+            }
+          })
+          console.log(`personIdExternal: `, personIdExternal)
+          console.log(`perPersonUuid: `, perPersonUuid)
+          console.log(``)
+          personIds.push({personIdExternal, perPersonUuid})
 
-            //--
-            fetchEmployeeDetails(business, config, personIdExternal, pQueueDone)
-          }
-        })
+          fetchEmployeeDetails(business, config, personIdExternal)
+        }
       })
-
-      Core.PowerQueue.run();
     } else {
       console.log(`ns7Event null: `)
     }
   }
 }
 
-let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
-  console.log(`Inside fetchEmployeeDetails ... `)
-
+let fetchEmployeeDetails = (business, config, personIdExternal) => {
   const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
   const userQueryUrl = `${baseUrl}/odata/v2/User?$filter=userId eq '${personIdExternal}'&$select=firstName,lastName,email,businessPhone,homePhone,cellPhone,addressLine1,addressLine2,addressLine3&$format=json`
   const empPayCompRecurringQueryUrl = `${baseUrl}/odata/v2/EmpPayCompRecurring?$filter=userId eq '${personIdExternal}'&$select=payComponent,userId,paycompvalue,calculatedAmount,currencyCode,frequency&$format=json`
@@ -207,7 +194,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
 
   if(userRes) {
     try {
-      console.log(`userRes.content: `, userRes.content)
       let userData = JSON.parse(userRes.content)
 
       if(userData && userData.d && userData.d.results && userData.d.results.length > 0) {
@@ -339,60 +325,63 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
   let accountId;
   if(!existingUser) {
     console.log(`user with personIdExternal: ${personIdExternal} for business id: ${business._id} NOT EXISTS`)
-
     try {
-      let userFirstName = bulkPayUserParams.firstname || ""
-      let userLastName = bulkPayUserParams.lastname || ""
-      //--
-      userFirstName = userFirstName.trim()
-      userLastName = userLastName.trim()
-      //--
-      let defaultUsername = userFirstName + "." + userLastName
-      defaultUsername = defaultUsername.toLowerCase()
-      // let defaultUsername = personIdExternal;
-  
-      accountId = Meteor.users.insert({
-        profile: {
-          firstname: bulkPayUserParams.firstname,
-          lastname: bulkPayUserParams.lastname,
-          fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
-        },
-        employeeProfile: {
-          employeeId: personIdExternal,
-          phone: bulkPayUserParams.phoneNumber,
-          employment: {
-            status: 'Active',
-            hireDate: new Date(),
-            terminationDate: null
+      accountId = Accounts.createUser(bulkPayUserParams)
+    } catch(e) {
+      try {
+        let userFirstName = bulkPayUserParams.firstname || ""
+        let userLastName = bulkPayUserParams.lastname || ""
+        //--
+        userFirstName = userFirstName.trim()
+        userLastName = userLastName.trim()
+        //--
+        let defaultUsername = userFirstName + "." + userLastName
+        defaultUsername = defaultUsername.toLowerCase()
+        // let defaultUsername = personIdExternal;
+    
+        accountId = Meteor.users.insert({
+          profile: {
+            firstname: bulkPayUserParams.firstname,
+            lastname: bulkPayUserParams.lastname,
+            fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
           },
-          payment: {}
-        },
-        employee: true,
-        businessIds: [business._id],
-        group: business._groupId,
-        roles: {
-          "__global_roles__" : [ 
-              "ess/all"
-          ]
-        }
-      })
-      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
-      Accounts.setPassword(accountId, "123456")
-      Partitioner.setUserGroup(accountId, business._groupId);
-    } catch(err1) {
-      console.log(`Error in alternative user creation! `, err1.message)
+          employeeProfile: {
+            employeeId: personIdExternal,
+            phone: bulkPayUserParams.phoneNumber,
+            employment: {
+              status: 'Active',
+              hireDate: new Date(),
+              terminationDate: null
+            },
+            payment: {}
+          },
+          employee: true,
+          businessIds: [business._id],
+          group: business._groupId,
+          roles: {
+            "__global_roles__" : [ 
+                "ess/all"
+            ]
+          }
+        })
+        Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
+        Accounts.setPassword(accountId, "123456")
+        Partitioner.setUserGroup(accountId, business._groupId);
+      } catch(err1) {
+        console.log(`Error in alternative user creation! `, err1.message)
+      }
     }
     
-    // if(bulkPayUserParams.email) {
-    //   try {
-    //     Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
-    //   } catch (e) {
-    //     console.log(`Enrollment email error: `, e.message)
-    //     console.log("Unable to send a notification mail to new successfactors employee")
-    //   }
-    // }
+    if(bulkPayUserParams.email) {
+      try {
+        Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
+      } catch (e) {
+        console.log(`Enrollment email error: `, e.message)
+        console.log("Unable to send a notification mail to new successfactors employee")
+      }
+    }
   } else {
-    console.log(`user with personIdExternal: ${personIdExternal} for business id: ${business._id} EXISTS`)
+    console.log(`user with personIdExternal: ${personIdExternal}for business id: ${business._id} EXISTS`)
     accountId = existingUser._id
   }
 
@@ -405,13 +394,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     lastname: bulkPayUserParams.lastname,
     fullName: `${bulkPayUserParams.firstname} ${bulkPayUserParams.lastname}`
   }
-  if(bulkPayUserParams.email) {
-    bpUser.emails = [{
-      address: bulkPayUserParams.email,
-      verified: false
-    }]    
-  }
-
+  bpUser.emails = [{
+    address: bulkPayUserParams.email,
+    verified: false
+  }]
   bpUser.employeeProfile = {
     employeeId: personIdExternal,
     phone: bulkPayUserParams.phoneNumber,
@@ -741,7 +727,6 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
   }
 
   Meteor.users.update({_id: bpUserId}, {$set: bpUser})
-  pQueueDone();
 }
 
 let setBPEmployeeStatus = (business, personIdExternal, status) => {
@@ -809,7 +794,11 @@ if (Meteor.isServer) {
 
               if(config) {
                 parseString(body, function (err, result) {
-                  getSfEmployeeIds2(business, config, result)
+                  const waitTime = Math.floor(Math.random() * 5)
+
+                  Meteor.setTimeout(function() {
+                    getSfEmployeeIds2(business, config, result)
+                  }, waitTime * 1000)
                 })
               }
             }
@@ -948,7 +937,7 @@ if (Meteor.isServer) {
 
               // fetchEmployeeDetails(business, config, 'efe.rambo')
               
-              fetchEmployeeDetails(business, config, 'ishawuru.johnson')
+              // fetchEmployeeDetails(business, config, 'ishawuru.johnson')
             }
           })
         }));        

@@ -36,6 +36,7 @@
                               <li><a href="{{pathFor 'constant.list'}}" id="constantlist">Constants</a></li>
                               <li><a href="{{pathFor 'currency.list'}}" id="currencylist">Currencies</a></li>
                               <li><a href="{{pathFor 'pensions'}}" id="pensions">Pensions</a></li>
+                              
                               <li><a href="{{pathFor 'taxes'}}" id="taxes">Taxes</a></li>
                               <li><a href="{{pathFor 'paygroups'}}" id="paygroups">Pay Groups</a></li>
                               <li><a href="{{pathFor 'paygrades'}}" id="paygrades">{{payGradeLabelPlural}}</a></li>
@@ -113,12 +114,18 @@
 
                               {{#if isTravelRequisitionActive}}
                                   <li><a href="{{pathFor 'travelrequests.list'}}" id="travelrequestslist">Travel requests</a></li>
+                               
 
                                   {{#if hasTravelRequisitionApproveAccess}}
                                   <li><a href="{{pathFor 'travelrequests.approvalList'}}" id="travelrequestsapprovalList">Trips Approval</a></li>
                                   {{/if}}
                               {{/if}}
-
+                              
+                            
+                              <li><a href="{{pathFor 'budgets'}}" id="budgets">Budget Holders</a></li>
+                              <li><a href="{{pathFor 'states'}}" id="states">States</a></li>
+                              <li><a href="{{pathFor 'hotels'}}" id="hotels">Hotels</a></li>
+                              <li><a href="{{pathFor 'flights'}}" id="flights">Flights</a></li>
                               <li><a href="{{pathFor 'payslip'}}" id="payslip">View Pay Slip</a></li>
                           {{/if}}
 

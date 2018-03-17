@@ -1,6 +1,6 @@
 <template name="TravelRequisitionCreate">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -18,181 +18,240 @@
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <label class="control-label" for="unit">Unit</label>
-                                <input name="unit" type="text" placeholder="Unit" class="form-control" disabled
-                                    value="{{getCurrentUserUnitName}}"/>
-                            </div>
-                        </div>
-                        <br/>
+                                <div class="form-group">
+                                    <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{description}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        <div class="col-sm-2">
+                            <div class="form-group">
 
-                        {{#each fields}}
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    {{#if isEqual this.type "String"}}
-                                        <label class="control-label" for="{{dbFieldName}}">
-                                            {{label}}
-                                            {{#if this.isRequired}}
-                                            *
-                                            {{/if}}
-                                        </label>
-                                        <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" class="form-control fieldInputField"/>
-                                        <br/>
-                                    {{else}}
-                                        {{#if isEqual this.type "TextArea"}}
-                                            <label class="control-label" for="requisitionReason">
-                                                {{label}}
-                                                {{#if this.isRequired}}
-                                                *
-                                                {{/if}}    
-                                            </label>
-                                            <textarea class="form-control fieldInputField" rows="5" name="{{dbFieldName}}"></textarea>
-                                            <br/>
-                                            {{else}}
-                                            {{#if isEqual this.type "Date"}}
-                                                <label class="control-label" for="{{dbFieldName}}">
-                                                    {{label}}
-                                                    {{#if this.isRequired}}
-                                                    *
-                                                    {{/if}}        
-                                                </label>
-                                                {{#datepicker}}
-                                                    <input type="text" class="form-control datepicker fieldInputField" name="{{dbFieldName}}" data-field="dateRequired" />
-                                                {{/datepicker}}
-                                                <br/>
-                                            {{else}}
-                                                {{#if isEqual this.type "Time"}}
-                                                    <label class="control-label" for="{{dbFieldName}}">
-                                                        {{label}}
-                                                        {{#if this.isRequired}}
-                                                        *
-                                                        {{/if}}
-                                                    </label>
-                                                    {{#datetimepicker}}
-                                                        <input type="text" class="form-control datetimepicker fieldInputField" name="{{dbFieldName}}" data-field="{{dbFieldName}}" />
-                                                    {{/datetimepicker}}
-                                                    <br/>
-                                                {{else}}
-                                                {{/if}}
-                                            {{/if}}                                        
-                                        {{/if}}
-                                    {{/if}}
-                                </div>
-                            </div>
-                        {{/each}}
-
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <br/>
-                                <label class="control-label" for="requisitionReason"><b>Travel costs</b></label>
-                            </div>
-                        </div>
-
-                        {{#if currencyEnabled}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="currency">Currency</label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select name="currency" placeholder="currency"
-                                        style="width: 100%" 
-                                        class="ui fluid search dropdown form-control currencyField">
-                                        <option value="0">No currency selected</option>
-                                        {{#each allowedCurrencies}}
-                                            <option value="{{this}}">{{this}}</option>
+                                    <label for="destination-state-name" class="control-label">FROM</label>
+                                    <select name="destination_state" style="width: 100%" class="form-control ">
+                                        <option value="" {{selected "state" nil}}>None</option>
+                                        {{#each stateList}}
+                                            <option value="{{_id}}" {{selected "state" _id}}>{{name}}</option>
                                         {{/each}}
                                     </select>
-                                </div>
-                            </div>
-                        </div>
-                        {{/if}}
-
-                        {{#if numberDaysEnabled}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="numberOfDays">Number of days</label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select name="numberOfDays" placeholder="Number of days"
-                                        style="width: 100%" 
-                                        class="ui fluid search dropdown form-control numberOfDaysField">
-                                        <option value="0">None selected</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        <option value="6">6</option>
-                                        <option value="7">7</option>
-                                        <option value="8">8</option>
-                                        <option value="9">9</option>
-                                        <option value="10">10</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        {{/if}}
-
-                        {{#if costCenterEnabled}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="costCenter">Cost-Center</label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <select name="costCenter" placeholder="Cost Center"
-                                        style="width: 100%" 
-                                        class="ui fluid search dropdown form-control costCenterField">
-                                        <option value="0">No cost center selected</option>
-                                        {{#each units}}
-                                            <option value="{{_id}}">{{name}}</option>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                    <label for="return-state-name" class="control-label">TO</label>
+                                    <select name="return_state" style="width: 100%" class="form-control ">
+                                        <option value="" {{selected "state" nil}}>None</option>
+                                        {{#each stateList}}
+                                            <option value="{{_id}}" {{selected "state" _id}}>{{name}}</option>
                                         {{/each}}
                                     </select>
-                                </div>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                        <div class="col-sm-2">
+                            <div class="form-group datetimepicker">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    <input class="set-due-date form-control " type="text" name="appointment" placeholder="Departure Date"/>
                             </div>
                         </div>
-                        {{/if}}
-                        <hr/>
+                        <div class="col-sm-2">
+                            <div class="form-group">
 
-                        {{#each costs}}
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="col-sm-6">
-                                        <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        {{#if costHasAllowedValues dbFieldName}}
-                                        <select name="{{dbFieldName}}" placeholder="{{label}}"
-                                            style="width: 100%" 
-                                            class="ui fluid search dropdown form-control costInputField">
-                                            <option value="0">No cost value selected</option>
-                                            {{#each costAllowedValues dbFieldName}}
-                                                <option value="{{this}}">{{this}}</option>
+                                    <label for="destination-state-name" class="control-label">FROM</label>
+                                    <select name="destination_state" style="width: 100%" class="form-control ">
+                                        <option value="1">00:00</option>
+                                    <option value="2">01:00</option>
+                                    <option value="3">02:00</option>
+                                    <option value="4">03:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                    <option value="24">00:00</option>
+                                    
+                                    </select>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+
+
+                        <div class="col-sm-2">
+                            <div class="form-group datetimepicker">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar "></i></span>
+                                        <input class="set-due-date form-control " type="text" name="appointment" placeholder="Return Date"/>
+                            </div>
+                        </div>       
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label class="control-label">Time</label>
+                                <select  name="time" class="form-control dropdown" >
+                                    <option value="1">00:00</option>
+                                    <option value="2">01:00</option>
+                                    <option value="3">02:00</option>
+                                    <option value="4">03:00</option>
+                                    <option value="5">05:00</option>
+                                    <option value="6">06:00</option>
+                                    <option value="7">07:00</option>
+                                    <option value="8">08:00</option>
+                                    <option value="9">09:00</option>
+                                    <option value="10">10:00</option>
+                                    <option value="11">11:00</option>
+                                    <option value="12">12:00</option>
+                                    <option value="13">13:00</option>
+                                    <option value="14">14:00</option>
+                                    <option value="15">15:00</option>
+                                    <option value="16">16:00</option>
+                                    <option value="17">17:00</option>
+                                    <option value="18">18:00</option>
+                                    <option value="19">19:00</option>
+                                    <option value="20">20:00</option>
+                                    <option value="21">21:00</option>
+                                    <option value="22">22:00</option>
+                                    <option value="23">23:00</option>
+                                    <option value="24">00:00</option>
+                                    
+                                    
+                                    
+                                </select>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-12 -->
+
+
+                                    
+                            
+                           
+                       
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+    
+                                        <label for="state-name" class="control-label">AIRLINE</label>
+                                        <select name="flight" style="width: 100%" class="form-control">
+                                            <option value="" {{selected "flight" nil}}>None</option>
+                                            {{#each flightList}}
+                                                <option value="{{_id}}" {{selected "flight" _id}}>{{name}}</option>
                                             {{/each}}
                                         </select>
-                                        {{else}}
-                                            <input name="{{dbFieldName}}" type="text" class="form-control costInputField"
-                                                value=""/>
-                                        {{/if}}
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="description" class="control-label">Cost <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{description}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            </div>
+                            <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                        <label for="hotel-name" class="control-label">Hotels</label>
+                                        <select name="hotel" style="width: 100%" class="form-control">
+                                            <option value="" {{selected "hotel" nil}}>None</option>
+                                            {{#each hotelList}}
+                                                <option value="{{_id}}" {{selected "hotel" _id}}>{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                                    
+                            <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="description" class="control-label">Cost <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{description}}" />
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                                <div class="row">
+                                <div class="col-sm-4">
+                                    <label>&nbsp;</label>
+                                    <div class="ckbox ckbox-success">
+                                        <input type="checkbox" id="hsdfMeal" 
+                                            checked="{{checked 'hsdfMeal'}}" />
+                                        <label for="hsdf-meal">I do not need a hotel</label>
                                     </div>
+                                </div><!-- col-sm-4 -->
                                 </div>
-                            </div>
-                        {{/each}}
-                        <hr/>
+                                
 
-                        <div class="row">
+                          
                             <div class="col-sm-12">
-                                <div class="col-sm-6">
-                                    <label class="control-label" for="totalCost">Amount Non Payable to employee</label>
-                                </div>
-                                <div class="col-sm-6">
-                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
-                                        value="{{formatMoneyD amountNonPaybelToEmp}}"/>
-                                </div>
+                                <div class="col-sm-4">
+                                <label>Hotel Will Cover:</label>
                             </div>
+                            <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="hsdfMeal" 
+                                        checked="{{checked 'hsdfMeal'}}" />
+                                    <label for="hsdf-meal">Breakfast</label>
+                                </div>
+                                </div>
+                                <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="hsdfMeal" 
+                                        checked="{{checked 'hsdfMeal'}}" />
+                                    <label for="hsdf-meal">Lunch</label>
+                                </div>
+                                </div>
+                                <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="hsdfMeal" 
+                                        checked="{{checked 'hsdfMeal'}}" />
+                                    <label for="hsdf-meal">Dinner</label>
+                                </div>
+                                </div>
+                                <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="hsdfMeal" 
+                                        checked="{{checked 'hsdfMeal'}}" />
+                                    <label for="hsdf-meal">Incidentals</label>
+                                </div>
+                                </div>
+                            </div><!-- col-sm-4 -->
+                           
+                           
+                            <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+            
+                                                    <select name="flight" style="width: 100%" class="form-control">
+                                                    <option value="" {{selected "flight" nil}}>None</option>
+                                                    {{#each flightList}}
+                                                        <option value="{{_id}}" {{selected "flight" _id}}>{{name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                        </div><!-- form-group -->
+                                    </div><!-- col-sm-3 -->
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="description" class="control-label">Cost <span class="asterisk important-input">*</span></label>
+                                            <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{description}}" />
+                                        </div><!-- form-group -->
+                                    </div><!-- col-sm-3 -->
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                                <label for="hotel-name" class="control-label">Hotels</label>
+                                                <select name="hotel" style="width: 100%" class="form-control">
+                                                    <option value="" {{selected "hotel" nil}}>None</option>
+                                                    {{#each hotelList}}
+                                                        <option value="{{_id}}" {{selected "hotel" _id}}>{{name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                        </div><!-- form-group -->
+                                    </div><!-- col-sm-3 -->
                         </div>
-
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="col-sm-6">
@@ -217,6 +276,14 @@
                             </div>
                         </div>
                     </div>
+                     
+                        </div>
+                        
+                       
+                        
+
+                     
+                     
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
@@ -226,5 +293,5 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 </template>

@@ -94,10 +94,6 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: String,
         optional: true,
     },
-    "successFactorsCustProject": {
-        type: String,
-        optional: true,
-    },
     createdAt: {
         type: Date,
         autoValue: function () {
