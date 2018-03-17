@@ -67,7 +67,15 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequestTreatList: function() {
         this.render('TravelRequisitionTreatList')
     },
-    
+    showTravelRequests2List: function() {
+        this.render('TravelRequisition2Index')
+    },
+    showTravelRequest2ApprovalList: function() {
+        this.render('TravelRequisition2ApprovalList')
+    },
+    showTravelRequest2TreatList: function() {
+        this.render('TravelRequisition2TreatList')
+    },
     onAfterAction: function () {
     },
     onStop: function () {
