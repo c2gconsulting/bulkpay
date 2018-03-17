@@ -1,8 +1,8 @@
 
 /**
-* Hotel Schema
+* Airlines  Schema
 */
-Core.Schemas.Hotel = new SimpleSchema({
+Core.Schemas.Airline = new SimpleSchema({
     _id: {
         type: String,
         optional: true
@@ -10,20 +10,9 @@ Core.Schemas.Hotel = new SimpleSchema({
     businessId: {
         type: String
     },
-    cityId: {
-        type: String
-    },
     name: {
         type: String
-    },
-    dailyRate: {
-        type: Number
-    },
-    currency: {
-        type: String,
-        defaultValue: 'NGN',
-        allowedValues: ['NGN', 'USD']
-    },
+    },    
     status: {
         type: String,
         optional: true,

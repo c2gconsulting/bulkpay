@@ -1,8 +1,8 @@
 
 /**
-* Hotel Schema
+* TravelBudgetCode Types Schema
 */
-Core.Schemas.Hotel = new SimpleSchema({
+Core.Schemas.TravelBudgetCode = new SimpleSchema({
     _id: {
         type: String,
         optional: true
@@ -10,19 +10,14 @@ Core.Schemas.Hotel = new SimpleSchema({
     businessId: {
         type: String
     },
-    cityId: {
+    budgetHolderId: {
+        type:String
+    },
+    code: {
         type: String
     },
     name: {
         type: String
-    },
-    dailyRate: {
-        type: Number
-    },
-    currency: {
-        type: String,
-        defaultValue: 'NGN',
-        allowedValues: ['NGN', 'USD']
     },
     status: {
         type: String,
