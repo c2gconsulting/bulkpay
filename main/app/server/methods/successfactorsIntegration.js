@@ -357,8 +357,8 @@ Meteor.methods({
         results = aggregatedTimeSheet.map(timeSheet => {
             return {
                 employeeId: timeSheet._id._id,
-                // successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
-                successFactorsCustProject: timeSheet._id.successFactorsCustProject,
+                successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                // successFactorsCustProject: timeSheet._id.successFactorsCustProject,
                 status: timeSheet._id.status,
                 duration: timeSheet.duration
             }
@@ -482,7 +482,8 @@ Meteor.methods({
                     { $group: {
                         _id: {
                             _id: "$employeeId",
-                            successFactorsCustProject: "$successFactorsCustProject",
+                            successFactorsCostCenter: "$successFactorsCostCenter",
+                            // successFactorsCustProject: "$successFactorsCustProject",
                             status: "$status"
                         },
                         duration: { $sum: "$duration" }
@@ -491,7 +492,8 @@ Meteor.methods({
                 results = aggregatedTimeSheet.map(timeSheet => {
                     return {
                         employeeId: timeSheet._id._id,
-                        successFactorsCustProject: timeSheet._id.successFactorsCustProject,
+                        successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                        // successFactorsCustProject: timeSheet._id.successFactorsCustProject,
                         status: timeSheet._id.status,
                         duration: timeSheet.duration
                     }
