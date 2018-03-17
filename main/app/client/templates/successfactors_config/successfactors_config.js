@@ -269,6 +269,7 @@ Template.SuccessFactorsConfig.events({
               if(!res) {
                   swal('Error', err.reason, 'error')
               } else {
+                  console.log(`res: `, res)
                   tmpl.sfTimeSheets.set(res)
               }
           })
@@ -281,8 +282,6 @@ Template.SuccessFactorsConfig.events({
         const month = $('[name="periodMonth"]').val();
         const year = $('[name="periodYear"]').val();
         if(month && year) {
-            console.log(`month: `, month)
-            console.log(`year: `, year)
             tmpl.isFetchingTimeSheet.set(true)
             
             Meteor.call("successfactors/syncEmployeeTimeSheets", businessUnitId, month, year, function(err, res) {

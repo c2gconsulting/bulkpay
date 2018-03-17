@@ -314,7 +314,7 @@
                                                 <tr>
                                                     <th>Employee</th>
                                                     <th>Duration(In Hours)</th>
-                                                    <th>Cost Center</th>
+                                                    <th>Cust Project</th>
                                                     <th>Status</th>
                                                 </tr>
                                                 </thead>
@@ -325,9 +325,9 @@
                                                     {{else}}
                                                         {{#each timeWritingRecords}}
                                                             <tr class="item">
-                                                                <td>{{getEmployeeFullName _id}}</td>
+                                                                <td>{{getEmployeeFullName employeeId}}</td>
                                                                 <td>{{duration}}</td>
-                                                                <td>{{successFactorsCostCenter}}</td>
+                                                                <td>{{successFactorsCustProject}}</td>
                                                                 <td>{{status}}</td>
                                                             </tr>
                                                         {{/each}}

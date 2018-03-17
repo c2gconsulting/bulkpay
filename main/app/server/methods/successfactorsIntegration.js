@@ -328,6 +328,7 @@ Meteor.methods({
         }
         this.unblock();
         let results = [];
+        console.log(`businessUnit: `, businessUnit)
 
         const monthAsNum = Number(month - 1)
         const yearAsNum = Number(year)
@@ -348,16 +349,17 @@ Meteor.methods({
                 _id: {
                     _id: "$employeeId",
                     successFactorsCostCenter: "$successFactorsCostCenter",
+                    status: "$status"
                 },
-                status: {$first: "$status"},
                 duration: { $sum: "$duration" }
             } }
         ]);
         results = aggregatedTimeSheet.map(timeSheet => {
             return {
-                _id: timeSheet._id._id,
-                successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
-                status: timeSheet.status,
+                employeeId: timeSheet._id._id,
+                // successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
+                successFactorsCustProject: timeSheet._id.successFactorsCustProject,
+                status: timeSheet._id.status,
                 duration: timeSheet.duration
             }
         })
@@ -407,14 +409,17 @@ Meteor.methods({
                     let timeSheetsWithEntries = []
                     Object.keys(timeSheets).map(function(userId, index) {
                         let empTimeSheets = timeSheets[userId]
-                        let bpUser = Meteor.users.findOne({'successFactors.personIdExternal': userId})
+                        let bpUser = Meteor.users.findOne({
+                            'successFactors.personIdExternal': userId,
+                            businessIds: config.businessId
+                        })
 
                         if(bpUser) {
                             console.log(`bpUser: `, bpUser)
                             // console.log(`empTimeSheets: `, empTimeSheets)
                             empTimeSheets.forEach(time => {
                                 try {
-                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
+                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,cust_Project,hours,bookingDate&$format=json`
                                     const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
                                     // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
     
@@ -423,7 +428,7 @@ Meteor.methods({
                                         const entries = SFIntegrationHelper.getOdataResults(timeSheetEntryData)
                                         entries.forEach(entry => {
                                             if(entry.hours > 0) {
-                                                // console.log(`entry: `, entry)
+                                                console.log(`entry: `, entry)
                                                 const startDate = SFIntegrationHelper.getJsDateFromOdataDate(entry.bookingDate)
                                                 let hoursAsNum = parseFloat(entry.hours)
 
@@ -447,7 +452,8 @@ Meteor.methods({
                                                     approvedBy: null,
                                                     approvedDate: null,
                                                     isApprovalStatusSeenByCreator: false,
-                                                    successFactorsCostCenter: entry.costCenter
+                                                    successFactorsCostCenter: entry.costCenter,
+                                                    successFactorsCustProject: entry.cust_Project
                                                 }
                                                 TimeWritings.insert(timeSheetEntry)
                                                 results.push(timeSheetEntry)
@@ -476,17 +482,17 @@ Meteor.methods({
                     { $group: {
                         _id: {
                             _id: "$employeeId",
-                            successFactorsCostCenter: "$successFactorsCostCenter",
+                            successFactorsCustProject: "$successFactorsCustProject",
+                            status: "$status"
                         },
-                        status: {$first: "$status"},
                         duration: { $sum: "$duration" }
                     } }
                 ]);
                 results = aggregatedTimeSheet.map(timeSheet => {
                     return {
-                        _id: timeSheet._id._id,
-                        successFactorsCostCenter: timeSheet._id.successFactorsCostCenter,
-                        status: timeSheet.status,
+                        employeeId: timeSheet._id._id,
+                        successFactorsCustProject: timeSheet._id.successFactorsCustProject,
+                        status: timeSheet._id.status,
                         duration: timeSheet.duration
                     }
                 })
