@@ -10,7 +10,7 @@ Core.Schemas.Hotel = new SimpleSchema({
     businessId: {
         type: String
     },
-    cityId: {
+    travelcityId: {
         type: String
     },
     name: {

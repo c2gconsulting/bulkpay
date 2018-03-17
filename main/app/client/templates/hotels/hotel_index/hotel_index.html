@@ -15,9 +15,11 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Cost of Hotel</th>
+                              
                                 <th>Name of hotel</th>
+                                <th>Daily Rate</th>
                                 <th>Travel city</th>
+                                <th>Currency</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -39,9 +41,12 @@
 <template name="singleHotel">
     <tr>
         <td class="pointer">{{index}}</td>
-        <td>{{data.code}}</td>
+       
         <td>{{data.name}}</td>
+        <td>{{data.dailyRate}}</td>
         <td>{{getTravelcityName data.travelcityId}}</td>
+        <td>{{data.currency}}</td>
+
       
         <td>
           {{#if condition data.status "eq" "Active"}}

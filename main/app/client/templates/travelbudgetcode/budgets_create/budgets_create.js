@@ -6,39 +6,39 @@ Template.BudgetCreate.events({
       Modal.hide('BudgetCreate');
     },
     'click #save': (e, tmpl) => {
-      let budgetCode = $('[name=budget-code]').val();
-      let budgetName = $('[name=budget-name]').val();
+      let code = $('[name=code]').val();
+      let name = $('[name=name]').val();
      
-      let budgetEmployee =  $('[name="employee"]').val()
+      let employee =  $('[name="employee"]').val()
   
      // employees: Core.returnSelection($('[name="employee"]')),
  
   
-      if (!budgetCode || budgetCode.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the budget code");
-      } else if(!budgetName || budgetName.trim().length === 0) {
-          Template.instance().errorMessage.set("Please enter the budget name");
-      } 
-      else {
+    //   if (!budgetCode || budgetCode.trim().length === 0) {
+    //     Template.instance().errorMessage.set("Please enter the budget code");
+    //   } else if(!budgetName || budgetName.trim().length === 0) {
+    //       Template.instance().errorMessage.set("Please enter the budget name");
+    //   } 
+    //   else {
         Template.instance().errorMessage.set(null);
   
         let newBudget = {
           businessId: Session.get('context'),
-          code : budgetCode,
-          name : budgetName,
-          employeeId :budgetEmployee
+          code : code,
+          name : name,
+          employeeId :employee
          // employeeId :budgetEmployee
 
         };
 
-        let budgetContext = Core.Schemas.Budget.namedContext("budgetForm");
-        budgetContext.validate(newBudget);
-        if (budgetContext.isValid()) {
-            console.log('Hotel is Valid!');
-        } else {
-            console.log('Hotel is not Valid!');
-        }
-        console.log(budgetContext._invalidKeys);
+        // let budgetContext = Core.Schemas.Budget.namedContext("budgetForm");
+        // budgetContext.validate(newBudget);
+        // if (budgetContext.isValid()) {
+        //     console.log('Hotel is Valid!');
+        // } else {
+        //     console.log('Hotel is not Valid!');
+        // }
+        // console.log(budgetContext._invalidKeys);
   
         Meteor.call('budget/create', newBudget, (err, res) => {
             if (res){
@@ -54,7 +54,7 @@ Template.BudgetCreate.events({
                 console.log(err);
             }
         });
-      }
+      
     },
   });
   

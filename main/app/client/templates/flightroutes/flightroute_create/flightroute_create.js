@@ -11,15 +11,15 @@ Template.FlightrouteCreate.events({
       let toId =  $('[name="toId"]').val()
       let airlineId =  $('[name="airlineId"]').val()
       let currency= $('[name="currency"]').val();
-      let cost = $('[name=cost]').val();
+      let cost =  parseFloat($('[name=cost]').val());
 
-      console.log('flightrouteTravelcity :', flightrouteTravelcity);
+     // console.log('flightrouteTravelcity :', flightrouteTravelcity);
   
-      if (!flightrouteCost || flightrouteCost.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the flightroute cost");
+    //   if (!flightrouteCost || flightrouteCost.trim().length === 0) {
+    //     Template.instance().errorMessage.set("Please enter the flightroute cost");
+    // //   } 
     //   } 
-      } 
-      else {
+    //   else {
         Template.instance().errorMessage.set(null);
   
         let newFlightroute = {
@@ -57,7 +57,7 @@ Template.FlightrouteCreate.events({
                 console.log(err);
             }
         });
-      }
+      
     },
   });
   

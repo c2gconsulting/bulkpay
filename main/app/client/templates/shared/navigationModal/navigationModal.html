@@ -65,6 +65,11 @@
                           {{/if}}
                           {{#if isMenuExpanded 'administrationMenu'}}
                               <li><a href="{{pathFor 'employees'}}" id="employees">Manage Employees</a></li>
+                              <li><a href="{{pathFor 'budgets'}}" id="budgets">Travel Budget Code</a></li>
+                              <li><a href="{{pathFor 'travelcities'}}" id="travelcities">Travelcities</a></li>
+                              <li><a href="{{pathFor 'airlines'}}" id="airlines">Airlines</a></li>
+                              <li><a href="{{pathFor 'hotels'}}" id="hotels">Hotels</a></li>
+                              <li><a href="{{pathFor 'flightroutes'}}" id="flightroutes">Flightroutes</a></li>
                               <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
                               
                               <li><a href="{{pathFor 'leave.entitlement.list'}}" id="leaveentitlementlist">Manage Leave Entitlements</a></li>
@@ -118,11 +123,7 @@
                                   <li><a href="{{pathFor 'travelrequests.approvalList'}}" id="travelrequestsapprovalList">Trips Approval</a></li>
                                   {{/if}}
                               {{/if}}
-                              <li><a href="{{pathFor 'budgets'}}" id="budgets">Budgets</a></li>
-                              <li><a href="{{pathFor 'travelcities'}}" id="travelcities">Travelcities</a></li>
-                              <li><a href="{{pathFor 'airlines'}}" id="airlines">Airlines</a></li>
-                              <li><a href="{{pathFor 'hotels'}}" id="hotels">Hotels</a></li>
-                              <li><a href="{{pathFor 'flightroutes'}}" id="flightroutes">Flightroutes</a></li>
+                            
                               <li><a href="{{pathFor 'payslip'}}" id="payslip">View Pay Slip</a></li>
                           {{/if}}
 

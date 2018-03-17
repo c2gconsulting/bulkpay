@@ -440,9 +440,9 @@ Hotels.attachSchema(Core.Schemas.Hotel);
 /**
  * Core Collections Budget
  */
-TravelBudgetCodes = new Mongo.Collection("travelbudgetcode");
-Partitioner.partitionCollection(TravelBudgetCodes);
-TravelBudgetCodes.attachSchema(Core.Schemas.TravelBudgetCode);
+Budgets = new Mongo.Collection("budgets");
+Partitioner.partitionCollection(Budgets);
+Budgets.attachSchema(Core.Schemas.Budget);
 
 /**
  * Core Collections Budget
@@ -453,9 +453,9 @@ Airlines.attachSchema(Core.Schemas.Airline);
 /**
  * Core Collections Budget
  */
-FlightRoutes = new Mongo.Collection("flightroutes");
-Partitioner.partitionCollection(FlightRoutes);
-FlightRoutes.attachSchema(Core.Schemas.FlightRoute);
+Flightroutes = new Mongo.Collection("flightroutes");
+Partitioner.partitionCollection(Flightroutes);
+Flightroutes.attachSchema(Core.Schemas.Flightroute);
 /**
  * Core Collections ProcurementRequisitions
  */

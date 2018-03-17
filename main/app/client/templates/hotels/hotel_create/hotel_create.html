@@ -10,21 +10,21 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="hotel-code" class="control-label">Code <span class="asterisk important-input">*</span></label>
-                                    <input type="text" name="hotel-code" class="form-control" placeholder="Code" ng-model="hotel.code" />
+                                    <label for="dailyRate" class="control-label">dailyRate<span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="dailyRate" class="form-control" placeholder="dailyRate" ng-model="dailyRate" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="hotel-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
-                                    <input type="text" name="hotel-name" class="form-control" placeholder="Name" ng-model="hotel.name"/>
+                                    <label for="name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="name"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                         </div><!-- row -->
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="travelcity-name" class="control-label">travelcity</label>
-                                <select name="travelcity" style="width: 100%" class="form-control">
+                                <label for="travelcityId" class="control-label">travelcity</label>
+                                <select name="travelcityId" style="width: 100%" class="form-control">
                                     <option value="" {{selected "travelcity" nil}}>None</option>
                                     {{#each travelcityList}}
                                         <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
@@ -32,6 +32,17 @@
                                 </select>
                             </div><!-- form-group -->
                         </div><!-- col-sm-6 -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label class="control-label">Currency</label>
+                                <select  name="currency" class="form-control dropdown" >
+                                   
+                                    <option value="NGN" {{selected "currency" "NGN" }}>NGN</option>
+                                    <option value="USD" {{selected "currency" "USD"}}>USD</option>
+                                   
+                                </select>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
 
                        
                         {{#if errorMessage}}

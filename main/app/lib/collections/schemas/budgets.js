@@ -2,7 +2,7 @@
 /**
 * TravelBudgetCode Types Schema
 */
-Core.Schemas.TravelBudgetCode = new SimpleSchema({
+Core.Schemas.Budget = new SimpleSchema({
     _id: {
         type: String,
         optional: true
@@ -10,9 +10,13 @@ Core.Schemas.TravelBudgetCode = new SimpleSchema({
     businessId: {
         type: String
     },
-    budgetHolderId: {
-        type:String
+    employeeId: {
+        type: String
     },
+    // budgetHolderId: {
+    //     type:String
+    // },
+
     code: {
         type: String
     },

@@ -44,13 +44,19 @@
 <template name="singleFlightroute">
     <tr>
         <td class="pointer">{{index}}</td>
-       
-        <td>{{getTravelcityName data.travelcityId}}</td>
-        <td>{{getTravelcityName data.travelcityId}}</td>
+        <td>{{getTravelcityName data.fromId}}</td>
+        <td>{{getTravelcityName data.toId}}</td>
         <td>{{getAirlineName data.airlineId}}</td>
         <td>{{data.currency}}</td>
         <td>{{data.cost}}</td>
       
+       
+        <!-- <td>{{getFromName data.fromId}}</td>
+        <td>{{getToName data.toId}}</td>
+        <td>{{getAirlineName data.airlineId}}</td>
+        <td>{{data.currency}}</td>
+        <td>{{data.cost}}</td>
+       -->
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

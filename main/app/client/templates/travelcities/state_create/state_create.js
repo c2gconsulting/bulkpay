@@ -6,21 +6,22 @@ Template.TravelCityCreate.events({
       Modal.hide('TravelCityCreate');
     },
     'click #save': (e, tmpl) => {
-      let travelcityPerdiem = $('[name=travelcity-perdiem]').val();
-      let travelcityName = $('[name=travelcity-name]').val();
-      let travelcitycurrency= $('[name="currency"]').val();
+      let perdiem = $('[name=perdiem]').val();
+      let name = $('[name=name]').val();
+      let currency= $('[name=currency]').val();
 
-      if (!travelcityPerdiem || travelcityPerdiem.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the state perdiem");
-      } else if(!travelcityName || travelcityName.trim().length === 0) {
-          Template.instance().errorMessage.set("Please enter the state name");
-      } else {
+      // if (!Perdiem || Perdiem.trim().length === 0) {
+      //   Template.instance().errorMessage.set("Please enter the state perdiem");
+      // } else if(!Name || Name.trim().length === 0) {
+      //     Template.instance().errorMessage.set("Please enter the state name");
+      // } else {
         Template.instance().errorMessage.set(null);
   
         let newTravelcity = {
           businessId: Session.get('context'),
-          perdiem : travelcityPerdiem,
-          name : travelcityName
+          perdiem : perdiem,
+          name : name,
+          currency : currency
 
         };
   
@@ -38,7 +39,7 @@ Template.TravelCityCreate.events({
                 console.log(err);
             }
         });
-      }
+      
     },
   });
   

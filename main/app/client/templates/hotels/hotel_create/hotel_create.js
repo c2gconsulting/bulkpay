@@ -6,25 +6,42 @@ Template.HotelCreate.events({
       Modal.hide('HotelCreate');
     },
     'click #save': (e, tmpl) => {
-      let hotelCode = $('[name=hotel-code]').val();
-      let hotelName = $('[name=hotel-name]').val();
-      let hotelTravelcity =  $('[name="travelcity"]').val()
-      console.log('hotelTravelcity :', hotelTravelcity);
+      let dailyRate = parseFloat($('[name=dailyRate]').val());
+      let name = $('[name=name]').val();
+      let travelcityId =  $('[name=travelcityId]').val()
+      let currency = $('[name=currency]').val();
+      console.log('currency:' + currency);
+      //console.log('hotelTravelcity :', hotelTravelcity);
   
-      if (!hotelCode || hotelCode.trim().length === 0) {
-        Template.instance().errorMessage.set("Please enter the hotel code");
-      } else if(!hotelName || hotelName.trim().length === 0) {
-          Template.instance().errorMessage.set("Please enter the hotel name");
-      } 
-      else {
+    //   if (!hotelCode || hotelCode.trim().length === 0) {
+    //     Template.instance().errorMessage.set("Please enter the hotel code");
+    //   } else if(!hotelName || hotelName.trim().length === 0) {
+    //       Template.instance().errorMessage.set("Please enter the hotel name");
+    //   } 
+    //   else {
         Template.instance().errorMessage.set(null);
   
         let newHotel = {
           businessId: Session.get('context'),
-          code : hotelCode,
-          name : hotelName,
-          travelcityId : hotelTravelcity
+          dailyRate : dailyRate,
+          name : name,
+          travelcityId : travelcityId,
+          currency : currency
         };
+        // travelcityId: {
+        //     type: String
+        // },
+        // name: {
+        //     type: String
+        // },
+        // dailyRate: {
+        //     type: Number
+        // },
+        // currency: {
+        //     type: String,
+        //     defaultValue: 'NGN',
+        //     allowedValues: ['NGN', 'USD']
+        // },
 
         let hotelContext = Core.Schemas.Hotel.namedContext("hotelForm");
         hotelContext.validate(newHotel);
@@ -49,7 +66,7 @@ Template.HotelCreate.events({
                 console.log(err);
             }
         });
-      }
+      
     },
   });
   
