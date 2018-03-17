@@ -174,7 +174,26 @@ Router.route('/business/:_id/hmoplans/changerequest', {
     action: 'changeRequest',
     where: 'client'
 });
-
+Router.route('/business/:_id/hotels', {
+    name: 'hotels',
+    controller: 'HotelsController',
+    where: 'client'
+});
+Router.route('/business/:_id/states', {
+    name: 'states',
+    controller: 'StatesController',
+    where: 'client'
+});
+Router.route('/business/:_id/budgets', {
+    name: 'budgets',
+    controller: 'BudgetsController',
+    where: 'client'
+});
+Router.route('/business/:_id/flights', {
+    name: 'flights',
+    controller: 'FlightsController',
+    where: 'client'
+});
 
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',

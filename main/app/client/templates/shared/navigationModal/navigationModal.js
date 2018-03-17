@@ -109,6 +109,27 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #states': function(event, tmpl) {
+        Router.go('states', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
+      'click #flights': function(event, tmpl) {
+        Router.go('flights', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
+      'click #hotels': function(event, tmpl) {
+        Router.go('hotels', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
+      'click #budgets': function(event, tmpl) {
+        Router.go('budgets', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
+
     'click #taxes': function(event, tmpl) {
       Router.go('taxes', {_id: Session.get('context')})
       Modal.hide('navigationModal');

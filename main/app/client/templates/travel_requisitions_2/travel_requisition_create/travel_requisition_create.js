@@ -253,7 +253,7 @@ Template.TravelRequisition2Create.events({
 /*****************************************************************************/
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionCreate.helpers({
+Template.TravelRequisition2Create.helpers({
     // 'calculate':function(){
     //     Session.get('selectedstateId');
 
@@ -399,7 +399,7 @@ flightList() {
 /*****************************************************************************/
 /* TravelRequisitionCreate: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionCreate.onCreated(function () {
+Template.TravelRequisition2Create.onCreated(function () {
     let self = this;
 
     let businessUnitId = Session.get('context');
@@ -549,7 +549,7 @@ Template.TravelRequisitionCreate.onCreated(function () {
     }
 });
 
-Template.TravelRequisitionCreate.onRendered(function () {
+Template.TravelRequisition2Create.onRendered(function () {
     $('select.dropdown').dropdown();
 
         this.$('.datetimepicker').datetimepicker(
@@ -560,5 +560,5 @@ Template.TravelRequisitionCreate.onRendered(function () {
 
 });
 
-Template.TravelRequisitionCreate.onDestroyed(function () {
+Template.TravelRequisition2Create.onDestroyed(function () {
 });

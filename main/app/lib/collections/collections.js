@@ -411,8 +411,41 @@ ProcurementRequisitions.attachSchema(Core.Schemas.ProcurementRequisition);
 TravelRequisitions = new Mongo.Collection("travelrequisitions");
 Partitioner.partitionCollection(TravelRequisitions);
 TravelRequisitions.attachSchema(Core.Schemas.TravelRequisition);
+/**
+ * Core Collections TravelRequest
+ */
+TravelRequests = new Mongo.Collection("travelrequests");
+Partitioner.partitionCollection(TravelRequests);
+TravelRequests.attachSchema(Core.Schemas.TravelRequest);
+/**
+ * Core Collections State
+ */
+States = new Mongo.Collection("states");
+Partitioner.partitionCollection(States);
+States.attachSchema(Core.Schemas.State);
+
+/**
+ * Core Collections Hotel
+ */
+Hotels = new Mongo.Collection("hotels");
+Partitioner.partitionCollection(Hotels);
+Hotels.attachSchema(Core.Schemas.Hotel);
 
 
+
+/**
+ * Core Collections Budget
+ */
+Budgets = new Mongo.Collection("budgets");
+Partitioner.partitionCollection(Budgets);
+Budgets.attachSchema(Core.Schemas.Budget);
+
+/**
+ * Core Collections Budget
+ */
+Flights = new Mongo.Collection("flights");
+Partitioner.partitionCollection(Flights);
+Flights.attachSchema(Core.Schemas.Flight);
 /**
  * Core Collections ProcurementRequisitions
  */
