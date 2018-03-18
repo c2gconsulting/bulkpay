@@ -4,13 +4,21 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2Create.events({
-    "change [name='destination_state']": function(e, tmpl){
+    // "change [name='toId']": function(e, tmpl){
+    //     e.preventDefault()
+
+    //     const selectedStateId = $(e.currentTarget).val();
+    //     console.log(`selectedStateId: `, selectedStateId)
+
+    //     tmpl.selectedstateId.set(selectedStateId);
+    // },
+    "change [name='toId']": function(e, tmpl){
         e.preventDefault()
 
-        const selectedStateId = $(e.currentTarget).val();
-        console.log(`selectedStateId: `, selectedStateId)
+        const selectedTravelcityId = $(e.currentTarget).val();
+        console.log(`selectedTravelcityId: `, selectedTravelcityId)
 
-        tmpl.selectedstateId.set(selectedStateId);
+        tmpl.selectedtravelcityId.set(selectedTravelcityId);
     },
 
 
@@ -264,20 +272,19 @@ Template.TravelRequisition2Create.helpers({
             return Template.instance().data[prop];
         return false;
     },
-    stateList() {
-        return States.find();
+    travelcityList() {
+        return  Travelcities.find();
    },
-
+   airlineList() {
+    return  Airlines.find();
+},
    hotelList() {
-    const selectedstateId = Template.instance().selectedstateId.get();
-    if(selectedstateId) {
-        return Hotels.find({stateId: selectedstateId});
+    const selectedtravelcityId = Template.instance().selectedtravelcityId.get();
+    if(selectedtravelcityId) {
+        return Hotels.find({travelcityId: selectedtravelcityId});
     }
 },
 
-flightList() {
-    return Flights.find();
-},
    selected(context,val) {
     let self = this;
 
@@ -403,9 +410,11 @@ Template.TravelRequisition2Create.onCreated(function () {
     let self = this;
 
     let businessUnitId = Session.get('context');
-    self.subscribe("states", Session.get('context'));
+    self.subscribe("travelcities", Session.get('context'));
+    self.subscribe("flightroutes", Session.get('context'));
+    self.subscribe("airlines", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
-    self.subscribe("flights", Session.get('context'));
+   // self.subscribe("flights", Session.get('context'));
     self.unitId = new ReactiveVar()
     self.units = new ReactiveVar([])
     self.businessUnitCustomConfig = new ReactiveVar()
@@ -417,6 +426,7 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.selectedNumDays = new ReactiveVar()
     self.selectedCostCenter = new ReactiveVar()
     self.selectedstateId = new ReactiveVar()
+    self.selectedtravelcityId = new ReactiveVar()
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)
