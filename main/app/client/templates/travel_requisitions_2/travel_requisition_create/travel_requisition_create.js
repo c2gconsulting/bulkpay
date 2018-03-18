@@ -20,6 +20,14 @@ Template.TravelRequisition2Create.events({
 
         tmpl.selectedtravelcityId.set(selectedTravelcityId);
     },
+    "change [name='airline']": function(e, tmpl){
+        e.preventDefault()
+        console.log("show")
+        const selectedFlightrouteId = $(e.currentTarget).val();
+        console.log(`selectedFlightrouteId: `, selectedFlightrouteId)
+
+        tmpl.selectedflightrouteId.set(selectedFlightrouteId);
+    },
 
 
         //includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
@@ -276,7 +284,10 @@ Template.TravelRequisition2Create.helpers({
         return  Travelcities.find();
    },
    airlineList() {
-    return  Airlines.find();
+    const selectedflightrouteId = Template.instance().selectedflightrouteId.get();
+    if(selectedflightrouteId) {
+        return Airlines.find({flightrouteId: selectedflightrouteId});
+    }
 },
    hotelList() {
     const selectedtravelcityId = Template.instance().selectedtravelcityId.get();
@@ -427,6 +438,8 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.selectedCostCenter = new ReactiveVar()
     self.selectedstateId = new ReactiveVar()
     self.selectedtravelcityId = new ReactiveVar()
+    self.selectedflightrouteId = new ReactiveVar()
+
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)

@@ -21,7 +21,7 @@
 
             <div class="row" ng-show="!singleTravelcityView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12">
-                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Travelcity</button></p>
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Travel City</button></p>
                 </div>
             </div>
 
@@ -32,8 +32,9 @@
                             <thead>
                             <tr>
                                 <th>#</th>
+                                <th>City Name</th>
                                 <th>Per Diem Cost</th>
-                                <th>State Name</th>
+                              
                                 <th>Currency</th>
                                 <th>Status</th>
                                 <th></th>
@@ -56,8 +57,9 @@
 <template name="singleTravelcity">
     <tr>
         <td class="pointer">{{index}}</td>
-        <td>{{data.perdiem}}</td>
         <td>{{data.name}}</td>
+        <td>{{data.perdiem}}</td>
+       
         <td>{{data.currency}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}

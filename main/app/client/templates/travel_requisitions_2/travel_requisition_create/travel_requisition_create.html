@@ -28,10 +28,10 @@
                 <div class="form-group">
 
                   <label for="state-name" class="control-label">Which project will be responsible for this trip?</label>
-                  <select name="flight" style="width: 100%" class="form-control">
-                    <option value="" {{selected "flight" nil}}>None</option>
-                    {{#each flightList}}
-                    <option value="{{_id}}" {{selected "flight" _id}}>{{name}}</option>
+                  <select name="budget" style="width: 100%" class="form-control">
+                    <option value="budget" {{selected "budget" nil}}>None</option>
+                    {{#each budgetList}}
+                    <option value="{{_id}}" {{selected "budget" _id}}>{{name}}</option>
                     {{/each}}
                   </select>
                   <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
@@ -56,7 +56,7 @@
 
             <hr/>
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-2">
                 <div class="form-group">
                     <label for="fromId" class="control-label">From</label>
                     <select name="fromId" style="width: 100%" class="form-control">
@@ -67,7 +67,7 @@
                     </select>
                 </div><!-- form-group -->
             </div><!-- col-sm-6 -->
-            <div class="col-sm-6">
+            <div class="col-sm-2">
                 <div class="form-group">
                     <label for="toId" class="control-label">To</label>
                     <select name="toId" style="width: 100%" class="form-control">
@@ -158,10 +158,10 @@
                 <div class="form-group">
 
                   <label for="state-name" class="control-label">Airline <span class="asterisk important-input">*</span></label>
-                  <select name="flight" style="width: 100%" class="form-control">
-                    <option value="" {{selected "flight" nil}}>None</option>
-                    {{#each flightList}}
-                    <option value="{{_id}}" {{selected "flight" _id}}>{{name}}</option>
+                  <select name="airline" style="width: 100%" class="form-control">
+                    <option value="airline" {{selected "airline" nil}}>None</option>
+                    {{#each airlineList}}
+                    <option value="{{_id}}" {{selected "airline" _id}}>{{name}}</option>
                     {{/each}}
                   </select>
                 </div><!-- form-group -->

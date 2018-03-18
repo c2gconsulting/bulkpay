@@ -8,22 +8,34 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
+                                <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                            <input type="text" name="name" class="form-control" placeholder="Name" ng-model="name"/>
+                                        </div><!-- form-group -->
+                                    </div><!-- col-sm-6 -->
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="dailyRate" class="control-label">dailyRate<span class="asterisk important-input">*</span></label>
-                                    <input type="text" name="dailyRate" class="form-control" placeholder="dailyRate" ng-model="dailyRate" />
+                                    <label for="dailyRate" class="control-label">Daily Rate<span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="dailyRate" class="form-control" placeholder="Daily Rate" ng-model="dailyRate" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
-                            <div class="col-sm-6">
+                            
+                        
+                        <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="name" class="control-label">Name <span class="asterisk important-input">*</span></label>
-                                    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="name"/>
+                                    <label class="control-label">Currency</label>
+                                    <select  name="currency" class="form-control dropdown" >
+                                       
+                                        <option value="NGN" {{selected "currency" "NGN" }}>NGN</option>
+                                        <option value="USD" {{selected "currency" "USD"}}>USD</option>
+                                       
+                                    </select>
                                 </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-                        </div><!-- row -->
+                            </div><!-- col-sm-3 -->
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="travelcityId" class="control-label">travelcity</label>
+                                <label for="travelcityId" class="control-label">Travel city</label>
                                 <select name="travelcityId" style="width: 100%" class="form-control">
                                     <option value="" {{selected "travelcity" nil}}>None</option>
                                     {{#each travelcityList}}
@@ -32,17 +44,8 @@
                                 </select>
                             </div><!-- form-group -->
                         </div><!-- col-sm-6 -->
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label class="control-label">Currency</label>
-                                <select  name="currency" class="form-control dropdown" >
-                                   
-                                    <option value="NGN" {{selected "currency" "NGN" }}>NGN</option>
-                                    <option value="USD" {{selected "currency" "USD"}}>USD</option>
-                                   
-                                </select>
-                            </div><!-- form-group -->
-                        </div><!-- col-sm-3 -->
+                        </div>
+                      
 
                        
                         {{#if errorMessage}}
