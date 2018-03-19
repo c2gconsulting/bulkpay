@@ -27,12 +27,14 @@
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project will be responsible for this trip?</label>
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
+                                    {{#semanticselect}}
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="NONE">I am not sure</option>
                                         {{#each budgetList}}
                                         <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
                                         {{/each}}
                                     </select>
+                                    {{/semanticselect}}
                                     <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
@@ -57,100 +59,106 @@
 
                         {{#each currentTravelRequest.trips}}
                         <div class="row">
-                            <div class="col-sm-2">
+                            <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="fromId_{{this.tripIndex}}" class="control-label">From</label>        
-                                    <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="form-control selectpicker" data-live-search="true" >
-                                        <option value="None" {{selected "travelcity" nil}}>None</option>
+                                    <label for="fromId_{{this.tripIndex}}" class="control-label">From</label>
+                                    {{#semanticselect}}
+                                    <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
+                                        <option value="None" >None</option>
                                         {{#each travelcityList}}
                                         <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
                                         {{/each}}
                                     </select>
+                                    {{/semanticselect}}
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
-                            <div class="col-sm-2">
+                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toId_{{this.tripIndex}}" class="control-label">To</label>
-                                    <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                    {{#semanticselect}}
+                                    <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="None" >None</option>
                                         {{#each travelcityList}}
                                         <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
                                         {{/each}}
                                     </select>
+                                    {{/semanticselect}}
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-2">
                                 <div class="form-group datetimepicker">
-                                    <label class="control-label">Departure Date <span class="asterisk important-input">*</span></label>
+                                    <label class="control-label">Departure<span class="asterisk important-input">*</span></label>
                                     <input class="set-due-date form-control " type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date" value="{{formatDate this.departureDate}}"/>
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <div class="form-group">
 
-                                    <label for="departureTime_{{this.tripIndex}}" class="control-label">Departure Time <span class="asterisk important-input">*</span></label>
-                                    <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control ">
-                                        <option value="1">06:00 AM</option>
-                                        <option value="2">07:00 AM</option>
-                                        <option value="3">08:00 AM</option>
-                                        <option value="4">09:00 AM</option>
-                                        <option value="5">10:00 AM</option>
-                                        <option value="6">11:00 AM</option>
-                                        <option value="7">12:00 PM</option>
-                                        <option value="8">01:00 PM</option>
-                                        <option value="9">02:00 PM</option>
-                                        <option value="10">03:00 PM</option>
-                                        <option value="11">04:00 PM</option>
-                                        <option value="12">05:00 PM</option>
-                                        <option value="13">06:00 PM</option>
-                                        <option value="14">07:00 PM</option>
-                                        <option value="15">08:00 PM</option>
-                                        <option value="16">09:00 PM</option>
-                                        <option value="17">10:00 PM</option>
-                                        <option value="18">11:00 PM</option>
-                                        <option value="19">01:00 AM</option>
-                                        <option value="20">02:00 AM</option>
-                                        <option value="21">03:00 AM</option>
-                                        <option value="22">04:00 AM</option>
-                                        <option value="23">05:00 AM</option>
+                                    <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
+                                    {{#semanticselect}}
+                                    <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                        <option value="1">6 AM</option>
+                                        <option value="2">7 AM</option>
+                                        <option value="3">8 AM</option>
+                                        <option value="4">9 AM</option>
+                                        <option value="5">10 AM</option>
+                                        <option value="6">11 AM</option>
+                                        <option value="7">12 PM</option>
+                                        <option value="8">1 PM</option>
+                                        <option value="9">2 PM</option>
+                                        <option value="10">3 PM</option>
+                                        <option value="11">4 PM</option>
+                                        <option value="12">5 PM</option>
+                                        <option value="13">6 PM</option>
+                                        <option value="14">7 PM</option>
+                                        <option value="15">8 PM</option>
+                                        <option value="16">9 PM</option>
+                                        <option value="17">10 PM</option>
+                                        <option value="18">11 PM</option>
+                                        <option value="19">1 AM</option>
+                                        <option value="20">2 AM</option>
+                                        <option value="21">3 AM</option>
+                                        <option value="22">4 AM</option>
+                                        <option value="23">5 AM</option>
                                     </select>
+                                    {{/semanticselect}}
                                 </div><!-- form-group -->
                             </div>
                             {{#if isReturnTrip}}
                             <div class="col-sm-2">
                                 <div class="form-group datetimepicker">
-                                    <label class="control-label">Return Date <span class="asterisk important-input">*</span></label>
+                                    <label class="control-label">Return <span class="asterisk important-input">*</span></label>
                                     <input class="set-due-date form-control " type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate this.returnDate}}"/>
                                 </div>
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <div class="form-group">
 
-                                    <label for="returnTime_{{this.tripIndex}}" class="control-label">Return Time <span class="asterisk important-input">*</span></label>
+                                    <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%" class="form-control ">
-                                        <option value="1">06:00 AM</option>
-                                        <option value="2">07:00 AM</option>
-                                        <option value="3">08:00 AM</option>
-                                        <option value="4">09:00 AM</option>
-                                        <option value="5">10:00 AM</option>
-                                        <option value="6">11:00 AM</option>
-                                        <option value="7">12:00 PM</option>
-                                        <option value="8">01:00 PM</option>
-                                        <option value="9">02:00 PM</option>
-                                        <option value="10">03:00 PM</option>
-                                        <option value="11">04:00 PM</option>
-                                        <option value="12">05:00 PM</option>
-                                        <option value="13">06:00 PM</option>
-                                        <option value="14">07:00 PM</option>
-                                        <option value="15">08:00 PM</option>
-                                        <option value="16">09:00 PM</option>
-                                        <option value="17">10:00 PM</option>
-                                        <option value="18">11:00 PM</option>
-                                        <option value="19">01:00 AM</option>
-                                        <option value="20">02:00 AM</option>
-                                        <option value="21">03:00 AM</option>
-                                        <option value="22">04:00 AM</option>
-                                        <option value="23">05:00 AM</option>
+                                        <option value="1">6 AM</option>
+                                        <option value="2">7 AM</option>
+                                        <option value="3">8 AM</option>
+                                        <option value="4">9 AM</option>
+                                        <option value="5">10 AM</option>
+                                        <option value="6">11 AM</option>
+                                        <option value="7">12 PM</option>
+                                        <option value="8">1 PM</option>
+                                        <option value="9">2 PM</option>
+                                        <option value="10">3 PM</option>
+                                        <option value="11">4 PM</option>
+                                        <option value="12">5 PM</option>
+                                        <option value="13">6 PM</option>
+                                        <option value="14">7 PM</option>
+                                        <option value="15">8 PM</option>
+                                        <option value="16">9 PM</option>
+                                        <option value="17">10 PM</option>
+                                        <option value="18">11 PM</option>
+                                        <option value="19">1 AM</option>
+                                        <option value="20">2 AM</option>
+                                        <option value="21">3 AM</option>
+                                        <option value="22">4 AM</option>
+                                        <option value="23">5 AM</option>
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-12 -->
@@ -162,12 +170,14 @@
                                 <div class="form-group">
 
                                     <label for="airlineId_{{this.tripIndex}}" class="control-label">Airline <span class="asterisk important-input">*</span></label>
-                                    <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                    {{#semanticselect}}
+                                    <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="None">None</option>
                                         {{#each airlineList this.fromId this.toId}}
                                         <option value="{{airlineId}}" {{airlineSelected airlineId ../tripIndex}}>{{getAirlineName airlineId}}</option>
                                         {{/each}}
                                     </select>
+                                    {{/semanticselect}}
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
                             <div class="col-sm-2">
@@ -187,12 +197,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
-                                    <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                    {{#semanticselect}}
+                                    <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="None">None</option>
                                         {{#each hotelList this.toId}}
                                         <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
                                         {{/each}}
                                     </select>
+                                    {{/semanticselect}}
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
                             <div class="col-sm-2">
