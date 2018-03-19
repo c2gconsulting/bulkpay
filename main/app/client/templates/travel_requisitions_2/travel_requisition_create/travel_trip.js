@@ -1,0 +1,506 @@
+/*****************************************************************************/
+/* TravelRequisitionCreate: Event Handlers */
+/*****************************************************************************/
+import _ from 'underscore';
+
+Template.TravelTrip.events({
+    // "change [name='toId']": function(e, tmpl){
+    //     e.preventDefault()
+
+    //     const selectedStateId = $(e.currentTarget).val();
+    //     console.log(`selectedStateId: `, selectedStateId)
+
+    //     tmpl.selectedstateId.set(selectedStateId);
+    // },
+    "change [name='toId']": function(e, tmpl){
+        e.preventDefault()
+
+        const selectedTravelcityId = $(e.currentTarget).val();
+        console.log(`selectedTravelcityId: `, selectedTravelcityId)
+
+        tmpl.selectedtravelcityId.set(selectedTravelcityId);
+    },
+    "change [name='airline']": function(e, tmpl){
+        e.preventDefault()
+        console.log("show")
+        const selectedFlightrouteId = $(e.currentTarget).val();
+        console.log(`selectedFlightrouteId: `, selectedFlightrouteId)
+
+        tmpl.selectedflightrouteId.set(selectedFlightrouteId);
+    },
+
+
+    //includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
+
+    'click #createProcurementRequisition': function(e, tmpl) {
+        e.preventDefault()
+
+        Modal.show('TravelTrip')
+    },
+    //'change .calculate': function(e, tmpl) {
+    //  e.preventDefault();
+    //$('#pay-type-title').val('populate automatically!');
+    //},
+    "change .fieldInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        let inputVal = $(e.target).val().trim();
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                let fields = travelRequestConfig.fields || [];
+                fields.forEach(field => {
+                    if(field.dbFieldName === fieldName) {
+                        if(!tmpl[fieldName]) {
+                            tmpl[fieldName] = new ReactiveVar();
+                        }
+
+                        if(field.type === 'String' || field.type === 'TextArea') {
+                            tmpl[fieldName].set(inputVal)
+                        } else if(field.type === 'Date' || field.type === 'Time') {
+                            if(inputVal && inputVal.length > 0) {
+                                const date = new Date(inputVal)
+                                const momentObj = moment(date)
+
+                                if(momentObj.isBefore(moment())) {
+                                    if(!field.allowDatesInPast) {
+                                        tmpl[fieldName].set(null)
+                                        $(e.target).val(null)
+                                    } else {
+                                        if(inputVal && inputVal.length > 0)
+                                        tmpl[fieldName].set(new Date(inputVal))
+                                        else
+                                        tmpl[fieldName].set(null)
+                                    }
+                                } else {
+                                    if(inputVal && inputVal.length > 0)
+                                    tmpl[fieldName].set(new Date(inputVal))
+                                    else
+                                    tmpl[fieldName].set(null)
+                                }
+                            } else {
+                                tmpl[fieldName].set(null)
+                                $(e.target).val(null)
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }, 200),
+    "change .currencyField": _.throttle(function(e, tmpl) {
+        var currency = $(e.target).val().trim();
+
+        tmpl.selectedCurrency.set(currency)
+        Meteor.defer(function() {
+            $('.costInputField').selectpicker('refresh');
+        });
+    }, 200),
+    "change .numberOfDaysField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let daysAsNumber = parseFloat(text)
+        if(isNaN(daysAsNumber)) {
+            daysAsNumber = 0
+        }
+
+        tmpl.selectedNumDays.set(daysAsNumber)
+    }, 200),
+    "change .costCenterField": _.throttle(function(e, tmpl) {
+        var val = $(e.target).val().trim();
+
+        if (!val || val.trim().length === 0) {
+            tmpl.selectedCostCenter.set(null)
+        } else {
+            tmpl.selectedCostCenter.set(val)
+        }
+    }, 200),
+    "change .costInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let costAsNumber = parseFloat(text)
+        if(isNaN(costAsNumber)) {
+            costAsNumber = 0
+        }
+
+        tmpl[fieldName].set(costAsNumber)
+        tmpl.updateTotalTripCost()
+    }, 200),
+    "keyup .costInputField": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        var text = $(e.target).val().trim();
+
+        if (!text || text.trim().length === 0) {
+            text = "0"
+        }
+        let costAsNumber = parseFloat(text)
+        if(isNaN(costAsNumber)) {
+            costAsNumber = 0
+        }
+
+        tmpl[fieldName].set(costAsNumber)
+        tmpl.updateTotalTripCost()
+    }, 200),
+
+    'click #new-requisition-save-draft': function(e, tmpl) {
+        e.preventDefault()
+        let requisitionDoc = {}
+
+        let currentUserUnitId = Template.instance().unitId.get()
+        if(currentUserUnitId) {
+            requisitionDoc.unitId = currentUserUnitId
+        }
+        //--
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                requisitionDoc.currency = tmpl.selectedCurrency.get()
+                requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
+
+                let fields = travelRequestConfig.fields || [];
+                fields.forEach(field => {
+                    if(tmpl[field.dbFieldName]) {
+                        const fieldVal = tmpl[field.dbFieldName].get();
+                        requisitionDoc[field.dbFieldName] = fieldVal;
+                    }
+                })
+
+                requisitionDoc.tripCosts = {}
+                let costs = travelRequestConfig.costs || [];
+                costs.forEach(cost => {
+                    let costAmount = tmpl[cost.dbFieldName].get();
+                    if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                        const selectedNumDays = tmpl.selectedNumDays.get()
+                        costAmount = costAmount * selectedNumDays
+                    }
+                    requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+                })
+            }
+        }
+        //--
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+            if(!err) {
+                swal({title: "Success", text: "Requisition Draft saved", type: "success",
+                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+            }, () => {
+                // Modal.hide()
+            })
+        } else {
+            swal('Validation error', err.message, 'error')
+        }
+    })
+},
+'click #new-requisition-create': function(e, tmpl) {
+    e.preventDefault()
+
+    let validation = tmpl.areInputsValid(tmpl)
+    if(validation === true) {
+        let requisitionDoc = {}
+
+        let currentUserUnitId = Template.instance().unitId.get()
+        if(currentUserUnitId) {
+            requisitionDoc.unitId = currentUserUnitId
+        }
+        //--
+        const customConfig = tmpl.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                requisitionDoc.currency = tmpl.selectedCurrency.get()
+                requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+                requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
+
+                let fields = travelRequestConfig.fields || [];
+                fields.forEach(field => {
+                    if(tmpl[field.dbFieldName]) {
+                        const fieldVal = tmpl[field.dbFieldName].get();
+                        requisitionDoc[field.dbFieldName] = fieldVal;
+                    }
+                })
+                //--
+                requisitionDoc.tripCosts = {}
+                let costs = travelRequestConfig.costs || [];
+                costs.forEach(cost => {
+                    let costAmount = tmpl[cost.dbFieldName].get();
+
+                    if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                        const selectedNumDays = tmpl.selectedNumDays.get()
+                        costAmount = costAmount * selectedNumDays
+                    }
+
+                    requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+                })
+
+            }
+        }
+        //--
+        let businessUnitId = Session.get('context')
+
+        Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
+            if(!err) {
+                swal({title: "Success", text: "Requisition is now pending approval", type: "success",
+                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+            }, () => {
+                //Modal.hide()
+            })
+        } else {
+            swal('Validation error', err.message, 'error')
+        }
+    })
+} else {
+    swal('Validation error', validation, 'error')
+}
+}
+});
+
+/*****************************************************************************/
+/* TravelRequisitionCreate: Helpers */
+/*****************************************************************************/
+Template.TravelTrip.helpers({
+
+    'checked': (prop) => {
+        if(Template.instance().data)
+        return Template.instance().data[prop];
+        return false;
+    },
+    travelcityList() {
+        return  Travelcities.find();
+    },
+    budgetList() {
+        return  Budgets.find();
+    },
+    airlineList() {
+        const selectedflightrouteId = Template.instance().selectedflightrouteId.get();
+        if(selectedflightrouteId) {
+            return Airlines.find({flightrouteId: selectedflightrouteId});
+        }
+    },
+    hotelList() {
+        const selectedtravelcityId = Template.instance().selectedtravelcityId.get();
+        if(selectedtravelcityId) {
+            return Hotels.find({travelcityId: selectedtravelcityId});
+        }
+    },
+    budgetCodeSelected(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val){
+            return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
+        }
+
+    },
+
+    travelTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val){
+            return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+
+    },
+    currentTravelRequest(){
+        return Template.instance().currentTravelRequest.get();
+    },
+
+
+    selected(context,val) {
+        let self = this;
+
+        if(Template.instance().data){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return Template.instance().data[context] === val ? selected="selected" : '';
+            }
+            return Template.instance().data[context] === self._id ? selected="selected" : '';
+        }
+    },
+    'getCurrentUserUnitName': function() {
+        let unitId = Template.instance().unitId.get()
+        if(unitId) {
+            let unit = EntityObjects.findOne({_id: unitId});
+            if(unit) {
+                return unit.name
+            }
+        }
+    },
+    'amountNonPaybelToEmp': function() {
+        return Template.instance().amountNonPaybelToEmp.get()
+    },
+    'amoutPayableToEmp': function() {
+        return Template.instance().amoutPayableToEmp.get()
+    },
+    'totalTripCost': function() {
+        return Template.instance().totalTripCost.get()
+    },
+    'isEqual': (a, b) => {
+        return a === b;
+    },
+    'fields': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            return travelRequestConfig.fields
+        }
+    },
+    'costs': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            return travelRequestConfig.costs
+        }
+    },
+    'currencyEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isCurrencyEnabled
+            }
+        }
+    },
+    'allowedCurrencies': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.allowedCurrencies
+            }
+        }
+    },
+    'numberDaysEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isNumberOfDaysEnabled
+            }
+        }
+    },
+    'costCenterEnabled': function() {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            if(travelRequestConfig) {
+                return travelRequestConfig.isCostCenterEnabled
+            }
+        }
+    },
+    'costHasAllowedValues': function(dbFieldName) {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            const costs = travelRequestConfig.costs || []
+            const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
+            if(fieldCost) {
+                return fieldCost.hasAllowedValues;
+            }
+        }
+    },
+    'costAllowedValues': function(dbFieldName) {
+        let customConfig = Template.instance().businessUnitCustomConfig.get()
+        if(customConfig) {
+            const travelRequestConfig = customConfig.travelRequestConfig;
+            const costs = travelRequestConfig.costs || []
+            const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
+            if(fieldCost) {
+                const selectedCurrency = Template.instance().selectedCurrency.get()
+                if(selectedCurrency) {
+                    return fieldCost.allowedValues[selectedCurrency];
+                }
+            }
+        }
+    },
+    'units': function () {
+        return Template.instance().units.get()
+    },
+
+
+
+
+
+});
+
+/*****************************************************************************/
+/* TravelRequisitionCreate: Lifecycle Hooks */
+/*****************************************************************************/
+Template.TravelTrip.onCreated(function () {
+
+    let self = this;
+
+    let businessUnitId = Session.get('context');
+    self.subscribe("travelcities", Session.get('context'));
+    self.subscribe("flightroutes", Session.get('context'));
+    self.subscribe("airlines", Session.get('context'));
+    self.subscribe("hotels", Session.get('context'));
+    self.subscribe("budgets", Session.get('context'));
+
+    self.autorun(function(){
+
+    })
+
+    self.areInputsValid = function(tmpl) {
+
+    }
+
+    self.updateTotalTripCost = () => {
+        const customConfig = self.businessUnitCustomConfig.get();
+        if(customConfig) {
+            let travelRequestConfig = customConfig.travelRequestConfig;
+
+            if(travelRequestConfig) {
+                let costs = travelRequestConfig.costs || [];
+                let nonPayableToEmp = 0;
+                let payableToEmp = 0;
+                let totalCosts = 0;
+
+                costs.forEach(cost => {
+                    let costAmount = self[cost.dbFieldName].get();
+                    if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                        const selectedNumDays = self.selectedNumDays.get()
+                        costAmount = costAmount * selectedNumDays
+                    }
+                    totalCosts += costAmount;
+
+                    if(cost.isPayableToStaff) {
+                        payableToEmp += costAmount;
+                    } else if(!cost.isPayableToStaff) {
+                        nonPayableToEmp += costAmount;
+                    }
+                })
+                self.amountNonPaybelToEmp.set(nonPayableToEmp)
+                self.amoutPayableToEmp.set(payableToEmp)
+                self.totalTripCost.set(totalCosts)
+            }
+        } else {
+            self.amountNonPaybelToEmp.set(0)
+            self.amoutPayableToEmp.set(0)
+            self.totalTripCost.set(0)
+        }
+    }
+});
+
+Template.TravelTrip.onRendered(function () {
+    $('select.dropdown').dropdown();
+
+    this.$('.datetimepicker').datetimepicker(
+
+        {  format: 'YYYY-MM-DD'}
+    );
+
+
+});
+
+Template.TravelTrip.onDestroyed(function () {
+});

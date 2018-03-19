@@ -23,7 +23,7 @@ Meteor.methods({
         //    // must have orders/manage permissions
         this.unblock();
 
-        let AirlineId = Airlines.insert(airline);
+        let airlineId = Airlines.insert(airline);
         return {_id: airlineId};
         //let newBu = BusinessUnits.findOne(buId);
         ////sendOrderNotification("order.created", newOrder, userId);

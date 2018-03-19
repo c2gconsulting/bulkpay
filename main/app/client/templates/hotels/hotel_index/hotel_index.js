@@ -19,7 +19,7 @@ Template.HotelIndex.helpers({
     'pfaCount': function(){
         return Hotels.find().count();
     },
-    
+
 });
 
 /*****************************************************************************/
@@ -37,7 +37,6 @@ Template.HotelIndex.onRendered(function () {
 
 Template.HotelIndex.onDestroyed(function () {
 });
-
 
 /*****************************************************************************/
 /* singleHotel: Helpers */
@@ -69,8 +68,7 @@ Template.singleHotel.events({
     }
 })
 Template.singleHotel.helpers({
-   
-    
+       
     'getTravelcityName': function(travelcityId) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
         if(travelcity) {

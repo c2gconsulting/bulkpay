@@ -1,330 +1,333 @@
 <template name="TravelRequisition2Create">
-  <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">New Travel Request</h3>
-          </div>
-          <div class="panel-body">
-            <div class="row">
-              {{#unless Template.subscriptionsReady}}
-              <div class="col-sm-12">
-                {{> spinner}}
-              </div>
-              {{/unless}}
-            </div>
-            <br/>
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
-                  <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{description}}" />
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
+    <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Travel Request</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{#unless Template.subscriptionsReady}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                {{> spinner}}
+                            </div>
+                        </div>
+                        {{/unless}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
 
-                  <label for="state-name" class="control-label">Which project will be responsible for this trip?</label>
-                  <select name="budget" style="width: 100%" class="form-control">
-                    <option value="budget" {{selected "budget" nil}}>None</option>
-                    {{#each budgetList}}
-                    <option value="{{_id}}" {{selected "budget" _id}}>{{name}}</option>
-                    {{/each}}
-                  </select>
-                  <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
+                                    <label for="budget-code" class="control-label">Which project will be responsible for this trip?</label>
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
+                                        <option value="NONE">I am not sure</option>
+                                        {{#each budgetList}}
+                                        <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                    <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
 
-            </div>
+                        </div>
 
-            <div class="row">
-              <div class="col-sm-10">
-                <div class="form-group">
-                  <ul class="list-inline">
-                    <li><input type="radio" value="true" name="retroactivePayrun" />&nbsp;&nbsp;Return Trip</li>
-                    <li><input type="radio"  value="false" name="retroactivePayrun"/>&nbsp;&nbsp;Multiple Trips</li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <button class="btn btn-danger btn-small mr5 pull-right" id="startProcessing">Reset All</button>
-              </div>
-            </div>
+                        <div class="row">
+                            <div class="col-sm-10">
+                                <div class="form-group">
+                                    <ul class="list-inline">
+                                        <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}}/>&nbsp;&nbsp;Return Trip</li>
+                                        <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}}/>&nbsp;&nbsp;Multiple Trips</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-danger btn-small mr5 pull-right" id="startProcessing">Reset All</button>
+                            </div>
+                        </div>
 
-            <hr/>
-            <div class="row">
-              <div class="col-sm-2">
-                <div class="form-group">
-                    <label for="fromId" class="control-label">From</label>
-                    <select name="fromId" style="width: 100%" class="form-control">
-                        <option value="" {{selected "travelcity" nil}}>None</option>
-                        {{#each travelcityList}}
-                            <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
+                        <hr/>
+
+                        {{#each currentTravelRequest.trips}}
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="fromId_{{this.tripIndex}}" class="control-label">From</label>        
+                                    <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="form-control selectpicker" data-live-search="true" >
+                                        <option value="None" {{selected "travelcity" nil}}>None</option>
+                                        {{#each travelcityList}}
+                                        <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="toId_{{this.tripIndex}}" class="control-label">To</label>
+                                    <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                        <option value="None" >None</option>
+                                        {{#each travelcityList}}
+                                        <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-2">
+                                <div class="form-group datetimepicker">
+                                    <label class="control-label">Departure Date <span class="asterisk important-input">*</span></label>
+                                    <input class="set-due-date form-control " type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date" value="{{formatDate this.departureDate}}"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+
+                                    <label for="departureTime_{{this.tripIndex}}" class="control-label">Departure Time <span class="asterisk important-input">*</span></label>
+                                    <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control ">
+                                        <option value="1">06:00 AM</option>
+                                        <option value="2">07:00 AM</option>
+                                        <option value="3">08:00 AM</option>
+                                        <option value="4">09:00 AM</option>
+                                        <option value="5">10:00 AM</option>
+                                        <option value="6">11:00 AM</option>
+                                        <option value="7">12:00 PM</option>
+                                        <option value="8">01:00 PM</option>
+                                        <option value="9">02:00 PM</option>
+                                        <option value="10">03:00 PM</option>
+                                        <option value="11">04:00 PM</option>
+                                        <option value="12">05:00 PM</option>
+                                        <option value="13">06:00 PM</option>
+                                        <option value="14">07:00 PM</option>
+                                        <option value="15">08:00 PM</option>
+                                        <option value="16">09:00 PM</option>
+                                        <option value="17">10:00 PM</option>
+                                        <option value="18">11:00 PM</option>
+                                        <option value="19">01:00 AM</option>
+                                        <option value="20">02:00 AM</option>
+                                        <option value="21">03:00 AM</option>
+                                        <option value="22">04:00 AM</option>
+                                        <option value="23">05:00 AM</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div>
+                            {{#if isReturnTrip}}
+                            <div class="col-sm-2">
+                                <div class="form-group datetimepicker">
+                                    <label class="control-label">Return Date <span class="asterisk important-input">*</span></label>
+                                    <input class="set-due-date form-control " type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate this.returnDate}}"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+
+                                    <label for="returnTime_{{this.tripIndex}}" class="control-label">Return Time <span class="asterisk important-input">*</span></label>
+                                    <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%" class="form-control ">
+                                        <option value="1">06:00 AM</option>
+                                        <option value="2">07:00 AM</option>
+                                        <option value="3">08:00 AM</option>
+                                        <option value="4">09:00 AM</option>
+                                        <option value="5">10:00 AM</option>
+                                        <option value="6">11:00 AM</option>
+                                        <option value="7">12:00 PM</option>
+                                        <option value="8">01:00 PM</option>
+                                        <option value="9">02:00 PM</option>
+                                        <option value="10">03:00 PM</option>
+                                        <option value="11">04:00 PM</option>
+                                        <option value="12">05:00 PM</option>
+                                        <option value="13">06:00 PM</option>
+                                        <option value="14">07:00 PM</option>
+                                        <option value="15">08:00 PM</option>
+                                        <option value="16">09:00 PM</option>
+                                        <option value="17">10:00 PM</option>
+                                        <option value="18">11:00 PM</option>
+                                        <option value="19">01:00 AM</option>
+                                        <option value="20">02:00 AM</option>
+                                        <option value="21">03:00 AM</option>
+                                        <option value="22">04:00 AM</option>
+                                        <option value="23">05:00 AM</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-12 -->
+                            {{/if}}
+                        </div>
+                        {{#unless isLastLeg this.tripIndex}}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+
+                                    <label for="airlineId_{{this.tripIndex}}" class="control-label">Airline <span class="asterisk important-input">*</span></label>
+                                    <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                        <option value="None">None</option>
+                                        {{#each airlineList this.fromId this.toId}}
+                                        <option value="{{airlineId}}" {{airlineSelected airlineId ../tripIndex}}>{{getAirlineName airlineId}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="airfareCost_{{this.tripIndex}}" class="control-label">Airfare Cost</label>
+                                    <input type="text" id="airfareCost_{{this.tripIndex}}" class="form-control" name="airfareCost_{{this.tripIndex}}" value="{{this.airfareCost}}" disabled/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="airfareCurrency_{{this.tripIndex}}" class="control-label">Curr.</label>
+                                    <input type="text" id="airfareCurrency_{{this.tripIndex}}" class="form-control" name="airfareCurrency_{{this.tripIndex}}" value="{{this.airfareCurrency}}" disabled/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
+                                    <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                        <option value="None">None</option>
+                                        {{#each hotelList this.toId}}
+                                        <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
+                                    <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{this.hotelRate}}" disabled/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <label for="hotelCurrency_{{this.tripIndex}}" class="control-label">Curr.</label>
+                                    <input type="text" id="hotelCurrency_{{this.tripIndex}}" class="form-control" name="hotelCurrency_{{this.tripIndex}}" value="{{this.hotelCurrency}}" disabled/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                            <div class="col-sm-3">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-danger">
+                                    <input type="checkbox" id="hotelNotRequired_{{this.tripIndex}}" name="hotelNotRequired_{{this.tripIndex}}" value="{{this.tripIndex}}" {{hotelNotRequiredChecked this.tripIndex}}/>
+                                    <label for="hotelNotRequired_{{this.tripIndex}}">I do not need a hotel</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
+                        </div>
+                        {{#unless hotelNotRequiredChecked this.tripIndex}}
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>Hotel Will Cover:</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="isBreakfastIncluded_{{this.tripIndex}}" {{isBreakfastIncluded this.tripIndex}} />
+                                    <label for="isBreakfastIncluded_{{this.tripIndex}}">Breakfast</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="isLunchIncluded_{{this.tripIndex}}" {{isLunchIncluded this.tripIndex}} />
+                                    <label for="isLunchIncluded_{{this.tripIndex}}">Lunch</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="isDinnerIncluded_{{this.tripIndex}}" {{isDinnerIncluded this.tripIndex}} />
+                                    <label for="isDinnerIncluded_{{this.tripIndex}}">Dinner</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="isIncidentalsIncluded_{{this.tripIndex}}" {{isIncidentalsIncluded this.tripIndex}} />
+                                    <label for="isIncidentalsIncluded_{{this.tripIndex}}">Incidentals</label>
+                                </div>
+                            </div>
+                        </div>
+                        {{/unless}}
+                        <hr/>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <span>Per Diem Rate: <strong>{{formatMoney this.perDiemCost this.perDiemCurrency}}</strong></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>Total Days/Nights: <strong>{{this.totalDuration}}</strong></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>Total Per Diem: <strong>{{formatMoney this.totalPerDiem this.perDiemCurrency}}</strong></span>
+                            </div>
+                            <div class="col-sm-3">
+                                <span>Total Hotel: <strong>{{formatMoney this.totalHotelCost this.hotelCurrency}}</strong></span>
+                            </div>
+
+                        </div>
+                        {{/unless}}
+                        <hr/>
                         {{/each}}
-                    </select>
-                </div><!-- form-group -->
-            </div><!-- col-sm-6 -->
-            <div class="col-sm-2">
-                <div class="form-group">
-                    <label for="toId" class="control-label">To</label>
-                    <select name="toId" style="width: 100%" class="form-control">
-                        <option value="" {{selected "travelcity" nil}}>None</option>
-                        {{#each travelcityList}}
-                            <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
-                        {{/each}}
-                    </select>
-                </div><!-- form-group -->
-            </div><!-- col-sm-6 -->
-              <div class="col-sm-2">
-                <div class="form-group datetimepicker">
-                  <label class="control-label">Departure Date <span class="asterisk important-input">*</span></label>
-                  <input class="set-due-date form-control " type="text" name="appointment" placeholder="Departure Date"/>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span><strong>Trip Summary</strong></span>
+                            </div>
+                        </div>
+                        <hr/>
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Amount Payable to Employee:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Flight Cost:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalFlightCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalFlightCostUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Hotel Cost:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalHotelCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalHotelCostUSD "USD"}}</span>
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span><strong>Total Estimated Trip Cost:</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalTripCostNGN "NGN"}}</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalTripCostUSD "USD"}}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+                        <button class="btn btn-success mr5 pull-right" id="new-requisition-create" data-dismiss="modal">Submit for Approval</button>
+                        <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>
+                    </div><!-- panel-footer -->
                 </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="form-group">
-
-                  <label for="destination-state-name" class="control-label">Departure Time <span class="asterisk important-input">*</span></label>
-                  <select name="destination_state" style="width: 100%" class="form-control ">
-                    <option value="1">06:00 AM</option>
-                    <option value="2">07:00 AM</option>
-                    <option value="3">08:00 AM</option>
-                    <option value="4">09:00 AM</option>
-                    <option value="5">10:00 AM</option>
-                    <option value="6">11:00 AM</option>
-                    <option value="7">12:00 PM</option>
-                    <option value="8">01:00 PM</option>
-                    <option value="9">02:00 PM</option>
-                    <option value="10">03:00 PM</option>
-                    <option value="11">04:00 PM</option>
-                    <option value="12">05:00 PM</option>
-                    <option value="13">06:00 PM</option>
-                    <option value="14">07:00 PM</option>
-                    <option value="15">08:00 PM</option>
-                    <option value="16">09:00 PM</option>
-                    <option value="17">10:00 PM</option>
-                    <option value="18">11:00 PM</option>
-                    <option value="19">01:00 AM</option>
-                    <option value="20">02:00 AM</option>
-                    <option value="21">03:00 AM</option>
-                    <option value="22">04:00 AM</option>
-                    <option value="23">05:00 AM</option>
-                  </select>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-2">
-                <div class="form-group datetimepicker">
-                  <label class="control-label">Return Date <span class="asterisk important-input">*</span></label>
-                  <input class="set-due-date form-control " type="text" name="appointment" placeholder="Return Date"/>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="form-group">
-
-                  <label for="destination-state-name" class="control-label">Return Time <span class="asterisk important-input">*</span></label>
-                  <select name="destination_state" style="width: 100%" class="form-control ">
-                    <option value="1">06:00 AM</option>
-                    <option value="2">07:00 AM</option>
-                    <option value="3">08:00 AM</option>
-                    <option value="4">09:00 AM</option>
-                    <option value="5">10:00 AM</option>
-                    <option value="6">11:00 AM</option>
-                    <option value="7">12:00 PM</option>
-                    <option value="8">01:00 PM</option>
-                    <option value="9">02:00 PM</option>
-                    <option value="10">03:00 PM</option>
-                    <option value="11">04:00 PM</option>
-                    <option value="12">05:00 PM</option>
-                    <option value="13">06:00 PM</option>
-                    <option value="14">07:00 PM</option>
-                    <option value="15">08:00 PM</option>
-                    <option value="16">09:00 PM</option>
-                    <option value="17">10:00 PM</option>
-                    <option value="18">11:00 PM</option>
-                    <option value="19">01:00 AM</option>
-                    <option value="20">02:00 AM</option>
-                    <option value="21">03:00 AM</option>
-                    <option value="22">04:00 AM</option>
-                    <option value="23">05:00 AM</option>
-                  </select>
-                </div><!-- form-group -->
-              </div><!-- col-sm-12 -->
             </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-
-                  <label for="state-name" class="control-label">Airline <span class="asterisk important-input">*</span></label>
-                  <select name="airline" style="width: 100%" class="form-control">
-                    <option value="airline" {{selected "airline" nil}}>None</option>
-                    {{#each airlineList}}
-                    <option value="{{_id}}" {{selected "airline" _id}}>{{name}}</option>
-                    {{/each}}
-                  </select>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-2">
-                <div class="form-group">
-                  <label for="description" class="control-label">Airfare Cost</label>
-                  <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-1">
-                <div class="form-group">
-                  <label for="description" class="control-label">Curr.</label>
-                  <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-            </div>
-            <div class="row">
-              <div class="col-sm-6">
-                <div class="form-group">
-                  <label for="hotel-name" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
-                  <select name="hotel" style="width: 100%" class="form-control">
-                    <option value="" {{selected "hotel" nil}}>None</option>
-                    {{#each hotelList}}
-                    <option value="{{_id}}" {{selected "hotel" _id}}>{{name}}</option>
-                    {{/each}}
-                  </select>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-2">
-                <div class="form-group">
-                  <label for="description" class="control-label">Rate per Night</label>
-                  <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-1">
-                <div class="form-group">
-                  <label for="description" class="control-label">Curr.</label>
-                  <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
-                </div><!-- form-group -->
-              </div><!-- col-sm-3 -->
-              <div class="col-sm-3">
-                <label>&nbsp;</label>
-                <div class="ckbox ckbox-success">
-                  <input type="checkbox" id="hsdfMeal"
-                  checked="{{checked 'hsdfMeal'}}" />
-                  <label for="hsdf-meal">I do not need a hotel</label>
-                </div>
-              </div><!-- col-sm-4 -->
-            </div>
-            <div class="row">
-              <div class="col-sm-4">
-                <label>Hotel Will Cover:</label>
-              </div>
-              <div class="col-sm-2">
-                <div class="ckbox ckbox-success">
-                  <input type="checkbox" id="hsdfMeal"
-                  checked="{{checked 'hsdfMeal'}}" />
-                  <label for="hsdf-meal">Breakfast</label>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="ckbox ckbox-success">
-                  <input type="checkbox" id="hsdfMeal"
-                  checked="{{checked 'hsdfMeal'}}" />
-                  <label for="hsdf-meal">Lunch</label>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="ckbox ckbox-success">
-                  <input type="checkbox" id="hsdfMeal"
-                  checked="{{checked 'hsdfMeal'}}" />
-                  <label for="hsdf-meal">Dinner</label>
-                </div>
-              </div>
-              <div class="col-sm-2">
-                <div class="ckbox ckbox-success">
-                  <input type="checkbox" id="hsdfMeal"
-                  checked="{{checked 'hsdfMeal'}}" />
-                  <label for="hsdf-meal">Incidentals</label>
-                </div>
-              </div>
-            </div><!-- col-sm-4 -->
-            <hr/>
-            <div class="row">
-              <div class="col-sm-3">
-                <span>Per Diem Rate: <strong>NGN 10,000</strong></span>
-              </div>
-              <div class="col-sm-3">
-                <span>Total Days/Nights: <strong>5</strong></span>
-              </div>
-              <div class="col-sm-3">
-                <span>Total Per Diem: <strong>NGN 50,000</strong></span>
-              </div>
-              <div class="col-sm-3">
-                <span>Total Hotel: <strong>NGN 500,000</strong></span>
-              </div>
-
-            </div>
-
-            <br/>
-            <div class="row">
-              <div class="col-sm-12">
-                <span><strong>Trip Summary</strong></span>
-              </div>
-            </div>
-            <hr/>
-            <div class="row">
-              <div class="col-sm-8">
-                <span>Total Estimated Amount Payable to Employee:</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">NGN 500,000</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">USD 10,000</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-8">
-                <span>Total Estimated Flight Cost:</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">NGN 400,000</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">USD 10,000</span>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-sm-8">
-                <span>Total Estimated Hotel Cost:</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">NGN 1,000,000</span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right">USD 40,000</span>
-              </div>
-            </div>
-
-            <hr>
-            <div class="row">
-              <div class="col-sm-8">
-                <span><strong>Total Estimated Trip Cost:</strong></span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right"><strong>NGN 4,000,000</strong></span>
-              </div>
-              <div class="col-sm-2">
-                <span class="text-right pull-right"><strong>USD 40,000</strong></span>
-              </div>
-            </div>
-
-          </div>
-          <div class="panel-footer">
-            <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-
-            <button class="btn btn-success mr5 pull-right" id="new-requisition-create" data-dismiss="modal">Submit for Approval</button>
-            <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>
-          </div><!-- panel-footer -->
         </div>
-      </div>
     </div>
-  </div>
 </template>

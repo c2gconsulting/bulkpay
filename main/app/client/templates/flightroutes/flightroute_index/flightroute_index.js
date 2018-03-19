@@ -19,7 +19,7 @@ Template.FlightrouteIndex.helpers({
     'pfaCount': function(){
         return Flightroutes.find().count();
     },
-    
+
 });
 
 /*****************************************************************************/
@@ -50,7 +50,7 @@ Template.singleFlightroute.events({
 
          swal({
              title: "Are you sure?",
-             text: "You will not be able to recover this Pension Manager",
+             text: "You will not be able to recover this Flight Route",
              type: "warning",
              showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -69,13 +69,13 @@ Template.singleFlightroute.events({
      }
  })
 Template.singleFlightroute.helpers({
-   
+
          'getTravelcityName': function(travelcityId) {
        const travelcity = Travelcities.findOne({_id: travelcityId})
          if(travelcity) {
              return travelcity.name
          }
-         
+
      },
      'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})

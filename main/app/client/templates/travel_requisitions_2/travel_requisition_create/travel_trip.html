@@ -1,0 +1,210 @@
+<template name="TravelTrip">
+
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="fromId" class="control-label">From</label>
+                <select name="fromId_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                    <option value="" {{selected "travelcity" nil}}>None</option>
+                    {{#each travelcityList}}
+                    <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
+                    {{/each}}
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-6 -->
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="toId" class="control-label">To</label>
+                <select name="toId" style="width: 100%" class="form-control">
+                    <option value="" {{selected "travelcity" nil}}>None</option>
+                    {{#each travelcityList}}
+                    <option value="{{_id}}" {{selected "travelcity" _id}}>{{name}}</option>
+                    {{/each}}
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-6 -->
+        <div class="col-sm-2">
+            <div class="form-group datetimepicker">
+                <label class="control-label">Departure Date <span class="asterisk important-input">*</span></label>
+                <input class="set-due-date form-control " type="text" name="appointment" placeholder="Departure Date"/>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+
+                <label for="destination-state-name" class="control-label">Departure Time <span class="asterisk important-input">*</span></label>
+                <select name="destination_state" style="width: 100%" class="form-control ">
+                    <option value="1">06:00 AM</option>
+                    <option value="2">07:00 AM</option>
+                    <option value="3">08:00 AM</option>
+                    <option value="4">09:00 AM</option>
+                    <option value="5">10:00 AM</option>
+                    <option value="6">11:00 AM</option>
+                    <option value="7">12:00 PM</option>
+                    <option value="8">01:00 PM</option>
+                    <option value="9">02:00 PM</option>
+                    <option value="10">03:00 PM</option>
+                    <option value="11">04:00 PM</option>
+                    <option value="12">05:00 PM</option>
+                    <option value="13">06:00 PM</option>
+                    <option value="14">07:00 PM</option>
+                    <option value="15">08:00 PM</option>
+                    <option value="16">09:00 PM</option>
+                    <option value="17">10:00 PM</option>
+                    <option value="18">11:00 PM</option>
+                    <option value="19">01:00 AM</option>
+                    <option value="20">02:00 AM</option>
+                    <option value="21">03:00 AM</option>
+                    <option value="22">04:00 AM</option>
+                    <option value="23">05:00 AM</option>
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-2">
+            <div class="form-group datetimepicker">
+                <label class="control-label">Return Date <span class="asterisk important-input">*</span></label>
+                <input class="set-due-date form-control " type="text" name="appointment" placeholder="Return Date"/>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="form-group">
+
+                <label for="destination-state-name" class="control-label">Return Time <span class="asterisk important-input">*</span></label>
+                <select name="destination_state" style="width: 100%" class="form-control ">
+                    <option value="1">06:00 AM</option>
+                    <option value="2">07:00 AM</option>
+                    <option value="3">08:00 AM</option>
+                    <option value="4">09:00 AM</option>
+                    <option value="5">10:00 AM</option>
+                    <option value="6">11:00 AM</option>
+                    <option value="7">12:00 PM</option>
+                    <option value="8">01:00 PM</option>
+                    <option value="9">02:00 PM</option>
+                    <option value="10">03:00 PM</option>
+                    <option value="11">04:00 PM</option>
+                    <option value="12">05:00 PM</option>
+                    <option value="13">06:00 PM</option>
+                    <option value="14">07:00 PM</option>
+                    <option value="15">08:00 PM</option>
+                    <option value="16">09:00 PM</option>
+                    <option value="17">10:00 PM</option>
+                    <option value="18">11:00 PM</option>
+                    <option value="19">01:00 AM</option>
+                    <option value="20">02:00 AM</option>
+                    <option value="21">03:00 AM</option>
+                    <option value="22">04:00 AM</option>
+                    <option value="23">05:00 AM</option>
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-12 -->
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+
+                <label for="state-name" class="control-label">Airline <span class="asterisk important-input">*</span></label>
+                <select name="airline" style="width: 100%" class="form-control">
+                    <option value="airline" {{selected "airline" nil}}>None</option>
+                    {{#each airlineList}}
+                    <option value="{{_id}}" {{selected "airline" _id}}>{{name}}</option>
+                    {{/each}}
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="description" class="control-label">Airfare Cost</label>
+                <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-1">
+            <div class="form-group">
+                <label for="description" class="control-label">Curr.</label>
+                <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="hotel-name" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
+                <select name="hotel" style="width: 100%" class="form-control">
+                    <option value="" {{selected "hotel" nil}}>None</option>
+                    {{#each hotelList}}
+                    <option value="{{_id}}" {{selected "hotel" _id}}>{{name}}</option>
+                    {{/each}}
+                </select>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="description" class="control-label">Rate per Night</label>
+                <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-1">
+            <div class="form-group">
+                <label for="description" class="control-label">Curr.</label>
+                <input type="text" id="description" class="form-control" name="description" value="{{description}}" disabled/>
+            </div><!-- form-group -->
+        </div><!-- col-sm-3 -->
+        <div class="col-sm-3">
+            <label>&nbsp;</label>
+            <div class="ckbox ckbox-success">
+                <input type="checkbox" id="hsdfMeal"
+                checked="{{checked 'hsdfMeal'}}" />
+                <label for="hsdf-meal">I do not need a hotel</label>
+            </div>
+        </div><!-- col-sm-4 -->
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <label>Hotel Will Cover:</label>
+        </div>
+        <div class="col-sm-2">
+            <div class="ckbox ckbox-success">
+                <input type="checkbox" id="hsdfMeal"
+                checked="{{checked 'hsdfMeal'}}" />
+                <label for="hsdf-meal">Breakfast</label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ckbox ckbox-success">
+                <input type="checkbox" id="hsdfMeal"
+                checked="{{checked 'hsdfMeal'}}" />
+                <label for="hsdf-meal">Lunch</label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ckbox ckbox-success">
+                <input type="checkbox" id="hsdfMeal"
+                checked="{{checked 'hsdfMeal'}}" />
+                <label for="hsdf-meal">Dinner</label>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="ckbox ckbox-success">
+                <input type="checkbox" id="hsdfMeal"
+                checked="{{checked 'hsdfMeal'}}" />
+                <label for="hsdf-meal">Incidentals</label>
+            </div>
+        </div>
+    </div><!-- col-sm-4 -->
+    <hr/>
+    <div class="row">
+        <div class="col-sm-3">
+            <span>Per Diem Rate: <strong>NGN 10,000</strong></span>
+        </div>
+        <div class="col-sm-3">
+            <span>Total Days/Nights: <strong>5</strong></span>
+        </div>
+        <div class="col-sm-3">
+            <span>Total Per Diem: <strong>NGN 50,000</strong></span>
+        </div>
+        <div class="col-sm-3">
+            <span>Total Hotel: <strong>NGN 500,000</strong></span>
+        </div>
+
+    </div>
+
+</template>

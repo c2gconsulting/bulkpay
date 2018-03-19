@@ -3,6 +3,11 @@
 */
 
 Core.Schemas.Trip = new SimpleSchema({
+    tripIndex: {
+        type: Number,
+        optional: false,
+        defaultValue: 1
+    },
     fromId: {
         type: String,
         optional: true,
@@ -45,6 +50,11 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         defaultValue: 'NGN',
         allowedValues: ['NGN', 'USD'],
+        optional: true
+    },
+    hotelNotRequired:{
+        type: Boolean,
+        defaultValue: false,
         optional: true
     },
     perDiemCost:{

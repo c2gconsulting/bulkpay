@@ -4,155 +4,449 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2Create.events({
-    // "change [name='toId']": function(e, tmpl){
-    //     e.preventDefault()
 
-    //     const selectedStateId = $(e.currentTarget).val();
-    //     console.log(`selectedStateId: `, selectedStateId)
+    "change [name='travelType']":_.throttle(function(e, tmpl) {
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const travelType = $(e.currentTarget).val();
+        currentTravelRequest.description = $("#description").val();
+        currentTravelRequest.budgetCodeId = $("#budget-code").val();
+        currentTravelRequest.type = travelType;
+        currentTravelRequest.totalTripDuration = 0;
+        currentTravelRequest.totalEmployeeAmountPayableNGN = 0;
+        currentTravelRequest.totalEmployeeAmountPayableUSD = 0;
+        currentTravelRequest.totalFlightCostNGN = 0;
+        currentTravelRequest.totalFlightCostUSD = 0;
+        currentTravelRequest.totalHotelCostNGN = 0;
+        currentTravelRequest.totalHotelCostUSD = 0;
+        currentTravelRequest.totalTripCostNGN = 0;
+        currentTravelRequest.totalTripCostUSD = 0;
 
-    //     tmpl.selectedstateId.set(selectedStateId);
-    // },
-    "change [name='toId']": function(e, tmpl){
-        e.preventDefault()
+        if (travelType && (currentTravelRequest.trips)) {
+            if ((travelType === "Return") && (currentTravelRequest.trips.length > 0)) {
+                currentTravelRequest.trips = [{
+                    tripIndex: 1,
+                    fromId: "",
+                    toId: "",
+                    departureDate: new Date(),
+                    returnDate: new Date(),
+                    airlineId: "",
+                    airfareCost: 0,
+                    airfareCurrency: "NGN",
+                    hotelId: "",
+                    hotelRate: 0,
+                    hotelCurrency: "NGN",
+                    hotelNotRequired: false,
+                    perDiemCost: 0,
+                    perDiemCurrency: "NGN",
+                    isBreakfastIncluded: true,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
+                    totalDuration: 0,
+                    totalPerDiem: 0,
+                    totalHotelCost: 0
+                }];
+            }else if (($(e.currentTarget).val() === "Multiple") && (currentTravelRequest.trips.length > 0)){
+                currentTravelRequest.trips = [{
+                    tripIndex: 1,
+                    fromId: "",
+                    toId: "",
+                    departureDate: new Date(),
+                    returnDate: new Date(),
+                    airlineId: "",
+                    airfareCost: 0,
+                    airfareCurrency: "NGN",
+                    hotelId: "",
+                    hotelRate: 0,
+                    hotelCurrency: "NGN",
+                    hotelNotRequired: false,
+                    perDiemCost: 0,
+                    perDiemCurrency: "NGN",
+                    isBreakfastIncluded: true,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
+                    totalDuration: 0,
+                    totalPerDiem: 0,
+                    totalHotelCost: 0
+                },{
+                    tripIndex: 2,
+                    fromId: "",
+                    toId: "",
+                    departureDate: new Date(),
+                    returnDate: new Date(),
+                    airlineId: "",
+                    airfareCost: 0,
+                    airfareCurrency: "NGN",
+                    hotelId: "",
+                    hotelRate: 0,
+                    hotelCurrency: "NGN",
+                    hotelNotRequired: false,
+                    perDiemCost: 0,
+                    perDiemCurrency: "NGN",
+                    isBreakfastIncluded: true,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
+                    totalDuration: 0,
+                    totalPerDiem: 0,
+                    totalHotelCost: 0
+                },{
+                    tripIndex: 3,
+                    fromId: "",
+                    toId: "",
+                    departureDate: new Date(),
+                    returnDate: new Date(),
+                    airlineId: "",
+                    airfareCost: 0,
+                    airfareCurrency: "NGN",
+                    hotelId: "",
+                    hotelRate: 0,
+                    hotelCurrency: "NGN",
+                    hotelNotRequired: false,
+                    perDiemCost: 0,
+                    perDiemCurrency: "NGN",
+                    isBreakfastIncluded: true,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
+                    totalDuration: 0,
+                    totalPerDiem: 0,
+                    totalHotelCost: 0
+                }
+            ]
+        }
+    }
 
-        const selectedTravelcityId = $(e.currentTarget).val();
-        console.log(`selectedTravelcityId: `, selectedTravelcityId)
+    tmpl.currentTravelRequest.set(currentTravelRequest);
 
-        tmpl.selectedtravelcityId.set(selectedTravelcityId);
-    },
-    "change [name='airline']": function(e, tmpl){
-        e.preventDefault()
-        console.log("show")
-        const selectedFlightrouteId = $(e.currentTarget).val();
-        console.log(`selectedFlightrouteId: `, selectedFlightrouteId)
+}, 200),
 
-        tmpl.selectedflightrouteId.set(selectedFlightrouteId);
-    },
+'click [id*=hotelNotRequired]': function(e, tmpl) {
+    e.preventDefault()
 
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = parseInt($(e.currentTarget).val()) - 1;
+    currentTravelRequest.trips[index].hotelNotRequired = !currentTravelRequest.trips[index].hotelNotRequired;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
 
-        //includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
+    tmpl.updateTripNumbers();
 
-    'click #createProcurementRequisition': function(e, tmpl) {
-        e.preventDefault()
+},
+"change [id*='fromId']": function(e, tmpl){
+    e.preventDefault()
 
-        Modal.show('TravelRequisition2Create')
-    },
-    //'change .calculate': function(e, tmpl) {
-      //  e.preventDefault();
-        //$('#pay-type-title').val('populate automatically!');
-    //},
-    "change .fieldInputField": _.throttle(function(e, tmpl) {
-        const fieldName = $(e.target).attr('name');
-        let inputVal = $(e.target).val().trim();
-        const customConfig = tmpl.businessUnitCustomConfig.get();
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
 
-        if(customConfig) {
-            let travelRequestConfig = customConfig.travelRequestConfig;
-            if(travelRequestConfig) {
-                let fields = travelRequestConfig.fields || [];
-                fields.forEach(field => {
-                    if(field.dbFieldName === fieldName) {
-                        if(!tmpl[fieldName]) {
-                            tmpl[fieldName] = new ReactiveVar();
-                        }
+    currentTravelRequest.trips[index].fromId = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
 
-                        if(field.type === 'String' || field.type === 'TextArea') {
-                            tmpl[fieldName].set(inputVal)
-                        } else if(field.type === 'Date' || field.type === 'Time') {
-                            if(inputVal && inputVal.length > 0) {
-                                const date = new Date(inputVal)
-                                const momentObj = moment(date)
+    tmpl.updateTripNumbers();
+},
+"change [id*='toId']": function(e, tmpl){
+    e.preventDefault()
 
-                                if(momentObj.isBefore(moment())) {
-                                    if(!field.allowDatesInPast) {
-                                        tmpl[fieldName].set(null)
-                                        $(e.target).val(null)
-                                    } else {
-                                        if(inputVal && inputVal.length > 0)
-                                            tmpl[fieldName].set(new Date(inputVal))
-                                        else
-                                            tmpl[fieldName].set(null)
-                                    }
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].toId = $(e.currentTarget).val();
+
+    if ((index + 1) < currentTravelRequest.trips.length){
+        currentTravelRequest.trips[index + 1].fromId = $(e.currentTarget).val();
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='airlineId']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].airlineId = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='hotelId']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].hotelId = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"click [id*='isBreakfastIncluded']": function(e, tmpl){
+
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].isBreakfastIncluded = !currentTravelRequest.trips[index].isBreakfastIncluded;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"click [id*='isLunchIncluded']": function(e, tmpl){
+
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].isLunchIncluded = !currentTravelRequest.trips[index].isLunchIncluded;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"click [id*='isDinnerIncluded']": function(e, tmpl){
+
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].isDinnerIncluded = !currentTravelRequest.trips[index].isDinnerIncluded;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"click [id*='isIncidentalsIncluded']": function(e, tmpl){
+
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].isIncidentalsIncluded = !currentTravelRequest.trips[index].isIncidentalsIncluded;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='departureDate']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        currentTravelRequest.trips[i].departureDate = new Date($("#departureDate_" + (i+1)).val());
+        currentTravelRequest.trips[i].returnDate = new Date($("#returnDate_" + (i+1)).val());
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
+"change [id*='returnDate']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        currentTravelRequest.trips[i].departureDate = new Date($("#departureDate_" + (i+1)).val());
+        currentTravelRequest.trips[i].returnDate = new Date($("#returnDate_" + (i+1)).val());
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
+"dp.change": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        currentTravelRequest.trips[i].departureDate = new Date($("#departureDate_" + (i+1)).val());
+        currentTravelRequest.trips[i].returnDate = new Date($("#returnDate_" + (i+1)).val());
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
+//includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
+
+'click #createProcurementRequisition': function(e, tmpl) {
+    e.preventDefault()
+
+    Modal.show('TravelRequisition2Create')
+},
+//'change .calculate': function(e, tmpl) {
+//  e.preventDefault();
+//$('#pay-type-title').val('populate automatically!');
+//},
+"change .fieldInputField": _.throttle(function(e, tmpl) {
+    const fieldName = $(e.target).attr('name');
+    let inputVal = $(e.target).val().trim();
+    const customConfig = tmpl.businessUnitCustomConfig.get();
+
+    if(customConfig) {
+        let travelRequestConfig = customConfig.travelRequestConfig;
+        if(travelRequestConfig) {
+            let fields = travelRequestConfig.fields || [];
+            fields.forEach(field => {
+                if(field.dbFieldName === fieldName) {
+                    if(!tmpl[fieldName]) {
+                        tmpl[fieldName] = new ReactiveVar();
+                    }
+
+                    if(field.type === 'String' || field.type === 'TextArea') {
+                        tmpl[fieldName].set(inputVal)
+                    } else if(field.type === 'Date' || field.type === 'Time') {
+                        if(inputVal && inputVal.length > 0) {
+                            const date = new Date(inputVal)
+                            const momentObj = moment(date)
+
+                            if(momentObj.isBefore(moment())) {
+                                if(!field.allowDatesInPast) {
+                                    tmpl[fieldName].set(null)
+                                    $(e.target).val(null)
                                 } else {
                                     if(inputVal && inputVal.length > 0)
-                                        tmpl[fieldName].set(new Date(inputVal))
+                                    tmpl[fieldName].set(new Date(inputVal))
                                     else
-                                        tmpl[fieldName].set(null)
+                                    tmpl[fieldName].set(null)
                                 }
                             } else {
+                                if(inputVal && inputVal.length > 0)
+                                tmpl[fieldName].set(new Date(inputVal))
+                                else
                                 tmpl[fieldName].set(null)
-                                $(e.target).val(null)
                             }
+                        } else {
+                            tmpl[fieldName].set(null)
+                            $(e.target).val(null)
                         }
                     }
-                })
-            }
+                }
+            })
         }
-    }, 200),
-    "change .currencyField": _.throttle(function(e, tmpl) {
-        var currency = $(e.target).val().trim();
+    }
+}, 200),
+"change .currencyField": _.throttle(function(e, tmpl) {
+    var currency = $(e.target).val().trim();
 
-        tmpl.selectedCurrency.set(currency)
-        Meteor.defer(function() {
-            $('.costInputField').selectpicker('refresh');
-        });
-    }, 200),
-    "change .numberOfDaysField": _.throttle(function(e, tmpl) {
-        const fieldName = $(e.target).attr('name');
-        var text = $(e.target).val().trim();
+    tmpl.selectedCurrency.set(currency)
+    Meteor.defer(function() {
+        $('.costInputField').selectpicker('refresh');
+    });
+}, 200),
+"change .numberOfDaysField": _.throttle(function(e, tmpl) {
+    const fieldName = $(e.target).attr('name');
+    var text = $(e.target).val().trim();
 
-        if (!text || text.trim().length === 0) {
-            text = "0"
+    if (!text || text.trim().length === 0) {
+        text = "0"
+    }
+    let daysAsNumber = parseFloat(text)
+    if(isNaN(daysAsNumber)) {
+        daysAsNumber = 0
+    }
+
+    tmpl.selectedNumDays.set(daysAsNumber)
+}, 200),
+"change .costCenterField": _.throttle(function(e, tmpl) {
+    var val = $(e.target).val().trim();
+
+    if (!val || val.trim().length === 0) {
+        tmpl.selectedCostCenter.set(null)
+    } else {
+        tmpl.selectedCostCenter.set(val)
+    }
+}, 200),
+"change .costInputField": _.throttle(function(e, tmpl) {
+    const fieldName = $(e.target).attr('name');
+    var text = $(e.target).val().trim();
+
+    if (!text || text.trim().length === 0) {
+        text = "0"
+    }
+    let costAsNumber = parseFloat(text)
+    if(isNaN(costAsNumber)) {
+        costAsNumber = 0
+    }
+
+    tmpl[fieldName].set(costAsNumber)
+    tmpl.updateTotalTripCost()
+}, 200),
+"keyup .costInputField": _.throttle(function(e, tmpl) {
+    const fieldName = $(e.target).attr('name');
+    var text = $(e.target).val().trim();
+
+    if (!text || text.trim().length === 0) {
+        text = "0"
+    }
+    let costAsNumber = parseFloat(text)
+    if(isNaN(costAsNumber)) {
+        costAsNumber = 0
+    }
+
+    tmpl[fieldName].set(costAsNumber)
+    tmpl.updateTotalTripCost()
+}, 200),
+
+'click #new-requisition-save-draft': function(e, tmpl) {
+    e.preventDefault()
+    let requisitionDoc = {}
+
+    let currentUserUnitId = Template.instance().unitId.get()
+    if(currentUserUnitId) {
+        requisitionDoc.unitId = currentUserUnitId
+    }
+    //--
+    const customConfig = tmpl.businessUnitCustomConfig.get();
+    if(customConfig) {
+        let travelRequestConfig = customConfig.travelRequestConfig;
+        if(travelRequestConfig) {
+            requisitionDoc.currency = tmpl.selectedCurrency.get()
+            requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
+            requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
+
+            let fields = travelRequestConfig.fields || [];
+            fields.forEach(field => {
+                if(tmpl[field.dbFieldName]) {
+                    const fieldVal = tmpl[field.dbFieldName].get();
+                    requisitionDoc[field.dbFieldName] = fieldVal;
+                }
+            })
+
+            requisitionDoc.tripCosts = {}
+            let costs = travelRequestConfig.costs || [];
+            costs.forEach(cost => {
+                let costAmount = tmpl[cost.dbFieldName].get();
+                if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
+                    const selectedNumDays = tmpl.selectedNumDays.get()
+                    costAmount = costAmount * selectedNumDays
+                }
+                requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
+            })
         }
-        let daysAsNumber = parseFloat(text)
-        if(isNaN(daysAsNumber)) {
-            daysAsNumber = 0
-        }
+    }
+    //--
+    let businessUnitId = Session.get('context')
 
-        tmpl.selectedNumDays.set(daysAsNumber)
-    }, 200),
-    "change .costCenterField": _.throttle(function(e, tmpl) {
-        var val = $(e.target).val().trim();
+    Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+        if(!err) {
+            swal({title: "Success", text: "Requisition Draft saved", type: "success",
+            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+        }, () => {
+            // Modal.hide()
+        })
+    } else {
+        swal('Validation error', err.message, 'error')
+    }
+})
+},
+'click #new-requisition-create': function(e, tmpl) {
+    e.preventDefault()
 
-        if (!val || val.trim().length === 0) {
-            tmpl.selectedCostCenter.set(null)
-        } else {
-            tmpl.selectedCostCenter.set(val)
-        }
-    }, 200),
-    "change .costInputField": _.throttle(function(e, tmpl) {
-        const fieldName = $(e.target).attr('name');
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let costAsNumber = parseFloat(text)
-        if(isNaN(costAsNumber)) {
-            costAsNumber = 0
-        }
-
-        tmpl[fieldName].set(costAsNumber)
-        tmpl.updateTotalTripCost()
-    }, 200),
-    "keyup .costInputField": _.throttle(function(e, tmpl) {
-        const fieldName = $(e.target).attr('name');
-        var text = $(e.target).val().trim();
-
-        if (!text || text.trim().length === 0) {
-            text = "0"
-        }
-        let costAsNumber = parseFloat(text)
-        if(isNaN(costAsNumber)) {
-            costAsNumber = 0
-        }
-
-        tmpl[fieldName].set(costAsNumber)
-        tmpl.updateTotalTripCost()
-    }, 200),
-
-    'click #new-requisition-save-draft': function(e, tmpl) {
-        e.preventDefault()
+    let validation = tmpl.areInputsValid(tmpl)
+    if(validation === true) {
         let requisitionDoc = {}
 
         let currentUserUnitId = Template.instance().unitId.get()
@@ -175,139 +469,167 @@ Template.TravelRequisition2Create.events({
                         requisitionDoc[field.dbFieldName] = fieldVal;
                     }
                 })
-
+                //--
                 requisitionDoc.tripCosts = {}
                 let costs = travelRequestConfig.costs || [];
                 costs.forEach(cost => {
                     let costAmount = tmpl[cost.dbFieldName].get();
+
                     if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
                         const selectedNumDays = tmpl.selectedNumDays.get()
                         costAmount = costAmount * selectedNumDays
                     }
+
                     requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
                 })
+
             }
         }
         //--
         let businessUnitId = Session.get('context')
 
-        Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
+        Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
             if(!err) {
-                swal({title: "Success", text: "Requisition Draft saved", type: "success",
-                    confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                }, () => {
-                    // Modal.hide()
-                })
-            } else {
-                swal('Validation error', err.message, 'error')
-            }
-        })
-    },
-    'click #new-requisition-create': function(e, tmpl) {
-        e.preventDefault()
-
-        let validation = tmpl.areInputsValid(tmpl)
-        if(validation === true) {
-            let requisitionDoc = {}
-
-            let currentUserUnitId = Template.instance().unitId.get()
-            if(currentUserUnitId) {
-                requisitionDoc.unitId = currentUserUnitId
-            }
-            //--
-            const customConfig = tmpl.businessUnitCustomConfig.get();
-            if(customConfig) {
-                let travelRequestConfig = customConfig.travelRequestConfig;
-                if(travelRequestConfig) {
-                    requisitionDoc.currency = tmpl.selectedCurrency.get()
-                    requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-                    requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
-
-                    let fields = travelRequestConfig.fields || [];
-                    fields.forEach(field => {
-                        if(tmpl[field.dbFieldName]) {
-                            const fieldVal = tmpl[field.dbFieldName].get();
-                            requisitionDoc[field.dbFieldName] = fieldVal;
-                        }
-                    })
-                    //--
-                    requisitionDoc.tripCosts = {}
-                    let costs = travelRequestConfig.costs || [];
-                    costs.forEach(cost => {
-                        let costAmount = tmpl[cost.dbFieldName].get();
-
-                        if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-                            const selectedNumDays = tmpl.selectedNumDays.get()
-                            costAmount = costAmount * selectedNumDays
-                        }
-
-                        requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-                    })
-
-                }
-            }
-            //--
-            let businessUnitId = Session.get('context')
-
-            Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
-                if(!err) {
-                    swal({title: "Success", text: "Requisition is now pending approval", type: "success",
-                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-                    }, () => {
-                        //Modal.hide()
-                    })
-                } else {
-                    swal('Validation error', err.message, 'error')
-                }
+                swal({title: "Success", text: "Requisition is now pending approval", type: "success",
+                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+            }, () => {
+                //Modal.hide()
             })
         } else {
-            swal('Validation error', validation, 'error')
+            swal('Validation error', err.message, 'error')
         }
-    }
+    })
+} else {
+    swal('Validation error', validation, 'error')
+}
+}
 });
 
 /*****************************************************************************/
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2Create.helpers({
-    // 'calculate':function(){
-    //     Session.get('selectedstateId');
 
-
-    //      },
     'checked': (prop) => {
         if(Template.instance().data)
-            return Template.instance().data[prop];
+        return Template.instance().data[prop];
         return false;
     },
     travelcityList() {
         return  Travelcities.find();
-   },
-   airlineList() {
-    const selectedflightrouteId = Template.instance().selectedflightrouteId.get();
-    if(selectedflightrouteId) {
-        return Airlines.find({flightrouteId: selectedflightrouteId});
-    }
-},
-   hotelList() {
-    const selectedtravelcityId = Template.instance().selectedtravelcityId.get();
-    if(selectedtravelcityId) {
-        return Hotels.find({travelcityId: selectedtravelcityId});
-    }
-},
-
-   selected(context,val) {
-    let self = this;
-
-    if(Template.instance().data){
-        //get value of the option element
-        //check and return selected if the template instce of data.context == self._id matches
-        if(val){
-            return Template.instance().data[context] === val ? selected="selected" : '';
+    },
+    budgetList() {
+        return  Budgets.find();
+    },
+    airlineList(fromId, toId) {
+        return Flightroutes.find({fromId: fromId, toId: toId});
+    },
+    getAirlineName(airlineId) {
+        const airline = Airlines.findOne({_id: airlineId})
+        if(airline) {
+            return airline.name
         }
-        return Template.instance().data[context] === self._id ? selected="selected" : '';
-    }
-},
+    },
+    hotelList(toId) {
+        return Hotels.find({travelcityId: toId});
+    },
+    budgetCodeSelected(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val){
+            return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
+        }
+
+    },
+    formatDate(dateVal){
+        return moment(dateVal).format('YYYY-MM-DD');
+    },
+    isLastLeg(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
+            return parseInt(index) >= currentTravelRequest.trips.length;
+        }
+    },
+    fromIdSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].fromId === val ? selected="selected" : '';
+        }
+
+    },
+    toIdSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].toId === val ? selected="selected" : '';
+        }
+    },
+    airlineSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].airlineId === val ? selected="selected" : '';
+        }
+    },
+    hotelSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].hotelId === val ? selected="selected" : '';
+        }
+    },
+
+    travelTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && val){
+            return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+    },
+    hotelNotRequiredChecked(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].hotelNotRequired? checked="checked" : '';
+        }
+    },
+    currentTravelRequest(){
+        return Template.instance().currentTravelRequest.get();
+    },
+    isReturnTrip(){
+        return Template.instance().currentTravelRequest.get().type === "Return";
+    },
+    isBreakfastIncluded(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].isBreakfastIncluded? checked="checked" : '';
+        }
+    },
+    isLunchIncluded(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].isLunchIncluded? checked="checked" : '';
+        }
+    },
+    isDinnerIncluded(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].isDinnerIncluded? checked="checked" : '';
+        }
+    },
+    isIncidentalsIncluded(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get()
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].isIncidentalsIncluded? checked="checked" : '';
+        }
+    },
+
+    selected(context,val) {
+        let self = this;
+
+        if(Template.instance().data){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return Template.instance().data[context] === val ? selected="selected" : '';
+            }
+            return Template.instance().data[context] === self._id ? selected="selected" : '';
+        }
+    },
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
         if(unitId) {
@@ -418,6 +740,7 @@ Template.TravelRequisition2Create.helpers({
 /* TravelRequisitionCreate: Lifecycle Hooks */
 /*****************************************************************************/
 Template.TravelRequisition2Create.onCreated(function () {
+
     let self = this;
 
     let businessUnitId = Session.get('context');
@@ -425,7 +748,211 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("flightroutes", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
-   // self.subscribe("flights", Session.get('context'));
+    self.subscribe("budgets", Session.get('context'));
+
+
+    let currentTravelRequest = {
+        businessId: businessUnitId,
+        description: "",
+        budgetCodeId: "",
+        type:"Return",
+        totalTripDuration: 0,
+        totalEmployeeAmountPayableNGN: 0,
+        totalEmployeeAmountPayableUSD: 0,
+        totalFlightCostNGN: 0,
+        totalFlightCostUSD: 0,
+        totalHotelCostNGN: 0,
+        totalHotelCostUSD: 0,
+        totalTripCostNGN: 0,
+        totalTripCostUSD: 0,
+        status: "Pending",
+        createdBy: Meteor.user()._id,
+        trips: [{
+            tripIndex: 1,
+            fromId: "",
+            toId: "",
+            departureDate: new Date(),
+            returnDate: new Date(),
+            airlineId: "",
+            airfareCost: 0,
+            airfareCurrency: "NGN",
+            hotelId: "",
+            hotelRate: 0,
+            hotelCurrency: "NGN",
+            hotelNotRequired: false,
+            perDiemCost: 0,
+            perDiemCurrency: "NGN",
+            isBreakfastIncluded: true,
+            isLunchIncluded: false,
+            isDinnerIncluded: false,
+            isIncidentalsIncluded: false,
+            totalDuration: 0,
+            totalPerDiem: 0,
+            totalHotelCost: 0
+        }]
+    };
+
+    self.currentTravelRequest =  new ReactiveVar();
+    self.currentTravelRequest.set(currentTravelRequest);
+
+    self.updateTripNumbers = () => {
+
+        let currentTravelRequest = self.currentTravelRequest.curValue;
+        const tripType = currentTravelRequest.type;
+
+        let totalTripDuration = 0;
+        let totalEmployeeAmountPayableNGN = 0;
+        let totalEmployeeAmountPayableUSD = 0;
+        let totalFlightCostNGN = 0;
+        let totalFlightCostUSD = 0;
+        let totalHotelCostNGN = 0;
+        let totalHotelCostUSD = 0;
+        let totalTripCostNGN = 0;
+        let totalTripCostUSD = 0;
+
+        for (i = 0; i < currentTravelRequest.trips.length; i++) {
+
+            const toId = currentTravelRequest.trips[i].toId;
+            const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
+
+
+            let totalDuration = 0;
+
+            if (tripType === "Return"){
+                const startDate = moment(currentTravelRequest.trips[i].departureDate);
+                const endDate = moment(currentTravelRequest.trips[i].returnDate)
+                totalDuration = endDate.diff(startDate, 'days');
+
+                if (totalDuration < 0){
+                    totalDuration = 0;
+                }
+            }else if (tripType === "Multiple"){
+
+                if ((i + 1) >= currentTravelRequest.trips.length){
+                    totalDuration = 0;
+                }else{
+                    const startDate = moment(currentTravelRequest.trips[i].departureDate);
+                    const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
+                    totalDuration = endDate.diff(startDate, 'days');
+                    if (totalDuration < 0){
+                        totalDuration = 0;
+                    }
+                }
+            }
+
+            console.log("Total Duration: " + totalDuration)
+
+            let perDiemCost = 0;
+            let unadjustedPerDiemCost = 0;
+            let perDiemCurrency = "NGN";
+
+            let travelcity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
+            if (travelcity){
+                unadjustedPerDiemCost = travelcity.perdiem;
+                perDiemCurrency = travelcity.currency;
+                perDiemCost = unadjustedPerDiemCost;
+
+                if(!hotelNotRequired){
+                    if (currentTravelRequest.trips[i].isBreakfastIncluded){
+                        perDiemCost = perDiemCost - (0.4 * unadjustedPerDiemCost);
+                    }
+
+                    if (currentTravelRequest.trips[i].isLunchIncluded){
+                        perDiemCost = perDiemCost - (0.3 * unadjustedPerDiemCost);
+                    }
+
+                    if (currentTravelRequest.trips[i].isDinnerIncluded){
+                        perDiemCost = perDiemCost - (0.2 * unadjustedPerDiemCost);
+                    }
+
+                    if (currentTravelRequest.trips[i].isIncidentalsIncluded){
+                        perDiemCost = perDiemCost - (0.1 * unadjustedPerDiemCost);
+                    }
+                }
+            }
+
+
+            let airfareCost = 0;
+            let airfareCurrency = "NGN";
+
+            let flightroute = Flightroutes.findOne({fromId: currentTravelRequest.trips[i].fromId, toId: currentTravelRequest.trips[i].toId, airlineId: currentTravelRequest.trips[i].airlineId});
+            if (flightroute){
+
+                if (tripType === "Return"){
+                    airfareCost = flightroute.cost * 2;
+                }else if(tripType === "Multiple"){
+                    if ((i + 1) >= currentTravelRequest.trips.length){
+                        airfareCost = 0;
+                    }else{
+                        airfareCost = flightroute.cost;
+                    }
+                }
+
+                airfareCurrency = flightroute.currency;
+            }
+
+            let hotelRate = 0;
+            let hotelCurrency = "NGN";
+
+            let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
+            if (hotel){
+                hotelRate = hotel.dailyRate;
+                hotelCurrency = hotel.currency;
+            }
+
+            if (hotelNotRequired){
+                currentTravelRequest.trips[i].totalHotelCost = 0
+            }else{
+                currentTravelRequest.trips[i].totalHotelCost = totalDuration * hotelRate;
+            }
+
+            currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
+            currentTravelRequest.trips[i].totalDuration = totalDuration;
+            currentTravelRequest.trips[i].perDiemCost = perDiemCost;
+            currentTravelRequest.trips[i].perDiemCurrency = perDiemCurrency;
+            currentTravelRequest.trips[i].hotelRate = hotelRate;
+            currentTravelRequest.trips[i].hotelCurrency = hotelCurrency
+            currentTravelRequest.trips[i].airfareCost = airfareCost;
+            currentTravelRequest.trips[i].airfareCurrency = airfareCurrency;
+
+
+            totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
+            if (currentTravelRequest.trips[i].perDiemCurrency === "NGN"){
+                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].totalPerDiem;
+            }else{
+                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].totalPerDiem;
+            }
+            if (currentTravelRequest.trips[i].airfareCurrency === "NGN"){
+                totalFlightCostNGN = totalFlightCostNGN + currentTravelRequest.trips[i].airfareCost;
+            }else{
+                totalFlightCostUSD = totalFlightCostUSD + currentTravelRequest.trips[i].airfareCost;
+            }
+            if (currentTravelRequest.trips[i].hotelCurrency === "NGN"){
+                totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
+            }else{
+                totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
+            }
+
+
+        }
+
+        totalTripCostNGN = totalEmployeeAmountPayableNGN + totalFlightCostNGN + totalHotelCostNGN;
+        totalTripCostUSD = totalEmployeeAmountPayableUSD + totalFlightCostUSD + totalHotelCostUSD;
+
+        currentTravelRequest.totalTripDuration = totalTripDuration;
+        currentTravelRequest.totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN;
+        currentTravelRequest.totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD;
+        currentTravelRequest.totalFlightCostNGN = totalFlightCostNGN;
+        currentTravelRequest.totalFlightCostUSD = totalFlightCostUSD;
+        currentTravelRequest.totalHotelCostNGN = totalHotelCostNGN;
+        currentTravelRequest.totalHotelCostUSD = totalHotelCostUSD;
+        currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
+        currentTravelRequest.totalTripCostUSD = totalTripCostUSD;
+
+        self.currentTravelRequest.set(currentTravelRequest);
+    }
+
+    // self.subscribe("flights", Session.get('context'));
     self.unitId = new ReactiveVar()
     self.units = new ReactiveVar([])
     self.businessUnitCustomConfig = new ReactiveVar()
@@ -433,6 +960,7 @@ Template.TravelRequisition2Create.onCreated(function () {
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
+    self.selectedTravelType = new ReactiveVar()
     self.selectedCurrency = new ReactiveVar()
     self.selectedNumDays = new ReactiveVar()
     self.selectedCostCenter = new ReactiveVar()
@@ -575,10 +1103,10 @@ Template.TravelRequisition2Create.onCreated(function () {
 Template.TravelRequisition2Create.onRendered(function () {
     $('select.dropdown').dropdown();
 
-        this.$('.datetimepicker').datetimepicker(
+    this.$('.datetimepicker').datetimepicker(
 
-         {  format: 'YYYY-MM-DD'}
-        );
+        {format: 'YYYY-MM-DD'}
+    );
 
 
 });
