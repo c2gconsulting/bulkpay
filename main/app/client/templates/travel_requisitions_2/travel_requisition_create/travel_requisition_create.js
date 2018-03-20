@@ -29,25 +29,28 @@ Template.TravelRequisition2Create.events({
                     toId: "",
                     departureDate: new Date(),
                     returnDate: new Date(),
+                    departureTime: "6 AM",
+                    returnTime: "6 AM",
                     transportationMode: 'AIRLINE',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    airportPickupCost: 0,
+                    originCityAirportTaxiCost: 0,
+                    destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
                     airlineId: "",
                     airfareCost: 0,
                     airfareCurrency: "NGN",
                     hotelId: "",
                     hotelRate: 0,
-                    hotelCurrency: "NGN",
+                    destinationCityCurrreny: "NGN",
                     hotelNotRequired: false,
                     perDiemCost: 0,
-                    perDiemCurrency: "NGN",
-                    isBreakfastIncluded: false,
+                    originCityCurrreny: "NGN",
+                    isBreakfastIncluded: true,
                     isLunchIncluded: true,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
+                    isDinnerIncluded: true,
+                    isIncidentalsIncluded: true,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -59,25 +62,28 @@ Template.TravelRequisition2Create.events({
                     toId: "",
                     departureDate: new Date(),
                     returnDate: new Date(),
+                    departureTime: "6 AM",
+                    returnTime: "6 AM",
                     transportationMode: 'AIRLINE',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    airportPickupCost: 0,
+                    originCityAirportTaxiCost: 0,
+                    destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
                     airlineId: "",
                     airfareCost: 0,
                     airfareCurrency: "NGN",
                     hotelId: "",
                     hotelRate: 0,
-                    hotelCurrency: "NGN",
+                    destinationCityCurrreny: "NGN",
                     hotelNotRequired: false,
                     perDiemCost: 0,
-                    perDiemCurrency: "NGN",
-                    isBreakfastIncluded: false,
+                    originCityCurrreny: "NGN",
+                    isBreakfastIncluded: true,
                     isLunchIncluded: true,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
+                    isDinnerIncluded: true,
+                    isIncidentalsIncluded: true,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -87,25 +93,28 @@ Template.TravelRequisition2Create.events({
                     toId: "",
                     departureDate: new Date(),
                     returnDate: new Date(),
+                    departureTime: "6 AM",
+                    returnTime: "6 AM",
                     transportationMode: 'AIRLINE',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    airportPickupCost: 0,
+                    originCityAirportTaxiCost: 0,
+                    destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
                     airlineId: "",
                     airfareCost: 0,
                     airfareCurrency: "NGN",
                     hotelId: "",
                     hotelRate: 0,
-                    hotelCurrency: "NGN",
+                    destinationCityCurrreny: "NGN",
                     hotelNotRequired: false,
                     perDiemCost: 0,
-                    perDiemCurrency: "NGN",
-                    isBreakfastIncluded: false,
+                    originCityCurrreny: "NGN",
+                    isBreakfastIncluded: true,
                     isLunchIncluded: true,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
+                    isDinnerIncluded: true,
+                    isIncidentalsIncluded: true,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -115,25 +124,28 @@ Template.TravelRequisition2Create.events({
                     toId: "",
                     departureDate: new Date(),
                     returnDate: new Date(),
+                    departureTime: "6 AM",
+                    returnTime: "6 AM",
                     transportationMode: 'AIRLINE',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    airportPickupCost: 0,
+                    originCityAirportTaxiCost: 0,
+                    destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
                     airlineId: "",
                     airfareCost: 0,
                     airfareCurrency: "NGN",
                     hotelId: "",
                     hotelRate: 0,
-                    hotelCurrency: "NGN",
+                    destinationCityCurrreny: "NGN",
                     hotelNotRequired: false,
                     perDiemCost: 0,
-                    perDiemCurrency: "NGN",
-                    isBreakfastIncluded: false,
+                    originCityCurrreny: "NGN",
+                    isBreakfastIncluded: true,
                     isLunchIncluded: true,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
+                    isDinnerIncluded: true,
+                    isIncidentalsIncluded: true,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -146,6 +158,11 @@ Template.TravelRequisition2Create.events({
 
 }, 200),
 
+"change [name='cashAdvanceNotRequired']":_.throttle(function(e, tmpl) {
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.cashAdvanceNotRequired = !currentTravelRequest.cashAdvanceNotRequired;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+},200),
 'click [id*=hotelNotRequired]': function(e, tmpl) {
     e.preventDefault()
 
@@ -175,6 +192,10 @@ Template.TravelRequisition2Create.events({
     const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
 
     currentTravelRequest.trips[index].toId = $(e.currentTarget).val();
+    currentTravelRequest.trips[index].airlineId = "";
+    currentTravelRequest.trips[index].airfareCost = 0;
+    currentTravelRequest.trips[index].hotelId = "";
+    currentTravelRequest.trips[index].hotelRate = 0;
 
     if ((index + 1) < currentTravelRequest.trips.length){
         currentTravelRequest.trips[index + 1].fromId = $(e.currentTarget).val();
@@ -224,6 +245,28 @@ Template.TravelRequisition2Create.events({
     const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
 
     currentTravelRequest.trips[index].hotelId = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='departureTime']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].departureTime = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='returnTime']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].returnTime = $(e.currentTarget).val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
     tmpl.updateTripNumbers();
@@ -641,6 +684,18 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val ? selected="selected" : '';
         }
     },
+    departureTimeSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].departureTime === val ? selected="selected" : '';
+        }
+    },
+    returnTimeSelected(val, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].returnTime === val ? selected="selected" : '';
+        }
+    },
     carOptionSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
@@ -666,10 +721,10 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
-    hotelNotRequiredChecked(index){
+    cashAdvanceNotRequiredChecked(){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].hotelNotRequired? checked="checked" : '';
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
         }
     },
     currentTravelRequest(){
@@ -866,6 +921,7 @@ Template.TravelRequisition2Create.onCreated(function () {
         businessId: businessUnitId,
         description: "",
         budgetCodeId: "",
+        cashAdvanceNotRequired: false,
         type:"Return",
         totalTripDuration: 0,
         totalEmployeeAmountPayableNGN: 0,
@@ -884,25 +940,28 @@ Template.TravelRequisition2Create.onCreated(function () {
             toId: "",
             departureDate: new Date(),
             returnDate: new Date(),
+            departureTime: "6 AM",
+            returnTime: "6 PM",
             transportationMode: 'AIRLINE',
             carOption: 'CAR_HIRE',
             provideAirportPickup: false,
             provideGroundTransport: false,
-            airportPickupCost: 0,
+            originCityAirportTaxiCost: 0,
+            destinationCityAirportTaxiCost: 0,
             groundTransportCost: 0,
             airlineId: "",
             airfareCost: 0,
             airfareCurrency: "NGN",
             hotelId: "",
             hotelRate: 0,
-            hotelCurrency: "NGN",
+            destinationCityCurrreny: "NGN",
             hotelNotRequired: false,
             perDiemCost: 0,
-            perDiemCurrency: "NGN",
-            isBreakfastIncluded: false,
+            originCityCurrreny: "NGN",
+            isBreakfastIncluded: true,
             isLunchIncluded: true,
-            isDinnerIncluded: false,
-            isIncidentalsIncluded: false,
+            isDinnerIncluded: true,
+            isIncidentalsIncluded: true,
             totalDuration: 0,
             totalPerDiem: 0,
             totalHotelCost: 0
@@ -916,6 +975,9 @@ Template.TravelRequisition2Create.onCreated(function () {
 
         let currentTravelRequest = self.currentTravelRequest.curValue;
         const tripType = currentTravelRequest.type;
+
+        currentTravelRequest.description = $("#description").val();
+        currentTravelRequest.budgetCodeId = $("#budget-code").val();
 
         let totalTripDuration = 0;
         let totalEmployeeAmountPayableNGN = 0;
@@ -967,12 +1029,22 @@ Template.TravelRequisition2Create.onCreated(function () {
 
             let perDiemCost = 0;
             let unadjustedPerDiemCost = 0;
-            let perDiemCurrency = "NGN";
+            let originCityCurrreny = "NGN";
+            let destinationCityCurrreny = "NGN";
 
-            let travelcity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
-            if (travelcity){
-                unadjustedPerDiemCost = travelcity.perdiem;
-                perDiemCurrency = travelcity.currency;
+            let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
+            let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
+
+            if(toTravelCity){
+                destinationCityCurrreny = toTravelCity.currency;
+            }
+
+            if(fromTravelCity){
+                originCityCurrreny = fromTravelCity.currency;
+            }
+
+            if (toTravelCity){
+                unadjustedPerDiemCost = toTravelCity.perdiem;
                 perDiemCost = 0;
 
                 if (currentTravelRequest.trips[i].isBreakfastIncluded){
@@ -993,50 +1065,40 @@ Template.TravelRequisition2Create.onCreated(function () {
             }
 
             let hotelRate = 0;
-            let hotelCurrency = "NGN";
-
             let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
             if (hotel){
                 hotelRate = hotel.dailyRate;
             }
 
-            let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
-            let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
-
-            if(toTravelCity){
-                hotelCurrency = travelcity.currency;
-            }
-
-
-
             currentTravelRequest.trips[i].totalHotelCost = (totalDuration - 0.5) * hotelRate;
 
-
-            if (totalDuration === 0.5){
-                currentTravelRequest.trips[i].totalPerDiem = perDiemCost;
-            }else{
-                currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
-            }
+            currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
             currentTravelRequest.trips[i].totalDuration = totalDuration;
             currentTravelRequest.trips[i].perDiemCost = perDiemCost;
-            currentTravelRequest.trips[i].perDiemCurrency = perDiemCurrency;
+            currentTravelRequest.trips[i].originCityCurrreny = originCityCurrreny;
             currentTravelRequest.trips[i].hotelRate = hotelRate;
-            currentTravelRequest.trips[i].hotelCurrency = hotelCurrency
+            currentTravelRequest.trips[i].destinationCityCurrreny = destinationCityCurrreny
 
             if (currentTravelRequest.trips[i].transportationMode !== "AIRLINE"){
                 currentTravelRequest.trips[i].provideAirportPickup = false;
-                currentTravelRequest.trips[i].airportPickupCost = 0;
+                currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
             }
 
             if (currentTravelRequest.trips[i].provideAirportPickup){
                 if (fromTravelCity){
-                    currentTravelRequest.trips[i].airportPickupCost = fromTravelCity.airportPickupDropOffCost;
+                    currentTravelRequest.trips[i].originCityAirportTaxiCost = fromTravelCity.airportPickupDropOffCost;
                 }else{
-                    currentTravelRequest.trips[i].airportPickupCost = 0;
+                    currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
+                }
+
+                if (toTravelCity){
+                    currentTravelRequest.trips[i].destinationCityAirportTaxiCost = toTravelCity.airportPickupDropOffCost;
+                }else{
+                    currentTravelRequest.trips[i].destinationCityAirportTaxiCost = 0;
                 }
 
             }else{
-                currentTravelRequest.trips[i].airportPickupCost = 0;
+                currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
             }
 
             if (currentTravelRequest.trips[i].provideGroundTransport){
@@ -1050,19 +1112,25 @@ Template.TravelRequisition2Create.onCreated(function () {
             }
 
             totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
-            if (currentTravelRequest.trips[i].perDiemCurrency  === "NGN"){
+            if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
                 totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].totalPerDiem;
             }else{
                 totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].totalPerDiem;
             }
 
             if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].airportPickupCost;
+                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].airportPickupCost;
+                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }
 
-            if (currentTravelRequest.trips[i].hotelCurrency === "NGN"){
+            if (toTravelCity && (toTravelCity.currency   === "NGN")){
+                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+            }else{
+                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+            }
+
+            if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
                 totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
                 totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
             }else{

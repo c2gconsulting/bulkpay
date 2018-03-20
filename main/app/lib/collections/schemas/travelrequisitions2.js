@@ -24,6 +24,14 @@ Core.Schemas.Trip = new SimpleSchema({
         type: Date,
         optional: true
     },
+    departureTime: {
+        type: String,
+        optional: true,
+    },
+    returnTime: {
+        type: String,
+        optional: true
+    },
     transportationMode:{
         type: String,
         defaultValue: 'AIRLINE',
@@ -44,7 +52,11 @@ Core.Schemas.Trip = new SimpleSchema({
         type: Boolean,
         defaultValue: false
     },
-    airportPickupCost:{
+    originCityAirportTaxiCost:{
+        type: Number,
+        defaultValue: 0
+    },
+    destinationCityAirportTaxiCost:{
         type: Number,
         defaultValue: 0
     },
@@ -74,7 +86,7 @@ Core.Schemas.Trip = new SimpleSchema({
         type:Number,
         optional: true
     },
-    hotelCurrency:{
+    destinationCityCurrreny:{
         type: String,
         defaultValue: 'NGN',
         allowedValues: ['NGN', 'USD'],
@@ -88,7 +100,7 @@ Core.Schemas.Trip = new SimpleSchema({
     perDiemCost:{
         type:Number
     },
-    perDiemCurrency:{
+    originCityCurrreny:{
         type: String,
         defaultValue: 'NGN',
         allowedValues: ['NGN', 'USD']
@@ -140,6 +152,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     budgetCodeId: {
         type: String,
         optional: true
+    },
+    cashAdvanceNotRequired: {
+        type: Boolean,
+        defaultValue: false
     },
     type: {
         type: String,
@@ -199,11 +215,15 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     createdBy: {
         type: String
     },
-    supervisorPositionId: {
+    supervisorId: {
         type: String,
         optional: true
     },
-    alternativeSupervisorPositionId: {
+    alternativeSupervisorId: {
+        type: String,
+        optional: true
+    },
+    budgetHolderId: {
         type: String,
         optional: true
     },
