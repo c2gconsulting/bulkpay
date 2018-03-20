@@ -14,12 +14,22 @@ Core.Schemas.Travelcity = new SimpleSchema({
     type: String
   },
   perdiem: {
-    type: String
+    type: Number
+  },
+  groundTransport: {
+    type: Number
+  },
+  airportPickupDropOffCost: {
+    type: Number
   },
   currency: {
     type: String,
     defaultValue: 'NGN',
     allowedValues: ['NGN', 'USD'],
+  },
+  isInternational: {
+      type: Boolean,
+      defaultValue: false
   },
   status: {
     type: String,

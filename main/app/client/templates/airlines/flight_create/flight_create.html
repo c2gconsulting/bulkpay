@@ -8,20 +8,27 @@
                     </div>
                     <div class="panel-body">
                         <div class="row">
-                          
+
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="airline-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
                                     <input type="text" name="airline-name" class="form-control" placeholder="Name" ng-model="airline.name"/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-danger">
+                                    <input type="checkbox" id="isInternational" name="isInternational" value="isInternational"/>
+                                    <label for="isInternational">is international</label>
+                                </div>
+                            </div><!-- col-sm-6 -->
                         </div><!-- row -->
-                        
-                      
+
+
                         {{#if errorMessage}}
                           <p class="text-center error">{{errorMessage}}</p>
                         {{/if}}
-                        
+
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" id="new-airline-close" data-dismiss="modal">Cancel</button>

@@ -11,8 +11,8 @@
                             <li>{{name}}</li>
                             <li>Travel City</li>
                         </ul>
-        
-                         <h4>Travel City</h4> 
+
+                         <h4>Travel City</h4>
                     </div>
                 </div><!-- media -->
             </div><!-- pageheader -->
@@ -34,8 +34,10 @@
                                 <th>#</th>
                                 <th>City Name</th>
                                 <th>Per Diem Cost</th>
-                              
+                                <th>Ground Transport</th>
+                                <th>Airport Pickup</th>
                                 <th>Currency</th>
+                                <th>International</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -59,8 +61,10 @@
         <td class="pointer">{{index}}</td>
         <td>{{data.name}}</td>
         <td>{{data.perdiem}}</td>
-       
+        <td>{{data.groundTransport}}</td>
+        <td>{{data.airportPickupDropOffCost}}</td>
         <td>{{data.currency}}</td>
+        <td>{{data.isInternational}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

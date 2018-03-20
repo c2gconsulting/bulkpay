@@ -6,9 +6,12 @@ Template.TravelCityCreate.events({
       Modal.hide('TravelCityCreate');
     },
     'click #save': (e, tmpl) => {
-      let perdiem = $('[name=perdiem]').val();
+      let perdiem = parseFloat($('[name=perdiem]').val());
       let name = $('[name=name]').val();
       let currency= $('[name=currency]').val();
+      let isInternational = $('#isInternational').is(':checked');
+      let groundTransport = parseFloat($('[name=groundTransport]').val());
+      let airportPickupDropOffCost = parseFloat($('[name=airportPickupDropOffCost]').val());
 
       // if (!Perdiem || Perdiem.trim().length === 0) {
       //   Template.instance().errorMessage.set("Please enter the state perdiem");
@@ -16,15 +19,17 @@ Template.TravelCityCreate.events({
       //     Template.instance().errorMessage.set("Please enter the state name");
       // } else {
         Template.instance().errorMessage.set(null);
-  
+
         let newTravelcity = {
           businessId: Session.get('context'),
           perdiem : perdiem,
           name : name,
-          currency : currency
-
+          currency : currency,
+          isInternational: isInternational,
+          groundTransport: groundTransport,
+          airportPickupDropOffCost: airportPickupDropOffCost
         };
-  
+
         Meteor.call('travelcity/create', newTravelcity, (err, res) => {
             if (res){
                 swal({
@@ -39,17 +44,17 @@ Template.TravelCityCreate.events({
                 console.log(err);
             }
         });
-      
+
     },
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Helpers */
   /*****************************************************************************/
   Template.TravelCityCreate.helpers({
     selected(context,val) {
       let self = this;
-  
+
       if(Template.instance().data){
           //get value of the option element
           //check and return selected if the template instce of data.context == self._id matches
@@ -63,20 +68,19 @@ Template.TravelCityCreate.events({
       return Template.instance().errorMessage.get()
     }
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Lifecycle Hooks */
   /*****************************************************************************/
   Template.TravelCityCreate.onCreated(function () {
     let self = this;
-  
+
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null)
   });
-  
+
   Template.TravelCityCreate.onRendered(function () {
   });
-  
+
   Template.TravelCityCreate.onDestroyed(function () {
   });
-  

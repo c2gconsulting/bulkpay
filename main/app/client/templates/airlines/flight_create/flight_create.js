@@ -8,26 +8,24 @@ Template.AirlineCreate.events({
     'click #save': (e, tmpl) => {
    //   let airlineCode = $('[name=airline-code]').val();
       let airlineName = $('[name=airline-name]').val();
-      
-     
-    
+      let isInternational = $('#isInternational').is(':checked');
+
      // employees: Core.returnSelection($('[name="employee"]')),
- 
-  
+
+
      // if (!airlineCode || airlineCode.trim().length === 0) {
        // Template.instance().errorMessage.set("Please enter the Airline code");
     /*} else */if(!airlineName || airlineName.trim().length === 0) {
           Template.instance().errorMessage.set("Please enter the Airline name");
-      } 
+      }
       else {
         Template.instance().errorMessage.set(null);
-  
+
         let newAirline = {
           businessId: Session.get('context'),
         //   code : airlineCode,
           name : airlineName,
-       
-      
+          isInternational: isInternational
         };
 
        /* let flightContext = Core.Schemas.FLight.namedContext("flightForm");
@@ -38,7 +36,7 @@ Template.AirlineCreate.events({
             console.log('Hotel is not Valid!');
         }
         console.log(flightContext._invalidKeys);*/
-  
+
         Meteor.call('airline/create', newAirline, (err, res) => {
             if (res){
                 swal({
@@ -56,12 +54,12 @@ Template.AirlineCreate.events({
       }
     },
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Helpers */
   /*****************************************************************************/
-  Template.AirlineCreate.helpers({  
- 
+  Template.AirlineCreate.helpers({
+
    selected(context,val) {
     let self = this;
 
@@ -78,23 +76,22 @@ Template.AirlineCreate.events({
       return Template.instance().errorMessage.get()
     }
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Lifecycle Hooks */
   /*****************************************************************************/
   Template.AirlineCreate.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
-  
+
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null)
 
- 
+
   });
-  
+
   Template.AirlineCreate.onRendered(function () {
   });
-  
+
   Template.AirlineCreate.onDestroyed(function () {
   });
-  

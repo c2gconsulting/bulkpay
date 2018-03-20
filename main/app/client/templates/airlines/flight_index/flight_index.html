@@ -11,8 +11,8 @@
                             <li>{{name}}</li>
                             <li>Airlines</li>
                         </ul>
-        
-                         <h4>Airline</h4> 
+
+                         <h4>Airline</h4>
                     </div>
                 </div><!-- media -->
             </div><!-- pageheader -->
@@ -32,11 +32,12 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                           
+
                                 <th>Flight Name</th>
-                        
-                          
-                                
+                                <th>International</th>
+
+
+
 
                                 <th>Status</th>
                                 <th></th>
@@ -59,10 +60,11 @@
 <template name="singleAirline">
     <tr>
         <td class="pointer">{{index}}</td>
-    
+
         <td>{{data.name}}</td>
-   
-  
+        <td>{{data.isInternational}}</td>
+
+
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

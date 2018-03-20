@@ -12,7 +12,11 @@ Core.Schemas.Airline = new SimpleSchema({
     },
     name: {
         type: String
-    },    
+    },
+    isInternational: {
+        type: Boolean,
+        defaultValue: false
+    },
     status: {
         type: String,
         optional: true,

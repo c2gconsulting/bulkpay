@@ -24,6 +24,34 @@ Core.Schemas.Trip = new SimpleSchema({
         type: Date,
         optional: true
     },
+    transportationMode:{
+        type: String,
+        defaultValue: 'AIRLINE',
+        allowedValues: ['AIRLINE', 'CAR', 'TRAIN'],
+        optional: true
+    },
+    carOption:{
+        type: String,
+        defaultValue: 'CAR_HIRE',
+        allowedValues: ['CAR_HIRE', 'OFFICE', 'THIRD_PARTY'],
+        optional: true
+    },
+    provideAirportPickup:{
+        type: Boolean,
+        defaultValue: false
+    },
+    provideGroundTransport:{
+        type: Boolean,
+        defaultValue: false
+    },
+    airportPickupCost:{
+        type: Number,
+        defaultValue: 0
+    },
+    groundTransportCost:{
+        type: Number,
+        defaultValue: 0
+    },
     airlineId: {
         type: String,
         optional: true
