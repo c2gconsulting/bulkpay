@@ -174,7 +174,31 @@ Router.route('/business/:_id/hmoplans/changerequest', {
     action: 'changeRequest',
     where: 'client'
 });
-
+Router.route('/business/:_id/hotels', {
+    name: 'hotels',
+    controller: 'HotelsController',
+    where: 'client'
+});
+Router.route('/business/:_id/travelcities', {
+    name: 'travelcities',
+    controller: 'TravelcitiesController',
+    where: 'client'
+});
+Router.route('/business/:_id/budgets', {
+    name: 'budgets',
+    controller: 'BudgetsController',
+    where: 'client'
+});
+Router.route('/business/:_id/airlines', {
+    name: 'airlines',
+    controller: 'AirlinesController',
+    where: 'client'
+});
+Router.route('/business/:_id/flightroutes', {
+    name: 'flightroutes',
+    controller: 'FlightroutesController',
+    where: 'client'
+});
 
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',
@@ -294,7 +318,7 @@ Router.route('/business/:_id/saphana/config', {
     where: 'client',
     action: 'showSapHanaConfig'
   });
-  
+
 
 Router.route('/business/:_id/payruns', {
   name: 'payruns',
@@ -368,6 +392,25 @@ Router.route('/business/:_id/employee/travelrequests/treatlist', {
     name: 'travelrequests.treatList',
     controller: 'RequisitionController',
     action: 'showTravelRequestTreatList',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequests2', {
+    name: 'travelrequests2.list',
+    controller: 'RequisitionController',
+    action: 'showTravelRequests2List',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/travelrequests2/approvalslist', {
+    name: 'travelrequests2.approvalList',
+    controller: 'RequisitionController',
+    action: 'showTravelRequest2ApprovalList',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/travelrequests2/treatlist', {
+    name: 'travelrequests2.treatList',
+    controller: 'RequisitionController',
+    action: 'showTravelRequest2TreatList',
     where: 'client'
 });
 

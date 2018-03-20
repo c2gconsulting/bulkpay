@@ -1,0 +1,88 @@
+
+<template name="FlightrouteIndex">
+        <div class="pageheader">
+                <div class="media">
+                    <div class="pageicon pull-left" style="padding: 9px;">
+                        <i class="fa fa-fax"></i>
+                    </div>
+                    <div class="media-body">
+                        <ul class="breadcrumb">
+                            <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                            <li><a ui-sref="business.overview">Business</a></li>
+                            <li>{{name}}</li>
+                            <li>Flight Routes</li>
+                        </ul>
+        
+                         <h4>Flight Routes</h4> 
+                    </div>
+                </div><!-- media -->
+            </div><!-- pageheader -->
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singleFlightrouteView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Flight Route</button></p>
+                </div>
+            </div>
+
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="flightroutes.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                            
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Airline</th>
+                                <th>Currency</th>
+                                <th>Cost</th>
+                                <th>Status</th>
+                              
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pfas}}
+                                {{> singleFlightroute index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+<template name="singleFlightroute">
+    <tr>
+        <td class="pointer">{{index}}</td>
+        <td>{{getTravelcityName data.fromId}}</td>
+        <td>{{getTravelcityName data.toId}}</td>
+        <td>{{getAirlineName data.airlineId}}</td>
+        <td>{{data.currency}}</td>
+        <td>{{data.cost}}</td>
+      
+       
+        <!-- <td>{{getFromName data.fromId}}</td>
+        <td>{{getToName data.toId}}</td>
+        <td>{{getAirlineName data.airlineId}}</td>
+        <td>{{data.currency}}</td>
+        <td>{{data.cost}}</td>
+       -->
+        <td>
+          {{#if condition data.status "eq" "Active"}}
+            <span class="label label-success">{{data.status}}</span>
+          {{else}}
+            <span class="label label-danger">{{data.status}}</span>
+          {{/if}}
+        </td>
+        <td>
+            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteFlightroute">Delete</button>
+        </td>
+    </tr>
+</template>

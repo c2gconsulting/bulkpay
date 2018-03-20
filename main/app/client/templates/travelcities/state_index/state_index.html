@@ -1,0 +1,79 @@
+<template name="TravelCityIndex">
+        <div class="pageheader">
+                <div class="media">
+                    <div class="pageicon pull-left" style="padding: 9px;">
+                        <i class="fa fa-fax"></i>
+                    </div>
+                    <div class="media-body">
+                        <ul class="breadcrumb">
+                            <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                            <li><a ui-sref="business.overview">Business</a></li>
+                            <li>{{name}}</li>
+                            <li>Travel City</li>
+                        </ul>
+
+                         <h4>Travel City</h4>
+                    </div>
+                </div><!-- media -->
+            </div><!-- pageheader -->
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singleTravelcityView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Travel City</button></p>
+                </div>
+            </div>
+
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="travelcities.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>City Name</th>
+                                <th>Per Diem Cost</th>
+                                <th>Ground Transport</th>
+                                <th>Airport Pickup</th>
+                                <th>Currency</th>
+                                <th>International</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pfas}}
+                                {{> singleTravelcity index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+<template name="singleTravelcity">
+    <tr>
+        <td class="pointer">{{index}}</td>
+        <td>{{data.name}}</td>
+        <td>{{data.perdiem}}</td>
+        <td>{{data.groundTransport}}</td>
+        <td>{{data.airportPickupDropOffCost}}</td>
+        <td>{{data.currency}}</td>
+        <td>{{data.isInternational}}</td>
+        <td>
+          {{#if condition data.status "eq" "Active"}}
+            <span class="label label-success">{{data.status}}</span>
+          {{else}}
+            <span class="label label-danger">{{data.status}}</span>
+          {{/if}}
+        </td>
+        <td>
+            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteTravelcity">Delete</button>
+        </td>
+    </tr>
+</template>

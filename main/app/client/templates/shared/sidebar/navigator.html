@@ -1,6 +1,6 @@
 <template name="navigator">
     <div class="side-bar">
-    
+
     <div class="media profile-left">
         <!--<a class="pull-left profile-thumb" href="/business/{{context}}/employee/{{currentUserId}}/profile">
             <img class="img-circle" id="user-profile-image" src="/images/photos/avatar.jpg" alt="">
@@ -91,8 +91,14 @@
         {{/if}}
         {{#if isMenuExpanded 'administrationMenu'}}
             <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+            <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
+            <li><a href="{{pathFor 'travelcities'}}">Travel Cities</a></li>
+            <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
+            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
+            <li><a href="{{pathFor 'flightroutes'}}">Flight Routes</a></li>
+          
             <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
-            
+
             {{#if isLeaveRequestEnabled}}
                 {{#if isLeaveAccrualByEntitlement}}
                     <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
@@ -106,11 +112,11 @@
             {{#if isTimeTypeEnabled}}
                 <li><a href="{{pathFor 'timetypes'}}">Manage Time Types</a></li>
             {{/if}}
-            
+
             {{#if isHmoSetupEnabled}}
                 <li><a href="{{pathFor 'hmoplans'}}">Manage HMO Plans</a></li>
             {{/if}}
-            
+
             <!--<li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>-->
             <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
         {{/if}}
@@ -131,7 +137,7 @@
             <!--<li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>-->
             <li><a href="{{pathFor route='payruns'}}">Payrun Results</a></li>
             <li><a href="{{pathFor route='payroll.approvalconfig'}}">Payrun Approval Config</a></li>
-            {{#if canApprovePayroll}} 
+            {{#if canApprovePayroll}}
             <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
             {{/if}}
         {{/if}}
@@ -158,7 +164,7 @@
             {{#if isHmoSetupEnabled}}
             <li><a href="{{pathFor 'hmoplans.changerequest'}}">HMO Plan</a></li>
             {{/if}}
-            
+
             {{#if isLeaveRequestEnabled}}
                 {{#if hasLeaveApprovalAccess}}
                 <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
@@ -188,12 +194,23 @@
                 {{#if hasTravelRequisitionApproveAccess}}
                     <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
                 {{/if}}
+
+                <li><a href="{{pathFor 'travelrequests2.list'}}">Travel requests (new)</a></li>
+
+                {{#if isUserASupervisor}}
+                <li><a href="{{pathFor 'travelrequests2.approvalList'}}">Approve Travel Requests (new)</a></li>
+                {{/if}}
+
+                {{#if hasTravelRequisitionApproveAccess}}
+                    <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests (new)</a></li>
+                {{/if}}
             {{/if}}
 
             {{#if isLoanEnabled}}
             <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
             {{/if}}
             
+          
             <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         {{/if}}
 
@@ -211,10 +228,10 @@
 
                 <li><a href="{{pathFor 'reports.tax'}}">Tax report</a></li>
                 <li><a href="{{pathFor 'reports.annualtax'}}">Annual Tax report</a></li>
-                
+
                 <li><a href="{{pathFor 'reports.pension'}}">Pension report</a></li>
                 <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
-                
+
                 <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
 
                 {{#if isTimeWritingEnabled}}
@@ -229,7 +246,7 @@
                 {{#if isLeaveRequestEnabled}}
                     {{#if isProcurementRequisitionActive}}
                     {{else}}
-                        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>                
+                        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
                     {{/if}}
                 {{/if}}
             {{/if}}
@@ -244,7 +261,7 @@
                     </a>
                 </li>
 
-                {{#if isMenuExpanded 'auditReportsMenu'}}                    
+                {{#if isMenuExpanded 'auditReportsMenu'}}
                     {{#if isLeaveRequestEnabled}}
                         <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
                     {{/if}}

@@ -412,7 +412,50 @@ TravelRequisitions = new Mongo.Collection("travelrequisitions");
 Partitioner.partitionCollection(TravelRequisitions);
 TravelRequisitions.attachSchema(Core.Schemas.TravelRequisition);
 
+TravelRequisition2s = new Mongo.Collection("travelrequisition2s");
+Partitioner.partitionCollection(TravelRequisition2s);
+TravelRequisition2s.attachSchema(Core.Schemas.TravelRequisition2);
+/**
+ * Core Collections TravelRequest
+ */
+TravelRequests = new Mongo.Collection("travelrequests");
+Partitioner.partitionCollection(TravelRequests);
+TravelRequests.attachSchema(Core.Schemas.TravelRequest);
+/**
+ * Core Collections Travelcities
+ */
+Travelcities =new Mongo.Collection("travelcities");
+Partitioner.partitionCollection(Travelcities);
+Travelcities.attachSchema(Core.Schemas.Travelcity);
 
+/**
+ * Core Collections Hotel
+ */
+Hotels = new Mongo.Collection("hotels");
+Partitioner.partitionCollection(Hotels);
+Hotels.attachSchema(Core.Schemas.Hotel);
+
+
+
+/**
+ * Core Collections Budget
+ */
+Budgets = new Mongo.Collection("budgets");
+Partitioner.partitionCollection(Budgets);
+Budgets.attachSchema(Core.Schemas.Budget);
+
+/**
+ * Core Collections Budget
+ */
+Airlines = new Mongo.Collection("airlines");
+Partitioner.partitionCollection(Airlines);
+Airlines.attachSchema(Core.Schemas.Airline);
+/**
+ * Core Collections Budget
+ */
+Flightroutes = new Mongo.Collection("flightroutes");
+Partitioner.partitionCollection(Flightroutes);
+Flightroutes.attachSchema(Core.Schemas.Flightroute);
 /**
  * Core Collections ProcurementRequisitions
  */
