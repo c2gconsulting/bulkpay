@@ -419,7 +419,7 @@ Meteor.methods({
                             // console.log(`empTimeSheets: `, empTimeSheets)
                             empTimeSheets.forEach(time => {
                                 try {
-                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,cust_Project,hours,bookingDate&$format=json`
+                                    const empTimeSheetEntryUrl = `${baseUrl}/odata/v2/EmployeeTimeValuationResult?$filter=EmployeeTimeSheet_externalCode eq '${time.externalCode}'&$select=externalCode,costCenter,hours,bookingDate&$format=json`
                                     const timeSheetEntryRes = getToSync(empTimeSheetEntryUrl, {headers: requestHeaders})
                                     // console.log(`timeSheetEntryRes: `, timeSheetEntryRes)
     
@@ -453,7 +453,7 @@ Meteor.methods({
                                                     approvedDate: null,
                                                     isApprovalStatusSeenByCreator: false,
                                                     successFactorsCostCenter: entry.costCenter,
-                                                    successFactorsCustProject: entry.cust_Project
+                                                    // successFactorsCustProject: entry.cust_Project
                                                 }
                                                 TimeWritings.insert(timeSheetEntry)
                                                 results.push(timeSheetEntry)
