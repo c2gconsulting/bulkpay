@@ -96,6 +96,46 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
+    "TravelRequest/retire": function(businessUnitId, travelRequestDoc, docId){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(businessUnitId, String);
+        this.unblock()
+
+        // travelRequestDoc.createdBy = Meteor.userId()
+        // travelRequestDoc.status = 'Draft'
+        // travelRequestDoc.businessId = businessUnitId
+        // if(docId) {
+        //     TravelRequisitions.update(docId, {$set: travelRequestDoc})
+        // } else{
+        //     TravelRequisitions.insert(travelRequestDoc)
+        // }
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you are not allowed to create a travel request because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+
+        let userPositionId = Meteor.user().employeeProfile.employment.position
+
+        let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
+        if(userPosition.properties) {
+            let supervisorPositionId = userPosition.properties.supervisor
+
+            travelRequestDoc.createdBy = Meteor.userId()
+            travelRequestDoc.status = 'Retire'
+            travelRequestDoc.businessId = businessUnitId
+            travelRequestDoc.supervisorPositionId = supervisorPositionId
+            if(docId) {
+                TravelRequisitions.update(docId, {$set: travelRequestDoc})
+            } else{
+                TravelRequisitions.insert(travelRequestDoc)
+            }
+            return true
+        }
+        throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
+    },
     "TravelRequest/create": function(businessUnitId, travelRequestDoc, docId){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");

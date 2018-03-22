@@ -5,12 +5,12 @@
 Core.publish("TravelRequestsICreated", function (businessUnitId) {
     let user = this.userId;
 
-    return TravelRequisitions.find({businessId: businessUnitId, createdBy: this.userId});
+    return travelrequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
 Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     let user = this.userId;
-    return TravelRequisitions.find({
+    return travelrequisition2s.find({
         businessId: businessUnitId,
         createdBy: this.userId,
         isStatusSeenByCreator: false
@@ -18,10 +18,7 @@ Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
 });
 
 Core.publish("TravelRequest", function (requisitionId) {
-    return TravelRequisitions.find({_id: requisitionId});
-});
-Core.publish("TravelRequestToRetire", function (requisitionId) {
-    return TravelRequisitions.find({_id: requisitionId});
+    return travelrequisition2s.find({_id: requisitionId});
 });
 
 Core.publish("TravelRequestsToApprove", function (businessUnitId) {
@@ -32,13 +29,12 @@ Core.publish("TravelRequestsToApprove", function (businessUnitId) {
     }
     let userPositionId = user.employeeProfile.employment.position
 
-    return TravelRequisitions.find({
+    return travelrequisition2s.find({
         businessId: businessUnitId,
         $or: [{supervisorPositionId : userPositionId}, 
                 {alternativeSupervisorPositionId: userPositionId}]
     });
 });
-
 
 Core.publish("TravelRequestsToTreat", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
@@ -49,8 +45,8 @@ Core.publish("TravelRequestsToTreat", function (businessUnitId) {
 
     let userPositionId = user.employeeProfile.employment.position
 
-    if (Core.hasTravelRequisitionApproveAccess(this.userId)) {
-        return TravelRequisitions.find({
+    if (Core.hastravelrequisition2ApproveAccess(this.userId)) {
+        return travelrequisition2s.find({
             businessId: businessUnitId,
             status: 'Approved'
         });

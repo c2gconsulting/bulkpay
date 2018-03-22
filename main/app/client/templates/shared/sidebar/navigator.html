@@ -186,6 +186,7 @@
 
             {{#if isTravelRequisitionActive}}
                 <li><a href="{{pathFor 'travelrequests.list'}}">Travel requests</a></li>
+                <li><a href="{{pathFor 'travelretirements.list'}}">Travel retirements</a></li>
 
                 {{#if isUserASupervisor}}
                 <li><a href="{{pathFor 'travelrequests.approvalList'}}">Approve Travel Requests</a></li>
@@ -196,6 +197,7 @@
                 {{/if}}
 
                 <li><a href="{{pathFor 'travelrequests2.list'}}">Travel requests (new)</a></li>
+                <li><a href="{{pathFor 'travelretirements2.list'}}">Travel retirements (new)</a></li>
 
                 {{#if isUserASupervisor}}
                 <li><a href="{{pathFor 'travelrequests2.approvalList'}}">Approve Travel Requests (new)</a></li>
