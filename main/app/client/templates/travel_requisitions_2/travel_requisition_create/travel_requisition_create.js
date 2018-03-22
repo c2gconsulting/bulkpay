@@ -383,30 +383,28 @@ Template.TravelRequisition2Create.events({
     tmpl.updateTripNumbers();
 },
 
-
 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+     currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-
-
-          Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-              if (res){
-                  swal({
-                      title: "Success",
-                      text: `New hotel added`,
-                      confirmButtonClass: "btn-success",
-                      type: "success",
-                      confirmButtonText: "OK"
-                  });
-                  Modal.hide('HotelCreate');
-              } else {
-                  console.log(err);
-              }
-          });
-
-      },
+    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+        if (res){
+            swal({
+                title: "Success",
+                text: `New hotel added`,
+                confirmButtonClass: "btn-success",
+                type: "success",
+                confirmButtonText: "OK"
+            });
+            Modal.hide('HotelCreate');
+        } else {
+            console.log(err);
+        }
     });
+
+},
+});
 
 
 
@@ -988,6 +986,8 @@ Template.TravelRequisition2Create.onCreated(function () {
         totalTripCostNGN: 0,
         totalTripCostUSD: 0,
         status: "Pending",
+        supervisorId: "",
+        budgetHolderId: "",
         createdBy: Meteor.user()._id,
         trips: [{
             tripIndex: 1,
