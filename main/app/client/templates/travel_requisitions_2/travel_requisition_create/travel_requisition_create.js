@@ -390,7 +390,7 @@ Template.TravelRequisition2Create.events({
 
 
 
-          Meteor.call('TravelRequest/create', currentTravelRequest, (err, res) => {
+          Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
               if (res){
                   swal({
                       title: "Success",
