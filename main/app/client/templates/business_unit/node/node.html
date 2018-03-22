@@ -88,6 +88,18 @@
                                     </div>
                                 </li>
 
+                                {{#if maxHoursInDayForTimeWritingPerLocationEnabled}}
+                                    <li class="list-group-item">
+                                        <div class="">
+                                            Maximum hours in day: 
+
+                                            <div class="row">
+                                                <input type="text" value="{{maxHoursInDayForTimeWriting}}" id="maxHoursInDay" class="form-control" />
+                                                <button class="btn btn-primary mr5 pull-right" id="saveLocationMaxHours">Save</button>    
+                                            </div>
+                                        </div>
+                                    </li>
+                                {{/if}}
                             </ul>
                         </div>
 

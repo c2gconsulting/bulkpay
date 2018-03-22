@@ -28,6 +28,7 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": true,
       "paymentHeadersForPayslip": {
         "bank": true,
         "accountNumber": true
@@ -65,6 +66,7 @@
       "isWeekendTimeWritingEnabled": true,
       "isOvertimeEnabled": false,
       "maxHoursInDayForTimeWriting": 24,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": true,
       "paymentHeadersForPayslip": {
         "bank": true,
         "accountNumber": true
@@ -104,6 +106,7 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": false,
       "paymentHeadersForPayslip": {
         "bank": true,
         "accountNumber": true
@@ -149,6 +152,7 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": false,
       "paymentHeadersForPayslip": {
         "bank": true,
         "accountNumber": true
@@ -250,6 +254,7 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": false,
       "maxHoursInDayForTimeWriting": 8,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": false,
       "paymentHeadersForPayslip": {
         "bank": true,
         "accountNumber": true
@@ -352,6 +357,7 @@
       "isWeekendTimeWritingEnabled": false,
       "isOvertimeEnabled": true,
       "maxHoursInDayForTimeWriting": 8,
+      "maxHoursInDayForTimeWritingPerLocationEnabled": false,
       "directEmployeeManagerEnabled": true,
       "paymentHeadersForPayslip": {
         "bank": false,
@@ -481,6 +487,7 @@
     "isWeekendTimeWritingEnabled" : false,
     "isOvertimeEnabled" : true,
     "maxHoursInDayForTimeWriting" : 8,
+    "maxHoursInDayForTimeWritingPerLocationEnabled": false,
     "directEmployeeManagerEnabled": true,
     "paymentHeadersForPayslip" : {
         "bank" : false,
@@ -661,7 +668,6 @@
                 "realValueMultiplier" : "NumberOfDaysOnTrip"
             }
         ]
-    },
-    "createdAt" : ISODate("2018-02-16T03:30:28.645Z")
+    }
     }
 ]

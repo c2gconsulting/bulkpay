@@ -57,6 +57,10 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: String,
         optional: true
     },
+    locationId: {
+        type: String,
+        optional: true
+    },
     day: {
         type: Date
     },

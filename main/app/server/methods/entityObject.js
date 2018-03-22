@@ -176,7 +176,17 @@ Meteor.methods({
             return name;
         }
         return ""
-    }
+    },
+    "entityObject/updateMaxHoursInDay": function(id, maxHours){
+        if(!this.userId){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        this.unblock();
+        check(id, String);
 
-
+        //--
+        EntityObjects.update({_id:id}, {$set:{
+            maxHoursInDayForTimeWriting: maxHours
+        }});
+    },
 });

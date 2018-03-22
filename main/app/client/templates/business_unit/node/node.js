@@ -38,6 +38,21 @@ Template.Node.events({
         
         Modal.show('EntityCreate', {node: selectedNode, action: "create"});
     },
+    'click #saveLocationMaxHours': (e, tmpl) => {
+        e.preventDefault();
+
+        let maxHoursInDay = $('#maxHoursInDay').val()
+        if(!isNaN(parseFloat(maxHoursInDay))) {
+            maxHoursInDay = parseFloat(maxHoursInDay)
+
+            let selectedNode = Session.get('node');
+            console.log(`Selected node for new member: ${selectedNode}`)
+     
+            Meteor.call('entityObject/updateMaxHoursInDay', selectedNode, maxHoursInDay, (err, res) => {
+                console.log(`Err: `, err)
+            })
+        }
+    },
 });
 
 /*****************************************************************************/
@@ -107,6 +122,12 @@ Template.Node.helpers({
             return businessUnitCustomConfig.isTwoStepApprovalEnabled
         }
     },
+    'maxHoursInDayForTimeWritingPerLocationEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.maxHoursInDayForTimeWritingPerLocationEnabled
+        }
+    }
 });
 
 /*****************************************************************************/

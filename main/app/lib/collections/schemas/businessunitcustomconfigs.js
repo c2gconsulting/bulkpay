@@ -105,6 +105,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     maxHoursInDayForTimeWriting: {
         type: Number
     },
+    maxHoursInDayForTimeWritingPerLocationEnabled: {
+        type: Boolean,
+        optional: false
+    },
     directEmployeeManagerEnabled: {
         type: Boolean,
         optional: true

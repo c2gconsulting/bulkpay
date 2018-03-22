@@ -47,6 +47,11 @@ Core.Schemas.EntityObject = new SimpleSchema({
         optional: true,
         blackbox: true
     },
+    maxHoursInDayForTimeWriting: {// used mainly for 'Location' entities
+        optional: true,
+        type: Number,
+        decimal: true
+    },
 
     "successFactors": {//externalCode, costCenter.code
         label: "Success Factors Config",
