@@ -4,7 +4,7 @@ import _ from 'underscore';
 
 let TravelRequestHelper = {
     sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName, 
-        description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        currentTravelRequest, approvalsPageUrl) {
         try {
             SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
             Email.send({
@@ -14,10 +14,8 @@ let TravelRequestHelper = {
                 html: SSR.render("travelRequestNotification", {
                     user: supervisorFullName,
                     createdBy: createdByFullName,
-                    description: description,
-                    unit: unitName,
-                    dateRequired: dateRequired,
-                    reason: requisitionReason,
+                    currentTravelRequest,
+                  
                     approvalsPageUrl: approvalsPageUrl
                 })
             });
@@ -27,7 +25,7 @@ let TravelRequestHelper = {
         }
     },
     sendRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName, 
-        description, unitName, dateRequired, requisitionReason, approvalsPageUrl) {
+        currentTravelRequest, approvalsPageUrl) {
         try {
             SSR.compileTemplate("travelRequisitionNotificationForTreatment", Assets.getText("emailTemplates/travelRequisitionNotificationForTreatment.html"));
             
@@ -38,10 +36,7 @@ let TravelRequestHelper = {
                 html: SSR.render("travelRequisitionNotificationForTreatment", {
                     user: supervisorFullName,
                     createdBy: createdByFullName,
-                    description: description,
-                    unit: unitName,
-                    dateRequired: dateRequired,
-                    reason: requisitionReason,
+                    currentTravelRequest,
                     approvalsPageUrl: approvalsPageUrl
                 })
             });
@@ -56,7 +51,7 @@ let TravelRequestHelper = {
  *  Travel Request Methods
  */
 Meteor.methods({
-    "TravelRequest2/createDraft": function(businessUnitId, travelRequestDoc, docId){
+    "TravelRequest2/createDraft": function(currentTravelRequest){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -136,7 +131,7 @@ Meteor.methods({
         }
         throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
     },
-    "TravelRequest2/create": function(currentTravelRequest){
+    "TravelRequest2/create": function(currentTravelRequest,user){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -147,99 +142,19 @@ Meteor.methods({
             let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
+        createdBy = Meteor.userId();
+        let createdBy = Meteor.users.findOne(Meteor.userId());
+        
+        let createdByEmail = createdBy.emails[0].address;
+        let createdByFullName = createdBy.profile.fullName
 
-        let userPositionId = Meteor.user().employeeProfile.employment.position
+        let directSupervisorId = user.directSupervisorId;
+        console.log('directSupervisorId' +directSupervisorId)
+        let directAlternateSupervisorId = user.directAlternateSupervisorId;
 
-        let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
-        if(userPosition.properties 
-            && (userPosition.properties.supervisor || userPosition.properties.alternateSupervisor)) {
-            let supervisorPositionId = userPosition.properties.supervisor || ""
-            let alternateSupervisorPositionId = userPosition.properties.alternateSupervisor || ""
 
-            createdBy = Meteor.userId()
-         //   businessId = businessUnitId
-            supervisorPositionId = supervisorPositionId
-            alternativeSupervisorPositionId = alternateSupervisorPositionId
-            // travelRequestDoc.status = 'Pending'
 
-            // if(docId) {
-            //     TravelRequisitions.update(docId, {$set: travelRequestDoc})
-            // } else {
-            //     docId = TravelRequisitions.insert(travelRequestDoc)
-            }
-            //--
-            let createdBy = Meteor.users.findOne(Meteor.userId())
-            
-            let createdByEmail = createdBy.emails[0].address;
-            let createdByFullName = createdBy.profile.fullName
 
-            // const travelDoc = TravelRequisitions.findOne({_id: docId})
-            // let unit = EntityObjects.findOne({_id: travelDoc.unitId, otype: 'Unit'})
-            // if(!unit) {
-            //     throw new Meteor.Error(404, "Sorry, the travel request does not have a unit");
-            // }
-            // let unitName = unit.name
-
-            // let dateRequired = ''
-            // if(travelRequestDoc.dateRequired) {
-            //     dateRequired = moment(travelRequestDoc.dateRequired).format('DD/MM/YYYY')
-            // }
-          //  let approvalsPageUrl = Meteor.absoluteUrl() + `business/${businessUnitId}/employee/travelrequests/approvalslist`
-            //--
-            let supervisors = []
-            let alternateSupervisors = []
-
-            if(supervisorPositionId) {
-                supervisors = Meteor.users.find({
-                    'employeeProfile.employment.position': supervisorPositionId
-                }).fetch()
-            }
-          
-            console.log('supervisorPositionId' + supervisorPositionId);
-
-            if(alternateSupervisorPositionId) {
-                alternateSupervisors = Meteor.users.find({
-                    'employeeProfile.employment.position': alternateSupervisorPositionId
-                }).fetch()
-            }
-            let businessCustomConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
-            if(businessCustomConfig && businessCustomConfig.isTwoStepApprovalEnabled) {
-                if(supervisors && supervisors.length > 0) {
-                    let supervisorEmail =  supervisors[0].emails[0].address;
-
-                    TravelRequestHelper.sendRequisitionCreated(
-                        supervisors[0].profile.fullName,
-                        supervisorEmail, createdByFullName, currentTravelRequest,
-                       
-                        approvalsPageUrl)
-                }
-            } else {
-                if(supervisors && supervisors.length > 0) {
-                    supervisors.forEach(aSupervisor => {
-                        let supervisorEmail =  aSupervisor.emails[0].address;
-
-                        TravelRequestHelper.sendRequisitionCreated(
-                            aSupervisor.profile.fullName,
-                            supervisorEmail, createdByFullName, 
-                            currentTravelRequest,
-                            approvalsPageUrl)
-                    })
-        //         }
-                if(alternateSupervisors && alternateSupervisors.length > 0) {
-                    alternateSupervisors.forEach(aSupervisor => {
-                        let supervisorEmail =  aSupervisor.emails[0].address;
-
-                        TravelRequestHelper.sendRequisitionCreated(
-                            aSupervisor.profile.fullName,
-                            supervisorEmail, createdByFullName,currentTravelRequest, 
-                           
-                            approvalsPageUrl)
-                    })
-                }
-            }
-            return true
-        }
-        throw new Meteor.Error(404, "Sorry, you do not have a supervisor to approve your requisition");
     },
     "TravelRequest2/approverSave": function(businessUnitId, travelRequestDoc, docId){
         if(!this.userId){
