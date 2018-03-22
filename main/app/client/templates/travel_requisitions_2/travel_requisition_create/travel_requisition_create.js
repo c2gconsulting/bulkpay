@@ -47,10 +47,10 @@ Template.TravelRequisition2Create.events({
                     hotelNotRequired: false,
                     perDiemCost: 0,
                     originCityCurrreny: "NGN",
-                    isBreakfastIncluded: true,
-                    isLunchIncluded: true,
-                    isDinnerIncluded: true,
-                    isIncidentalsIncluded: true,
+                    isBreakfastIncluded: false,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -80,10 +80,10 @@ Template.TravelRequisition2Create.events({
                     hotelNotRequired: false,
                     perDiemCost: 0,
                     originCityCurrreny: "NGN",
-                    isBreakfastIncluded: true,
-                    isLunchIncluded: true,
-                    isDinnerIncluded: true,
-                    isIncidentalsIncluded: true,
+                    isBreakfastIncluded: false,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -111,10 +111,10 @@ Template.TravelRequisition2Create.events({
                     hotelNotRequired: false,
                     perDiemCost: 0,
                     originCityCurrreny: "NGN",
-                    isBreakfastIncluded: true,
-                    isLunchIncluded: true,
-                    isDinnerIncluded: true,
-                    isIncidentalsIncluded: true,
+                    isBreakfastIncluded: false,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -142,10 +142,10 @@ Template.TravelRequisition2Create.events({
                     hotelNotRequired: false,
                     perDiemCost: 0,
                     originCityCurrreny: "NGN",
-                    isBreakfastIncluded: true,
-                    isLunchIncluded: true,
-                    isDinnerIncluded: true,
-                    isIncidentalsIncluded: true,
+                    isBreakfastIncluded: false,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
                     totalDuration: 0,
                     totalPerDiem: 0,
                     totalHotelCost: 0
@@ -382,187 +382,15 @@ Template.TravelRequisition2Create.events({
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
 },
-//includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
 
-'click #createProcurementRequisition': function(e, tmpl) {
-    e.preventDefault()
-
-    Modal.show('TravelRequisition2Create')
-},
-/**
-* Trip Cost
-*/
-
-
-
-
-    _id: {
-        type: String,
-        optional: true
-    },
-    businessId: {
-        type: String
-    },
-    description: {
-        type: String
-    },
-    budgetCodeId: {
-        type: String,
-        optional: true
-    },
-    cashAdvanceNotRequired: {
-        type: Boolean,
-        defaultValue: false
-    },
-    type: {
-        type: String,
-        defaultValue: 'Return',
-        allowedValues: ['Single', 'Return', 'Multiple']
-    },
-    totalTripDuration: {
-        type: Number,
-        optional: true
-    },
-    totalEmployeeAmountPayableNGN: {
-        type: Number,
-        optional: true
-    },
-    totalEmployeeAmountPayableUSD: {
-        type: Number,
-        optional: true
-    },
-    totalFlightCostNGN: {
-        type: Number,
-        optional: true
-    },
-    totalFlightCostUSD: {
-        type: Number,
-        optional: true
-    },
-    totalHotelCostNGN: {
-        type: Number,
-        optional: true
-    },
-    totalHotelCostUSD: {
-        type: Number,
-        optional: true
-    },
-    totalTripCostNGN: {
-        type: Number,
-        optional: true
-    },
-    totalTripCostUSD: {
-        type: Number,
-        optional: true
-    },
-    trips: {
-        type: [Core.Schemas.Trip],
-        optional: true,
-    },
-   
-   
-    
-     
-  
 
 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
-    let description = $('[name=description]').val();
-    let budgetCodeId = $('[name=budgetCodeId]').val();
-    let trips = $('[name=trips]').val();
-    let totalTripDuration= parseFloat($('[name=totalTripDuration]').val());
-    let totalEmployeeAmountPayableNGN = parseFloat($('[name=totalEmployeeAmountPayableNGN]').val());
-    let totalEmployeeAmountPayableUSD = parseFloat($('[name=totalEmployeeAmountPayableUSD]').val());
-    let totalFlightCostNGN = parseFloat($('[name=totalFlightCostNGN]').val());
-    let totalFlightCostUSD = parseFloat($('[name=totalFlightCostUSD]').val());
-    let totalHotelCostNGN = parseFloat($('[name=totalHotelCostNGN]').val());
-    let totalFlightCostNGNailyRate = parseFloat($('[name=dailyRate]').val());
-    let totalHotelCostUSD = parseFloat($('[name=totalHotelCostUSD]').val());
-    let totalTripCostNGN = parseFloat($('[name=totalTripCostNGN]').val());
-    let totalTripCostUSD = parseFloat($('[name=totalTripCostUSD]').val());
-    let originCityAirportTaxiCost = parseFloat($('[name=originCityAirportTaxiCost]').val());
-    let destinationCityAirportTaxiCost = parseFloat($('[name=destinationCityAirportTaxiCost]').val());
-    let groundTransportCostndex = parseFloat($('[name=groundTransportCost]').val());
-    let airfareCost = parseFloat($('[name=airfareCost]').val());
-    let hotelRate = parseFloat($('[name=hotelRate]').val());
-    let perDiemCost = parseFloat($('[name=perDiemCost]').val());
-    let totalDuration = parseFloat($('[name=totalDuration]').val());
-    let totalPerDiem = parseFloat($('[name=totalPerDiem]').val());
-    let totalHotelCost = parseFloat($('[name=totalHotelCost]').val());
-    let fromId = $('[name=fromId]').val();
-    let toId = $('[name=toId]').val();
-    let departureDate = $('[name=departureDate]').val();
-    let returnDate = $('[name=returnDate]').val();
-    let departureTime = $('[name=departureTime]').val();
-    let returnTime = $('[name=returnTime]').val();
-    let transportationMode = $('[name=transportationMode]').val();
-    let carOption = $('[name=carOption]').val();
-    let provideAirportPickup = $('[name=provideAirportPickup]').val();
-    let provideGroundTransport = $('[name=provideGroundTransport]').val();
-    let airlineId = $('[name=airlineId]').val();
-    let airfareCurrency = $('[name=airfareCurrency]').val();
-    let hotelId = $('[name=hotelId]').val();
-    let destinationCityCurrreny = $('[name=destinationCityCurrreny]').val();
-    let hotelNotRequired = $('[name=hotelNotRequired]').val();
-    let originCityCurrreny = $('[name=originCityCurrreny]').val();
-    let isBreakfastIncluded = $('[nisLunchIncluded]').val();
-    let isDinnerIncluded = $('[name=isDinnerIncluded]').val();
-    let isIncidentalsIncluded = $('[name=isIncidentalsIncluded]').val();
-    
-   
-  
-    let newTravelRequest = {
-        // description = description,
-        // budgetCodeId = budgetCodeId,
-        // type = type,
-        // totalTripDuration = totalTripDuration,
-        // totalEmployeeAmountPayableNGN =totalEmployeeAmountPayableNGN,
-        // totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD ,
-        // totalFlightCostNGN = totalFlightCostNGN,
-        // totalFlightCostUSD =totalFlightCostUSD,
-        // totalHotelCostNGN =totalHotelCostNGN,
-        // totalHotelCostUSD = totalHotelCostUSD,
-        // totalTripCostNGN = totalTripCostNGN,
-        // totalTripCostUSD = totalTripCostUSD,
-      businessId: Session.get('context'),
-      tripIndex:tripIndex,
-    fromId: fromId,
-    toId: toId,
-    departureDate:  departureDate,
-    returnDate:returnDate,
-    departureTime: departureTime,
-    returnTime: returnTime,
-    transportationMode: transportationMode,
-    carOption:  carOption,
-    provideAirportPickup: provideAirportPickup,
-    provideGroundTransport: provideGroundTransport,
-    originCityAirportTaxiCost: originCityAirportTaxiCost,
-    destinationCityAirportTaxiCost: destinationCityAirportTaxiCost,
-    groundTransportCost:  groundTransportCost,
-    airlineId: airlineId,
-    airfareCost: airfareCost,
-    airfareCurrency: airfareCurrency,
-    hotelId: hotelId,
-    hotelRate: hotelRate,
-    destinationCityCurrreny: destinationCityCurrreny,
-    hotelNotRequired: hotelNotRequired,
-    perDiemCost: perDiemCost,
-    originCityCurrreny:originCityCurrreny,
-    isBreakfastIncluded: isBreakfastIncluded,
-    isLunchIncluded: isLunchIncluded,
-    isDinnerIncluded: isDinnerIncluded,
-    isIncidentalsIncluded: isIncidentalsIncluded,
-    totalDuration: totalDuration,
-    totalPerDiem: totalPerDiem,
-    totalHotelCost: totalHotelCost
-   
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
-    };
-   
-          
-  
-          
-          Meteor.call('TravelRequest/create', newTravelRequest, (err, res) => {
+
+
+          Meteor.call('TravelRequest/create', currentTravelRequest, (err, res) => {
               if (res){
                   swal({
                       title: "Success",
@@ -576,14 +404,14 @@ Template.TravelRequisition2Create.events({
                   console.log(err);
               }
           });
-        
+
       },
     });
-    
-    
-   
 
-    
+
+
+
+
 
 
 //     let validation = tmpl.areInputsValid(description)
@@ -1185,10 +1013,10 @@ Template.TravelRequisition2Create.onCreated(function () {
             hotelNotRequired: false,
             perDiemCost: 0,
             originCityCurrreny: "NGN",
-            isBreakfastIncluded: true,
-            isLunchIncluded: true,
-            isDinnerIncluded: true,
-            isIncidentalsIncluded: true,
+            isBreakfastIncluded: false,
+            isLunchIncluded: false,
+            isDinnerIncluded: false,
+            isIncidentalsIncluded: false,
             totalDuration: 0,
             totalPerDiem: 0,
             totalHotelCost: 0
@@ -1272,22 +1100,22 @@ Template.TravelRequisition2Create.onCreated(function () {
 
             if (toTravelCity){
                 unadjustedPerDiemCost = toTravelCity.perdiem;
-                perDiemCost = 0;
+                perDiemCost = unadjustedPerDiemCost;
 
                 if (currentTravelRequest.trips[i].isBreakfastIncluded){
-                    perDiemCost = perDiemCost + (0.2 * unadjustedPerDiemCost);
+                    perDiemCost = perDiemCost - (0.2 * unadjustedPerDiemCost);
                 }
 
                 if (currentTravelRequest.trips[i].isLunchIncluded){
-                    perDiemCost = perDiemCost + (0.3 * unadjustedPerDiemCost);
+                    perDiemCost = perDiemCost - (0.3 * unadjustedPerDiemCost);
                 }
 
                 if (currentTravelRequest.trips[i].isDinnerIncluded){
-                    perDiemCost = perDiemCost + (0.4 * unadjustedPerDiemCost);
+                    perDiemCost = perDiemCost - (0.4 * unadjustedPerDiemCost);
                 }
 
                 if (currentTravelRequest.trips[i].isIncidentalsIncluded){
-                    perDiemCost = perDiemCost + (0.1 * unadjustedPerDiemCost);
+                    perDiemCost = perDiemCost - (0.1 * unadjustedPerDiemCost);
                 }
             }
 
@@ -1442,7 +1270,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             }
         }
 
-      
+
     })
 
     // self.areInputsValid = function(tmpl) {

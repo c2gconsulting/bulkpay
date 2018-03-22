@@ -4,7 +4,7 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2Index.events({
-    'click #createProcurementRequisition  ': function(e, tmpl) {
+    'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
     },
