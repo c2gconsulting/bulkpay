@@ -11,14 +11,7 @@ Template.HotelCreate.events({
       let travelcityId =  $('[name=travelcityId]').val()
       let currency = $('[name=currency]').val();
       console.log('currency:' + currency);
-      //console.log('hotelTravelcity :', hotelTravelcity);
   
-    //   if (!hotelCode || hotelCode.trim().length === 0) {
-    //     Template.instance().errorMessage.set("Please enter the hotel code");
-    //   } else if(!hotelName || hotelName.trim().length === 0) {
-    //       Template.instance().errorMessage.set("Please enter the hotel name");
-    //   } 
-    //   else {
         Template.instance().errorMessage.set(null);
   
         let newHotel = {
@@ -28,20 +21,7 @@ Template.HotelCreate.events({
           travelcityId : travelcityId,
           currency : currency
         };
-        // travelcityId: {
-        //     type: String
-        // },
-        // name: {
-        //     type: String
-        // },
-        // dailyRate: {
-        //     type: Number
-        // },
-        // currency: {
-        //     type: String,
-        //     defaultValue: 'NGN',
-        //     allowedValues: ['NGN', 'USD']
-        // },
+        
 
         let hotelContext = Core.Schemas.Hotel.namedContext("hotelForm");
         hotelContext.validate(newHotel);

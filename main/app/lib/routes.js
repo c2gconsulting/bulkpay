@@ -394,6 +394,12 @@ Router.route('/business/:_id/employee/travelrequests/treatlist', {
     action: 'showTravelRequestTreatList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/travelretirements/list', {
+    name: 'travelretirements.list',
+    controller: 'RequisitionController',
+    action: 'showTravelRetirementList',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/travelrequests2', {
     name: 'travelrequests2.list',
@@ -411,6 +417,12 @@ Router.route('/business/:_id/employee/travelrequests2/treatlist', {
     name: 'travelrequests2.treatList',
     controller: 'RequisitionController',
     action: 'showTravelRequest2TreatList',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/travelretirements2/list', {
+    name: 'travelretirements2.list',
+    controller: 'RequisitionController',
+    action: 'showTravelRetirement2List',
     where: 'client'
 });
 

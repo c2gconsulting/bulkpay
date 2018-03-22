@@ -6,16 +6,13 @@ Template.AirlineCreate.events({
       Modal.hide('AirlineCreate');
     },
     'click #save': (e, tmpl) => {
-   //   let airlineCode = $('[name=airline-code]').val();
+ 
       let airlineName = $('[name=airline-name]').val();
       let isInternational = $('#isInternational').is(':checked');
 
-     // employees: Core.returnSelection($('[name="employee"]')),
+     
 
-
-     // if (!airlineCode || airlineCode.trim().length === 0) {
-       // Template.instance().errorMessage.set("Please enter the Airline code");
-    /*} else */if(!airlineName || airlineName.trim().length === 0) {
+     if(!airlineName || airlineName.trim().length === 0) {
           Template.instance().errorMessage.set("Please enter the Airline name");
       }
       else {
@@ -23,19 +20,12 @@ Template.AirlineCreate.events({
 
         let newAirline = {
           businessId: Session.get('context'),
-        //   code : airlineCode,
+   
           name : airlineName,
           isInternational: isInternational
         };
 
-       /* let flightContext = Core.Schemas.FLight.namedContext("flightForm");
-        flightContext.validate(newFlight);
-        if (flightContext.isValid()) {
-            console.log('Hotel is Valid!');
-        } else {
-            console.log('Hotel is not Valid!');
-        }
-        console.log(flightContext._invalidKeys);*/
+   
 
         Meteor.call('airline/create', newAirline, (err, res) => {
             if (res){
