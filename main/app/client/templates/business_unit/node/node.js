@@ -50,6 +50,9 @@ Template.Node.events({
      
             Meteor.call('entityObject/updateMaxHoursInDay', selectedNode, maxHoursInDay, (err, res) => {
                 console.log(`Err: `, err)
+                if(!err) {
+                    swal("Maximum hours in day for Time Writing", "Save successful" , "success");
+                }
             })
         }
     },

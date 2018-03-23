@@ -43,6 +43,14 @@ Core.publish("getPositions", function (businessId) {
     return EntityObjects.find({otype: "Position", businessId: businessId});
 });
 
+Core.publish("getLocationsWithMaxHours", function (businessId) {
+    return EntityObjects.find({
+        otype: "Location", 
+        businessId: businessId,
+        maxHoursInDayForTimeWriting: {$exists: true}
+    });
+});
+
 
 Core.publish("getEntityWithDirectDecent", function(id){
 

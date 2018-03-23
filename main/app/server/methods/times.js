@@ -1,12 +1,29 @@
 Meteor.methods({
 
-    "time/create": function(time){
+    "time/create": function(time) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         let userId = Meteor.userId();
 
         this.unblock();
+
+
+        let customConfig = BusinessUnitCustomConfigs.findOne({businessId: time.businessId})   
+        if(customConfig) {
+            if(customConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
+                if(time.locationId) {
+                    const location = EntityObjects.findOne({_id: time.locationId})
+                    if(location) {
+                        const maxHoursInDayForTimeWriting = location.maxHoursInDayForTimeWriting
+
+                        if(time.duration > maxHoursInDayForTimeWriting) {
+                            throw new Meteor.Error(401, `You can't record time more than: ${maxHoursInDayForTimeWriting} hour(s) for location: ${location.name}`);
+                        }
+                    }
+                }
+            }
+        }
 
         try {
             TimeWritings.insert(time);
