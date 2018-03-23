@@ -391,14 +391,20 @@ Template.TravelRequisition2Create.events({
     Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
         if (res){
             swal({
-                title: "Success",
-                text: `New hotel added`,
+                title: "Travel requisition created",
+                text: "Your travel requisition has been created, a notification has been sent to your supervisor",
                 confirmButtonClass: "btn-success",
                 type: "success",
                 confirmButtonText: "OK"
             });
-            Modal.hide('HotelCreate');
         } else {
+            swal({
+                title: "Oops!",
+                text: "Your travel requisition could not be created, reason: " + err.message,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             console.log(err);
         }
     });
@@ -1060,7 +1066,9 @@ Template.TravelRequisition2Create.onCreated(function () {
                 if (totalDuration < 0){
                     totalDuration = 0;
                 }else{
-                    totalDuration = totalDuration + 0.5;
+                    //totalDuration = totalDuration + 0.5;
+                    totalDuration = totalDuration;
+
                 }
             }else if (tripType === "Multiple"){
 

@@ -142,9 +142,9 @@ Meteor.methods({
 
 
         currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-        console.log("user is:")
+        console.log("user isss:")
         console.log(Meteor.users.findOne(currentTravelRequest.createdBy))
-        currentTravelRequest.budgetHolderId = (Budgets.findOne({_id: currentTravelRequest.budgetCodeId}))._id;
+        currentTravelRequest.budgetHolderId = (Budgets.findOne(currentTravelRequest.budgetCodeId))._id;
 
         console.log("current travel request is: ");
         console.log(currentTravelRequest);
@@ -153,7 +153,8 @@ Meteor.methods({
             let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
             throw new Meteor.Error(401, errMsg);
         }
-        TravelRequisitions.insert(currentTravelRequest);
+
+        TravelRequisition2s.insert(currentTravelRequest);
         return true;
     },
     "TravelRequest2/approverSave": function(businessUnitId, travelRequestDoc, docId){
