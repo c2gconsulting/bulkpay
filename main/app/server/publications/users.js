@@ -169,7 +169,7 @@ Core.publish("activeEmployees", function (businessId) {
     this.unblock(); // eliminate wait time impact
     let selector = { 'businessIds': businessId, 'employee': true, 'employeeProfile.employment.status': "Active" };
     check(businessId, String);
-    if (businessId && Core.hasPayrollAccess(this.userId)){
+    if (businessId) {
         //return all meteor users in that position
         return Meteor.users.find(selector, {
             fields: {

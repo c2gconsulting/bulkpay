@@ -112,6 +112,26 @@
                                 <input type="number"  class="form-control" name="duration" id="duration" value="" min="1" max="8"/>
                                 <label>Hours left for current day: {{hoursToTimeWriteForCurrentDay}}</label>
                             </div>
+
+                            {{#if maxHoursInDayForTimeWritingPerLocationEnabled}}
+                            <!-- <div class="col-sm-4">
+                                <label for="duration" class="control-label">Duration (in hours)</label>
+                                <input type="number"  class="form-control" name="duration" id="duration" value="" min="1" max="8"/>
+                                <label>Hours left for current day: {{hoursToTimeWriteForCurrentDay}}</label>
+                            </div> -->
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">Location</label>
+                                    <select name="locations" class="form-control dropdown" id="locations">
+                                        <option value=""></option>
+                                        {{#each locationsWithMaxHoursSet}}
+                                            <option value="{{_id}}" {{employeeLocationWithMaxHourSet _id}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            {{/if}}
                         </div><!-- row -->
                         
                         {{#if isOvertimeEnabled}}

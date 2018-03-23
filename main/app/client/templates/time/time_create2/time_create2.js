@@ -70,45 +70,58 @@ Template.TimeCreate2.events({
 
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
 
+        let timeDoc = {
+            employeeId: Meteor.userId(),
+            activity: activityId,
+            day: day,
+            businessId: Session.get('context')
+        }
+
         let isOvertimeEnabled = false;
         const businessUnitCustomConfig = tmpl.businessUnitCustomConfig.get();
         if(businessUnitCustomConfig) {
             isOvertimeEnabled = businessUnitCustomConfig.isOvertimeEnabled
         }
 
-        if(isOvertimeEnabled) {
-            let allowOvertime = $('#allowOvertime').is(":checked")
-            if(allowOvertime) {
-                if(durationAsNumber > 24) {
-                    swal('Validation error', "You cannot record overtime more than 24 hours on the same day", 'error')
-                    return
-                }
-            } else if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
-                swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
-                return
-            }
-        } else {
-            if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
-                swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
-                return
-            }
+        let maxHoursInDayForTimeWritingPerLocationEnabled = false;
+        if(businessUnitCustomConfig) {
+            maxHoursInDayForTimeWritingPerLocationEnabled = businessUnitCustomConfig.maxHoursInDayForTimeWritingPerLocationEnabled
         }
 
-        let note = $('#note').val() || "";
-        //--
-        let timeDoc = {
-            employeeId: Meteor.userId(),
-            activity: activityId,
-            day: day,
-            duration: durationAsNumber,
-            note: note,
-            businessId: Session.get('context')
+        if(maxHoursInDayForTimeWritingPerLocationEnabled) {
+            let location = $('#locations').val() || "";            
+            timeDoc.locationId = location
+        } else {
+            if(isOvertimeEnabled) {
+                let allowOvertime = $('#allowOvertime').is(":checked")
+                if(allowOvertime) {
+                    if(durationAsNumber > 24) {
+                        swal('Validation error', "You cannot record overtime more than 24 hours on the same day", 'error')
+                        return
+                    }
+                } else if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+                    swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
+                    return
+                }
+            } else {
+                if(durationAsNumber > hoursToTimeWriteForCurrentDay) {
+                    swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
+                    return
+                }
+            }    
         }
+
+        timeDoc.duration = durationAsNumber;
+
+        let note = $('#note').val() || "";
+        timeDoc.note = note;
+
         if(costElement === 'project') {
             timeDoc.project = costElementId
         } else if(costElement === 'costCenter') {
             timeDoc.costCenter = costElementId
         }
+
         //--
         Meteor.call('time/create', timeDoc, function(err, res) {
             if(!err) {
@@ -197,6 +210,25 @@ Template.TimeCreate2.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isOvertimeEnabled
         }
+    },
+    'maxHoursInDayForTimeWritingPerLocationEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.maxHoursInDayForTimeWritingPerLocationEnabled
+        }
+    },
+    'locationsWithMaxHoursSet': function() {
+        return EntityObjects.find({
+            otype: "Location",
+            businessId: Session.get('context'),
+            maxHoursInDayForTimeWriting: {$exists: true}
+        });
+    },
+    'employeeLocationWithMaxHourSet': function(locationId) {
+        const employeeLocationWithMaxHoursSet = Template.instance().employeeLocationWithMaxHoursSet.get()
+        if(employeeLocationWithMaxHoursSet) {
+            return employeeLocationWithMaxHoursSet._id === locationId ? 'selected' : ''
+        }
     }
 });
 
@@ -223,12 +255,15 @@ Template.TimeCreate2.onCreated(function () {
 
     self.hoursToTimeWriteForCurrentDay = new ReactiveVar(0)
     //self.hoursToTimeWriteForCurrentDay.set(8)
+    self.employeeLocationWithMaxHoursSet = new ReactiveVar()
 
     const businessId = Session.get('context')
 
     self.subscribe('employeeprojects', Session.get('context'));
     self.subscribe('getCostElement', Session.get('context'));
     self.subscribe('AllActivities', Session.get('context'));
+    self.subscribe('getLocationsWithMaxHours', Session.get('context'));
+    self.subscribe('User', Meteor.userId())
 
     //--
     self.autorun(function(){
@@ -256,6 +291,37 @@ Template.TimeCreate2.onCreated(function () {
         if(businessUnitCustomConfig) {
             const maxHoursInDayForTimeWriting = businessUnitCustomConfig.maxHoursInDayForTimeWriting || 8
             self.hoursToTimeWriteForCurrentDay.set(maxHoursInDayForTimeWriting - numberOfHoursTimewritedFor)
+        }
+        //--
+        const employee = Meteor.users.findOne({_id: Meteor.userId()})
+        if(employee) {
+            employee.employeeProfile = employee.employeeProfile || {}
+            employee.employeeProfile.employment = employee.employeeProfile.employment || {}
+            const employeePositionId = employee.employeeProfile.employment.position
+
+            if(employeePositionId) {
+                let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
+    
+                let getLocationWithHoursSet = (entity) => {
+                    let possibleUnitId = entity.parentId
+                    if(possibleUnitId) {
+                        let possibleLocation = EntityObjects.findOne({_id: possibleUnitId})
+                        if(possibleLocation) {
+                            if(possibleLocation.otype === 'Location' && possibleLocation.maxHoursInDayForTimeWriting) {
+                                console.log(`possibleLocation: `, possibleLocation)
+                                self.employeeLocationWithMaxHoursSet.set(possibleLocation)
+                            } else {
+                                return getLocationWithHoursSet(possibleLocation)
+                            }
+                        } else {
+                            return null
+                        }
+                    } else {
+                        return null
+                    }
+                }
+                getLocationWithHoursSet(position)
+            }
         }
     });
 

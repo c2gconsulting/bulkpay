@@ -203,12 +203,9 @@ Template.LeaveTypeCreate.onRendered(function () {
         });
 
         if(self.canNowPrefittyDropdowns.get()) {
-            console.log(`canNowPrefittyDropdowns: `, true)
             setTimeout(function() {
                 $('select.dropdown').dropdown();                
             }, 1000)
-        } else {
-            console.log(`canNowPrefittyDropdowns: `, false)            
         }
     });
 });
