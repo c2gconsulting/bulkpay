@@ -104,6 +104,8 @@ Template.TravelRequisitionDetail.events({
     },
     'click #requisition-approver-edit': function(e, tmpl) {
         let isInEditMode = Template.instance().isInEditMode.get()
+        let isInRetireMode = Template.instance().isInRetireMode.get()
+        
         let isInApproveMode = Template.instance().isInApproveMode.get()
 
         if(isInApproveMode) {
@@ -261,6 +263,25 @@ Template.TravelRequisitionDetail.events({
             })
         }
     },
+    'click #requisition-retire': function(e, tmpl) {
+        e.preventDefault()
+        let procurementDetails = Template.instance().procurementDetails.get()
+        if(procurementDetails) {
+            let businessUnitId = Session.get('context')
+
+            Meteor.call('TravelRequest/retire', businessUnitId, procurementDetails._id, function(err, res) {
+                if(!err) {
+                    swal({title: "Success", text: "Travel request retired", type: "success",
+                        confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
+                    }, () => {
+                        Modal.hide()
+                    })
+                } else {
+                    swal('Validation error', err.message, 'error')
+                }
+            })
+        }
+    },
     'click #requisition-treatment-reject': function(e, tmpl) {
         e.preventDefault()
         let procurementDetails = Template.instance().procurementDetails.get()
@@ -401,6 +422,9 @@ Template.TravelRequisitionDetail.helpers({
     'isInTreatMode': function() {
         return Template.instance().isInTreatMode.get()
     },
+    'isInRetireMode': function() {
+        return Template.instance().isInTreatMode.get()
+    },
     'getUnitName': function(unitId) {
         if(unitId) {
             console.log(`unit id: `, unitId)
@@ -507,6 +531,7 @@ Template.TravelRequisitionDetail.onCreated(function () {
     self.isInApproveMode = new ReactiveVar()
     self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
+    self.isInRetireMode = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
 
@@ -525,6 +550,9 @@ Template.TravelRequisitionDetail.onCreated(function () {
     }
     if(invokeReason.reason === 'treat') {
         self.isInTreatMode.set(true)
+    }
+    if(invokeReason.reason === 'retire') {
+        self.isInRetireMode.set(true)
     }
 
     self.businessUnitLogoUrl = new ReactiveVar()

@@ -1,12 +1,12 @@
 /*****************************************************************************/
-/* TravelRequisition2Index: Event Handlers */
+/* TravelRequisitionIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2Index.events({
-    'click #createTravelRequisition  ': function(e, tmpl) {
+Template.TravelRequisitionIndex.events({
+    'click #createProcurementRequisition': function(e, tmpl) {
         e.preventDefault()
-        Modal.show('TravelRequisition2Create')
+        Modal.show('TravelRequisitionCreate')
     },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
@@ -17,7 +17,7 @@ Template.TravelRequisition2Index.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2Detail', invokeReason)
+        Modal.show('TravelRequisitionDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -48,9 +48,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Index: Helpers */
+/* TravelRequisitionIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2Index.helpers({
+Template.TravelRequisitionIndex.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
@@ -100,9 +100,9 @@ Template.TravelRequisition2Index.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Index: Lifecycle Hooks */
+/* TravelRequisitionIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2Index.onCreated(function () {
+Template.TravelRequisitionIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -154,10 +154,10 @@ Template.TravelRequisition2Index.onCreated(function () {
     })
 });
 
-Template.TravelRequisition2Index.onRendered(function () {
+Template.TravelRequisitionIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisition2Index.onDestroyed(function () {
+Template.TravelRequisitionIndex.onDestroyed(function () {
 });
