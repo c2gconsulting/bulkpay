@@ -43,10 +43,10 @@
                                 <tr>
                                     <th>Creator</th>
                                     <th>Description</th>
-                                    <th>Unit</th>
+                                   
                                     <th>Date created</th>
                                     <th>Status</th>
-                                    <th>Total Trip Cost</th>
+                                    <!--<th>Total Trip Cost</th>-->
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,14 +54,14 @@
                                 <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                     <td nowrap>{{getCreatedByFullName this}}</td>
                                     <td>{{description}}</td>
-                                    <td>{{getUnitName unitId}}</td>
+                                   
                                     {{#if createdAt}}
                                     <td nowrap>{{formatDate createdAt}}</td>
                                     {{else}}
                                     <td nowrap></td>
                                     {{/if}}
                                     <td>{{status}}</td>
-                                    <td>{{formatMoneyD (totalTripCost this) (getTravelRequestCurrency this)}}</td>
+                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -76,10 +76,10 @@
                             <tr>
                                 <th>Creator</th>
                                 <th>Description</th>
-                                <th>Unit</th>
+                            
                                 <th>Date created</th>
                                 <th>Status</th>
-                                <th>Total Trip Cost</th>
+                                <!--<th>Total Trip Cost</th>-->
                             </tr>
                         </thead>
                         <tbody>

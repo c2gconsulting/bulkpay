@@ -56,7 +56,7 @@ Template.TravelRequisition2Index.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisitions.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -73,30 +73,15 @@ Template.TravelRequisition2Index.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
-    'getUnitName': function(unitId) {
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
-    },
-    'totalTripCost': function(travelRequestDetails) {
-        if(travelRequestDetails) {
-            let tripCosts = travelRequestDetails.tripCosts || [];
-            let costNames = Object.keys(tripCosts)
-
-            let totalCosts = 0;
-
-            costNames.forEach(costName => {
-                totalCosts += tripCosts[costName];
-            })
-            return totalCosts;
+  
+    'totalTripCostNGN': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
+            
+            return totalTripCostNGN;
         }
     },
-    'getTravelRequestCurrency': function(requisition) {
-        if(requisition.currency) {
-            return requisition.currency
-        } else {
-            return 'NGN'
-        }
-    }
+    
 });
 
 /*****************************************************************************/
@@ -112,6 +97,8 @@ Template.TravelRequisition2Index.onCreated(function () {
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
+   
+    self.totalTripCost = new ReactiveVar(0)
 
     self.getTravelRequestsICreated = function(skip) {
         let sortBy = "createdAt";
@@ -123,7 +110,7 @@ Template.TravelRequisition2Index.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisitions.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisition2s.find({createdBy: Meteor.userId()}, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

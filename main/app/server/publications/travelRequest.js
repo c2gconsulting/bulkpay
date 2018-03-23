@@ -5,12 +5,12 @@
 Core.publish("TravelRequestsICreated", function (businessUnitId) {
     let user = this.userId;
 
-    return TravelRequisitions.find({businessId: businessUnitId, createdBy: this.userId});
+    return TravelRequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
 Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     let user = this.userId;
-    return TravelRequisitions.find({
+    return TravelRequisition2s.find({
         businessId: businessUnitId,
         createdBy: this.userId,
         isStatusSeenByCreator: false
