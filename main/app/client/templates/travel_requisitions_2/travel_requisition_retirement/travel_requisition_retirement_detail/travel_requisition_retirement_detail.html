@@ -5,11 +5,11 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
                             </div>
-                            <div class="col-sm-4">
-                                <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
+                            <div class="col-sm-6">
+                                <h3 class="panel-title pull-right">Status: {{currentTravelRequest.retirementStatus}}</h3>
                             </div>
                         </div>
 
@@ -95,7 +95,7 @@
                                     <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control" placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
                                 </div>
-                                    <!-- form-group -->
+                                <!-- form-group -->
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
@@ -248,16 +248,49 @@
                             </div>
                         </div>
                         <hr/>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Trip Duration:</span>
+                            </div>
+                            <div class="col-sm-2">&nbsp;
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{currentTravelRequest.totalTripDuration}} Days</span>
+                            </div>
+
+                        </div>
 
                         <div class="row">
                             <div class="col-sm-8">
-                                <span>Total Estimated Amount Payable to Employee:</span>
+                                <span>Total Estimated Perdiem:</span>
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableNGN "NGN"}}</span>
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemNGN "NGN"}}</span>
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableUSD "USD"}}</span>
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Airport Taxi:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Local Transport:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostUSD "USD"}}</span>
                             </div>
                         </div>
                         <div class="row">
@@ -287,26 +320,151 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="supervisorComment" class="control-label">Supervisor Comment </label>
+                                <label for="supervisorComment" class="control-label">Supervisor Approval Comments</label>
                                 <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
 
                             </div>
                         </div>
-
                         <div class="row">
-
                             <div class="col-sm-12">
-                                <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
+                                <label for="budgetHolderComment" class="control-label">Budget Holder Approval Comments</label>
                                 <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}" disabled/>
 
                             </div>
                         </div>
-</div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span><strong>Trip Expenses</strong></span>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Total Trip Duration (Days):</span>
+                            </div>
+                            <div class="col-sm-2"><span class="text-right pull-right">Planned:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalTripDuration" class="form-control text-right" placeholder="" name="totalTripDuration" value="{{currentTravelRequest.totalTripDuration}}" disabled/>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">Actual:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="actualTotalTripDuration" class="form-control text-right" placeholder="" name="actualTotalTripDuration" value="{{currentTravelRequest.actualTotalTripDuration}}" />
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                &nbsp;
+                            </div>
+                            <div class="col-sm-2"><span class="text-right pull-right"><strong>Planned (NGN)</strong></span>
+                            </div>
+                            <div class="col-sm-2"><span class="text-right pull-right"><strong>Actual (NGN)</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>Planned (USD)</strong></span>
+                            </div>
+                            <div class="col-sm-2"><span class="text-right pull-right"><strong>Actual (USD)</strong></span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Airport Taxi Expenses:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalAirportTaxiCostNGN" class="form-control text-right" placeholder="" name="totalAirportTaxiCostNGN" value="{{formatMoney currentTravelRequest.totalAirportTaxiCostNGN}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalAirportTaxiCostNGN" class="form-control text-right" placeholder="" name="actualTotalAirportTaxiCostNGN" value="{{formatMoney currentTravelRequest.actualTotalAirportTaxiCostNGN}}" />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalAirportTaxiCostUSD" class="form-control text-right" placeholder="" name="totalAirportTaxiCostUSD" value="{{formatMoney currentTravelRequest.totalAirportTaxiCostUSD}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalAirportTaxiCostUSD" class="form-control text-right" placeholder="" name="actualTotalAirportTaxiCostUSD" value="{{formatMoney currentTravelRequest.actualTotalAirportTaxiCostUSD}}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Local Transport Expenses:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalGroundTransportCostNGN" class="form-control text-right" placeholder="" name="totalGroundTransportCostNGN" value="{{formatMoney currentTravelRequest.totalGroundTransportCostNGN}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalGroundTransportCostNGN" class="form-control text-right" placeholder="" name="actualTotalGroundTransportCostNGN" value="{{formatMoney currentTravelRequest.actualTotalGroundTransportCostNGN}}" />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalGroundTransportCostUSD" class="form-control text-right" placeholder="" name="totalGroundTransportCostUSD" value="{{formatMoney currentTravelRequest.totalGroundTransportCostUSD}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalGroundTransportCostUSD" class="form-control text-right" placeholder="" name="actualTotalGroundTransportCostUSD" value="{{formatMoney currentTravelRequest.actualTotalGroundTransportCostUSD}}" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Other Miscellenous Expenses:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalMiscCostNGN" class="form-control text-right" placeholder="" name="totalMiscCostNGN" value="{{formatMoney currentTravelRequest.totalMiscCostNGN}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalMiscCostNGN" class="form-control text-right" placeholder="" name="actualTotalMiscCostNGN" value="{{formatMoney currentTravelRequest.actualTotalMiscCostNGN}}" />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalMiscCostUSD" class="form-control text-right" placeholder="" name="totalMiscCostUSD" value="{{formatMoney currentTravelRequest.totalMiscCostUSD}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalMiscCostUSD" class="form-control text-right" placeholder="" name="actualTotalMiscCostUSD" value="{{formatMoney currentTravelRequest.actualTotalMiscCostUSD}}" />
+                            </div>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span><strong>Total:</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalAncilliaryCostNGN}}</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.actualTotalAncilliaryCostNGN}}</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalAncilliaryCostUSD}}</strong></span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.actualTotalAncilliaryCostUSD}}</strong></span>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="additionalRetirementComment" class="control-label">Additional comments related to this retirement: </label>
+                                <input type="text" id="additionalRetirementComment" class="form-control" placeholder="" name="additionalRetirementComment" value="{{currentTravelRequest.additionalRetirementComment}}" />
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="supervisorRetirementComment" class="control-label">Supervisor Retirement Comments</label>
+                                <input type="text" id="supervisorRetirementComment" class="form-control" placeholder="" name="supervisorRetirementComment" value="{{currentTravelRequest.supervisorRetirementComment}}" disabled/>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="budgetHolderRetirementComment" class="control-label">Budget Holder Retirement Comments</label>
+                                <input type="text" id="budgetHolderRetirementComment" class="form-control" placeholder="" name="budgetHolderRetirementComment" value="{{currentTravelRequest.budgetHolderRetirementComment}}" disabled/>
+
+                            </div>
+                        </div>
+                    </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                         <!--
-                       <button class="btn btn-success mr5 pull-right" id="new-requisition-create" data-dismiss="modal">Submit for Approval</button>
-                        <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
+
+                        <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
+                        <!--<button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
                     </div><!-- panel-footer -->
                 </div>
             </div>

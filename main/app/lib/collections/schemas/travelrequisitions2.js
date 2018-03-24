@@ -53,15 +53,15 @@ Core.Schemas.Trip = new SimpleSchema({
         defaultValue: false
     },
     originCityAirportTaxiCost:{
-        type: Number,
+        type: Number, decimal: true,
         defaultValue: 0
     },
     destinationCityAirportTaxiCost:{
-        type: Number,
+        type: Number, decimal: true,
         defaultValue: 0
     },
     groundTransportCost:{
-        type: Number,
+        type: Number, decimal: true,
         defaultValue: 0
     },
     airlineId: {
@@ -69,7 +69,7 @@ Core.Schemas.Trip = new SimpleSchema({
         optional: true
     },
     airfareCost:{
-        type:Number,
+        type:SimpleSchema.Integer,
         optional: true
     },
     airfareCurrency:{
@@ -83,7 +83,7 @@ Core.Schemas.Trip = new SimpleSchema({
         optional: true
     },
     hotelRate:{
-        type:Number,
+        type:SimpleSchema.Integer,
         optional: true
     },
     destinationCityCurrreny:{
@@ -98,7 +98,7 @@ Core.Schemas.Trip = new SimpleSchema({
         optional: true
     },
     perDiemCost:{
-        type:Number
+        type:SimpleSchema.Integer
     },
     originCityCurrreny:{
         type: String,
@@ -122,15 +122,15 @@ Core.Schemas.Trip = new SimpleSchema({
         defaultValue: false
     },
     totalDuration:{
-        type: Number,
+        type: Number, decimal: true,
         optional: true
     },
     totalPerDiem:{
-        type:Number,
+        type:SimpleSchema.Integer,
         optional:true
     },
     totalHotelCost:{
-        type:Number,
+        type:SimpleSchema.Integer,
         optional:true
     },
 });
@@ -163,40 +163,118 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         allowedValues: ['Single', 'Return', 'Multiple']
     },
     totalTripDuration: {
-        type: Number,
+        type: Number, decimal: true,
         optional: true
     },
-    totalEmployeeAmountPayableNGN: {
-        type: Number,
+    actualTotalTripDuration: {
+        type: Number, decimal: true,
+        defaultValue: 0,
         optional: true
     },
-    totalEmployeeAmountPayableUSD: {
-        type: Number,
+    totalEmployeePerdiemNGN: {
+        type: Number, decimal: true,
         optional: true
+    },
+    totalEmployeePerdiemUSD: {
+        type: Number, decimal: true,
+        optional: true
+    },
+    totalAirportTaxiCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    totalAirportTaxiCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    totalGroundTransportCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    totalGroundTransportCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    totalMiscCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    totalMiscCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalAirportTaxiCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalAirportTaxiCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalGroundTransportCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalGroundTransportCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalMiscCostNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalMiscCostUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
     },
     totalFlightCostNGN: {
-        type: Number,
+        type: Number, decimal: true,
         optional: true
     },
     totalFlightCostUSD: {
-        type: Number,
-        optional: true
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
     },
     totalHotelCostNGN: {
-        type: Number,
-        optional: true
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
     },
     totalHotelCostUSD: {
-        type: Number,
-        optional: true
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
     },
     totalTripCostNGN: {
-        type: Number,
-        optional: true
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
     },
     totalTripCostUSD: {
-        type: Number,
-        optional: true
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
+    totalAncilliaryCostNGN: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
+    totalAncilliaryCostUSD: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
+    actualTotalAncilliaryCostNGN: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
+    actualTotalAncilliaryCostUSD: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
     },
     trips: {
         type: [Core.Schemas.Trip],
@@ -205,7 +283,13 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder","Retired"],
+        allowedValues: ["Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder"],
+        optional: true
+    },
+    retirementStatus: {
+        type: String,
+        defaultValue: 'Not Retired',
+        allowedValues: ["Not Retired","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved By Budget Holder","Retirement Rejected By Budget Holder"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -233,6 +317,21 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true
     },
     budgetHolderComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    additionalRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    supervisorRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    budgetHolderRetirementComment: {
         type: String,
         defaultValue: '',
         optional: true

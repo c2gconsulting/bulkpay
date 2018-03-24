@@ -12,8 +12,8 @@ Template.TravelRequisition2Create.events({
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
         currentTravelRequest.type = travelType;
         currentTravelRequest.totalTripDuration = 0;
-        currentTravelRequest.totalEmployeeAmountPayableNGN = 0;
-        currentTravelRequest.totalEmployeeAmountPayableUSD = 0;
+        currentTravelRequest.totalEmployeePerdiemNGN = 0;
+        currentTravelRequest.totalEmployeePerdiemUSD = 0;
         currentTravelRequest.totalFlightCostNGN = 0;
         currentTravelRequest.totalFlightCostUSD = 0;
         currentTravelRequest.totalHotelCostNGN = 0;
@@ -386,8 +386,7 @@ Template.TravelRequisition2Create.events({
 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-     currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
+    
     Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
         if (res){
             swal({
@@ -974,7 +973,6 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
 
-
     let currentTravelRequest = {
         businessId: businessUnitId,
         description: "",
@@ -982,8 +980,8 @@ Template.TravelRequisition2Create.onCreated(function () {
         cashAdvanceNotRequired: false,
         type:"Return",
         totalTripDuration: 0,
-        totalEmployeeAmountPayableNGN: 0,
-        totalEmployeeAmountPayableUSD: 0,
+        totalEmployeePerdiemNGN: 0,
+        totalEmployeePerdiemUSD: 0, totalAirportTaxiCostNGN: 0, totalAirportTaxiCostUSD: 0, totalGroundTransportCostNGN: 0, totalGroundTransportCostUSD: 0,
         totalFlightCostNGN: 0,
         totalFlightCostUSD: 0,
         totalHotelCostNGN: 0,
@@ -1040,14 +1038,20 @@ Template.TravelRequisition2Create.onCreated(function () {
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
 
         let totalTripDuration = 0;
-        let totalEmployeeAmountPayableNGN = 0;
-        let totalEmployeeAmountPayableUSD = 0;
+        let totalEmployeePerdiemNGN = 0;
+        let totalEmployeePerdiemUSD = 0;
         let totalFlightCostNGN = 0;
         let totalFlightCostUSD = 0;
         let totalHotelCostNGN = 0;
         let totalHotelCostUSD = 0;
         let totalTripCostNGN = 0;
         let totalTripCostUSD = 0;
+        let totalAirportTaxiCostNGN = 0;
+        let totalAirportTaxiCostUSD = 0;
+        let totalGroundTransportCostNGN = 0;
+        let totalGroundTransportCostUSD = 0;
+        let totalMiscCostNGN = 0;
+        let totalMiscCostUSD = 0;
 
         for (i = 0; i < currentTravelRequest.trips.length; i++) {
 
@@ -1065,8 +1069,8 @@ Template.TravelRequisition2Create.onCreated(function () {
                 if (totalDuration < 0){
                     totalDuration = 0;
                 }else{
-                    //totalDuration = totalDuration + 0.5;
-                    totalDuration = totalDuration;
+                    totalDuration = totalDuration + 0.5;
+                    //totalDuration = totalDuration;
 
                 }
             }else if (tripType === "Multiple"){
@@ -1175,40 +1179,47 @@ Template.TravelRequisition2Create.onCreated(function () {
 
             totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
             if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].totalPerDiem;
+                totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].totalPerDiem;
+                totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
             }
 
             if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }
 
             if (toTravelCity && (toTravelCity.currency   === "NGN")){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
             }
 
             if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+                totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
                 totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+                totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
                 totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
             }
 
 
         }
 
-        totalTripCostNGN = totalEmployeeAmountPayableNGN + totalHotelCostNGN;
-        totalTripCostUSD = totalEmployeeAmountPayableUSD + totalHotelCostUSD;
+        totalTripCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalHotelCostNGN;
+        totalTripCostUSD = totalEmployeePerdiemUSD + totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalHotelCostUSD;
+
 
         currentTravelRequest.totalTripDuration = totalTripDuration;
-        currentTravelRequest.totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN;
-        currentTravelRequest.totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD;
+        currentTravelRequest.totalEmployeePerdiemNGN = totalEmployeePerdiemNGN;
+        currentTravelRequest.totalEmployeePerdiemUSD = totalEmployeePerdiemUSD;
+        currentTravelRequest.totalAirportTaxiCostNGN = totalAirportTaxiCostNGN;
+        currentTravelRequest.totalAirportTaxiCostUSD = totalAirportTaxiCostUSD;
+        currentTravelRequest.totalGroundTransportCostNGN = totalGroundTransportCostNGN;
+        currentTravelRequest.totalGroundTransportCostUSD = totalGroundTransportCostUSD;
+        currentTravelRequest.totalAncilliaryCostNGN = totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalMiscCostNGN;
+        currentTravelRequest.totalAncilliaryCostUSD = totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalMiscCostUSD;
         currentTravelRequest.totalHotelCostNGN = totalHotelCostNGN;
         currentTravelRequest.totalHotelCostUSD = totalHotelCostUSD;
         currentTravelRequest.totalTripCostNGN = totalTripCostNGN;

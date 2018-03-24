@@ -44,188 +44,52 @@ import _ from 'underscore';
 
 
 Template.RetirementDetail.events({
-    'click #requisition-save-draft': function(e, tmpl) {
+    'change ': function(e, tmpl) {
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.businessUnitId = Session.get('context');
-        Meteor.call('TravelRequest/createDraft', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request Draft saved", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
 
-},
-'click #requisition-create': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/create',currentTravelRequest, (err, res) => {
-        if(!err) {
-            swal({title: "Success", text: "Travel request is now pending approval", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
+        currentTravelRequest.actualTotalTripDuration = parseFloat(($("#actualTotalTripDuration").val()).replace(',',''));
+        currentTravelRequest.actualTotalAirportTaxiCostNGN = parseFloat(($("#actualTotalAirportTaxiCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalGroundTransportCostNGN = parseFloat(($("#actualTotalGroundTransportCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalMiscCostNGN = parseFloat(($("#actualTotalMiscCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalAirportTaxiCostUSD = parseFloat(($("#actualTotalAirportTaxiCostUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalGroundTransportCostUSD = parseFloat(($("#actualTotalGroundTransportCostUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalMiscCostUSD = parseFloat(($("#actualTotalMiscCostUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalAncilliaryCostNGN = currentTravelRequest.actualTotalAirportTaxiCostNGN + currentTravelRequest.actualTotalGroundTransportCostNGN + currentTravelRequest.actualTotalMiscCostNGN;
+        currentTravelRequest.actualTotalAncilliaryCostUSD = currentTravelRequest.actualTotalAirportTaxiCostUSD + currentTravelRequest.actualTotalGroundTransportCostUSD + currentTravelRequest.actualTotalMiscCostUSD;
+        currentTravelRequest.additionalRetirementComment = $("#additionalRetirementComment").val();
 
+        console.log("current travel request");
+        console.log(currentTravelRequest);
 
-
-},
-'click #requisition-delete': (e,tmpl) => {
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(travelRequestDetails.status === 'Draft' || travelRequestDetails.status === 'Pending') {
-        Meteor.call("TravelRequest/delete",currentTravelRequest, (err, res) => {
-            if(!err){
-                Modal.hide();
-                swal("Deleted!", `Travel request deleted successfully!`, "success");
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
+    'click #new-retirement-create': function(e, tmpl) {
+        e.preventDefault()
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.retirementStatus = "Retirement Submitted";
+        Meteor.call('TravelRequest2/retire', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Trip Retirement Updated",
+                    text: "Your trip requirement has been made, a notification has been sent to your supervisor",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
             } else {
-                swal("Error!", err.reason, "error");
+                swal({
+                    title: "Oops!",
+                    text: "Your trip requirement could not be created, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
             }
-            // window.location.reload();
         });
-    } else {
-        swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' or 'Pending' state", "error");
-    }
-},
-'click #requisition-approver-edit': function(e, tmpl) {
-    let isInEditMode = Template.instance().isInEditMode.get()
-    let isInRetireMode = Template.instance().isInRetireMode.get()
 
-    let isInApproveMode = Template.instance().isInApproveMode.get()
-
-    if(isInApproveMode) {
-        Template.instance().isInApproverEditMode.set(true)
-    }
-    // approverSave
-},
-'click #requisition-approver-save': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/approverSave', businessUnitId, requisitionDoc, currentTravelRequest._id, function(err, res) {
-        tmpl.isInApproverEditMode.set(false)
-
-        if(!err) {
-            swal({title: "Success", text: "Requisition edits saved", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-
-        })
-    } else {
-        swal('Validation error', err.reason, 'error')
-    }
-})
-
-
-
-},
-'click #requisition-approve': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/approveWithApprovalRecommendation',
-    businessUnitId, currentTravelRequest._id, approvalRecommendation, function(err, res) {
-        if(!err) {
-            swal({title: "Success", text: "Travel request approved", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
-
-
-},
-'click #requisition-treat': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/treat',currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request treated", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-retire': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/retire', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request retired", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-treatment-reject': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/treatmentRejected', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request treatment rejected", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-reject': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/reject', currentTravelRequest, (err, res) => {
-        if(!err) {
-            swal({title: "Success", text: "Travel request rejected", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
-
-},
-
+    },
 });
 
 

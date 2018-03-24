@@ -91,61 +91,40 @@ let TravelRequestHelper = {
                 }
                 throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
             },
-            "TravelRequest2/retire": function(businessUnitId, travelRequestDoc, docId){
+            "TravelRequest2/retire": function(currentTravelRequest){
                 if(!this.userId && Core.hasPayrollAccess(this.userId)){
                     throw new Meteor.Error(401, "Unauthorized");
                 }
-                check(businessUnitId, String);
+                check(currentTravelRequest.businessId, String);
                 this.unblock()
 
-                // travelRequestDoc.createdBy = Meteor.userId()
-                // travelRequestDoc.status = 'Draft'
-                // travelRequestDoc.businessId = businessUnitId
-                // if(docId) {
-                //     TravelRequisitions.update(docId, {$set: travelRequestDoc})
-                // } else{
-                //     TravelRequisitions.insert(travelRequestDoc)
-                // }
+                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+                if (budgetCode){
+                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                }
 
                 if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you are not allowed to create a travel request because you are a super admin"
+                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
                     throw new Meteor.Error(401, errMsg);
                 }
 
-                let userPositionId = Meteor.user().employeeProfile.employment.position
+                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
-                let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
-                if(userPosition.properties) {
-                    let supervisorPositionId = userPosition.properties.supervisor
-
-                    travelRequestDoc.createdBy = Meteor.userId()
-                    travelRequestDoc.status = 'Retire'
-                    travelRequestDoc.businessId = businessUnitId
-                    travelRequestDoc.supervisorPositionId = supervisorPositionId
-                    if(docId) {
-                        TravelRequisitions.update(docId, {$set: travelRequestDoc})
-                    } else{
-                        TravelRequisitions.insert(travelRequestDoc)
-                    }
-                    return true
-                }
-                throw new Meteor.Error(404, "Sorry, you have no supervisor to approve your requisition");
+                return true;
             },
             "TravelRequest2/create": function(currentTravelRequest){
                 if(!this.userId && Core.hasPayrollAccess(this.userId)){
                     throw new Meteor.Error(401, "Unauthorized");
                 }
-                //    console.log(currentTravelRequest.businessUnitId);
-                check(currentTravelRequest.businessUnitId, String);
+                check(currentTravelRequest.businessId, String);
                 this.unblock()
 
-
-
                 currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                currentTravelRequest.budgetHolderId = (Budgets.findOne(currentTravelRequest.budgetCodeId)).employeeId;
-
-                //    console.log("current travel request is: ");
-                //console.log(currentTravelRequest);
+                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+                if (budgetCode){
+                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                }
 
                 if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
                     let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
@@ -155,7 +134,7 @@ let TravelRequestHelper = {
 
                     TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
                 }else{
-                    TravelRequisition2s.insert(currentTravelRequest);
+                    let result = TravelRequisition2s.insert(currentTravelRequest);
                 }
 
                 return true;

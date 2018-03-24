@@ -251,13 +251,47 @@
 
                         <div class="row">
                             <div class="col-sm-8">
-                                <span>Total Estimated Amount Payable to Employee:</span>
+                                <span>Total Trip Duration:</span>
+                            </div>
+                            <div class="col-sm-2">&nbsp;
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableNGN "NGN"}}</span>
+                                <span class="text-right pull-right">{{currentTravelRequest.totalTripDuration}} Days</span>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Perdiem:</span>
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableUSD "USD"}}</span>
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Airport Taxi:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Local Transport:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostUSD "USD"}}</span>
                             </div>
                         </div>
                         <div class="row">

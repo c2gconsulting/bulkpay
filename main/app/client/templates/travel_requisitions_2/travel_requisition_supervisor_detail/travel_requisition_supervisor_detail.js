@@ -126,12 +126,6 @@ Template.TravelRequisitionSupervisor2Detail.events({
           console.log(err);
       }
   });
-
-
-
-
-
-
 },
 
 

@@ -110,7 +110,10 @@ Template.RetirementIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisition2s.find({
+            $and : [
+                {createdBy: Meteor.userId()},{ status : "Approved By Budget Holder" } ]
+        }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

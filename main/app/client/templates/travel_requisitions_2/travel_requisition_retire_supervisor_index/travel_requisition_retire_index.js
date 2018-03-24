@@ -113,7 +113,7 @@ Template.TravelRequisitionRetirementIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { supervisorId: Meteor.userId()},
-                { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+                { $or : [ { retirementStatus : "Retirement Submitted" }, { retirementStatus : "Retirement Approved By Supervisor" }, { retirementStatus : "Retirement Rejected By Supervisor"}] }
             ]
         }, options);
             }

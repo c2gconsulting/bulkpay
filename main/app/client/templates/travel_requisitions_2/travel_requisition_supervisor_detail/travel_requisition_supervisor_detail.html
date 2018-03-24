@@ -5,10 +5,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-sm-8">
+                            <div class="col-sm-6">
                                 <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
                             </div>
                         </div>
@@ -254,16 +254,49 @@
                             </div>
                         </div>
                         <hr/>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Trip Duration:</span>
+                            </div>
+                            <div class="col-sm-2">&nbsp;
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{currentTravelRequest.totalTripDuration}} Days</span>
+                            </div>
+
+                        </div>
 
                         <div class="row">
                             <div class="col-sm-8">
-                                <span>Total Estimated Amount Payable to Employee:</span>
+                                <span>Total Estimated Perdiem:</span>
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableNGN "NGN"}}</span>
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemNGN "NGN"}}</span>
                             </div>
                             <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableUSD "USD"}}</span>
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeePerdiemUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Airport Taxi:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalAirportTaxiCostUSD "USD"}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <span>Total Estimated Local Transport:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostNGN "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalGroundTransportCostUSD "USD"}}</span>
                             </div>
                         </div>
                         <div class="row">

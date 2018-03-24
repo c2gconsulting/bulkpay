@@ -119,7 +119,7 @@ Template.TravelRequisitionBudgetHolderRetireIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { budgetHolderId: Meteor.userId()},
-                { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+                { $or : [ { retirementStatus : "Retirement Approved By Supervisor" }, { retirementStatus : "Retirement Approved By Budget Holder" }, { retirementStatus : "Retirement Rejected By Budget Holder"}] }
             ]
         }, options);
     }
