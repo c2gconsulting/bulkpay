@@ -400,6 +400,19 @@ Router.route('/business/:_id/employee/travelrequests/retirementlist', {
     action: 'showTravelRequestsRetirementList',
     where: 'client'
 });
+Router.route('/business/:_id/employee/travelrequests/retirementslist', {
+    name: 'travelrequests.retirementslist',
+    controller: 'RequisitionController',
+    action: 'showTravelRequestsRetirementsList',
+    where: 'client'
+});
+Router.route('/business/:_id/employee/travelrequests/budgetholderretirementslist', {
+    name: 'travelrequests.budgetholderretirementslist',
+    controller: 'RequisitionController',
+    action: 'showTravelRequestsBudgetHolderRetirementsList',
+    where: 'client'
+});
+
 
 
 Router.route('/business/:_id/employee/travelrequests/approvalslist', {

@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisitionRetirementIndex: Event Handlers */
+/* TravelRequisitionBudgetHolderRetireIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionRetirementIndex.events({
+Template.TravelRequisitionBudgetHolderRetireIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,7 +17,7 @@ Template.TravelRequisitionRetirementIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisitionRetirementDetail', invokeReason)
+        Modal.show('TravelRequisitionBudgetHolderRetireDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.TravelRequisitionRetirementIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsICreated(skip)
-        Template.instance().travelRequestsICreated.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByBudgetHolder(skip)
+        Template.instance().travelRequestsByBudgetHolder.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -48,11 +48,11 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionRetirementIndex: Helpers */
+/* TravelRequisitionBudgetHolderRetireIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionRetirementIndex.helpers({
-    'travelRequestsICreated': function() {
-        return Template.instance().travelRequestsICreated.get()
+Template.TravelRequisitionBudgetHolderRetireIndex.helpers({
+    'travelRequestsByBudgetHolder': function() {
+        return Template.instance().travelRequestsByBudgetHolder.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
@@ -61,7 +61,7 @@ Template.TravelRequisitionRetirementIndex.helpers({
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
         if (remainder > 0)
-            result += 2;
+        result += 2;
         return result;
     },
     getCreatedByFullName: (requisition) => {
@@ -85,32 +85,43 @@ Template.TravelRequisitionRetirementIndex.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionRetirementIndex: Lifecycle Hooks */
+/* TravelRequisitionBudgetHolderRetireIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionRetirementIndex.onCreated(function () {
+Template.TravelRequisitionBudgetHolderRetireIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
+
+    // let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    //currentTravelRequest.budgetCodeId = budgetCodeId;
+
+
 
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsICreated = new ReactiveVar()
+    self.travelRequestsByBudgetHolder = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsICreated = function(skip) {
+    self.getTravelRequestsByBudgetHolder = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
         let options = {};
         options.sort = {};
+        //options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisition2s.find({
+            $and : [
+                { budgetHolderId: Meteor.userId()},
+                { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+            ]
+        }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -122,16 +133,10 @@ Template.TravelRequisitionRetirementIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
+        let travelRequestsByBudgetHolderSub = self.subscribe('TravelRequestsByBudgetHolder', businessUnitId, Meteor.userId());
 
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
-
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
-        if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
+        if(travelRequestsByBudgetHolderSub.ready()) {
+            self.travelRequestsByBudgetHolder.set(self.getTravelRequestsByBudgetHolder(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -141,10 +146,10 @@ Template.TravelRequisitionRetirementIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisitionRetirementIndex.onRendered(function () {
+Template.TravelRequisitionBudgetHolderRetireIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionRetirementIndex.onDestroyed(function () {
+Template.TravelRequisitionBudgetHolderRetireIndex.onDestroyed(function () {
 });

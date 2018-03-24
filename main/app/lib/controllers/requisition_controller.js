@@ -70,6 +70,14 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequestsRetirementList: function() {
         this.render('TravelRequisitionRetirementIndex')
     },
+    showTravelRequestsRetirementsList: function() {
+        this.render('RetirementIndex')
+    },
+    showTravelRequestsBudgetHolderRetirementsList: function() {
+        this.render('TravelRequisitionBudgetHolderRetireIndex')
+    },
+
+
 
 
     showTravelRequestApprovalList: function() {

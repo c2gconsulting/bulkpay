@@ -61,25 +61,82 @@ Template.TravelRequisitionRetirementDetail.events({
     })
 
 },
-'click #requisition-create': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/create',currentTravelRequest, (err, res) => {
-        if(!err) {
-            swal({title: "Success", text: "Travel request is now pending approval", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
+'click #approve': (e, tmpl) => {
+
+  let supervisorComment = $('[name=supervisorComment]').val();
+  let budgetCodeId =$('[name=budget-code]').val();
+
+  let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+  currentTravelRequest.supervisorComment = supervisorComment;
+  currentTravelRequest.budgetCodeId = budgetCodeId;
+  currentTravelRequest.status = "Approved By Supervisor";
+
+  currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+
+ Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+     if (res){
+         swal({
+             title: "Travel requisition has been updated",
+             text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+             confirmButtonClass: "btn-success",
+             type: "success",
+             confirmButtonText: "OK"
+         });
+     } else {
+         swal({
+             title: "Oops!",
+             text: "Travel requisition has  not been updated, reason: " + err.message,
+             confirmButtonClass: "btn-danger",
+             type: "error",
+             confirmButtonText: "OK"
+         });
+         console.log(err);
+     }
+ });
+},
+ 'click #reject': (e, tmpl) => {
+
+   let supervisorComment = $('[name=supervisorComment]').val();
+   let budgetCodeId =$('[name=budget-code]').val();
+
+   let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+   currentTravelRequest.supervisorComment = supervisorComment;
+   currentTravelRequest.budgetCodeId = budgetCodeId;
+   currentTravelRequest.status = "Rejected By Supervisor";
+
+   currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+
+  Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+      if (res){
+          swal({
+              title: "Travel requisition has been rejected",
+              text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+              confirmButtonClass: "btn-success",
+              type: "success",
+              confirmButtonText: "OK"
+          });
+      } else {
+          swal({
+              title: "Oops!",
+              text: "Travel requisition has  not been updated, reason: " + err.message,
+              confirmButtonClass: "btn-danger",
+              type: "error",
+              confirmButtonText: "OK"
+          });
+          console.log(err);
+      }
+  });
+
+
+
 
 
 
 },
+
+
+
+
 'click #requisition-delete': (e,tmpl) => {
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.businessUnitId = Session.get('context');
@@ -309,6 +366,16 @@ Template.TravelRequisitionRetirementDetail.helpers({
             return travelcity.name
         }
     },
+    budgetList() {
+        return  Budgets.find();
+    },
+    budgetCodeSelected(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
+        }
+    },
+
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
 
@@ -384,6 +451,8 @@ Template.TravelRequisitionRetirementDetail.helpers({
 /* TravelRequisitionRetirementDetail: Lifecycle Hooks */
 /*****************************************************************************/
 Template.TravelRequisitionRetirementDetail.onCreated(function () {
+
+
     let self = this;
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));

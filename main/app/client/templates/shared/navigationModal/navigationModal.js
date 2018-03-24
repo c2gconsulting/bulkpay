@@ -244,6 +244,19 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #travelrequestsretirementslist': function(event, tmpl) {
+      Router.go('travelrequests.retirementslist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travelrequestsbudgetholderretirementslist': function(event, tmpl) {
+      Router.go('travelrequests.budgetholderretirementslist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
+
 
 
     'click #travelrequestsapprovalList': function(event, tmpl) {
