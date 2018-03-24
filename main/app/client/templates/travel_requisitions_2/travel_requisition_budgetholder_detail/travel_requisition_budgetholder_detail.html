@@ -34,14 +34,8 @@
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
-                                    {{#semanticselect}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
-                                        {{#each budgetList}}
-                                        <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
-                                        {{/each}}
-                                    </select>
-                                    {{/semanticselect}}
-                                    <span class="text-danger"><small>Please verify that the project is correct, this field cannot also be left blank</small></span>
+                                    <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{getBudgetName currentTravelRequest.budgetCodeId}}" disabled/>
+
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
@@ -241,7 +235,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <div class="ckbox ckbox-danger">
-                                        <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} />
+                                        <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} disabled/>
                                         <label for="cashAdvanceNotRequired">I do not need a cash advance (I will simply retire my expenses when i return)</label>
                                     </div>
                                 </div>
@@ -293,11 +287,21 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
-                                <input type="text" id="budgetHolderComment" class="form-control" placeholder="Comment" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}"/>
+                                <label for="supervisorComment" class="control-label">Supervisor Comment </label>
+                                <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
 
                             </div>
                         </div>
+
+                        <div class="row">
+
+                            <div class="col-sm-12">
+                                <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
+                                <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}"/>
+
+                            </div>
+                        </div>
+
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>

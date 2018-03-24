@@ -81,7 +81,7 @@ Template.TravelRequisitionSupervisor2Detail.events({
              confirmButtonClass: "btn-success",
              type: "success",
              confirmButtonText: "OK"
-         });      
+         });
      } else {
          swal({
              title: "Oops!",
@@ -93,6 +93,40 @@ Template.TravelRequisitionSupervisor2Detail.events({
          console.log(err);
      }
  });
+},
+ 'click #reject': (e, tmpl) => {
+
+   let supervisorComment = $('[name=supervisorComment]').val();
+   let budgetCodeId =$('[name=budget-code]').val();
+
+   let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+   currentTravelRequest.supervisorComment = supervisorComment;
+   currentTravelRequest.budgetCodeId = budgetCodeId;
+   currentTravelRequest.status = "Rejected By Supervisor";
+
+   currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+
+  Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+      if (res){
+          swal({
+              title: "Travel requisition has been rejected",
+              text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+              confirmButtonClass: "btn-success",
+              type: "success",
+              confirmButtonText: "OK"
+          });
+      } else {
+          swal({
+              title: "Oops!",
+              text: "Travel requisition has  not been updated, reason: " + err.message,
+              confirmButtonClass: "btn-danger",
+              type: "error",
+              confirmButtonText: "OK"
+          });
+          console.log(err);
+      }
+  });
+
 
 
 

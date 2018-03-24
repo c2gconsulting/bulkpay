@@ -106,13 +106,17 @@ Template.TravelRequisitionSupervisor2Index.onCreated(function () {
 
         let options = {};
         options.sort = {};
-        options.sort["status"] = sortDirection;
+        //options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-
-        return TravelRequisition2s.find({supervisorId: Meteor.userId()}, options);
-    }
+        return TravelRequisition2s.find({
+            $and : [
+                { supervisorId: Meteor.userId()},
+                { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+            ]
+        }, options);
+            }
 
     self.subscribe('getCostElement', businessUnitId)
 
@@ -122,13 +126,6 @@ Template.TravelRequisitionSupervisor2Index.onCreated(function () {
         let sortDirection =  -1;
         let sort = {};
         sort[sortBy] = sortDirection;
-
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
-
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
 
         let travelRequestsBySupervisorSub = self.subscribe('TravelRequestsBySupervisor', businessUnitId, Meteor.userId());
         if(travelRequestsBySupervisorSub.ready()) {

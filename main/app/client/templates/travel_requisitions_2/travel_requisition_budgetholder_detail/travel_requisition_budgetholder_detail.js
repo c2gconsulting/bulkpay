@@ -63,42 +63,72 @@ Template.TravelRequisitionBudgetHolderDetail.events({
 },
 'click #approve': (e, tmpl) => {
 
-  let budgetHolderComment = $('[name=budgetHolderComment]').val();
-  let budgetCodeId =$('[name=budget-code]').val();
+    let budgetHolderComment = $('[name=budgetHolderComment]').val();
 
-  let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-  currentTravelRequest.budgetHolderComment = budgetHolderComment;
-  currentTravelRequest.budgetCodeId = budgetCodeId;
-  currentTravelRequest.status = "Approved By Budget Holder";
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.budgetHolderComment = budgetHolderComment;
+    currentTravelRequest.status = "Approved By Budget Holder";
 
-  currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
- Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-     if (res){
-         swal({
-             title: "Travel requisition has been updated",
-             text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
-             confirmButtonClass: "btn-success",
-             type: "success",
-             confirmButtonText: "OK"
-         });
-     } else {
-         swal({
-             title: "Oops!",
-             text: "Travel requisition has  not been updated, reason: " + err.message,
-             confirmButtonClass: "btn-danger",
-             type: "error",
-             confirmButtonText: "OK"
-         });
-         console.log(err);
-     }
- });
+    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+        if (res){
+            swal({
+                title: "Travel requisition has been approved",
+                text: "Employee travel requisition has been approved,notification has been sent to the necessary parties",
+                confirmButtonClass: "btn-success",
+                type: "success",
+                confirmButtonText: "OK"
+            });
+        } else {
+            swal({
+                title: "Oops!",
+                text: "Travel requisition has  not been updated, reason: " + err.message,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
+            console.log(err);
+        }
+    });
+},
+
+'click #reject': (e, tmpl) => {
+
+    let budgetHolderComment = $('[name=budgetHolderComment]').val();
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.budgetHolderComment = budgetHolderComment;
+    currentTravelRequest.status = "Rejected By Budget Holder";
+    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+        if (res){
+            swal({
+                title: "Travel requisition has been rejected",
+                text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+                confirmButtonClass: "btn-success",
+                type: "success",
+                confirmButtonText: "OK"
+            });
+        } else {
+            swal({
+                title: "Oops!",
+                text: "Travel requisition has  not been updated, reason: " + err.message,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
+            console.log(err);
+        }
+    });
+
 
 
 
 
 
 },
+
 
 
 

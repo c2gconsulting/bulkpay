@@ -142,8 +142,6 @@ let TravelRequestHelper = {
 
 
                 currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                //console.log("user isss:")
-                //    console.log(Meteor.users.findOne(currentTravelRequest.createdBy))
                 currentTravelRequest.budgetHolderId = (Budgets.findOne(currentTravelRequest.budgetCodeId)).employeeId;
 
                 //    console.log("current travel request is: ");
@@ -154,7 +152,7 @@ let TravelRequestHelper = {
                     throw new Meteor.Error(401, errMsg);
                 }
                 if(currentTravelRequest._id){
-        
+
                     TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
                 }else{
                     TravelRequisition2s.insert(currentTravelRequest);

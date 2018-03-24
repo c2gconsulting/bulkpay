@@ -61,7 +61,7 @@ Template.TravelRequisitionBudgetHolderIndex.helpers({
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
         if (remainder > 0)
-            result += 2;
+        result += 2;
         return result;
     },
     getCreatedByFullName: (requisition) => {
@@ -111,13 +111,17 @@ Template.TravelRequisitionBudgetHolderIndex.onCreated(function () {
 
         let options = {};
         options.sort = {};
-        options.sort["status"] = sortDirection;
+        //options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({budgetHolderId: currentTravelRequest.budgetCodeId}, options);
-
+        return TravelRequisition2s.find({
+            $and : [
+                { budgetHolderId: Meteor.userId()},
+                { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+            ]
+        }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -129,15 +133,8 @@ Template.TravelRequisitionBudgetHolderIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
+        let travelRequestsByBudgetHolderSub = self.subscribe('TravelRequestsByBudgetHolder', businessUnitId, Meteor.userId());
 
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
-
-        let travelRequestsByBudgetHolderSub = self.subscribe('TravelRequestsByBudgetHolder', businessUnitId, currentTravelRequest.budgetCodeId);
-        console.log(TravelRequestsByBudgetHolder)
         if(travelRequestsByBudgetHolderSub.ready()) {
             self.travelRequestsByBudgetHolder.set(self.getTravelRequestsByBudgetHolder(0))
         }

@@ -4,7 +4,15 @@
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Travel Request for [Michael Ukpong]</h3>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
+                            </div>
+                            <div class="col-sm-4">
+                                <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="panel-body">
                         {{#unless Template.subscriptionsReady}}
@@ -227,7 +235,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <div class="ckbox ckbox-danger">
-                                        <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} />
+                                        <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} disabled/>
                                         <label for="cashAdvanceNotRequired">I do not need a cash advance (I will simply retire my expenses when i return)</label>
                                     </div>
                                 </div>
@@ -279,36 +287,21 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <span><strong>Approvals</strong></span>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <span>Supervisor ([Michael Ukpong])</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label for="description" class="control-label">Action Taken: <span class="text-danger">Rejected</span></label>
-                                <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
+                                <label for="supervisorComment" class="control-label">Supervisor Comment </label>
+                                <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
 
                             </div>
                         </div>
-                        <br/>
+
                         <div class="row">
+
                             <div class="col-sm-12">
-                                <span>Budget Holder ([Michael Ukpong])</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label for="description" class="control-label">Action Taken: <span class="text-danger">Rejected</span></label>
-                                <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
+                                <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
+                                <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}" disabled/>
 
                             </div>
                         </div>
-                    </div>
+</div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
                          <!--
