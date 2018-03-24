@@ -205,7 +205,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ['Approval-1', 'Approval-2', "Pending","FinalApproval"],
+        allowedValues: ["Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By BudgetHolder","Rejected By BudgetHolder"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -225,6 +225,16 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     budgetHolderId: {
         type: String,
+        optional: true
+    },
+    supervisorComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    budgetHolderComment: {
+        type: String,
+        defaultValue: '',
         optional: true
     },
     'approvals': {
@@ -253,15 +263,16 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     createdAt: {
         type: Date,
-        autoValue: function () {
+        autoValue: function() {
+
             if (this.isInsert) {
                 return new Date;
             } else if (this.isUpsert) {
-                return {
-                    $setOnInsert: new Date
-                };
+                return {$setOnInsert: new Date};
+            } else {
+                this.unset();
             }
-        },
-        denyUpdate: true
+        }
     }
+
 });

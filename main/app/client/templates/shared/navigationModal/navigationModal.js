@@ -229,6 +229,23 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #travelrequestssupervisorlist': function(event, tmpl) {
+      Router.go('travelrequests.supervisorlist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travelrequestsbudgethoderlist': function(event, tmpl) {
+      Router.go('travelrequests.budgetholderlist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travelrequestsretirementlist': function(event, tmpl) {
+      Router.go('travelrequests.retirementlist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
     'click #travelrequestsapprovalList': function(event, tmpl) {
       Router.go('travelrequests.approvalList', {_id: Session.get('context')})
       Modal.hide('navigationModal');
@@ -353,7 +370,7 @@ Template.navigationModal.onCreated(function () {
     //--
 
     self.businessUnitCustomConfig = new ReactiveVar()
-    
+
     self.autorun(function(){
         let businessUnitId = Session.get('context');
         // console.log(`businessUnitId`, businessUnitId)

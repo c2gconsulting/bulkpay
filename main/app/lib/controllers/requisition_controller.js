@@ -61,32 +61,31 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequestsList: function() {
         this.render('TravelRequisitionIndex')
     },
+    showTravelRequestsSupervisorList: function() {
+        this.render('TravelRequisitionSupervisor2Index')
+    },
+    showTravelRequestsBudgetHolderList: function() {
+        this.render('TravelRequisitionBudgetHolderIndex')
+    },
+    showTravelRequestsRetirementList: function() {
+        this.render('TravelRequisitionRetirementIndex')
+    },
+
+
     showTravelRequestApprovalList: function() {
         this.render('TravelRequisitionApprovalList')
-    },
-    showTravelRetirementList: function() {
-        this.render('TravelRetirementList')
     },
     showTravelRequestTreatList: function() {
         this.render('TravelRequisitionTreatList')
     },
-    showTravelRequestBudgetholderList: function() {
-        this.render('TravelRequisitionBudgetHolderList')
-    },
     showTravelRequests2List: function() {
         this.render('TravelRequisition2Index')
-    },
-    showTravelRetirement2List: function() {
-        this.render('TravelRetirement2List')
     },
     showTravelRequest2ApprovalList: function() {
         this.render('TravelRequisition2ApprovalList')
     },
     showTravelRequest2TreatList: function() {
         this.render('TravelRequisition2TreatList')
-    },
-    showTravelRequest2BudgetholderList: function() {
-        this.render('TravelRequisitionBudgetHolderList')
     },
     onAfterAction: function () {
     },

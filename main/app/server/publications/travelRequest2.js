@@ -2,29 +2,38 @@
  * Travel Request publications
  */
 
-Core.publish("TravelRequestsICreated1", function (businessUnitId) {
+
+ Core.publish("TravelRequestsBySupervisor", function (businessUnitId, supervisorId) {
+     return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
+ });
+
+ Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {
+     return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
+ });
+
+Core.publish("TravelRequestsICreated", function (businessUnitId) {
     let user = this.userId;
 
-    return TravelRequisitions.find({businessId: businessUnitId, createdBy: this.userId});
+    return TravelRequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
-Core.publish("TravelRequestsStatusNotSeen1", function (businessUnitId) {
+Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     let user = this.userId;
-    return TravelRequisitions.find({
+    return TravelRequisition2s.find({
         businessId: businessUnitId,
         createdBy: this.userId,
         isStatusSeenByCreator: false
     });
 });
 
-Core.publish("TravelRequest", function (requisitionId) {
-    return TravelRequisitions.find({_id: requisitionId});
+Core.publish("TravelRequest2", function (requisitionId) {
+    return TravelRequisition2s.find({_id: requisitionId});
 });
-Core.publish("TravelRequestToRetire1", function (requisitionId) {
-    return TravelRequisitions.find({_id: requisitionId});
+Core.publish("TravelRequestToRetire", function (requisitionId) {
+    return TravelRequisition2s.find({_id: requisitionId});
 });
 
-Core.publish("TravelRequestsToApprove1", function (businessUnitId) {
+Core.publish("TravelRequestsToApprove", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
     if(!user.employeeProfile || !user.employeeProfile.employment) {
@@ -32,7 +41,7 @@ Core.publish("TravelRequestsToApprove1", function (businessUnitId) {
     }
     let userPositionId = user.employeeProfile.employment.position
 
-    return TravelRequisitions.find({
+    return TravelRequisition2s.find({
         businessId: businessUnitId,
         $or: [{supervisorPositionId : userPositionId},
                 {alternativeSupervisorPositionId: userPositionId}]
@@ -40,7 +49,7 @@ Core.publish("TravelRequestsToApprove1", function (businessUnitId) {
 });
 
 
-Core.publish("TravelRequestsToTreat1", function (businessUnitId) {
+Core.publish("TravelRequestsToTreat", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
     if(!user.employeeProfile || !user.employeeProfile.employment) {

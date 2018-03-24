@@ -1,6 +1,6 @@
 
 /*****************************************************************************/
-/* TravelRequisition2Detail: Event Handlers */
+/* TravelRequisitionRetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
@@ -43,7 +43,7 @@ import _ from 'underscore';
 // },
 
 
-Template.TravelRequisition2Detail.events({
+Template.TravelRequisitionRetirementDetail.events({
     'click #requisition-save-draft': function(e, tmpl) {
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -234,9 +234,9 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Detail: Helpers */
+/* TravelRequisitionRetirementDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2Detail.helpers({
+Template.TravelRequisitionRetirementDetail.helpers({
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -333,6 +333,9 @@ Template.TravelRequisition2Detail.helpers({
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
     },
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
 
@@ -378,9 +381,9 @@ Template.TravelRequisition2Detail.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Detail: Lifecycle Hooks */
+/* TravelRequisitionRetirementDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2Detail.onCreated(function () {
+Template.TravelRequisitionRetirementDetail.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
@@ -452,7 +455,7 @@ Template.TravelRequisition2Detail.onCreated(function () {
 
 });
 
-Template.TravelRequisition2Detail.onRendered(function () {
+Template.TravelRequisitionRetirementDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -473,5 +476,5 @@ Template.TravelRequisition2Detail.onRendered(function () {
     }
 });
 
-Template.TravelRequisition2Detail.onDestroyed(function () {
+Template.TravelRequisitionRetirementDetail.onDestroyed(function () {
 });

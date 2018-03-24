@@ -1,0 +1,89 @@
+<template name="TravelRequisitionRetirementIndex">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-fax"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Travel Requests</li>
+                </ul>
+
+                <h4>Travel requests</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="panel">
+            <div class="panel-body">
+                {{#unless Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{> spinner}}
+                    </div>
+                </div>
+                {{/unless}}
+                {{#if condition travelRequestsICreated.count '>' 0}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Creator</th>
+                                    <th>Description</th>
+
+                                    <th>Date created</th>
+                                    <th>Status</th>
+                                    <!--<th>Total Trip Cost</th>-->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each travelRequestsICreated}}
+                                <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
+                                    <td nowrap>{{getCreatedByFullName this}}</td>
+                                    <td>{{description}}</td>
+
+                                    {{#if createdAt}}
+                                    <td nowrap>{{formatDate createdAt}}</td>
+                                    {{else}}
+                                    <td nowrap></td>
+                                    {{/if}}
+                                    <td>{{status}}</td>
+                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {{else}}
+                <div class="row">
+                    <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Creator</th>
+                                <th>Description</th>
+
+                                <th>Date created</th>
+                                <th>Status</th>
+                                <!--<th>Total Trip Cost</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td nowrap colspan="6"><h5 class="text-muted"><i class="fa fa-exclamation-circle"></i>&nbsp;You have not yet made any travel request</h5></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {{/if}}
+
+            </div>
+        </div>
+    </div>
+</template>

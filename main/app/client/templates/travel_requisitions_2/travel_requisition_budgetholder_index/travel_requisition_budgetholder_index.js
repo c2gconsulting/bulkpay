@@ -1,12 +1,12 @@
 /*****************************************************************************/
-/* TravelRequisitionIndex: Event Handlers */
+/* TravelRequisitionBudgetHolderIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionIndex.events({
-    'click #createProcurementRequisition': function(e, tmpl) {
+Template.TravelRequisitionBudgetHolderIndex.events({
+    'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
-        Modal.show('TravelRequisitionCreate')
+        Modal.show('TravelRequisition2Create')
     },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
@@ -17,7 +17,7 @@ Template.TravelRequisitionIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisitionDetail', invokeReason)
+        Modal.show('TravelRequisitionBudgetHolderDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.TravelRequisitionIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsICreated1(skip)
-        Template.instance().travelRequestsICreated1.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByBudgetHolder(skip)
+        Template.instance().travelRequestsByBudgetHolder.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -48,15 +48,15 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionIndex: Helpers */
+/* TravelRequisitionBudgetHolderIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionIndex.helpers({
-    'travelRequestsICreated': function() {
-        return Template.instance().travelRequestsICreated1.get()
+Template.TravelRequisitionBudgetHolderIndex.helpers({
+    'travelRequestsByBudgetHolder': function() {
+        return Template.instance().travelRequestsByBudgetHolder.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisitions.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -73,57 +73,51 @@ Template.TravelRequisitionIndex.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
-    'getUnitName': function(unitId) {
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
-    },
-    'totalTripCost': function(travelRequestDetails) {
-        if(travelRequestDetails) {
-            let tripCosts = travelRequestDetails.tripCosts || [];
-            let costNames = Object.keys(tripCosts)
 
-            let totalCosts = 0;
+    'totalTripCostNGN': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
 
-            costNames.forEach(costName => {
-                totalCosts += tripCosts[costName];
-            })
-            return totalCosts;
+            return totalTripCostNGN;
         }
     },
-    'getTravelRequestCurrency': function(requisition) {
-        if(requisition.currency) {
-            return requisition.currency
-        } else {
-            return 'NGN'
-        }
-    }
+
 });
 
 /*****************************************************************************/
-/* TravelRequisitionIndex: Lifecycle Hooks */
+/* TravelRequisitionBudgetHolderIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionIndex.onCreated(function () {
+Template.TravelRequisitionBudgetHolderIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
+
+    // let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    //currentTravelRequest.budgetCodeId = budgetCodeId;
+
+
 
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsICreated1 = new ReactiveVar()
+    self.travelRequestsByBudgetHolder = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
-    self.getTravelRequestsICreated1 = function(skip) {
+    self.totalTripCost = new ReactiveVar(0)
+
+    self.getTravelRequestsByBudgetHolder = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
         let options = {};
         options.sort = {};
+        options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisitions.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisition2s.find({budgetHolderId: currentTravelRequest.budgetCodeId}, options);
+
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -142,9 +136,10 @@ Template.TravelRequisitionIndex.onCreated(function () {
             let positionSubscription = self.subscribe('getEntity', userPositionId)
         }
 
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated1', businessUnitId, limit, sort)
-        if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsICreated1.set(self.getTravelRequestsICreated1(0))
+        let travelRequestsByBudgetHolderSub = self.subscribe('TravelRequestsByBudgetHolder', businessUnitId, currentTravelRequest.budgetCodeId);
+        console.log(TravelRequestsByBudgetHolder)
+        if(travelRequestsByBudgetHolderSub.ready()) {
+            self.travelRequestsByBudgetHolder.set(self.getTravelRequestsByBudgetHolder(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -154,10 +149,10 @@ Template.TravelRequisitionIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisitionIndex.onRendered(function () {
+Template.TravelRequisitionBudgetHolderIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionIndex.onDestroyed(function () {
+Template.TravelRequisitionBudgetHolderIndex.onDestroyed(function () {
 });

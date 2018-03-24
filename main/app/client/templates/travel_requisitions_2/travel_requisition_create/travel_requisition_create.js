@@ -773,13 +773,6 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].hotelId === val ? selected="selected" : '';
         }
     },
-
-    travelTypeChecked(val){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && val){
-            return currentTravelRequest.type === val ? checked="checked" : '';
-        }
-    },
     cashAdvanceNotRequiredChecked(){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest){
@@ -788,6 +781,12 @@ Template.TravelRequisition2Create.helpers({
     },
     currentTravelRequest(){
         return Template.instance().currentTravelRequest.get();
+    },
+    travelTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.type === val ? checked="checked" : '';
+        }
     },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";

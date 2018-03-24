@@ -1,12 +1,12 @@
 /*****************************************************************************/
-/* TravelRequisitionIndex: Event Handlers */
+/* TravelRequisitionSupervisor2Index: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionIndex.events({
-    'click #createProcurementRequisition': function(e, tmpl) {
+Template.TravelRequisitionSupervisor2Index.events({
+    'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
-        Modal.show('TravelRequisitionCreate')
+        Modal.show('TravelRequisition2Create')
     },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
@@ -17,7 +17,7 @@ Template.TravelRequisitionIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisitionDetail', invokeReason)
+        Modal.show('TravelRequisitionSupervisor2Detail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.TravelRequisitionIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsICreated1(skip)
-        Template.instance().travelRequestsICreated1.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsBySupervisor(skip)
+        Template.instance().travelRequestsBySupervisor.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -48,15 +48,15 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionIndex: Helpers */
+/* TravelRequisitionSupervisor2Index: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionIndex.helpers({
-    'travelRequestsICreated': function() {
-        return Template.instance().travelRequestsICreated1.get()
+Template.TravelRequisitionSupervisor2Index.helpers({
+    'travelRequestsBySupervisor': function() {
+        return Template.instance().travelRequestsBySupervisor.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisitions.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -73,36 +73,21 @@ Template.TravelRequisitionIndex.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
-    'getUnitName': function(unitId) {
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
-    },
-    'totalTripCost': function(travelRequestDetails) {
-        if(travelRequestDetails) {
-            let tripCosts = travelRequestDetails.tripCosts || [];
-            let costNames = Object.keys(tripCosts)
 
-            let totalCosts = 0;
+    'totalTripCostNGN': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
 
-            costNames.forEach(costName => {
-                totalCosts += tripCosts[costName];
-            })
-            return totalCosts;
+            return totalTripCostNGN;
         }
     },
-    'getTravelRequestCurrency': function(requisition) {
-        if(requisition.currency) {
-            return requisition.currency
-        } else {
-            return 'NGN'
-        }
-    }
+
 });
 
 /*****************************************************************************/
-/* TravelRequisitionIndex: Lifecycle Hooks */
+/* TravelRequisitionSupervisor2Index: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionIndex.onCreated(function () {
+Template.TravelRequisitionSupervisor2Index.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -110,20 +95,23 @@ Template.TravelRequisitionIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsICreated1 = new ReactiveVar()
+    self.travelRequestsBySupervisor = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
-    self.getTravelRequestsICreated1 = function(skip) {
+    self.totalTripCost = new ReactiveVar(0)
+
+    self.getTravelRequestsBySupervisor = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
         let options = {};
         options.sort = {};
+        options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisitions.find({createdBy: Meteor.userId()}, options);
+        return TravelRequisition2s.find({supervisorId: Meteor.userId()}, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -142,9 +130,9 @@ Template.TravelRequisitionIndex.onCreated(function () {
             let positionSubscription = self.subscribe('getEntity', userPositionId)
         }
 
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated1', businessUnitId, limit, sort)
-        if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsICreated1.set(self.getTravelRequestsICreated1(0))
+        let travelRequestsBySupervisorSub = self.subscribe('TravelRequestsBySupervisor', businessUnitId, Meteor.userId());
+        if(travelRequestsBySupervisorSub.ready()) {
+            self.travelRequestsBySupervisor.set(self.getTravelRequestsBySupervisor(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -154,10 +142,10 @@ Template.TravelRequisitionIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisitionIndex.onRendered(function () {
+Template.TravelRequisitionSupervisor2Index.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionIndex.onDestroyed(function () {
+Template.TravelRequisitionSupervisor2Index.onDestroyed(function () {
 });
