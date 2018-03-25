@@ -1,56 +1,66 @@
 
 /*****************************************************************************/
-/* RetirementDetail: Event Handlers */
+/* TravelRequisitionRetirementPrint: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.RetirementDetail.events({
-    'change ': function(e, tmpl) {
-        e.preventDefault()
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+Template.TravelRequisitionRetirementPrint.events({
+    'click #approve': (e, tmpl) => {
 
-        currentTravelRequest.actualTotalTripDuration = parseFloat(($("#actualTotalTripDuration").val()).replace(',',''));
-        currentTravelRequest.actualTotalAirportTaxiCostNGN = parseFloat(($("#actualTotalAirportTaxiCostNGN").val()).replace(',',''));
-        currentTravelRequest.actualTotalGroundTransportCostNGN = parseFloat(($("#actualTotalGroundTransportCostNGN").val()).replace(',',''));
-        currentTravelRequest.actualTotalMiscCostNGN = parseFloat(($("#actualTotalMiscCostNGN").val()).replace(',',''));
-        currentTravelRequest.actualTotalAirportTaxiCostUSD = parseFloat(($("#actualTotalAirportTaxiCostUSD").val()).replace(',',''));
-        currentTravelRequest.actualTotalGroundTransportCostUSD = parseFloat(($("#actualTotalGroundTransportCostUSD").val()).replace(',',''));
-        currentTravelRequest.actualTotalMiscCostUSD = parseFloat(($("#actualTotalMiscCostUSD").val()).replace(',',''));
-        currentTravelRequest.actualTotalAncilliaryCostNGN = currentTravelRequest.actualTotalAirportTaxiCostNGN + currentTravelRequest.actualTotalGroundTransportCostNGN + currentTravelRequest.actualTotalMiscCostNGN;
-        currentTravelRequest.actualTotalAncilliaryCostUSD = currentTravelRequest.actualTotalAirportTaxiCostUSD + currentTravelRequest.actualTotalGroundTransportCostUSD + currentTravelRequest.actualTotalMiscCostUSD;
-        currentTravelRequest.additionalRetirementComment = $("#additionalRetirementComment").val();
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
+      currentTravelRequest.retirementStatus = "Retirement Approved By Supervisor";
 
-        console.log("current travel request");
-        console.log(currentTravelRequest);
 
-        tmpl.currentTravelRequest.set(currentTravelRequest);
+     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+         if (res){
+             swal({
+                 title: "Trip retirement has been approved by supervisor",
+                 text: "Employee retirement has been updated,notification has been sent to the necessary parties",
+                 confirmButtonClass: "btn-success",
+                 type: "success",
+                 confirmButtonText: "OK"
+             });
+         } else {
+             swal({
+                 title: "Oops!",
+                 text: "Employee retirement has not been updated, reason: " + err.message,
+                 confirmButtonClass: "btn-danger",
+                 type: "error",
+                 confirmButtonText: "OK"
+             });
+             console.log(err);
+         }
+     });
     },
-    'click #new-retirement-create': function(e, tmpl) {
-        e.preventDefault()
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.retirementStatus = "Retirement Submitted";
-        Meteor.call('TravelRequest2/retire', currentTravelRequest, (err, res) => {
-            if (res){
-                swal({
-                    title: "Trip Retirement Updated",
-                    text: "Your trip requirement has been made, a notification has been sent to your supervisor",
-                    confirmButtonClass: "btn-success",
-                    type: "success",
-                    confirmButtonText: "OK"
-                });
-            } else {
-                swal({
-                    title: "Oops!",
-                    text: "Your trip requirement could not be created, reason: " + err.message,
-                    confirmButtonClass: "btn-danger",
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
-                console.log(err);
-            }
-        });
+     'click #reject': (e, tmpl) => {
 
-    },
+         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+         currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
+         currentTravelRequest.retirementStatus = "Retirement Rejected By Supervisor";
+
+      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+          if (res){
+              swal({
+                  title: "Trip retirement has been rejected by supervisor",
+                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+          } else {
+              swal({
+                  title: "Oops!",
+                  text: "Employee retirement has not been updated, reason: " + err.message,
+                  confirmButtonClass: "btn-danger",
+                  type: "error",
+                  confirmButtonText: "OK"
+              });
+              console.log(err);
+          }
+      });
+    }
+
 });
 
 
@@ -59,9 +69,9 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* RetirementDetail: Helpers */
+/* TravelRequisitionRetirementPrint: Helpers */
 /*****************************************************************************/
-Template.RetirementDetail.helpers({
+Template.TravelRequisitionRetirementPrint.helpers({
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -207,16 +217,21 @@ Template.RetirementDetail.helpers({
 });
 
 /*****************************************************************************/
-/* RetirementDetail: Lifecycle Hooks */
+/* TravelRequisitionRetirementPrint: Lifecycle Hooks */
 /*****************************************************************************/
-Template.RetirementDetail.onCreated(function () {
-    let self = this;
-    let businessUnitId = Session.get('context');
-    self.subscribe("travelcities", Session.get('context'));
-    self.subscribe("hotels", Session.get('context'));
-    self.subscribe("airlines", Session.get('context'));
-    self.subscribe("budgets", Session.get('context'));
+Template.TravelRequisitionRetirementPrint.onCreated(function () {
 
+    let self = this;
+    let businessUnitId = Router.current().params._id;
+    self.subscribe("travelcities",  Router.current().params._id);
+    self.subscribe("hotels",  Router.current().params._id);
+    self.subscribe("airlines",  Router.current().params._id);
+    self.subscribe("budgets",  Router.current().params._id);
+
+    let invokeReason = {}
+    invokeReason.requisitionId = Router.current().params.query.requisitionId
+    invokeReason.reason = 'edit'
+    invokeReason.approverId = null
 
 
 
@@ -229,8 +244,6 @@ Template.RetirementDetail.onCreated(function () {
     self.isInRetireMode = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
-
-    let invokeReason = self.data;
 
     // self.totalTripCost = new ReactiveVar(0)
     self.amountNonPaybelToEmp = new ReactiveVar(0)
@@ -281,7 +294,7 @@ Template.RetirementDetail.onCreated(function () {
 
 });
 
-Template.RetirementDetail.onRendered(function () {
+Template.TravelRequisitionRetirementPrint.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -302,5 +315,5 @@ Template.RetirementDetail.onRendered(function () {
     }
 });
 
-Template.RetirementDetail.onDestroyed(function () {
+Template.TravelRequisitionRetirementPrint.onDestroyed(function () {
 });

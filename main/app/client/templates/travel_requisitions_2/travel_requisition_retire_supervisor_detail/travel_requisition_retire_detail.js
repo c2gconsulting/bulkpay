@@ -12,7 +12,7 @@ Template.TravelRequisitionRetirementDetail.events({
       currentTravelRequest.retirementStatus = "Retirement Approved By Supervisor";
 
 
-     Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
                  title: "Trip retirement has been approved by supervisor",

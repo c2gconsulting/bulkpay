@@ -4,283 +4,70 @@
 /*****************************************************************************/
 import _ from 'underscore';
 
-
-/*
-* invokeReason
-* {
-*   requisitionId: String,
-*   reason: 'edit' | 'approve'
-*   approverId: optional
-* }
-* */
-
-// 'click #new-requisition-create': function(e, tmpl) {
-//     e.preventDefault()
-//     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-//      currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-//     Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-//         if (res){
-//             swal({
-//                 title: "Travel requisition created",
-//                 text: "Your travel requisition has been created, a notification has been sent to your budgetHolder",
-//                 confirmButtonClass: "btn-success",
-//                 type: "success",
-//                 confirmButtonText: "OK"
-//             });
-//         } else {
-//             swal({
-//                 title: "Oops!",
-//                 text: "Your travel requisition could not be created, reason: " + err.message,
-//                 confirmButtonClass: "btn-danger",
-//                 type: "error",
-//                 confirmButtonText: "OK"
-//             });
-//             console.log(err);
-//         }
-//     });
-
-// },
-
-
 Template.TravelRequisitionBudgetHolderDetail.events({
-    'click #requisition-save-draft': function(e, tmpl) {
-        e.preventDefault()
+
+    'click #approve': (e, tmpl) => {
+
+        let budgetHolderComment = $('[name=budgetHolderComment]').val();
+
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.businessUnitId = Session.get('context');
-        Meteor.call('TravelRequest/createDraft', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request Draft saved", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
+        currentTravelRequest.budgetHolderComment = budgetHolderComment;
+        currentTravelRequest.status = "Approved By Budget Holder";
 
-},
-'click #approve': (e, tmpl) => {
+        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-    let budgetHolderComment = $('[name=budgetHolderComment]').val();
-
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.budgetHolderComment = budgetHolderComment;
-    currentTravelRequest.status = "Approved By Budget Holder";
-
-    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-    Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
-        if (res){
-            swal({
-                title: "Travel requisition has been approved",
-                text: "Employee travel requisition has been approved,notification has been sent to the necessary parties",
-                confirmButtonClass: "btn-success",
-                type: "success",
-                confirmButtonText: "OK"
-            });
-        } else {
-            swal({
-                title: "Oops!",
-                text: "Travel requisition has  not been updated, reason: " + err.message,
-                confirmButtonClass: "btn-danger",
-                type: "error",
-                confirmButtonText: "OK"
-            });
-            console.log(err);
-        }
-    });
-},
-
-'click #reject': (e, tmpl) => {
-
-    let budgetHolderComment = $('[name=budgetHolderComment]').val();
-
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.budgetHolderComment = budgetHolderComment;
-    currentTravelRequest.status = "Rejected By Budget Holder";
-    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-        if (res){
-            swal({
-                title: "Travel requisition has been rejected",
-                text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-                confirmButtonClass: "btn-success",
-                type: "success",
-                confirmButtonText: "OK"
-            });
-        } else {
-            swal({
-                title: "Oops!",
-                text: "Travel requisition has  not been updated, reason: " + err.message,
-                confirmButtonClass: "btn-danger",
-                type: "error",
-                confirmButtonText: "OK"
-            });
-            console.log(err);
-        }
-    });
-
-
-
-
-
-
-},
-
-
-
-
-
-'click #requisition-delete': (e,tmpl) => {
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(travelRequestDetails.status === 'Draft' || travelRequestDetails.status === 'Pending') {
-        Meteor.call("TravelRequest/delete",currentTravelRequest, (err, res) => {
-            if(!err){
-                Modal.hide();
-                swal("Deleted!", `Travel request deleted successfully!`, "success");
+        Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition has been approved",
+                    text: "Employee travel requisition has been approved,notification has been sent to the necessary parties",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
             } else {
-                swal("Error!", err.reason, "error");
+                swal({
+                    title: "Oops!",
+                    text: "Travel requisition has  not been updated, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
             }
-            // window.location.reload();
         });
-    } else {
-        swal("Error!", "You are not allowed to delete a travel request that is NOT in 'Draft' or 'Pending' state", "error");
+    },
+
+    'click #reject': (e, tmpl) => {
+
+        let budgetHolderComment = $('[name=budgetHolderComment]').val();
+
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.budgetHolderComment = budgetHolderComment;
+        currentTravelRequest.status = "Rejected By Budget Holder";
+        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+        Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition has been rejected",
+                    text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Travel requisition has  not been updated, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+        });
     }
-},
-'click #requisition-approver-edit': function(e, tmpl) {
-    let isInEditMode = Template.instance().isInEditMode.get()
-    let isInRetireMode = Template.instance().isInRetireMode.get()
-
-    let isInApproveMode = Template.instance().isInApproveMode.get()
-
-    if(isInApproveMode) {
-        Template.instance().isInApproverEditMode.set(true)
-    }
-    // approverSave
-},
-'click #requisition-approver-save': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/approverSave', businessUnitId, requisitionDoc, currentTravelRequest._id, function(err, res) {
-        tmpl.isInApproverEditMode.set(false)
-
-        if(!err) {
-            swal({title: "Success", text: "Requisition edits saved", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-
-        })
-    } else {
-        swal('Validation error', err.reason, 'error')
-    }
-})
-
-
-
-},
-'click #requisition-approve': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/approveWithApprovalRecommendation',
-    businessUnitId, currentTravelRequest._id, approvalRecommendation, function(err, res) {
-        if(!err) {
-            swal({title: "Success", text: "Travel request approved", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
-
-
-},
-'click #requisition-treat': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/treat',currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request treated", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-retire': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/retire', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request retired", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-treatment-reject': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    if(currentTravelRequest) {
-        let businessUnitId = Session.get('context')
-
-        Meteor.call('TravelRequest/treatmentRejected', currentTravelRequest, (err, res) => {
-            if(!err) {
-                swal({title: "Success", text: "Travel request treatment rejected", type: "success",
-                confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-            }, () => {
-                Modal.hide()
-            })
-        } else {
-            swal('Validation error', err.message, 'error')
-        }
-    })
-}
-},
-'click #requisition-reject': function(e, tmpl) {
-    e.preventDefault()
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.businessUnitId = Session.get('context');
-    Meteor.call('TravelRequest/reject', currentTravelRequest, (err, res) => {
-        if(!err) {
-            swal({title: "Success", text: "Travel request rejected", type: "success",
-            confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-        }, () => {
-            Modal.hide()
-        })
-    } else {
-        swal('Validation error', err.message, 'error')
-    }
-})
-
-},
-
 });
-
 
 Template.registerHelper('formatDate', function(date) {
     return moment(date).format('DD-MM-YYYY');

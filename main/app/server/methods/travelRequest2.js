@@ -1,7 +1,5 @@
 import _ from 'underscore';
 
-
-
 let TravelRequestHelper = {
     sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName,
         currentTravelRequest, approvalsPageUrl) {
@@ -47,168 +45,166 @@ let TravelRequestHelper = {
             }
         }
 
-        /**
-        *  Travel Request Methods
-        */
-        Meteor.methods({
-   
-            "TravelRequest2/create": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+/**
+*  Travel Request Methods
+*/
+Meteor.methods({
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+    "TravelRequest2/create": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-            "TravelRequest2/retire": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+        return true;
+    },
+    "TravelRequest2/retire": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-            "TravelRequest2/supervisorApprovals": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+        return true;
+    },
+    "TravelRequest2/supervisorApprovals": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-            "TravelRequest2/supervisorRetirements": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+        return true;
+    },
+    "TravelRequest2/supervisorRetirements": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-            "TravelRequest2/budgetHolderApprovals": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+        return true;
+    },
+    "TravelRequest2/budgetHolderApprovals": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-            "TravelRequest2/budgetHolderRetirements": function(currentTravelRequest){
-                if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                    throw new Meteor.Error(401, "Unauthorized");
-                }
-                check(currentTravelRequest.businessId, String);
-                this.unblock()
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
 
-                currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-                let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-                if (budgetCode){
-                    currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-                }
+        return true;
+    },
+    "TravelRequest2/budgetHolderRetirements": function(currentTravelRequest){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTravelRequest.businessId, String);
+        this.unblock()
 
-                if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                    throw new Meteor.Error(401, errMsg);
-                }
-                if(currentTravelRequest._id){
+        currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+        let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+        if (budgetCode){
+            currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+        }
 
-                    TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                }else{
-                    let result = TravelRequisition2s.insert(currentTravelRequest);
-                }
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTravelRequest._id){
 
-                return true;
-            },
-     
-           
-                           
-                                    });
+            TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+        }else{
+            let result = TravelRequisition2s.insert(currentTravelRequest);
+        }
+
+        return true;
+    },
+
+});

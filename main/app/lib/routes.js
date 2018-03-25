@@ -418,8 +418,6 @@ Router.route('/business/:_id/employee/travelrequests/budgetholderretirementslist
     where: 'client'
 });
 
-
-
 Router.route('/business/:_id/employee/travelrequests/approvalslist', {
     name: 'travelrequests.approvalList',
     controller: 'RequisitionController',
@@ -431,6 +429,17 @@ Router.route('/business/:_id/employee/travelrequests/treatlist', {
     controller: 'RequisitionController',
     action: 'showTravelRequestTreatList',
     where: 'client'
+});
+Router.route('/business/:_id/travelrequests2/printrequisition', {
+    name: 'travelrequests2.printrequisition',
+    layoutTemplate: 'ExtLayout',
+    template: 'TravelRequisition2Print'
+});
+
+Router.route('/business/:_id/travelrequests2/printretirement', {
+    name: 'travelrequests2.printretirement',
+    layoutTemplate: 'ExtLayout',
+    template: 'TravelRequisitionRetirementPrint'
 });
 
 Router.route('/business/:_id/employee/travelrequests2', {
