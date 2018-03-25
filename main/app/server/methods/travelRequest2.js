@@ -1,18 +1,15 @@
 import _ from 'underscore';
 
 let TravelRequestHelper = {
-    sendRequisitionCreated: function(supervisorFullName, supervisorEmail, createdByFullName,
-        currentTravelRequest, approvalsPageUrl) {
+    sendRequisitionCreated: function( approvalsPageUrl) {
             try {
                 SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
                 Email.send({
-                    to: supervisorEmail,
+                    to: "zekerizekkerriyya@gmail.com",
                     from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                     subject: "Travel Request created!",
                     html: SSR.render("travelRequestNotification", {
-                        user: supervisorFullName,
-                        createdBy: createdByFullName,
-                        currentTravelRequest,
+                        
 
                         approvalsPageUrl: approvalsPageUrl
                     })
@@ -44,6 +41,7 @@ let TravelRequestHelper = {
                 }
             }
         }
+       
 
 /**
 *  Travel Request Methods
@@ -72,7 +70,10 @@ Meteor.methods({
             TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
         }else{
             let result = TravelRequisition2s.insert(currentTravelRequest);
-        }
+
+            approvalsPageUrl =  'http://localhost:3000/business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + result
+            TravelRequestHelper.sendRequisitionCreated(approvalsPageUrl)
+ }
 
         return true;
     },
