@@ -1,0 +1,341 @@
+<div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <h3 class="panel-title">Travel Request for {{currentTravelRequest.createdBy}}</h3>
+                        </div>
+                        <div class="col-sm-4">
+                            <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+
+                                <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
+                                <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{currentTravelRequest.budgetCodeId}}" disabled/>
+
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <ul class="list-inline">
+                                    <li><input type="radio" value="Return" name="travelType" disabled/>&nbsp;&nbsp;Return Trip</li>
+                                    <li><input type="radio"  value="Multiple" name="travelType" disabled/>&nbsp;&nbsp;Multiple Trips</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr/>
+
+                    {{#each currentTravelRequest.trips}}
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="fromId_{{currentTravelRequest.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="fromId_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.fromId}}" disabled />
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-6 -->
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="toId_{{currentTravelRequest.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="toId_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.toId}}" disabled />
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-6 -->
+                        <div class="col-sm-2">
+                            <div class="form-group datetimepicker">
+                                <label class="control-label">Departure<span class="asterisk important-input">*</span></label>
+                                <input class="form-control" type="text" id="departureDate_{{currentTravelRequest.tripIndex}}" name="departureDate_{{currentTravelRequest.tripIndex}}" placeholder="Departure Date" value="{{currentTravelRequest.departureDate}}" disabled/>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="form-group">
+
+                                <label for="departureTime_{{currentTravelRequest.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="departureTime_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Departure Time" name="departureTime_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.departureTime}}" disabled/>
+                            </div><!-- form-group -->
+                        </div>
+                        {{#if isReturnTrip}}
+                        <div class="col-sm-2">
+                            <div class="form-group datetimepicker">
+                                <label class="control-label">Return <span class="asterisk important-input">*</span></label>
+                                <input class="form-control" type="text" id="returnDate_{{currentTravelRequest.tripIndex}}" name="returnDate_{{currentTravelRequest.tripIndex}}" placeholder="Return Date" value="{{currentTravelRequest.returnDate}}" disabled/>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <label for="returnTime_{{currentTravelRequest.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="returnTime_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Return Time" name="returnTime_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.returnTime}}" disabled/>
+                            </div>
+                            <!-- form-group -->
+                        </div><!-- col-sm-12 -->
+                        {{/if}}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="transportationMode_{{currentTravelRequest.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="transportationMode_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Transportation Mode" name="transportationMode_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.transportationMode}}" disabled/>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                        <div class="col-sm-5">
+                            <div class="form-group">
+
+                                <div >
+                                    <label for="airlineId_{{currentTravelRequest.tripIndex}}" class="control-label">Preferred Airline</label>
+                                    <input type="text" id="airlineId_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Preferred Airline" name="airlineId_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.airlineId}}" disabled/>
+                                </div>
+
+                                <div >
+
+                                    <label for="carOption_{{currentTravelRequest.tripIndex}}" class="control-label">Car Options</label>
+                                    <input type="text" id="carOption_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Car Option" name="carOption_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.carOption}}" disabled/>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+
+                                <div class="ckbox ckbox-success" >
+                                    <input type="checkbox" id="provideAirportPickup_{{currentTravelRequest.tripIndex}}" name="provideAirportPickup_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.tripIndex}}" disabled/>
+                                    <label for="provideAirportPickup_{{currentTravelRequest.tripIndex}}">I need for airport taxi</label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="provideGroundTransport_{{currentTravelRequest.tripIndex}}" name="provideGroundTransport_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.tripIndex}}" disabled/>
+                                    <label for="provideGroundTransport_{{currentTravelRequest.tripIndex}}">I need local transportation</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="hotelId_{{currentTravelRequest.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="hotelId_{{currentTravelRequest.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.hotelId}}" disabled/>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <label for="hotelRate_{{currentTravelRequest.tripIndex}}" class="control-label">Rate per Night</label>
+                                <input type="text" id="hotelRate_{{currentTravelRequest.tripIndex}}" class="form-control" name="hotelRate_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.hotelRate}}" disabled/>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                        <div class="col-sm-1">
+                            <div class="form-group">
+                                <label for="destinationCityCurrreny_{{currentTravelRequest.tripIndex}}" class="control-label">Curr.</label>
+                                <input type="text" id="destinationCityCurrreny_{{currentTravelRequest.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{currentTravelRequest.tripIndex}}" value="{{currentTravelRequest.destinationCityCurrreny}}" disabled/>
+                            </div><!-- form-group -->
+                        </div><!-- col-sm-3 -->
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>My per diem should exclude:</label>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="ckbox ckbox-success">
+                                <input type="checkbox" id="isBreakfastIncluded_{{currentTravelRequest.tripIndex}}" disabled/>
+                                <label for="isBreakfastIncluded_{{currentTravelRequest.tripIndex}}">Breakfast</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="ckbox ckbox-success">
+                                <input type="checkbox" id="isLunchIncluded_{{currentTravelRequest.tripIndex}}" disabled/>
+                                <label for="isLunchIncluded_{{currentTravelRequest.tripIndex}}">Lunch</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="ckbox ckbox-success">
+                                <input type="checkbox" id="isDinnerIncluded_{{currentTravelRequest.tripIndex}}" disabled/>
+                                <label for="isDinnerIncluded_{{currentTravelRequest.tripIndex}}">Dinner</label>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="ckbox ckbox-success">
+                                <input type="checkbox" id="isIncidentalsIncluded_{{currentTravelRequest.tripIndex}}" disabled/>
+                                <label for="isIncidentalsIncluded_{{currentTravelRequest.tripIndex}}">Incidentals</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <hr/>
+                    <div class="row">
+                        {{#if currentTravelRequest.provideAirportPickup}}
+                        <div class="col-sm-6">
+                            <span>Airport Taxi: Origin: <strong>{{currentTravelRequest.originCityAirportTaxiCost currentTravelRequest.originCityCurrreny}}</strong> Destination: <strong>{{currentTravelRequest.destinationCityAirportTaxiCost currentTravelRequest.destinationCityCurrreny}}</strong></span>
+                        </div>
+                        {{/if}}
+                        {{#if currentTravelRequest.provideGroundTransport}}
+                        <div class="col-sm-6">
+                            <span>Ground Transportation: <strong>{{currentTravelRequest.groundTransportCost currentTravelRequest.destinationCityCurrreny}}/day</strong></span>
+                        </div>
+                        {{/if}}
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <span>Per Diem Rate: <strong>{{currentTravelRequest.perDiemCost currentTravelRequest.destinationCityCurrreny}}</strong></span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span>Total Days: <strong>{{currentTravelRequest.totalDuration}}</strong></span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span>Total Per Diem: <strong>{{currentTravelRequest.totalPerDiem currentTravelRequest.destinationCityCurrreny}}</strong></span>
+                        </div>
+                        <div class="col-sm-3">
+                            <span>Total Hotel: <strong>{{currentTravelRequest.totalHotelCost currentTravelRequest.destinationCityCurrreny}}</strong></span>
+                        </div>
+
+                    </div>
+
+                    <hr/>
+                    {{/each}}
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="ckbox ckbox-danger">
+                                    <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" disabled/>
+                                    <label for="cashAdvanceNotRequired">I do not need a cash advance (I will simply retire my expenses when i return)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span><strong>Trip Summary</strong></span>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span>Total Trip Duration:</span>
+                        </div>
+                        <div class="col-sm-2">&nbsp;
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalTripDuration}} Days</span>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span>Total Estimated Perdiem:</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalEmployeePerdiemNGN "NGN"}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalEmployeePerdiemUSD "USD"}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span>Total Estimated Airport Taxi:</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalAirportTaxiCostNGN "NGN"}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalAirportTaxiCostUSD "USD"}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span>Total Estimated Local Transport:</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalGroundTransportCostNGN "NGN"}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalGroundTransportCostUSD "USD"}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span>Total Estimated Hotel Cost:</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalHotelCostNGN "NGN"}}</span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right">{{currentTravelRequest.totalHotelCostUSD "USD"}}</span>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <span><strong>Total Estimated Trip Cost (Excluding Flights/Car Hire):</strong></span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right"><strong>{{currentTravelRequest.totalTripCostNGN "NGN"}}</strong></span>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="text-right pull-right"><strong>{{currentTravelRequest.totalTripCostUSD "USD"}}</strong></span>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label for="supervisorComment" class="control-label">Supervisor Comment </label>
+                            <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-sm-12">
+                            <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
+                            <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}" disabled/>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <!--<button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+                    <button class="btn btn-success mr5 pull-right" id="new-requisition-create" data-dismiss="modal">Submit for Approval</button>
+                    <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
+                </div><!-- panel-footer -->
+            </div>
+        </div>
+    </div>
+</div>

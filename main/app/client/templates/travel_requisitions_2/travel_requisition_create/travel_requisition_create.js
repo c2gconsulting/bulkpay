@@ -163,6 +163,14 @@ Template.TravelRequisition2Create.events({
     currentTravelRequest.cashAdvanceNotRequired = !currentTravelRequest.cashAdvanceNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 },200),
+'click [id=description]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.description = $("#description").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+},
 'click [id*=hotelNotRequired]': function(e, tmpl) {
     e.preventDefault()
 
@@ -386,27 +394,59 @@ Template.TravelRequisition2Create.events({
 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    
-    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-        if (res){
-            swal({
-                title: "Travel requisition created",
-                text: "Your travel requisition has been created, a notification has been sent to your supervisor",
-                confirmButtonClass: "btn-success",
-                type: "success",
-                confirmButtonText: "OK"
-            });
-        } else {
-            swal({
-                title: "Oops!",
-                text: "Your travel requisition could not be created, reason: " + err.message,
-                confirmButtonClass: "btn-danger",
-                type: "error",
-                confirmButtonText: "OK"
-            });
-            console.log(err);
+
+    //update description one last final time
+    currentTravelRequest.description = $("#description").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    let fieldsAreValid = true;
+    let validationErrors = '';
+
+    /*** VALIDATIONS ***/
+    //check that the description is not hello
+    if (currentTravelRequest.description ==="hello"){
+        fieldsAreValid = false;
+        validationErrors += ": description cannot be hello";
+    }
+
+
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        const currentTrip = currentTravelRequest.trips[i];
+
+        if (currentTrip.transportationMode === "AIRLINE"){
+            fieldsAreValid = false;
+            validationErrors += ": airline mode not allowed";
         }
-    });
+    }
+
+
+    if (fieldsAreValid){
+        Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition created",
+                    text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Your travel requisition could not be created, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+
+        });
+        Template.instance().errorMessage.set(null);
+        Modal.hide('TravelRequisition2Create');
+    }else{
+        Template.instance().errorMessage.set("Validation errors" + validationErrors);
+    }
 
 },
 });
@@ -415,272 +455,13 @@ Template.TravelRequisition2Create.events({
 
 
 
-
-
-//     let validation = tmpl.areInputsValid(description)
-//     if(validation === true) {
-//         let requisitionDoc = {}
-
-//         requisitionDoc.description = description
-
-//         let currentUserUnitId = Template.instance().unitId.get()
-//         if(currentUserUnitId) {
-//             requisitionDoc.unitId = currentUserUnitId
-//         }
-//         let businessUnitId = Session.get('context')
-
-//         Meteor.call('TravelRequest/create', newTravelRequest,businessUnitId, requisitionDoc, function(err, res) {
-//             if(!err) {
-//                 swal({title: "Success", text: "Requisition is now pending approval", type: "success",
-//                     confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//                 }, () => {
-//                     //Modal.hide()
-//                 })
-//             } else {
-//                 swal('Validation error', err.message, 'error')
-//             }
-//         })
-//     } else {
-//         swal('Validation error', validation, 'error')
-//     }
-// }
-// });
-
-
-//'change .calculate': function(e, tmpl) {
-//  e.preventDefault();
-//$('#pay-type-title').val('populate automatically!');
-//},
-// "change .fieldInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     let inputVal = $(e.target).val().trim();
-//     const customConfig = tmpl.businessUnitCustomConfig.get();
-
-//     if(customConfig) {
-//         let travelRequestConfig = customConfig.travelRequestConfig;
-//         if(travelRequestConfig) {
-//             let fields = travelRequestConfig.fields || [];
-//             fields.forEach(field => {
-//                 if(field.dbFieldName === fieldName) {
-//                     if(!tmpl[fieldName]) {
-//                         tmpl[fieldName] = new ReactiveVar();
-//                     }
-
-//                     if(field.type === 'String' || field.type === 'TextArea') {
-//                         tmpl[fieldName].set(inputVal)
-//                     } else if(field.type === 'Date' || field.type === 'Time') {
-//                         if(inputVal && inputVal.length > 0) {
-//                             const date = new Date(inputVal)
-//                             const momentObj = moment(date)
-
-//                             if(momentObj.isBefore(moment())) {
-//                                 if(!field.allowDatesInPast) {
-//                                     tmpl[fieldName].set(null)
-//                                     $(e.target).val(null)
-//                                 } else {
-//                                     if(inputVal && inputVal.length > 0)
-//                                     tmpl[fieldName].set(new Date(inputVal))
-//                                     else
-//                                     tmpl[fieldName].set(null)
-//                                 }
-//                             } else {
-//                                 if(inputVal && inputVal.length > 0)
-//                                 tmpl[fieldName].set(new Date(inputVal))
-//                                 else
-//                                 tmpl[fieldName].set(null)
-//                             }
-//                         } else {
-//                             tmpl[fieldName].set(null)
-//                             $(e.target).val(null)
-//                         }
-//                     }
-//                 }
-//             })
-//         }
-//     }
-// }, 200),
-// "change .currencyField": _.throttle(function(e, tmpl) {
-//     var currency = $(e.target).val().trim();
-
-//     tmpl.selectedCurrency.set(currency)
-//     Meteor.defer(function() {
-//         $('.costInputField').selectpicker('refresh');
-//     });
-// }, 200),
-// "change .numberOfDaysField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let daysAsNumber = parseFloat(text)
-//     if(isNaN(daysAsNumber)) {
-//         daysAsNumber = 0
-//     }
-
-//     tmpl.selectedNumDays.set(daysAsNumber)
-// }, 200),
-// "change .costCenterField": _.throttle(function(e, tmpl) {
-//     var val = $(e.target).val().trim();
-
-//     if (!val || val.trim().length === 0) {
-//         tmpl.selectedCostCenter.set(null)
-//     } else {
-//         tmpl.selectedCostCenter.set(val)
-//     }
-// }, 200),
-// "change .costInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let costAsNumber = parseFloat(text)
-//     if(isNaN(costAsNumber)) {
-//         costAsNumber = 0
-//     }
-
-//     tmpl[fieldName].set(costAsNumber)
-//     tmpl.updateTotalTripCost()
-// }, 200),
-// "keyup .costInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let costAsNumber = parseFloat(text)
-//     if(isNaN(costAsNumber)) {
-//         costAsNumber = 0
-//     }
-
-//     tmpl[fieldName].set(costAsNumber)
-//     tmpl.updateTotalTripCost()
-// }, 200),
-
-// 'click #new-requisition-save-draft': function(e, tmpl) {
-//     e.preventDefault()
-//     let requisitionDoc = {}
-
-//     let currentUserUnitId = Template.instance().unitId.get()
-//     if(currentUserUnitId) {
-//         requisitionDoc.unitId = currentUserUnitId
-//     }
-//     //--
-//     const customConfig = tmpl.businessUnitCustomConfig.get();
-//     if(customConfig) {
-//         let travelRequestConfig = customConfig.travelRequestConfig;
-//         if(travelRequestConfig) {
-//             requisitionDoc.currency = tmpl.selectedCurrency.get()
-//             requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-//             requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
-
-//             let fields = travelRequestConfig.fields || [];
-//             fields.forEach(field => {
-//                 if(tmpl[field.dbFieldName]) {
-//                     const fieldVal = tmpl[field.dbFieldName].get();
-//                     requisitionDoc[field.dbFieldName] = fieldVal;
-//                 }
-//             })
-
-//             requisitionDoc.tripCosts = {}
-//             let costs = travelRequestConfig.costs || [];
-//             costs.forEach(cost => {
-//                 let costAmount = tmpl[cost.dbFieldName].get();
-//                 if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-//                     const selectedNumDays = tmpl.selectedNumDays.get()
-//                     costAmount = costAmount * selectedNumDays
-//                 }
-//                 requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-//             })
-//         }
-//     }
-//     //--
-//     let businessUnitId = Session.get('context')
-
-//     Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
-//         if(!err) {
-//             swal({title: "Success", text: "Requisition Draft saved", type: "success",
-//             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//         }, () => {
-//             // Modal.hide()
-//         })
-//     } else {
-//         swal('Validation error', err.message, 'error')
-//     }
-// })
-// },
-// 'click #new-requisition-create': function(e, tmpl) {
-//     e.preventDefault()
-
-//    // let validation = tmpl.areInputsValid(tmpl)
-//     if(validation === true) {
-//         let requisitionDoc = {}
-
-//         let currentUserUnitId = Template.instance().unitId.get()
-//         if(currentUserUnitId) {
-//             requisitionDoc.unitId = currentUserUnitId
-//         }
-//         //--
-//         // const customConfig = tmpl.businessUnitCustomConfig.get();
-//         // if(customConfig) {
-//         //     let travelRequestConfig = customConfig.travelRequestConfig;
-//         //     if(travelRequestConfig) {
-//         //         requisitionDoc.currency = tmpl.selectedCurrency.get()
-//         //         requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-//         //         requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
-
-//         //         let fields = travelRequestConfig.fields || [];
-//         //         fields.forEach(field => {
-//         //             if(tmpl[field.dbFieldName]) {
-//         //                 const fieldVal = tmpl[field.dbFieldName].get();
-//         //                 requisitionDoc[field.dbFieldName] = fieldVal;
-//         //             }
-//         //         })
-//         //         //--
-//         //         requisitionDoc.tripCosts = {}
-//         //         let costs = travelRequestConfig.costs || [];
-//         //         costs.forEach(cost => {
-//         //             let costAmount = tmpl[cost.dbFieldName].get();
-
-//         //             if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-//         //                 const selectedNumDays = tmpl.selectedNumDays.get()
-//         //                 costAmount = costAmount * selectedNumDays
-//         //             }
-
-//         //             requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-//         //         })
-
-//         //     }
-//         // }
-//         //--
-//         let businessUnitId = Session.get('context')
-
-//         Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
-//             if(!err) {
-//                 swal({title: "Success", text: "Requisition is now pending approval", type: "success",
-//                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//             }, () => {
-//                 //Modal.hide()
-//             })
-//         } else {
-//             swal('Validation error', err.message, 'error')
-//         }
-//     })
-// } else {
-//     swal('Validation error', validation, 'error')
-// }
-// }
-
-
 /*****************************************************************************/
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2Create.helpers({
-
+    'errorMessage': function() {
+        return Template.instance().errorMessage.get()
+    },
     'checked': (prop) => {
         if(Template.instance().data)
         return Template.instance().data[prop];
@@ -965,6 +746,9 @@ Template.TravelRequisition2Create.helpers({
 Template.TravelRequisition2Create.onCreated(function () {
 
     let self = this;
+
+    self.errorMessage = new ReactiveVar();
+    self.errorMessage.set(null);
 
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
