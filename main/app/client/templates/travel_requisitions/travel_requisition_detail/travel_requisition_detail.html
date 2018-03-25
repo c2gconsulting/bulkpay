@@ -1,6 +1,6 @@
 <template name="TravelRequisitionDetail">
     <div id="TravelRequisitionDetailModal" class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="panel panel-default">
                     {{#with procurementDetails}}
@@ -14,168 +14,143 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                <label class="control-label" for="creator">Creator super</label>
+                                <label class="control-label" for="creator">Creator</label>
                                 <input name="creator" type="text" placeholder="Creator" class="form-control"
                                         value="{{getCreatedByFullName this}}" disabled />
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
-                      
+                        <br/>
 
                         <div class="row">
                             <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
+                                <label class="control-label" for="description">Description</label>
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
+                                    <input name="description" type="text" placeholder="Description" class="form-control"
+                                        value="{{this.description}}"/>
+                                {{else}}
+                                    <input name="description" type="text" placeholder="Description" class="form-control"
+                                           value="{{this.description}}" disabled />
+                                {{/if}}
                             </div><!-- col-sm-3 -->
-                        </div>
+                        </div><!-- row -->
                         <br/>
                         <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-
-                                    <label for="budget-code" class="control-label">Budget Code</label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
+                            <div class="col-sm-12">
+                                <label class="control-label" for="unit">Unit</label>
+                                <input name="unit" type="text" placeholder="Unit" class="form-control"
+                                       value="{{getUnitName this.unitId}}" disabled/>
                             </div><!-- col-sm-3 -->
-
-                        </div>
+                        </div><!-- row -->
                         <br/>
+
                         <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-6 -->
-                            <div class="col-sm-2">
-                                <div class="form-group datetimepicker">
-                                    <label class="control-label">Departure<span class="asterisk important-input">*</span></label>
-                                    <input class="set-due-date form-control " type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date" value="{{formatDate this.departureDate}}"/>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <div class="form-group">
+                            <div class="col-sm-12">
+                                <label class="control-label" for="dateRequired">Date required</label>
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
+                                    {{#datepicker dateRequired}}
+                                        <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" />
+                                    {{/datepicker}}
+                                {{else}}
+                                    {{#datepicker dateRequired}}
+                                        <input type="text" class="form-control datepicker" name="dateRequired" data-field="dateRequired" disabled/>
+                                    {{/datepicker}}
+                                {{/if}}
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+                        <br/>
 
-                                    <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-
-                                </div><!-- form-group -->
-                            </div>
-                           
-                            <div class="col-sm-2">
-                                <div class="form-group datetimepicker">
-                                    <label class="control-label">Return <span class="asterisk important-input">*</span></label>
-                                    <input class="set-due-date form-control " type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate this.returnDate}}"/>
-                                </div>
-                            </div>
-                            <div class="col-sm-1">
-                                <div class="form-group">
-
-                                    <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-12 -->
-                         
-                        </div>
                         <div class="row">
-                        <div class="col-sm-3">
-                            <div class="form-group">
-
-                                <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
-                                <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
+                            <div class="col-sm-12">
+                                <label class="control-label" for="requisitionReason">Requisition reason</label>
+                                {{#if or (isInEditMode) (isInApproverEditMode)}}
+                                    <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
+                                              value="{{this.requisitionReason}}"></textarea>
+                                {{else}}
+                                    <textarea class="form-control" rows="5" name="requisitionReason" id="requisitionReason"
+                                              value="{{this.requisitionReason}}" disabled></textarea>
+                                {{/if}}
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+                        <div class="col-sm-6">
+                            <div class="form-group"></div>
+                                <label for="budget-name" class="control-label">Budget Holders</label>
+                                <select name="budget" style="width: 100%" class="form-control">
+                                    <option value="" {{selected "budget" nil}}>None</option>
+                                    {{#each budgetList}}
+                                        <option value="{{_id}}" {{selected "budget" _id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
                             </div><!-- form-group -->
-                        </div><!-- col-sm-3 -->
-                        </div>
-                      
-                     
-                        <br/>
+                   
                         <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="" name="description" value="{{currentTravelRequest.description}}" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
-                                    <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{this.hotelRate}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            <div class="col-sm-1">
-                                <div class="form-group">
-                                    <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
-                                    <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <span>Per Diem Rate: <strong>{{formatMoney this.perDiemCost this.destinationCityCurrreny}}</strong></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <span>Total Days: <strong>{{this.totalDuration}}</strong></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <span>Total Per Diem: <strong>{{formatMoney this.totalPerDiem this.destinationCityCurrreny}}</strong></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <span>Total Hotel: <strong>{{formatMoney this.totalHotelCost this.destinationCityCurrreny}}</strong></span>
-                            </div>
-    
-                        </div> <div class="row">
                             <div class="col-sm-12">
-                                <span><strong>Trip Summary</strong></span>
+                                <br/>
+                                <label class="control-label" for="requisitionReason"><b>Travel costs</b></label>
+                            </div><!-- col-sm-3 -->
+                        </div><!-- row -->
+
+                        {{#each costs}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="{{dbFieldName}}">{{label}}</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="{{dbFieldName}}" type="text" placeholder="{{label}}" 
+                                        class="form-control costInputField"
+                                        value="{{value}}"/>
+                                </div>
                             </div>
                         </div>
-                        <hr/>
-    
+                        {{/each}}
+
+                        <!-- <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Total cost</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD totalTripCost}}"/>
+                                </div>
+                            </div>
+                        </div> -->
+
                         <div class="row">
-                            <div class="col-sm-8">
-                                <span>Total Estimated Amount Payable to Employee:</span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableNGN "NGN"}}</span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalEmployeeAmountPayableUSD "USD"}}</span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <span>Total Estimated Hotel Cost:</span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalHotelCostNGN "NGN"}}</span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalHotelCostUSD "USD"}}</span>
-                            </div>
-                        </div>
-    
-                        <hr>
-                        <div class="row">
-                            <div class="col-sm-8">
-                                <span><strong>Total Estimated Trip Cost (Excluding Flights/Car Hire):</strong></span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalTripCostNGN "NGN"}}</strong></span>
-                            </div>
-                            <div class="col-sm-2">
-                                <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalTripCostUSD "USD"}}</strong></span>
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Amount Non Payable to employee</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amountNonPaybelToEmp}}"/>
+                                </div>
                             </div>
                         </div>
 
-                        <br/>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Amount Payable to employee: </label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD amoutPayableToEmp}}"/>
+                                </div>
+                            </div>
+                        </div>
 
-                      
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <label class="control-label" for="totalCost">Total Amount</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input name="totalCost" type="text" placeholder="0" class="form-control" disabled
+                                        value="{{formatMoneyD totalTripCost}}"/>
+                                </div>
+                            </div>
+                        </div>
 
                         {{#if isTwoStepApprovalEnabled}}
                             <br/>

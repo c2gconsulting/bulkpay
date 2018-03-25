@@ -106,7 +106,7 @@ Template.TravelRequisitionSupervisor2Detail.events({
 
    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-  Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+  Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
       if (res){
           swal({
               title: "Travel requisition has been rejected",

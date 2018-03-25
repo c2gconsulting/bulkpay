@@ -39,7 +39,7 @@ Template.TravelRequisitionBudgetHolderRetireDetail.events({
          currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
          currentTravelRequest.retirementStatus = "Retirement Rejected By Budget Holder";
 
-      Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+      Meteor.call('TravelRequest2/budgetHolderRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been rejected by budget holder",

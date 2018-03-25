@@ -194,6 +194,11 @@ Router.route('/business/:_id/airlines', {
     controller: 'AirlinesController',
     where: 'client'
 });
+Router.route('/business/:_id/emailsettings', {
+    name: 'emailsettings',
+    controller: 'EmailSettingsController',
+    where: 'client'
+});
 Router.route('/business/:_id/flightroutes', {
     name: 'flightroutes',
     controller: 'FlightroutesController',

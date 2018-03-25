@@ -129,6 +129,11 @@ Template.navigationModal.events({
         Modal.hide('navigationModal');
         event.preventDefault();
       },
+      'click #emailsettings': function(event, tmpl) {
+        Router.go('emailsettings', {_id: Session.get('context')})
+        Modal.hide('navigationModal');
+        event.preventDefault();
+      },
       'click #budgets': function(event, tmpl) {
         Router.go('budgets', {_id: Session.get('context')})
         Modal.hide('navigationModal');

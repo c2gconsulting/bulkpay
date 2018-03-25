@@ -39,7 +39,7 @@ Template.TravelRequisitionRetirementDetail.events({
          currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
          currentTravelRequest.retirementStatus = "Retirement Rejected By Supervisor";
 
-      Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been rejected by supervisor",
