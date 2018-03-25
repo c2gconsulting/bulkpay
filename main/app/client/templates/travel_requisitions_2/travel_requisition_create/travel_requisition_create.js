@@ -404,18 +404,45 @@ Template.TravelRequisition2Create.events({
 
     /*** VALIDATIONS ***/
     //check that the description is not hello
-    if (currentTravelRequest.description ==="hello"){
+  
+    if (currentTravelRequest.description ===""){
         fieldsAreValid = false;
-        validationErrors += ": description cannot be hello";
+        validationErrors += ": description cannot be empty";
     }
 
-
+    if( currentTravelRequest.budgetCodeId=="I am not sure")
+    {
+        fieldsAreValid = false;
+        validationErrors += ": select a budget code";
+    }
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         const currentTrip = currentTravelRequest.trips[i];
+ 
+        // if (currentTrip.transportationMode === ""){
+        //     fieldsAreValid = false;
+        //     validationErrors += ": select transportation mode";
+        // }
+      
 
-        if (currentTrip.transportationMode === "AIRLINE"){
+        if (currentTrip.fromId === ""){
             fieldsAreValid = false;
-            validationErrors += ": airline mode not allowed";
+            validationErrors += ": select your current location";
+        }
+        if (currentTrip.fromId.selectedIndex == 0){
+            fieldsAreValid = false;
+            validationErrors += ": select your current location";
+        }
+        if (currentTrip.toId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select your destination location";
+        }
+        if (currentTrip.hotelId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select a hotel";
+        }
+        if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select an airline";
         }
     }
 
@@ -643,98 +670,7 @@ Template.TravelRequisition2Create.helpers({
             }
         }
     },
-    // 'amountNonPaybelToEmp': function() {
-    //     return Template.instance().amountNonPaybelToEmp.get()
-    // },
-    // 'amoutPayableToEmp': function() {
-    //     return Template.instance().amoutPayableToEmp.get()
-    // },
-    // 'totalTripCost': function() {
-    //     return Template.instance().totalTripCost.get()
-    // },
-    // 'isEqual': (a, b) => {
-    //     return a === b;
-    // },
-    // 'fields': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         return travelRequestConfig.fields
-    //     }
-    // },
-    // 'costs': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         return travelRequestConfig.costs
-    //     }
-    // },
-    // 'currencyEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isCurrencyEnabled
-    //         }
-    //     }
-    // },
-    // 'allowedCurrencies': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.allowedCurrencies
-    //         }
-    //     }
-    // },
-    // 'numberDaysEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isNumberOfDaysEnabled
-    //         }
-    //     }
-    // },
-    // 'costCenterEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isCostCenterEnabled
-    //         }
-    //     }
-    // },
-    // 'costHasAllowedValues': function(dbFieldName) {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         const costs = travelRequestConfig.costs || []
-    //         const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
-    //         if(fieldCost) {
-    //             return fieldCost.hasAllowedValues;
-    //         }
-    //     }
-    // },
-    // 'costAllowedValues': function(dbFieldName) {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         const costs = travelRequestConfig.costs || []
-    //         const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
-    //         if(fieldCost) {
-    //             const selectedCurrency = Template.instance().selectedCurrency.get()
-    //             if(selectedCurrency) {
-    //                 return fieldCost.allowedValues[selectedCurrency];
-    //             }
-    //         }
-    //     }
-    // },
-    // 'units': function () {
-    //     return Template.instance().units.get()
-    // },
-
-
+   
 
 
 
@@ -1075,71 +1011,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     })
 
-    // self.areInputsValid = function(tmpl) {
-    //     const customConfig = tmpl.businessUnitCustomConfig.get();
-    //     let isOk = false;
-
-    //     if(customConfig) {
-    //         let travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             let fields = travelRequestConfig.fields || [];
-
-    //             fields.forEach(field => {
-    //                 if(field.isRequired) {
-    //                     if(tmpl[field.dbFieldName]) {
-    //                         const fieldVal = tmpl[field.dbFieldName].get();
-    //                         if(!fieldVal) {
-    //                             isOk = `Please fill ${field.label}`
-    //                         }
-    //                     } else {
-    //                         isOk = `Please fill ${field.label}`
-    //                     }
-    //                 }
-    //             })
-    //         }
-    //     }
-    //     if(isOk) {
-    //         return isOk
-    //     } else {
-    //         return true
-    //     }
-    // }
-
-    // self.updateTotalTripCost = () => {
-    //     const customConfig = self.businessUnitCustomConfig.get();
-    //     if(customConfig) {
-    //         let travelRequestConfig = customConfig.travelRequestConfig;
-
-    //         if(travelRequestConfig) {
-    //             let costs = travelRequestConfig.costs || [];
-    //             let nonPayableToEmp = 0;
-    //             let payableToEmp = 0;
-    //             let totalCosts = 0;
-
-    //             costs.forEach(cost => {
-    //                 let costAmount = self[cost.dbFieldName].get();
-    //                 if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-    //                     const selectedNumDays = self.selectedNumDays.get()
-    //                     costAmount = costAmount * selectedNumDays
-    //                 }
-    //                 totalCosts += costAmount;
-
-    //                 if(cost.isPayableToStaff) {
-    //                     payableToEmp += costAmount;
-    //                 } else if(!cost.isPayableToStaff) {
-    //                     nonPayableToEmp += costAmount;
-    //                 }
-    //             })
-    //             self.amountNonPaybelToEmp.set(nonPayableToEmp)
-    //             self.amoutPayableToEmp.set(payableToEmp)
-    //             self.totalTripCost.set(totalCosts)
-    //         }
-    //     } else {
-    //         self.amountNonPaybelToEmp.set(0)
-    //         self.amoutPayableToEmp.set(0)
-    //         self.totalTripCost.set(0)
-    //     }
-    // }
+   
 });
 
 Template.TravelRequisition2Create.onRendered(function () {

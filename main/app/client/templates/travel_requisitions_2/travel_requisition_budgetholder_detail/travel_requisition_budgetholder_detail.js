@@ -5,9 +5,7 @@
 import _ from 'underscore';
 
 Template.TravelRequisitionBudgetHolderDetail.events({
-
     'click #approve': (e, tmpl) => {
-
         let budgetHolderComment = $('[name=budgetHolderComment]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -15,8 +13,25 @@ Template.TravelRequisitionBudgetHolderDetail.events({
         currentTravelRequest.status = "Approved By Budget Holder";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-        Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+      
+        e.preventDefault()
+        
+        //update budgetHolderComment one last final time
+        currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    
+        let fieldsAreValid = true;
+        let validationErrors = '';
+    
+        /*** VALIDATIONS ***/
+        //check that the description is not hello
+      
+        if (currentTravelRequest.budgetHolderComment ===""){
+            fieldsAreValid = false;
+            validationErrors += ": Budget Holder Comment cannot be empty";
+        }
+        if (fieldsAreValid){
+           Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Travel requisition has been approved",
@@ -34,39 +49,79 @@ Template.TravelRequisitionBudgetHolderDetail.events({
                     confirmButtonText: "OK"
                 });
                 console.log(err);
-            }
-        });
+                }
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisition2Create');
+        }else{
+            Template.instance().errorMessage.set("Validation errors" + validationErrors);
+        }
+    
     },
+     
+
 
     'click #reject': (e, tmpl) => {
-
         let budgetHolderComment = $('[name=budgetHolderComment]').val();
-
+        let budgetCodeId =$('[name=budget-code]').val();
+      
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
+        currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Rejected By Budget Holder";
+      
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-        Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
-            if (res){
-                swal({
-                    title: "Travel requisition has been rejected",
-                    text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-                    confirmButtonClass: "btn-success",
-                    type: "success",
-                    confirmButtonText: "OK"
-                });
-            } else {
-                swal({
-                    title: "Oops!",
-                    text: "Travel requisition has  not been updated, reason: " + err.message,
-                    confirmButtonClass: "btn-danger",
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
-                console.log(err);
-            }
-        });
+      
+        e.preventDefault()
+        
+        //update budgetHolderComment one last final time
+        currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    
+        let fieldsAreValid = true;
+        let validationErrors = '';
+    
+        /*** VALIDATIONS ***/
+        //check that the description is not hello
+      
+        if (currentTravelRequest.budgetHolderComment ===""){
+            fieldsAreValid = false;
+            validationErrors += ": Supervisor Comment cannot be empty";
+        }
+    
+      
+        if (fieldsAreValid){
+          
+            Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Travel requisition has been rejected",
+                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel requisition has  not been updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
     }
+});
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisitionBudgetHolderDetail');
+        }else{
+            Template.instance().errorMessage.set("Validation errors" + validationErrors);
+        }
+    
+    },
+
+
+
 });
 
 Template.registerHelper('formatDate', function(date) {
@@ -77,6 +132,9 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisitionBudgetHolderDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionBudgetHolderDetail.helpers({
+    'errorMessage': function() {
+        return Template.instance().errorMessage.get()
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -237,6 +295,9 @@ Template.TravelRequisitionBudgetHolderDetail.onCreated(function () {
 
 
     let self = this;
+    self.errorMessage = new ReactiveVar();
+    self.errorMessage.set(null);
+
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));

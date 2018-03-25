@@ -331,12 +331,20 @@
 
                             </div>
                         </div>
+                        {{#if errorMessage}}
+                        <hr>
+                        <div class="row" >
+                            <div class="col-sm-12">
+                                <span class="text-danger">{{errorMessage}}</span>
+                            </div><!-- col-sm-3 -->
+                        </div>
+                        {{/if}}
                     </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
-                        <button class="btn btn-success mr5 pull-right" id="approve" data-dismiss="modal">Approve</button>
-                        <button class="btn btn-danger mr5 pull-right" id="reject" data-dismiss="modal">Reject</button>
+                        <button class="btn btn-success mr5 pull-right" id="approve" >Approve</button>
+                        <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button>
 
                     </div><!-- panel-footer -->
                 </div>
