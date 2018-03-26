@@ -1,12 +1,11 @@
 /*****************************************************************************/
-/* TravelRequisition2TreatList: Event Handlers */
+/* RetirementIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2TreatList.events({
-    'click #createProcurementRequisition': function(e, tmpl) {
+Template.RetirementIndex.events({
+    'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
-
         Modal.show('TravelRequisition2Create')
     },
     'click .requisitionRow': function(e, tmpl) {
@@ -15,10 +14,10 @@ Template.TravelRequisition2TreatList.events({
 
         let invokeReason = {}
         invokeReason.requisitionId = requisitionId
-        invokeReason.reason = 'treat'
-        invokeReason.approverId = Meteor.userId()
+        invokeReason.reason = 'edit'
+        invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2Detail', invokeReason)
+        Modal.show('RetirementDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -26,8 +25,8 @@ Template.TravelRequisition2TreatList.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsToApprove(skip)
-        Template.instance().travelRequestsToApprove.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsICreated(skip)
+        Template.instance().travelRequestsICreated.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -49,27 +48,21 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2TreatList: Helpers */
+/* RetirementIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2TreatList.helpers({
-    'travelRequestsToApprove': function() {
-        return Template.instance().travelRequestsToApprove.get()
+Template.RetirementIndex.helpers({
+    'travelRequestsICreated': function() {
+        return Template.instance().travelRequestsICreated.get()
     },
     'numberOfPages': function() {
-        let currentUser = Meteor.user()
-        if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-            let currentUserPosition = currentUser.employeeProfile.employment.position
+        let limit = Template.instance().NUMBER_PER_PAGE.get()
+        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
 
-            let limit = Template.instance().NUMBER_PER_PAGE.get()
-            let totalNum = TravelRequisitions.find({supervisorPositionId: currentUserPosition}).count();
-
-            let result = Math.floor(totalNum/limit)
-            var remainder = totalNum % limit;
-            if (remainder > 0)
-                result += 2;
-            return result;
-        }
-        return 0;
+        let result = Math.floor(totalNum/limit)
+        var remainder = totalNum % limit;
+        if (remainder > 0)
+            result += 2;
+        return result;
     },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
@@ -80,25 +73,34 @@ Template.TravelRequisition2TreatList.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
-    'getUnitName': function(unitId) {
-        if(unitId)
-            return EntityObjects.findOne({_id: unitId}).name
-    }
+
+    'totalTripCostNGN': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
+
+            return totalTripCostNGN;
+        }
+    },
+
 });
 
 /*****************************************************************************/
-/* TravelRequisition2TreatList: Lifecycle Hooks */
+/* RetirementIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2TreatList.onCreated(function () {
+Template.RetirementIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
-    self.travelRequestsToApprove = new ReactiveVar()
+    let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
+    self.travelRequestsICreated = new ReactiveVar()
+    self.businessUnitCustomConfig = new ReactiveVar()
 
-    self.getTravelRequestsToApprove = function(skip) {
+    self.totalTripCost = new ReactiveVar(0)
+
+    self.getTravelRequestsICreated = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -108,15 +110,10 @@ Template.TravelRequisition2TreatList.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        let currentUser = Meteor.user()
-        if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-            let currentUserPosition = currentUser.employeeProfile.employment.position
-
-            return TravelRequisitions.find({
-                status: 'Approved'
-            }, options);
-        }
-        return null
+        return TravelRequisition2s.find({
+            $and : [
+                {createdBy: Meteor.userId()},{ status : "Approved By Budget Holder" } ]
+        }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -128,23 +125,29 @@ Template.TravelRequisition2TreatList.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsToApproveSub = self.subscribe('TravelRequestsToTreat', businessUnitId, limit, sort)
-        //--
-        if(travelRequestsToApproveSub.ready()) {
-            let currentUser = Meteor.user()
-            if(currentUser.employeeProfile && currentUser.employeeProfile.employment) {
-                let currentUserPosition = currentUser.employeeProfile.employment.position
+        let employeeProfile = Meteor.user().employeeProfile
+        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
+            let userPositionId = employeeProfile.employment.position
 
-                self.travelRequestsToApprove.set(self.getTravelRequestsToApprove(0))
-            }
+            let positionSubscription = self.subscribe('getEntity', userPositionId)
+        }
+
+        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
+        if(travelRequestsCreatedSub.ready()) {
+            self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
+        }
+        //--
+        if(customConfigSub.ready()) {
+            const customConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
+            self.businessUnitCustomConfig.set(customConfig)
         }
     })
 });
 
-Template.TravelRequisition2TreatList.onRendered(function () {
+Template.RetirementIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisition2TreatList.onDestroyed(function () {
+Template.RetirementIndex.onDestroyed(function () {
 });

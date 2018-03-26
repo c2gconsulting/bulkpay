@@ -1,4 +1,4 @@
-<template name="RetirementIndex">
+<template name="EmailSettingIndex">
     <div class="pageheader">
             <div class="media">
                 <div class="pageicon pull-left" style="padding: 9px;">
@@ -9,34 +9,33 @@
                         <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                         <li><a ui-sref="business.overview">Business</a></li>
                         <li>{{name}}</li>
-                        <li>Retirements</li>
+                        <li>Email Settings</li>
                     </ul>
 
-                     <h4>Retirement</h4>
+                     <h4>Email Settings</h4>
                 </div>
             </div><!-- media -->
         </div><!-- pageheader -->
 <div class="col-md-12">
     <div class="tab-pane" id="followers">
 
-        <div class="row" ng-show="!singleRetirementView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+        <div class="row" ng-show="!singleEmailSettingView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
             <div class="col-md-12">
-                <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Retirement</button></p>
+                <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Email Setting</button></p>
             </div>
         </div>
 
         <div class="row" style="margin-left: 10px; margin-right: 10px;">
-            <div class="col-md-12" ng-if="retirements.length > 0">
+            <div class="col-md-12" ng-if="EmailSettings.length > 0">
                 <div class="table-responsive">
                     <table class="table table-primary mb60 table-hover">
                         <thead>
                         <tr>
                             <th>#</th>
 
-                            <th>Flight Name</th>
-                            <th>International</th>
-
-
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Department</th>
 
 
                             <th>Status</th>
@@ -45,7 +44,7 @@
                         </thead>
                         <tbody>
                         {{#each pfas}}
-                            {{> singleRetirement index=@index data=this}}
+                            {{> singleEmailSetting index=@index data=this}}
                         {{/each}}
                         </tbody>
                     </table>
@@ -57,12 +56,13 @@
 </div>
 </template>
 
-<template name="singleRetirement">
+<template name="singleEmailSetting">
 <tr>
     <td class="pointer">{{index}}</td>
 
     <td>{{data.name}}</td>
-    <td>{{data.isInternational}}</td>
+    <td>{{data.email}}</td>
+    <td>{{data.department}}</td>
 
 
     <td>
@@ -73,7 +73,7 @@
       {{/if}}
     </td>
     <td>
-        <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteRetirement">Delete</button>
+        <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteEmailSetting">Delete</button>
     </td>
 </tr>
 </template>

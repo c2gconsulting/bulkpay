@@ -25,8 +25,8 @@ Template.TravelRequisitionIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsICreated(skip)
-        Template.instance().travelRequestsICreated.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsICreated1(skip)
+        Template.instance().travelRequestsICreated1.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -52,7 +52,7 @@ Template.registerHelper('repeat', function(max) {
 /*****************************************************************************/
 Template.TravelRequisitionIndex.helpers({
     'travelRequestsICreated': function() {
-        return Template.instance().travelRequestsICreated.get()
+        return Template.instance().travelRequestsICreated1.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
@@ -110,10 +110,10 @@ Template.TravelRequisitionIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsICreated = new ReactiveVar()
+    self.travelRequestsICreated1 = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
-    self.getTravelRequestsICreated = function(skip) {
+    self.getTravelRequestsICreated1 = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -142,9 +142,9 @@ Template.TravelRequisitionIndex.onCreated(function () {
             let positionSubscription = self.subscribe('getEntity', userPositionId)
         }
 
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
+        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated1', businessUnitId, limit, sort)
         if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
+            self.travelRequestsICreated1.set(self.getTravelRequestsICreated1(0))
         }
         //--
         if(customConfigSub.ready()) {

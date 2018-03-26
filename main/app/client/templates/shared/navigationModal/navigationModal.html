@@ -70,10 +70,11 @@
                               <li><a href="{{pathFor 'airlines'}}" id="airlines">Airlines</a></li>
                               <li><a href="{{pathFor 'hotels'}}" id="hotels">Hotels</a></li>
                               <li><a href="{{pathFor 'flightroutes'}}" id="flightroutes">Flight Routes</a></li>
+                              <li><a href="{{pathFor 'emailsettings'}}" id="emailsettings">Email Settings</a></li>
                               <li><a href="{{pathFor 'payslip'}}" id="payslip">View Pay Slip</a></li>
-                          
+
                               <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
-                              
+
                               <li><a href="{{pathFor 'leave.entitlement.list'}}" id="leaveentitlementlist">Manage Leave Entitlements</a></li>
                               <li><a href="{{pathFor 'leavetypes'}}" id="leavetypes">Manage Leave Types</a></li>
                               <li><a href="{{pathFor 'employee.time.approve'}}" id="employeetimeapprove">Approve employees Time</a></li>
@@ -120,12 +121,20 @@
 
                               {{#if isTravelRequisitionActive}}
                                   <li><a href="{{pathFor 'travelrequests.list'}}" id="travelrequestslist">Travel requests</a></li>
+                                  <li><a href="{{pathFor 'travelrequest.retirementslist'}}" id="travelrequestsretirementslist">Retirements</a></li>
+
+                                  <li><a href="{{pathFor 'travelrequests.supervisorlist'}}" id="travelrequestssupervisorlist">Supervisor Approvals</a></li>
+                                  <li><a href="{{pathFor 'travelrequests.budgetholderlist'}}" id="travelrequestsbudgethoderlist">Budget Holder Approvals</a></li>
+                                  <li><a href="{{pathFor 'travelrequests.retirementlist'}}" id="travelrequestsretirementlist">Travel Retirement</a></li>
+
+
+
 
                                   {{#if hasTravelRequisitionApproveAccess}}
                                   <li><a href="{{pathFor 'travelrequests.approvalList'}}" id="travelrequestsapprovalList">Trips Approval</a></li>
                                   {{/if}}
                               {{/if}}
-                             
+
                           {{/if}}
 
 

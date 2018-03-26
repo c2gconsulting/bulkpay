@@ -90,7 +90,10 @@ Meteor.methods({
             if(docId) {
                 TravelRequisitions.update(docId, {$set: travelRequestDoc})
             } else{
+
                 TravelRequisitions.insert(travelRequestDoc)
+
+                
             }
             return true
         }

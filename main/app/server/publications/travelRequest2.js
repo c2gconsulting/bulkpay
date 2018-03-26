@@ -2,23 +2,35 @@
  * Travel Request publications
  */
 
+
+ Core.publish("TravelRequestsBySupervisor", function (businessUnitId, supervisorId) {
+     return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
+ });
+
+ Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {
+     return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
+ });
+
 Core.publish("TravelRequestsICreated", function (businessUnitId) {
     let user = this.userId;
 
-    return travelrequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
+    return TravelRequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
 Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     let user = this.userId;
-    return travelrequisition2s.find({
+    return TravelRequisition2s.find({
         businessId: businessUnitId,
         createdBy: this.userId,
         isStatusSeenByCreator: false
     });
 });
 
-Core.publish("TravelRequest", function (requisitionId) {
-    return travelrequisition2s.find({_id: requisitionId});
+Core.publish("TravelRequest2", function (requisitionId) {
+    return TravelRequisition2s.find({_id: requisitionId});
+});
+Core.publish("TravelRequestToRetire", function (requisitionId) {
+    return TravelRequisition2s.find({_id: requisitionId});
 });
 
 Core.publish("TravelRequestsToApprove", function (businessUnitId) {
@@ -29,12 +41,13 @@ Core.publish("TravelRequestsToApprove", function (businessUnitId) {
     }
     let userPositionId = user.employeeProfile.employment.position
 
-    return travelrequisition2s.find({
+    return TravelRequisition2s.find({
         businessId: businessUnitId,
-        $or: [{supervisorPositionId : userPositionId}, 
+        $or: [{supervisorPositionId : userPositionId},
                 {alternativeSupervisorPositionId: userPositionId}]
     });
 });
+
 
 Core.publish("TravelRequestsToTreat", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
@@ -45,8 +58,8 @@ Core.publish("TravelRequestsToTreat", function (businessUnitId) {
 
     let userPositionId = user.employeeProfile.employment.position
 
-    if (Core.hastravelrequisition2ApproveAccess(this.userId)) {
-        return travelrequisition2s.find({
+    if (Core.hasTravelRequisitionApproveAccess(this.userId)) {
+        return TravelRequisition2s.find({
             businessId: businessUnitId,
             status: 'Approved'
         });

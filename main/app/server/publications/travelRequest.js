@@ -2,13 +2,13 @@
  * Travel Request publications
  */
 
-Core.publish("TravelRequestsICreated", function (businessUnitId) {
+Core.publish("TravelRequestsICreated1", function (businessUnitId) {
     let user = this.userId;
 
     return TravelRequisitions.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
-Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
+Core.publish("TravelRequestsStatusNotSeen1", function (businessUnitId) {
     let user = this.userId;
     return TravelRequisitions.find({
         businessId: businessUnitId,
@@ -20,11 +20,11 @@ Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
 Core.publish("TravelRequest", function (requisitionId) {
     return TravelRequisitions.find({_id: requisitionId});
 });
-Core.publish("TravelRequestToRetire", function (requisitionId) {
+Core.publish("TravelRequestToRetire1", function (requisitionId) {
     return TravelRequisitions.find({_id: requisitionId});
 });
 
-Core.publish("TravelRequestsToApprove", function (businessUnitId) {
+Core.publish("TravelRequestsToApprove1", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
     if(!user.employeeProfile || !user.employeeProfile.employment) {
@@ -34,13 +34,13 @@ Core.publish("TravelRequestsToApprove", function (businessUnitId) {
 
     return TravelRequisitions.find({
         businessId: businessUnitId,
-        $or: [{supervisorPositionId : userPositionId}, 
+        $or: [{supervisorPositionId : userPositionId},
                 {alternativeSupervisorPositionId: userPositionId}]
     });
 });
 
 
-Core.publish("TravelRequestsToTreat", function (businessUnitId) {
+Core.publish("TravelRequestsToTreat1", function (businessUnitId) {
     let user = Meteor.users.findOne({_id: this.userId})
 
     if(!user.employeeProfile || !user.employeeProfile.employment) {
@@ -50,7 +50,7 @@ Core.publish("TravelRequestsToTreat", function (businessUnitId) {
     let userPositionId = user.employeeProfile.employment.position
 
     if (Core.hasTravelRequisitionApproveAccess(this.userId)) {
-        return TravelRequisitions.find({
+        return TravelRequisition2s.find({
             businessId: businessUnitId,
             status: 'Approved'
         });

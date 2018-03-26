@@ -450,7 +450,13 @@ Budgets.attachSchema(Core.Schemas.Budget);
 Airlines = new Mongo.Collection("airlines");
 Partitioner.partitionCollection(Airlines);
 Airlines.attachSchema(Core.Schemas.Airline);
+
+
+EmailSettings = new Mongo.Collection("emailsettings");
+Partitioner.partitionCollection(EmailSettings);
+EmailSettings.attachSchema(Core.Schemas.EmailSetting);
 /**
+ * 
  * Core Collections Budget
  */
 Flightroutes = new Mongo.Collection("flightroutes");

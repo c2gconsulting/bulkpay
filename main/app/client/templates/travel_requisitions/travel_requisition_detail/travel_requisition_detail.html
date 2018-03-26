@@ -28,8 +28,8 @@
                                     <input name="description" type="text" placeholder="Description" class="form-control"
                                         value="{{this.description}}"/>
                                 {{else}}
-                                    <input name="description" type="text" placeholder="Description one baby" class="form-control"
-                                           value="{{this.description}}"/>
+                                    <input name="description" type="text" placeholder="Description" class="form-control"
+                                           value="{{this.description}}" disabled />
                                 {{/if}}
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
@@ -71,7 +71,17 @@
                                 {{/if}}
                             </div><!-- col-sm-3 -->
                         </div><!-- row -->
-
+                        <div class="col-sm-6">
+                            <div class="form-group"></div>
+                                <label for="budget-name" class="control-label">Budget Holders</label>
+                                <select name="budget" style="width: 100%" class="form-control">
+                                    <option value="" {{selected "budget" nil}}>None</option>
+                                    {{#each budgetList}}
+                                        <option value="{{_id}}" {{selected "budget" _id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
+                            </div><!-- form-group -->
+                   
                         <div class="row">
                             <div class="col-sm-12">
                                 <br/>

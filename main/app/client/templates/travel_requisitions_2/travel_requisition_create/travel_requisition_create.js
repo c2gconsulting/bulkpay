@@ -12,8 +12,8 @@ Template.TravelRequisition2Create.events({
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
         currentTravelRequest.type = travelType;
         currentTravelRequest.totalTripDuration = 0;
-        currentTravelRequest.totalEmployeeAmountPayableNGN = 0;
-        currentTravelRequest.totalEmployeeAmountPayableUSD = 0;
+        currentTravelRequest.totalEmployeePerdiemNGN = 0;
+        currentTravelRequest.totalEmployeePerdiemUSD = 0;
         currentTravelRequest.totalFlightCostNGN = 0;
         currentTravelRequest.totalFlightCostUSD = 0;
         currentTravelRequest.totalHotelCostNGN = 0;
@@ -163,6 +163,14 @@ Template.TravelRequisition2Create.events({
     currentTravelRequest.cashAdvanceNotRequired = !currentTravelRequest.cashAdvanceNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 },200),
+'click [id=description]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.description = $("#description").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+},
 'click [id*=hotelNotRequired]': function(e, tmpl) {
     e.preventDefault()
 
@@ -386,22 +394,86 @@ Template.TravelRequisition2Create.events({
 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-     currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-    Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-        if (res){
-            swal({
-                title: "Success",
-                text: `New hotel added`,
-                confirmButtonClass: "btn-success",
-                type: "success",
-                confirmButtonText: "OK"
-            });
-            Modal.hide('HotelCreate');
-        } else {
-            console.log(err);
+    //update description one last final time
+    currentTravelRequest.description = $("#description").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    let fieldsAreValid = true;
+    let validationErrors = '';
+
+    /*** VALIDATIONS ***/
+    //check that the description is not hello
+  
+    if (currentTravelRequest.description ===""){
+        fieldsAreValid = false;
+        validationErrors += ": description cannot be empty";
+    }
+
+    if( currentTravelRequest.budgetCodeId=="I am not sure")
+    {
+        fieldsAreValid = false;
+        validationErrors += ": select a budget code";
+    }
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        const currentTrip = currentTravelRequest.trips[i];
+ 
+        // if (currentTrip.transportationMode === ""){
+        //     fieldsAreValid = false;
+        //     validationErrors += ": select transportation mode";
+        // }
+      
+
+        if (currentTrip.fromId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select your current location";
         }
-    });
+        if (currentTrip.fromId.selectedIndex == 0){
+            fieldsAreValid = false;
+            validationErrors += ": select your current location";
+        }
+        if (currentTrip.toId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select your destination location";
+        }
+        if (currentTrip.hotelId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select a hotel";
+        }
+        if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            fieldsAreValid = false;
+            validationErrors += ": select an airline";
+        }
+    }
+
+
+    if (fieldsAreValid){
+        Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition created",
+                    text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Your travel requisition could not be created, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+
+        });
+        Template.instance().errorMessage.set(null);
+        Modal.hide('TravelRequisition2Create');
+    }else{
+        Template.instance().errorMessage.set("Validation errors" + validationErrors);
+    }
 
 },
 });
@@ -410,272 +482,13 @@ Template.TravelRequisition2Create.events({
 
 
 
-
-
-//     let validation = tmpl.areInputsValid(description)
-//     if(validation === true) {
-//         let requisitionDoc = {}
-
-//         requisitionDoc.description = description
-
-//         let currentUserUnitId = Template.instance().unitId.get()
-//         if(currentUserUnitId) {
-//             requisitionDoc.unitId = currentUserUnitId
-//         }
-//         let businessUnitId = Session.get('context')
-
-//         Meteor.call('TravelRequest/create', newTravelRequest,businessUnitId, requisitionDoc, function(err, res) {
-//             if(!err) {
-//                 swal({title: "Success", text: "Requisition is now pending approval", type: "success",
-//                     confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//                 }, () => {
-//                     //Modal.hide()
-//                 })
-//             } else {
-//                 swal('Validation error', err.message, 'error')
-//             }
-//         })
-//     } else {
-//         swal('Validation error', validation, 'error')
-//     }
-// }
-// });
-
-
-//'change .calculate': function(e, tmpl) {
-//  e.preventDefault();
-//$('#pay-type-title').val('populate automatically!');
-//},
-// "change .fieldInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     let inputVal = $(e.target).val().trim();
-//     const customConfig = tmpl.businessUnitCustomConfig.get();
-
-//     if(customConfig) {
-//         let travelRequestConfig = customConfig.travelRequestConfig;
-//         if(travelRequestConfig) {
-//             let fields = travelRequestConfig.fields || [];
-//             fields.forEach(field => {
-//                 if(field.dbFieldName === fieldName) {
-//                     if(!tmpl[fieldName]) {
-//                         tmpl[fieldName] = new ReactiveVar();
-//                     }
-
-//                     if(field.type === 'String' || field.type === 'TextArea') {
-//                         tmpl[fieldName].set(inputVal)
-//                     } else if(field.type === 'Date' || field.type === 'Time') {
-//                         if(inputVal && inputVal.length > 0) {
-//                             const date = new Date(inputVal)
-//                             const momentObj = moment(date)
-
-//                             if(momentObj.isBefore(moment())) {
-//                                 if(!field.allowDatesInPast) {
-//                                     tmpl[fieldName].set(null)
-//                                     $(e.target).val(null)
-//                                 } else {
-//                                     if(inputVal && inputVal.length > 0)
-//                                     tmpl[fieldName].set(new Date(inputVal))
-//                                     else
-//                                     tmpl[fieldName].set(null)
-//                                 }
-//                             } else {
-//                                 if(inputVal && inputVal.length > 0)
-//                                 tmpl[fieldName].set(new Date(inputVal))
-//                                 else
-//                                 tmpl[fieldName].set(null)
-//                             }
-//                         } else {
-//                             tmpl[fieldName].set(null)
-//                             $(e.target).val(null)
-//                         }
-//                     }
-//                 }
-//             })
-//         }
-//     }
-// }, 200),
-// "change .currencyField": _.throttle(function(e, tmpl) {
-//     var currency = $(e.target).val().trim();
-
-//     tmpl.selectedCurrency.set(currency)
-//     Meteor.defer(function() {
-//         $('.costInputField').selectpicker('refresh');
-//     });
-// }, 200),
-// "change .numberOfDaysField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let daysAsNumber = parseFloat(text)
-//     if(isNaN(daysAsNumber)) {
-//         daysAsNumber = 0
-//     }
-
-//     tmpl.selectedNumDays.set(daysAsNumber)
-// }, 200),
-// "change .costCenterField": _.throttle(function(e, tmpl) {
-//     var val = $(e.target).val().trim();
-
-//     if (!val || val.trim().length === 0) {
-//         tmpl.selectedCostCenter.set(null)
-//     } else {
-//         tmpl.selectedCostCenter.set(val)
-//     }
-// }, 200),
-// "change .costInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let costAsNumber = parseFloat(text)
-//     if(isNaN(costAsNumber)) {
-//         costAsNumber = 0
-//     }
-
-//     tmpl[fieldName].set(costAsNumber)
-//     tmpl.updateTotalTripCost()
-// }, 200),
-// "keyup .costInputField": _.throttle(function(e, tmpl) {
-//     const fieldName = $(e.target).attr('name');
-//     var text = $(e.target).val().trim();
-
-//     if (!text || text.trim().length === 0) {
-//         text = "0"
-//     }
-//     let costAsNumber = parseFloat(text)
-//     if(isNaN(costAsNumber)) {
-//         costAsNumber = 0
-//     }
-
-//     tmpl[fieldName].set(costAsNumber)
-//     tmpl.updateTotalTripCost()
-// }, 200),
-
-// 'click #new-requisition-save-draft': function(e, tmpl) {
-//     e.preventDefault()
-//     let requisitionDoc = {}
-
-//     let currentUserUnitId = Template.instance().unitId.get()
-//     if(currentUserUnitId) {
-//         requisitionDoc.unitId = currentUserUnitId
-//     }
-//     //--
-//     const customConfig = tmpl.businessUnitCustomConfig.get();
-//     if(customConfig) {
-//         let travelRequestConfig = customConfig.travelRequestConfig;
-//         if(travelRequestConfig) {
-//             requisitionDoc.currency = tmpl.selectedCurrency.get()
-//             requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-//             requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
-
-//             let fields = travelRequestConfig.fields || [];
-//             fields.forEach(field => {
-//                 if(tmpl[field.dbFieldName]) {
-//                     const fieldVal = tmpl[field.dbFieldName].get();
-//                     requisitionDoc[field.dbFieldName] = fieldVal;
-//                 }
-//             })
-
-//             requisitionDoc.tripCosts = {}
-//             let costs = travelRequestConfig.costs || [];
-//             costs.forEach(cost => {
-//                 let costAmount = tmpl[cost.dbFieldName].get();
-//                 if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-//                     const selectedNumDays = tmpl.selectedNumDays.get()
-//                     costAmount = costAmount * selectedNumDays
-//                 }
-//                 requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-//             })
-//         }
-//     }
-//     //--
-//     let businessUnitId = Session.get('context')
-
-//     Meteor.call('TravelRequest/createDraft', businessUnitId, requisitionDoc, null, function(err, res) {
-//         if(!err) {
-//             swal({title: "Success", text: "Requisition Draft saved", type: "success",
-//             confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//         }, () => {
-//             // Modal.hide()
-//         })
-//     } else {
-//         swal('Validation error', err.message, 'error')
-//     }
-// })
-// },
-// 'click #new-requisition-create': function(e, tmpl) {
-//     e.preventDefault()
-
-//    // let validation = tmpl.areInputsValid(tmpl)
-//     if(validation === true) {
-//         let requisitionDoc = {}
-
-//         let currentUserUnitId = Template.instance().unitId.get()
-//         if(currentUserUnitId) {
-//             requisitionDoc.unitId = currentUserUnitId
-//         }
-//         //--
-//         // const customConfig = tmpl.businessUnitCustomConfig.get();
-//         // if(customConfig) {
-//         //     let travelRequestConfig = customConfig.travelRequestConfig;
-//         //     if(travelRequestConfig) {
-//         //         requisitionDoc.currency = tmpl.selectedCurrency.get()
-//         //         requisitionDoc.numberOfDays = tmpl.selectedNumDays.get()
-//         //         requisitionDoc.costCenterCode = tmpl.selectedCostCenter.get()
-
-//         //         let fields = travelRequestConfig.fields || [];
-//         //         fields.forEach(field => {
-//         //             if(tmpl[field.dbFieldName]) {
-//         //                 const fieldVal = tmpl[field.dbFieldName].get();
-//         //                 requisitionDoc[field.dbFieldName] = fieldVal;
-//         //             }
-//         //         })
-//         //         //--
-//         //         requisitionDoc.tripCosts = {}
-//         //         let costs = travelRequestConfig.costs || [];
-//         //         costs.forEach(cost => {
-//         //             let costAmount = tmpl[cost.dbFieldName].get();
-
-//         //             if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-//         //                 const selectedNumDays = tmpl.selectedNumDays.get()
-//         //                 costAmount = costAmount * selectedNumDays
-//         //             }
-
-//         //             requisitionDoc.tripCosts[cost.dbFieldName] = costAmount;
-//         //         })
-
-//         //     }
-//         // }
-//         //--
-//         let businessUnitId = Session.get('context')
-
-//         Meteor.call('TravelRequest/create', businessUnitId, requisitionDoc, function(err, res) {
-//             if(!err) {
-//                 swal({title: "Success", text: "Requisition is now pending approval", type: "success",
-//                 confirmButtonColor: "#DD6B55", confirmButtonText: "OK!", closeOnConfirm: true
-//             }, () => {
-//                 //Modal.hide()
-//             })
-//         } else {
-//             swal('Validation error', err.message, 'error')
-//         }
-//     })
-// } else {
-//     swal('Validation error', validation, 'error')
-// }
-// }
-
-
 /*****************************************************************************/
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2Create.helpers({
-
+    'errorMessage': function() {
+        return Template.instance().errorMessage.get()
+    },
     'checked': (prop) => {
         if(Template.instance().data)
         return Template.instance().data[prop];
@@ -767,13 +580,6 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].hotelId === val ? selected="selected" : '';
         }
     },
-
-    travelTypeChecked(val){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && val){
-            return currentTravelRequest.type === val ? checked="checked" : '';
-        }
-    },
     cashAdvanceNotRequiredChecked(){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest){
@@ -782,6 +588,12 @@ Template.TravelRequisition2Create.helpers({
     },
     currentTravelRequest(){
         return Template.instance().currentTravelRequest.get();
+    },
+    travelTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.type === val ? checked="checked" : '';
+        }
     },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
@@ -858,98 +670,7 @@ Template.TravelRequisition2Create.helpers({
             }
         }
     },
-    // 'amountNonPaybelToEmp': function() {
-    //     return Template.instance().amountNonPaybelToEmp.get()
-    // },
-    // 'amoutPayableToEmp': function() {
-    //     return Template.instance().amoutPayableToEmp.get()
-    // },
-    // 'totalTripCost': function() {
-    //     return Template.instance().totalTripCost.get()
-    // },
-    // 'isEqual': (a, b) => {
-    //     return a === b;
-    // },
-    // 'fields': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         return travelRequestConfig.fields
-    //     }
-    // },
-    // 'costs': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         return travelRequestConfig.costs
-    //     }
-    // },
-    // 'currencyEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isCurrencyEnabled
-    //         }
-    //     }
-    // },
-    // 'allowedCurrencies': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.allowedCurrencies
-    //         }
-    //     }
-    // },
-    // 'numberDaysEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isNumberOfDaysEnabled
-    //         }
-    //     }
-    // },
-    // 'costCenterEnabled': function() {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             return travelRequestConfig.isCostCenterEnabled
-    //         }
-    //     }
-    // },
-    // 'costHasAllowedValues': function(dbFieldName) {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         const costs = travelRequestConfig.costs || []
-    //         const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
-    //         if(fieldCost) {
-    //             return fieldCost.hasAllowedValues;
-    //         }
-    //     }
-    // },
-    // 'costAllowedValues': function(dbFieldName) {
-    //     let customConfig = Template.instance().businessUnitCustomConfig.get()
-    //     if(customConfig) {
-    //         const travelRequestConfig = customConfig.travelRequestConfig;
-    //         const costs = travelRequestConfig.costs || []
-    //         const fieldCost = _.find(costs, cost => cost.dbFieldName === dbFieldName)
-    //         if(fieldCost) {
-    //             const selectedCurrency = Template.instance().selectedCurrency.get()
-    //             if(selectedCurrency) {
-    //                 return fieldCost.allowedValues[selectedCurrency];
-    //             }
-    //         }
-    //     }
-    // },
-    // 'units': function () {
-    //     return Template.instance().units.get()
-    // },
-
-
+   
 
 
 
@@ -962,13 +683,15 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     let self = this;
 
+    self.errorMessage = new ReactiveVar();
+    self.errorMessage.set(null);
+
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
     self.subscribe("flightroutes", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
-
 
     let currentTravelRequest = {
         businessId: businessUnitId,
@@ -977,8 +700,8 @@ Template.TravelRequisition2Create.onCreated(function () {
         cashAdvanceNotRequired: false,
         type:"Return",
         totalTripDuration: 0,
-        totalEmployeeAmountPayableNGN: 0,
-        totalEmployeeAmountPayableUSD: 0,
+        totalEmployeePerdiemNGN: 0,
+        totalEmployeePerdiemUSD: 0, totalAirportTaxiCostNGN: 0, totalAirportTaxiCostUSD: 0, totalGroundTransportCostNGN: 0, totalGroundTransportCostUSD: 0,
         totalFlightCostNGN: 0,
         totalFlightCostUSD: 0,
         totalHotelCostNGN: 0,
@@ -1035,14 +758,20 @@ Template.TravelRequisition2Create.onCreated(function () {
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
 
         let totalTripDuration = 0;
-        let totalEmployeeAmountPayableNGN = 0;
-        let totalEmployeeAmountPayableUSD = 0;
+        let totalEmployeePerdiemNGN = 0;
+        let totalEmployeePerdiemUSD = 0;
         let totalFlightCostNGN = 0;
         let totalFlightCostUSD = 0;
         let totalHotelCostNGN = 0;
         let totalHotelCostUSD = 0;
         let totalTripCostNGN = 0;
         let totalTripCostUSD = 0;
+        let totalAirportTaxiCostNGN = 0;
+        let totalAirportTaxiCostUSD = 0;
+        let totalGroundTransportCostNGN = 0;
+        let totalGroundTransportCostUSD = 0;
+        let totalMiscCostNGN = 0;
+        let totalMiscCostUSD = 0;
 
         for (i = 0; i < currentTravelRequest.trips.length; i++) {
 
@@ -1061,6 +790,8 @@ Template.TravelRequisition2Create.onCreated(function () {
                     totalDuration = 0;
                 }else{
                     totalDuration = totalDuration + 0.5;
+                    //totalDuration = totalDuration;
+
                 }
             }else if (tripType === "Multiple"){
 
@@ -1168,40 +899,47 @@ Template.TravelRequisition2Create.onCreated(function () {
 
             totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
             if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].totalPerDiem;
+                totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].totalPerDiem;
+                totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
             }
 
             if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
             }
 
             if (toTravelCity && (toTravelCity.currency   === "NGN")){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
             }
 
             if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
-                totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+                totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
                 totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
             }else{
-                totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+                totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
                 totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
             }
 
 
         }
 
-        totalTripCostNGN = totalEmployeeAmountPayableNGN + totalHotelCostNGN;
-        totalTripCostUSD = totalEmployeeAmountPayableUSD + totalHotelCostUSD;
+        totalTripCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalHotelCostNGN;
+        totalTripCostUSD = totalEmployeePerdiemUSD + totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalHotelCostUSD;
+
 
         currentTravelRequest.totalTripDuration = totalTripDuration;
-        currentTravelRequest.totalEmployeeAmountPayableNGN = totalEmployeeAmountPayableNGN;
-        currentTravelRequest.totalEmployeeAmountPayableUSD = totalEmployeeAmountPayableUSD;
+        currentTravelRequest.totalEmployeePerdiemNGN = totalEmployeePerdiemNGN;
+        currentTravelRequest.totalEmployeePerdiemUSD = totalEmployeePerdiemUSD;
+        currentTravelRequest.totalAirportTaxiCostNGN = totalAirportTaxiCostNGN;
+        currentTravelRequest.totalAirportTaxiCostUSD = totalAirportTaxiCostUSD;
+        currentTravelRequest.totalGroundTransportCostNGN = totalGroundTransportCostNGN;
+        currentTravelRequest.totalGroundTransportCostUSD = totalGroundTransportCostUSD;
+        currentTravelRequest.totalAncilliaryCostNGN = totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalMiscCostNGN;
+        currentTravelRequest.totalAncilliaryCostUSD = totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalMiscCostUSD;
         currentTravelRequest.totalHotelCostNGN = totalHotelCostNGN;
         currentTravelRequest.totalHotelCostUSD = totalHotelCostUSD;
         currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
@@ -1273,71 +1011,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     })
 
-    // self.areInputsValid = function(tmpl) {
-    //     const customConfig = tmpl.businessUnitCustomConfig.get();
-    //     let isOk = false;
-
-    //     if(customConfig) {
-    //         let travelRequestConfig = customConfig.travelRequestConfig;
-    //         if(travelRequestConfig) {
-    //             let fields = travelRequestConfig.fields || [];
-
-    //             fields.forEach(field => {
-    //                 if(field.isRequired) {
-    //                     if(tmpl[field.dbFieldName]) {
-    //                         const fieldVal = tmpl[field.dbFieldName].get();
-    //                         if(!fieldVal) {
-    //                             isOk = `Please fill ${field.label}`
-    //                         }
-    //                     } else {
-    //                         isOk = `Please fill ${field.label}`
-    //                     }
-    //                 }
-    //             })
-    //         }
-    //     }
-    //     if(isOk) {
-    //         return isOk
-    //     } else {
-    //         return true
-    //     }
-    // }
-
-    // self.updateTotalTripCost = () => {
-    //     const customConfig = self.businessUnitCustomConfig.get();
-    //     if(customConfig) {
-    //         let travelRequestConfig = customConfig.travelRequestConfig;
-
-    //         if(travelRequestConfig) {
-    //             let costs = travelRequestConfig.costs || [];
-    //             let nonPayableToEmp = 0;
-    //             let payableToEmp = 0;
-    //             let totalCosts = 0;
-
-    //             costs.forEach(cost => {
-    //                 let costAmount = self[cost.dbFieldName].get();
-    //                 if(cost.realValueMultiplier && cost.realValueMultiplier === 'NumberOfDaysOnTrip') {
-    //                     const selectedNumDays = self.selectedNumDays.get()
-    //                     costAmount = costAmount * selectedNumDays
-    //                 }
-    //                 totalCosts += costAmount;
-
-    //                 if(cost.isPayableToStaff) {
-    //                     payableToEmp += costAmount;
-    //                 } else if(!cost.isPayableToStaff) {
-    //                     nonPayableToEmp += costAmount;
-    //                 }
-    //             })
-    //             self.amountNonPaybelToEmp.set(nonPayableToEmp)
-    //             self.amoutPayableToEmp.set(payableToEmp)
-    //             self.totalTripCost.set(totalCosts)
-    //         }
-    //     } else {
-    //         self.amountNonPaybelToEmp.set(0)
-    //         self.amoutPayableToEmp.set(0)
-    //         self.totalTripCost.set(0)
-    //     }
-    // }
+   
 });
 
 Template.TravelRequisition2Create.onRendered(function () {

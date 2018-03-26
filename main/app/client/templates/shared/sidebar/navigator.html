@@ -96,7 +96,8 @@
             <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
             <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
             <li><a href="{{pathFor 'flightroutes'}}">Flight Routes</a></li>
-          
+            <li><a href="{{pathFor 'emailsettings'}}">Email Settings</a></li>
+
             <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
 
             {{#if isLeaveRequestEnabled}}
@@ -185,34 +186,41 @@
             {{/if}}
 
             {{#if isTravelRequisitionActive}}
-                <li><a href="{{pathFor 'travelrequests.list'}}">Travel requests</a></li>
-                <li><a href="{{pathFor 'travelretirements.list'}}">Travel retirements</a></li>
+            <li><a href="{{pathFor 'travelrequests2.list'}}">Travel Requests</a></li>
+            <li><a href="{{pathFor 'travelrequests.retirementslist'}}">Retirements</a></li>
+
+                <li><a href="{{pathFor 'travelrequests.supervisorlist'}}">TR Approvals (Supervisor)</a></li>
+                <li><a href="{{pathFor 'travelrequests.retirementlist'}}">Retirement Approvals (Supervisor)</a></li>
+
+                <li><a href="{{pathFor 'travelrequests.budgetholderlist'}}">TR Approvals (BudgetHolder)</a></li>
+                <li><a href="{{pathFor 'travelrequests.budgetholderretirementslist'}}">Retirement Approvals: (Budget Holder)</a></li>
+
+
+
 
                 {{#if isUserASupervisor}}
                 <li><a href="{{pathFor 'travelrequests.approvalList'}}">Approve Travel Requests</a></li>
                 {{/if}}
 
+                <li><a href="{{pathFor 'travelrequests.list'}}">Travel Requests (simple)</a></li>
                 {{#if hasTravelRequisitionApproveAccess}}
-                    <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
+                    <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests (simple)</a></li>
                 {{/if}}
 
-                <li><a href="{{pathFor 'travelrequests2.list'}}">Travel requests (new)</a></li>
-                <li><a href="{{pathFor 'travelretirements2.list'}}">Travel retirements (new)</a></li>
+
+
 
                 {{#if isUserASupervisor}}
                 <li><a href="{{pathFor 'travelrequests2.approvalList'}}">Approve Travel Requests (new)</a></li>
                 {{/if}}
 
-                {{#if hasTravelRequisitionApproveAccess}}
-                    <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests (new)</a></li>
                 {{/if}}
-            {{/if}}
 
             {{#if isLoanEnabled}}
             <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
             {{/if}}
-            
-          
+
+
             <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
         {{/if}}
 

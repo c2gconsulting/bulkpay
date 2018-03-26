@@ -4,6 +4,133 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2ApprovalList.events({
+    'click #approve': (e, tmpl) => {
+        let supervisorComment = $('[name=supervisorComment]').val();
+        let budgetCodeId =$('[name=budget-code]').val();
+      
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.budgetCodeId = budgetCodeId;
+        currentTravelRequest.status = "Approved By Supervisor";
+      
+        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+      
+        e.preventDefault()
+        
+        //update supervisorComment one last final time
+        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    
+        let fieldsAreValid = true;
+        let validationErrors = '';
+    
+        /*** VALIDATIONS ***/
+        //check that the description is not hello
+      
+        if (currentTravelRequest.supervisorComment ===""){
+            fieldsAreValid = false;
+            validationErrors += ": Supervisor Comment cannot be empty";
+        }
+    
+        if( currentTravelRequest.budgetCodeId=="I am not sure")
+        {
+            fieldsAreValid = false;
+            validationErrors += ": select a budget code";
+        }
+        if (fieldsAreValid){
+            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Travel requisition has been updated",
+                        text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel requisition has  not been updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisition2Create');
+        }else{
+            Template.instance().errorMessage.set("Validation errors" + validationErrors);
+        }
+    
+    },
+     
+
+
+    'click #reject': (e, tmpl) => {
+        let supervisorComment = $('[name=supervisorComment]').val();
+        let budgetCodeId =$('[name=budget-code]').val();
+      
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.budgetCodeId = budgetCodeId;
+        currentTravelRequest.status = "Rejected By Supervisor";
+      
+        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+      
+        e.preventDefault()
+        
+        //update supervisorComment one last final time
+        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    
+        let fieldsAreValid = true;
+        let validationErrors = '';
+    
+        /*** VALIDATIONS ***/
+        //check that the description is not hello
+      
+        if (currentTravelRequest.supervisorComment ===""){
+            fieldsAreValid = false;
+            validationErrors += ": Supervisor Comment cannot be empty";
+        }
+    
+        if( currentTravelRequest.budgetCodeId=="I am not sure")
+        {
+            fieldsAreValid = false;
+            validationErrors += ": select a budget code";
+        }
+        if (fieldsAreValid){
+          
+  Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+    if (res){
+        swal({
+            title: "Travel requisition has been rejected",
+            text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+            confirmButtonClass: "btn-success",
+            type: "success",
+            confirmButtonText: "OK"
+        });
+    } else {
+        swal({
+            title: "Oops!",
+            text: "Travel requisition has  not been updated, reason: " + err.message,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+        console.log(err);
+    }
+});
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisition2Create');
+        }else{
+            Template.instance().errorMessage.set("Validation errors" + validationErrors);
+        }
+    
+    },
+  
     'click #createProcurementRequisition': function(e, tmpl) {
         e.preventDefault()
 
