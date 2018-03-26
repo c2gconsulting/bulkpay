@@ -1811,7 +1811,7 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
             console.log(`[Projects] With location max hours! duration: ${totalDuration}, fraction: ${fraction}`)
             return {fraction, projectDurations, duration: totalDuration}
         } else {
-            return {duration: 0, fraction: 0}
+            return {duration: 0, fraction: 0, projectDurations: []}
         }
     }
 }
