@@ -565,12 +565,16 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 let employeePositionId = x.employeeProfile.employment.position
                 //--
                 //--Time recording things
+                const locationsWithMaxHours = EntityObjects.find({
+                    maxHoursInDayForTimeWriting: {$exists: true},
+                    otype: 'Location'
+                }).fetch()
                 const projectsPayDetails = 
-                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id)
+                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours)
                 // {duration: , fraction: }
                 
                 const costCentersPayDetails = 
-                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id)
+                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours)
                 // {duration: , fraction: }                
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
@@ -901,10 +905,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             let projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
                                             costCenterPayAmount = costCentersPayDetails.fraction * value
 
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                            // processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                             processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
 
-                                            processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
+                                            // processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                             processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
 
                                             value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
@@ -934,7 +938,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 processProjectAndCostCenterPay(x)
                                             } else {
                                                 processing.push({code: `Number of projects assigned to: `, derived: projectsAssignedToEmployee.length});
-                                                console.log(`projectsAssignedToEmployee: `, projectsAssignedToEmployee)
 
                                                 // let totalWorkHoursInYear = 2080
                                                 // let numberOfMonthsInYear = 12
@@ -952,10 +955,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                         // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
                                                     }
                                                 } else if(projectsAssignedToEmployee.length === 1) {
-                                                    console.log(`value: `, value)
-                                                    console.log(`numDaysEmployeeCanWorkInMonth: `, numDaysEmployeeCanWorkInMonth)
-                                                    console.log(`totalNumWeekDaysInMonth: `, totalNumWeekDaysInMonth)
-
                                                     projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                                                     value = projectPayAmount
 
@@ -1696,36 +1695,40 @@ function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRat
     }
 }
 
-function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, totalNumWeekDaysInMonth, employeeUserId) {
+function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, totalNumWeekDaysInMonth, 
+        employeeUserId, businessUnitConfig, locationsWithMaxHours) {
     const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
     const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
-    let queryObj = {
-        businessId: businessId, 
-        project: {$exists : true},
-        day: {$gte: startDate, $lt: endDate},
-        employeeId: employeeUserId,
-        status: 'Approved'
-    }
+    let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
+    console.log(`\nNumber of weekdays in month: `, totalNumWeekDaysInMonth)
 
-    let allProjectTimesInMonth = TimeWritings.aggregate([
-        { $match: queryObj},
-        { $group: {
-          _id: {
-            "empUserId": "$employeeId",
-            "project": "$project"
-          }, 
-          duration: { $sum: "$duration" }
-        } }
-    ]);
-    //--
-    // let totalWorkHoursInYear = 2080
-    // let numberOfMonthsInYear = 12
-
-    if(allProjectTimesInMonth) {
-        if(allProjectTimesInMonth.length > 0) {
+    if(!businessUnitConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
+        let queryObj = {
+            businessId: businessId, 
+            project: {$exists : true},
+            day: {$gte: startDate, $lt: endDate},
+            employeeId: employeeUserId,
+            status: 'Approved'
+        }
+    
+        let allProjectTimesInMonth = TimeWritings.aggregate([
+            { $match: queryObj},
+            { $group: {
+              _id: {
+                "empUserId": "$employeeId",
+                "project": "$project"
+              }, 
+              duration: { $sum: "$duration" }
+            } }
+        ]);
+        //--
+        // let totalWorkHoursInYear = 2080
+        // let numberOfMonthsInYear = 12
+    
+        if(allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let projectDurations = []
 
             let totalProjectsDuration = 0
@@ -1737,51 +1740,180 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
                 })
             })
             // const fraction = totalProjectsDuration * numberOfMonthsInYear / totalWorkHoursInYear
-            const fraction = totalProjectsDuration / (totalNumWeekDaysInMonth * 8)
+            const fraction = totalProjectsDuration / (totalNumWeekDaysInMonth * companyWideMaxHours)
             
             return {duration: totalProjectsDuration, fraction, projectDurations}
         } else {
             return {duration: 0, fraction: 0, projectDurations: []}
         }
     } else {
-        return {duration: 0, fraction: 0, projectDurations: []}
+        let queryObj = {
+            businessId: businessId, 
+            project: {$exists : true},
+            day: {$gte: startDate, $lt: endDate},
+            employeeId: employeeUserId,
+            status: 'Approved'
+        }
+    
+        let allProjectTimesInMonth = TimeWritings.aggregate([
+            { $match: queryObj},
+            { $group: {
+              _id: {
+                "empUserId": "$employeeId",
+                "project": "$project",
+                "locationId": "$locationId"
+              }, 
+              count: {$sum: 1},
+              duration: { $sum: "$duration" }
+            } }
+        ]);
+
+        if(allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
+            let noLocationDuration = {
+                duration: 0, count: 0
+            }
+
+            let projectDurations = []
+            let totalDuration = 0;
+            let fraction = 0;
+
+            allProjectTimesInMonth.forEach(aProjectTime => {
+                console.log(`aProjectTime: `, aProjectTime)
+
+                projectDurations.push({
+                    project: aProjectTime._id.project, 
+                    duration: aProjectTime.duration
+                })
+                totalDuration += aProjectTime.duration
+
+                if(!aProjectTime._id.locationId) {
+                    noLocationDuration.duration = aProjectTime.duration
+                    noLocationDuration.count = aProjectTime.count
+                } else {                    
+                    const foundLocation = _.find(locationsWithMaxHours, loc => {
+                        return loc._id === aProjectTime._id.locationId
+                    })
+                    if(foundLocation) {
+                        if(aProjectTime.duration > 0 & aProjectTime.count > 0) {
+                            fraction += ((aProjectTime.duration / (aProjectTime.count * foundLocation.maxHoursInDayForTimeWriting))
+                                            * (aProjectTime.count / totalNumWeekDaysInMonth))
+                        }
+                    } else {
+                        fraction += ((aProjectTime.duration / (aProjectTime.count * companyWideMaxHours))
+                                        * (aProjectTime.count / totalNumWeekDaysInMonth))
+                    }
+                }
+            })
+            if(noLocationDuration.duration > 0) {
+                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours)) 
+                                * (noLocationDuration.count / totalNumWeekDaysInMonth))
+            }
+            console.log(`[Projects] With location max hours! duration: ${totalDuration}, fraction: ${fraction}`)
+            return {fraction, projectDurations, duration: totalDuration}
+        } else {
+            return {duration: 0, fraction: 0, projectDurations: []}
+        }
     }
 }
 
-function getFractionForCalcCostCentersPayValue(businessId, periodMonth, periodYear, totalNumWeekDaysInMonth, employeeUserId) {
+function getFractionForCalcCostCentersPayValue(businessId, periodMonth, periodYear, 
+        totalNumWeekDaysInMonth, employeeUserId, businessUnitConfig, locationsWithMaxHours) {
     const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
     const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
-    let queryObj = {
-        businessId: businessId, 
-        costCenter: {$exists : true},
-        day: {$gte: startDate, $lt: endDate},
-        employeeId: employeeUserId,
-        status: 'Approved'
-    }
+    let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
+    console.log(`\nNumber of weekdays in month: `, totalNumWeekDaysInMonth)
 
-    let allCostCenterTimesInMonth = TimeWritings.aggregate([
-        { $match: queryObj},
-        { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
-    ]);
-    //--
-    // let totalWorkHoursInYear = 2080
-    // let numberOfMonthsInYear = 12
+    if(!businessUnitConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
+        let queryObj = {
+            businessId: businessId, 
+            costCenter: {$exists : true},
+            day: {$gte: startDate, $lt: endDate},
+            employeeId: employeeUserId,
+            status: 'Approved'
+        }
+    
+        let allCostCenterTimesInMonth = TimeWritings.aggregate([
+            { $match: queryObj},
+            { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
+        ]);
+        //--
+        // let totalWorkHoursInYear = 2080
+        // let numberOfMonthsInYear = 12
 
-    if(allCostCenterTimesInMonth) {
-        if(allCostCenterTimesInMonth.length === 1) {
+        if(allCostCenterTimesInMonth && allCostCenterTimesInMonth.length === 1) {
             const duration = allCostCenterTimesInMonth[0].duration
             // const fraction = duration * numberOfMonthsInYear / totalWorkHoursInYear
-            const fraction = duration / (totalNumWeekDaysInMonth * 8)
+            const fraction = duration / (totalNumWeekDaysInMonth * companyWideMaxHours)
 
+            console.log(`No location max hours! duration: ${duration}, fraction: ${fraction}`)
             return {duration, fraction}
         } else {
             return {duration: 0, fraction: 0}
         }
     } else {
-        return {duration: 0, fraction: 0}
+        let queryObj = {
+            businessId: businessId, 
+            costCenter: {$exists : true},
+            day: {$gte: startDate, $lt: endDate},
+            employeeId: employeeUserId,
+            status: 'Approved'
+        }
+    
+        let allCostCenterTimesInMonth = TimeWritings.aggregate([
+            { $match: queryObj},
+            { $group: {
+                _id: {
+                  "empUserId": "$employeeId",
+                  "locationId": "$locationId"
+                }, 
+                count: {$sum: 1},
+                duration: { $sum: "$duration" }
+            } }
+        ]);
+
+
+        if(allCostCenterTimesInMonth && allCostCenterTimesInMonth.length > 0) {
+            let noLocationDuration = {
+                duration: 0, count: 0
+            }
+
+            let totalDuration = 0;
+            let fraction = 0;
+
+            allCostCenterTimesInMonth.forEach(aCostCenterTime => {
+                console.log(`aCostCenterTime: `, aCostCenterTime)
+                totalDuration += aCostCenterTime.duration
+
+                if(!aCostCenterTime._id.locationId) {
+                    noLocationDuration.duration = aCostCenterTime.duration
+                    noLocationDuration.count = aCostCenterTime.count
+                } else {                    
+                    const foundLocation = _.find(locationsWithMaxHours, loc => {
+                        return loc._id === aCostCenterTime._id.locationId
+                    })
+                    if(foundLocation) {
+                        if(aCostCenterTime.duration > 0 & aCostCenterTime.count > 0) {
+                            fraction += ((aCostCenterTime.duration / (aCostCenterTime.count * foundLocation.maxHoursInDayForTimeWriting))
+                                            * (aCostCenterTime.count / totalNumWeekDaysInMonth))
+                        }
+                    } else {
+                        fraction += ((aCostCenterTime.duration / (aCostCenterTime.count * companyWideMaxHours))
+                                        * (aCostCenterTime.count / totalNumWeekDaysInMonth))
+                    }
+                }
+            })
+            if(noLocationDuration.duration > 0) {
+                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours)) 
+                                * (noLocationDuration.count / totalNumWeekDaysInMonth))
+            }
+            console.log(`[CostCenters] With location max hours! duration: ${totalDuration}, fraction: ${fraction}`)
+            return {fraction, duration: totalDuration}
+        } else {
+            return {duration: 0, fraction: 0}
+        }
     }
 }
 
