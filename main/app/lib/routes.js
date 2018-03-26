@@ -433,7 +433,15 @@ Router.route('/business/:_id/employee/travelrequests/treatlist', {
 Router.route('/business/:_id/travelrequests2/printrequisition', {
     name: 'travelrequests2.printrequisition',
     layoutTemplate: 'ExtLayout',
-    template: 'TravelRequisition2Print'
+    template: 'TravelRequisition2Print',
+    onBeforeAction: function () {
+        if  (!Meteor.userId() && !Meteor.loggingIn()) {
+            this.redirect('/');
+            this.stop();
+        } else {
+            this.next();
+        }
+    }
 });
 
 Router.route('/business/:_id/travelrequests2/printretirement', {

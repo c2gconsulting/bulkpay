@@ -3,12 +3,12 @@ import _ from 'underscore';
 let TravelRequestHelper = {
     sendRequisitionCreated: function( approvalsPageUrl) {
         try {
-            SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
+            SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
             Email.send({
-                to: "zekerizekkerriyya@gmail.com",
+                to: "michaelukpong@gmail.com",
                 from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Travel Request created!",
-                html: SSR.render("travelRequestNotification", {
+                html: SSR.render("TravelRequestNotification2", {
 
 
                     approvalsPageUrl: approvalsPageUrl
@@ -16,7 +16,8 @@ let TravelRequestHelper = {
             });
             return true
         } catch(e) {
-            throw new Meteor.Error(401, e.message);
+            console.log(e);
+            //throw new Meteor.Error(401, e.message);
         }
     },
     sendRequisitionNeedsTreatment: function(supervisorFullName, supervisorEmail, createdByFullName,
@@ -70,8 +71,7 @@ let TravelRequestHelper = {
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
             }else{
                 let result = TravelRequisition2s.insert(currentTravelRequest);
-                
-                //approvalsPageUrl =  'http://localhost:3000/business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + result
+                approvalsPageUrl =  "";//'http://localhost:3000/business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + result
                 //TravelRequestHelper.sendRequisitionCreated(approvalsPageUrl)
             }
 
