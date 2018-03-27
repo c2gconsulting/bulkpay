@@ -110,6 +110,12 @@ Template.TravelRequisition2Detail.helpers({
             return budget.name
         }
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
     },

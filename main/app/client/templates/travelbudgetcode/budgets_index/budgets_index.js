@@ -18,6 +18,17 @@ Template.BudgetIndex.helpers({
     },
     'pfaCount': function(){
         return Budgets.find().count();
+    },
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    }
+
+});
+
+Template.singleBudget.helpers({
+    
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     }
 
 });

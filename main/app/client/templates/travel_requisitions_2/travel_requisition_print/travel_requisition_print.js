@@ -103,6 +103,12 @@ Template.TravelRequisition2Print.helpers({
             return airline.name
         }
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     'getBudgetName': function(budgetCodeId) {
         const budget = Budgets.findOne({_id: budgetCodeId})
 

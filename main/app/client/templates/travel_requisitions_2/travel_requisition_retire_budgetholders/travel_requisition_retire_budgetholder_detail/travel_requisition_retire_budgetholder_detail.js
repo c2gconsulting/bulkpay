@@ -135,6 +135,12 @@ Template.TravelRequisitionBudgetHolderRetireDetail.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].isIncidentalsIncluded? checked="checked" : '';
         }
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){

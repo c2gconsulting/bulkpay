@@ -11,8 +11,8 @@
                             <li>{{name}}</li>
                             <li>Travel Budget Codes</li>
                         </ul>
-        
-                         <h4>Travel Budgets Codes</h4> 
+
+                         <h4>Travel Budgets Codes</h4>
                     </div>
                 </div><!-- media -->
             </div><!-- pageheader -->
@@ -34,7 +34,7 @@
                                 <th>#</th>
                                 <th>Budget Code</th>
                                 <th>Budget Name</th>
-                          
+
                                 <th>Budget Holders</th>
 
                                 <th>Status</th>
@@ -60,8 +60,8 @@
         <td class="pointer">{{index}}</td>
         <td>{{data.code}}</td>
         <td>{{data.name}}</td>
-      
-        <td>{{data.employeeId}}</td>
+
+        <td>{{getEmployeeNameById data.employeeId}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

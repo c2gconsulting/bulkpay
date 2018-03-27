@@ -13,19 +13,19 @@ Template.TravelRequisitionBudgetHolderDetail.events({
         currentTravelRequest.status = "Approved By Budget Holder";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-      
+
         e.preventDefault()
-        
+
         //update budgetHolderComment one last final time
         currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
-    
+
         let fieldsAreValid = true;
         let validationErrors = '';
-    
+
         /*** VALIDATIONS ***/
         //check that the description is not hello
-      
+
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
             validationErrors += ": Budget Holder Comment cannot be empty";
@@ -56,42 +56,42 @@ Template.TravelRequisitionBudgetHolderDetail.events({
         }else{
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
-    
+
     },
-     
+
 
 
     'click #reject': (e, tmpl) => {
         let budgetHolderComment = $('[name=budgetHolderComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
-      
+
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Rejected By Budget Holder";
-      
+
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-      
+
         e.preventDefault()
-        
+
         //update budgetHolderComment one last final time
         currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
-    
+
         let fieldsAreValid = true;
         let validationErrors = '';
-    
+
         /*** VALIDATIONS ***/
         //check that the description is not hello
-      
+
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
             validationErrors += ": Supervisor Comment cannot be empty";
         }
-    
-      
+
+
         if (fieldsAreValid){
-          
+
             Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
@@ -117,7 +117,7 @@ Template.TravelRequisitionBudgetHolderDetail.events({
         }else{
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
-    
+
     },
 
 
@@ -236,6 +236,12 @@ Template.TravelRequisitionBudgetHolderDetail.helpers({
 
         if(budget) {
             return budget.name
+        }
+    },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
         }
     },
     'currentTravelRequest': function() {

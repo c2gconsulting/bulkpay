@@ -171,6 +171,49 @@ Template.TravelRequisition2Create.events({
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
 },
+'click [id=add-additional_stop]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+    currentTravelRequest.trips.push({
+        tripIndex: currentTravelRequest.trips.length + 1,
+        fromId: currentTravelRequest.trips[currentTravelRequest.trips.length - 1].toId,
+        toId: "",
+        departureDate: new Date(),
+        returnDate: new Date(),
+        departureTime: "6 AM",
+        returnTime: "6 AM",
+        transportationMode: 'AIRLINE',
+        carOption: 'CAR_HIRE',
+        provideAirportPickup: false,
+        provideGroundTransport: false,
+        originCityAirportTaxiCost: 0,
+        destinationCityAirportTaxiCost: 0,
+        groundTransportCost: 0,
+        airlineId: "",
+        airfareCost: 0,
+        airfareCurrency: "NGN",
+        hotelId: "",
+        hotelRate: 0,
+        destinationCityCurrreny: "NGN",
+        hotelNotRequired: false,
+        perDiemCost: 0,
+        originCityCurrreny: "NGN",
+        isBreakfastIncluded: false,
+        isLunchIncluded: false,
+        isDinnerIncluded: false,
+        isIncidentalsIncluded: false,
+        totalDuration: 0,
+        totalPerDiem: 0,
+        totalHotelCost: 0
+    });
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+
+},
 'click [id*=hotelNotRequired]': function(e, tmpl) {
     e.preventDefault()
 
@@ -404,7 +447,7 @@ Template.TravelRequisition2Create.events({
 
     /*** VALIDATIONS ***/
     //check that the description is not hello
-  
+
     if (currentTravelRequest.description ===""){
         fieldsAreValid = false;
         validationErrors += ": description cannot be empty";
@@ -417,32 +460,33 @@ Template.TravelRequisition2Create.events({
     }
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         const currentTrip = currentTravelRequest.trips[i];
- 
+
         // if (currentTrip.transportationMode === ""){
         //     fieldsAreValid = false;
         //     validationErrors += ": select transportation mode";
         // }
-      
 
-        if (currentTrip.fromId === ""){
-            fieldsAreValid = false;
-            validationErrors += ": select your current location";
-        }
-        if (currentTrip.fromId.selectedIndex == 0){
-            fieldsAreValid = false;
-            validationErrors += ": select your current location";
-        }
-        if (currentTrip.toId === ""){
-            fieldsAreValid = false;
-            validationErrors += ": select your destination location";
-        }
-        if (currentTrip.hotelId === ""){
-            fieldsAreValid = false;
-            validationErrors += ": select a hotel";
-        }
-        if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
-            fieldsAreValid = false;
-            validationErrors += ": select an airline";
+        if (currentTravelRequest.trips.length ===1){
+            if (currentTrip.fromId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select your current location";
+            }
+            if (currentTrip.fromId.selectedIndex == 0){
+                fieldsAreValid = false;
+                validationErrors += ": select your current location";
+            }
+            if (currentTrip.toId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select your destination location";
+            }
+            if (currentTrip.hotelId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select a hotel";
+            }
+            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //    fieldsAreValid = false;
+            //    validationErrors += ": select an airline";
+            //}
         }
     }
 
@@ -500,11 +544,17 @@ Template.TravelRequisition2Create.helpers({
     budgetList() {
         return  Budgets.find();
     },
-    airlineList(toId) {
-        const travelcity = Travelcities.findOne({_id: toId});
-        if(travelcity){
-            return Airlines.find({isInternational: travelcity.isInternational});
+    airlineList(fromId, toId) {
+        let isInternational = false;
+        let fromTravelCity = Travelcities.findOne({_id: fromId});
+        if (fromTravelCity){
+            isInternational = isInternational || fromTravelCity.isInternational;
         }
+        let toTravelCity = Travelcities.findOne({_id: toId});
+        if (toTravelCity){
+            isInternational = isInternational || toTravelCity.isInternational;
+        }
+        return Airlines.find({isInternational: isInternational});
     },
     getAirlineName(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -670,7 +720,7 @@ Template.TravelRequisition2Create.helpers({
             }
         }
     },
-   
+
 
 
 
@@ -1011,17 +1061,18 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     })
 
-   
+
 });
 
 Template.TravelRequisition2Create.onRendered(function () {
-    $('select.dropdown').dropdown();
+    this.$('select.dropdown').dropdown();
 
-    this.$('.datetimepicker').datetimepicker(
 
-        {format: 'YYYY-MM-DD', minDate: new Date()}
-    );
 
+    /*this.$('.datetimepicker').datetimepicker({
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
+    })*/
 
 });
 

@@ -129,6 +129,12 @@ Template.TravelRequisitionRetirementDetail.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].isDinnerIncluded? checked="checked" : '';
         }
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     isIncidentalsIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
