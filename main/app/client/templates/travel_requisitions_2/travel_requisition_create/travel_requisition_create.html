@@ -28,14 +28,14 @@
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
-                                    {{#semanticselect}}
+                                    {{#semanticselect2}}
                                     <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="NONE">I am not sure</option>
                                         {{#each budgetList}}
                                         <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
                                         {{/each}}
                                     </select>
-                                    {{/semanticselect}}
+                                    {{/semanticselect2}}
                                     <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
@@ -64,41 +64,48 @@
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect}}
+                                {{#semanticselect2}}
                                 <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
                                     <option value="None" >None</option>
                                     {{#each travelcityList}}
                                     <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
                                     {{/each}}
                                 </select>
-                                {{/semanticselect}}
+                                {{/semanticselect2}}
                             </div><!-- form-group -->
                         </div><!-- col-sm-6 -->
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect}}
+                                {{#semanticselect2}}
                                 <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                     <option value="None" >None</option>
                                     {{#each travelcityList}}
                                     <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
                                     {{/each}}
                                 </select>
-                                {{/semanticselect}}
+                                {{/semanticselect2}}
                             </div><!-- form-group -->
                         </div><!-- col-sm-6 -->
                         <div class="col-sm-2">
-                            <div class="form-group datetimepicker">
-                                <label class="control-label">Departures<span class="asterisk important-input">*</span></label>
-                                <input class="date-picker form-control " type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date" value="{{formatDate this.departureDate}}"/>
+                            <div class="form-group">
+                                <div class="date">
+                                    <div class="inner-addon left-addon">
+                                        <i class="glyphicon icon-calendar"></i>
+                                        <label class="control-label">Departures <span class="asterisk important-input">*</span></label>
+                                        {{#datepicker2 this.departureDate}}
+                                        <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date"/>
+                                        {{/datepicker2}}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-1">
                             <div class="form-group">
 
                                 <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect}}
-                                <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control">
+                                {{#semanticselect2}}
+                                <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control input-sm">
                                     <option value="6 AM" {{departureTimeSelected "6 AM" tripIndex}}>6 AM</option>
                                     <option value="7 AM" {{departureTimeSelected "7 AM" tripIndex}}>7 AM</option>
                                     <option value="8 AM" {{departureTimeSelected "8 AM" tripIndex}}>8 AM</option>
@@ -124,22 +131,31 @@
                                     <option value="4 AM" {{departureTimeSelected "4 AM" tripIndex}}>4 AM</option>
                                     <option value="5 AM" {{departureTimeSelected "5 AM" tripIndex}}>5 AM</option>
                                 </select>
-                                {{/semanticselect}}
+                                {{/semanticselect2}}
 
                             </div><!-- form-group -->
                         </div>
                         {{#if isReturnTrip}}
                         <div class="col-sm-2">
-                            <div class="form-group datetimepicker">
-                                <label class="control-label">Return <span class="asterisk important-input">*</span></label>
-                                <input class="set-due-date form-control " type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate this.returnDate}}"/>
+
+                            <div class="form-group">
+                                <div class="date">
+                                    <div class="inner-addon left-addon">
+                                        <i class="glyphicon icon-calendar"></i>
+                                        <label class="control-label">Return <span class="asterisk important-input">*</span></label>
+                                        {{#datepicker2 this.returnDate}}
+                                        <input class="form-control datepicker" type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date"/>
+                                        {{/datepicker2}}
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                         <div class="col-sm-1">
                             <div class="form-group">
 
                                 <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%" class="form-control ">
+                                <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%" class="form-control input-sm">
                                     <option value="6 AM" {{returnTimeSelected "6 AM" tripIndex}}>6 AM</option>
                                     <option value="7 AM" {{returnTimeSelected "7 AM" tripIndex}}>7 AM</option>
                                     <option value="8 AM" {{returnTimeSelected "8 AM" tripIndex}}>8 AM</option>
@@ -175,13 +191,13 @@
                             <div class="form-group">
 
                                 <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect}}
+                                {{#semanticselect2}}
                                 <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                     <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option>
                                     <option value="CAR" {{transportModeSelected "CAR" tripIndex}}>Car</option>
                                     <option value="AIRLINE" {{transportModeSelected "AIRLINE" tripIndex}}>Airline</option>
                                 </select>
-                                {{/semanticselect}}
+                                {{/semanticselect2}}
                             </div><!-- form-group -->
                         </div><!-- col-sm-3 -->
                         <div class="col-sm-5">
@@ -189,7 +205,7 @@
 
                                 <div style="display: {{isAirModeOfTransport this.tripIndex}}">
                                     <label for="airlineId_{{this.tripIndex}}" class="control-label">Preferred Airline</label>
-                                    {{#semanticselect}}
+                                    {{#semanticselect2}}
                                     <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
 
                                         {{#each airlineList this.fromId this.toId}}
@@ -197,18 +213,18 @@
                                         {{/each}}
                                         <option value="None">A third party will cater for my flight</option>
                                     </select>
-                                    {{/semanticselect}}
+                                    {{/semanticselect2}}
                                 </div>
 
                                 <div style="display:{{isCarModeOfTransport this.tripIndex}}">
-                                    {{#semanticselect}}
+                                    {{#semanticselect2}}
                                     <label for="carOption_{{this.tripIndex}}" class="control-label">Car Options</label>
                                     <select id="carOption_{{this.tripIndex}}" name="carOption_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="THIRD_PARTY" {{carOptionSelected "THIRD_PARTY" tripIndex}}>A third party will provide me a car</option>
                                         <option value="OFFICE" {{carOptionSelected "OFFICE" tripIndex}}>I need an office car and driver</option>
                                         <option value="CAR_HIRE" {{carOptionSelected "CAR_HIRE" tripIndex}}>I need a car hire</option>
                                     </select>
-                                    {{/semanticselect}}
+                                    {{/semanticselect2}}
                                 </div>
 
                             </div>
@@ -241,14 +257,14 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect}}
+                                {{#semanticselect2}}
                                 <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                     <option value="None">None</option>
                                     {{#each hotelList this.toId}}
                                     <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
                                     {{/each}}
                                 </select>
-                                {{/semanticselect}}
+                                {{/semanticselect2}}
                             </div><!-- form-group -->
                         </div><!-- col-sm-3 -->
                         <div class="col-sm-2">

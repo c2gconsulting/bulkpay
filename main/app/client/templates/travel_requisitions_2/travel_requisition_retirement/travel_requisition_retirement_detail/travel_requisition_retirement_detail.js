@@ -168,6 +168,12 @@ Template.RetirementDetail.helpers({
         const user = Meteor.users.findOne(userId)
         return user ? user.profile.fullName : '...'
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     'isInEditMode': function() {
         return Template.instance().isInEditMode.get()
     },

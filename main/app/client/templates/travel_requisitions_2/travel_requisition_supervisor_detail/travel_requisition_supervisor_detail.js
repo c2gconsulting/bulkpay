@@ -12,31 +12,31 @@ Template.TravelRequisitionSupervisor2Detail.events({
     'click #approve': (e, tmpl) => {
         let supervisorComment = $('[name=supervisorComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
-      
+
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Approved By Supervisor";
-      
+
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-      
+
         e.preventDefault()
-        
+
         //update supervisorComment one last final time
         currentTravelRequest.supervisorComment = $("#supervisorComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
-    
+
         let fieldsAreValid = true;
         let validationErrors = '';
-    
+
         /*** VALIDATIONS ***/
         //check that the description is not hello
-      
+
         if (currentTravelRequest.supervisorComment ===""){
             fieldsAreValid = false;
             validationErrors += ": Supervisor Comment cannot be empty";
         }
-    
+
         if( currentTravelRequest.budgetCodeId=="I am not sure")
         {
             fieldsAreValid = false;
@@ -68,46 +68,46 @@ Template.TravelRequisitionSupervisor2Detail.events({
         }else{
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
-    
+
     },
-     
+
 
 
     'click #reject': (e, tmpl) => {
         let supervisorComment = $('[name=supervisorComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
-      
+
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Rejected By Supervisor";
-      
+
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-      
+
         e.preventDefault()
-        
+
         //update supervisorComment one last final time
         currentTravelRequest.supervisorComment = $("#supervisorComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
-    
+
         let fieldsAreValid = true;
         let validationErrors = '';
-    
+
         /*** VALIDATIONS ***/
         //check that the description is not hello
-      
+
         if (currentTravelRequest.supervisorComment ===""){
             fieldsAreValid = false;
             validationErrors += ": Supervisor Comment cannot be empty";
         }
-    
+
         if( currentTravelRequest.budgetCodeId=="I am not sure")
         {
             fieldsAreValid = false;
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-          
+
   Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
     if (res){
         swal({
@@ -133,14 +133,14 @@ Template.TravelRequisitionSupervisor2Detail.events({
         }else{
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
-    
+
     },
-  
 
 
 
- 
- 
+
+
+
 
 
 
@@ -200,6 +200,12 @@ Template.TravelRequisitionSupervisor2Detail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
+        }
+    },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
         }
     },
     isLunchIncluded(index){

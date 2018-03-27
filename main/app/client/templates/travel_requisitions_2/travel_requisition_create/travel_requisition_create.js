@@ -1065,13 +1065,14 @@ Template.TravelRequisition2Create.onCreated(function () {
 });
 
 Template.TravelRequisition2Create.onRendered(function () {
-    $('select.dropdown').dropdown();
+    this.$('select.dropdown').dropdown();
 
-    this.$('.datetimepicker').datetimepicker(
 
-        {format: 'YYYY-MM-DD', minDate: new Date()}
-    );
 
+    /*this.$('.datetimepicker').datetimepicker({
+        format: 'YYYY-MM-DD',
+        minDate: new Date()
+    })*/
 
 });
 
