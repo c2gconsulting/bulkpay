@@ -364,6 +364,10 @@
         "accountNumber": false
       },
       "notifyEmployeesOnPayrollApproval": true,
+
+       "skipCompanyListPageOnLogin": true,
+       "onLoginFirstBlazeTemplate": "TravelRequisition2Index",
+
       "isActive": true,
       "_groupId": "QyPY7RY4Hc2dqZTem",
       "travelRequestConfig": {
@@ -494,6 +498,10 @@
         "accountNumber" : false
     },
     "notifyEmployeesOnPayrollApproval" : true,
+    
+    "skipCompanyListPageOnLogin": true,
+    "onLoginFirstBlazeTemplate": "TravelRequisition2Index",
+    
     "isActive" : true,
     "_groupId" : "QyPY7RY4Hc2dqZTem",
     "travelRequestConfig" : {

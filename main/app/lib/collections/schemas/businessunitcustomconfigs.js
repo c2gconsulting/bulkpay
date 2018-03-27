@@ -135,6 +135,14 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     notifyEmployeesOnPayrollApproval: {
         type: Boolean        
     },
+    skipCompanyListPageOnLogin: {
+        type: Boolean,
+        optional: true,
+    },
+    onLoginFirstBlazeTemplate: {
+        type: String,
+        optional: true,
+    },
 
     "payrun": {
         label: "Payrun",
