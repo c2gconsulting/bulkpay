@@ -13,9 +13,9 @@ Core.Schemas.Budget = new SimpleSchema({
     employeeId: {
         type: String
     },
-    // budgetHolderId: {
-    //     type:String
-    // },
+    financeApproverId: {
+       type:String
+    },
 
     code: {
         type: String

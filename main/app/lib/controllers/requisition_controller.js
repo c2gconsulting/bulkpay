@@ -61,39 +61,29 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequestsList: function() {
         this.render('TravelRequisitionIndex')
     },
-    showTravelRequestsSupervisorList: function() {
-        this.render('TravelRequisitionSupervisor2Index')
-    },
-    showTravelRequestsBudgetHolderList: function() {
-        this.render('TravelRequisitionBudgetHolderIndex')
-    },
-    showTravelRequestsRetirementList: function() {
-        this.render('TravelRequisitionRetirementIndex')
-    },
-    showTravelRequestsRetirementsList: function() {
-        this.render('RetirementIndex')
-    },
-    showTravelRequestsBudgetHolderRetirementsList: function() {
-        this.render('TravelRequisitionBudgetHolderRetireIndex')
-    },
-
-
-
-
-    showTravelRequestApprovalList: function() {
-        this.render('TravelRequisitionApprovalList')
-    },
     showTravelRequestTreatList: function() {
         this.render('TravelRequisitionTreatList')
     },
-    showTravelRequests2List: function() {
+    showTravelRequisition2BudgetHolderIndex: function() {
+        this.render('TravelRequisition2BudgetHolderIndex')
+    },
+    showTravelRequisition2Index: function() {
         this.render('TravelRequisition2Index')
     },
-    showTravelRequest2ApprovalList: function() {
-        this.render('TravelRequisition2ApprovalList')
+    showTravelRequisition2BudgetHolderRetireIndex: function() {
+        this.render('TravelRequisition2BudgetHolderRetireIndex')
     },
-    showTravelRequest2TreatList: function() {
-        this.render('TravelRequisition2TreatList')
+    showTravelRequisition2FinanceRetireIndex: function() {
+        this.render('TravelRequisition2FinanceRetireIndex')
+    },
+    showTravelRequisition2SupervisorRetirementIndex: function() {
+        this.render('TravelRequisition2SupervisorRetirementIndex')
+    },
+    showTravelRequisition2RetirementIndex: function() {
+        this.render('TravelRequisition2RetirementIndex')
+    },
+    showTravelRequisition2SupervisorIndex: function() {
+        this.render('TravelRequisition2SupervisorIndex')
     },
     onAfterAction: function () {
     },

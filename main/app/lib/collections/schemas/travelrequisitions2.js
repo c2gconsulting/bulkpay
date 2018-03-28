@@ -203,6 +203,14 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: Number, decimal: true,
         defaultValue: 0
     },
+    actualTotalEmployeePerdiemNGN:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
+    actualTotalEmployeePerdiemUSD:{
+        type: Number, decimal: true,
+        defaultValue: 0
+    },
     actualTotalAirportTaxiCostNGN:{
         type: Number, decimal: true,
         defaultValue: 0
@@ -289,7 +297,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved By Budget Holder","Retirement Rejected By Budget Holder"],
+        allowedValues: ["Not Retired","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -308,6 +316,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true
     },
     budgetHolderId: {
+        type: String,
+        optional: true
+    },
+    financeApproverId: {
         type: String,
         optional: true
     },

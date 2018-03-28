@@ -1,27 +1,45 @@
 
 /*****************************************************************************/
-/* RetirementDetail: Event Handlers */
+/* TravelRequisition2RetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.RetirementDetail.events({
+Template.TravelRequisition2RetirementDetail.events({
     'change ': function(e, tmpl) {
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
         currentTravelRequest.actualTotalTripDuration = parseFloat(($("#actualTotalTripDuration").val()).replace(',',''));
+        currentTravelRequest.actualTotalTripDuration = isNaN(currentTravelRequest.actualTotalTripDuration)?0:currentTravelRequest.actualTotalTripDuration;
+
+        currentTravelRequest.actualTotalEmployeePerdiemNGN = parseFloat(($("#actualTotalEmployeePerdiemNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalEmployeePerdiemNGN = isNaN(currentTravelRequest.actualTotalEmployeePerdiemNGN)?0:currentTravelRequest.actualTotalEmployeePerdiemNGN;
+
+        currentTravelRequest.actualTotalEmployeePerdiemUSD = parseFloat(($("#actualTotalEmployeePerdiemUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalEmployeePerdiemUSD = isNaN(currentTravelRequest.actualTotalEmployeePerdiemUSD)?0:currentTravelRequest.actualTotalEmployeePerdiemUSD;
+
         currentTravelRequest.actualTotalAirportTaxiCostNGN = parseFloat(($("#actualTotalAirportTaxiCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalAirportTaxiCostNGN = isNaN(currentTravelRequest.actualTotalAirportTaxiCostNGN)?0:currentTravelRequest.actualTotalAirportTaxiCostNGN;
+
         currentTravelRequest.actualTotalGroundTransportCostNGN = parseFloat(($("#actualTotalGroundTransportCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalGroundTransportCostNGN = isNaN(currentTravelRequest.actualTotalGroundTransportCostNGN)?0:currentTravelRequest.actualTotalGroundTransportCostNGN;
+
         currentTravelRequest.actualTotalMiscCostNGN = parseFloat(($("#actualTotalMiscCostNGN").val()).replace(',',''));
+        currentTravelRequest.actualTotalMiscCostNGN = isNaN(currentTravelRequest.actualTotalMiscCostNGN)?0:currentTravelRequest.actualTotalMiscCostNGN;
+
         currentTravelRequest.actualTotalAirportTaxiCostUSD = parseFloat(($("#actualTotalAirportTaxiCostUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalAirportTaxiCostUSD = isNaN(currentTravelRequest.actualTotalAirportTaxiCostUSD)?0:currentTravelRequest.actualTotalAirportTaxiCostUSD;
+
         currentTravelRequest.actualTotalGroundTransportCostUSD = parseFloat(($("#actualTotalGroundTransportCostUSD").val()).replace(',',''));
+        currentTravelRequest.actualTotalGroundTransportCostUSD = isNaN(currentTravelRequest.actualTotalGroundTransportCostUSD)?0:currentTravelRequest.actualTotalGroundTransportCostUSD;
+
         currentTravelRequest.actualTotalMiscCostUSD = parseFloat(($("#actualTotalMiscCostUSD").val()).replace(',',''));
-        currentTravelRequest.actualTotalAncilliaryCostNGN = currentTravelRequest.actualTotalAirportTaxiCostNGN + currentTravelRequest.actualTotalGroundTransportCostNGN + currentTravelRequest.actualTotalMiscCostNGN;
-        currentTravelRequest.actualTotalAncilliaryCostUSD = currentTravelRequest.actualTotalAirportTaxiCostUSD + currentTravelRequest.actualTotalGroundTransportCostUSD + currentTravelRequest.actualTotalMiscCostUSD;
+        currentTravelRequest.actualTotalMiscCostUSD = isNaN(currentTravelRequest.actualTotalMiscCostUSD)?0:currentTravelRequest.actualTotalMiscCostUSD;
+
+        currentTravelRequest.actualTotalAncilliaryCostNGN = currentTravelRequest.actualTotalEmployeePerdiemNGN + currentTravelRequest.actualTotalAirportTaxiCostNGN + currentTravelRequest.actualTotalGroundTransportCostNGN + currentTravelRequest.actualTotalMiscCostNGN;
+        currentTravelRequest.actualTotalAncilliaryCostUSD = currentTravelRequest.actualTotalEmployeePerdiemUSD + currentTravelRequest.actualTotalAirportTaxiCostUSD + currentTravelRequest.actualTotalGroundTransportCostUSD + currentTravelRequest.actualTotalMiscCostUSD;
         currentTravelRequest.additionalRetirementComment = $("#additionalRetirementComment").val();
 
-        console.log("current travel request");
-        console.log(currentTravelRequest);
 
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
@@ -59,9 +77,37 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* RetirementDetail: Helpers */
+/* TravelRequisition2RetirementDetail: Helpers */
 /*****************************************************************************/
-Template.RetirementDetail.helpers({
+Template.TravelRequisition2RetirementDetail.helpers({
+
+    checkWhoToRefund(currency){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        let formatNumber = function(numberVariable, n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        }
+
+        if (currency === "USD"){
+            const usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            if (usdDifference > 0){
+                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+            }else if (usdDifference < 0){
+                return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
+            }else{
+                return "No USD refunds"
+            }
+        }else if (currency === "NGN"){
+            const ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            if (ngnDifference > 0){
+                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+            }else if (ngnDifference < 0){
+                return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
+            }else{
+                return "No NGN refunds"
+            }
+        }
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -213,9 +259,9 @@ Template.RetirementDetail.helpers({
 });
 
 /*****************************************************************************/
-/* RetirementDetail: Lifecycle Hooks */
+/* TravelRequisition2RetirementDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.RetirementDetail.onCreated(function () {
+Template.TravelRequisition2RetirementDetail.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
@@ -287,7 +333,7 @@ Template.RetirementDetail.onCreated(function () {
 
 });
 
-Template.RetirementDetail.onRendered(function () {
+Template.TravelRequisition2RetirementDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -308,5 +354,5 @@ Template.RetirementDetail.onRendered(function () {
     }
 });
 
-Template.RetirementDetail.onDestroyed(function () {
+Template.TravelRequisition2RetirementDetail.onDestroyed(function () {
 });

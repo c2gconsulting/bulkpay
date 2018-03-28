@@ -988,8 +988,8 @@ Template.TravelRequisition2Create.onCreated(function () {
         currentTravelRequest.totalAirportTaxiCostUSD = totalAirportTaxiCostUSD;
         currentTravelRequest.totalGroundTransportCostNGN = totalGroundTransportCostNGN;
         currentTravelRequest.totalGroundTransportCostUSD = totalGroundTransportCostUSD;
-        currentTravelRequest.totalAncilliaryCostNGN = totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalMiscCostNGN;
-        currentTravelRequest.totalAncilliaryCostUSD = totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalMiscCostUSD;
+        currentTravelRequest.totalAncilliaryCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalMiscCostNGN;
+        currentTravelRequest.totalAncilliaryCostUSD = totalEmployeePerdiemUSD + totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalMiscCostUSD;
         currentTravelRequest.totalHotelCostNGN = totalHotelCostNGN;
         currentTravelRequest.totalHotelCostUSD = totalHotelCostUSD;
         currentTravelRequest.totalTripCostNGN = totalTripCostNGN;

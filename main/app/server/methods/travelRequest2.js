@@ -86,6 +86,7 @@ let TravelRequestHelper = {
             let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
             if (budgetCode){
                 currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
             }
 
             if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
@@ -151,6 +152,7 @@ let TravelRequestHelper = {
             let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
             if (budgetCode){
                 currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
             }
 
             if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
@@ -177,32 +179,7 @@ let TravelRequestHelper = {
             let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
             if (budgetCode){
                 currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-            }
-
-            if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-                let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
-                throw new Meteor.Error(401, errMsg);
-            }
-            if(currentTravelRequest._id){
-
-                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-            }else{
-                let result = TravelRequisition2s.insert(currentTravelRequest);
-            }
-
-            return true;
-        },
-        "TravelRequest2/supervisorRetirements": function(currentTravelRequest){
-            if(!this.userId && Core.hasPayrollAccess(this.userId)){
-                throw new Meteor.Error(401, "Unauthorized");
-            }
-            check(currentTravelRequest.businessId, String);
-            this.unblock()
-
-            currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-            let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-            if (budgetCode){
-                currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
             }
 
             if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
@@ -229,6 +206,34 @@ let TravelRequestHelper = {
             let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
             if (budgetCode){
                 currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+            }
+
+            if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+                let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+                throw new Meteor.Error(401, errMsg);
+            }
+            if(currentTravelRequest._id){
+
+                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+            }else{
+                let result = TravelRequisition2s.insert(currentTravelRequest);
+            }
+
+            return true;
+        },
+        "TravelRequest2/supervisorRetirements": function(currentTravelRequest){
+            if(!this.userId && Core.hasPayrollAccess(this.userId)){
+                throw new Meteor.Error(401, "Unauthorized");
+            }
+            check(currentTravelRequest.businessId, String);
+            this.unblock()
+
+            currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+            let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+            if (budgetCode){
+                currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
             }
 
             if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
@@ -255,6 +260,7 @@ let TravelRequestHelper = {
             let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
             if (budgetCode){
                 currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
             }
 
             if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
@@ -270,5 +276,32 @@ let TravelRequestHelper = {
 
             return true;
         },
+        "TravelRequest2/financeRetirements": function(currentTravelRequest){
+            if(!this.userId && Core.hasPayrollAccess(this.userId)){
+                throw new Meteor.Error(401, "Unauthorized");
+            }
+            check(currentTravelRequest.businessId, String);
+            this.unblock()
+
+            currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+            let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+            if (budgetCode){
+                currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+            }
+
+            if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+                let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+                throw new Meteor.Error(401, errMsg);
+            }
+            if(currentTravelRequest._id){
+
+                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+            }else{
+                let result = TravelRequisition2s.insert(currentTravelRequest);
+            }
+
+            return true;
+        }
 
     });

@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Index: Event Handlers */
+/* TravelRequisition2SupervisorIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionSupervisor2Index.events({
+Template.TravelRequisition2SupervisorIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,7 +17,7 @@ Template.TravelRequisitionSupervisor2Index.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisitionSupervisor2Detail', invokeReason)
+        Modal.show('TravelRequisition2SupervisorDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -48,9 +48,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Index: Helpers */
+/* TravelRequisition2SupervisorIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionSupervisor2Index.helpers({
+Template.TravelRequisition2SupervisorIndex.helpers({
     'travelRequestsBySupervisor': function() {
         return Template.instance().travelRequestsBySupervisor.get()
     },
@@ -85,9 +85,9 @@ Template.TravelRequisitionSupervisor2Index.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Index: Lifecycle Hooks */
+/* TravelRequisition2SupervisorIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionSupervisor2Index.onCreated(function () {
+Template.TravelRequisition2SupervisorIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -139,10 +139,10 @@ Template.TravelRequisitionSupervisor2Index.onCreated(function () {
     })
 });
 
-Template.TravelRequisitionSupervisor2Index.onRendered(function () {
+Template.TravelRequisition2SupervisorIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionSupervisor2Index.onDestroyed(function () {
+Template.TravelRequisition2SupervisorIndex.onDestroyed(function () {
 });

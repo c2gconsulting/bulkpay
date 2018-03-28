@@ -1,139 +1,103 @@
 
 /*****************************************************************************/
-/* TravelRequisition2BudgetHolderDetail: Event Handlers */
+/* TravelRequisition2SupervisorRetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2BudgetHolderDetail.events({
+Template.TravelRequisition2SupervisorRetirementDetail.events({
     'click #approve': (e, tmpl) => {
-        let budgetHolderComment = $('[name=budgetHolderComment]').val();
 
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Approved By Budget Holder";
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
+      currentTravelRequest.retirementStatus = "Retirement Approved By Supervisor";
 
-        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-        e.preventDefault()
-
-        //update budgetHolderComment one last final time
-        currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-        let fieldsAreValid = true;
-        let validationErrors = '';
-
-        /*** VALIDATIONS ***/
-        //check that the description is not hello
-
-        if (currentTravelRequest.budgetHolderComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": Budget Holder Comment cannot be empty";
-        }
-        if (fieldsAreValid){
-           Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
-            if (res){
-                swal({
-                    title: "Travel requisition has been approved",
-                    text: "Employee travel requisition has been approved,notification has been sent to the necessary parties",
-                    confirmButtonClass: "btn-success",
-                    type: "success",
-                    confirmButtonText: "OK"
-                });
-            } else {
-                swal({
-                    title: "Oops!",
-                    text: "Travel requisition has  not been updated, reason: " + err.message,
-                    confirmButtonClass: "btn-danger",
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
-                console.log(err);
-                }
-            });
-            Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2Create');
-        }else{
-            Template.instance().errorMessage.set("Validation errors" + validationErrors);
-        }
-
+     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+         if (res){
+             swal({
+                 title: "Trip retirement has been approved by supervisor",
+                 text: "Employee retirement has been updated,notification has been sent to the necessary parties",
+                 confirmButtonClass: "btn-success",
+                 type: "success",
+                 confirmButtonText: "OK"
+             });
+         } else {
+             swal({
+                 title: "Oops!",
+                 text: "Employee retirement has not been updated, reason: " + err.message,
+                 confirmButtonClass: "btn-danger",
+                 type: "error",
+                 confirmButtonText: "OK"
+             });
+             console.log(err);
+         }
+     });
     },
+     'click #reject': (e, tmpl) => {
 
+         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+         currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
+         currentTravelRequest.retirementStatus = "Retirement Rejected By Supervisor";
 
-
-    'click #reject': (e, tmpl) => {
-        let budgetHolderComment = $('[name=budgetHolderComment]').val();
-        let budgetCodeId =$('[name=budget-code]').val();
-
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Rejected By Budget Holder";
-
-        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-        e.preventDefault()
-
-        //update budgetHolderComment one last final time
-        currentTravelRequest.budgetHolderComment = $("#budgetHolderComment").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-        let fieldsAreValid = true;
-        let validationErrors = '';
-
-        /*** VALIDATIONS ***/
-        //check that the description is not hello
-
-        if (currentTravelRequest.budgetHolderComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": Supervisor Comment cannot be empty";
-        }
-
-
-        if (fieldsAreValid){
-
-            Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
-                if (res){
-                    swal({
-                        title: "Travel requisition has been rejected",
-                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-                        confirmButtonClass: "btn-success",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                } else {
-                    swal({
-                        title: "Oops!",
-                        text: "Travel requisition has  not been updated, reason: " + err.message,
-                        confirmButtonClass: "btn-danger",
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                    console.log(err);
+      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+          if (res){
+              swal({
+                  title: "Trip retirement has been rejected by supervisor",
+                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+          } else {
+              swal({
+                  title: "Oops!",
+                  text: "Employee retirement has not been updated, reason: " + err.message,
+                  confirmButtonClass: "btn-danger",
+                  type: "error",
+                  confirmButtonText: "OK"
+              });
+              console.log(err);
+          }
+      });
     }
-});
-            Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2BudgetHolderDetail');
-        }else{
-            Template.instance().errorMessage.set("Validation errors" + validationErrors);
-        }
-
-    },
-
-
 
 });
+
 
 Template.registerHelper('formatDate', function(date) {
     return moment(date).format('DD-MM-YYYY');
 });
 
 /*****************************************************************************/
-/* TravelRequisition2BudgetHolderDetail: Helpers */
+/* TravelRequisition2SupervisorRetirementDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2BudgetHolderDetail.helpers({
-    'errorMessage': function() {
-        return Template.instance().errorMessage.get()
+Template.TravelRequisition2SupervisorRetirementDetail.helpers({
+    checkWhoToRefund(currency){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        let formatNumber = function(numberVariable, n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        }
+
+        if (currency === "USD"){
+            const usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            if (usdDifference > 0){
+                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+            }else if (usdDifference < 0){
+                return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
+            }else{
+                return "No USD refunds"
+            }
+        }else if (currency === "NGN"){
+            const ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            if (ngnDifference > 0){
+                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+            }else if (ngnDifference < 0){
+                return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
+            }else{
+                return "No NGN refunds"
+            }
+        }
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -158,6 +122,10 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
         }
     },
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    },
+
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
@@ -188,6 +156,12 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].isDinnerIncluded? checked="checked" : '';
         }
     },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
+        }
+    },
     isIncidentalsIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
@@ -207,16 +181,6 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
             return travelcity.name
         }
     },
-    budgetList() {
-        return  Budgets.find();
-    },
-    budgetCodeSelected(val){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && val){
-            return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
-        }
-    },
-
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
 
@@ -238,17 +202,8 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
             return budget.name
         }
     },
-    cashAdvanceNotRequiredChecked(){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest){
-            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
-        }
-    },
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
-    },
-    'getEmployeeNameById': function(employeeId){
-        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
@@ -295,15 +250,10 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2BudgetHolderDetail: Lifecycle Hooks */
+/* TravelRequisition2SupervisorRetirementDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2BudgetHolderDetail.onCreated(function () {
-
-
+Template.TravelRequisition2SupervisorRetirementDetail.onCreated(function () {
     let self = this;
-    self.errorMessage = new ReactiveVar();
-    self.errorMessage.set(null);
-
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
@@ -374,7 +324,7 @@ Template.TravelRequisition2BudgetHolderDetail.onCreated(function () {
 
 });
 
-Template.TravelRequisition2BudgetHolderDetail.onRendered(function () {
+Template.TravelRequisition2SupervisorRetirementDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -395,5 +345,5 @@ Template.TravelRequisition2BudgetHolderDetail.onRendered(function () {
     }
 });
 
-Template.TravelRequisition2BudgetHolderDetail.onDestroyed(function () {
+Template.TravelRequisition2SupervisorRetirementDetail.onDestroyed(function () {
 });

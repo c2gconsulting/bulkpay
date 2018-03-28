@@ -82,6 +82,36 @@ Template.navigator.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #travelSupervisorMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelBudgetHolderMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelFinanceMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
     'click #reportsMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
 
@@ -152,11 +182,35 @@ Template.navigator.helpers({
 
             let numPositionsSupervising = EntityObjects.find({
                     otype: 'Position',
-                    $or: [{'properties.supervisor' : currentUserPosition}, 
-                        {'properties.alternateSupervisor': currentUserPosition}], 
+                    $or: [{'properties.supervisor' : currentUserPosition},
+                        {'properties.alternateSupervisor': currentUserPosition}],
                     businessId: Session.get('context')
                 }).count()
             return (numPositionsSupervising > 0)
+        }
+    },
+    isUserADirectSupervisor: function() {
+        console.log(Meteor.userId());
+
+        if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+            return true;
+        }else{
+            return false;
+        }
+    },
+    isUserABudgetHolder: function() {
+
+        if (Template.instance().isBudgetHolder.get() === "TRUE"){
+            return true;
+        }else{
+            return false;
+        }
+    },
+    isUserATravelFinanceApprover: function() {
+        if (Template.instance().isFinanceApprover.get() === "TRUE"){
+            return true;
+        }else{
+            return false;
         }
     },
     hasTravelRequisitionApproveAccess: function () {
@@ -171,7 +225,7 @@ Template.navigator.helpers({
         } else {
             return false
         }
-    }, 
+    },
     hasPayrollReportsViewAccess: function () {
         let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
         return hasPayrollReportsViewAccess;
@@ -258,21 +312,21 @@ Template.navigator.helpers({
     },
     'isTimeTypeEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isTimeTypeEnabled
         }
     },
     'isHmoSetupEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isHmoSetupEnabled
         }
     },
     'isLoanEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isLoanEnabled
         }
@@ -288,10 +342,14 @@ Template.navigator.onCreated(function () {
     //--
     self.expandedMenu = new ReactiveVar()
     //--
-    self.businessUnitCustomConfig = new ReactiveVar()
-    self.payrollApprovalConfig = new ReactiveVar()
+    self.businessUnitCustomConfig = new ReactiveVar();
+    self.payrollApprovalConfig = new ReactiveVar();
+
+    self.isBudgetHolder = new ReactiveVar();
+    self.isFinanceApprover = new ReactiveVar();
 
     self.subscribe("getPositions", Session.get('context'));
+
 
     self.autorun(function() {
         let businessUnitId = Session.get('context');
@@ -309,6 +367,22 @@ Template.navigator.onCreated(function () {
                 self.businessUnitCustomConfig.set(res)
             }
         })
+
+        let budgetSub = self.subscribe("budgets", Session.get('context'));
+        if (budgetSub.ready()){
+
+            if (Budgets.findOne({employeeId: Meteor.userId()})){
+                self.isBudgetHolder.set("TRUE");
+            }else{
+                self.isBudgetHolder.set("FALSE");
+            }
+
+            if (Budgets.findOne({financeApproverId: Meteor.userId()})){
+                self.isFinanceApprover.set("TRUE");
+            }else{
+                self.isFinanceApprover.set("FALSE");
+            }
+        }
     })
 });
 

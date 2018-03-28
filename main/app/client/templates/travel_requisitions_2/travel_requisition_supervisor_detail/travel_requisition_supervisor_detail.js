@@ -1,6 +1,6 @@
 
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Detail: Event Handlers */
+/* TravelRequisition2SupervisorDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
@@ -8,7 +8,7 @@ import _ from 'underscore';
 
 
 
-Template.TravelRequisitionSupervisor2Detail.events({
+Template.TravelRequisition2SupervisorDetail.events({
     'click #approve': (e, tmpl) => {
         let supervisorComment = $('[name=supervisorComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
@@ -129,7 +129,7 @@ Template.TravelRequisitionSupervisor2Detail.events({
     }
 });
             Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisitionSupervisor2Detail');
+            Modal.hide('TravelRequisition2SupervisorDetail');
         }else{
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
@@ -155,9 +155,9 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Detail: Helpers */
+/* TravelRequisition2SupervisorDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionSupervisor2Detail.helpers({
+Template.TravelRequisition2SupervisorDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
@@ -321,9 +321,9 @@ Template.TravelRequisitionSupervisor2Detail.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionSupervisor2Detail: Lifecycle Hooks */
+/* TravelRequisition2SupervisorDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionSupervisor2Detail.onCreated(function () {
+Template.TravelRequisition2SupervisorDetail.onCreated(function () {
 
 
     let self = this;
@@ -400,7 +400,7 @@ Template.TravelRequisitionSupervisor2Detail.onCreated(function () {
 
 });
 
-Template.TravelRequisitionSupervisor2Detail.onRendered(function () {
+Template.TravelRequisition2SupervisorDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -421,5 +421,5 @@ Template.TravelRequisitionSupervisor2Detail.onRendered(function () {
     }
 });
 
-Template.TravelRequisitionSupervisor2Detail.onDestroyed(function () {
+Template.TravelRequisition2SupervisorDetail.onDestroyed(function () {
 });
