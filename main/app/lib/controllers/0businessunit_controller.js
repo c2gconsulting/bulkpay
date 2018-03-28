@@ -15,9 +15,18 @@ BusinessUnitController = ApplicationController.extend({
     // return Meteor.subscribe('post', this.params._id);
 
     waitOn: function () {
-        return [
-            //Meteor.subscribe("BusinessUnits")
-        ];
+        const businessId = Session.get('context')
+        const tenantId = Core.getTenantId()
+
+        if(tenantId) {
+            Meteor.subscribe("BusinessUnitCustomConfig", businessId, tenantId)
+        } else {
+            return []
+        }
+
+        // return [
+        //     //Meteor.subscribe("BusinessUnits")
+        // ];
         //return InvoiceSubs.subscribe('Invoice', this.params._id);
         // return [Meteor.subscribe('BusinessUnit')];
     },
@@ -83,11 +92,27 @@ BusinessUnitController = ApplicationController.extend({
         //} else {
         //    Router.go('distributors.list');
         //}
+
         this.render('BusinessUnit');
     },
 
     show: function () {
-        this.render("BuDetail");
+        const businessId = Session.get('context')
+        const customConfig = BusinessUnitCustomConfigs.findOne({businessId: businessId})
+
+        if(customConfig) {
+            if(customConfig.skipCompanyListPageOnLogin) {
+                if(customConfig.onLoginFirstBlazeTemplate) {
+                    this.render(customConfig.onLoginFirstBlazeTemplate);
+                } else {
+                    this.render("BuDetail");
+                }
+            } else {
+                this.render("BuDetail");
+            }
+        } else {
+            this.render("BuDetail");
+        }
     },
 
     onAfterAction: function () {
