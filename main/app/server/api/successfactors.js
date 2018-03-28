@@ -597,7 +597,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
                             status: 'Active',
                             createdBy: null,
                             properties: null,
-                            businessId: businessUnitId,
+                            businessId: business._id,
                             _groupId: business._groupId,
                             successFactors: {
                               externalCode: department.externalCode,
