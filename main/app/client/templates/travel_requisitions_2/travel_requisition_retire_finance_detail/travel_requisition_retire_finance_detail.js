@@ -1,18 +1,18 @@
 
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireDetail: Event Handlers */
+/* TravelRequisition2FinanceRetireDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionBudgetHolderRetireDetail.events({
+Template.TravelRequisition2FinanceRetireDetail.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By Budget Holder";
+      currentTravelRequest.retirementStatus = "Retirement Approved Finance";
 
 
-     Meteor.call('TravelRequest2/budgetHolderRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
                  title: "Trip retirement has been approved by budget holder",
@@ -37,9 +37,9 @@ Template.TravelRequisitionBudgetHolderRetireDetail.events({
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
          currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By Budget Holder";
+         currentTravelRequest.retirementStatus = "Retirement Rejected Finance";
 
-      Meteor.call('TravelRequest2/budgetHolderRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been rejected by budget holder",
@@ -69,9 +69,36 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireDetail: Helpers */
+/* TravelRequisition2FinanceRetireDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionBudgetHolderRetireDetail.helpers({
+Template.TravelRequisition2FinanceRetireDetail.helpers({
+    checkWhoToRefund(currency){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        let formatNumber = function(numberVariable, n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        }
+
+        if (currency === "USD"){
+            const usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            if (usdDifference > 0){
+                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+            }else if (usdDifference < 0){
+                return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
+            }else{
+                return "No USD refunds"
+            }
+        }else if (currency === "NGN"){
+            const ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            if (ngnDifference > 0){
+                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+            }else if (ngnDifference < 0){
+                return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
+            }else{
+                return "No NGN refunds"
+            }
+        }
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -223,9 +250,9 @@ Template.TravelRequisitionBudgetHolderRetireDetail.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireDetail: Lifecycle Hooks */
+/* TravelRequisition2FinanceRetireDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionBudgetHolderRetireDetail.onCreated(function () {
+Template.TravelRequisition2FinanceRetireDetail.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
@@ -297,7 +324,7 @@ Template.TravelRequisitionBudgetHolderRetireDetail.onCreated(function () {
 
 });
 
-Template.TravelRequisitionBudgetHolderRetireDetail.onRendered(function () {
+Template.TravelRequisition2FinanceRetireDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -318,5 +345,5 @@ Template.TravelRequisitionBudgetHolderRetireDetail.onRendered(function () {
     }
 });
 
-Template.TravelRequisitionBudgetHolderRetireDetail.onDestroyed(function () {
+Template.TravelRequisition2FinanceRetireDetail.onDestroyed(function () {
 });

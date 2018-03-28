@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* RetirementIndex: Event Handlers */
+/* TravelRequisition2RetirementIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.RetirementIndex.events({
+Template.TravelRequisition2RetirementIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,7 +17,7 @@ Template.RetirementIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('RetirementDetail', invokeReason)
+        Modal.show('TravelRequisition2RetirementDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -48,9 +48,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* RetirementIndex: Helpers */
+/* TravelRequisition2RetirementIndex: Helpers */
 /*****************************************************************************/
-Template.RetirementIndex.helpers({
+Template.TravelRequisition2RetirementIndex.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
@@ -85,9 +85,9 @@ Template.RetirementIndex.helpers({
 });
 
 /*****************************************************************************/
-/* RetirementIndex: Lifecycle Hooks */
+/* TravelRequisition2RetirementIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.RetirementIndex.onCreated(function () {
+Template.TravelRequisition2RetirementIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -144,10 +144,10 @@ Template.RetirementIndex.onCreated(function () {
     })
 });
 
-Template.RetirementIndex.onRendered(function () {
+Template.TravelRequisition2RetirementIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.RetirementIndex.onDestroyed(function () {
+Template.TravelRequisition2RetirementIndex.onDestroyed(function () {
 });

@@ -8,26 +8,27 @@ Template.BudgetCreate.events({
     'click #save': (e, tmpl) => {
       let code = $('[name=code]').val();
       let name = $('[name=name]').val();
-     
-      let employee =  $('[name="employee"]').val()
-  
+
+      let employeeId =  $('[name="employeeId"]').val()
+      let financeApproverId =  $('[name="financeApproverId"]').val()
+
      // employees: Core.returnSelection($('[name="employee"]')),
- 
-  
+
+
     //   if (!budgetCode || budgetCode.trim().length === 0) {
     //     Template.instance().errorMessage.set("Please enter the budget code");
     //   } else if(!budgetName || budgetName.trim().length === 0) {
     //       Template.instance().errorMessage.set("Please enter the budget name");
-    //   } 
+    //   }
     //   else {
         Template.instance().errorMessage.set(null);
-  
+
         let newBudget = {
           businessId: Session.get('context'),
           code : code,
           name : name,
-          employeeId :employee
-         // employeeId :budgetEmployee
+          employeeId :employeeId,
+          financeApproverId :financeApproverId
 
         };
 
@@ -39,7 +40,7 @@ Template.BudgetCreate.events({
         //     console.log('Hotel is not Valid!');
         // }
         // console.log(budgetContext._invalidKeys);
-  
+
         Meteor.call('budget/create', newBudget, (err, res) => {
             if (res){
                 swal({
@@ -54,14 +55,14 @@ Template.BudgetCreate.events({
                 console.log(err);
             }
         });
-      
+
     },
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Helpers */
   /*****************************************************************************/
-  Template.BudgetCreate.helpers({  
+  Template.BudgetCreate.helpers({
     'checked': (prop) => {
         if(Template.instance().data)
             return Template.instance().data[prop];
@@ -91,23 +92,22 @@ Template.BudgetCreate.events({
       return Template.instance().errorMessage.get()
     }
   });
-  
+
   /*****************************************************************************/
   /* HotelCreate: Lifecycle Hooks */
   /*****************************************************************************/
   Template.BudgetCreate.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
-  
+
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null)
 
   self.subscribe("allEmployees", businessUnitId);
   });
-  
+
   Template.BudgetCreate.onRendered(function () {
   });
-  
+
   Template.BudgetCreate.onDestroyed(function () {
   });
-  

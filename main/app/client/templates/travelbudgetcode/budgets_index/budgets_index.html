@@ -35,7 +35,8 @@
                                 <th>Budget Code</th>
                                 <th>Budget Name</th>
 
-                                <th>Budget Holders</th>
+                                <th>Budget Holder</th>
+                                <th>Finance Approver</th>
 
                                 <th>Status</th>
                                 <th></th>
@@ -62,6 +63,7 @@
         <td>{{data.name}}</td>
 
         <td>{{getEmployeeNameById data.employeeId}}</td>
+        <td>{{getEmployeeNameById data.financeApproverId}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

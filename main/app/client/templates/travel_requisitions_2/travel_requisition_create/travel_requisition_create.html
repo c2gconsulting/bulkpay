@@ -36,7 +36,7 @@
                                         {{/each}}
                                     </select>
                                     {{/semanticselect2}}
-                                    <span class="text-warning"><small>Try your best to provide this info. But if you are not sure, then leave it blank</small></span>
+                                    <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
@@ -105,7 +105,7 @@
 
                                 <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
-                                <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%" class="form-control input-sm">
+                                <select name="departureTime_{{this.tripIndex}}" id="departureTime_{{this.tripIndex}}" style="width: 100%;font-size: 10px" class="form-control input-sm">
                                     <option value="6 AM" {{departureTimeSelected "6 AM" tripIndex}}>6 AM</option>
                                     <option value="7 AM" {{departureTimeSelected "7 AM" tripIndex}}>7 AM</option>
                                     <option value="8 AM" {{departureTimeSelected "8 AM" tripIndex}}>8 AM</option>
@@ -155,7 +155,7 @@
                             <div class="form-group">
 
                                 <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%" class="form-control input-sm">
+                                <select id="returnTime_{{this.tripIndex}}" name="returnTime_{{this.tripIndex}}" style="width: 100%;font-size: 10px" class="form-control input-sm">
                                     <option value="6 AM" {{returnTimeSelected "6 AM" tripIndex}}>6 AM</option>
                                     <option value="7 AM" {{returnTimeSelected "7 AM" tripIndex}}>7 AM</option>
                                     <option value="8 AM" {{returnTimeSelected "8 AM" tripIndex}}>8 AM</option>

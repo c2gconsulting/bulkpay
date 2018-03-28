@@ -1,9 +1,10 @@
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireIndex: Event Handlers */
+/* TravelRequisition2BudgetHolderRetireIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionBudgetHolderRetireIndex.events({
+
+Template.TravelRequisition2BudgetHolderRetireIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,7 +18,7 @@ Template.TravelRequisitionBudgetHolderRetireIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisitionBudgetHolderRetireDetail', invokeReason)
+        Modal.show('TravelRequisition2BudgetHolderRetireDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -48,9 +49,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireIndex: Helpers */
+/* TravelRequisition2BudgetHolderRetireIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionBudgetHolderRetireIndex.helpers({
+Template.TravelRequisition2BudgetHolderRetireIndex.helpers({
     'travelRequestsByBudgetHolder': function() {
         return Template.instance().travelRequestsByBudgetHolder.get()
     },
@@ -85,9 +86,9 @@ Template.TravelRequisitionBudgetHolderRetireIndex.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionBudgetHolderRetireIndex: Lifecycle Hooks */
+/* TravelRequisition2BudgetHolderRetireIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionBudgetHolderRetireIndex.onCreated(function () {
+Template.TravelRequisition2BudgetHolderRetireIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -146,10 +147,10 @@ Template.TravelRequisitionBudgetHolderRetireIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisitionBudgetHolderRetireIndex.onRendered(function () {
+Template.TravelRequisition2BudgetHolderRetireIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisitionBudgetHolderRetireIndex.onDestroyed(function () {
+Template.TravelRequisition2BudgetHolderRetireIndex.onDestroyed(function () {
 });

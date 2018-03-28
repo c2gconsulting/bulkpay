@@ -1,4 +1,4 @@
-<template name="TravelRequisition2BudgetHolderIndex">
+<template name="TravelRequisition2BudgetHolderRetireIndex">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left" style="padding: 9px;">
@@ -9,10 +9,10 @@
                     <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
                     <li><a ui-sref="business.overview">Business</a></li>
                     <li>{{name}}</li>
-                    <li>Budget Holder Approvals</li>
+                    <li>Retirements: Budget Holder</li>
                 </ul>
 
-                <h4>Travel Requests Approvals: Budget Holder </h4>
+                <h4>Retirements Approvals: Budget Holder </h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -53,7 +53,7 @@
                                     {{else}}
                                     <td nowrap></td>
                                     {{/if}}
-                                    <td>{{status}}</td>
+                                    <td>{{retirementStatus}}</td>
                                     <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
                                 </tr>
                                 {{/each}}

@@ -1,4 +1,4 @@
-<template name="TravelRequisitionBudgetHolderRetireDetail">
+<template name="TravelRequisition2BudgetHolderRetireDetail">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -80,7 +80,7 @@
                                 <div class="form-group">
 
                                     <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
+                                    <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
                                 </div><!-- form-group -->
                             </div>
                             {{#if isReturnTrip}}
@@ -93,7 +93,7 @@
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
+                                    <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
                                 </div>
                                 <!-- form-group -->
                             </div><!-- col-sm-12 -->
@@ -372,7 +372,21 @@
 
                         </div>
 
-
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span>Perdiem Expenses:</span>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalEmployeePerdiemNGN" class="form-control text-right" placeholder="" name="totalEmployeePerdiemNGN" value="{{formatMoney currentTravelRequest.totalEmployeePerdiemNGN}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalEmployeePerdiemNGN" class="form-control text-right" placeholder="" name="actualTotalEmployeePerdiemNGN" value="{{formatMoney currentTravelRequest.actualTotalEmployeePerdiemNGN}}" disabled />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" id="totalEmployeePerdiemUSD" class="form-control text-right" placeholder="" name="totalEmployeePerdiemUSD" value="{{formatMoney currentTravelRequest.totalEmployeePerdiemUSD}}" disabled/>
+                            </div>
+                            <div class="col-sm-2"><input type="text" id="actualTotalEmployeePerdiemUSD" class="form-control text-right" placeholder="" name="actualTotalEmployeePerdiemUSD" value="{{formatMoney currentTravelRequest.actualTotalEmployeePerdiemUSD}}" disabled />
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-4">
                                 <span>Airport Taxi Expenses:</span>
@@ -435,6 +449,18 @@
                             </div>
                             <div class="col-sm-2">
                                 <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.actualTotalAncilliaryCostUSD}}</strong></span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <span><strong>Refund Summary:</strong></span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="text-right pull-right">{{checkWhoToRefund "NGN"}}</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <span class="text-right pull-right">{{checkWhoToRefund "USD"}}</span>
                             </div>
                         </div>
                         <hr>

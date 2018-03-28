@@ -1,10 +1,10 @@
 
 /*****************************************************************************/
-/* TravelRequisitionRetirementPrint: Event Handlers */
+/* TravelRequisition2RetirementPrint: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisitionRetirementPrint.events({
+Template.TravelRequisition2RetirementPrint.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -69,9 +69,36 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisitionRetirementPrint: Helpers */
+/* TravelRequisition2RetirementPrint: Helpers */
 /*****************************************************************************/
-Template.TravelRequisitionRetirementPrint.helpers({
+Template.TravelRequisition2RetirementPrint.helpers({
+    checkWhoToRefund(currency){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        let formatNumber = function(numberVariable, n, x) {
+            var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+            return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        }
+
+        if (currency === "USD"){
+            const usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            if (usdDifference > 0){
+                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+            }else if (usdDifference < 0){
+                return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
+            }else{
+                return "No USD refunds"
+            }
+        }else if (currency === "NGN"){
+            const ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            if (ngnDifference > 0){
+                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+            }else if (ngnDifference < 0){
+                return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
+            }else{
+                return "No NGN refunds"
+            }
+        }
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -223,9 +250,9 @@ Template.TravelRequisitionRetirementPrint.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionRetirementPrint: Lifecycle Hooks */
+/* TravelRequisition2RetirementPrint: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisitionRetirementPrint.onCreated(function () {
+Template.TravelRequisition2RetirementPrint.onCreated(function () {
 
     let self = this;
     let businessUnitId = Router.current().params._id;
@@ -300,7 +327,7 @@ Template.TravelRequisitionRetirementPrint.onCreated(function () {
 
 });
 
-Template.TravelRequisitionRetirementPrint.onRendered(function () {
+Template.TravelRequisition2RetirementPrint.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -321,5 +348,5 @@ Template.TravelRequisitionRetirementPrint.onRendered(function () {
     }
 });
 
-Template.TravelRequisitionRetirementPrint.onDestroyed(function () {
+Template.TravelRequisition2RetirementPrint.onDestroyed(function () {
 });

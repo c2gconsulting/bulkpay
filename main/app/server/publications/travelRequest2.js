@@ -11,6 +11,10 @@
      return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
  });
 
+ Core.publish("TravelRequestsByFinanceApprover", function (businessUnitId, financeApproverId) {
+     return TravelRequisition2s.find({businessId: businessUnitId, financeApproverId: financeApproverId});
+ });
+
 Core.publish("TravelRequestsICreated", function (businessUnitId) {
     let user = this.userId;
 
