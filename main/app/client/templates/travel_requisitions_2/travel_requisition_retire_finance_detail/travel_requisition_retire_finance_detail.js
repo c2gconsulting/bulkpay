@@ -15,7 +15,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
      Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been approved by budget holder",
+                 title: "Trip retirement has been approved by Finance",
                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -42,7 +42,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
       Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
-                  title: "Trip retirement has been rejected by budget holder",
+                  title: "Trip retirement has been rejected by Finance",
                   text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                   confirmButtonClass: "btn-success",
                   type: "success",

@@ -24,22 +24,56 @@ let TravelRequestHelper = {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
-            return travelcity.name
+            return travelcity.name;
         }
     },
-    sendRequisitionCreated: function( approvalsPageUrl) {
+    getTravelcityEmail: function(travelcityId) {
+        const travelcity = Travelcities.findOne({_id: travelcityId})
+
+        if(travelcity) {
+            return travelcity.notificationEmail;
+        }
+    },
+    sendTravelRequestEmail: function(currentTravelRequest, emailTo, emailSubject) {
         try {
+            const travelType = currentTravelRequest.type === "Return"?'Return Trip':'Multiple Stops';
+            const returnDate = currentTravelRequest.type === "Return"?currentTravelRequest.trips[0].returnDate:currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
+            let itenerary = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
+            if (currentTravelRequest.type === "Multiple"){
+                for (i = 1; i < currentTravelRequest.trips.length; i++) {
+                    itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
+                }
+            }
+
+            //Todo, itenerary, employee full name
             SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
             Email.send({
-                to: "michaelukpong@gmail.com",
-                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
-                subject: "Travel Request created!",
+                to: emailTo,
+                from: "BulkPay™ Travel Team <bulkpay@c2gconsulting.com>",
+                subject: emailSubject,
                 html: SSR.render("TravelRequestNotification2", {
-
-
-                    approvalsPageUrl: approvalsPageUrl
+                    itenerary: itenerary,
+                    departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+                    returnDate: TravelRequestHelper.formatDate(returnDate),
+                    travelType: travelType,
+                    employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+                    status: currentTravelRequest.status,
+                    description: currentTravelRequest.description,
+                    totalTripDuration: currentTravelRequest.totalTripDuration,
+                    totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+                    totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+                    totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+                    totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+                    totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+                    totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+                    totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
+                    totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
+                    totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
+                    totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
+                    actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
                 })
             });
+
             return true
         } catch(e) {
             console.log(e);
@@ -97,46 +131,38 @@ let TravelRequestHelper = {
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
             }else{
-                let result = TravelRequisition2s.insert(currentTravelRequest);
-                const travelType = currentTravelRequest.type === "Return"?'Return Trip':'Multiple Stops';
-                const returnDate = currentTravelRequest.type === "Return"?currentTravelRequest.trips[0].returnDate:currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
-                let itenerary = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
-                if (currentTravelRequest.type === "Multiple"){
-                    for (i = 1; i < currentTravelRequest.trips.length; i++) {
-                        itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
-                    }
+                currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
+
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                let createdByEmail = "";
+                let supervisorEmail = "";
+                let createdByName = "Employee"
+                let supervisorName = "Supervisor"
+                const createdBySubject = "New travel request for " + createdBy.profile.fullName;
+                const supervisorSubject = "Please approve travel request for " + createdBy.profile.fullName;
+
+
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
                 }
 
-                //Todo, itenerary, employee full name
-                SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
-                Email.send({
-                    to: "michaelukpong@gmail.com",
-                    from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
-                    subject: "Travel Request created!",
-                    html: SSR.render("TravelRequestNotification2", {
-                        itenerary: itenerary,
-                        departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-                        returnDate: TravelRequestHelper.formatDate(returnDate),
-                        travelType: travelType,
-                        employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-                        status: currentTravelRequest.status,
-                        description: currentTravelRequest.description,
-                        totalTripDuration: currentTravelRequest.totalTripDuration,
-                        totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
-                        totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
-                        totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
-                        totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
-                        totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
-                        totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
-                        totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
-                        totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
-                        totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
-                        totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
-                        actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + result
-                    })
-                });
+                if (supervisor.emails.length > 0){
+                    supervisorEmail = supervisor.emails[0].address;
+                    supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
+                    console.log(supervisorEmail);
+                }
 
-                //TravelRequestHelper.sendRequisitionCreated(approvalsPageUrl)
+                //Send to requestor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Supervisor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+
             }
 
             return true;
@@ -159,6 +185,7 @@ let TravelRequestHelper = {
                 let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
                 throw new Meteor.Error(401, errMsg);
             }
+
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
@@ -187,8 +214,45 @@ let TravelRequestHelper = {
                 throw new Meteor.Error(401, errMsg);
             }
             if(currentTravelRequest._id){
-
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                let createdByEmail = "";
+                let supervisorEmail = "";
+                let createdByName = "Employee"
+                let supervisorName = "Supervisor"
+                let createdBySubject = "";
+                let supervisorSubject = "";
+
+                if(currentTravelRequest.status === "Approved By Supervisor"){
+                    createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel request";
+                    supervisorSubject = "You have approved " + createdBy.profile.fullName + "'s travel request";
+                }else{
+                    createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has rejected your travel request";
+                    supervisorSubject = "You have rejected " + createdBy.profile.fullName + "'s travel request";
+                }
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
+                }
+
+                if (supervisor.emails.length > 0){
+                    supervisorEmail = supervisor.emails[0].address;
+                    supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
+                    console.log(supervisorEmail);
+                }
+
+                //Send to requestor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Supervisor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+
+
             }else{
                 let result = TravelRequisition2s.insert(currentTravelRequest);
             }
@@ -216,6 +280,47 @@ let TravelRequestHelper = {
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+                for (i = 0; i < currentTravelRequest.trips.length; i++) {
+                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
+                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
+                }
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
+                let createdByEmail = "";
+                let budgetHolderEmail = "";
+                let createdByName = "Employee"
+                let budgetHolderName = "Budget Holder"
+                let createdBySubject = "";
+                let budgetHolderSubject = "";
+
+                if(currentTravelRequest.status === "Approved By Budget Holder"){
+                    createdBySubject = "Budget Holder: " + budgetHolder.profile.fullName + " has approved " +  createdBy.profile.fullName + "'s travel request";
+                    budgetHolderSubject = "You have approved " + createdBy.profile.fullName + "'s travel request";
+                }else{
+                    createdBySubject = "Budget Holder: " + budgetHolder.profile.fullName + " has rejected your travel request";
+                    budgetHolderSubject = "You have rejected " + createdBy.profile.fullName + "'s travel request";
+                }
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
+                }
+
+                if (budgetHolder.emails.length > 0){
+                    budgetHolderEmail = budgetHolder.emails[0].address;
+                    budgetHolderEmail = budgetHolderEmail  + ", bulkpay@c2gconsulting.com";
+                    console.log(budgetHolderEmail);
+                }
+
+                //Send to requestor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Budget Holder
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
+
+
             }else{
                 let result = TravelRequisition2s.insert(currentTravelRequest);
             }
