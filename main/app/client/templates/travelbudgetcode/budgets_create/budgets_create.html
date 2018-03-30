@@ -49,6 +49,15 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-6 -->
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="externalNotificationEmail" class="control-label">External Notification Emails <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="externalNotificationEmail" class="form-control" placeholder="Notification Email List" ng-model="externalNotificationEmail" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                        </div><!-- row -->
                         {{#if errorMessage}}
                         <p class="text-center error">{{errorMessage}}</p>
                         {{/if}}

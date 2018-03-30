@@ -16,7 +16,9 @@ Core.Schemas.Budget = new SimpleSchema({
     financeApproverId: {
        type:String
     },
-
+    externalNotificationEmail: {
+       type:String
+    },
     code: {
         type: String
     },

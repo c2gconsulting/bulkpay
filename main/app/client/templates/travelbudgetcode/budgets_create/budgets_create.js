@@ -9,8 +9,9 @@ Template.BudgetCreate.events({
       let code = $('[name=code]').val();
       let name = $('[name=name]').val();
 
-      let employeeId =  $('[name="employeeId"]').val()
-      let financeApproverId =  $('[name="financeApproverId"]').val()
+      let employeeId =  $('[name="employeeId"]').val();
+      let financeApproverId =  $('[name="financeApproverId"]').val();
+      let externalNotificationEmail = $('[name="externalNotificationEmail"]').val();
 
      // employees: Core.returnSelection($('[name="employee"]')),
 
@@ -25,10 +26,11 @@ Template.BudgetCreate.events({
 
         let newBudget = {
           businessId: Session.get('context'),
-          code : code,
-          name : name,
-          employeeId :employeeId,
-          financeApproverId :financeApproverId
+          code: code,
+          name: name,
+          employeeId: employeeId,
+          financeApproverId:financeApproverId,
+          externalNotificationEmail: externalNotificationEmail
 
         };
 
