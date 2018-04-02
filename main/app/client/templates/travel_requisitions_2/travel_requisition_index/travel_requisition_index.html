@@ -29,9 +29,13 @@
                 {{/unless}}
                 <div class="row">
                     <div class="col-sm-12">
+                        {{#if hasUnretiredTrips}}
+                        <span class="mb20 pull-right text-danger">You cannot create a new travel request until your current request is complete, and you have done your retirements</span>
+                        {{else}}
                         <span class="mb20 pull-right" id="createTravelRequisition">
                             <a class="btn btn-primary">New Travel Request</a>
                         </span>
+                        {{/if}}
                         <br/><br/>
                     </div>
                 </div>
@@ -43,7 +47,7 @@
                                 <tr>
                                     <th>Creator</th>
                                     <th>Description</th>
-                                   
+
                                     <th>Date created</th>
                                     <th>Status</th>
                                     <!--<th>Total Trip Cost</th>-->
@@ -54,7 +58,7 @@
                                 <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                     <td nowrap>{{getCreatedByFullName this}}</td>
                                     <td>{{description}}</td>
-                                   
+
                                     {{#if createdAt}}
                                     <td nowrap>{{formatDate createdAt}}</td>
                                     {{else}}
@@ -68,7 +72,21 @@
                         </table>
                     </div>
                 </div>
-
+                <div class="row">
+                    <div class="row">
+                        <div class="pull-right">
+                            <ul class="pagination pagination-split pagination-sm pagination-contact">
+                                {{#each (repeat numberOfPages)}}
+                                    {{#if condition currentPage 'eq' this}}
+                                    <li class="active"><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{else}}
+                                    <li><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 {{else}}
                 <div class="row">
                     <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
@@ -76,7 +94,7 @@
                             <tr>
                                 <th>Creator</th>
                                 <th>Description</th>
-                            
+
                                 <th>Date created</th>
                                 <th>Status</th>
                                 <!--<th>Total Trip Cost</th>-->

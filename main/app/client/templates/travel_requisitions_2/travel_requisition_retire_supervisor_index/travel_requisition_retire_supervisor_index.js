@@ -56,7 +56,10 @@ Template.TravelRequisition2SupervisorRetirementIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({$and : [
+            { supervisorId: Meteor.userId()},
+            { $or : [ { retirementStatus : "Retirement Submitted" }, { retirementStatus : "Retirement Approved By Supervisor" }, { retirementStatus : "Retirement Rejected By Supervisor"}] }
+        ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;

@@ -54,6 +54,21 @@ Template.TravelRequisition2Index.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
+    'hasUnretiredTrips': function() {
+
+        let unretiredCount = TravelRequisition2s.find({
+            $and : [
+                { retirementStatus: "Not Retired"},
+                { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+            ]}).count()
+        console.log("Unretired Count: " + unretiredCount);
+        if (unretiredCount > 0){
+            return true;
+        }else{
+            return false;
+        }
+
+    },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
@@ -73,15 +88,15 @@ Template.TravelRequisition2Index.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
-  
+
     'totalTripCostNGN': function(currentTravelRequest) {
         if(currentTravelRequest) {
             currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
-            
+
             return totalTripCostNGN;
         }
     },
-    
+
 });
 
 /*****************************************************************************/
@@ -97,7 +112,7 @@ Template.TravelRequisition2Index.onCreated(function () {
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
-   
+
     self.totalTripCost = new ReactiveVar(0)
 
     self.getTravelRequestsICreated = function(skip) {

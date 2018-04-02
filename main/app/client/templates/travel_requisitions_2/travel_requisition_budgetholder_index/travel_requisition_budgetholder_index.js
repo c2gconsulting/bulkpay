@@ -56,7 +56,11 @@ Template.TravelRequisition2BudgetHolderIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({
+            $and : [
+            { budgetHolderId: Meteor.userId()},
+            { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+        ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
