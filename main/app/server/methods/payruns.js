@@ -757,7 +757,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             formula = formula.replace(regex, payBasedOnHours);
                                         } else {
-                                            formula = formula.replace(regex, paytypes[i].value);
+                                            let payTypeAmount = paytypes[i].value
+                                            if(x.currency === tenant.baseCurrency.iso && paytypes[i].currency !== tenant.baseCurrency.iso) {
+                                                payTypeAmount = convertForeignCurrencyToBaseCurrency(paytypes[i], parseFloat(payTypeAmount), currencyRatesForPeriod)
+                                            }
+
+                                            formula = formula.replace(regex, payTypeAmount);
                                         }
                                     }
                                 }
@@ -1298,6 +1303,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         const taxComputationInput = [
                             {code: 'Consultation Tax', value: ''}
                         ];
+                        const taxBucketCurrency = taxBucket ? taxBucket.currency : 'NGN'
 
                         if(taxBucket) {
                             currentEmployeeInPayrunLoop.employeeProfile = currentEmployeeInPayrunLoop.employeeProfile || {}
@@ -1334,8 +1340,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         }
 
                         const taxProcessing = [];
-                        taxProcessing.push({code: `Tax(NGN)`, derived: '(TaxBucket)'});
-                        taxProcessing.push({code: `Tax(NGN)`, derived: netTaxLocal});
+                        taxProcessing.push({code: `Tax(${taxBucketCurrency})`, derived: '(TaxBucket)'});
+                        taxProcessing.push({code: `Tax(${taxBucketCurrency})`, derived: netTaxLocal});
                         taxLog = {paytype: sfWithholdingTaxDetails.code, input: taxComputationInput, processing: taxProcessing};
 
                         //populate result for tax
@@ -1343,13 +1349,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             amountLC: netTaxLocal, amountPC: '', code: taxBucketId.code, 
                             description: taxBucketId.name, type: 'Deduction'});
                         //--
-                        if(!paymentsAccountingForCurrency.deduction['NGN']) {
-                            paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
+                        if(!paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`]) {
+                            paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`] = {payments: []}
                         }
-                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                        paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`].payments.push({
                             title: taxBucketId.name,
                             code: taxBucketId.code,
-                            currency: 'NGN',
+                            currency: `${taxBucketCurrency}`,
                             reference: 'Tax',
                             value: netTaxLocal * -1
                         })

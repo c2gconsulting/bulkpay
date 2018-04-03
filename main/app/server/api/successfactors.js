@@ -697,7 +697,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     })
 
     let consultancyFeePc = _.find(paymentsData, payment => {
-      return payment.payComponent === 'CON_FEE'
+      return (payment.payComponent === 'CON_FEE_NG' || payment.payComponent === 'CON_FEE_US')
     })
     if(consultancyFeePc) {
       const consultancyPayType = PayTypes.findOne({
