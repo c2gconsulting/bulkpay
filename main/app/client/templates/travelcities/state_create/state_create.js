@@ -12,6 +12,7 @@ Template.TravelCityCreate.events({
       let isInternational = $('#isInternational').is(':checked');
       let groundTransport = parseFloat($('[name=groundTransport]').val());
       let airportPickupDropOffCost = parseFloat($('[name=airportPickupDropOffCost]').val());
+      let notificationEmail = $('[name=notificationEmail]').val();
 
       // if (!Perdiem || Perdiem.trim().length === 0) {
       //   Template.instance().errorMessage.set("Please enter the state perdiem");
@@ -27,7 +28,8 @@ Template.TravelCityCreate.events({
           currency : currency,
           isInternational: isInternational,
           groundTransport: groundTransport,
-          airportPickupDropOffCost: airportPickupDropOffCost
+          airportPickupDropOffCost: airportPickupDropOffCost,
+          notificationEmail: notificationEmail
         };
 
         Meteor.call('travelcity/create', newTravelcity, (err, res) => {

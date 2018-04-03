@@ -63,11 +63,9 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
     'click #reject': (e, tmpl) => {
         let budgetHolderComment = $('[name=budgetHolderComment]').val();
-        let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Rejected By Budget Holder";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe

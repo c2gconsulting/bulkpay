@@ -37,6 +37,7 @@
 
                                 <th>Budget Holder</th>
                                 <th>Finance Approver</th>
+                                <th>Additional Notification Emails</th>
 
                                 <th>Status</th>
                                 <th></th>
@@ -64,6 +65,7 @@
 
         <td>{{getEmployeeNameById data.employeeId}}</td>
         <td>{{getEmployeeNameById data.financeApproverId}}</td>
+        <td>{{data.externalNotificationEmail}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

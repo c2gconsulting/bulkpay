@@ -10,6 +10,7 @@
                             <li><a ui-sref="business.overview">Business</a></li>
                             <li>{{name}}</li>
                             <li>Travel City</li>
+
                         </ul>
 
                          <h4>Travel City</h4>
@@ -38,6 +39,7 @@
                                 <th>Airport Pickup</th>
                                 <th>Currency</th>
                                 <th>International</th>
+                                <th>Notification List</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -65,6 +67,7 @@
         <td>{{data.airportPickupDropOffCost}}</td>
         <td>{{data.currency}}</td>
         <td>{{data.isInternational}}</td>
+        <td>{{data.notificationEmail}}</td>        
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

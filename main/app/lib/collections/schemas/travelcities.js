@@ -31,6 +31,10 @@ Core.Schemas.Travelcity = new SimpleSchema({
       type: Boolean,
       defaultValue: false
   },
+  notificationEmail: {
+    type: String,
+    optional: true
+  },
   status: {
     type: String,
     optional: true,

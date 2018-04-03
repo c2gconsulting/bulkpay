@@ -56,7 +56,8 @@ Template.TravelRequisition2RetirementIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({$and : [
+            {createdBy: Meteor.userId()},{ status : "Approved By Budget Holder" } ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;

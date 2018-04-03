@@ -56,6 +56,14 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="notificationEmail" class="control-label">Email Notification List <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="notificationEmail" class="form-control" placeholder="Email Notification List" ng-model="notificationEmail"/>
+                                </div>
+                            </div>
+                        </div>
                         {{#if errorMessage}}
                         <p class="text-center error">{{errorMessage}}</p>
                         {{/if}}
