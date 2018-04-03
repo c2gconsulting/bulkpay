@@ -15,7 +15,6 @@
     "eventie": "^1.0.6",
     "get-size": "^2.0.2",
     "jStat": "^1.5.3",
-    "jdbc": "=0.1.4",
     "jquery": "^2.2.3",
     "jsonwebtoken": "^8.1.1",
     "ladda": "^1.0.0",

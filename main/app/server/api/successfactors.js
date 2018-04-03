@@ -458,6 +458,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
               'successFactors.externalCode': payment.payComponent,
               businessId: business._id
             })
+            const payTypeWithNoSpace = payment.payComponent.replace(/\s/g,'');
             if(payType) {
               empBpPaytypeAmounts.push({
                 paytype: payType._id,
@@ -467,7 +468,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
               const addTotal = !_.contains(noAddTotal, payment.payComponent)
     
               PayTypes.update({_id: payType._id}, {$set: {
-                code: payment.payComponent,
+                code: payTypeWithNoSpace,
                 title: payCompData.name,
                 frequencyCode: frequency,
                 type: payCompData.isEarning ? 'Benefit' : 'Deduction',
@@ -480,7 +481,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
               const addTotal = !_.contains(noAddTotal, payment.payComponent)
 
               const bpPayTypeId = PayTypes.insert({
-                code: payment.payComponent,
+                code: payTypeWithNoSpace,
                 title: payCompData.name,
                 frequencyCode: frequency,
                 currency: payment.currencyCode,
@@ -561,7 +562,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     let positionParentId;
     const positionsUrl = `${baseUrl}/odata/v2/Position?$filter= code eq '${positionData.positionCode}'&$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
           
-    let getToSync = Meteor.wrapAsync(HTTP.get);  
+    let getToSync = Meteor.wrapAsync(HTTP.get);
     const positionsRes = getToSync(positionsUrl, {headers: requestHeaders})
     if(positionsRes) {
       try {
