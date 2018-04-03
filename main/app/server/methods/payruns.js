@@ -870,9 +870,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]) {
                                             const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
                                             processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
-                                            processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${numDaysEmployeeCanWorkInMonth} * 8 * ${hourlyRate}`})
-                                            
-                                            value = (numDaysEmployeeCanWorkInMonth * 8) * hourlyRate
+                                            processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${totalHoursWorkedInPeriod} * ${hourlyRate}`})
                                         } else {
                                             processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
                                             value = 0
