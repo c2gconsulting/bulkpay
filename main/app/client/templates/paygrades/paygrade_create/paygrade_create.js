@@ -63,11 +63,13 @@ Template.PaygradeCreate.events({
             });
             return paytypes;
         };
+
+        const applyPayGradePaytypesToEmployees = $('#applyPayGradePaytypesToEmployees').is(":checked");
         
         if(tmpl.data){//edit action for updating tax
             const pygId = tmpl.data._id;
             const code = tmpl.data.code;
-            Meteor.call("paygrade/update", pygId, details, (err, res) => {
+            Meteor.call("paygrade/update", pygId, details, applyPayGradePaytypesToEmployees, (err, res) => {
                 l.stop();
                 if(err){
                     swal("Update Failed", `Cannot Update Pay Grade ${code}`, "error");
@@ -76,8 +78,7 @@ Template.PaygradeCreate.events({
                     Modal.hide("PaygradeCreate");
                 }
             });
-
-        } else{ //New Action for creating paytype}
+        } else {
             Meteor.call('paygrade/create', details, (err, res) => {
                 l.stop();
                 if (res){
