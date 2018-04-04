@@ -564,6 +564,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 
                 let employeePositionId = x.employeeProfile.employment.position
                 //--
+                let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
+
                 //--Time recording things
                 const locationsWithMaxHours = EntityObjects.find({
                     maxHoursInDayForTimeWriting: {$exists: true},
@@ -667,7 +669,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             })
                             input.push({
                                 code: 'Number of hours employee can work in month',
-                                value: numDaysEmployeeCanWorkInMonth * 8
+                                value: numDaysEmployeeCanWorkInMonth * companyWideMaxHours
                             })
 
                             input.push({
@@ -785,9 +787,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 if (parsed.result !== null && !isNaN(parsed.result)) {
                                     //negate value if paytype is deduction.
                                     x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
-                                    //--    
+                                    //--
                                     let netPayTypeAmount; //net amount used if payment type is monthly
-                                    if(x.frequency === 'Monthly' && !x.additionalPay){
+                                    if(x.frequency === 'Monthly' && !x.additionalPay && !x.hourlyRate) {
                                         netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
 
                                         if(!x.hourlyRate) {
@@ -893,7 +895,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         let processProjectAndCostCenterPay = (x) => {
                                             projectsPayDetails.projectDurations.forEach(aProject => {
                                                 // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
-                                                const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * 8)
+                                                const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * companyWideMaxHours)
                                                 let individualProjectPayAmount = fraction * value
                                                 if(tenant.baseCurrency.iso !== x.currency) {
                                                     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
@@ -905,8 +907,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     payAmount: individualProjectPayAmount
                                                 })
                                             })
-                                            let projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
-                                            costCenterPayAmount = costCentersPayDetails.fraction * value
+                                            let projectsTotalPayInPayTypeCurrency = 0
+                                            costCenterPayAmount = 0
+
+                                            if(!x.hourlyRate) {
+                                                projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
+                                                costCenterPayAmount = costCentersPayDetails.fraction * value                                                    
+                                            } else {
+                                                if(totalHoursWorkedInPeriod > 0) {
+                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                    costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value    
+                                                }
+                                            }
 
                                             // processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                             processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
@@ -1707,6 +1719,7 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
     const endDate = moment(startDate).endOf('month').toDate();
 
     let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
+    console.log(`\ncompanyWideMaxHours: `, companyWideMaxHours)
     console.log(`\nNumber of weekdays in month: `, totalNumWeekDaysInMonth)
 
     if(!businessUnitConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
