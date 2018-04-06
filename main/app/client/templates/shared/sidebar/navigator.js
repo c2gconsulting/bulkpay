@@ -269,6 +269,14 @@ Template.navigator.helpers({
           return true
       }
     },
+    isTimeWritingReportsActive: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTimeWritingReportsActive
+      } else {
+          return true
+      }
+    },
     hasSuccessfactorsManageAccess: () => {
       return Core.hasSuccessfactorManagesAccess(Meteor.userId());
     },

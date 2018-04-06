@@ -42,6 +42,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isTimeWritingActive: {
         type: Boolean
     },
+    isTimeWritingReportsActive: {
+        type: Boolean,
+        optional: true
+    },
 
     procurementRequisitionApprovalConfig: {
         type: Object

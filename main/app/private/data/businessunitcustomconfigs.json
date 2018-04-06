@@ -11,6 +11,7 @@
       "isTravelRequisitionActive": false,
       "isLeaveRequestActive": true,
       "isTimeWritingActive": true,
+      "isTimeWritingReportsActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },
@@ -49,6 +50,7 @@
       "isTravelRequisitionActive": false,
       "isLeaveRequestActive": true,
       "isTimeWritingActive": true,
+      "isTimeWritingReportsActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },
@@ -87,6 +89,7 @@
       "isTravelRequisitionActive": true,
       "isLeaveRequestActive": true,
       "isTimeWritingActive": true,
+      "isTimeWritingReportsActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },
@@ -127,6 +130,7 @@
       "isTravelRequisitionActive": true,
       "isLeaveRequestActive": true,
       "isTimeWritingActive": true,
+      "isTimeWritingReportsActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": true
       },
@@ -237,6 +241,7 @@
       "isTravelRequisitionActive": true,
       "isLeaveRequestActive": true,
       "isTimeWritingActive": true,
+      "isTimeWritingReportsActive": true,
       "procurementRequisitionApprovalConfig": {
           "requireTwoSupervisors": false
       },
@@ -340,6 +345,7 @@
       "isProcurementRequisitionActive": false,
       "isLeaveRequestActive": false,
       "isTimeWritingActive": false,
+      "isTimeWritingReportsActive": true,
       "isTravelRequisitionActive": true,
       "leaveDaysAccrual": "FixedLeaveEntitlement",
       "checkEmployeeResumptionForPayroll": true,
@@ -474,6 +480,7 @@
     "isProcurementRequisitionActive" : false,
     "isLeaveRequestActive" : false,
     "isTimeWritingActive" : false,
+    "isTimeWritingReportsActive": true,
     "isTravelRequisitionActive" : true,
     "leaveDaysAccrual" : "FixedLeaveEntitlement",
     "checkEmployeeResumptionForPayroll" : true,
@@ -690,6 +697,7 @@
     "isProcurementRequisitionActive" : false,
     "isLeaveRequestActive" : false,
     "isTimeWritingActive" : false,
+    "isTimeWritingReportsActive": true,
     "isTravelRequisitionActive" : true,
     "leaveDaysAccrual" : "FixedLeaveEntitlement",
     "checkEmployeeResumptionForPayroll" : false,

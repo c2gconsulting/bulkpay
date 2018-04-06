@@ -112,7 +112,7 @@ let getSfEmployeeIds = (jsonPayLoad) => {
 }
 
 let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
-  // console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
+  console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
   let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
 
   let personIds = []
@@ -786,6 +786,7 @@ if (Meteor.isServer) {
           return failureResponse(e.message)
         }
         let businessId = decoded.businessId;
+        console.log(`businessId: `, businessId)
 
         let body = [];
         this.request
@@ -798,6 +799,8 @@ if (Meteor.isServer) {
 
           Partitioner.directOperation(function() {
             let business = BusinessUnits.findOne({_id: businessId})
+            console.log(`business: `, business)
+
             if(business) {
               Partitioner.bindGroup(business._groupId, function() {
                 SuccessFactorsEvents.insert({
@@ -859,6 +862,8 @@ if (Meteor.isServer) {
                   setBPEmployeeStatus(business, personIdExternal, 'Active')
                 })
               }
+            } else {
+              console.log(`business can't be found in database`)
             }
           })
         }));        
