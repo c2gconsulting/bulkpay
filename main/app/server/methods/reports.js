@@ -164,7 +164,13 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
 
     timeReportDataFromDb.forEach(aTimeDatum => {
         let projectInReportData = _.find(reportData, aProject => {
-            return aProject.project === aTimeDatum.project
+            if(aTimeDatum.hasOwnProperty('project')) {
+                return (aProject.project === aTimeDatum.project)
+            } else if(aTimeDatum.hasOwnProperty('successFactorsCostCenter')) {
+                return (aProject.successFactorsCostCenter === aTimeDatum.successFactorsCostCenter)
+            } else {
+                return false
+            }
         })
 
         if(!projectInReportData) {// New project - New employee - New time
@@ -172,8 +178,10 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
             if(isNaN(employeeTimeTotal)) {
                 employeeTimeTotal = 0
             }
+
             reportData.push({
                 project: aTimeDatum.project,
+                successFactorsCostCenter: aTimeDatum.successFactorsCostCenter,
                 projectName: aTimeDatum.projectDetails.projectName,
                 employees: [{
                     employeeDetails: aTimeDatum.employeeDetails, 
@@ -312,7 +320,10 @@ Meteor.methods({
         } else {
             let queryObj = {
                 businessId: businessId, 
-                project: {$exists : true},
+                $or: [
+                    {project: {$exists : true}},
+                    {"successFactorsCostCenter": {$exists: true}}
+                ],
                 day: {$gte: startDate, $lte: endDate}
             }
             if(selectedEmployees && selectedEmployees.length > 0) {                
@@ -332,23 +343,33 @@ Meteor.methods({
                     _.extend(aTime.employeeDetails, employeeDetails)
                 }
                 //--
-                let project = Projects.findOne({_id: aTime.project})
-                if(project) {
+                if(aTime.hasOwnProperty('successFactorsCostCenter')) {
+                    console.log(`special aTime: `, aTime)
                     aTime.projectDetails = {}
                     let projectDetails = {
-                        _id: project._id,
-                        projectName: project.name,
+                        _id: aTime.successFactorsCostCenter || '',
+                        projectName: aTime.successFactorsCostCenter || '---',
                     }
                     _.extend(aTime.projectDetails, projectDetails)
-                }
-                //--
-                let activity = Activities.findOne({_id: aTime.activity})
-                if(activity) {
-                    aTime.activityDetails = {}
-                    let activityDetails = {
-                        activityName: activity.description
+                } else {
+                    let project = Projects.findOne({_id: aTime.project})
+                    if(project) {
+                        aTime.projectDetails = {}
+                        let projectDetails = {
+                            _id: project._id,
+                            projectName: project.name,
+                        }
+                        _.extend(aTime.projectDetails, projectDetails)
                     }
-                    _.extend(aTime.activityDetails, activityDetails)
+
+                    let activity = Activities.findOne({_id: aTime.activity})
+                    if(activity) {
+                        aTime.activityDetails = {}
+                        let activityDetails = {
+                            activityName: activity.description
+                        }
+                        _.extend(aTime.activityDetails, activityDetails)
+                    }
                 }
                 return aTime
             })
