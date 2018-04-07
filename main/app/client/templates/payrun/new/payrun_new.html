@@ -133,7 +133,7 @@
                                                     <div class="col-md-9">
                                                         <div class="form-group">
                                                             <ul class="list-inline">
-                                                                <li><input type="radio" value="Simulation" name="runtype" />Simulation</li>
+                                                                <li><input type="radio" value="Simulation" name="runtype" checked="checked" />Simulation</li>
                                                                 <li><input type="radio"  value="LiveRun" name="runtype"/>Live Run</li>
                                                             </ul>
                                                         </div><!-- form-group -->
@@ -182,7 +182,11 @@
                                         <div class="alert alert-success">
                                             <strong>Payment Processing Complete!</strong> Please note <a href="" class="alert-link">Payroll Result Saved</a> For processed employees.
                                             
-                                            <button type="button" class="btn-primary pull-right" id="export-to-csv">Export Payrun to CSV</button>
+                                            {{#if showPayrunExportButtonWithProjects}}
+                                                <button type="button" class="btn-primary pull-right" id="detailed-export-to-csv">Export Payrun to CSV</button>
+                                            {{else}}
+                                                <button type="button" class="btn-primary pull-right" id="export-to-csv">Export Payrun to CSV</button>
+                                            {{/if}}
                                             <!--<span class="pull-right">&nbsp; &nbsp; &nbsp;</span>
                                             <button type="button" class="btn-primary pull-right" id="variance-report">Variance Report</button>-->
                                         </div>

@@ -572,11 +572,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     otype: 'Location'
                 }).fetch()
                 const projectsPayDetails = 
-                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours)
+                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
                 
                 const costCentersPayDetails = 
-                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours)
+                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }                
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
@@ -1358,15 +1358,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                         //populate result for tax
                         employeeResult.payment.push({id: taxBucketId, reference: 'Tax', 
-                            amountLC: netTaxLocal, amountPC: '', code: taxBucketId.code, 
-                            description: taxBucketId.name, type: 'Deduction'});
+                            amountLC: netTaxLocal, amountPC: '', code: sfWithholdingTaxDetails.code, 
+                            description: sfWithholdingTaxDetails.name, type: 'Deduction'});
                         //--
                         if(!paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`]) {
                             paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`] = {payments: []}
                         }
                         paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`].payments.push({
-                            title: taxBucketId.name,
-                            code: taxBucketId.code,
+                            title: sfWithholdingTaxDetails.name,
+                            code: sfWithholdingTaxDetails.code,
                             currency: `${taxBucketCurrency}`,
                             reference: 'Tax',
                             value: netTaxLocal * -1
@@ -1570,6 +1570,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     final.payslip.employee.grade = grade.code;
                     final.payslip.employee.gradeId = grade._id;
                     final.payslip.period = period
+                    final.timeRecord = {}
+                    final.timeRecord.totalHoursWorkedInPeriod = totalHoursWorkedInPeriod
+                    final.timeRecord.projects = projectsPayDetails;
+                    final.timeRecord.costCenters = costCentersPayDetails;
 
                     //payement will also be sent to result for factoring and storage;
                     payresult.push(final);
@@ -1712,34 +1716,55 @@ function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRat
 }
 
 function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, totalNumWeekDaysInMonth, 
-        employeeUserId, businessUnitConfig, locationsWithMaxHours) {
+        employeeUserId, businessUnitConfig, locationsWithMaxHours, employeeData) {
     const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
     const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
     const endDate = moment(startDate).endOf('month').toDate();
 
     let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
-    console.log(`\ncompanyWideMaxHours: `, companyWideMaxHours)
-    console.log(`\nNumber of weekdays in month: `, totalNumWeekDaysInMonth)
 
     if(!businessUnitConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
-        let queryObj = {
-            businessId: businessId, 
-            project: {$exists : true},
-            day: {$gte: startDate, $lt: endDate},
-            employeeId: employeeUserId,
-            status: 'Approved'
+        let queryObj = {}
+        let groupingQuery = {}
+
+        if(!employeeData.successFactors) {
+            queryObj = {
+                businessId: businessId, 
+                project: {$exists : true},
+                day: {$gte: startDate, $lt: endDate},
+                employeeId: employeeUserId,
+                status: 'Approved'
+            }
+
+            groupingQuery = {
+                _id: {
+                  "empUserId": "$employeeId",
+                  "project": "$project"
+                }, 
+                duration: { $sum: "$duration" }
+            }
+        } else {
+            queryObj = {
+                businessId: businessId, 
+                'successFactorsCostCenter': {$exists : true},
+                day: {$gte: startDate, $lt: endDate},
+                employeeId: employeeUserId,
+                status: 'Approved'
+            }
+
+            groupingQuery = {
+                _id: {
+                  "empUserId": "$employeeId",
+                  "project": "$successFactorsCostCenter"
+                }, 
+                duration: { $sum: "$duration" }
+            }
         }
     
         let allProjectTimesInMonth = TimeWritings.aggregate([
             { $match: queryObj},
-            { $group: {
-              _id: {
-                "empUserId": "$employeeId",
-                "project": "$project"
-              }, 
-              duration: { $sum: "$duration" }
-            } }
+            { $group: groupingQuery }
         ]);
         //--
         // let totalWorkHoursInYear = 2080
@@ -1766,7 +1791,10 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
     } else {
         let queryObj = {
             businessId: businessId, 
-            project: {$exists : true},
+            $or: [
+                {project: {$exists : true}},
+                {"successFactorsCostCenter": {$exists: true}}
+            ],
             day: {$gte: startDate, $lt: endDate},
             employeeId: employeeUserId,
             status: 'Approved'
@@ -1795,8 +1823,6 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
             let fraction = 0;
 
             allProjectTimesInMonth.forEach(aProjectTime => {
-                console.log(`aProjectTime: `, aProjectTime)
-
                 projectDurations.push({
                     project: aProjectTime._id.project, 
                     duration: aProjectTime.duration
@@ -1901,7 +1927,6 @@ function getFractionForCalcCostCentersPayValue(businessId, periodMonth, periodYe
             let fraction = 0;
 
             allCostCenterTimesInMonth.forEach(aCostCenterTime => {
-                console.log(`aCostCenterTime: `, aCostCenterTime)
                 totalDuration += aCostCenterTime.duration
 
                 if(!aCostCenterTime._id.locationId) {

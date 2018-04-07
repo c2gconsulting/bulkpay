@@ -89,23 +89,30 @@
                                 </li>
 
                                 {{#if maxHoursInDayForTimeWritingPerLocationEnabled}}
-                                    <li class="list-group-item">
-                                        <div class="">
-                                            Maximum hours in day: 
+                                    {{#if isLocation}}
+                                        <li class="list-group-item">
+                                            <div class="">
+                                                <div class="row">
+                                                    Maximum hours in day: 
+                                                    <input type="text" value="{{maxHoursInDayForTimeWriting}}" id="maxHoursInDay" class="form-control" />
+                                                </div>
 
-                                            <div class="row">
-                                                <input type="text" value="{{maxHoursInDayForTimeWriting}}" id="maxHoursInDay" class="form-control" />
-                                                <button class="btn btn-primary mr5 pull-right" id="saveLocationMaxHours">Save</button>    
+                                                <div class="row">
+                                                    <input type="checkbox" id="allowWeekendTimeWriting" name="allowWeekendTimeWriting" />
+                                                    <label for="allowWeekendTimeWriting">Allow Weekend Time Record</label>
+                                                </div>
+
+                                                <div class="row">
+                                                    <button class="btn btn-primary mr5 pull-right" id="saveLocationMaxHours">Save</button>    
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
+                                        </li>
+                                    {{/if}}
                                 {{/if}}
                             </ul>
                         </div>
-
                     </div>
                 {{/with}}
-
 
             {{else}}
                 {{> Loading}}

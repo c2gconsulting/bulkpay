@@ -130,7 +130,17 @@ Template.Node.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.maxHoursInDayForTimeWritingPerLocationEnabled
         }
-    }
+    },
+    'isLocation': () => {
+        let node = Session.get('node');
+        if(node && node !== "root") {
+            const entity = EntityObjects.findOne({_id: node}) || {};
+
+            if(entity) {
+                return entity.otype === 'Location'
+            }    
+        }
+    },
 });
 
 /*****************************************************************************/

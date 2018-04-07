@@ -52,6 +52,10 @@ Core.Schemas.EntityObject = new SimpleSchema({
         type: Number,
         decimal: true
     },
+    allowWeekendTimeWriting: {
+        type: Boolean,
+        optional: true
+    },
 
     "successFactors": {//externalCode, costCenter.code
         label: "Success Factors Config",

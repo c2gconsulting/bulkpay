@@ -31,6 +31,11 @@ Core.Schemas.PayResult = new SimpleSchema({
     type: Object,
     optional: true
   }, 
+  timeRecord: {
+    type: Object,
+    optional: true,
+    blackbox: true
+  },
   createdAt: {
     type: Date,
     autoValue: function () {
