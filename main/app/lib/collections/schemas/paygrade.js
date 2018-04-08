@@ -47,6 +47,11 @@ Core.Schemas.PayGrade = new SimpleSchema({
         type: String,
         optional: true
     },
+    enablePensionPayments: {
+        type: Boolean,
+        optional: true,
+        defaultValue: true,
+    },
     "successFactors": {// externalCode
         label: "Success Factors PayGroup Config",
         optional: true,

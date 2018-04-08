@@ -134,7 +134,8 @@ Template.PayrunApproval.helpers({
     'header': () => {
         let rawData = Template.instance().netPayReportResults.get();
         let headers = rawData.headers
-
+        console.log(`headers: `, headers)
+        
         let arrayToReturn = []
 
         for(let i = 0; i < headers.length; i++) {

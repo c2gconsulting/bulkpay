@@ -612,7 +612,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     pgp = grade.payGroups[0]; //first element of paygroup// {review}
                 }
                 //payElemnts derivation;
-                const {tax, pension} = getPaygroup(pgp);
+                let {tax, pension} = getPaygroup(pgp);
 
                 let defaultTaxBucket = 0, pensionBucket = 0, log = [];  //check if pagrade uses default tax bucket
                 let assignedTaxBucket, grossIncomeBucket = 0, totalsBucket = 0, reliefBucket = 0;
@@ -1141,61 +1141,62 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 if(!skipToNextEmployee) {//further processing after evaluation of all paytypes! pension calculation and tax calculation
                     //get employee and employer contribution
                     let {employerPenContrib, employeePenContrib, grossPension, pensionLog} = getPensionContribution(pensionBucket, pension);  //@@technicalPaytype
-                    
-                    if(pension) {
-                        let processing = pensionLog.processing
 
-                        if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
-                            processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
-                            processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-        
-                            employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                            employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
-                        } else {
-                            processing.push({code: pension.code + "_EE - (Employee contribution)", derived: ` ${employeePenContrib}`});                    
-                            processing.push({code: pension.code + "_ER - (Employer contribution)", derived: ` ${employerPenContrib}`});
+                    if(grade.enablePensionPayments) {
+                        if(pension) {
+                            let processing = pensionLog.processing
+
+                            if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
+                                processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
+                                processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
+            
+                                employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                            } else {
+                                processing.push({code: pension.code + "_EE - (Employee contribution)", derived: ` ${employeePenContrib}`});                    
+                                processing.push({code: pension.code + "_ER - (Employer contribution)", derived: ` ${employerPenContrib}`});
+                            }
+                        }
+                        
+                        //populate result for employee and employer pension contribution
+                        if(pension) {
+                            employeeResult.payment.push({id: pension._id, reference: 'Pension', 
+                                amountLC: employeePenContrib, amountPC: '', 
+                                code: pension.code + '_EE', 
+                                description: pension.name + ' Employee', type: 'Deduction'});
+                            employeeResult.payment.push({id: pension._id, reference: 'Pension', 
+                                amountLC: employerPenContrib, amountPC: '', 
+                                code: pension.code + '_ER', 
+                                description: pension.name + ' Employer', type: 'Others'});
+
+                            if(!paymentsAccountingForCurrency.deduction['NGN']) {
+                                paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
+                            }
+                            if(!paymentsAccountingForCurrency.others['NGN']) {
+                                paymentsAccountingForCurrency.others['NGN'] = {payments: []}
+                            }
+                            paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                                title: pension.name + ' Employee',
+                                code: pension.code + '_EE',
+                                currency: 'NGN',
+                                reference: 'Pension',
+                                value: -1 * employeePenContrib
+                            })
+                            paymentsAccountingForCurrency.others['NGN'].payments.push({
+                                title: pension.name + ' Employer',
+                                code: pension.code + '_ER',
+                                currency: 'NGN',
+                                reference: 'Pension',
+                                value: employerPenContrib
+                            })
+                        }
+                        
+                        if(pensionLog) {   //add pension calculation log
+                            log.push(pensionLog)
                         }
                     }
-                    
-                    //populate result for employee and employer pension contribution
-                    if(pension) {
-                        employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                            amountLC: employeePenContrib, amountPC: '', 
-                            code: pension.code + '_EE', 
-                            description: pension.name + ' Employee', type: 'Deduction'});
-                        employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                            amountLC: employerPenContrib, amountPC: '', 
-                            code: pension.code + '_ER', 
-                            description: pension.name + ' Employer', type: 'Others'});
-
-                        if(!paymentsAccountingForCurrency.deduction['NGN']) {
-                            paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
-                        }
-                        if(!paymentsAccountingForCurrency.others['NGN']) {
-                            paymentsAccountingForCurrency.others['NGN'] = {payments: []}
-                        }
-                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
-                            title: pension.name + ' Employee',
-                            code: pension.code + '_EE',
-                            currency: 'NGN',
-                            reference: 'Pension',
-                            value: -1 * employeePenContrib
-                        })
-                        paymentsAccountingForCurrency.others['NGN'].payments.push({
-                            title: pension.name + ' Employer',
-                            code: pension.code + '_ER',
-                            currency: 'NGN',
-                            reference: 'Pension',
-                            value: employerPenContrib
-                        })
-                    }
-                    
-                    if(pensionLog) {   //add pension calculation log
-                        log.push(pensionLog)
-                    }
-
                     //add employee to relief Bucket
-                    reliefBucket += (grossPension || 0); //nagate employee Pension contribution and add to relief bucket
+                    reliefBucket += (grossPension ? grossPension : 0); //nagate employee Pension contribution and add to relief bucket
 
                     //--Tax processing follows
                     // let netTax = null
@@ -1310,6 +1311,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             });
                         }
                     } else if(sfWithholdingTaxDetails) {
+                        tax = sfWithholdingTaxDetails;
                         const taxBucketId = sfWithholdingTaxDetails.SuccessFactorsWithholdingTaxBucketPayTypeId
                         const taxBucket = PayTypes.findOne({_id: taxBucketId})
                         const taxComputationInput = [
@@ -1420,13 +1422,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }); // negate add tax to deduction
                     //--End of Tax processing
 
-                    if(pension) {                        
-                        let valueInForeignCurrency = ''
-                        final.payslip.deduction.push({title: `${pension.code}_EE`, code: `${pension.name} Employee`, value: employeePenContrib * -1, valueInForeignCurrency});
-                        // if(pension.displayEmployerInPayslip) {
-                            valueInForeignCurrency = ''
-                            final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib, valueInForeignCurrency}]); //if employer contribution (displayEmployerInPayslip) add to other payments
-                        // }
+                    if(pension) {
+                        if(grade.enablePensionPayments) {
+                            let valueInForeignCurrency = ''
+                            final.payslip.deduction.push({title: `${pension.code}_EE`, code: `${pension.name} Employee`, value: employeePenContrib * -1, valueInForeignCurrency});
+                            // if(pension.displayEmployerInPayslip) {
+                                valueInForeignCurrency = ''
+                                final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib, valueInForeignCurrency}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+                            // }    
+                        }
                     } else {
                         final.payslip.others = others
                     }

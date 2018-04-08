@@ -119,7 +119,7 @@ Meteor.methods({
         }
         return false;
     },
-    "account/customLoginWithEmail": function(userEmail, hashedPassword) {
+    "account/customLoginWithEmail": function(userEmail, hashedPassword, businessId) {
         if(!userEmail) {
             throw new Meteor.Error(401, "Email not specified");
         }
@@ -127,7 +127,10 @@ Meteor.methods({
             throw new Meteor.Error(401, "Password not specified");
         }
         
-        let user = Meteor.users.findOne({'emails.address': userEmail})
+        let user = Meteor.users.findOne({
+            'emails.address': userEmail,
+            // 'businessIds': businessId
+        })
 
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {

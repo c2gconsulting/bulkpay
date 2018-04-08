@@ -242,8 +242,15 @@
                                             </div>
                                         </div>
 
-                                        <input type="checkbox" id="applyPayGradePaytypesToEmployees">
-                                        <label for="applyPayGradePaytypesToEmployees">Apply to employees in pay grade</label>
+                                        {{#if isInUpdateMode}}
+                                            <input type="checkbox" id="applyPayGradePaytypesToEmployees">
+                                            <label for="applyPayGradePaytypesToEmployees">Apply to employees in pay grade</label>
+                                        {{/if}}
+
+                                        <div>
+                                            <input type="checkbox" id="enablePensionPayments" checked="checked">
+                                            <label for="enablePensionPayments">Enable Pension Payments</label>
+                                        </div>
                                     </div>
 
 

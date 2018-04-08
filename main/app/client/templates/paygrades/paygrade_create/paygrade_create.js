@@ -17,7 +17,8 @@ Template.PaygradeCreate.events({
             leaveRequest: $('[name="leaveRequest"]').val(),
             status: $('[name="status"]').val(),
             payTypes: getPaytypes(),
-            payTypePositionIds: payTypesPositionOnPayrunExport()
+            payTypePositionIds: payTypesPositionOnPayrunExport(),
+            enablePensionPayments: $('#enablePensionPayments').is(":checked")
         };
 
         let currencyCode = $('[name="currencyCode"]').val()
@@ -227,6 +228,9 @@ Template.PaygradeCreate.helpers({
         } else {
             return 'New Pay Grade'
         }
+    },
+    'isInUpdateMode': () => {
+        return Template.instance().data
     },
     'allCurrencies': () => {
         return [""].concat(Core.currencies());
