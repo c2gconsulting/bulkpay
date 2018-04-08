@@ -151,6 +151,11 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    hsdfTimeSheetReportEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
 
     "payrun": {
         label: "Payrun",

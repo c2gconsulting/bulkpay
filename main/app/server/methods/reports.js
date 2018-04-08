@@ -379,6 +379,83 @@ Meteor.methods({
         }
     },
 
+    'reports/timesForEveryoneByProject_Tabular': function(businessId, startDate, endDate, selectedEmployees) {
+        const queryObj = {
+            businessId: businessId, 
+            'successFactorsCostCenter': {$exists : true},
+            day: {$gte: startDate, $lt: endDate},
+            status: 'Approved'
+        }
+        if(selectedEmployees && selectedEmployees.length > 0) {                
+            queryObj.employeeId = {$in: selectedEmployees}
+        }
+
+        const groupingQuery = {
+            _id: {
+              "employeeId": "$employeeId",
+              "project": "$successFactorsCostCenter"
+            }, 
+            duration: { $sum: "$duration" }
+        }
+
+        let allProjectTimesInMonth = TimeWritings.aggregate([
+            { $match: queryObj},
+            { $group: groupingQuery }
+        ]);
+        // console.log(`allProjectTimesInMonth: `, allProjectTimesInMonth)
+
+        const finalResult = []
+        const listOfProjectCodes = []
+
+        allProjectTimesInMonth.forEach(timeRecord => {
+            const gotEmployeeTime = _.find(finalResult, employeeTime => {
+                if(timeRecord._id.employeeId) {
+                    return employeeTime._id === timeRecord._id.employeeId
+                }
+            })
+            if(!gotEmployeeTime) {
+                const employee = Meteor.users.findOne({_id: timeRecord._id.employeeId})
+                if(employee) {
+                    employee.employeeProfile = employee.employeeProfile || {}
+                    employee.employeeProfile.employeeId = employee.employeeProfile.employeeId || '---'
+                    
+                    const firstEmployeeTimeRecord = {
+                        _id: timeRecord._id.employeeId,
+                        employeeFullName: employee.profile.fullName,
+                        employeeId: employee.employeeProfile.employeeId,
+                        totalDuration: timeRecord.duration,
+                        projects: [{
+                            project: timeRecord._id.project,
+                            duration: timeRecord.duration
+                        }]
+                    }
+                    finalResult.push(firstEmployeeTimeRecord)
+                }
+            } else {
+                let projects = gotEmployeeTime.projects;
+                let foundEmployeeProjectTime = _.find(projects, project => {
+                    return project.project === timeRecord._id.project
+                })
+                if(foundEmployeeProjectTime) {
+                    foundEmployeeProjectTime.duration += timeRecord.duration
+                } else {
+                    projects.push({
+                        project: timeRecord._id.project,
+                        duration: timeRecord.duration
+                    })
+                }
+                gotEmployeeTime.totalDuration += timeRecord.duration
+            }
+
+            if(listOfProjectCodes.indexOf(timeRecord._id.project || '---') < 0) {
+                listOfProjectCodes.push(timeRecord._id.project || '---')                
+            }
+        })
+        console.log(`finalResult: `, finalResult)
+
+        return {employeeData: finalResult, projectCodes: listOfProjectCodes}
+    },
+
     'reports/timesForEveryoneByUnit': function(businessId, startDate, endDate, selectedEmployees) {
         check(businessId, String)
         this.unblock()

@@ -36,6 +36,8 @@
       },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
+      "hsdfTimeSheetReportEnabled": false,
+
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -76,6 +78,8 @@
       },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
+      "hsdfTimeSheetReportEnabled": false,
+
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -118,6 +122,7 @@
       },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
+      "hsdfTimeSheetReportEnabled": false,
       "isActive": true,
       "_groupId": "MNBvtuMhKfpz2Sic7"
   },
@@ -166,6 +171,8 @@
       },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
+      "hsdfTimeSheetReportEnabled": false,
+
       "isActive": true,
       "_groupId": "mYssKhxYo3mnxmoQd",
       "travelRequestConfig": {
@@ -270,6 +277,8 @@
       },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
+      "hsdfTimeSheetReportEnabled": false,
+
       "isActive": true,
       "_groupId": "FLTGdyX8jb9Yx2kXB",
       "travelRequestConfig": {
@@ -379,6 +388,7 @@
 
        "skipCompanyListPageOnLogin": true,
        "onLoginFirstBlazeTemplate": "TravelRequisition2Index",
+        "hsdfTimeSheetReportEnabled": true,
 
       "isActive": true,
       "_groupId": "QyPY7RY4Hc2dqZTem",
@@ -514,7 +524,8 @@
     
     "skipCompanyListPageOnLogin": true,
     "onLoginFirstBlazeTemplate": "TravelRequisition2Index",
-      "showPayrunExportButtonWithProjects": true,
+    "showPayrunExportButtonWithProjects": true,
+    "hsdfTimeSheetReportEnabled": true,
     
     "isActive" : true,
     "_groupId" : "QyPY7RY4Hc2dqZTem",
@@ -731,6 +742,8 @@
     "skipCompanyListPageOnLogin" : true,
     "onLoginFirstBlazeTemplate" : "TravelRequisition2Index",
     "showPayrunExportButtonWithProjects": true,
+    "hsdfTimeSheetReportEnabled": true,
+    
     "isActive" : true,
     "payrun" : {
         "fullPayOnTimeRecorded" : true

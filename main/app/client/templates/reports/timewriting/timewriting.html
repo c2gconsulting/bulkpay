@@ -50,12 +50,16 @@
                                                             {{#transformableDatepicker}}
                                                                 <input name="endTime" type="text" class="form-control datepicker" data-field="endTime" />
                                                             {{/transformableDatepicker}}
-                                                        </div><!-- form-group -->
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <button class="btn btn-primary" id="getReportForProjectsForDisplay">Project reports</button>
-                                                        <button class="btn btn-primary" id="getReportForUnitsForDisplay">Cost-Center reports</button>
+                                                        {{#if hsdfTimeSheetReportEnabled}}
+                                                            <button class="btn btn-primary" id="timesForEveryoneByProject_Tabular">Project reports</button>                                                        
+                                                        {{else}}
+                                                            <button class="btn btn-primary" id="getReportForProjectsForDisplay">Project reports</button>
+                                                            <button class="btn btn-primary" id="getReportForUnitsForDisplay">Cost-Center reports</button>
+                                                        {{/if}}
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -69,65 +73,107 @@
                                                                     {{/each}}
                                                                 </select>
                                                             {{/semanticselect}}
-                                                        </div><!-- form-group -->
+                                                        </div>
                                                     </div>
                                                 </div>
+
                                                 {{#if showingReportsForProjects}}
-                                                {{#if condition timeWritingReports.length '>' 0}}
-                                                {{#if timeWritingReports}}
-                                                <button class="btn btn-primary" id="exportReportForProjects">
-                                                    <i class='glyphicon glyphicon-download'></i>
-                                                    Export
-                                                </button>
-                                                <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Project > Employees</th>
-                                                            <th>Hours</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {{#each timeWritingReports}}
-                                                            <tr>
-                                                                <td><b>Project: {{projectName}}</b></td>
-                                                                <td></td>
-                                                            </tr>
-
-                                                            {{#each this.employees}}
-                                                                <tr>
-                                                                    <td><b>Employee ID: {{employeeDetails.employmentCode}} - {{this.employeeDetails.fullName}}</b></td>
-                                                                    <td></td>
-                                                                </tr>
-
-                                                                {{#each this.days}}
+                                                    {{#if condition timeWritingReports.length '>' 0}}
+                                                        {{#if timeWritingReports}}
+                                                            <button class="btn btn-primary" id="exportReportForProjects">
+                                                                <i class='glyphicon glyphicon-download'></i>
+                                                                Export
+                                                            </button>
+                                                            <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                                                                <thead>
                                                                     <tr>
-                                                                        <td>{{day}}</td>
-                                                                        <td>{{duration}}</td>
+                                                                        <th>Project > Employees</th>
+                                                                        <th>Hours</th>
                                                                     </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {{#each timeWritingReports}}
+                                                                        <tr>
+                                                                            <td><b>Project: {{projectName}}</b></td>
+                                                                            <td></td>
+                                                                        </tr>
 
-                                                                    {{#if isLastIndex ../days @index}}
-                                                                    <tr>
-                                                                        <td class="text-right"><b>EmployeeTotal</b>: </td>
-                                                                        <td>{{../employeeTimeTotal}}</td>
-                                                                    </tr>
-                                                                    {{/if}}
-                                                                {{/each}}
-                                                                {{#if isLastIndex ../employees @index}}
-                                                                    <tr>
-                                                                        <td class="text-right"><b>Project Total Hours</b>: </td>
-                                                                        <td>{{../projectTotalHours}}</td>
-                                                                    </tr>
-                                                                    {{/if}}
-                                                            {{/each}}
-                                                        {{/each}}
-                                                    </tbody>
-                                                </table>
+                                                                        {{#each this.employees}}
+                                                                            <tr>
+                                                                                <td><b>Employee ID: {{employeeDetails.employmentCode}} - {{this.employeeDetails.fullName}}</b></td>
+                                                                                <td></td>
+                                                                            </tr>
+
+                                                                            {{#each this.days}}
+                                                                                <tr>
+                                                                                    <td>{{day}}</td>
+                                                                                    <td>{{duration}}</td>
+                                                                                </tr>
+
+                                                                                {{#if isLastIndex ../days @index}}
+                                                                                <tr>
+                                                                                    <td class="text-right"><b>EmployeeTotal</b>: </td>
+                                                                                    <td>{{../employeeTimeTotal}}</td>
+                                                                                </tr>
+                                                                                {{/if}}
+                                                                            {{/each}}
+                                                                            {{#if isLastIndex ../employees @index}}
+                                                                                <tr>
+                                                                                    <td class="text-right"><b>Project Total Hours</b>: </td>
+                                                                                    <td>{{../projectTotalHours}}</td>
+                                                                                </tr>
+                                                                                {{/if}}
+                                                                        {{/each}}
+                                                                    {{/each}}
+                                                                </tbody>
+                                                            </table>
+                                                        {{/if}}
+                                                        {{else}}
+                                                        <div class="alert alert-danger text-center">
+                                                            <p>No times recorded for any project in the selected period</p>
+                                                        </div>
+                                                    {{/if}}
                                                 {{/if}}
-                                                {{else}}
-                                                <div class="alert alert-danger text-center">
-                                                    <p>No times recorded for any project in the selected period</p>
-                                                </div>
-                                                {{/if}}
+
+                                                {{#if hsdfTimeSheetReportEnabled}}                                                    
+                                                    {{#with timeWritingReports_Tabular}}
+                                                        {{#if condition employeeData.length '>' 0}}
+                                                            <button class="btn btn-primary" id="exportReportForProjects_Tabular">
+                                                                <i class='glyphicon glyphicon-download'></i>
+                                                                Export
+                                                            </button>
+                                                            <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Employee Name</th>
+                                                                        <th>Employee ID</th>
+                                                                        <th>Total Time Field</th>
+                                                                        {{#each projectCodes}}
+                                                                            <th>{{this}}</th>                                                                    
+                                                                        {{/each}}
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {{#each employeeData}}
+                                                                        {{#let currentEmployeeData=this}}
+                                                                        <tr>
+                                                                            <td>{{employeeFullName}}</td>
+                                                                            <td>{{employeeId}}</td>
+                                                                            <td>{{totalDuration}}</td>
+                                                                            {{#each ../projectCodes}}
+                                                                                <td>{{getEmployeeProjectCodeDuration currentEmployeeData this}}</td>
+                                                                            {{/each}}
+                                                                        </tr>
+                                                                        {{/let}}
+                                                                    {{/each}}
+                                                                </tbody>
+                                                            </table>
+                                                        {{else}}
+                                                            <div class="alert alert-danger text-center">
+                                                                <p>No times recorded for any project in the selected period</p>
+                                                            </div>
+                                                        {{/if}}
+                                                    {{/with}}
                                                 {{/if}}
 
                                                 {{#if showingReportsForUnits}}
