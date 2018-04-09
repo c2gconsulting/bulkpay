@@ -217,6 +217,15 @@ Template.navigator.helpers({
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
     },
+    isAdvancedTravelEnabled: function () {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isAdvancedTravelEnabled
+        } else {
+            return false
+        }
+    },
     isTravelRequisitionActive: function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 

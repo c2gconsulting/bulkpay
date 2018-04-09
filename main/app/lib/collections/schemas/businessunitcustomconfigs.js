@@ -28,7 +28,7 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean
     },
     isHourLeaveRequestsEnabled: {
-        type: Boolean        
+        type: Boolean
     },
     isProcurementRequisitionActive: {
         type: Boolean
@@ -117,14 +117,14 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
-    
+
     isActive: {
         type: Boolean
     },
     _groupId: {
         type: String
     },
-    // fields, costs, allowDatesInPast, isCurrencyEnabled, allowedCurrencies, 
+    // fields, costs, allowDatesInPast, isCurrencyEnabled, allowedCurrencies,
     // isNumberOfDaysEnabled, isCostCenterEnabled
     travelRequestConfig: {
         type: Object,
@@ -137,7 +137,7 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         blackbox: true
     },
     notifyEmployeesOnPayrollApproval: {
-        type: Boolean        
+        type: Boolean
     },
     skipCompanyListPageOnLogin: {
         type: Boolean,
@@ -152,6 +152,11 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         optional: true
     },
     hsdfTimeSheetReportEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+    isAdvancedTravelEnabled: {
         type: Boolean,
         optional: true,
         defaultValue: false
@@ -174,7 +179,7 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     'payrun.fullPayOnTimeRecorded': {
         type: Boolean
     },
-    
+
     createdAt: {
         type: Date,
         autoValue: function () {
