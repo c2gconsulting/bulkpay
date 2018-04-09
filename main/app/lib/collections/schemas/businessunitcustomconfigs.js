@@ -162,6 +162,42 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         defaultValue: false
     },
 
+    isTravelBudgetsEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isTravelCitiesEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isAirlinesEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isAHotelsEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isFlightRoutesEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isEmailSettingsEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
     "payrun": {
         label: "Payrun",
         optional: true,

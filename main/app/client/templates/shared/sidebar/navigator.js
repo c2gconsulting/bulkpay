@@ -350,7 +350,49 @@ Template.navigator.helpers({
     },
     'showSideBarLinks': function() {
         return Session.get('context')
-    }
+    },
+    'isTravelBudgetsEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTravelBudgetsEnabled
+        }
+    },
+    'isTravelCitiesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTravelCitiesEnabled
+        }
+    },
+    'isAirlinesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isAirlinesEnabled
+        }
+    },
+    'isAHotelsEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isAHotelsEnabled
+        }
+    },
+    'isFlightRoutesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isFlightRoutesEnabled
+        }
+    },
+    'isEmailSettingsEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isEmailSettingsEnabled
+        }
+    },
 });
 
 Template.navigator.onCreated(function () {
