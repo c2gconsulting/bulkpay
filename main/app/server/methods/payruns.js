@@ -2071,13 +2071,21 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
             rules.init();
     
             console.log(`paytypes.length: `, paytypes.length)
+            console.log(`paytypes: `, paytypes)
             for (var i = 0; i < paytypes.length; i++) {
                 const code = paytypes[i].code;
                 console.log(`code: `, code)
                 const pattern = `\\b${code}\\b`;
                 const regex = new RegExp(pattern, "g");
-    
-                formula = formula.replace(regex, paytypes[i].value);
+
+                let replaceValue;
+                if(!isNaN(paytypes[i].parsedValue)) {
+                    replaceValue = paytypes[i].parsedValue;
+                } else {
+                    paytypes[i].value
+                }
+                
+                formula = formula.replace(regex, replaceValue);
             }
 
             let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
@@ -2090,11 +2098,42 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
             console.log(`formula: `, formula)
     
             var parsed = rules.parse(formula, '');
+
             console.log(`taxable income = `, parsed)
 
             if (parsed.result !== null && !isNaN(parsed.result)) {
                 taxableIncome = parsed.result.toFixed(2)
                 processing.push({code: `Taxable Income`, derived: taxableIncome });
+            } else {
+                console.log(`Error! Parsed taxable income NOT a number.`)
+
+                //--One more level of regex replacing ... tired to make it truly recursive
+                // let newRules = new ruleJS();
+                // newRules.init();
+
+                // for (var i = 0; i < paytypes.length; i++) {
+                //     const code = paytypes[i].code;
+                //     const pattern = `\\b${code}\\b`;
+                //     const regex = new RegExp(pattern, "g");
+    
+                //     formula = formula.replace(regex, paytypes[i].value);
+                // }
+
+                // let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                // k.forEach(c => {
+                //     const code = c.code ? c.code.toUpperCase() : c.code;
+                //     const pattern = `\\b${code}\\b`;
+                //     const regex = new RegExp(pattern, "g");
+                //     formula = formula.replace(regex, c.value);
+                // });
+                // console.log(`final formula: `, formula)
+                // parsed = newRules.parse(formula, '');
+
+                // console.log(`final taxable income = `, parsed)
+                // if (parsed.result !== null && !isNaN(parsed.result)) {
+                //     taxableIncome = parsed.result.toFixed(2)
+                //     processing.push({code: `Taxable Income`, derived: taxableIncome });
+                // }
             }
         }
     } else {

@@ -3,8 +3,10 @@
  */
 
 Core.publish("budgets", function (businessId) {
-    check(businessId, String);
-    return Budgets.find({businessId: businessId});
+    if(businessId) {
+        check(businessId, String);
+        return Budgets.find({businessId: businessId});    
+    }
     //enhnace this method..
 });
 
