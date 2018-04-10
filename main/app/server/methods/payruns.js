@@ -1423,7 +1423,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         } else {
                             taxBucket = defaultTaxBucket
                         }
-                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId);  //@@technicalPaytype
+                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod);  //@@technicalPaytype
                         netTaxLocal = taxCalculationResult.netTax
 
                         if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
@@ -2094,7 +2094,7 @@ function getPensionContribution(pensionBucket, pension) {
 }
 
 //from taxable income calculate tax and return value
-function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, businessId) {
+function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod) {
     //@import taxBucket (defualt tax bucket or valuated passed bucket)
     //@import tax (tax doc configured )
     //calculate reliefs
@@ -2105,80 +2105,85 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
 
     let taxableIncome;
     if(tax.usingCustomTaxableIncomeFormula) {
-        console.log(`using custome taxable income formula`)
-        // console.log(`paytypes: `, paytypes)
-        if(tax.taxableIncomeFormula) {
-            let formula = tax.taxableIncomeFormula;
-            processing.push({code: `Taxable Income`, derived: tax.taxableIncomeFormula });
-
-            let rules = new ruleJS();
-            rules.init();
+        if(totalHoursWorkedInPeriod > 0) {
+            console.log(`using custome taxable income formula`)
+            // console.log(`paytypes: `, paytypes)
+            if(tax.taxableIncomeFormula) {
+                let formula = tax.taxableIncomeFormula;
+                processing.push({code: `Taxable Income`, derived: tax.taxableIncomeFormula });
     
-            console.log(`paytypes.length: `, paytypes.length)
-            console.log(`paytypes: `, paytypes)
-            for (var i = 0; i < paytypes.length; i++) {
-                const code = paytypes[i].code;
-                console.log(`code: `, code)
-                const pattern = `\\b${code}\\b`;
-                const regex = new RegExp(pattern, "g");
-
-                let replaceValue;
-                if(!isNaN(paytypes[i].parsedValue)) {
-                    replaceValue = paytypes[i].parsedValue;
-                } else {
-                    replaceValue = paytypes[i].value
+                let rules = new ruleJS();
+                rules.init();
+        
+                console.log(`paytypes.length: `, paytypes.length)
+                console.log(`paytypes: `, paytypes)
+                for (var i = 0; i < paytypes.length; i++) {
+                    const code = paytypes[i].code;
+                    console.log(`code: `, code)
+                    const pattern = `\\b${code}\\b`;
+                    const regex = new RegExp(pattern, "g");
+    
+                    let replaceValue;
+                    if(!isNaN(paytypes[i].parsedValue)) {
+                        replaceValue = paytypes[i].parsedValue;
+                    } else {
+                        replaceValue = paytypes[i].value
+                    }
+                    
+                    formula = formula.replace(regex, replaceValue);
                 }
-                
-                formula = formula.replace(regex, replaceValue);
-            }
-
-            let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
-            k.forEach(c => {
-                const code = c.code ? c.code.toUpperCase() : c.code;
-                const pattern = `\\b${code}\\b`;
-                const regex = new RegExp(pattern, "g");
-                formula = formula.replace(regex, c.value);
-            });
-            console.log(`formula: `, formula)
     
-            var parsed = rules.parse(formula, '');
-
-            console.log(`taxable income = `, parsed)
-
-            if (parsed.result !== null && !isNaN(parsed.result)) {
-                taxableIncome = parsed.result.toFixed(2)
-                processing.push({code: `Taxable Income`, derived: taxableIncome });
-            } else {
-                console.log(`Error! Parsed taxable income NOT a number.`)
-
-                //--One more level of regex replacing ... tired to make it truly recursive
-                // let newRules = new ruleJS();
-                // newRules.init();
-
-                // for (var i = 0; i < paytypes.length; i++) {
-                //     const code = paytypes[i].code;
-                //     const pattern = `\\b${code}\\b`;
-                //     const regex = new RegExp(pattern, "g");
+                let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                k.forEach(c => {
+                    const code = c.code ? c.code.toUpperCase() : c.code;
+                    const pattern = `\\b${code}\\b`;
+                    const regex = new RegExp(pattern, "g");
+                    formula = formula.replace(regex, c.value);
+                });
+                console.log(`formula: `, formula)
+        
+                var parsed = rules.parse(formula, '');
     
-                //     formula = formula.replace(regex, paytypes[i].value);
-                // }
-
-                // let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
-                // k.forEach(c => {
-                //     const code = c.code ? c.code.toUpperCase() : c.code;
-                //     const pattern = `\\b${code}\\b`;
-                //     const regex = new RegExp(pattern, "g");
-                //     formula = formula.replace(regex, c.value);
-                // });
-                // console.log(`final formula: `, formula)
-                // parsed = newRules.parse(formula, '');
-
-                // console.log(`final taxable income = `, parsed)
-                // if (parsed.result !== null && !isNaN(parsed.result)) {
-                //     taxableIncome = parsed.result.toFixed(2)
-                //     processing.push({code: `Taxable Income`, derived: taxableIncome });
-                // }
+                console.log(`taxable income = `, parsed)
+    
+                if (parsed.result !== null && !isNaN(parsed.result)) {
+                    taxableIncome = parsed.result.toFixed(2)
+                    processing.push({code: `Taxable Income`, derived: taxableIncome });
+                } else {
+                    console.log(`Error! Parsed taxable income NOT a number.`)
+    
+                    //--One more level of regex replacing ... tired to make it truly recursive
+                    // let newRules = new ruleJS();
+                    // newRules.init();
+    
+                    // for (var i = 0; i < paytypes.length; i++) {
+                    //     const code = paytypes[i].code;
+                    //     const pattern = `\\b${code}\\b`;
+                    //     const regex = new RegExp(pattern, "g");
+        
+                    //     formula = formula.replace(regex, paytypes[i].value);
+                    // }
+    
+                    // let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                    // k.forEach(c => {
+                    //     const code = c.code ? c.code.toUpperCase() : c.code;
+                    //     const pattern = `\\b${code}\\b`;
+                    //     const regex = new RegExp(pattern, "g");
+                    //     formula = formula.replace(regex, c.value);
+                    // });
+                    // console.log(`final formula: `, formula)
+                    // parsed = newRules.parse(formula, '');
+    
+                    // console.log(`final taxable income = `, parsed)
+                    // if (parsed.result !== null && !isNaN(parsed.result)) {
+                    //     taxableIncome = parsed.result.toFixed(2)
+                    //     processing.push({code: `Taxable Income`, derived: taxableIncome });
+                    // }
+                }
             }
+        } else {
+            processing.push({code: `Total number of hours worked`, derived: '0' });
+            processing.push({code: `Taxable Income`, derived: '0' });
         }
     } else {
         input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
