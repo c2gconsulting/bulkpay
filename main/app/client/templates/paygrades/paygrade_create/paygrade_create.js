@@ -364,6 +364,20 @@ Template.PaygradeCreate.onRendered(function () {
     var self = this;
     var oldIndex, newIndex;
     
+    if(Template.instance().data) {
+        const payGrade = Template.instance().data
+
+        if(!payGrade) {
+            $('#enablePensionPayments').prop('checked', true);
+        } else {
+            if(payGrade.enablePensionPayments) {
+                $('#enablePensionPayments').prop('checked', true);
+            } else {
+                $('#enablePensionPayments').prop('checked', false);
+            }
+        }
+    }
+
     // fix a little rendering bug by clicking on step 1
     $('#step1').click();
 
