@@ -759,7 +759,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             formula = formula.replace(regex, payBasedOnHours);
                                         } else {
-                                            let payTypeAmount = paytypes[i].value
+                                            let payTypeAmount;
+                                            if(!isNaN(paytypes[i].parsedValue)) {
+                                                payTypeAmount = paytypes[i].parsedValue;
+                                            } else {
+                                                payTypeAmount = paytypes[i].value
+                                            }
+    
                                             if(x.currency === tenant.baseCurrency.iso && paytypes[i].currency !== tenant.baseCurrency.iso) {
                                                 payTypeAmount = convertForeignCurrencyToBaseCurrency(paytypes[i], parseFloat(payTypeAmount), currencyRatesForPeriod)
                                             }
@@ -783,6 +789,38 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     processing.push({code: x.code, previous: old, derived: formula});
                                 }
                                 var parsed = rules.parse(formula, '');
+
+                                if (parsed.result !== null && !isNaN(parsed.result)) {
+                                } else {
+                                    //--One more level of regex replacing ... tired to make it truly recursive
+                                    let newRules = new ruleJS();
+                                    newRules.init();
+
+                                    for (var i = 0; i < paytypes.length; i++) {
+                                        const code = paytypes[i].code;
+                                        const pattern = `\\b${code}\\b`;
+                                        const regex = new RegExp(pattern, "g");
+                                        let replaceValue;
+                                        if(!isNaN(paytypes[i].parsedValue)) {
+                                            replaceValue = paytypes[i].parsedValue;
+                                        } else {
+                                            replaceValue = paytypes[i].value
+                                        }
+                                        formula = formula.replace(regex, replaceValue);
+                                    }
+
+                                    let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                                    k.forEach(c => {
+                                        const code = c.code ? c.code.toUpperCase() : c.code;
+                                        const pattern = `\\b${code}\\b`;
+                                        const regex = new RegExp(pattern, "g");
+                                        formula = formula.replace(regex, c.value);
+                                    });
+                                    console.log(`final formula: `, formula)
+                                    parsed = newRules.parse(formula, '');
+
+                                    console.log(`final payment = `, parsed)
+                                }
 
                                 if (parsed.result !== null && !isNaN(parsed.result)) {
                                     //negate value if paytype is deduction.
@@ -868,7 +906,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     } else {
                                         value = parseFloat(x.parsedValue);
                                     }
-                                    console.log(`value: `, value)
+                                    console.log(`value 1: `, value)
                                     //--
 
                                     if(x.hourlyRate) {
@@ -945,7 +983,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             if(totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
                                                 processProjectAndCostCenterPay(x)
                                             } else {
-                                                value = 0
+                                                // value = 0
                                                 processing.push({code: x.code, derived: value});
                                             }
                                         } else {
@@ -995,7 +1033,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         }
                                     } else {
                                         if(totalHoursWorkedInPeriod === 0) {
-                                            value = 0;
+                                            //value = 0;
                                         }
                                         processing.push({code: x.code, derived: value});
                                         processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
@@ -1013,6 +1051,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         //     }
                                         // }
                                     }
+                                    console.log(`value 2: `, value)
+
                                     //--
                                     switch (x.type) {
                                         case 'Benefit':                                            
@@ -1318,6 +1358,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             {code: 'Consultation Tax', value: ''}
                         ];
                         const taxBucketCurrency = taxBucket ? taxBucket.currency : 'NGN'
+                        tax.currency = taxBucketCurrency
 
                         if(taxBucket) {
                             currentEmployeeInPayrunLoop.employeeProfile = currentEmployeeInPayrunLoop.employeeProfile || {}
@@ -1417,6 +1458,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     final.payslip.deduction.push({
                         title: tax.code, 
                         code: tax.name, 
+                        currency: tax.currency ? tax.currency : 'NGN',
                         value: netTaxLocal * -1, 
                         valueInForeignCurrency: netTaxForeign * -1
                     }); // negate add tax to deduction
@@ -2082,7 +2124,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                 if(!isNaN(paytypes[i].parsedValue)) {
                     replaceValue = paytypes[i].parsedValue;
                 } else {
-                    paytypes[i].value
+                    replaceValue = paytypes[i].value
                 }
                 
                 formula = formula.replace(regex, replaceValue);
