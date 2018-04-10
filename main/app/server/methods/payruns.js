@@ -32,7 +32,8 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
                     {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                     {'employeeProfile.employment.terminationDate': null},
                     {'employeeProfile.employment.terminationDate' : ''},
-                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } },
+                    {'employeeProfile.employment.terminationDate' : '' }
                 ],
                 'employeeProfile.employment.paygrade': {$in: paygrade},
                 'businessIds': businessId,
@@ -61,7 +62,8 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
                 $or: [
                     {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
                     {'employeeProfile.employment.terminationDate': null},
-                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } },
+                    {'employeeProfile.employment.terminationDate' : '' }
                 ],
                 'employeeProfile.employment.paygrade': {$in: paygrade},
                 'businessIds': businessId,
