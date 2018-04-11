@@ -186,9 +186,41 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
     return {payTypeHeaders}
 }
 
+ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
+    let groupedPayruns = {}
+    let groupedPayresults = {}
+    
+    payObj.payrun = payObj.payrun || []
+    payObj.result = payObj.result || []
+
+    payObj.payrun.forEach(anEmployeeData => {
+        let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
+        if(anEmployeeFullData) {
+            let payGradeId = anEmployeeFullData.employeeProfile.employment.paygrade
+            if(payGradeId) {
+                groupedPayruns[payGradeId] = groupedPayruns[payGradeId] || []
+                groupedPayruns[payGradeId].push(anEmployeeData)
+            }
+        }
+    })
+
+    payObj.result.forEach(anEmployeeData => {
+        let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
+        if(anEmployeeFullData) {
+            let payGradeId = anEmployeeData.employeeProfile.employment.paygrade
+            if(payGradeId) {
+                groupedPayresults[payGradeId] = groupedPayresults[payGradeId] || []
+                groupedPayresults[payGradeId].push(anEmployeeData)
+            }
+        }
+    })
+
+    return {groupedPayruns, groupedPayresults};
+}
+
 ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
     let payTypeHeaders = ['EMP ID', 'Employee', 'Project Code', 'Ratio']
- 
+
     let payGrade =  null;
     let firstUserId = employeePayments[0].employeeId
     let firstUser = Meteor.users.findOne(firstUserId)
@@ -198,11 +230,10 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
             payGrade = PayGrades.findOne(payGradeId)
         }
     }
- 
+
     // Supplementary payments are payments like netpay, 
-    // pension employee contrib and pension employer contrib
- 
-    //-- 
+    // pension employee contrib and pension employer contrib 
+    //--
     let localCurrency = Core.getTenantBaseCurrency().iso;
 
     let netPayCurrencyAllocation_Headers = []
@@ -225,7 +256,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
         //--
         let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
         
-        if(anEmployeeFullData) {
+        if(anEmployeeFullData) {            
             let netPayAllocation = anEmployeeFullData.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
                 if(netPayAllocation.hasNetPayAllocation) {
@@ -253,11 +284,6 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
     if(payGrade) {
         if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
             supplementaryPayTypeHeaders.push({
-                id: 'totalBenefit_' + localCurrency,
-                code: 'totalBenefit_' + localCurrency,
-                description: localCurrency + ' Total Benefit'
-            })
-            supplementaryPayTypeHeaders.push({
                 id: 'totalDeduction_' + localCurrency,
                 code: 'totalDeduction_' + localCurrency,
                 description: localCurrency + ' Total Deduction'
@@ -281,11 +307,6 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
                 description: netPayAlternativeCurrency + ' Tax'
             })
             //--
-            supplementaryPayTypeHeaders.push({
-                id: 'totalBenefit_' + netPayAlternativeCurrency,
-                code: 'totalBenefit_' + netPayAlternativeCurrency,
-                description: netPayAlternativeCurrency + ' Total Benefit'
-            })
             supplementaryPayTypeHeaders.push({
                 id: 'totalDeduction_' + netPayAlternativeCurrency,
                 code: 'totalDeduction_' + netPayAlternativeCurrency,
@@ -313,8 +334,6 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
     payTypeHeaders.push(...netPayCurrencyAllocation_Headers)
     
-    console.log(`payTypeHeaders: `, payTypeHeaders)
-
     return {payTypeHeaders}
 }
 
@@ -1052,18 +1071,29 @@ Template.PayrunNew.events({
     'click #detailed-export-to-csv': (e,tmpl) => {
         const payResult = Template.instance().dict.get('payResult');
         if (payResult) {
-            let payTypeHeaders = ReportUtils.getDetailedPayTypeHeaders2(payResult.payObj.payrun)
-            let detailedPayrunResults = payResult.payObj.result;
+            const {groupedPayruns, groupedPayresults} = ReportUtils.groupEmployeePaymentsByPayGrade(payResult.payObj)
 
-            let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
-                return aHeader.description || aHeader
+            const paygradeIds = Object.keys(groupedPayruns) || []
+
+            paygradeIds.forEach(payGradeId => {
+                const payrunRuns = groupedPayruns[payGradeId]
+                const payrunResults = groupedPayresults[payGradeId]
+
+                let payTypeHeaders = ReportUtils.getDetailedPayTypeHeaders2(payrunRuns)
+    
+                let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
+                    return aHeader.description || aHeader
+                })
+                console.log(`formattedHeader: `, formattedHeader)
+
+                //--
+                let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, 
+                    payrunResults, payTypeHeaders.payTypeHeaders)    
+                console.log(`reportData: `, reportData)
             })
-            //--
-            let reportData = ReportUtils.getDetailedPayTypeValues(payResult.payObj.payrun, 
-                detailedPayrunResults, payTypeHeaders.payTypeHeaders)
 
-            BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-                `Payrun results export with project ratios`);
+            // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+            //     `Payrun results export with project ratios`);
         } else {
             swal('Error', 'No payrun results', 'error')
         }
