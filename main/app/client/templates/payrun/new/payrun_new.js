@@ -219,7 +219,7 @@ ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
 }
 
 ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
-    let payTypeHeaders = ['Name', 'EmpID', 'Project Code', 'Ratio']
+    let payTypeHeaders = ['Name', 'EmpID', 'Job Title', 'Currency', 'Project Code', 'Ratio']
 
     // Supplementary payments are payments like netpay, 
     // pension employee contrib and pension employer contrib 
@@ -296,39 +296,17 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
     let supplementaryPayTypeHeaders = []
 
     if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
-        supplementaryPayTypeHeaders.push({
-            id: 'totalDeduction_' + localCurrency,
-            code: 'totalDeduction_' + localCurrency,
-            description: localCurrency + ' Total Deduction'
-        })
-        supplementaryPayTypeHeaders.push({
-            id: 'netPay_' + localCurrency,
-            code: 'netPay_' + localCurrency,
-            description: localCurrency + ' Net Pay'
-        })
-        //--
         let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
-
-        supplementaryPayTypeHeaders.push({
-            id: 'tax_' + localCurrency,
-            code: 'tax_' + localCurrency,
-            description: localCurrency + ' Tax'
-        })
-        supplementaryPayTypeHeaders.push({
-            id: 'tax_' + netPayAlternativeCurrency,
-            code: 'tax_' + netPayAlternativeCurrency,
-            description: netPayAlternativeCurrency + ' Tax'
-        })
-        //--
+        
         supplementaryPayTypeHeaders.push({
             id: 'totalDeduction_' + netPayAlternativeCurrency,
             code: 'totalDeduction_' + netPayAlternativeCurrency,
-            description: netPayAlternativeCurrency + ' Total Deduction'
+            description: 'Total Deduction'
         })
         supplementaryPayTypeHeaders.push({
             id: 'netPay_' + netPayAlternativeCurrency,
             code: 'netPay_' + netPayAlternativeCurrency,
-            description: netPayAlternativeCurrency + ' Net Pay'
+            description: 'Net Pay'
         })
     } else {
         supplementaryPayTypeHeaders.push({
@@ -616,7 +594,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
     // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
     
     let localCurrency = Core.getTenantBaseCurrency().iso;
-    let netPayAlternativeCurrency = ''
+    let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
@@ -633,6 +611,27 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 aRowOfPayTypeValues.push(employee.profile.fullName)
                 return
             }
+            if(aPaytypeHeader === 'Job Title') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+                employee.employeeProfile = employee.employeeProfile || {}
+                employee.employeeProfile.employment = employee.employeeProfile.employment || {}
+
+                const positionId = employee.employeeProfile.employment.position
+                const position = EntityObjects.findOne({_id: positionId})
+                if(position) {
+                    aRowOfPayTypeValues.push(position.name)
+                }
+                return
+            }
+            if(aPaytypeHeader === 'Currency') {
+                if(netPayAlternativeCurrency && netPayAlternativeCurrency.length > 0) {
+                    aRowOfPayTypeValues.push(netPayAlternativeCurrency)
+                } else {
+                    aRowOfPayTypeValues.push(localCurrency)
+                }
+                return
+            }
+            
             if(aPaytypeHeader === 'Project Code') {
                 let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
                     let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
@@ -1212,6 +1211,7 @@ Template.PayrunNew.onCreated(function () {
     self.subscribe("activeEmployees", businessUnitId);
     self.subscribe('PayrollApprovalConfigs', businessUnitId);
     self.subscribe("PayTypes", businessUnitId);
+    self.subscribe("getPositions", Session.get('context'));
 
     self.dict = new ReactiveDict();
     self.showPayGrade = new ReactiveVar(true);
