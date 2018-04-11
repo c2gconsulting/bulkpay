@@ -218,121 +218,139 @@ ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
     return {groupedPayruns, groupedPayresults};
 }
 
-ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments) {
-    let payTypeHeaders = ['EMP ID', 'Employee', 'Project Code', 'Ratio']
-
-    let payGrade =  null;
-    let firstUserId = employeePayments[0].employeeId
-    let firstUser = Meteor.users.findOne(firstUserId)
-    if(firstUser) {
-        let payGradeId = firstUser.employeeProfile.employment.paygrade
-        if(payGradeId) {
-            payGrade = PayGrades.findOne(payGradeId)
-        }
-    }
+ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
+    let payTypeHeaders = ['Name', 'EmpID', 'Project Code', 'Ratio']
 
     // Supplementary payments are payments like netpay, 
     // pension employee contrib and pension employer contrib 
     //--
     let localCurrency = Core.getTenantBaseCurrency().iso;
+    let benefitHeaders = [];
+    let deductionHeaders = [];
 
-    let netPayCurrencyAllocation_Headers = []
+    const empty = {}
+    let headerColumnSlots = _.range(100).map(x => {
+        return empty
+    }) 
+    benefitHeaders.push(...headerColumnSlots)
+    deductionHeaders.push(...headerColumnSlots)
+
+    let isTaxDeductionAdded = false;
 
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach((anEmployeePayType, empPayTypeIndex) => {
             if(anEmployeePayType.id) {
-                let doesPayTypeHeaderExist = _.find(payTypeHeaders, function(aPayType) {
-                    return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
-                })
-                if(!doesPayTypeHeaderExist) {
-                    payTypeHeaders.push({
-                        id: anEmployeePayType.id,
-                        code: anEmployeePayType.code,
-                        description: anEmployeePayType.description
+                if(anEmployeePayType.type === 'Benefit') {
+                    let doesPayTypeHeaderExist = _.find(benefitHeaders, function(aPayType) {
+                        return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
                     })
-                }
-            }
-        })
-        //--
-        let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
-        
-        if(anEmployeeFullData) {            
-            let netPayAllocation = anEmployeeFullData.employeeProfile.employment.netPayAllocation
-            if(netPayAllocation) {
-                if(netPayAllocation.hasNetPayAllocation) {
-                    if(netPayCurrencyAllocation_Headers.length < 1) {
-                        netPayCurrencyAllocation_Headers.push({
-                            id: 'netPayCurrencyAllocation_' + localCurrency,
-                            code: 'netPayCurrencyAllocation_' + localCurrency,
-                            currency: localCurrency,
-                            description: localCurrency + ' NetPay Currency Allocation'
+                    if(!doesPayTypeHeaderExist) {
+                        const gotPayGradePayTypeConfig = _.find(payGrade.payTypePositionIds, payGradePayTypeConfig => {
+                            return payGradePayTypeConfig.paytype === anEmployeePayType.id
                         })
-                        netPayCurrencyAllocation_Headers.push({
-                            id: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
-                            code: 'netPayCurrencyAllocation_' + netPayAllocation.foreignCurrency,
-                            currency: netPayAllocation.foreignCurrency,
-                            description: netPayAllocation.foreignCurrency + ' NetPay Currency Allocation'
+
+                        if(gotPayGradePayTypeConfig && gotPayGradePayTypeConfig.displayInPayslip) {
+                            benefitHeaders[gotPayGradePayTypeConfig.paySlipPositionId] = {
+                                id: anEmployeePayType.id,
+                                code: anEmployeePayType.code,
+                                description: anEmployeePayType.description
+                            }
+                        }
+                    }
+                } else if(anEmployeePayType.type === 'Deduction') {
+                    if(!isTaxDeductionAdded) {
+                        if(anEmployeePayType.reference === 'Tax') {
+                            deductionHeaders[0] = {
+                                id: anEmployeePayType.id,
+                                code: anEmployeePayType.code,
+                                description: anEmployeePayType.description
+                            }
+                            isTaxDeductionAdded = true;
+                        }
+                    } else {
+                        let doesPayTypeHeaderExist = _.find(deductionHeaders, function(aPayType) {
+                            return aPayType.id && (aPayType.id === anEmployeePayType.id && aPayType.code === anEmployeePayType.code)
                         })
+                        if(!doesPayTypeHeaderExist) {
+                            const gotPayGradePayTypeConfig = _.find(payGrade.payTypePositionIds, payGradePayTypeConfig => {
+                                return payGradePayTypeConfig.paytype === anEmployeePayType.id
+                            })
+                            if(gotPayGradePayTypeConfig && gotPayGradePayTypeConfig.displayInPayslip) {
+                                deductionHeaders[gotPayGradePayTypeConfig.paySlipPositionId] = {
+                                    id: anEmployeePayType.id,
+                                    code: anEmployeePayType.code,
+                                    description: anEmployeePayType.description
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
+        })
     })
     
+
+    benefitHeaders = _.without(benefitHeaders, empty)
+    deductionHeaders = _.without(deductionHeaders, empty)
+
     let supplementaryPayTypeHeaders = []
 
-    if(payGrade) {
-        if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
-            supplementaryPayTypeHeaders.push({
-                id: 'totalDeduction_' + localCurrency,
-                code: 'totalDeduction_' + localCurrency,
-                description: localCurrency + ' Total Deduction'
-            })
-            supplementaryPayTypeHeaders.push({
-                id: 'netPay_' + localCurrency,
-                code: 'netPay_' + localCurrency,
-                description: localCurrency + ' Net Pay'
-            })
-            //--
-            let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
+    if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
+        supplementaryPayTypeHeaders.push({
+            id: 'totalDeduction_' + localCurrency,
+            code: 'totalDeduction_' + localCurrency,
+            description: localCurrency + ' Total Deduction'
+        })
+        supplementaryPayTypeHeaders.push({
+            id: 'netPay_' + localCurrency,
+            code: 'netPay_' + localCurrency,
+            description: localCurrency + ' Net Pay'
+        })
+        //--
+        let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
 
-            supplementaryPayTypeHeaders.push({
-                id: 'tax_' + localCurrency,
-                code: 'tax_' + localCurrency,
-                description: localCurrency + ' Tax'
-            })
-            supplementaryPayTypeHeaders.push({
-                id: 'tax_' + netPayAlternativeCurrency,
-                code: 'tax_' + netPayAlternativeCurrency,
-                description: netPayAlternativeCurrency + ' Tax'
-            })
-            //--
-            supplementaryPayTypeHeaders.push({
-                id: 'totalDeduction_' + netPayAlternativeCurrency,
-                code: 'totalDeduction_' + netPayAlternativeCurrency,
-                description: netPayAlternativeCurrency + ' Total Deduction'
-            })
-            supplementaryPayTypeHeaders.push({
-                id: 'netPay_' + netPayAlternativeCurrency,
-                code: 'netPay_' + netPayAlternativeCurrency,
-                description: netPayAlternativeCurrency + ' Net Pay'
-            })
-        } else {
-            supplementaryPayTypeHeaders.push({
-                id: 'totalDeduction',
-                code: 'totalDeduction',
-                description: 'Total Deduction'
-            })
-            supplementaryPayTypeHeaders.push({
-                id: 'netPay',
-                code: 'netPay',
-                description: 'Net Pay'
-            })            
-        }
+        supplementaryPayTypeHeaders.push({
+            id: 'tax_' + localCurrency,
+            code: 'tax_' + localCurrency,
+            description: localCurrency + ' Tax'
+        })
+        supplementaryPayTypeHeaders.push({
+            id: 'tax_' + netPayAlternativeCurrency,
+            code: 'tax_' + netPayAlternativeCurrency,
+            description: netPayAlternativeCurrency + ' Tax'
+        })
+        //--
+        supplementaryPayTypeHeaders.push({
+            id: 'totalDeduction_' + netPayAlternativeCurrency,
+            code: 'totalDeduction_' + netPayAlternativeCurrency,
+            description: netPayAlternativeCurrency + ' Total Deduction'
+        })
+        supplementaryPayTypeHeaders.push({
+            id: 'netPay_' + netPayAlternativeCurrency,
+            code: 'netPay_' + netPayAlternativeCurrency,
+            description: netPayAlternativeCurrency + ' Net Pay'
+        })
+    } else {
+        supplementaryPayTypeHeaders.push({
+            id: 'totalDeduction',
+            code: 'totalDeduction',
+            description: 'Total Deduction'
+        })
+        supplementaryPayTypeHeaders.push({
+            id: 'netPay',
+            code: 'netPay',
+            description: 'Net Pay'
+        })
     }
 
+    payTypeHeaders.push(...benefitHeaders)
+    payTypeHeaders.push(...deductionHeaders)
+    
+
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
-    payTypeHeaders.push(...netPayCurrencyAllocation_Headers)
+
+    console.log(`benefitHeaders: `, benefitHeaders)
+    console.log(`deductionHeaders: `, deductionHeaders)
     
     return {payTypeHeaders}
 }
@@ -593,40 +611,24 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
     return payTypeValues
 }
 
-ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrunResults, payTypeHeaders) {
+ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrunResults, payTypeHeaders, payGrade) {
     let payTypeValues = []
     // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
-    console.log(`payTypeHeaders: `, payTypeHeaders)
     
-    let payGrade =  null
-    let firstUserId = employeePayments[0].employeeId
-    let firstUser = Meteor.users.findOne(firstUserId)
-    if(firstUser) {
-        let payGradeId = firstUser.employeeProfile.employment.paygrade
-        if(payGradeId) {
-            payGrade = PayGrades.findOne(payGradeId)
-        }
-    }
-    //--
     let localCurrency = Core.getTenantBaseCurrency().iso;
     let netPayAlternativeCurrency = ''
-    if(payGrade) {
-        if(payGrade.netPayAlternativeCurrency) {
-            netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
-        }
-    }
 
     employeePayments.forEach(anEmployeeData => {
         let aRowOfPayTypeValues = []
         let netPaymentInBaseCurrency = 0
 
         payTypeHeaders.forEach(aPaytypeHeader => {
-            if(aPaytypeHeader === 'EMP ID') {
+            if(aPaytypeHeader === 'EmpID') {
                 let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
                 aRowOfPayTypeValues.push(employee.employeeProfile.employeeId)
                 return
             }
-            if(aPaytypeHeader === 'Employee') {
+            if(aPaytypeHeader === 'Name') {
                 let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
                 aRowOfPayTypeValues.push(employee.profile.fullName)
                 return
@@ -638,7 +640,6 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     return (anEmployeeData.employeeId === employeeData.employeeUserId)
                 })
                 if(found) {
-                    console.log(`got time record for payrun export`, found.timeRecord)
                     found.timeRecord = found.timeRecord || {}
                     let projects = found.timeRecord.projects || {}
                     let projectDurations = projects.projectDurations || []
@@ -1079,17 +1080,20 @@ Template.PayrunNew.events({
                 const payrunRuns = groupedPayruns[payGradeId]
                 const payrunResults = groupedPayresults[payGradeId]
 
-                let payTypeHeaders = ReportUtils.getDetailedPayTypeHeaders2(payrunRuns)
+                let payGrade = PayGrades.findOne(payGradeId)
+                let {payTypeHeaders} = ReportUtils.getDetailedPayTypeHeaders2(payrunRuns, payGrade)
     
-                let formattedHeader = payTypeHeaders.payTypeHeaders.map(aHeader => {
-                    return aHeader.description || aHeader
+                let formattedHeader = payTypeHeaders.map(aHeader => {
+                    return (aHeader.description || aHeader)
                 })
-                console.log(`formattedHeader: `, formattedHeader)
+                console.log(`formattedHeader>>>>>: `, formattedHeader)
 
                 //--
-                let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, 
-                    payrunResults, payTypeHeaders.payTypeHeaders)    
+                let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, payrunResults, payTypeHeaders, payGrade)    
                 console.log(`reportData: `, reportData)
+
+                BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+                    `Payrun results export with project ratios - ${payGrade.code}`);
             })
 
             // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
