@@ -460,6 +460,20 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
     }
 });
 
+Router.route('/business/:_id/travelrequests2/printretirement', {
+    name: 'travelrequests2.printretirement',
+    layoutTemplate: 'ExtLayout',
+    template: 'TravelRequisition2RetirementPrint',
+    onBeforeAction: function () {
+        if  (!Meteor.userId() && !Meteor.loggingIn()) {
+            this.redirect('/');
+            this.stop();
+        } else {
+            this.next();
+        }
+    }
+});
+
 
 Router.route('/business/:_id/reports/netpay', {
     name: 'reports.netpay',

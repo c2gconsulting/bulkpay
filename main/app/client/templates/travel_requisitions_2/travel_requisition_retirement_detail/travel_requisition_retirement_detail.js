@@ -256,7 +256,7 @@ Template.TravelRequisition2RetirementDetail.helpers({
     },
     'getPrintUrl': function(currentTravelRequest) {
         if(currentTravelRequest) {
-            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
+            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id
         }
     }
 });
