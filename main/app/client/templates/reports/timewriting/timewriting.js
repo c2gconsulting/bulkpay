@@ -414,10 +414,11 @@ Template.TimeWritingReport.onCreated(function () {
     }
 
     self.exportTimesForProjects_Tabular_ReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Employee Name", "Employee ID", "Total Time Field"]
+        let formattedHeader = ["Employee Name", "Employee ID", "Location", "Total Time Field"]
 
         const projectsList = theData.projectCodes || []
         formattedHeader = formattedHeader.concat(projectsList)
+        formattedHeader.push('Total %')
         //--
         let reportData = []
 
@@ -426,6 +427,7 @@ Template.TimeWritingReport.onCreated(function () {
 
             newEmployeeRow.push(employeeData.employeeFullName)
             newEmployeeRow.push(employeeData.employeeId)
+            newEmployeeRow.push(employeeData.workLocation)
             newEmployeeRow.push(employeeData.totalDuration)
 
             projectsList.forEach(projectCode => {
@@ -450,6 +452,7 @@ Template.TimeWritingReport.onCreated(function () {
                 }
                 newEmployeeRow.push(projectDurationPercentage)
             })
+            newEmployeeRow.push('100%')
             reportData.push(newEmployeeRow)
         })
 

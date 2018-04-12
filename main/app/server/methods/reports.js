@@ -423,6 +423,7 @@ Meteor.methods({
                         _id: timeRecord._id.employeeId,
                         employeeFullName: employee.profile.fullName,
                         employeeId: employee.employeeProfile.employeeId,
+                        workLocation: employee.employeeProfile.workLocation || '---',
                         totalDuration: timeRecord.duration,
                         projects: [{
                             project: timeRecord._id.project,

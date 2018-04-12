@@ -147,10 +147,12 @@
                                                                     <tr>
                                                                         <th>Employee Name</th>
                                                                         <th>Employee ID</th>
+                                                                        <th>Location</th>
                                                                         <th>Total Time Field</th>
                                                                         {{#each projectCodes}}
                                                                             <th>{{this}}</th>                                                                    
                                                                         {{/each}}
+                                                                        <th>Total %</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -159,10 +161,12 @@
                                                                         <tr>
                                                                             <td>{{employeeFullName}}</td>
                                                                             <td>{{employeeId}}</td>
+                                                                            <td>{{workLocation}}</td>
                                                                             <td>{{totalDuration}}</td>
                                                                             {{#each ../projectCodes}}
                                                                                 <td>{{getEmployeeProjectCodeDuration currentEmployeeData this}}</td>
                                                                             {{/each}}
+                                                                            <td>100%</td>
                                                                         </tr>
                                                                         {{/let}}
                                                                     {{/each}}
