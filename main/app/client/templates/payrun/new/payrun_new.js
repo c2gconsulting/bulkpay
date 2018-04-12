@@ -219,7 +219,7 @@ ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
 }
 
 ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
-    let payTypeHeaders = ['Name', 'EmpID', 'Job Title', 'Currency', 'Project Code', 'Ratio']
+    let payTypeHeaders = ['Name', 'EmpID', 'Job Title', 'Currency', 'Location', 'Project Code', 'Ratio']
 
     // Supplementary payments are payments like netpay, 
     // pension employee contrib and pension employer contrib 
@@ -326,6 +326,8 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
     
 
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
+    payTypeHeaders.push('Bank Name')
+    payTypeHeaders.push('Bank Account Number')
 
     console.log(`benefitHeaders: `, benefitHeaders)
     console.log(`deductionHeaders: `, deductionHeaders)
@@ -631,7 +633,14 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 }
                 return
             }
-            
+            if(aPaytypeHeader === 'Location') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+                employee.employeeProfile = employee.employeeProfile || {}
+
+                aRowOfPayTypeValues.push(employee.employeeProfile.workLocation || '---')
+
+                return
+            }
             if(aPaytypeHeader === 'Project Code') {
                 let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
                     let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
@@ -680,6 +689,24 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     return;
                 }
                 aRowOfPayTypeValues.push('---');
+                return
+            }
+            if(aPaytypeHeader === 'Bank Name') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+
+                employee.employeeProfile = employee.employeeProfile || {}
+                employee.employeeProfile.payment = employee.employeeProfile.payment || {}
+
+                aRowOfPayTypeValues.push(employee.employeeProfile.payment.bank || '---')
+                return
+            }
+            if(aPaytypeHeader === 'Bank Account Number') {
+                let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
+
+                employee.employeeProfile = employee.employeeProfile || {}
+                employee.employeeProfile.payment = employee.employeeProfile.payment || {}
+
+                aRowOfPayTypeValues.push(employee.employeeProfile.payment.accountNumber || '---')
                 return
             }
 

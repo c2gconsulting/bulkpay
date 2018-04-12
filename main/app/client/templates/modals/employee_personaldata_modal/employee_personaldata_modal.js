@@ -152,6 +152,16 @@ Template.EmployeePersonalDataModal.events({
       }
       Template.instance().setEditUser(user);
     },
+    'blur [name=workLocation]': function (e, tmpl) {
+      let user = Template.instance().getEditUser();
+      let value = e.currentTarget.value;
+      if (value && value.trim().length > 0) {
+        user.employeeProfile = user.employeeProfile || {};
+        user.employeeProfile.workLocation = value;
+        console.log("user work location changed to: " + value);
+      }
+      Template.instance().setEditUser(user);
+    },
     'blur [name=email]': function (e, tmpl) {
       let user = Template.instance().getEditUser();
       let value = e.currentTarget.value;

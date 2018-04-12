@@ -306,6 +306,7 @@ Meteor.methods({
                 "employeeProfile.phone": user.employeeProfile.phone,
                 "employeeProfile.nationality": user.employeeProfile.nationality,
                 "employeeProfile.state": user.employeeProfile.state,
+                "employeeProfile.workLocation": user.employeeProfile.workLocation,
                 "employeeProfile.religion": user.employeeProfile.religion,
                 "employeeProfile.bloodGroup": user.employeeProfile.bloodGroup,
                 "employeeProfile.disability": user.employeeProfile.disability,
