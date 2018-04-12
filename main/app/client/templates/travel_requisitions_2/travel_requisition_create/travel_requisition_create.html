@@ -27,7 +27,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
+                                    <label for="budget-code" class="control-label">Which project is this trip <strong>primarily</strong> related to?</label>
                                     {{#semanticselect2}}
                                     <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search dropdown form-control">
                                         <option value="NONE">I am not sure</option>
@@ -92,7 +92,7 @@
                                 <div class="date">
                                     <div class="inner-addon left-addon">
                                         <i class="glyphicon icon-calendar"></i>
-                                        <label class="control-label">Departures <span class="asterisk important-input">*</span></label>
+                                        <label class="control-label">Departure <span class="asterisk important-input">*</span></label>
                                         {{#datepicker2 this.departureDate}}
                                         <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date"/>
                                         {{/datepicker2}}
@@ -185,7 +185,7 @@
                         </div><!-- col-sm-12 -->
                         {{/if}}
                     </div>
-                    {{#unless isLastLeg this.tripIndex}}
+
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
@@ -229,6 +229,7 @@
 
                             </div>
                         </div>
+                    
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label>&nbsp;</label>
@@ -242,6 +243,7 @@
                         </div>
 
                     </div>
+                    {{#unless isLastLeg this.tripIndex}}
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
@@ -444,7 +446,7 @@
                             <span class="text-right pull-right">{{formatMoney currentTravelRequest.totalHotelCostUSD "USD"}}</span>
                         </div>
                     </div>
-        
+
                     <hr>
                     <div class="row">
                         <div class="col-sm-8">

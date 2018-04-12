@@ -160,6 +160,11 @@ Template.TravelRequisition2Detail.helpers({
     'totalTripCostNGN': function() {
         return Template.instance().totalTripCostNGN.get()
     },
+    'getPrintUrl': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
+        }
+    }
 });
 
 /*****************************************************************************/

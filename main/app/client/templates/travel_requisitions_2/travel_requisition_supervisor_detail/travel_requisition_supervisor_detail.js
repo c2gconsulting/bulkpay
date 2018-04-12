@@ -313,11 +313,14 @@ Template.TravelRequisition2SupervisorDetail.helpers({
     'isEqual': (a, b) => {
         return a === b;
     },
-
-
     'totalTripCostNGN': function() {
         return Template.instance().totalTripCostNGN.get()
     },
+    'getPrintUrl': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
+        }
+    }
 });
 
 /*****************************************************************************/
