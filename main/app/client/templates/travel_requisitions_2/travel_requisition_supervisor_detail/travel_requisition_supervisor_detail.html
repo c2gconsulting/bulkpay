@@ -5,12 +5,15 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-8">
                                 <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
                             </div>
+                            <!--<div class="col-sm-1">
+                                <a class="btn btn-primary pull-right" href="{{getPrintUrl currentTravelRequest}}" target="_blank">Print</a>
+                            </div>-->
                         </div>
                     </div>
                     <div class="panel-body">
@@ -33,7 +36,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
+                                    <label for="budget-code" class="control-label">Which project is this trip <strong>primarily</strong> related to?</label>
                                     {{#semanticselect}}
                                     <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
                                         {{#each budgetList}}
@@ -105,7 +108,7 @@
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
-                        {{#unless isLastLeg this.tripIndex}}
+
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
@@ -142,6 +145,7 @@
                             </div>
 
                         </div>
+                        {{#unless isLastLeg this.tripIndex}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">

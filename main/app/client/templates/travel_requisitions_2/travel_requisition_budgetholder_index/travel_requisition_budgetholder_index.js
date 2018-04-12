@@ -85,6 +85,11 @@ Template.TravelRequisition2BudgetHolderIndex.helpers({
             return totalTripCostNGN;
         }
     },
+    'getPrintUrl': function(currentTravelRequest) {
+        if(currentTravelRequest) {
+            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id            
+        }
+    }
 
 });
 

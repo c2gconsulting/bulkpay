@@ -34,7 +34,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="budget-code" class="control-label">Which project is this trip <u>primarily</u> related to?</label>
+                                    <label for="budget-code" class="control-label">Which project is this trip <strong>primarily</strong> related to?</label>
                                     <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{getBudgetName currentTravelRequest.budgetCodeId}}" disabled/>
 
                                 </div><!-- form-group -->
@@ -99,7 +99,7 @@
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
-                        {{#unless isLastLeg this.tripIndex}}
+
                         <div class="row">
                             <div class="col-sm-3">
                                 <div class="form-group">
@@ -136,6 +136,7 @@
                             </div>
 
                         </div>
+                        {{#unless isLastLeg this.tripIndex}}
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
