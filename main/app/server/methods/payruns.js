@@ -1061,6 +1061,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             //add to payslip benefit if display in payslip
                                             if (x.addToTotal) {
                                                 let paymentObj = {
+                                                    payTypeId: x._id,
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency || "",
@@ -1081,6 +1082,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 })
                                             } else if(!x.addToTotal){
                                                 others.push({
+                                                    payTypeId: x._id,
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency || "",
@@ -1103,6 +1105,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         case 'Deduction':
                                             if (x.addToTotal){
                                                 deduction.push({
+                                                    payTypeId: x._id,
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency || "",
@@ -1122,6 +1125,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 })
                                             } else if(!x.addToTotal){
                                                 others.push({
+                                                    payTypeId: x._id,
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency || "",
@@ -1458,6 +1462,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                     final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
                     final.payslip.deduction.push({
+                        payTypeId: tax._id,
                         title: tax.code, 
                         code: tax.name, 
                         currency: tax.currency ? tax.currency : 'NGN',
@@ -1469,10 +1474,22 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     if(pension) {
                         if(grade.enablePensionPayments) {
                             let valueInForeignCurrency = ''
-                            final.payslip.deduction.push({title: `${pension.code}_EE`, code: `${pension.name} Employee`, value: employeePenContrib * -1, valueInForeignCurrency});
+                            final.payslip.deduction.push({
+                                payTypeId: pension._id,
+                                title: `${pension.code}_EE`, 
+                                code: `${pension.name} Employee`, 
+                                value: employeePenContrib * -1, 
+                                valueInForeignCurrency
+                            });
                             // if(pension.displayEmployerInPayslip) {
                                 valueInForeignCurrency = ''
-                                final.payslip.others = others.concat([{title: `${pension.code}_ER`, code: `${pension.name} Employer`, value: employerPenContrib, valueInForeignCurrency}]); //if employer contribution (displayEmployerInPayslip) add to other payments
+                                final.payslip.others = others.concat([{
+                                    payTypeId: pension._id,
+                                    title: `${pension.code}_ER`, 
+                                    code: `${pension.name} Employer`, 
+                                    value: employerPenContrib, 
+                                    valueInForeignCurrency
+                                }]); //if employer contribution (displayEmployerInPayslip) add to other payments
                             // }    
                         }
                     } else {
