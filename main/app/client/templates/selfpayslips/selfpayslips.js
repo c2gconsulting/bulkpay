@@ -35,57 +35,62 @@ Template.selfpayslips.events({
                 const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
                 if(paygrade) {
                     //console.log(paygrade.payTypePositionIds);
+                    if (payLoadForPayslip.payslip.benefit){
+                        payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.benefit.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
+                            return aaPosition - bbPosition;
+                        });
+                    }
 
-                        return aaPosition - bbPosition;
-                    });
+                    if (payLoadForPayslip.payslip.deduction){
+                        payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.deduction.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
+                            return aaPosition - bbPosition;
+                        });
+                    }
 
-                        return aaPosition - bbPosition;
-                    });
+                    if (payLoadForPayslip.payslip.others){
+                        payLoadForPayslip.payslip.others.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.others.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
-
-                        return aaPosition - bbPosition;
-                    });
+                            return aaPosition - bbPosition;
+                        });
+                    }
 
                 }
 
@@ -178,57 +183,62 @@ Template.selfpayslips.onCreated(function () {
 
                     if(paygrade) {
                         //console.log(paygrade.payTypePositionIds);
+                        if (payLoadForPayslip.payslip.benefit){
+                            payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                                let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                                let aaPosition = 99;
+                                if (aa){
+                                    aaPosition = parseInt(aa.paySlipPositionId);
+                                }
 
-                        payLoadForPayslip.payslip.benefit.sort(function(a, b){
-                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                            let aaPosition = 99;
-                            if (aa){
-                                aaPosition = parseInt(aa.paySlipPositionId);
-                            }
+                                let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                                let bbPosition = 99;
+                                if (bb){
+                                    bbPosition = parseInt(bb.paySlipPositionId);
+                                }
 
-                            let bbPosition = 99;
-                            if (bb){
-                                bbPosition = parseInt(bb.paySlipPositionId);
-                            }
+                                return aaPosition - bbPosition;
+                            });
+                        }
 
-                            return aaPosition - bbPosition;
-                        });
+                        if (payLoadForPayslip.payslip.deduction){
+                            payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                                let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                                let aaPosition = 99;
+                                if (aa){
+                                    aaPosition = parseInt(aa.paySlipPositionId);
+                                }
+                                
+                                let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        payLoadForPayslip.payslip.deduction.sort(function(a, b){
-                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                            let aaPosition = 99;
-                            if (aa){
-                                aaPosition = parseInt(aa.paySlipPositionId);
-                            }
+                                let bbPosition = 99;
+                                if (bb){
+                                    bbPosition = parseInt(bb.paySlipPositionId);
+                                }
 
-                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                                return aaPosition - bbPosition;
+                            });
+                        }
 
-                            let bbPosition = 99;
-                            if (bb){
-                                bbPosition = parseInt(bb.paySlipPositionId);
-                            }
+                        if (payLoadForPayslip.payslip.others){
+                            payLoadForPayslip.payslip.others.sort(function(a, b){
+                                let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                                let aaPosition = 99;
+                                if (aa){
+                                    aaPosition = parseInt(aa.paySlipPositionId);
+                                }
 
-                            return aaPosition - bbPosition;
-                        });
+                                let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        payLoadForPayslip.payslip.others.sort(function(a, b){
-                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                            let aaPosition = 99;
-                            if (aa){
-                                aaPosition = parseInt(aa.paySlipPositionId);
-                            }
+                                let bbPosition = 99;
+                                if (bb){
+                                    bbPosition = parseInt(bb.paySlipPositionId);
+                                }
 
-                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
-
-                            let bbPosition = 99;
-                            if (bb){
-                                bbPosition = parseInt(bb.paySlipPositionId);
-                            }
-
-                            return aaPosition - bbPosition;
-                        });
+                                return aaPosition - bbPosition;
+                            });
+                        }
 
                     }
 

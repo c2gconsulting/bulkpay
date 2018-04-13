@@ -284,20 +284,20 @@ Template.payruns.helpers({
         }
     },
     isSapBusinessOneEnabled: () => {
-      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-      if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapBusinessOneIntegrationEnabled
-      } else {
-          return true
-      }
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapBusinessOneIntegrationEnabled
+        } else {
+            return true
+        }
     },
     isSapHanaEnabled: () => {
-      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-      if(businessUnitCustomConfig) {
-          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
-      } else {
-          return true
-      }
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+        } else {
+            return true
+        }
     }
 });
 
@@ -330,14 +330,14 @@ Template.payruns.onCreated(function () {
         self.subscribe('PayrollApprovalConfigs', businessId);
 
         if (self.subscriptionsReady()) {
-          let payRun = Payruns.find({period: currentPayrunPeriod, businessId}).fetch();
+            let payRun = Payruns.find({period: currentPayrunPeriod, businessId}).fetch();
 
-          let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId})
-          self.payrollApprovalConfig.set(payrollApprovalConfig)
+            let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId})
+            self.payrollApprovalConfig.set(payrollApprovalConfig)
 
-          if(payRun && payRun.length > 0)
+            if(payRun && payRun.length > 0)
             Template.instance().currentPayrun.set(payRun);
-          else
+            else
             Template.instance().currentPayrun.set(null);
             Template.instance().errorMsg.set("No Payrun available for that time period");
         }
@@ -362,20 +362,20 @@ Template.payruns.onDestroyed(function () {
 //----------
 
 Template.singlePayrunResult.helpers({
-  'getEmployeeFullName': function(employeeId) {
-    let employee = Meteor.users.findOne({_id: employeeId});
-    if(employee)
-      return employee.profile.fullName;
-    else
-      return ""
-  },
-  'getEmployeeRealId': function(employeeId) {
-    let employee = Meteor.users.findOne({_id: employeeId});
-    if(employee)
-      return employee.employeeProfile.employeeId;
-    else
-      return ""
-  },
+    'getEmployeeFullName': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.profile.fullName;
+        else
+        return ""
+    },
+    'getEmployeeRealId': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.employeeProfile.employeeId;
+        else
+        return ""
+    },
 });
 
 Template.singlePayrunResult.onCreated(function () {
@@ -415,58 +415,63 @@ Template.singlePayrunResult.events({
                 const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
                 if(paygrade) {
                     //console.log(paygrade.payTypePositionIds);
+                    if (payLoadForPayslip.payslip.benefit){
+                        payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.benefit.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
+                            return aaPosition - bbPosition;
+                        });
+                    }
 
-                        return aaPosition - bbPosition;
-                    });
+                    if (payLoadForPayslip.payslip.deduction){
+                        payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.deduction.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
+                            return aaPosition - bbPosition;
+                        });
+                    }
 
-                        return aaPosition - bbPosition;
-                    });
+                    if (payLoadForPayslip.payslip.others){
+                        payLoadForPayslip.payslip.others.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
 
-                    payLoadForPayslip.payslip.others.sort(function(a, b){
-                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
-                        let aaPosition = 99;
-                        if (aa){
-                            aaPosition = parseInt(aa.paySlipPositionId);
-                        }
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
 
-                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
 
-                        let bbPosition = 99;
-                        if (bb){
-                            bbPosition = parseInt(bb.paySlipPositionId);
-                        }
+                            return aaPosition - bbPosition;
+                        });
 
-                        return aaPosition - bbPosition;
-                    });
-
+                    }
                 }
 
                 Modal.show('Payslip', payLoadForPayslip);
