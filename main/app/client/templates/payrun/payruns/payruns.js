@@ -109,7 +109,7 @@ Template.payruns.events({
                 }
             })
         }
-    }, 
+    },
     'click #postToSapHana': (e,tmpl) => {
         let currentPayrun = Template.instance().currentPayrun.get();
 
@@ -130,7 +130,7 @@ Template.payruns.events({
                 resetButton()
                 console.log(`err: `, err)
                 console.log(`res: `, res)
-                
+
                 if (!err) {
                     if(res.status === false) {
                         if(res.errors) {
@@ -170,7 +170,7 @@ Template.payruns.events({
     },
     'click #payrunDelete': function(e, tmpl) {
         e.preventDefault();
-        
+
         const month = $('[name="paymentPeriodMonth"]').val();
         const year = $('[name="paymentPeriodYear"]').val();
         let period = `${month}${year}`
@@ -250,7 +250,7 @@ Template.payruns.helpers({
     },
     'doesRequirePayrunApproval': function() {
         let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
-        
+
         if(payrollApprovalConfig) {
             return payrollApprovalConfig.requirePayrollApproval
         } else {
@@ -269,7 +269,7 @@ Template.payruns.helpers({
             let firstOne = currentPayrun[0]
 
             if(firstOne) {
-                let isApproved = true                
+                let isApproved = true
                 _.each(firstOne.approvals, anApproval => {
                     if(!anApproval.isApproved) {
                         isApproved = false
@@ -331,7 +331,7 @@ Template.payruns.onCreated(function () {
 
         if (self.subscriptionsReady()) {
           let payRun = Payruns.find({period: currentPayrunPeriod, businessId}).fetch();
-            
+
           let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId})
           self.payrollApprovalConfig.set(payrollApprovalConfig)
 
@@ -379,6 +379,8 @@ Template.singlePayrunResult.helpers({
 });
 
 Template.singlePayrunResult.onCreated(function () {
+    let self = this;
+    self.subscribe("paygrades", Session.get('context'));
 })
 
 Template.singlePayrunResult.events({
@@ -395,10 +397,78 @@ Template.singlePayrunResult.events({
 
                 let payLoadForPayslip = {
                     payrun: selfPayrun,
-                    payslip: selfPayResults.payslip, 
+                    payslip: selfPayResults.payslip,
                     payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
                     displayAllPaymentsUnconditionally: true
                 }
+
+                console.log(payLoadForPayslip);
+                let findObjectByKey = function (array, key, value) {
+                    for (var i = 0; i < array.length; i++) {
+                        if (array[i][key] === value) {
+                            return array[i];
+                        }
+                    }
+                    return null;
+                };
+
+                const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
+                if(paygrade) {
+                    //console.log(paygrade.payTypePositionIds);
+
+                    payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
+                    payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
+                    payLoadForPayslip.payslip.others.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
+                }
+
                 Modal.show('Payslip', payLoadForPayslip);
             } else {
                 tmpl.errorMsg.set(err.message);
@@ -422,7 +492,6 @@ Template.PayrunResultsPostToSapErrors.helpers({
 /*****************************************************************************/
 Template.PayrunResultsPostToSapErrors.onCreated(function () {
     let self = this;
-
     self.payrunResultsPostToSapErrors = new ReactiveVar()
     self.payrunResultsPostToSapErrors.set(self.data);
 });

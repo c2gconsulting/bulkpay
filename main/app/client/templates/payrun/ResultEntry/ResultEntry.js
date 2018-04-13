@@ -17,8 +17,8 @@ Template.ResultEntry.events({
             payslipWithCurrencyDelineation: tmpl.data.payslipWithCurrencyDelineation,
             displayAllPaymentsUnconditionally: true
         }
-        //console.log("payslip info ");
-        //console.log(payLoadForPayslip.payslip);
+        console.log("payslip info ");
+        console.log(payLoadForPayslip.payslip);
 
         let findObjectByKey = function (array, key, value) {
             for (var i = 0; i < array.length; i++) {
@@ -32,7 +32,7 @@ Template.ResultEntry.events({
         const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
 
         if(paygrade) {
-            //console.log(paygrade.payTypePositionIds);
+            console.log(paygrade.payTypePositionIds);
 
             payLoadForPayslip.payslip.benefit.sort(function(a, b){
                 let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);

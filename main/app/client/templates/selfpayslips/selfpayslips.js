@@ -18,15 +18,81 @@ Template.selfpayslips.events({
 
                 let payLoadForPayslip = {
                     payrun: selfPayrun,
-                    payslip: selfPayResults.payslip, 
+                    payslip: selfPayResults.payslip,
                     payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
                     displayAllPaymentsUnconditionally: false
+                }
+
+                let findObjectByKey = function (array, key, value) {
+                    for (var i = 0; i < array.length; i++) {
+                        if (array[i][key] === value) {
+                            return array[i];
+                        }
+                    }
+                    return null;
+                };
+
+                const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
+                if(paygrade) {
+                    //console.log(paygrade.payTypePositionIds);
+
+                    payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
+                    payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
+                    payLoadForPayslip.payslip.others.sort(function(a, b){
+                        let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                        let aaPosition = 99;
+                        if (aa){
+                            aaPosition = parseInt(aa.paySlipPositionId);
+                        }
+
+                        let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                        let bbPosition = 99;
+                        if (bb){
+                            bbPosition = parseInt(bb.paySlipPositionId);
+                        }
+
+                        return aaPosition - bbPosition;
+                    });
+
                 }
 
                 Session.set('currentPayrunPeriod', {month: paymentPeriodMonth, year: paymentPeriodYear})
 
                 Session.set('currentSelectedPaySlip', payLoadForPayslip)
-        
+
                 // Modal.show('Payslip', payLoadForPayslip);
             } else {
                 tmpl.errorMsg.set(err.message);
@@ -91,17 +157,84 @@ Template.selfpayslips.onCreated(function () {
                     self.errorMsg.set(null);
                     let selfPayrun = res.selfPayrun
                     let selfPayResults = res.selfPayResults
-    
+
                     let payLoadForPayslip = {
                         payrun: selfPayrun,
-                        payslip: selfPayResults.payslip, 
+                        payslip: selfPayResults.payslip,
                         payslipWithCurrencyDelineation: selfPayResults.payslipWithCurrencyDelineation,
                         displayAllPaymentsUnconditionally: false
                     }
-    
+
+                    let findObjectByKey = function (array, key, value) {
+                        for (var i = 0; i < array.length; i++) {
+                            if (array[i][key] === value) {
+                                return array[i];
+                            }
+                        }
+                        return null;
+                    };
+
+                    const paygrade = PayGrades.findOne({_id: payLoadForPayslip.payslip.employee.gradeId})
+
+                    if(paygrade) {
+                        //console.log(paygrade.payTypePositionIds);
+
+                        payLoadForPayslip.payslip.benefit.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
+
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
+
+                            return aaPosition - bbPosition;
+                        });
+
+                        payLoadForPayslip.payslip.deduction.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
+
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
+
+                            return aaPosition - bbPosition;
+                        });
+
+                        payLoadForPayslip.payslip.others.sort(function(a, b){
+                            let aa = findObjectByKey(paygrade.payTypePositionIds, "paytype", a.payTypeId);
+                            let aaPosition = 99;
+                            if (aa){
+                                aaPosition = parseInt(aa.paySlipPositionId);
+                            }
+
+                            let bb = findObjectByKey(paygrade.payTypePositionIds, "paytype", b.payTypeId);
+
+                            let bbPosition = 99;
+                            if (bb){
+                                bbPosition = parseInt(bb.paySlipPositionId);
+                            }
+
+                            return aaPosition - bbPosition;
+                        });
+
+                    }
+
                     Session.set('currentPayrunPeriod', {month: selecedMonth, year: selectedYear})
                     Session.set('currentSelectedPaySlip', payLoadForPayslip)
-            
+
                     // Modal.show('Payslip', payLoadForPayslip);
                 } else {
                     self.errorMsg.set(err.message);
