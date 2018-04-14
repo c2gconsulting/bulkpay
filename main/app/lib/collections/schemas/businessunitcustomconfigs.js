@@ -212,6 +212,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     'payrun.monthEndDay': {
         type: Number
     },
+    'payrun.isMinimumTimeWorkedForPayrollEnabled': {
+        type: Boolean
+    },
     'payrun.fullPayOnTimeRecorded': {
         type: Boolean
     },

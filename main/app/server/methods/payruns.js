@@ -569,16 +569,35 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
 
                 //--Time recording things
+                let startDate;
+                let endDate;
+
+                if(businessUnitConfig.payrun && businessUnitConfig.payrun.startFromPrevMonth) {
+                    const monthStartDay = businessUnitConfig.payrun.monthStartDay
+                    const monthEndDay = businessUnitConfig.payrun.monthEndDay
+                    
+                    const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
+                    startDate = moment(new Date(firsDayOfPeriod)).subtract(1, 'month').add(monthStartDay -1, 'day').startOf('day').toDate();
+                    endDate = moment(startDate).startOf('month').add(monthEndDay - 1, 'day').endOf('day').toDate();
+                } else {
+                    const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
+
+                    startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
+                    endDate = moment(startDate).endOf('month').toDate();    
+                }
+                console.log(`startDate: `, startDate)
+                console.log(`endDate: `, endDate)
+
                 const locationsWithMaxHours = EntityObjects.find({
                     maxHoursInDayForTimeWriting: {$exists: true},
                     otype: 'Location'
                 }).fetch()
                 const projectsPayDetails = 
-                    getFractionForCalcProjectsPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
+                    getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
                 
                 const costCentersPayDetails = 
-                    getFractionForCalcCostCentersPayValue(businessId, period.month, period.year, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
+                    getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }                
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
@@ -607,6 +626,17 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     if (grade) {
                         paygrades.push(grade);
                         empSpecificType = determineRule(pt, grade);
+                    }
+                }
+
+                if(businessUnitConfig.payrun && businessUnitConfig.payrun.isMinimumTimeWorkedForPayrollEnabled) {
+                    if(grade.minimumHoursWorkedForPayroll > 0) {
+                        console.log(`grade.minimumHoursWorkedForPayroll: `, grade.minimumHoursWorkedForPayroll)
+                        console.log(`totalHoursWorkedInPeriod: `, totalHoursWorkedInPeriod)
+
+                        if(totalHoursWorkedInPeriod < grade.minimumHoursWorkedForPayroll) {
+                            return
+                        }
                     }
                 }
 
@@ -1780,12 +1810,12 @@ function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRat
     }
 }
 
-function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear, totalNumWeekDaysInMonth, 
+function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, 
         employeeUserId, businessUnitConfig, locationsWithMaxHours, employeeData) {
-    const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
+    // const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
-    const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
-    const endDate = moment(startDate).endOf('month').toDate();
+    // const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
+    // const endDate = moment(startDate).endOf('month').toDate();
 
     let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
 
@@ -1924,12 +1954,12 @@ function getFractionForCalcProjectsPayValue(businessId, periodMonth, periodYear,
     }
 }
 
-function getFractionForCalcCostCentersPayValue(businessId, periodMonth, periodYear, 
+function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, 
         totalNumWeekDaysInMonth, employeeUserId, businessUnitConfig, locationsWithMaxHours) {
-    const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
+    // const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
-    const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
-    const endDate = moment(startDate).endOf('month').toDate();
+    // const startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
+    // const endDate = moment(startDate).endOf('month').toDate();
 
     let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
     console.log(`\nNumber of weekdays in month: `, totalNumWeekDaysInMonth)

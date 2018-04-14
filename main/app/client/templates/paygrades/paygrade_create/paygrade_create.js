@@ -18,7 +18,8 @@ Template.PaygradeCreate.events({
             status: $('[name="status"]').val(),
             payTypes: getPaytypes(),
             payTypePositionIds: payTypesPositionOnPayrunExport(),
-            enablePensionPayments: $('#enablePensionPayments').is(":checked")
+            enablePensionPayments: $('#enablePensionPayments').is(":checked"),
+            minimumHoursWorkedForPayroll: $('#minimumHoursWorkedForPayroll').val(),
         };
 
         let currencyCode = $('[name="currencyCode"]').val()

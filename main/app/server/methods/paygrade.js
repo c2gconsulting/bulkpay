@@ -65,7 +65,8 @@ Meteor.methods({
 
         const selector = {
             _id: id
-        };        
+        };
+
         let result = PayGrades.update(selector, {$set: details});
 
         if(applyPayGradePaytypesToEmployees) {

@@ -52,6 +52,12 @@ Core.Schemas.PayGrade = new SimpleSchema({
         optional: true,
         defaultValue: true,
     },
+    minimumHoursWorkedForPayroll: {
+        type: Number,
+        optional: true,
+        defaultValue: 0,
+    },
+    
     "successFactors": {// externalCode
         label: "Success Factors PayGroup Config",
         optional: true,
