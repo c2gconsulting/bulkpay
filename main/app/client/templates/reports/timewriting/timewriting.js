@@ -345,6 +345,57 @@ Template.TimeWritingReport.helpers({
             return '---'
         }
     },
+    'getEmployeeProjectCodeTotalDuration': (projectCode) => {
+        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            let result = 0;
+
+            const employeeData = timeWritingReports_Tabular.employeeData;
+            employeeData.forEach(data => {
+                const projectDuration = _.find(data.projects, project => {
+                    if(project.project) {
+                        return project.project === projectCode
+                    } else {
+                        return '---' === projectCode                
+                    }
+                })
+                if(projectDuration) {
+                    if(data.totalDuration > 0) {
+                        let ratio = (projectDuration.duration / data.totalDuration) * 100
+                        result += ratio
+                    } else {
+                        return '---'
+                    }
+                }
+            })
+
+            return `${result.toFixed(2)}%`
+        }
+        return '---'
+    },
+    'getTotalDurationForEverybody': () => {
+        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            let totalDuration = 0;
+
+            const projectCodes = Object.keys(timeWritingReports_Tabular.projectCodeTotals) || [];
+            projectCodes.forEach(projectCode => {
+                const projectCodeTotalData = timeWritingReports_Tabular.projectCodeTotals[projectCode]
+
+                if(projectCodeTotalData) {
+                    totalDuration += projectCodeTotalData.total;
+                }
+            })
+
+            return totalDuration;
+        }
+    },
+    'getTotalNumberOfEmployeesPercentage': () => {
+        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            return `${timeWritingReports_Tabular.employeeData.length * 100}%`
+        }
+    },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
     },

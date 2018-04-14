@@ -406,6 +406,7 @@ Meteor.methods({
 
         const finalResult = []
         const listOfProjectCodes = []
+        const projectCodeTotals = {}
 
         allProjectTimesInMonth.forEach(timeRecord => {
             const gotEmployeeTime = _.find(finalResult, employeeTime => {
@@ -448,13 +449,21 @@ Meteor.methods({
                 gotEmployeeTime.totalDuration += timeRecord.duration
             }
 
-            if(listOfProjectCodes.indexOf(timeRecord._id.project || '---') < 0) {
-                listOfProjectCodes.push(timeRecord._id.project || '---')                
+            const projectCodeVal = timeRecord._id.project || '---'
+
+            if(listOfProjectCodes.indexOf(projectCodeVal) < 0) {
+                listOfProjectCodes.push(projectCodeVal)
+                projectCodeTotals[projectCodeVal] = {total: 0}
+                projectCodeTotals[projectCodeVal].total = timeRecord.duration
+            } else {
+                projectCodeTotals[projectCodeVal].total += timeRecord.duration
             }
         })
-        console.log(`finalResult: `, finalResult)
+        console.log(`listOfProjectCodes: `, listOfProjectCodes)
+        console.log(`time sheet report: `, finalResult)
+        console.log(`projectCodeTotals: `, projectCodeTotals)
 
-        return {employeeData: finalResult, projectCodes: listOfProjectCodes}
+        return {employeeData: finalResult, projectCodes: listOfProjectCodes, projectCodeTotals}
     },
 
     'reports/timesForEveryoneByUnit': function(businessId, startDate, endDate, selectedEmployees) {

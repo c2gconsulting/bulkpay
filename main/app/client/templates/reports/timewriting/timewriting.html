@@ -170,6 +170,14 @@
                                                                         </tr>
                                                                         {{/let}}
                                                                     {{/each}}
+                                                                    <tr>
+                                                                        <td>Total</td><td></td><td></td>
+                                                                        <td>{{getTotalDurationForEverybody}}</td>
+                                                                        {{#each projectCodes}}
+                                                                            <td>{{getEmployeeProjectCodeTotalDuration this}}</td>
+                                                                        {{/each}}
+                                                                        <td>{{getTotalNumberOfEmployeesPercentage}}</td>
+                                                                    </tr>
                                                                 </tbody>
                                                             </table>
                                                         {{else}}
