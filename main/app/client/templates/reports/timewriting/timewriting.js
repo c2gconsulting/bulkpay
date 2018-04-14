@@ -346,55 +346,13 @@ Template.TimeWritingReport.helpers({
         }
     },
     'getEmployeeProjectCodeTotalDuration': (projectCode) => {
-        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
-        if(timeWritingReports_Tabular) {
-            let result = 0;
-
-            const employeeData = timeWritingReports_Tabular.employeeData;
-            employeeData.forEach(data => {
-                const projectDuration = _.find(data.projects, project => {
-                    if(project.project) {
-                        return project.project === projectCode
-                    } else {
-                        return '---' === projectCode                
-                    }
-                })
-                if(projectDuration) {
-                    if(data.totalDuration > 0) {
-                        let ratio = (projectDuration.duration / data.totalDuration) * 100
-                        result += ratio
-                    } else {
-                        return '---'
-                    }
-                }
-            })
-
-            return `${result.toFixed(2)}%`
-        }
-        return '---'
+        return Template.instance().getEmployeeProjectCodeTotalDuration(projectCode)
     },
     'getTotalDurationForEverybody': () => {
-        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
-        if(timeWritingReports_Tabular) {
-            let totalDuration = 0;
-
-            const projectCodes = Object.keys(timeWritingReports_Tabular.projectCodeTotals) || [];
-            projectCodes.forEach(projectCode => {
-                const projectCodeTotalData = timeWritingReports_Tabular.projectCodeTotals[projectCode]
-
-                if(projectCodeTotalData) {
-                    totalDuration += projectCodeTotalData.total;
-                }
-            })
-
-            return totalDuration;
-        }
+        return Template.instance().getTotalDurationForEverybody();
     },
     'getTotalNumberOfEmployeesPercentage': () => {
-        const timeWritingReports_Tabular = Template.instance().timeWritingReports_Tabular.get()
-        if(timeWritingReports_Tabular) {
-            return `${timeWritingReports_Tabular.employeeData.length * 100}%`
-        }
+        return Template.instance().getTotalNumberOfEmployeesPercentage();
     },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
@@ -507,6 +465,16 @@ Template.TimeWritingReport.onCreated(function () {
             reportData.push(newEmployeeRow)
         })
 
+        let totalsRow = [];
+
+        totalsRow = totalsRow.concat(['Total', '', '', self.getTotalDurationForEverybody()])
+        projectsList.forEach(projectCode => {
+            totalsRow.push(self.getEmployeeProjectCodeTotalDuration(projectCode))
+        })
+        totalsRow.push(self.getTotalNumberOfEmployeesPercentage())
+
+        reportData.push(totalsRow)
+
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Project Time Report ${startTime} - ${endTime}`);
     }
@@ -531,6 +499,60 @@ Template.TimeWritingReport.onCreated(function () {
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Cost-Center Time Report ${startTime} - ${endTime}`);
+    }
+
+    self.getTotalDurationForEverybody = () => {
+        const timeWritingReports_Tabular = self.timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            let totalDuration = 0;
+
+            const projectCodes = Object.keys(timeWritingReports_Tabular.projectCodeTotals) || [];
+            projectCodes.forEach(projectCode => {
+                const projectCodeTotalData = timeWritingReports_Tabular.projectCodeTotals[projectCode]
+
+                if(projectCodeTotalData) {
+                    totalDuration += projectCodeTotalData.total;
+                }
+            })
+
+            return totalDuration;
+        }
+    }
+
+    self.getTotalNumberOfEmployeesPercentage = () => {
+        const timeWritingReports_Tabular = self.timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            return `${timeWritingReports_Tabular.employeeData.length * 100}%`
+        }
+    }
+
+    self.getEmployeeProjectCodeTotalDuration = (projectCode) => {
+        const timeWritingReports_Tabular = self.timeWritingReports_Tabular.get()
+        if(timeWritingReports_Tabular) {
+            let result = 0;
+
+            const employeeData = timeWritingReports_Tabular.employeeData;
+            employeeData.forEach(data => {
+                const projectDuration = _.find(data.projects, project => {
+                    if(project.project) {
+                        return project.project === projectCode
+                    } else {
+                        return '---' === projectCode                
+                    }
+                })
+                if(projectDuration) {
+                    if(data.totalDuration > 0) {
+                        let ratio = (projectDuration.duration / data.totalDuration) * 100
+                        result += ratio
+                    } else {
+                        return '---'
+                    }
+                }
+            })
+
+            return `${result.toFixed(2)}%`
+        }
+        return '---'
     }
 
     Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
