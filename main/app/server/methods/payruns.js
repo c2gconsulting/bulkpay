@@ -578,7 +578,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     
                     const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
                     startDate = moment(new Date(firsDayOfPeriod)).subtract(1, 'month').add(monthStartDay -1, 'day').startOf('day').toDate();
-                    endDate = moment(startDate).startOf('month').add(monthEndDay - 1, 'day').endOf('day').toDate();
+                    endDate = moment(new Date(firsDayOfPeriod)).add(monthEndDay - 1, 'day').endOf('day').toDate();
                 } else {
                     const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
 
@@ -1457,7 +1457,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         } else {
                             taxBucket = defaultTaxBucket
                         }
-                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod);  //@@technicalPaytype
+                        let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod, currencyRatesForPeriod, tenant);  //@@technicalPaytype
                         netTaxLocal = taxCalculationResult.netTax
 
                         if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
@@ -2141,7 +2141,7 @@ function getPensionContribution(pensionBucket, pension) {
 }
 
 //from taxable income calculate tax and return value
-function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod) {
+function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod, currencyRatesForPeriod, tenant) {
     //@import taxBucket (defualt tax bucket or valuated passed bucket)
     //@import tax (tax doc configured )
     //calculate reliefs
@@ -2176,6 +2176,12 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     } else {
                         replaceValue = paytypes[i].value
                     }
+
+                    if(!isNaN(replaceValue)) {
+                        if(paytypes[i].currency !== tenant.baseCurrency.iso) {
+                            replaceValue = convertForeignCurrencyToBaseCurrency(paytypes[i], replaceValue, currencyRatesForPeriod)
+                        }
+                    }
                     
                     formula = formula.replace(regex, replaceValue);
                 }
@@ -2200,32 +2206,45 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     console.log(`Error! Parsed taxable income NOT a number.`)
     
                     //--One more level of regex replacing ... tired to make it truly recursive
-                    // let newRules = new ruleJS();
-                    // newRules.init();
+                    let newRules = new ruleJS();
+                    newRules.init();
     
-                    // for (var i = 0; i < paytypes.length; i++) {
-                    //     const code = paytypes[i].code;
-                    //     const pattern = `\\b${code}\\b`;
-                    //     const regex = new RegExp(pattern, "g");
+                    for (var i = 0; i < paytypes.length; i++) {
+                        const code = paytypes[i].code;
+                        const pattern = `\\b${code}\\b`;
+                        const regex = new RegExp(pattern, "g");
+
+                        let replaceValue;
+                        if(!isNaN(paytypes[i].parsedValue)) {
+                            replaceValue = paytypes[i].parsedValue;
+                        } else {
+                            replaceValue = paytypes[i].value
+                        }
+    
+                        if(!isNaN(replaceValue)) {
+                            if(paytypes[i].currency !== tenant.baseCurrency.iso) {
+                                replaceValue = convertForeignCurrencyToBaseCurrency(paytypes[i], replaceValue, currencyRatesForPeriod)
+                            }
+                        }    
         
-                    //     formula = formula.replace(regex, paytypes[i].value);
-                    // }
+                        formula = formula.replace(regex, replaceValue);
+                    }
     
-                    // let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
-                    // k.forEach(c => {
-                    //     const code = c.code ? c.code.toUpperCase() : c.code;
-                    //     const pattern = `\\b${code}\\b`;
-                    //     const regex = new RegExp(pattern, "g");
-                    //     formula = formula.replace(regex, c.value);
-                    // });
-                    // console.log(`final formula: `, formula)
-                    // parsed = newRules.parse(formula, '');
+                    let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
+                    k.forEach(c => {
+                        const code = c.code ? c.code.toUpperCase() : c.code;
+                        const pattern = `\\b${code}\\b`;
+                        const regex = new RegExp(pattern, "g");
+                        formula = formula.replace(regex, c.value);
+                    });
+                    console.log(`final formula: `, formula)
+                    parsed = newRules.parse(formula, '');
     
-                    // console.log(`final taxable income = `, parsed)
-                    // if (parsed.result !== null && !isNaN(parsed.result)) {
-                    //     taxableIncome = parsed.result.toFixed(2)
-                    //     processing.push({code: `Taxable Income`, derived: taxableIncome });
-                    // }
+                    console.log(`final taxable income = `, parsed)
+                    if (parsed.result !== null && !isNaN(parsed.result)) {
+                        taxableIncome = parsed.result.toFixed(2)
+                        processing.push({code: `Taxable Income`, derived: taxableIncome });
+                    }
                 }
             }
         } else {
