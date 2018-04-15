@@ -1465,23 +1465,68 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             netTaxLocal = netTaxLocal * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                         }
 
+                        let currencyRateForTax = _.find(currencyRatesForPeriod, (aCurrency) => {
+                            return aCurrency.code === tax.currency
+                        })
+                        if(currencyRateForTax) {
+                            if(!isNaN(currencyRateForTax.rateToBaseCurrency)) {
+                                netTaxForeign = netTaxLocal / currencyRateForTax.rateToBaseCurrency
+                            }
+                        }
+                        console.log(`netTaxLocal: `, netTaxLocal)
+                        console.log(`netTaxForeign: `, netTaxForeign)
+                        console.log(`tax.currency: `, tax.currency)
+                        console.log(`tenant.baseCurrency.iso: `, tenant.baseCurrency.iso)
+
                         taxLog = taxCalculationResult.taxLog
 
                         //populate result for tax
-                        employeeResult.payment.push({id: tax._id, reference: 'Tax', 
+                        if(tax.currency) {
+                            if(tenant.baseCurrency.iso === tax.currency) {
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax', 
+                                amountLC: netTaxLocal, amountPC: '', code: tax.code, 
+                                description: tax.name, type: 'Deduction'});
+                            } else {
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax', 
+                                amountLC: netTaxForeign, amountPC: '', code: tax.code, 
+                                description: tax.name, type: 'Deduction'});
+                            }    
+                        } else {
+                            employeeResult.payment.push({id: tax._id, reference: 'Tax', 
                             amountLC: netTaxLocal, amountPC: '', code: tax.code, 
                             description: tax.name, type: 'Deduction'});
+                        }
                         //--
                         if(!paymentsAccountingForCurrency.deduction['NGN']) {
                             paymentsAccountingForCurrency.deduction['NGN'] = {payments: []}
                         }
-                        paymentsAccountingForCurrency.deduction['NGN'].payments.push({
-                            title: tax.name,
-                            code: tax.code,
-                            currency: 'NGN',
-                            reference: 'Tax',
-                            value: netTaxLocal * -1
-                        })
+                        if(tax.currency) {
+                            if(tenant.baseCurrency.iso === tax.currency) {
+                                paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                                    title: tax.name,
+                                    code: tax.code,
+                                    currency: 'NGN',
+                                    reference: 'Tax',
+                                    value: netTaxLocal * -1
+                                })
+                            } else {
+                                paymentsAccountingForCurrency.deduction[tax.currency].payments.push({
+                                    title: tax.name,
+                                    code: tax.code,
+                                    currency: tax.currency,
+                                    reference: 'Tax',
+                                    value: netTaxForeign * -1
+                                })
+                            }
+                        } else {
+                            paymentsAccountingForCurrency.deduction['NGN'].payments.push({
+                                title: tax.name,
+                                code: tax.code,
+                                currency: 'NGN',
+                                reference: 'Tax',
+                                value: netTaxLocal * -1
+                            })
+                        }
                     }
 
                     if(taxLog)
@@ -1491,13 +1536,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     final.log = log; //payrun processing log
 
                     final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
+                    
                     final.payslip.deduction.push({
                         payTypeId: tax._id,
                         title: tax.code, 
                         code: tax.name, 
                         currency: tax.currency ? tax.currency : 'NGN',
-                        value: netTaxLocal * -1, 
-                        valueInForeignCurrency: netTaxForeign * -1
+                        value: tax.currency ? (tax.currency === tenant.baseCurrency.iso ? netTaxLocal * -1 : netTaxForeign * -1) : netTaxLocal * -1, 
+                        valueInForeignCurrency: 0
                     }); // negate add tax to deduction
                     //--End of Tax processing
 
@@ -2152,8 +2198,8 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
 
     let taxableIncome;
     if(tax.usingCustomTaxableIncomeFormula) {
-        if(totalHoursWorkedInPeriod > 0) {
-            console.log(`using custome taxable income formula`)
+        //if(totalHoursWorkedInPeriod > 0) {
+            console.log(`using custom taxable income formula`)
             // console.log(`paytypes: `, paytypes)
             if(tax.taxableIncomeFormula) {
                 let formula = tax.taxableIncomeFormula;
@@ -2247,10 +2293,10 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     }
                 }
             }
-        } else {
-            processing.push({code: `Total number of hours worked`, derived: '0' });
-            processing.push({code: `Taxable Income`, derived: '0' });
-        }
+        // } else {
+        //     processing.push({code: `Total number of hours worked`, derived: '0' });
+        //     processing.push({code: `Taxable Income`, derived: '0' });
+        // }
     } else {
         input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
         const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;

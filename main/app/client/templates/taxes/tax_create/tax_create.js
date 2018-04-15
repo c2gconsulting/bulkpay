@@ -65,6 +65,8 @@ Template.TaxCreate.events({
             details.taxableIncomeFormula = taxableIncomeFormula
         }
         //--
+        let currencyCode = $('[name="currencyCode"]').val()
+        details['currency'] = currencyCode
 
         if(tmpl.data){//edit action for updating tax
             const tId = tmpl.data._id;
@@ -298,6 +300,18 @@ Template.TaxCreate.helpers({
     },
     "paytype": () => {
         return Template.instance().paytypes.get()
+    },
+    taxCurrency: function(currency) {
+        if(Template.instance().data) {
+            if(Template.instance().data.currency) {
+                if(currency === Template.instance().data.currency) {
+                    return "selected"
+                }
+            }
+        }
+    },
+    'allCurrencies': () => {
+        return [""].concat(Core.currencies());
     }
 });
 

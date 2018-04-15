@@ -127,6 +127,19 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Currency</label>
+                                        <select name="currencyCode" class="form-control" style="width: 100%">
+                                            {{#each allCurrencies}}
+                                                <option value="{{this}}" {{taxCurrency this}}>{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-sm-12">
                                 <div class="row">
                                     <div class="col-sm-12">

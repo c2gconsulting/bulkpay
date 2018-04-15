@@ -262,6 +262,11 @@ Template.SimplePayslip.helpers({
         if(!displayAllPaymentsUnconditionally) {
             return true
         }
+    },
+    valueExists: function(val) {
+        console.log(`val: `, val)
+        
+        return (val && val.length > 0)
     }
 });
 

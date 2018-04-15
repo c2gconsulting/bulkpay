@@ -148,10 +148,10 @@
                                 
                                 {{#if getNetPayAlternateCurrency}}
                                 <td>
-                                    {{#if valueInForeignCurrency}}
-                                        {{formatMoneyD valueInForeignCurrency}}
+                                    {{#if isPaymentCurrencySameAsTenants this}}
+                                    
                                     {{else}}
-                                        {{formatMoneyD value}}                                    
+                                        {{formatMoneyD value}}
                                     {{/if}}
                                 </td>
                                 {{/if}}
@@ -175,8 +175,8 @@
                         <tbody>
                             <tr>
                                 <td></td>
-                                <td>-{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
-                                <td>-{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>
+                                <td>{{formatMoneyD (totalDeductionForCurrency (currency))}}</td>
+                                <td>{{formatMoneyD (totalDeductionForCurrency (getNetPayAlternateCurrency))}}</td>
                             </tr>
                         </tbody>
                     </table>

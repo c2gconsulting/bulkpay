@@ -78,6 +78,10 @@ Core.Schemas.Tax = new SimpleSchema({
         defaultValue: "Active",
         optional: true
     },
+    currency: {
+        type: String,
+        optional: true
+    },
     rules: {
         type: Array,
         optional: true
