@@ -1065,7 +1065,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         }
                                     } else {
                                         if(totalHoursWorkedInPeriod === 0) {
-                                            //value = 0;
+                                            value = 0;
                                         }
                                         processing.push({code: x.code, derived: value});
                                         processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
@@ -2198,7 +2198,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
 
     let taxableIncome;
     if(tax.usingCustomTaxableIncomeFormula) {
-        //if(totalHoursWorkedInPeriod > 0) {
+        if(totalHoursWorkedInPeriod > 0) {
             console.log(`using custom taxable income formula`)
             // console.log(`paytypes: `, paytypes)
             if(tax.taxableIncomeFormula) {
@@ -2293,10 +2293,10 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     }
                 }
             }
-        // } else {
-        //     processing.push({code: `Total number of hours worked`, derived: '0' });
-        //     processing.push({code: `Taxable Income`, derived: '0' });
-        // }
+        } else {
+            processing.push({code: `Total number of hours worked`, derived: '0' });
+            processing.push({code: `Taxable Income`, derived: '0' });
+        }
     } else {
         input = [{code: 'Relief', value: relief}, {code: 'TaxBucket', value: taxBucket}, {code: 'GrossIncomeBucket', value: grossIncomeBucket}];
         const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
