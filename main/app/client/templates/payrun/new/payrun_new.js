@@ -204,17 +204,18 @@ ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
         }
     })
 
-    payObj.result.forEach(anEmployeeData => {
-        let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
+    payObj.result.forEach(datum => {
+        let anEmployeeFullData = Meteor.users.findOne(datum.payslip.employee.employeeUserId)
+
         if(anEmployeeFullData) {
-            let payGradeId = anEmployeeData.employeeProfile.employment.paygrade
+            let payGradeId = anEmployeeFullData.employeeProfile.employment.paygrade
+
             if(payGradeId) {
                 groupedPayresults[payGradeId] = groupedPayresults[payGradeId] || []
-                groupedPayresults[payGradeId].push(anEmployeeData)
+                groupedPayresults[payGradeId].push(datum)
             }
         }
     })
-
     return {groupedPayruns, groupedPayresults};
 }
 
@@ -642,11 +643,16 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 return
             }
             if(aPaytypeHeader === 'Project Code') {
+                console.log(`anEmployeeData.employeeId: `, anEmployeeData.employeeId)
+                console.log(`detailedPayrunResults: `, detailedPayrunResults)
+
                 let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
                     let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
 
                     return (anEmployeeData.employeeId === employeeData.employeeUserId)
                 })
+                console.log(`found: `, found)
+
                 if(found) {
                     found.timeRecord = found.timeRecord || {}
                     let projects = found.timeRecord.projects || {}
@@ -681,7 +687,10 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     if(totalProjectsDuration > 0) {
                         projectDurations.forEach(projectDuration => {
                             // if(projectDuration && projectDuration.project) {
-                                projectRatioColumnVal.push( ((projectDuration.duration / totalProjectsDuration) * 100) )
+                                let percent = ((projectDuration.duration / totalProjectsDuration) * 100)
+                                percent = percent.toFixed(2)
+
+                                projectRatioColumnVal.push(percent)
                             // }
                         })
                     }
