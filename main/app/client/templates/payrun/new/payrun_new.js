@@ -715,7 +715,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 employee.employeeProfile = employee.employeeProfile || {}
                 employee.employeeProfile.payment = employee.employeeProfile.payment || {}
 
-                aRowOfPayTypeValues.push(employee.employeeProfile.payment.accountNumber || '---')
+                aRowOfPayTypeValues.push(`"${employee.employeeProfile.payment.accountNumber}"` || '---')
                 return
             }
 
@@ -1122,13 +1122,16 @@ Template.PayrunNew.events({
                     return (aHeader.description || aHeader)
                 })
                 console.log(`formattedHeader>>>>>: `, formattedHeader)
-
                 //--
                 let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, payrunResults, payTypeHeaders, payGrade)    
                 console.log(`reportData: `, reportData)
 
+                const month = tmpl.selectedMonth.get()
+                const year = tmpl.selectedYear.get()
+                let payrunRunType = tmpl.payrunRunType.get() || 'Simulation'
+
                 BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-                    `Payrun results export with project ratios - ${payGrade.code}`);
+                    `${payrunRunType} Payrun results ${month}-${year}`);
             })
 
             // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
