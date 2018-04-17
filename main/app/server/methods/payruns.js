@@ -443,7 +443,7 @@ Meteor.methods({
         }
 
         //if live run and no error then save result
-        if (runtype === 'LiveRun' && payObj.error.length === 0){
+        if (runtype === 'LiveRun' && payObj.payrun && payObj.payrun.length > 0){
             //store result in Payrun Collection.
            try {
                let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessId})
