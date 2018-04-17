@@ -429,7 +429,7 @@ let TravelRequestHelper = {
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
                 //only invole city by city admin in trip was approved
-                if (currentTravelRequest.status = "Approved By Budget Holder"){
+                if (currentTravelRequest.status === "Approved By Budget Holder"){
                     for (i = 0; i < currentTravelRequest.trips.length; i++) {
                         otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
                         otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
