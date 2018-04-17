@@ -356,6 +356,11 @@ Meteor.methods({
         let res;
         let payObj = {};
 
+        const year = period.year;
+        const month = period.month;
+        const firsDayOfPeriod = `${month}-01-${year} GMT`;
+        const DateLimit = new Date(firsDayOfPeriod);
+
         let businessUnitConfig = BusinessUnitCustomConfigs.findOne({businessId: businessId})
         
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
@@ -368,13 +373,8 @@ Meteor.methods({
                     period, businessUnitConfig, retroactivePayrun, false);
             }
         } else if (employees.length > 0) {
-            const year = period.year;
-            const month = period.month;
-            const firsDayOfPeriod = `${month}-01-${year} GMT`;
-            const DateLimit = new Date(firsDayOfPeriod);
             //get all employees specified
             //return empoloyee and reason why payroll cannot be run for such employee if any
-
             let users = []
 
             if(businessUnitConfig) {
@@ -424,6 +424,20 @@ Meteor.methods({
                     }).fetch();
                 }
             }
+            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, 
+                period, businessUnitConfig, retroactivePayrun, false);
+        } else {
+            users = Meteor.users.find({
+                $or: [
+                    {'employeeProfile.employment.terminationDate': {$gt: DateLimit}},
+                    {'employeeProfile.employment.terminationDate': null},
+                    {'employeeProfile.employment.terminationDate': ""},
+                    {'employeeProfile.employment.terminationDate' : { $exists : false } }
+                ],
+                'employeeProfile.employment.status': 'Active',
+                'businessIds': businessId
+            }).fetch();
+
             payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, 
                 period, businessUnitConfig, retroactivePayrun, false);
         }
@@ -630,8 +644,31 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }
                 }
 
+                if(!grade) {
+                    console.log(`employee has no pay grade: `, x)
+                    const error  = {};
+                    x.employeeProfile = x.employeeProfile || {};
+                    x.profile = x.profile || {};
+
+                    let failedEmployeeId = x.employeeProfile.employeeId || 'Employee does not have EmployeeID'
+                    let failedEmployeeFullName = x.profile.fullName || 'Employee does not have Full Name'
+
+                    error.employee = `${failedEmployeeId} - ${failedEmployeeFullName}`;
+                    error.employee = `${x.employeeProfile.employeeId} - ${x.profile.fullName}`;
+
+                    error.reason = 'Employee does not have a pay grade';
+                    error.details = '';
+                    processingError.push(error);
+
+                    if(count < employees.length - 1) {
+                        count++;
+                        runPayrun(count);
+                    }
+                    return;
+                }
+
                 if(businessUnitConfig.payrun && businessUnitConfig.payrun.isMinimumTimeWorkedForPayrollEnabled) {
-                    if(grade.minimumHoursWorkedForPayroll > 0) {
+                    if(grade && grade.minimumHoursWorkedForPayroll > 0) {
                         console.log(`grade.minimumHoursWorkedForPayroll: `, grade.minimumHoursWorkedForPayroll)
                         console.log(`totalHoursWorkedInPeriod: `, totalHoursWorkedInPeriod)
 

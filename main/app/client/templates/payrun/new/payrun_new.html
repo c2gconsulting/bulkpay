@@ -171,26 +171,27 @@
                                     <!-- <h5 class="lg-title mb5">List of Processed Employees</h5>
                                     <p class="mb20">The table below shows a list of processed employees You can View the Log or payslip of any given employee.</p> -->
 
-                                    {{#if processingError}}
+                                    <!-- {{#if numProcessingErrors}}
                                     <div class="alert alert-danger">
                                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                         <strong>Payment Processing Error!</strong>
                                         Please note <a href="" class="alert-link">Payroll Results were not saved.</a>
                                         There are processing Errors for some employees, Please Correct and rerun.
+                                    </div> -->
+
+                                    <div class="alert alert-success">
+                                        <!-- <strong></strong> -->
+                                        
+                                        <a href="" class="alert-link">Payroll Results</a> for processed employees.
+                                        
+                                        {{#if showPayrunExportButtonWithProjects}}
+                                            <button type="button" class="btn-primary pull-right" id="detailed-export-to-csv">Export Payrun to CSV</button>
+                                        {{else}}
+                                            <button type="button" class="btn-primary pull-right" id="export-to-csv">Export Payrun to CSV</button>
+                                        {{/if}}
+                                        <!--<span class="pull-right">&nbsp; &nbsp; &nbsp;</span>
+                                        <button type="button" class="btn-primary pull-right" id="variance-report">Variance Report</button>-->
                                     </div>
-                                    {{else}}
-                                        <div class="alert alert-success">
-                                            <strong>Payment Processing Complete!</strong> Please note <a href="" class="alert-link">Payroll Result Saved</a> For processed employees.
-                                            
-                                            {{#if showPayrunExportButtonWithProjects}}
-                                                <button type="button" class="btn-primary pull-right" id="detailed-export-to-csv">Export Payrun to CSV</button>
-                                            {{else}}
-                                                <button type="button" class="btn-primary pull-right" id="export-to-csv">Export Payrun to CSV</button>
-                                            {{/if}}
-                                            <!--<span class="pull-right">&nbsp; &nbsp; &nbsp;</span>
-                                            <button type="button" class="btn-primary pull-right" id="variance-report">Variance Report</button>-->
-                                        </div>
-                                    {{/if}}
 
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
@@ -242,6 +243,27 @@
                                             <button type="button" class="btn-primary pull-right" id="send-for-approval">Send for Approval</button>
                                         </div>
                                     {{/if}}
+
+                                    {{#if numProcessingErrors}}
+                                        {{#each processingErrors}}
+                                        <div class="alert alert-danger">
+                                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                            <strong>Payment Processing Error!</strong>
+
+                                            {{#if employee}}
+                                                {{employee}}
+                                            {{/if}}
+                                            -
+                                            {{#if reason}}
+                                                {{reason}}
+                                            {{/if}}
+                                            -
+                                            {{#if details}}
+                                            {{/if}}
+                                        </div>
+                                        {{/each}}
+                                    {{/if}}
+
                                 </div>
                             </div>
                         {{/if}}

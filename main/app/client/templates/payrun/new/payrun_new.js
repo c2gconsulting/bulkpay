@@ -1016,25 +1016,28 @@ Template.PayrunNew.events({
             retroactivePayrun: retroactivePayrun,
         };
         //check if any valid selection is made
-        if (params.employees.length > 0 || params.paygrades.length > 0){
-            Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
-                Session.set('currentSelectedPaySlip', null)
-                
-                if(res) {
-                    console.log(`Payrun results: `, res);
-                    Session.set('currentPayrunPeriod', res.period);
-
-                    //set result as reactive dict payResult
-                    tmpl.dict.set("payResult", res);
-                } else{
-                    console.log(err);
-                }
+        if(payrunRunType !== 'Simulation') {
+            if (params.employees.length > 0 || params.paygrades.length > 0){
+            } else {
                 Blaze.remove(view);
-            })
-        } else {
-            Blaze.remove(view);
-            swal("Validation Error", "Please select a paygrade or some employees", "error");
+                swal("Validation Error", "Please select a paygrade or some employees", "error");
+                return;
+            }
         }
+        Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
+            Session.set('currentSelectedPaySlip', null)
+            
+            if(res) {
+                console.log(`Payrun results: `, res);
+                Session.set('currentPayrunPeriod', res.period);
+
+                //set result as reactive dict payResult
+                tmpl.dict.set("payResult", res);
+            } else{
+                console.log(err);
+            }
+            Blaze.remove(view);
+        })
     },
     'change [name="annualPay"]': (e, tmpl) => {
         tmpl.includePay.set($(e.target).is(':checked'));
@@ -1221,12 +1224,19 @@ Template.PayrunNew.helpers({
             return payResult.payObj.result;
         }
     },
-    'processingError': () => {
+    'numProcessingErrors': () => {
         const payresult = Template.instance().dict.get('payResult');
         let errors = payresult.payObj.error || []
         
         return errors.length;
     },
+    'processingErrors': () => {
+        const payresult = Template.instance().dict.get('payResult');
+        let errors = payresult.payObj.error || []
+        
+        return errors;
+    },
+    
     selectedMonth: function (val) {
         if(Template.instance().selectedMonth.get()) {
             return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
