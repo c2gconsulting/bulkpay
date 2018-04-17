@@ -171,6 +171,13 @@ Template.TravelRequisition2Create.events({
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
 },
+'change [id=budget-code]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.budgetCodeId = $("#budget-code").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+},
 'click [id=add-additional_stop]': function(e, tmpl) {
     e.preventDefault()
 
@@ -243,10 +250,10 @@ Template.TravelRequisition2Create.events({
     const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
 
     currentTravelRequest.trips[index].toId = $(e.currentTarget).val();
-    currentTravelRequest.trips[index].airlineId = "";
-    currentTravelRequest.trips[index].airfareCost = 0;
-    currentTravelRequest.trips[index].hotelId = "";
-    currentTravelRequest.trips[index].hotelRate = 0;
+    //currentTravelRequest.trips[index].airlineId = "";
+    //currentTravelRequest.trips[index].airfareCost = 0;
+    //currentTravelRequest.trips[index].hotelId = "";
+    //currentTravelRequest.trips[index].hotelRate = 0;
 
     if ((index + 1) < currentTravelRequest.trips.length){
         currentTravelRequest.trips[index + 1].fromId = $(e.currentTarget).val();
@@ -465,8 +472,28 @@ Template.TravelRequisition2Create.events({
         //     fieldsAreValid = false;
         //     validationErrors += ": select transportation mode";
         // }
+        //console.log(currentTravelRequest.type);
+        if ((currentTravelRequest.type === "Multiple") && ((i + 1) < currentTravelRequest.trips.length)) {
+            const startDate = moment(currentTrip.departureDate);
+            const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
+
+            if (endDate.diff(startDate, 'days') < 0){
+                fieldsAreValid = false;
+                validationErrors += ": Return date cannot be earlier than Departure date";
+            }
+        }else{
+            const startDate = moment(currentTrip.departureDate);
+            const endDate = moment(currentTrip.returnDate)
+
+            if (endDate.diff(startDate, 'days') < 0){
+                fieldsAreValid = false;
+                validationErrors += ": Return date cannot be earlier than Departure date";
+            }
+        }
 
         if (currentTravelRequest.trips.length ===1){
+
+
             if (currentTrip.fromId === ""){
                 fieldsAreValid = false;
                 validationErrors += ": select your current location";
@@ -492,6 +519,9 @@ Template.TravelRequisition2Create.events({
 
 
     if (fieldsAreValid){
+        //explicitely set status
+        currentTravelRequest.status = "Pending";
+
         Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
@@ -520,6 +550,116 @@ Template.TravelRequisition2Create.events({
     }
 
 },
+
+'click #new-requisition-save-draft': function(e, tmpl) {
+    e.preventDefault()
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+    //update description one last final time
+    currentTravelRequest.description = $("#description").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    let fieldsAreValid = true;
+    let validationErrors = '';
+
+    /*** VALIDATIONS ***/
+    //check that the description is not hello
+
+    if (currentTravelRequest.description ===""){
+        fieldsAreValid = false;
+        validationErrors += ": description cannot be empty";
+    }
+
+    if( currentTravelRequest.budgetCodeId=="I am not sure")
+    {
+        fieldsAreValid = false;
+        validationErrors += ": select a budget code";
+    }
+    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+        const currentTrip = currentTravelRequest.trips[i];
+
+        // if (currentTrip.transportationMode === ""){
+        //     fieldsAreValid = false;
+        //     validationErrors += ": select transportation mode";
+        // }
+        //console.log(currentTravelRequest.type);
+        if ((currentTravelRequest.type === "Multiple") && ((i + 1) < currentTravelRequest.trips.length)) {
+            const startDate = moment(currentTrip.departureDate);
+            const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
+
+            if (endDate.diff(startDate, 'days') < 0){
+                fieldsAreValid = false;
+                validationErrors += ": Return date cannot be earlier than Departure date";
+            }
+        }else{
+            const startDate = moment(currentTrip.departureDate);
+            const endDate = moment(currentTrip.returnDate)
+
+            if (endDate.diff(startDate, 'days') < 0){
+                fieldsAreValid = false;
+                validationErrors += ": Return date cannot be earlier than Departure date";
+            }
+        }
+
+        if (currentTravelRequest.trips.length ===1){
+
+
+            if (currentTrip.fromId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select your current location";
+            }
+            if (currentTrip.fromId.selectedIndex == 0){
+                fieldsAreValid = false;
+                validationErrors += ": select your current location";
+            }
+            if (currentTrip.toId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select your destination location";
+            }
+            if (currentTrip.hotelId === ""){
+                fieldsAreValid = false;
+                validationErrors += ": select a hotel";
+            }
+            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //    fieldsAreValid = false;
+            //    validationErrors += ": select an airline";
+            //}
+        }
+    }
+
+
+    if (fieldsAreValid){
+        //explicitely set status
+        currentTravelRequest.status = "Draft";
+
+        Meteor.call('TravelRequest2/createDraft', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition created",
+                    text: "Your travel requisition has been saved as draft",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Your travel requisition could not be created, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+
+        });
+        Template.instance().errorMessage.set(null);
+        Modal.hide('TravelRequisition2Create');
+    }else{
+        Template.instance().errorMessage.set("Validation errors" + validationErrors);
+    }
+
+}
 });
 
 
@@ -539,7 +679,14 @@ Template.TravelRequisition2Create.helpers({
         return false;
     },
     travelcityList() {
-        return  Travelcities.find();
+        let sortBy = "name";
+        let sortDirection = 1;
+
+        let options = {};
+        options.sort = {};
+        options.sort[sortBy] = sortDirection;
+
+        return  Travelcities.find({},options);
     },
     budgetList() {
         return  Budgets.find();
@@ -554,7 +701,16 @@ Template.TravelRequisition2Create.helpers({
         if (toTravelCity){
             isInternational = isInternational || toTravelCity.isInternational;
         }
-        return Airlines.find({isInternational: isInternational});
+
+
+        let sortBy = "name";
+        let sortDirection = 1;
+
+        let options = {};
+        options.sort = {};
+        options.sort[sortBy] = sortDirection;
+
+        return Airlines.find({isInternational: isInternational}, options);
     },
     getAirlineName(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -567,8 +723,14 @@ Template.TravelRequisition2Create.helpers({
     },
     budgetCodeSelected(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
         if(currentTravelRequest && val){
-            return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
+            if(currentTravelRequest.budgetCodeId === val){
+                $('#budget-code').dropdown('set selected', currentTravelRequest.budgetCodeId);
+            }
+
+            //return currentTravelRequest.budgetCodeId === val ? selected="selected" : '';
+
         }
 
     },
@@ -584,20 +746,30 @@ Template.TravelRequisition2Create.helpers({
     fromIdSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].fromId === val ? selected="selected" : '';
+
+            if(currentTravelRequest.trips[parseInt(index) - 1].fromId === val){
+                $('#fromId_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].fromId);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].fromId === val ? selected="selected" : '';
         }
 
     },
     toIdSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].toId === val ? selected="selected" : '';
+            if(currentTravelRequest.trips[parseInt(index) - 1].toId === val){
+                $('#toId_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].toId);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].toId === val ? selected="selected" : '';
         }
     },
     transportModeSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val ? selected="selected" : '';
+            if(currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val){
+                $('#transportationMode_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].transportationMode);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val ? selected="selected" : '';
         }
     },
     departureTimeSelected(val, index){
@@ -615,19 +787,29 @@ Template.TravelRequisition2Create.helpers({
     carOptionSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].carOption === val ? selected="selected" : '';
+            if(currentTravelRequest.trips[parseInt(index) - 1].carOption === val){
+                $('#carOption_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].carOption);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].carOption === val ? selected="selected" : '';
         }
     },
     airlineSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        //console.log(currentTravelRequest);
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].airlineId === val ? selected="selected" : '';
+            if(currentTravelRequest.trips[parseInt(index) - 1].airlineId === val){
+                $('#airlineId_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].airlineId);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].airlineId === val ? selected="selected" : '';
         }
     },
     hotelSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].hotelId === val ? selected="selected" : '';
+            if(currentTravelRequest.trips[parseInt(index) - 1].hotelId === val){
+               $('#hotelId_' + index).dropdown('set selected', currentTravelRequest.trips[parseInt(index) - 1].hotelId);
+            }
+            //return currentTravelRequest.trips[parseInt(index) - 1].hotelId === val ? selected="selected" : '';
         }
     },
     cashAdvanceNotRequiredChecked(){
@@ -1019,60 +1201,30 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.amoutPayableToEmp = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getUnitForPosition = (entity) => {
-        let possibleUnitId = entity.parentId
-        if(possibleUnitId) {
-            let possibleUnit = EntityObjects.findOne({_id: possibleUnitId})
-            if(possibleUnit) {
-                if(possibleUnit.otype === 'Unit') {
-                    return possibleUnit
-                } else {
-                    return self.getUnitForPosition(possibleUnit)
-                }
-            } else {
-                return null
-            }
-        } else {
-            return null
-        }
-    }
+    let invokeReason = self.data;
 
     self.autorun(function(){
-        if(unitsSubscription.ready()){
-            self.units.set(EntityObjects.find({otype: 'Unit'}).fetch())
 
-            let employeeProfile = Meteor.user().employeeProfile
-            if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-                let userPositionId = employeeProfile.employment.position
-                let positionSubscription = self.subscribe('getEntity', userPositionId)
+        if (invokeReason){
+            let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId);
+            if(travelRequest2Sub.ready()) {
+                let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
+                self.currentTravelRequest.set(travelRequestDetails)
 
-                if(positionSubscription.ready()){
-                    let userPosition = EntityObjects.findOne({_id: userPositionId, otype: 'Position'})
-                    let unit = self.getUnitForPosition(userPosition)
-                    if(unit) {
-                        self.unitId.set(unit._id)
-                    } else {
-                        self.unitId.set(null)
-                    }
-                }
             }
         }
-
-
     })
 
 
 });
 
 Template.TravelRequisition2Create.onRendered(function () {
-    this.$('select.dropdown').dropdown();
-
 
 
     /*this.$('.datetimepicker').datetimepicker({
-        format: 'YYYY-MM-DD',
-        minDate: new Date()
-    })*/
+    format: 'YYYY-MM-DD',
+    minDate: new Date()
+})*/
 
 });
 

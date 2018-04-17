@@ -29,7 +29,7 @@
 
                                     <label for="budget-code" class="control-label">Which project is this trip <strong>primarily</strong> related to?</label>
                                     {{#semanticselect2}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown">
                                         <option value="NONE">I am not sure</option>
                                         {{#each budgetList}}
                                         <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
@@ -119,12 +119,12 @@
                                     <option value="4 PM" {{departureTimeSelected "4 PM" tripIndex}}>4 PM</option>
                                     <option value="5 PM" {{departureTimeSelected "5 PM" tripIndex}}>5 PM</option>
                                     <option value="6 PM" {{departureTimeSelected "6 PM" tripIndex}}>6 PM</option>
-                                    <option value="6 PM" {{departureTimeSelected "7 PM" tripIndex}}>7 PM</option>
-                                    <option value="7 PM" {{departureTimeSelected "8 PM" tripIndex}}>8 PM</option>
-                                    <option value="8 PM" {{departureTimeSelected "9 PM" tripIndex}}>9 PM</option>
-                                    <option value="9 PM" {{departureTimeSelected "10 PM" tripIndex}}>10 PM</option>
-                                    <option value="10 PM" {{departureTimeSelected "11 PM" tripIndex}}>11 PM</option>
-                                    <option value="11 PM" {{departureTimeSelected "12 PM" tripIndex}}>12 AM</option>
+                                    <option value="7 PM" {{departureTimeSelected "7 PM" tripIndex}}>7 PM</option>
+                                    <option value="8 PM" {{departureTimeSelected "8 PM" tripIndex}}>8 PM</option>
+                                    <option value="9 PM" {{departureTimeSelected "9 PM" tripIndex}}>9 PM</option>
+                                    <option value="10 PM" {{departureTimeSelected "10 PM" tripIndex}}>10 PM</option>
+                                    <option value="11 PM" {{departureTimeSelected "11 PM" tripIndex}}>11 PM</option>
+                                    <option value="12 PM" {{departureTimeSelected "12 PM" tripIndex}}>12 AM</option>
                                     <option value="1 AM" {{departureTimeSelected "1 AM" tripIndex}}>1 AM</option>
                                     <option value="2 AM" {{departureTimeSelected "2 AM" tripIndex}}>2 AM</option>
                                     <option value="3 AM" {{departureTimeSelected "3 AM" tripIndex}}>3 AM</option>
@@ -169,12 +169,12 @@
                                     <option value="4 PM" {{returnTimeSelected "4 PM" tripIndex}}>4 PM</option>
                                     <option value="5 PM" {{returnTimeSelected "5 PM" tripIndex}}>5 PM</option>
                                     <option value="6 PM" {{returnTimeSelected "6 PM" tripIndex}}>6 PM</option>
-                                    <option value="6 PM" {{returnTimeSelected "7 PM" tripIndex}}>7 PM</option>
-                                    <option value="7 PM" {{returnTimeSelected "8 PM" tripIndex}}>8 PM</option>
-                                    <option value="8 PM" {{returnTimeSelected "9 PM" tripIndex}}>9 PM</option>
-                                    <option value="9 PM" {{returnTimeSelected "10 PM" tripIndex}}>10 PM</option>
-                                    <option value="10 PM" {{returnTimeSelected "11 PM" tripIndex}}>11 PM</option>
-                                    <option value="11 PM" {{returnTimeSelected "12 PM" tripIndex}}>12 AM</option>
+                                    <option value="7 PM" {{returnTimeSelected "7 PM" tripIndex}}>7 PM</option>
+                                    <option value="8 PM" {{returnTimeSelected "8 PM" tripIndex}}>8 PM</option>
+                                    <option value="9 PM" {{returnTimeSelected "9 PM" tripIndex}}>9 PM</option>
+                                    <option value="10 PM" {{returnTimeSelected "10 PM" tripIndex}}>10 PM</option>
+                                    <option value="11 PM" {{returnTimeSelected "11 PM" tripIndex}}>11 PM</option>
+                                    <option value="12 PM" {{returnTimeSelected "12 PM" tripIndex}}>12 AM</option>
                                     <option value="1 AM" {{returnTimeSelected "1 AM" tripIndex}}>1 AM</option>
                                     <option value="2 AM" {{returnTimeSelected "2 AM" tripIndex}}>2 AM</option>
                                     <option value="3 AM" {{returnTimeSelected "3 AM" tripIndex}}>3 AM</option>
@@ -229,7 +229,7 @@
 
                             </div>
                         </div>
-                    
+
                         <div class="col-sm-4">
                             <div class="form-group">
                                 <label>&nbsp;</label>
@@ -272,7 +272,7 @@
                         <div class="col-sm-2">
                             <div class="form-group">
                                 <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
-                                <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{this.hotelRate}}" disabled/>
+                                <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{formatMoney this.hotelRate}}" disabled/>
                             </div><!-- form-group -->
                         </div><!-- col-sm-3 -->
                         <div class="col-sm-1">
@@ -473,7 +473,7 @@
                     <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
                     <button class="btn btn-success mr5 pull-right" id="new-requisition-create">Submit for Approval</button>
-                    <!--<button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
+                    <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>
                 </div><!-- panel-footer -->
             </div>
         </div>

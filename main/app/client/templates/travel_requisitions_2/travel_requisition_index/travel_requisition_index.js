@@ -17,7 +17,17 @@ Template.TravelRequisition2Index.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2Detail', invokeReason)
+        const status = $("#status_" + requisitionId).html();
+
+
+
+
+        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+            Modal.show('TravelRequisition2Create', invokeReason);
+        }else{
+            Modal.show('TravelRequisition2Detail', invokeReason);
+        }
+
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')

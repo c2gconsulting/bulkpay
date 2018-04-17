@@ -108,26 +108,26 @@ Template.TravelRequisition2SupervisorDetail.events({
         }
         if (fieldsAreValid){
 
-  Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
-    if (res){
-        swal({
-            title: "Travel requisition has been rejected",
-            text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-            confirmButtonClass: "btn-success",
-            type: "success",
-            confirmButtonText: "OK"
-        });
-    } else {
-        swal({
-            title: "Oops!",
-            text: "Travel requisition has  not been updated, reason: " + err.message,
-            confirmButtonClass: "btn-danger",
-            type: "error",
-            confirmButtonText: "OK"
-        });
-        console.log(err);
-    }
-});
+            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Travel requisition has been rejected",
+                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel requisition has  not been updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+            });
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2SupervisorDetail');
         }else{
@@ -135,18 +135,15 @@ Template.TravelRequisition2SupervisorDetail.events({
         }
 
     },
+    'change [id=budget-code]': function(e, tmpl) {
+        e.preventDefault()
 
+        console.log("budget codexxx");
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.budgetCodeId = $("#budget-code").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
 
-
-
-
-
-
-
-
-
-
-
+    }
 });
 
 
