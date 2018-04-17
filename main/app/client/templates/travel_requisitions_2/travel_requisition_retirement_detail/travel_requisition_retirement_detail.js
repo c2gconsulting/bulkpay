@@ -89,7 +89,10 @@ Template.TravelRequisition2RetirementDetail.helpers({
         }
 
         if (currency === "USD"){
-            const usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            let usdDifference = currentTravelRequest.totalAncilliaryCostUSD - currentTravelRequest.actualTotalAncilliaryCostUSD;
+            if (currentTravelRequest.cashAdvanceNotRequired){
+                usdDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostUSD;
+            }
             if (usdDifference > 0){
                 return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
             }else if (usdDifference < 0){
@@ -98,7 +101,10 @@ Template.TravelRequisition2RetirementDetail.helpers({
                 return "No USD refunds"
             }
         }else if (currency === "NGN"){
-            const ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            let ngnDifference = currentTravelRequest.totalAncilliaryCostNGN - currentTravelRequest.actualTotalAncilliaryCostNGN;
+            if (currentTravelRequest.cashAdvanceNotRequired){
+                ngnDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostNGN;
+            }
             if (ngnDifference > 0){
                 return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
             }else if (ngnDifference < 0){
