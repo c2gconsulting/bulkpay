@@ -427,9 +427,13 @@ let TravelRequestHelper = {
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
-                for (i = 0; i < currentTravelRequest.trips.length; i++) {
-                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
-                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
+
+                //only invole city by city admin in trip was approved
+                if (currentTravelRequest.status === "Approved By Budget Holder"){
+                    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+                        otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
+                        otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
+                    }
                 }
 
                 otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
@@ -590,10 +594,12 @@ let TravelRequestHelper = {
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
-                for (i = 0; i < currentTravelRequest.trips.length; i++) {
-                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
-                    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
-                }
+
+                //For retirements no need to involve city by city admin
+                //for (i = 0; i < currentTravelRequest.trips.length; i++) {
+                //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
+                //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
+                //}
 
                 otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
