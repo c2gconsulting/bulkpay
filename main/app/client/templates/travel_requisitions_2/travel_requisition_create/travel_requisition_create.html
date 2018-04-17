@@ -94,7 +94,7 @@
                                         <i class="glyphicon icon-calendar"></i>
                                         <label class="control-label">Departure <span class="asterisk important-input">*</span></label>
                                         {{#datepicker2 this.departureDate}}
-                                        <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date"/>
+                                        <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Departure Date" value="{{formatDate2 this.departureDate}}"/>
                                         {{/datepicker2}}
                                     </div>
                                 </div>
@@ -144,7 +144,7 @@
                                         <i class="glyphicon icon-calendar"></i>
                                         <label class="control-label">Return <span class="asterisk important-input">*</span></label>
                                         {{#datepicker2 this.returnDate}}
-                                        <input class="form-control datepicker" type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date"/>
+                                        <input class="form-control datepicker" type="text" id="returnDate_{{this.tripIndex}}" name="returnDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate2 this.returnDate}}"/>
                                         {{/datepicker2}}
                                     </div>
                                 </div>

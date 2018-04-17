@@ -737,6 +737,9 @@ Template.TravelRequisition2Create.helpers({
     formatDate(dateVal){
         return moment(dateVal).format('YYYY-MM-DD');
     },
+    formatDate2(dateVal){
+        return moment(dateVal).format('DD MMM YYYY');
+    },
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
