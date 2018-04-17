@@ -641,7 +641,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 let employee = Meteor.users.findOne({_id: anEmployeeData.employeeId});
                 employee.employeeProfile = employee.employeeProfile || {}
 
-                aRowOfPayTypeValues.push(employee.employeeProfile.workLocation || '---')
+                aRowOfPayTypeValues.push(employee.employeeProfile.workLocation || "'")
 
                 return
             }
@@ -659,14 +659,12 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     let projectCodeColumnVal = [];
 
                     projectDurations.forEach(projectDuration => {
-                        // if(projectDuration && projectDuration.project) {
-                            projectCodeColumnVal.push(projectDuration.project || "---")
-                        // }
+                        projectCodeColumnVal.push(projectDuration.project || "---")
                     })
-                    aRowOfPayTypeValues.push(projectCodeColumnVal.join(','));
+                    aRowOfPayTypeValues.push(projectCodeColumnVal.join('/'));
                     return;
                 }
-                aRowOfPayTypeValues.push('---');
+                aRowOfPayTypeValues.push("'");
                 return;
             }
             if(aPaytypeHeader === 'Ratio') {
@@ -696,7 +694,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     aRowOfPayTypeValues.push(projectRatioColumnVal.join(':'));
                     return;
                 }
-                aRowOfPayTypeValues.push('---');
+                aRowOfPayTypeValues.push("'");
                 return
             }
             if(aPaytypeHeader === 'Bank Name') {
@@ -747,7 +745,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                             payAmount *= -1
                         }
                     } else {
-                        payAmount = '---'                        
+                        payAmount = "'"
                     }
                 }
                 aRowOfPayTypeValues.push(payAmount)
@@ -788,7 +786,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(payslipWithCurrencyDelineation.benefit[localCurrency]) {
                             aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)                            
                         } else {
-                            aRowOfPayTypeValues.push('---')
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id === 'totalDeduction_' + localCurrency) {
@@ -802,7 +800,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(payslipWithCurrencyDelineation.deduction[localCurrency]) {
                             aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[localCurrency].total)
                         } else {
-                            aRowOfPayTypeValues.push('---')
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id === 'netPay_' + localCurrency) {
@@ -834,7 +832,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(payslipWithCurrencyDelineation.benefit[netPayAlternativeCurrency]) {
                             aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[netPayAlternativeCurrency].total)
                         } else {
-                            aRowOfPayTypeValues.push('---')
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id === 'totalDeduction_' + netPayAlternativeCurrency) {
@@ -848,7 +846,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency]) {
                             aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)                            
                         } else {
-                            aRowOfPayTypeValues.push('---')
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id === 'netPay_' + netPayAlternativeCurrency) {
@@ -888,7 +886,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(foundTax) {
                             aRowOfPayTypeValues.push(foundTax.value)
                         } else {
-                            aRowOfPayTypeValues.push("---")
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id === 'tax_' + netPayAlternativeCurrency) {
@@ -910,7 +908,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         if(foundTax) {
                             aRowOfPayTypeValues.push(foundTax.value)
                         } else {
-                            aRowOfPayTypeValues.push("---")
+                            aRowOfPayTypeValues.push("'")
                         }
                     }
                 } else if(aPaytypeHeader.id && aPaytypeHeader.id.startsWith('netPayCurrencyAllocation_')) {
@@ -924,7 +922,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     }
                     aRowOfPayTypeValues.push(allocation)
                 } else {
-                    aRowOfPayTypeValues.push("---")
+                    aRowOfPayTypeValues.push("'")
                 }
             }
         })
@@ -949,14 +947,14 @@ ReportUtils.getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists = function(u
                 
                 let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
                 if(netPayRemainderInLocalCurrency < 0) {
-                    return '---'
+                    return "'"
                 } else {
                     return netPayRemainderInLocalCurrency
                 }
             }
         }
     }
-    return '---'
+    return "'"
 }
 
 ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists = function(user, netPaymentInBaseCurrency) {
@@ -977,7 +975,7 @@ ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists = functio
             }
         }
     }
-    return "---"
+    return "'"
 }
 
 //----------
