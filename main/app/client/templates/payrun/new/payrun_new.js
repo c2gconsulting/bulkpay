@@ -329,6 +329,9 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
     payTypeHeaders.push('Bank Name')
     payTypeHeaders.push('Bank Account Number')
+    payTypeHeaders = payTypeHeaders.concat(_.range(20).map(x => {
+        return ''
+    }))
 
     console.log(`benefitHeaders: `, benefitHeaders)
     console.log(`deductionHeaders: `, deductionHeaders)
@@ -643,15 +646,11 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                 return
             }
             if(aPaytypeHeader === 'Project Code') {
-                console.log(`anEmployeeData.employeeId: `, anEmployeeData.employeeId)
-                console.log(`detailedPayrunResults: `, detailedPayrunResults)
-
                 let found = _.find(detailedPayrunResults, aDetailPayrunResult => {
                     let employeeData = aDetailPayrunResult.payslipWithCurrencyDelineation.employee
 
                     return (anEmployeeData.employeeId === employeeData.employeeUserId)
                 })
-                console.log(`found: `, found)
 
                 if(found) {
                     found.timeRecord = found.timeRecord || {}
@@ -1111,6 +1110,14 @@ Template.PayrunNew.events({
 
             const paygradeIds = Object.keys(groupedPayruns) || []
 
+            let finalDataRows = []
+
+            const month = tmpl.selectedMonth.get()
+            const year = tmpl.selectedYear.get()
+            let payrunRunType = tmpl.payrunRunType.get() || 'Simulation'
+
+            let headers;
+
             paygradeIds.forEach(payGradeId => {
                 const payrunRuns = groupedPayruns[payGradeId]
                 const payrunResults = groupedPayresults[payGradeId]
@@ -1126,13 +1133,26 @@ Template.PayrunNew.events({
                 let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, payrunResults, payTypeHeaders, payGrade)    
                 console.log(`reportData: `, reportData)
 
-                const month = tmpl.selectedMonth.get()
-                const year = tmpl.selectedYear.get()
-                let payrunRunType = tmpl.payrunRunType.get() || 'Simulation'
 
-                BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-                    `${payrunRunType} Payrun results ${month}-${year}`);
+                if(!headers) {
+                    headers = formattedHeader
+                    finalDataRows.push([`Pay Grade(${payGrade.code})`])
+                } else {
+                    finalDataRows.push([''])
+                    
+                    finalDataRows = finalDataRows.concat([formattedHeader])
+                    finalDataRows.push([`Pay Grade(${payGrade.code})`])
+                }
+                finalDataRows = finalDataRows.concat(reportData)    
+
+                // Meteor.setTimeout(function() {
+                //     BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+                //         `${payrunRunType} Payrun results ${month}-${year} - ${payGrade.code}`);    
+                // }, 2000)
             })
+
+            BulkpayExplorer.exportAllData({fields: headers, data: finalDataRows}, 
+                `${payrunRunType} Payrun results ${month}-${year}`);
 
             // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
             //     `Payrun results export with project ratios`);

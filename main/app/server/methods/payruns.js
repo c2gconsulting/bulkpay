@@ -484,6 +484,7 @@ Meteor.methods({
 // instantiate payment object for employee with props for all methods required
 processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig, 
     isRetroActivePayrunEnabled, isDoingARetroActivePayrunNow) {
+    // console.log(`employees for payrun before elimination: `, employees.map(x => x._id))
     
     let paygrades = [];
     let payresult = [];  // holds result that will be sent to client
@@ -635,6 +636,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         console.log(`totalHoursWorkedInPeriod: `, totalHoursWorkedInPeriod)
 
                         if(totalHoursWorkedInPeriod < grade.minimumHoursWorkedForPayroll) {
+                            console.log(`Will skip employee: `, x._id)
+                            if(count < employees.length - 1) {
+                                count++;
+                                runPayrun(count);
+                            }
                             return
                         }
                     }
