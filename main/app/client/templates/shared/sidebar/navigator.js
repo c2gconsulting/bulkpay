@@ -250,9 +250,9 @@ Template.navigator.helpers({
     hasPayrollApprovalConfigAccess: function () {
         return Core.hasPayrollApprovalConfigAccess(Meteor.userId());
     },
-    hasPayrollApprovalManageAccess: function () {
-        return Core.hasPayrollApprovalManageAccess(Meteor.userId());
-    },
+    // hasPayrollApprovalManageAccess: function () {
+    //     return Core.hasPayrollApprovalManageAccess(Meteor.userId());
+    // },
 
     hasPayrollReportsViewAccess: function () {
         let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());

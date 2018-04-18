@@ -166,10 +166,8 @@
             <li><a href="{{pathFor route='payroll.approvalconfig'}}">Payrun Approval Config</a></li>
             {{/if}}
 
-            {{#if hasPayrollApprovalManageAccess}}
-                {{#if canApprovePayroll}}
-                    <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
-                {{/if}}
+            {{#if canApprovePayroll}}
+                <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
             {{/if}}
         {{/if}}
 
