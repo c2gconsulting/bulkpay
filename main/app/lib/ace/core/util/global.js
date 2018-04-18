@@ -214,6 +214,9 @@ _.extend(Core, {
     hasTimeManageAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TIME_MANAGE, userId);
     },
+    hasPayRulesManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYRULES_MANAGE, userId);
+    },
     hasPayrollAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PAYROLL_MANAGE, userId);
     },

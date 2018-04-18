@@ -25,7 +25,7 @@
         <li><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
         {{/if}}
 
-        {{#if hasPayrollAccess}}
+        {{#if hasPayRulesManageAccess}}
         <li class="parent {{isMenuExpandedFocusClass  'payRulesMenu'}}">
             <a href="" id="payRulesMenu"><i class="fa fa-money"></i> <span>Pay Rules</span></a>
         </li>

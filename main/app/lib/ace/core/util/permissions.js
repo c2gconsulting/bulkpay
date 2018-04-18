@@ -6,6 +6,7 @@ Core.Permissions = {
     "TIME_APPROVE" : "time/approve",
     "TIME_MANAGE" : "time/manage",
     "EMPLOYEE_SS" : "ess/all",
+    "PAYRULES_MANAGE" : "payrules/manage",
     "PAYROLL_MANAGE" : "payroll/manage",
     "LEAVE_MANAGE" : "leave/manage",
 	  "PROCUREMENT_REQUISITION_APPROVE": "procurement_requisition/approve",
@@ -54,6 +55,7 @@ Core.PermissionNames = {
 		"procurement_requisition/treat" : "Treat Procurement Requisition",
     "travel_requisition/treat" : "Treat Travel Requisition",
 
+		"payrules/manage" : "Payrules Manage",
 		"payroll_reports/view" : "Payroll Reports View",
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",

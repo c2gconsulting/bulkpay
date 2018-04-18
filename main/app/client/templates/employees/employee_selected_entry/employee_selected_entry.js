@@ -158,6 +158,12 @@ Template.EmployeeSelectedEntry.helpers({
     let canDoSelfService = Core.hasSelfServiceAccess(selectedEmployee._id);
     return canDoSelfService;
   },
+  hasPayRulesManageAccess: function () {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let hasPayrulesManageAccess = Core.hasPayRulesManageAccess(selectedEmployee._id);
+    return hasPayrulesManageAccess;
+  },
   hasPayrollAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
     console.log("selected employee id: " + selectedEmployee._id);
@@ -283,6 +289,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldApproveTime = $("[name=timeApprove]").val();
         let shouldManageTime = $("[name=timeManage]").val();
         let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
+
+        let shouldManagePayRules = $("[name=payRulesManage]").val();
         let shouldManagePayroll = $("[name=payrollManage]").val();
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
@@ -314,6 +322,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldHaveEmployeeSelfService === "true") {
           arrayOfRoles.push(Core.Permissions.EMPLOYEE_SS)
+        }
+        if(shouldManagePayRules === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYRULES_MANAGE)
         }
         if(shouldManagePayroll === "true") {
           arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)

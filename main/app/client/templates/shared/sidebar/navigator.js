@@ -190,11 +190,9 @@ Template.navigator.helpers({
         }
     },
     isUserADirectSupervisor: function() {
-        console.log(Meteor.userId());
-
         if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
             return true;
-        }else{
+        } else {
             return false;
         }
     },
@@ -234,6 +232,10 @@ Template.navigator.helpers({
         } else {
             return false
         }
+    },
+    hasPayRulesManageAccess: function () {
+        let hasPayrulesManageAccess = Core.hasPayRulesManageAccess(Meteor.userId());
+        return hasPayrulesManageAccess;
     },
     hasPayrollReportsViewAccess: function () {
         let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
