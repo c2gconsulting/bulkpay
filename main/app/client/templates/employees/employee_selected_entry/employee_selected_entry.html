@@ -408,12 +408,12 @@
                                         <label for="payRulesManage" class="col-sm-6 control-label">Pay Rules Manage</label>
                                         <div class="col-sm-4">
                                             {{#if hasPayRulesManageAccess}}
-                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrulesManage">
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payRulesManage">
                                                     <option value="true" selected>Yes</option>
                                                     <option value="false">No</option>
                                                 </select>
                                             {{else}}
-                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrulesManage">
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payRulesManage">
                                                     <option value="true">Yes</option>
                                                     <option value="false" selected>No</option>
                                                 </select>
@@ -437,6 +437,92 @@
                                             {{/if}}
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <label for="runPayrollManage" class="col-sm-6 control-label">Run Payroll manage</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasRunPayrollManageAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="runPayrollManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="runPayrollManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <label for="payrollAdditionalPaymentsManage" class="col-sm-6 control-label">Payroll Additional Payments Manage</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasPayrollAdditionalPaymentsManageAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollAdditionalPaymentsManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollAdditionalPaymentsManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <label for="payrollResultsManage" class="col-sm-6 control-label">Payroll Results View</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasPayrollResultsViewAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollResultsManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollResultsManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <label for="payrollApprovalConfigManage" class="col-sm-6 control-label">Payroll Approval Config manage</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasPayrollApprovalConfigAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollApprovalConfigManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollApprovalConfigManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <label for="payrollApprovalManage" class="col-sm-6 control-label">Payroll Approval manage</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasPayrollApprovalManageAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollApprovalManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="payrollApprovalManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
 
                                     <div class="row">
                                         <label for="payrollReportsView" class="col-sm-6 control-label">Payroll Reports View</label>

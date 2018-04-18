@@ -41,16 +41,18 @@
         {{/if}}
 
 
-        {{#if hasPayrollAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'sapB1IntegrationMenu'}}">
-            <a href="" id="sapB1IntegrationMenu">
-                <i class="fa fa-cog"></i>
-                <span>SAP B1 Integration</span>
-            </a>
-        </li>
-        {{/if}}
-        {{#if isMenuExpanded 'sapB1IntegrationMenu'}}
-        <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
+        {{#if isSapBusinessOneIntegrationEnabled}}
+            {{#if hasPayrollAccess}}
+                <li class="parent {{isMenuExpandedFocusClass 'sapB1IntegrationMenu'}}">
+                    <a href="" id="sapB1IntegrationMenu">
+                        <i class="fa fa-cog"></i>
+                        <span>SAP B1 Integration</span>
+                    </a>
+                </li>
+            {{/if}}
+            {{#if isMenuExpanded 'sapB1IntegrationMenu'}}
+                <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
+            {{/if}}
         {{/if}}
 
         {{#if isSuccessfactorsEnabled}}
@@ -146,14 +148,28 @@
             </li>
         {{/if}}
         {{#if isMenuExpanded 'payrunsMenu'}}
-            <li><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
+            {{#if hasRunPayrollManageAccess}}
+                <li><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
+            {{/if}}
 
-            <li><a href="{{pathFor route='additional.pay'}}">Additional Payment/ Deduction</a></li>
+            {{#if hasPayrollAdditionalPaymentsManageAccess}}
+                <li><a href="{{pathFor route='additional.pay'}}">Additional Payment/ Deduction</a></li>
+            {{/if}}
+
             <!--<li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>-->
+
+            {{#if hasPayrollResultsViewAccess}}
             <li><a href="{{pathFor route='payruns'}}">Payrun Results</a></li>
+            {{/if}}
+
+            {{#if hasPayrollApprovalConfigAccess}}
             <li><a href="{{pathFor route='payroll.approvalconfig'}}">Payrun Approval Config</a></li>
-            {{#if canApprovePayroll}}
-                <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
+            {{/if}}
+
+            {{#if hasPayrollApprovalManageAccess}}
+                {{#if canApprovePayroll}}
+                    <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
+                {{/if}}
             {{/if}}
         {{/if}}
 

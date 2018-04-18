@@ -166,13 +166,35 @@ Template.EmployeeSelectedEntry.helpers({
   },
   hasPayrollAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
-    console.log("selected employee id: " + selectedEmployee._id);
-
     let canManagePayroll = Core.hasPayrollAccess(selectedEmployee._id);
-    console.log("canManagePayroll: " + canManagePayroll);
-
     return canManagePayroll;
   },
+  hasRunPayrollManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canManagePayroll = Core.hasRunPayrollManageAccess(selectedEmployee._id);
+    return canManagePayroll;
+  },
+  hasPayrollAdditionalPaymentsManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canManagePayroll = Core.hasPayrollAdditionalPaymentsManageAccess(selectedEmployee._id);
+    return canManagePayroll;
+  },
+  hasPayrollResultsViewAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canManagePayroll = Core.hasPayrollResultsViewAccess(selectedEmployee._id);
+    return canManagePayroll;
+  },
+  hasPayrollApprovalConfigAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canManagePayroll = Core.hasPayrollApprovalConfigAccess(selectedEmployee._id);
+    return canManagePayroll;
+  },
+  hasPayrollApprovalManageAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canManagePayroll = Core.hasPayrollApprovalManageAccess(selectedEmployee._id);
+    return canManagePayroll;
+  },
+  
   canSetLeaveEntitlement: () => {
     let userId = Meteor.userId()
 
@@ -292,6 +314,13 @@ Template.EmployeeSelectedEntry.onCreated(function () {
 
         let shouldManagePayRules = $("[name=payRulesManage]").val();
         let shouldManagePayroll = $("[name=payrollManage]").val();
+
+        let shouldManagePayrollRun = $("[name=runPayrollManage]").val();
+        let shouldManagePayrollAdditionalPayments = $("[name=payrollAdditionalPaymentsManage]").val();
+        let shouldViewPayrollResults = $("[name=payrollResultsManage]").val();
+        let shouldManagePayrollApprovalConfig = $("[name=payrollApprovalConfigManage]").val();
+        let shouldManagePayrollApproval = $("[name=payrollApprovalManage]").val();
+
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
 
@@ -329,6 +358,23 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         if(shouldManagePayroll === "true") {
           arrayOfRoles.push(Core.Permissions.PAYROLL_MANAGE)
         }
+
+        if(shouldManagePayrollRun === "true") {
+          arrayOfRoles.push(Core.Permissions.RUN_PAYROLL_MANAGE)
+        }
+        if(shouldManagePayrollAdditionalPayments === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYROLL_ADDITIONAL_PAYMENTS_MANAGE)
+        }
+        if(shouldViewPayrollResults === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYROLL_RESULTS_VIEW)
+        }
+        if(shouldManagePayrollApprovalConfig === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYROLL_APPROVAL_CONFIG_MANAGE)
+        }
+        if(shouldManagePayrollApproval === "true") {
+          arrayOfRoles.push(Core.Permissions.PAYROLL_APPROVAL_MANAGE)
+        }
+
         if(shouldApproveProcurementRequisition === "true") {
             arrayOfRoles.push(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE)
         }

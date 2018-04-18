@@ -237,6 +237,23 @@ Template.navigator.helpers({
         let hasPayrulesManageAccess = Core.hasPayRulesManageAccess(Meteor.userId());
         return hasPayrulesManageAccess;
     },
+
+    hasRunPayrollManageAccess: function () {
+        return Core.hasRunPayrollManageAccess(Meteor.userId());
+    },
+    hasPayrollAdditionalPaymentsManageAccess: function () {
+        return Core.hasPayrollAdditionalPaymentsManageAccess(Meteor.userId());
+    },
+    hasPayrollResultsViewAccess: function () {
+        return Core.hasPayrollResultsViewAccess(Meteor.userId());
+    },
+    hasPayrollApprovalConfigAccess: function () {
+        return Core.hasPayrollApprovalConfigAccess(Meteor.userId());
+    },
+    hasPayrollApprovalManageAccess: function () {
+        return Core.hasPayrollApprovalManageAccess(Meteor.userId());
+    },
+
     hasPayrollReportsViewAccess: function () {
         let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
         return hasPayrollReportsViewAccess;
@@ -247,6 +264,14 @@ Template.navigator.helpers({
     },
     hasProcurementReportsViewAccess: function () {
         return Core.hasProcurementReportsViewAccess(Meteor.userId());
+    },
+    isSapBusinessOneIntegrationEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapBusinessOneIntegrationEnabled
+      } else {
+          return true
+      }
     },
     isSuccessfactorsEnabled: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()

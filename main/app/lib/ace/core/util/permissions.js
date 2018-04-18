@@ -8,7 +8,14 @@ Core.Permissions = {
     "EMPLOYEE_SS" : "ess/all",
     "PAYRULES_MANAGE" : "payrules/manage",
     "PAYROLL_MANAGE" : "payroll/manage",
-    "LEAVE_MANAGE" : "leave/manage",
+		
+		"RUN_PAYROLL_MANAGE" : "runpayroll/manage",
+    "PAYROLL_ADDITIONAL_PAYMENTS_MANAGE" : "payroll_additional_payments/manage",
+    "PAYROLL_RESULTS_VIEW" : "payroll_results/view",
+    "PAYROLL_APPROVAL_CONFIG_MANAGE" : "payroll_approval_config/manage",
+    "PAYROLL_APPROVAL_MANAGE" : "payroll_approval/manage",
+		
+		"LEAVE_MANAGE" : "leave/manage",
 	  "PROCUREMENT_REQUISITION_APPROVE": "procurement_requisition/approve",
 	  "TRAVEL_REQUISITION_APPROVE": "travel_requisition/approve",
 
@@ -56,6 +63,14 @@ Core.PermissionNames = {
     "travel_requisition/treat" : "Treat Travel Requisition",
 
 		"payrules/manage" : "Payrules Manage",
+
+		"payroll/manage" : "Payroll Manage",
+		"runpayroll/manage" : "Run Payroll Manage",
+		"payroll_additional_payments/manage" : "Payroll Additional Payments Manage",
+		"payroll_results/view" : "Payroll Results View",
+		"payroll_approval_config/manage" : "Payroll Approval Config Manage",
+		"payroll_approval/manage" : "Payroll Approval Manage",
+
 		"payroll_reports/view" : "Payroll Reports View",
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",

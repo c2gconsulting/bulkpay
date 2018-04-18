@@ -220,6 +220,25 @@ _.extend(Core, {
     hasPayrollAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PAYROLL_MANAGE, userId);
     },
+
+
+    hasRunPayrollManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.RUN_PAYROLL_MANAGE, userId);
+    },
+    hasPayrollAdditionalPaymentsManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYROLL_ADDITIONAL_PAYMENTS_MANAGE, userId);
+    },
+    hasPayrollResultsViewAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYROLL_RESULTS_VIEW, userId);
+    },
+    hasPayrollApprovalConfigAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYROLL_APPROVAL_CONFIG_MANAGE, userId);
+    },
+    hasPayrollApprovalManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.PAYROLL_APPROVAL_MANAGE, userId);
+    },
+
+
     hasProcurementRequisitionApproveAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PROCUREMENT_REQUISITION_APPROVE, userId);
     },
