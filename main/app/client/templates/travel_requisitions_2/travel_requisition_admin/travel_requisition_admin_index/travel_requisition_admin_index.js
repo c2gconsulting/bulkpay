@@ -19,14 +19,7 @@ Template.TravelRequisition2AdminIndex.events({
 
         const status = $("#status_" + requisitionId).html();
 
-
-
-
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
-            Modal.show('TravelRequisition2Create', invokeReason);
-        }else{
-            Modal.show('TravelRequisition2Detail', invokeReason);
-        }
+        Modal.show('TravelRequisition2AdminDetail', invokeReason);
 
     },
     'click .goToPage': function(e, tmpl) {
@@ -134,8 +127,8 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
     self.getTravelRequestsAdminCreated = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
-    
-        
+
+
 
         let options = {};
         options.sort = {};
@@ -144,7 +137,7 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
         options.skip = skip
 
         return TravelRequisition2s.find({});
-        
+
     }
 
     self.subscribe('getCostElement', businessUnitId)

@@ -4,6 +4,60 @@
 /*****************************************************************************/
 import _ from 'underscore';
 
+
+Template.TravelRequisition2AdminDetail.events({
+
+    'click #requisition-cancel': function(e, tmpl) {
+        e.preventDefault()
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+
+        let fieldsAreValid = true;
+        let validationErrors = '';
+
+        /*** VALIDATIONS ***/
+        //check that the description is not hello
+
+        if (currentTravelRequest.retirementStatus !=="Not Retired"){
+            fieldsAreValid = false;
+            validationErrors += ": Travel Request cannot be cancelled because it has been retired";
+        }
+
+
+        if (fieldsAreValid){
+            //explicitely set status
+            //currentTravelRequest.status = "Cancelled";
+
+            Meteor.call('TravelRequest2/cancelTravel', currentTravelRequest, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Travel requisition created",
+                        text: "Travel request has been cancelled",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel request could not be cancelled, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisition2AdminDetail');
+        }else{
+            Template.instance().errorMessage.set("Validation errors" + validationErrors);
+        }
+
+    }
+});
+
 Template.registerHelper('formatDate', function(date) {
     return moment(date).format('DD-MM-YYYY');
 });
@@ -12,6 +66,9 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2AdminDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2AdminDetail.helpers({
+    'errorMessage': function() {
+        return Template.instance().errorMessage.get()
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -179,7 +236,8 @@ Template.TravelRequisition2AdminDetail.onCreated(function () {
     self.subscribe("budgets", Session.get('context'));
 
 
-
+    self.errorMessage = new ReactiveVar();
+    self.errorMessage.set(null);
 
     self.currentTravelRequest = new ReactiveVar()
     self.isInEditMode = new ReactiveVar()

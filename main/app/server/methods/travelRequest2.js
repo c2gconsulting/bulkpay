@@ -229,6 +229,82 @@ let TravelRequestHelper = {
 
             return true;
         },
+        "TravelRequest2/cancelTravel": function(currentTravelRequest){
+            if(!this.userId && Core.hasPayrollAccess(this.userId)){
+                throw new Meteor.Error(401, "Unauthorized");
+            }
+            check(currentTravelRequest.businessId, String);
+            this.unblock()
+
+            currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+            let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+            if (budgetCode){
+                currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+            }
+
+            //if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            //    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+            //    throw new Meteor.Error(401, errMsg);
+            //}
+            if(currentTravelRequest._id){
+
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+                //only invole city by city admin in trip was approved
+                if (currentTravelRequest.status === "Approved By Budget Holder"){
+                    for (i = 0; i < currentTravelRequest.trips.length; i++) {
+                        otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
+                        otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
+                    }
+                }
+
+                //explicitely set status
+                currentTravelRequest.status = "Cancelled";
+
+                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+                
+                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
+                let createdByEmail = "";
+                let budgetHolderEmail = "";
+                let createdByName = "Employee"
+                let budgetHolderName = "Budget Holder"
+                let createdBySubject = "";
+                let budgetHolderSubject = "";
+
+                if(currentTravelRequest.status === "Approved By Budget Holder"){
+                    createdBySubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
+                    budgetHolderSubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
+                }else{
+                    createdBySubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
+                    budgetHolderSubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
+                }
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
+                }
+
+                if (budgetHolder.emails.length > 0){
+                    budgetHolderEmail = budgetHolder.emails[0].address;
+                    budgetHolderEmail = budgetHolderEmail  + ", bulkpay@c2gconsulting.com";
+                    console.log(budgetHolderEmail);
+                }
+
+                //Send to requestor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Budget Holder
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
+
+
+            }
+
+            return true;
+        },
 
         "TravelRequest2/create": function(currentTravelRequest){
             if(!this.userId && Core.hasPayrollAccess(this.userId)){
