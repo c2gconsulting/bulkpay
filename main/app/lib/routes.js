@@ -199,12 +199,6 @@ Router.route('/business/:_id/emailsettings', {
     controller: 'EmailSettingsController',
     where: 'client'
 });
-Router.route('/business/:_id/flightroutes', {
-    name: 'flightroutes',
-    controller: 'FlightroutesController',
-    where: 'client'
-});
-
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',
     controller: 'PaygradesController',
@@ -395,7 +389,16 @@ Router.route('/business/:_id/employee/travelrequests/treatlist', {
     where: 'client'
 });
 
+
 //Travel Request Two
+
+
+Router.route('/business/:_id/employee/travelrequisition2adminindex', {
+    name: 'travelrequest2.travelrequisition2adminindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2AdminIndex',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/travelrequisition2budgetholderindex', {
     name: 'travelrequest2.travelrequisition2budgetholderindex',
