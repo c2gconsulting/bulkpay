@@ -21,6 +21,12 @@ Core.publish("TravelRequestsICreated", function (businessUnitId) {
     return TravelRequisition2s.find({businessId: businessUnitId, createdBy: this.userId});
 });
 
+Core.publish("TravelRequestsAdminCreated", function (businessUnitId) {
+
+
+    return TravelRequisition2s.find({businessId: businessUnitId});
+});
+
 Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     let user = this.userId;
     return TravelRequisition2s.find({

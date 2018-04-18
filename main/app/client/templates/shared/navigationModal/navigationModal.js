@@ -244,6 +244,11 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #travelrequestsadminlist': function(event, tmpl) {
+      Router.go('travelrequests.adminlist', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
     'click #travelrequestsretirementlist': function(event, tmpl) {
       Router.go('travelrequests.retirementlist', {_id: Session.get('context')})
       Modal.hide('navigationModal');
