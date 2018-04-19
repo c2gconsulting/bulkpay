@@ -15,6 +15,7 @@
 
                 <div class="panel-body">
                     <div class="tab-content nopadding noborder">
+                    {{#if Template.subscriptionsReady}}
                       <ul class="nav nav-pills nav-stacked">
                           {{#if hasAdminAccess}}
                               <li class="parent {{isMenuExpandedFocusClass 'companyMenu'}}">
@@ -26,7 +27,7 @@
                               <li><a href="{{pathFor 'bu.details'}}" id="budetails">Org Chart</a></li>
                           {{/if}}
 
-                          {{#if hasPayrollAccess}}
+                          {{#if hasPayRulesManageAccess}}
                               <li class="parent {{isMenuExpandedFocusClass  'payRulesMenu'}}">
                                   <a href="" id="payRulesMenu"><i class="fa fa-money"></i> <span>Pay Rules</span></a>
                               </li>
@@ -374,6 +375,7 @@
                             <i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a>
                           </li>
                       </ul>
+                      {{/if}}
                     </div>
                 </div>
 

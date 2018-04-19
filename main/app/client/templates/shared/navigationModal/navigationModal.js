@@ -88,6 +88,17 @@ Template.navigationModal.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #travelSupervisorMenu': function(event, tmpl) {
+      let menuId = $(event.currentTarget).attr('id')
+      console.log(`menuId: `, menuId)
+
+      let currentExpandedMenu = tmpl.expandedMenu.get()
+      if(menuId === currentExpandedMenu) {
+          tmpl.expandedMenu.set(null)
+      } else {
+          tmpl.expandedMenu.set(menuId)
+      }
+  },
     'click #reportsMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
         console.log(`menuId: `, menuId)
@@ -754,6 +765,12 @@ Template.navigationModal.onCreated(function () {
     self.autorun(function(){
         let businessUnitId = Session.get('context');
         // console.log(`businessUnitId`, businessUnitId)
+        let payrollApprovalConfigSub = self.subscribe('PayrollApprovalConfigs', businessUnitId);
+
+        if(payrollApprovalConfigSub.ready()) {
+            let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
+            self.payrollApprovalConfig.set(payrollApprovalConfig)
+        }
 
         let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
 
