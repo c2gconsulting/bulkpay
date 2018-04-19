@@ -263,6 +263,34 @@ Template.navigationModal.events({
       event.preventDefault();
     },
 
+    'click #treattravelrequest': function(event, tmpl) {
+      Router.go('travelrequests.treatList', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+    'click #travels2supervisors': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2supervisorindex', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+    'click #travels2supervisorretirements': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2supervisorretirementindex', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #budgetholdertravels2approval': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2budgetholderindex', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #travels2financeretirementapproval': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2financeretireindex', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
 
     //--Self-Service sub menus
     'click #employeetime': function(event, tmpl) {
@@ -306,12 +334,6 @@ Template.navigationModal.events({
       event.preventDefault();
     },
 
-    'click #selfpayslip': function(event, tmpl) {
-      Router.go('payslip', {_id: Session.get('context')})
-      Modal.hide('navigationModal');
-      event.preventDefault();
-    },
-
     'click #travelrequest2': function(event, tmpl) {
       Router.go('travelrequest2.travelrequisition2index', {_id: Session.get('context')})
       Modal.hide('navigationModal');
@@ -329,15 +351,12 @@ Template.navigationModal.events({
       event.preventDefault();
     },
 
-
-
-
-
     'click #travelrequestsapprovalList': function(event, tmpl) {
       Router.go('travelrequests.approvalList', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+
     'click #payslip': function(event, tmpl) {
       Router.go('payslip', {_id: Session.get('context')})
       Modal.hide('navigationModal');
@@ -350,16 +369,34 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #reportsnetpayannual': function(event, tmpl) {
+      Router.go('reports.annualpay', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
     'click #reportstax': function(event, tmpl) {
       Router.go('reports.tax', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #reportstaxannual': function(event, tmpl) {
+      Router.go('reports.annualtax', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    
     'click #reportspension': function(event, tmpl) {
       Router.go('reports.pension', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #reportspensionannual': function(event, tmpl) {
+      Router.go('reports.annualpension', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
     'click #reportscomprehensive': function(event, tmpl) {
       Router.go('reports.comprehensive', {_id: Session.get('context')})
       Modal.hide('navigationModal');
@@ -370,6 +407,13 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #employeesreport': function(event, tmpl) {
+      Router.go('reports.employees', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
     'click #reportsprocurement': function(event, tmpl) {
       Router.go('reports.procurement', {_id: Session.get('context')})
       Modal.hide('navigationModal');

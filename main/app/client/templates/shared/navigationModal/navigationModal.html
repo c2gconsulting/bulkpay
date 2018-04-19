@@ -226,7 +226,7 @@
               
                                   {{#if isUserASupervisor}}
                                       {{#if hasTravelRequisitionApproveAccess}}
-                                      <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
+                                      <li><a href="{{pathFor 'travelrequests.treatList'}}" id="treattravelrequest">Treat Travel Requests</a></li>
                                       {{/if}}
                                   {{/if}}
                               {{/if}}
@@ -237,7 +237,7 @@
                               <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
                           {{/if}}              
               
-                          <li><a href="{{pathFor 'payslip'}}" id="selfpayslip">View Pay Slip</a></li>
+                          <li><a href="{{pathFor 'payslip'}}" id="payslip">View Pay Slip</a></li>
                       {{/if}}
               
               
@@ -251,8 +251,8 @@
                                       </a>
                                   </li>
                                   {{#if isMenuExpanded 'travelSupervisorMenu'}}
-                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
-                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}" id="travels2supervisors">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}" id="travels2supervisorretirements">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
                                   {{/if}}
                               {{/if}}
               
@@ -264,7 +264,7 @@
                                       </a>
                                   </li>
                                   {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
-                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}" id="budgetholdertravels2approval">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
                                       <!--<li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>-->
                                   {{/if}}
                                {{/if}}
@@ -277,7 +277,7 @@
                                       </a>
                                   </li>
                                   {{#if isMenuExpanded 'travelFinanceMenu'}}
-                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2financeretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+                                      <li><a href="{{pathFor 'travelrequest2.travelrequisition2financeretireindex'}}" id="travels2financeretirementapproval">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
                                   {{/if}}
                               {{/if}}
                           {{/if}}
@@ -292,30 +292,30 @@
                           </li>
 
                           {{#if isMenuExpanded 'reportsMenu'}}
-                          <li><a href="{{pathFor 'reports.netpay'}}">Net pay report</a></li>
-                          <li><a href="{{pathFor 'reports.annualpay'}}">Annual Pay report</a></li>
+                          <li><a href="{{pathFor 'reports.netpay'}}" id="reportsnetpay">Net pay report</a></li>
+                          <li><a href="{{pathFor 'reports.annualpay'}}" id="reportsnetpayannual">Annual Pay report</a></li>
                   
-                          <li><a href="{{pathFor 'reports.tax'}}">Tax report</a></li>
-                          <li><a href="{{pathFor 'reports.annualtax'}}">Annual Tax report</a></li>
+                          <li><a href="{{pathFor 'reports.tax'}}" id="reportstax">Tax report</a></li>
+                          <li><a href="{{pathFor 'reports.annualtax'}}" id="reportstaxannual">Annual Tax report</a></li>
                   
-                          <li><a href="{{pathFor 'reports.pension'}}">Pension report</a></li>
-                          <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
+                          <li><a href="{{pathFor 'reports.pension'}}" id="reportspension">Pension report</a></li>
+                          <li><a href="{{pathFor 'reports.annualpension'}}" id="reportspensionannual">Annual Pension report</a></li>
                   
-                          <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
+                          <li><a href="{{pathFor 'reports.comprehensive'}}" id="reportscomprehensive">Comprehensive report</a></li>
                   
                           {{#if isTimeWritingReportsActive}}
-                          <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
+                          <li><a href="{{pathFor 'reports.timewriting'}}" id="reportstimewriting">Time-writing report</a></li>
                           {{/if}}
                   
                           {{#if isProcurementRequisitionActive}}
-                          <li><a href="{{pathFor 'reports.employees'}}">Employees report</a></li>
+                          <li><a href="{{pathFor 'reports.employees'}}" id="employeesreport">Employees report</a></li>
                           {{/if}}
                   
                   
                           {{#if isLeaveRequestEnabled}}
                           {{#if isProcurementRequisitionActive}}
                           {{else}}
-                          <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
+                          <li><a href="{{pathFor 'reports.leaverequests'}}" id="leaverequestsreport">Leave Requests report</a></li>
                           {{/if}}
                           {{/if}}
                           {{/if}}
