@@ -114,7 +114,9 @@ BusinessUnitController = ApplicationController.extend({
             this.render("BuDetail");
         }
     },
-
+    mobileNavigation: function() {
+        this.render('MobileNavigation')
+    },
     onAfterAction: function () {
     },
     onStop: function () {

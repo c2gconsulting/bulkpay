@@ -100,6 +100,12 @@ Router.route('/business/:_id/payslip', {
     where: 'client'
 });
 
+Router.route('/business/:_id/currencies', { 
+    name: 'currency.list', 
+    controller: 'CurrenciesController', 
+    where: 'client' 
+});
+
 Router.route('/business/:_id/payslip/:payrunPeriod', {
     name: 'payslip.period',
     controller: 'PayslipController',
@@ -584,7 +590,7 @@ Router.route('/business/:_id/payrun/approval/:payrunPeriod', {
 
 Router.route('/business/:_id/mobilenavigation', {
     name: 'mobile.navigation',
-    controller: 'HomeController',
+    controller: 'BusinessUnitController',
     action: 'mobileNavigation',
     where: 'client'
 });

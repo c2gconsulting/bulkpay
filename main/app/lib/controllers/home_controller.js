@@ -58,10 +58,6 @@ HomeController = ApplicationController.extend({
         Router.go('businessunits');
     },
 
-    mobileNavigation: function() {
-        this.render('MobileNavigation')
-    },
-
     onAfterAction: function () {
     },
     onStop: function () {
