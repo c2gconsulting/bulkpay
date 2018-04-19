@@ -2,7 +2,8 @@
 
 Template.header.events({
     'click #navigationModal': function(e, tmpl) {
-        Modal.show('navigationModal')
+        // Modal.show('navigationModal')
+        Router.go('mobile.navigation', {_id: Session.get('context')})
         e.preventDefault()
     },
     'click .requisitionRowForApproval': function(e, tmpl) {
@@ -124,6 +125,9 @@ Template.header.helpers({
     businessUnitLogoUrl: function() {
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
+    },
+    'isOnMobile': function() {
+        return ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
     }
 });
 

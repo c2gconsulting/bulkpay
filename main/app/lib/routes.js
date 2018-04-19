@@ -144,12 +144,6 @@ Router.route('/business/:_id/constants', {
     where: 'client'
 });
 
-Router.route('/business/:_id/currencies', {
-    name: 'currency.list',
-    controller: 'CurrenciesController',
-    where: 'client'
-});
-
 Router.route('/business/:_id/leavetypes', {
     name: 'leavetypes',
     controller: 'LeaveTypesController',
@@ -585,5 +579,12 @@ Router.route('/business/:_id/payrun/approval/:payrunPeriod', {
     name: 'payroll.approval.period',
     controller: 'PayrunController',
     action: 'showPayrunApproval',
+    where: 'client'
+});
+
+Router.route('/business/:_id/mobilenavigation', {
+    name: 'mobile.navigation',
+    controller: 'HomeController',
+    action: 'mobileNavigation',
     where: 'client'
 });

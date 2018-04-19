@@ -1,0 +1,113 @@
+/*****************************************************************************/
+/* ApplicationLayout: Style */
+/*****************************************************************************/
+
+.app-body {
+    color: #484848;
+}
+
+.extra-margin-top {
+    margin-top: 160px;
+}
+
+/*
+.headerwrapper {
+    background-color: #ee0000 !important;
+}*/
+
+.notifications {
+    position: fixed;
+    top: 0.75rem;
+    right: 1.5rem;
+    bottom: auto;
+    left: auto;
+    width: 25%;
+    height: auto;
+    max-width: 280px;
+    min-width: 200px;
+    z-index: 1;
+}
+
+/*element.style {
+    display: block;
+    opacity: 1;
+}*/
+.notifications .notification {
+    font-size: 13px;
+    line-height: 18px;
+    line-height: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 3px;
+    box-shadow: rgba(0, 0, 0, 0.15) 0 0 3px 0;
+    color: white;
+    margin-bottom: 4px;
+    padding: .5rem .75rem;
+    position: relative;
+    width: 100%;
+}
+.notifications .notification {
+    z-index: 2;
+}
+
+.notifications .notification .meta {
+    overflow: hidden;
+    padding-left: 30px;
+}
+
+.notifications .notification .meta .title-notification {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 20px;
+    display: block;
+}
+
+.notifications .notification .meta .description {
+    display: block;
+}
+
+.notifications .notification .meta .retry {
+    display: block;
+}
+
+.notifications .notification .meta .retry a{
+    color: #e0e0e0;
+}
+
+.notifications .notification .meta .retry a:hover{
+    color: #fff;
+    text-decoration: none !important;
+}
+
+.notifications .notification [class^="glyphicon-"], .notifications .notification [class*=" glyphicon-"] {
+    font-size: 16px;
+    position: absolute;
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 1rem;
+    width: auto;
+    height: auto;
+    line-height: 1;
+    margin-top: -0.5em;
+}
+
+.notifications .notification .spin{
+    -webkit-animation: spin 2s infinite linear;
+    -moz-animation: spin 2s infinite linear;
+    -o-animation: spin 2s infinite linear;
+    animation: spin 2s infinite linear;
+}
+
+.notifications .notification [class^="glyphicon-"].neutral, .notifications .notification [class*=" glyphicon-"].neutral {
+    color: white;
+}
+
+#main-menu .no-margin-top{
+    margin-top: 0;
+}
+.row {
+   margin-top: 3px;
+}
+.ui.dropdown .menu > .item {
+    font-size: 15px;
+}
