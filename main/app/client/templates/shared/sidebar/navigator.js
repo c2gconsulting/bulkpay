@@ -419,7 +419,7 @@ Template.navigator.helpers({
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isEmailSettingsEnabled
         }
-    },
+    }
 });
 
 Template.navigator.onCreated(function () {

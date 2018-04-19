@@ -94,7 +94,11 @@
         {{#if isMenuExpanded 'administrationMenu'}}
 
             <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+            
+            {{#if isAdvancedTravelEnabled}}
             <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">All Travel Requests</a></li>
+            {{/if}}
+
             {{#if isTravelBudgetsEnabled}}
             <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
             {{/if}}

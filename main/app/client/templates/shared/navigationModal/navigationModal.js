@@ -32,6 +32,29 @@ Template.navigationModal.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #successFactorsIntegrationMenu': function(event, tmpl) {
+      let menuId = $(event.currentTarget).attr('id')
+      console.log(`menuId: `, menuId)
+
+      let currentExpandedMenu = tmpl.expandedMenu.get()
+      if(menuId === currentExpandedMenu) {
+          tmpl.expandedMenu.set(null)
+      } else {
+          tmpl.expandedMenu.set(menuId)
+      }
+  },
+  'click #sapHanaIntegrationMenu': function(event, tmpl) {
+    let menuId = $(event.currentTarget).attr('id')
+    console.log(`menuId: `, menuId)
+
+    let currentExpandedMenu = tmpl.expandedMenu.get()
+    if(menuId === currentExpandedMenu) {
+        tmpl.expandedMenu.set(null)
+    } else {
+        tmpl.expandedMenu.set(menuId)
+    }
+},
+
     'click #administrationMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
         console.log(`menuId: `, menuId)
@@ -109,36 +132,6 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
-    'click #travelcities': function(event, tmpl) {
-        Router.go('travelcities', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
-      'click #flightroutes': function(event, tmpl) {
-        Router.go('flightroutes', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
-      'click #hotels': function(event, tmpl) {
-        Router.go('hotels', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
-      'click #airlines': function(event, tmpl) {
-        Router.go('airlines', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
-      'click #emailsettings': function(event, tmpl) {
-        Router.go('emailsettings', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
-      'click #budgets': function(event, tmpl) {
-        Router.go('budgets', {_id: Session.get('context')})
-        Modal.hide('navigationModal');
-        event.preventDefault();
-      },
 
     'click #taxes': function(event, tmpl) {
       Router.go('taxes', {_id: Session.get('context')})
@@ -162,6 +155,16 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #successfactorsconfig': function(event, tmpl) {
+      Router.go('successfactors.config', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #saphanaconfig': function(event, tmpl) {
+      Router.go('saphana.config', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
 
 
     'click #employees': function(event, tmpl) {
@@ -169,8 +172,46 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+
+    'click #travelcities': function(event, tmpl) {
+      Router.go('travelcities', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #flightroutes': function(event, tmpl) {
+      Router.go('flightroutes', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #hotels': function(event, tmpl) {
+      Router.go('hotels', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #airlines': function(event, tmpl) {
+      Router.go('airlines', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #emailsettings': function(event, tmpl) {
+      Router.go('emailsettings', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #budgets': function(event, tmpl) {
+      Router.go('budgets', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+
     'click #leaveentitlementlist': function(event, tmpl) {
       Router.go('leave.entitlement.list', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #leavebalances': function(event, tmpl) {
+      Router.go('leave.balances.list', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
@@ -201,8 +242,23 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
+    'click #newpayrun': function(event, tmpl) {
+      Router.go('payrun.new', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
     'click #payruns': function(event, tmpl) {
       Router.go('payruns', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #payrunApprovalConfig': function(event, tmpl) {
+      Router.go('payroll.approvalconfig', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+    'click #payrunApproval': function(event, tmpl) {
+      Router.go('payroll.approval', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
@@ -249,13 +305,21 @@ Template.navigationModal.events({
       Modal.hide('navigationModal');
       event.preventDefault();
     },
-    'click #travelrequestsretirementlist': function(event, tmpl) {
-      Router.go('travelrequests.retirementlist', {_id: Session.get('context')})
+
+    'click #selfpayslip': function(event, tmpl) {
+      Router.go('payslip', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
-    'click #travelrequestsretirementslist': function(event, tmpl) {
-      Router.go('travelrequests.retirementslist', {_id: Session.get('context')})
+
+    'click #travelrequest2': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2index', {_id: Session.get('context')})
+      Modal.hide('navigationModal');
+      event.preventDefault();
+    },
+
+    'click #travelrequestsretirementlist': function(event, tmpl) {
+      Router.go('travelrequest2.travelrequisition2retirementindex', {_id: Session.get('context')})
       Modal.hide('navigationModal');
       event.preventDefault();
     },
@@ -340,33 +404,196 @@ Template.navigationModal.helpers({
         let currentExpandedMenuId = Template.instance().expandedMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
-    'hasProcurementRequisitionApproveAccess': function () {
-        let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
-        return canApproveProcurement;
-    },
-    'isProcurementRequisitionActive': function () {
-        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        // if(businessUnitCustomConfig) {
-        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
-        // } else {
-        //     return false
-        // }
-        return true;
-    },
-    'hasTravelRequisitionApproveAccess': function () {
-        let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
-        return canApproveTrip;
-    },
-    'isTravelRequisitionActive': function () {
-        // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    // 'hasProcurementRequisitionApproveAccess': function () {
+    //     let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
+    //     return canApproveProcurement;
+    // },
+    // 'isProcurementRequisitionActive': function () {
+    //     // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    //     // if(businessUnitCustomConfig) {
+    //     //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
+    //     // } else {
+    //     //     return false
+    //     // }
+    //     return true;
+    // },
+    // 'hasTravelRequisitionApproveAccess': function () {
+    //     let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
+    //     return canApproveTrip;
+    // },
+    // 'isTravelRequisitionActive': function () {
+    //     // let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 
-        // if(businessUnitCustomConfig) {
-        //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
-        // } else {
-        //     return false
-        // }
-        return true;
+    //     // if(businessUnitCustomConfig) {
+    //     //     return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
+    //     // } else {
+    //     //     return false
+    //     // }
+    //     return true;
+    // },
+
+
+    hasLeaveApprovalAccess: function () {
+      return Core.hasLeaveApprovalAccess(Meteor.userId());
     },
+
+  hasProcurementRequisitionApproveAccess: function () {
+      let canApproveProcurement = Core.hasProcurementRequisitionApproveAccess(Meteor.userId());
+      return canApproveProcurement;
+  },
+  isProcurementRequisitionActive: function () {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isProcurementRequisitionActive
+      } else {
+          return false
+      }
+  },
+  isUserASupervisor: function() {
+      let currentUser = Meteor.users.findOne(Meteor.userId())
+      if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
+          let currentUserPosition = currentUser.employeeProfile.employment.position
+
+          let numPositionsSupervising = EntityObjects.find({
+                  otype: 'Position',
+                  $or: [{'properties.supervisor' : currentUserPosition},
+                      {'properties.alternateSupervisor': currentUserPosition}],
+                  businessId: Session.get('context')
+              }).count()
+          return (numPositionsSupervising > 0)
+      }
+  },
+  isUserADirectSupervisor: function() {
+      if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+          return true;
+      } else {
+          return false;
+      }
+  },
+  isUserABudgetHolder: function() {
+
+      if (Template.instance().isBudgetHolder.get() === "TRUE"){
+          return true;
+      }else{
+          return false;
+      }
+  },
+  isUserATravelFinanceApprover: function() {
+      if (Template.instance().isFinanceApprover.get() === "TRUE"){
+          return true;
+      }else{
+          return false;
+      }
+  },
+  hasTravelRequisitionApproveAccess: function () {
+      let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
+      return canApproveTrip;
+  },
+  isAdvancedTravelEnabled: function () {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isAdvancedTravelEnabled
+      } else {
+          return false
+      }
+  },
+  isTravelRequisitionActive: function () {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTravelRequisitionActive
+      } else {
+          return false
+      }
+  },
+  hasPayRulesManageAccess: function () {
+      let hasPayrulesManageAccess = Core.hasPayRulesManageAccess(Meteor.userId());
+      return hasPayrulesManageAccess;
+  },
+
+  hasRunPayrollManageAccess: function () {
+      return Core.hasRunPayrollManageAccess(Meteor.userId());
+  },
+  hasPayrollAdditionalPaymentsManageAccess: function () {
+      return Core.hasPayrollAdditionalPaymentsManageAccess(Meteor.userId());
+  },
+  hasPayrollResultsViewAccess: function () {
+      return Core.hasPayrollResultsViewAccess(Meteor.userId());
+  },
+  hasPayrollApprovalConfigAccess: function () {
+      return Core.hasPayrollApprovalConfigAccess(Meteor.userId());
+  },
+  // hasPayrollApprovalManageAccess: function () {
+  //     return Core.hasPayrollApprovalManageAccess(Meteor.userId());
+  // },
+
+  hasPayrollReportsViewAccess: function () {
+      let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
+      return hasPayrollReportsViewAccess;
+  },
+  hasAuditReportsViewAccess: function () {
+      let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());
+      return hasAuditReportsViewAccess;
+  },
+  hasProcurementReportsViewAccess: function () {
+      return Core.hasProcurementReportsViewAccess(Meteor.userId());
+  },
+  isSapBusinessOneIntegrationEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapBusinessOneIntegrationEnabled
+    } else {
+        return true
+    }
+  },
+  isSuccessfactorsEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSuccessFactorsIntegrationEnabled
+    } else {
+        return true
+    }
+  },
+  isSapHanaEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isSapHanaIntegrationEnabled
+    } else {
+        return true
+    }
+  },
+  isLeaveRequestEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isLeaveRequestActive
+    } else {
+        return true
+    }
+  },
+  isTimeWritingEnabled: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTimeWritingActive
+    } else {
+        return true
+    }
+  },
+  isTimeWritingReportsActive: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isTimeWritingReportsActive
+    } else {
+        return true
+    }
+  },
+  hasSuccessfactorsManageAccess: () => {
+    return Core.hasSuccessfactorManagesAccess(Meteor.userId());
+  },
+  hasSapHanaManageAccess: () => {
+    return Core.hasSapHanaManageAccess(Meteor.userId());
+  },
+
     'payGradeLabel': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
         if(businessUnitCustomConfig) {
@@ -382,6 +609,88 @@ Template.navigationModal.helpers({
         } else {
             return "Pay Grades"
         }
+    },
+    'canApprovePayroll': function() {
+          let userId = Meteor.userId()
+          let payrollApprovalConfig = Template.instance().payrollApprovalConfig.get()
+          if(payrollApprovalConfig) {
+              let approvers = payrollApprovalConfig.approvers
+              if(approvers && approvers.length > 0) {
+                  let currentUserIsApprover = _.find(approvers, anApproverId => {
+                      return anApproverId === userId
+                  })
+                  return (currentUserIsApprover) ? true : false
+              }
+          }
+      },
+      'isLeaveAccrualByEntitlement': function() {
+          let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+          if(businessUnitCustomConfig) {
+              return businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement'
+          }
+      },
+      'isTimeTypeEnabled': function() {
+          let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+          if(businessUnitCustomConfig) {
+              return businessUnitCustomConfig.isTimeTypeEnabled
+          }
+      },
+      'isHmoSetupEnabled': function() {
+          let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+          if(businessUnitCustomConfig) {
+              return businessUnitCustomConfig.isHmoSetupEnabled
+          }
+      },
+      'isLoanEnabled': function() {
+          let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+          if(businessUnitCustomConfig) {
+              return businessUnitCustomConfig.isLoanEnabled
+          }
+      },
+    'isTravelBudgetsEnabled': function() {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isTravelBudgetsEnabled
+      }
+    },
+    'isTravelCitiesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isTravelCitiesEnabled
+        }
+    },
+    'isAirlinesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isAirlinesEnabled
+        }
+    },
+    'isAHotelsEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isAHotelsEnabled
+        }
+    },
+    'isFlightRoutesEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isFlightRoutesEnabled
+        }
+    },
+    'isEmailSettingsEnabled': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isEmailSettingsEnabled
+        }
     }
 });
 
@@ -391,8 +700,12 @@ Template.navigationModal.onCreated(function () {
     //--
     self.expandedMenu = new ReactiveVar()
     //--
-
     self.businessUnitCustomConfig = new ReactiveVar()
+    self.payrollApprovalConfig = new ReactiveVar();
+
+    self.isBudgetHolder = new ReactiveVar();
+    self.isFinanceApprover = new ReactiveVar();
+
 
     self.autorun(function(){
         let businessUnitId = Session.get('context');
@@ -402,7 +715,7 @@ Template.navigationModal.onCreated(function () {
 
         if(customConfigSub.ready()) {
             self.businessUnitCustomConfig.set(BusinessUnitCustomConfigs.findOne({businessId: businessUnitId}))
-            // console.log(`businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
+            // console.log(`mobile navigation modal: businessUnitCustomConfig: ${JSON.stringify(self.businessUnitCustomConfig.get())}`)
         }
     })
 });
