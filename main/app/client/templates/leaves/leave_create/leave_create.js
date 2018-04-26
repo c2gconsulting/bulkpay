@@ -266,11 +266,16 @@ Template.LeaveCreate.onCreated(function () {
     self.getDurationOfWeekDaysInHours = function(startDate, endDate) {        
         let startDateMoment = moment(startDate)
         let endDateMoment = moment(endDate)
+        if(endDateMoment.hour() === 0 && endDateMoment.minute() === 0) {
+            endDateMoment.endOf('day')
+        }
         //--
         let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
+        console.log(`numberOfHoursInPeriod: `, numberOfHoursInPeriod)
         let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
         //--
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+        console.log(`numberOfDays: `, numberOfDays)
 
         let startDateMomentClone = moment(startDateMoment); // use a clone
         let weekDates = []
@@ -280,8 +285,11 @@ Template.LeaveCreate.onCreated(function () {
 
             if(businessUnitCustomConfig && !businessUnitCustomConfig.isWeekendIncludedInLeaveRequests) {
                 if (startDateMomentClone.isoWeekday() !== 6 && startDateMomentClone.isoWeekday() !== 7) {
+                    console.log(`will add this day: `, startDateMomentClone._d)
                     weekDates.push(moment(startDateMomentClone).toDate())  // calling moment here cos I need a clone
                 } else {
+                    console.log(`will subtract 24 hours for this day: `, startDateMomentClone._d)
+                    moment(startDateMomentClone)
                     numberOfHoursInPeriodWeekDays -= (24)
                 }
             } else {
@@ -290,6 +298,7 @@ Template.LeaveCreate.onCreated(function () {
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }
+        console.log(`numberOfHoursInPeriodWeekDays: `, numberOfHoursInPeriodWeekDays)
 
         return numberOfHoursInPeriodWeekDays
     }
@@ -297,6 +306,9 @@ Template.LeaveCreate.onCreated(function () {
     self.getDurationOfWeekDays = function(startDate, endDate) {
         let startDateMoment = moment(startDate)
         let endDateMoment = moment(endDate)
+        if(endDateMoment.hour() === 0 && endDateMoment.minute() === 0) {
+            endDateMoment.endOf('day')
+        }
         //--
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
         let numberOfLeaveDaysToAward = numberOfDays
