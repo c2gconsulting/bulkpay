@@ -12,7 +12,10 @@
                       <li><a href=".promotions" data-toggle="tab"><strong>Promotions</strong></a></li>                      
                       {{/if}}
 
+                      {{#if hasPayrollAccess}}
                       <li><a href=".payroll" data-toggle="tab"><strong>Payroll details</strong></a></li>
+                      {{/if}}
+                      
                       <li><a href=".netPayAllocation" data-toggle="tab"><strong>Net Pay Currency Allocation</strong></a></li>
                   </ul>
                 </div>

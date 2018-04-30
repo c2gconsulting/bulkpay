@@ -233,6 +233,9 @@ Template.navigator.helpers({
             return false
         }
     },
+    hasPayrollAccess: function () {
+        return Core.hasPayrollAccess(Meteor.userId());
+    },
     hasPayRulesManageAccess: function () {
         let hasPayrulesManageAccess = Core.hasPayRulesManageAccess(Meteor.userId());
         return hasPayrulesManageAccess;

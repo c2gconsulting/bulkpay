@@ -397,6 +397,9 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
       return Core.currencies();
   },
 
+  hasPayrollAccess: function () {
+    return Core.hasPayrollAccess(Meteor.userId());
+  },
     'baseCurrency': function() {
         return Core.getTenantBaseCurrency().iso;
     },
