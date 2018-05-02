@@ -80,6 +80,15 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2RetirementDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2RetirementDetail.helpers({
+     'isUnretiredTrips': function() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest) {
+            return currentTravelRequest.retirementStatus === "Not Retired"
+
+        }
+     },
+   
+
 
     checkWhoToRefund(currency){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
