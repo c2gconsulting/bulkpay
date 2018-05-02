@@ -75,11 +75,17 @@ Template.LeaveCreate.events({
                 tmpl.inputErrorMsg.set("Please select a end date")
                 return
             }
-            endDateObj = moment(end).toDate()
+            const endDateMoment = moment(end);
+            if(endDateMoment.hour() === 0 && endDateMoment.minute() === 0) {
+                endDateMoment.endOf('day')
+            }
+            endDateObj = endDateMoment.toDate()
+            console.log(`endDateObj: `, endDateObj)
 
-            durationAsNumber = tmpl.getDurationOfWeekDays(start, end) // in days
+            durationAsNumber = tmpl.getDurationOfWeekDays(start, endDateMoment) // in days
+            console.log(`durationAsNumber: `, durationAsNumber)
         }
-        // console.log(`durationAsNumber: `, durationAsNumber)
+        console.log(`durationAsNumber: `, durationAsNumber)
 
         if(!selectedLeaveType || selectedLeaveType.length === 0) {
             tmpl.inputErrorMsg.set("Please select a leave type")
@@ -310,22 +316,24 @@ Template.LeaveCreate.onCreated(function () {
             endDateMoment.endOf('day')
         }
         //--
-        let numberOfDays = endDateMoment.diff(startDateMoment, 'days') + 1
-        let numberOfLeaveDaysToAward = numberOfDays
+        let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
+        let numberOfLeaveDaysToAward = 0
+        console.log(`numberOfLeaveDaysToAward: `, numberOfLeaveDaysToAward)
 
         let startDateMomentClone = moment(startDateMoment); // use a clone
 
-        while (numberOfDays >= 0) {
+        while (numberOfDays > 0) {
             let businessUnitCustomConfig = self.businessUnitCustomConfig.get()
 
             if(!businessUnitCustomConfig.isWeekendIncludedInLeaveRequests) {
-                if (startDateMomentClone.isoWeekday() === 6 || startDateMomentClone.isoWeekday() === 7) {
-                    numberOfLeaveDaysToAward -= 1
+                if (startDateMomentClone.isoWeekday() !== 6 || startDateMomentClone.isoWeekday() !== 7) {
+                    numberOfLeaveDaysToAward += 1
                 }
             }
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }
+        console.log(`numberOfLeaveDaysToAward: `, numberOfLeaveDaysToAward)
         
         return numberOfLeaveDaysToAward
     }
