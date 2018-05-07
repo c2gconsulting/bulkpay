@@ -64,21 +64,21 @@ Template.TravelRequisition2Index.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
-    'hasUnretiredTrips': function() {
+    // 'hasUnretiredTrips': function() {
 
-        let unretiredCount = TravelRequisition2s.find({
-            $and : [
-                { retirementStatus: "Not Retired"},
-                { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
-            ]}).count()
-        console.log("Unretired Count: " + unretiredCount);
-        if (unretiredCount > 0){
-            return true;
-        }else{
-            return false;
-        }
+    //     let unretiredCount = TravelRequisition2s.find({
+    //         $and : [
+    //             { retirementStatus: "Not Retired"},
+    //             { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+    //         ]}).count()
+    //     console.log("Unretired Count: " + unretiredCount);
+    //     if (unretiredCount > 0){
+    //         return true;
+    //     }else{
+    //         return false;
+    //     }
 
-    },
+    // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
