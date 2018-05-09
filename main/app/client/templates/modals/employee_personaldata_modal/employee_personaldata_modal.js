@@ -71,7 +71,7 @@ Template.EmployeePersonalDataModal.events({
 
               swal({
                   title: "Success",
-                  text: "Username and Password were reset successfully",
+                  text: "Password was reset successfully",
                   confirmButtonClass: "btn-success",
                   type: "success",
                   confirmButtonText: "OK"
