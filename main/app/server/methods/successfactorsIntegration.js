@@ -168,10 +168,10 @@ Meteor.methods({
         if(config) {
             const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
             const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-           // const custProjectUrl = `${baseUrl}/odata/v2/cust_project?$select=externalCode,cust_projectName_en_US&$format=json`
+            const custProjectUrl = `${baseUrl}/odata/v2/cust_project?$select=externalCode,cust_projectName_en_US&$format=json`
           
             let getToSync = Meteor.wrapAsync(HTTP.get);  
-            const custProjectRes = getToSync(/*custProjectUrl,*/ {headers: requestHeaders})
+            const custProjectRes = getToSync(custProjectUrl, {headers: requestHeaders})
 
             if(custProjectRes) {
                 try {
