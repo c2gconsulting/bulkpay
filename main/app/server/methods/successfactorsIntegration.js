@@ -158,34 +158,34 @@ Meteor.methods({
         }
         return []
     },
-    'successfactors/fetchSfCustProjects': function (businessUnitId) {
-        if (!this.userId) {
-            throw new Meteor.Error(401, "Unauthorized");
-        }
-        this.unblock();
+    // 'successfactors/fetchSfCustProjects': function (businessUnitId) {
+    //     if (!this.userId) {
+    //         throw new Meteor.Error(401, "Unauthorized");
+    //     }
+    //     this.unblock();
 
-        let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
-        if(config) {
-            const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
-            const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
-            const custProjectUrl = `${baseUrl}/odata/v2/cust_project?$select=externalCode,cust_projectName_en_US&$format=json`
+    //     let config = SuccessFactorsIntegrationConfigs.findOne({businessId: businessUnitId})
+    //     if(config) {
+    //         const requestHeaders = SFIntegrationHelper.getAuthHeader(config)
+    //         const baseUrl = `${config.protocol}://${config.odataDataCenterUrl}`
+    //         const custProjectUrl = `${baseUrl}/odata/v2/cust_project?$select=externalCode,cust_projectName_en_US&$format=json`
           
-            let getToSync = Meteor.wrapAsync(HTTP.get);  
-            const custProjectRes = getToSync(custProjectUrl, {headers: requestHeaders})
+    //         let getToSync = Meteor.wrapAsync(HTTP.get);  
+    //         const custProjectRes = getToSync(custProjectUrl, {headers: requestHeaders})
 
-            if(custProjectRes) {
-                try {
-                    let custProjectData = JSON.parse(custProjectRes.content)
-                    return SFIntegrationHelper.getOdataResults(custProjectData)
-                } catch(e) {
-                  console.log('Error in Getting SF custProjects! ', e.message)
-                }
-            } else {
-                console.log('Error in Getting SF custProjects! null response')
-            }
-        }
-        return []
-    },
+    //         if(custProjectRes) {
+    //             try {
+    //                 let custProjectData = JSON.parse(custProjectRes.content)
+    //                 return SFIntegrationHelper.getOdataResults(custProjectData)
+    //             } catch(e) {
+    //               console.log('Error in Getting SF custProjects! ', e.message)
+    //             }
+    //         } else {
+    //             console.log('Error in Getting SF custProjects! null response')
+    //         }
+    //     }
+    //     return []
+    // },
     "successfactors/setSfCostCenterOnUnits": function(businessUnitId, unitCostCenters) {
         if (!this.userId) {
             throw new Meteor.Error(401, "Unauthorized")

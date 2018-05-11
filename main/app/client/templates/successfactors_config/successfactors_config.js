@@ -494,16 +494,16 @@ Template.SuccessFactorsConfig.onCreated(function () {
     //     }
     // });
 
-    self.isFetchingCustProjects.set(true)
-    Meteor.call('successfactors/fetchSfCustProjects', businessUnitId, (err, sfCustProjects) => {
-        self.isFetchingCustProjects.set(false)
-        if (!err) {
-            console.log(`err: `, err)
-            self.sfCustProjects.set(sfCustProjects)
-        } else {
-            swal("Server error", `Please try again at a later time`, "error");
-        }
-    });
+    // self.isFetchingCustProjects.set(true)
+    // Meteor.call('successfactors/fetchSfCustProjects', businessUnitId, (err, sfCustProjects) => {
+    //     self.isFetchingCustProjects.set(false)
+    //     if (!err) {
+    //         console.log(`err: `, err)
+    //         self.sfCustProjects.set(sfCustProjects)
+    //     } else {
+    //         swal("Server error", `Please try again at a later time`, "error");
+    //     }
+    // });
 });
 
 Template.SuccessFactorsConfig.onRendered(function () {
