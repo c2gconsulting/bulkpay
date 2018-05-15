@@ -658,7 +658,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
           // payTypes: mergedPayTypes,
           // positions: [positionId],
           payTypes: paytypesWithNoVals,
-          enablePensionPayments: (code === 'PG-CON-NG' || code === 'PG-CON-US') ? false : true
+          enablePensionPayments: (payGroupData.code === 'PG-CON-NG' || payGroupData.code === 'PG-CON-US') ? false : true
         }})
       } else {
         payGradeId = PayGrades.insert({
@@ -673,7 +673,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
           successFactors: {
             externalCode: payGroupData.code
           },
-          enablePensionPayments: (code === 'PG-CON-NG' || code === 'PG-CON-US') ? false : true
+          enablePensionPayments: (payGroupData.code === 'PG-CON-NG' || payGroupData.code === 'PG-CON-US') ? false : true
         })
       }
     }
