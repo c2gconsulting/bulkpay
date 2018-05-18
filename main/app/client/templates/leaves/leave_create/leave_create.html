@@ -122,6 +122,28 @@
                                 </div>
                                 {{/unless}}
                             </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label class="control-label">Used leave days: {{usedLeaveDays}}</label>
+                                </div>
+
+                                {{#unless Template.subscriptionsReady}}
+                                <div class="col-sm-3">
+                                    {{> spinner}}
+                                </div>
+                                {{/unless}}
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label class="control-label">Available leave days: {{availableLeaveDays}}</label>
+                                </div>
+
+                                {{#unless Template.subscriptionsReady}}
+                                <div class="col-sm-3">
+                                    {{> spinner}}
+                                </div>
+                                {{/unless}}
+                            </div>
                         {{/if}}
 
                         <div class="row">

@@ -185,6 +185,12 @@ Template.LeaveCreate.helpers({
     numberOfLeaveDaysLeft: function() {
         return Template.instance().numberOfLeaveDaysLeft.get() || '---'
     },
+    usedLeaveDays: function() {
+        return Template.instance().usedLeaveDays.get() || '---'
+    },
+    availableLeaveDays: function() {
+        return Template.instance().availableLeaveDays.get() || '---'
+    },
     startOfToday: function() {
         return moment().startOf('day').toDate()
     },
@@ -232,8 +238,11 @@ Template.LeaveCreate.onCreated(function () {
     self.isAllowingHoursLeave.set(false)
 
     self.isHourLeaveRequestsEnabled = new ReactiveVar()
-
+    
     self.numberOfLeaveDaysLeft = new ReactiveVar();
+    self.usedLeaveDays = new ReactiveVar();
+    self.availableLeaveDays = new ReactiveVar();
+
 
     self.businessUnitCustomConfig = new ReactiveVar()
 
@@ -397,15 +406,14 @@ Template.LeaveCreate.onCreated(function () {
             deductFromAnnualLeave: false
         }).fetch();
         let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
-
-        let hoursOfLeaveApproved = 0
+             let hoursOfLeaveApproved = 0
         let userApprovedLeaves = Leaves.find({
             businessId: businessId, 
             employeeId: Meteor.userId(),
             approvalStatus: 'Approved',
-            type: {$nin: theLeaveTypeIds}
+          //  type: {$nin: theLeaveTypeIds}
         }).fetch();
-
+      
         userApprovedLeaves.forEach(aLeave => {
             hoursOfLeaveApproved += aLeave.durationInHours
         })
@@ -414,10 +422,22 @@ Template.LeaveCreate.onCreated(function () {
         if(suppLeavesForUser) {
             numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
         }
+      
+
         //--
-        let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) - (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+        let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) 
+        let usedLeaveDays = (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+     
+        let availableLeaveDays = (numberOfLeaveDaysLeft) - (usedLeaveDays);
+    
+        
+
+
 
         self.numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft.toFixed(2))
+        self.usedLeaveDays.set(usedLeaveDays.toFixed(2))
+        self.availableLeaveDays.set(availableLeaveDays.toFixed(2))
+  
     }
 
     self.subscribe('employeeLeaveTypes', businessId);
