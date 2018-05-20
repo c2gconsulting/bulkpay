@@ -261,6 +261,7 @@
                                 <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
                                 <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <option value="H3593">I do not need a hotel</option>
                                     {{#each hotelList this.toId}}
                                     <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
                                     {{/each}}
