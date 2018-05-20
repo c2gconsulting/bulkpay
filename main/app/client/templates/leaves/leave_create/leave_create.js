@@ -405,6 +405,7 @@ Template.LeaveCreate.onCreated(function () {
         let leaveTypesWithoutDeduction = LeaveTypes.find({
             deductFromAnnualLeave: false
         }).fetch();
+      
         let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
              let hoursOfLeaveApproved = 0
         let userApprovedLeaves = Leaves.find({
@@ -439,7 +440,7 @@ Template.LeaveCreate.onCreated(function () {
         self.availableLeaveDays.set(availableLeaveDays.toFixed(2))
   
     }
-
+   
     self.subscribe('employeeLeaveTypes', businessId);
     let employeeApprovedLeavesSub = self.subscribe('employeeApprovedLeaves', businessId)
     let suppLeavesForUserSub = self.subscribe('supplementaryLeaveForUser', businessId, Meteor.userId())

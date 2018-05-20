@@ -18,7 +18,7 @@
       "isTwoStepApprovalEnabled": false,
       "leaveDaysAccrual": "NumberOfDaysWorked",
       "checkEmployeeResumptionForPayroll": true,
-      "isWeekendIncludedInLeaveRequests": true,
+      "isWeekendIncludedInLeaveRequests": false,
       "isTimeTypeEnabled": false,
       "isHmoSetupEnabled": false,
       "isLoanEnabled": false,

@@ -52,7 +52,11 @@ Template.BudgetIndex.onDestroyed(function () {
 /*****************************************************************************/
 /* singleHotel: Helpers */
 /*****************************************************************************/
+
 Template.singleBudget.events({
+    'click .pointer': function(e, tmpl){
+        Modal.show('BudgetCreate', this.data);
+    },
     'click #deleteBudget': function(e, tmpl) {
         event.preventDefault();
         let self = this;

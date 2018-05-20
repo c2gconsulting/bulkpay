@@ -1,11 +1,12 @@
 /*****************************************************************************/
 /* HotelCreate: Event Handlers */
 /*****************************************************************************/
+import Ladda from 'ladda'
 Template.BudgetCreate.events({
     'click #new-budget-close': (e, tmpl) => {
       Modal.hide('BudgetCreate');
     },
-    'click #save': (e, tmpl) => {
+    'click #Budget': (e, tmpl) => {
       let code = $('[name=code]').val();
       let name = $('[name=name]').val();
 
@@ -24,6 +25,10 @@ Template.BudgetCreate.events({
     //   else {
         Template.instance().errorMessage.set(null);
 
+        e.preventDefault();
+        let l = Ladda.create(tmpl.$('#Budget')[0]);
+        l.start();
+
         let newBudget = {
           businessId: Session.get('context'),
           code: code,
@@ -33,6 +38,20 @@ Template.BudgetCreate.events({
           externalNotificationEmail: externalNotificationEmail
 
         };
+        if(tmpl.data){//edit action for updating paytype
+            const ptId = tmpl.data._id;
+            const code = tmpl.data.code;
+            Meteor.call("budget/update", tmpl.data._id, newBudget, (err, res) => {
+                l.stop();
+                if(err){
+                    swal("Update Failed", `Cannot Update Budget Holder ${code}`, "error");
+                } else {
+                    swal("Successful Update!", `Succesffully update Budget Holder ${code}`, "success");
+                    Modal.hide("BudgetCreate");
+                }
+            });
+
+        } else{
 
         // let budgetContext = Core.Schemas.Budget.namedContext("budgetForm");
         // budgetContext.validate(newBudget);
@@ -44,6 +63,7 @@ Template.BudgetCreate.events({
         // console.log(budgetContext._invalidKeys);
 
         Meteor.call('budget/create', newBudget, (err, res) => {
+            l.stop();
             if (res){
                 swal({
                     title: "Success",
@@ -57,7 +77,7 @@ Template.BudgetCreate.events({
                 console.log(err);
             }
         });
-
+    }
     },
   });
 
@@ -65,7 +85,11 @@ Template.BudgetCreate.events({
   /* HotelCreate: Helpers */
   /*****************************************************************************/
   Template.BudgetCreate.helpers({
-    'checked': (prop) => {
+    'edit': () => {
+        return Template.instance().data ? true:false;
+        //use ReactiveVar or reactivedict instead of sessions..
+    },
+     'checked': (prop) => {
         if(Template.instance().data)
             return Template.instance().data[prop];
         return false;
@@ -109,6 +133,12 @@ Template.BudgetCreate.events({
   });
 
   Template.BudgetCreate.onRendered(function () {
+    let self = this;
+    self.$('select.dropdown').dropdown();
+    //if the data context of template.instance().data is empty then the action is new as template.instance.data will be undefined
+    //change id of save button to update and populate input/select domobjects with required value
+    //also pass a button for delete.
+
   });
 
   Template.BudgetCreate.onDestroyed(function () {

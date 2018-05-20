@@ -40,7 +40,7 @@ Meteor.methods({
         Budgets.remove({_id: id});
         return true;
     },
-    "budget/update": function(id, details){
+    "budget/update": function(id, newBudget){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -49,7 +49,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = Budgets.update(selector, {$set: details} );
+        const result = Budgets.update(selector, {$set: newBudget} );
         return result;
     }
 

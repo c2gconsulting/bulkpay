@@ -26,7 +26,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     if(terminationDate) {
         terminationDate = moment(terminationDate).utcOffset(0, true).toDate().toUTCString()
     }
-
+    
     user.employeeProfile.employment.hireDate = hireDate;
     user.employeeProfile.employment.confirmationDate = confirmationDate;
     user.employeeProfile.employment.terminationDate = terminationDate;
@@ -34,6 +34,10 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     user.directAlternateSupervisorId = $('[name="directAlternateSupervisorId"]').val()
 
     Template.instance().setEditUser(user);
+    console.log("terminationDate")
+    console.log(terminationDate)
+
+
     //--
     Meteor.call('account/updateEmploymentData', user, user._id, (err, res) => {
         if (res){
@@ -51,6 +55,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         }
     });
   },
+  
   'click #saveEmployeePayrollPaytypes': (e, tmpl) => {
     let user = Template.instance().getEditUser();
     let payTypesArray = tmpl.getPaytypes();
