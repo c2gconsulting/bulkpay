@@ -201,7 +201,7 @@ Template.TravelRequisition2Create.events({
         airlineId: "",
         airfareCost: 0,
         airfareCurrency: "NGN",
-        hotelId: "",
+        hotelId: "H3593",
         hotelRate: 0,
         destinationCityCurrreny: "NGN",
         hotelNotRequired: false,
