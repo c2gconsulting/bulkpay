@@ -126,7 +126,7 @@ Meteor.methods({
         if(!hashedPassword) {
             throw new Meteor.Error(401, "Password not specified");
         }
-        
+
         let user = Meteor.users.findOne({
             'emails.address': userEmail,
             // 'businessIds': businessId
@@ -134,7 +134,7 @@ Meteor.methods({
 
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {
-                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");                
+                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");
             }
 
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
@@ -147,7 +147,7 @@ Meteor.methods({
                 let hashedDefaultPassword = Package.sha.SHA256("123456")
                 let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
                 let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
-    
+
                 if(defaultLoginResult.error) {
                     Meteor.users.update({_id: user._id}, {$set: {
                         isUsingDefaultPassword: false
@@ -159,18 +159,18 @@ Meteor.methods({
                     }})
                 }
                 //--
-                if(user.employeeProfile && user.employeeProfile.employment 
-                    && user.employeeProfile.employment.status === 'Active') {    
+                if(user.employeeProfile && user.employeeProfile.employment
+                    && user.employeeProfile.employment.status === 'Active') {
                     return {
-                        status: true, 
-                        loginType: 'usingEmail', 
+                        status: true,
+                        loginType: 'usingEmail',
                         userEmail: userEmail
                     }
                 } else {
                     if(user.businessIds.length === 0) {
                         return {
-                            status: true, 
-                            loginType: 'usingEmail', 
+                            status: true,
+                            loginType: 'usingEmail',
                             userEmail: userEmail
                         }
                     } else {
@@ -179,7 +179,7 @@ Meteor.methods({
                 }
             }
         } else {
-            throw new Meteor.Error(401, "Email does not exist");            
+            throw new Meteor.Error(401, "Email does not exist");
         }
     },
     "account/customLogin": function(usernameOrEmail, hashedPassword) {
@@ -189,12 +189,12 @@ Meteor.methods({
         if(!hashedPassword) {
             throw new Meteor.Error(401, "Password not specified");
         }
-        
+
         let user = Meteor.users.findOne({customUsername: usernameOrEmail})
 
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {
-                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");                
+                throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");
             }
 
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
@@ -204,11 +204,11 @@ Meteor.methods({
             if(loginResult.error) {
                 throw loginResult.error
             } else {
-                if(user.employeeProfile && user.employeeProfile.employment 
+                if(user.employeeProfile && user.employeeProfile.employment
                     && user.employeeProfile.employment.status === 'Active') {
                     let hashedDefaultPassword = Package.sha.SHA256("123456")
                     let defaultPassword = {digest: hashedDefaultPassword, algorithm: 'sha-256'}
-    
+
                     let defaultLoginResult = Accounts._checkPassword(user, defaultPassword);
                     let userEmail = user.emails[0].address
                     console.log(`userEmail: `, userEmail)
@@ -224,10 +224,10 @@ Meteor.methods({
                                 isUsingDefaultPassword: true
                             }})
                             let resetPasswordToken = getPasswordResetToken(user, user._id, userEmail)
-        
+
                             return {
-                                status: true, 
-                                loginType: 'usingDefaultPassword', 
+                                status: true,
+                                loginType: 'usingDefaultPassword',
                                 resetPasswordToken: resetPasswordToken,
                                 userEmail: userEmail
                             }
@@ -237,20 +237,20 @@ Meteor.methods({
                             isUsingDefaultPassword: true
                         }})
                         let resetPasswordToken = getPasswordResetToken(user, user._id, usernameOrEmail)
-    
+
                         return {
-                            status: true, 
-                            loginType: 'usingDefaultPassword', 
+                            status: true,
+                            loginType: 'usingDefaultPassword',
                             resetPasswordToken: resetPasswordToken,
                             userEmail: userEmail
                         }
                     }
                 } else {
-                    throw new Meteor.Error(401, "User is not active");                                
+                    throw new Meteor.Error(401, "User is not active");
                 }
             }
         } else {
-            throw new Meteor.Error(401, "Username does not exist");            
+            throw new Meteor.Error(401, "Username does not exist");
         }
     },
     "account/update": function (user, userId) {
@@ -431,7 +431,7 @@ Meteor.methods({
                     changedBy: Meteor.userId()
                 })
             }
-            
+
             Meteor.users.update({_id: account._id}, {$set: updateObj});
             return true
         } else {
@@ -446,7 +446,7 @@ Meteor.methods({
         }
 
         let account =  Meteor.users.findOne(userId);
-        if (account){            
+        if (account){
             if(!newPromotion) {
                 throw new Meteor.Error(404, "Promotion details was not specified");
             }
@@ -456,7 +456,7 @@ Meteor.methods({
 
             let newPromotionPayGrade = PayGrades.findOne(newPromotion.payGradeId);
             if(!newPromotionPayGrade) {
-                throw new Meteor.Error(404, "Paygrade details for promotion could not be found in database");                
+                throw new Meteor.Error(404, "Paygrade details for promotion could not be found in database");
             }
 
             newPromotion.payGradeName = newPromotionPayGrade.code
@@ -529,7 +529,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Unauthorized");
         }
         let account =  Meteor.users.findOne(userId);
-        if (account){            
+        if (account){
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.paytypes": payTypesArray,
               "employeeProfile.employment.hourlyRate": hourlyRate
@@ -541,7 +541,7 @@ Meteor.methods({
     },
     "account/netPayAllocation": function (userId, hasNetPayAllocation, foreignCurrency, rateToBaseCurrency, foreignCurrencyAmount) {
         check(userId, String);
-        
+
         if (!Meteor.userId()){
             throw new Meteor.Error(404, "Unauthorized");
         }
@@ -706,9 +706,22 @@ Meteor.methods({
           let defaultUsername = userFirstName + "." + userLastName
           defaultUsername = defaultUsername.toLowerCase()
 
-          Meteor.users.update(foundUser._id, {$set: {customUsername: defaultUsername}}) 
+          Meteor.users.update(foundUser._id, {$set: {customUsername: defaultUsername}})
           Accounts.setPassword(foundUser._id, "123456")
           return defaultUsername
+        } else {
+            throw new Meteor.Error(404, 'User does not exist for company');
+        }
+    },
+    "accounts/resetToDefaultPassword": function(businessId, userId) {
+        let foundUser = Meteor.users.findOne({
+            _id: userId,
+            businessIds: {"$in" : [businessId]}
+        })
+
+        if(foundUser) {
+          Accounts.setPassword(foundUser._id, "123456")
+
         } else {
             throw new Meteor.Error(404, 'User does not exist for company');
         }

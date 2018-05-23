@@ -6,11 +6,11 @@ Template.AirlineCreate.events({
       Modal.hide('AirlineCreate');
     },
     'click #save': (e, tmpl) => {
- 
+
       let airlineName = $('[name=airline-name]').val();
       let isInternational = $('#isInternational').is(':checked');
 
-     
+
 
      if(!airlineName || airlineName.trim().length === 0) {
           Template.instance().errorMessage.set("Please enter the Airline name");
@@ -20,12 +20,11 @@ Template.AirlineCreate.events({
 
         let newAirline = {
           businessId: Session.get('context'),
-   
           name : airlineName,
           isInternational: isInternational
         };
 
-   
+
 
         Meteor.call('airline/create', newAirline, (err, res) => {
             if (res){

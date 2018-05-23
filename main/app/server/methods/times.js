@@ -9,7 +9,7 @@ Meteor.methods({
         this.unblock();
 
 
-        let customConfig = BusinessUnitCustomConfigs.findOne({businessId: time.businessId})   
+        let customConfig = BusinessUnitCustomConfigs.findOne({businessId: time.businessId})
         if(customConfig) {
             if(customConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
                 if(time.locationId) {
@@ -38,7 +38,7 @@ Meteor.methods({
         this.unblock()
 
         let timeRecord = TimeWritings.findOne({_id: timeId})
-        if(timeRecord && timeRecord.employeeId === Meteor.userId()) {            
+        if(timeRecord && timeRecord.employeeId === Meteor.userId()) {
             TimeWritings.update(timeId, {$set: {isApprovalStatusSeenByCreator: true}})
             return true;
         } else {

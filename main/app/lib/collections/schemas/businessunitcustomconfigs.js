@@ -151,6 +151,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         type: Boolean,
         optional: true
     },
+    showResetPasswordButton: {
+        type: Boolean,
+        optional: true
+    },
     hsdfTimeSheetReportEnabled: {
         type: Boolean,
         optional: true,

@@ -1,4 +1,3 @@
-
 /*****************************************************************************/
 /* EmployeeEditEmploymentPayrollModal: Event Handlers */
 /*****************************************************************************/
@@ -26,7 +25,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     if(terminationDate) {
         terminationDate = moment(terminationDate).utcOffset(0, true).toDate().toUTCString()
     }
-    
+
     user.employeeProfile.employment.hireDate = hireDate;
     user.employeeProfile.employment.confirmationDate = confirmationDate;
     user.employeeProfile.employment.terminationDate = terminationDate;
@@ -55,7 +54,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         }
     });
   },
-  
+
   'click #saveEmployeePayrollPaytypes': (e, tmpl) => {
     let user = Template.instance().getEditUser();
     let payTypesArray = tmpl.getPaytypes();
@@ -65,7 +64,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let hourlyRateInBaseCurrency = $('[name="hourlyRate_NGN"]').val()
     let hourlyRateInAlternateCurrency = null
 
-    let selectedGrade = Template.instance().selectedGrade.get();        
+    let selectedGrade = Template.instance().selectedGrade.get();
     if(selectedGrade) {
         let grade = PayGrades.findOne({_id: selectedGrade})
         if(grade && grade.netPayAlternativeCurrency) {
@@ -80,7 +79,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         } else {
             hourlyRateObj['NGN'] = parseFloat(hourlyRateInBaseCurrency)
 
-            let selectedGrade = Template.instance().selectedGrade.get();        
+            let selectedGrade = Template.instance().selectedGrade.get();
             if(selectedGrade) {
                 let grade = PayGrades.findOne({_id: selectedGrade})
                 if(grade && grade.netPayAlternativeCurrency) {
@@ -89,14 +88,14 @@ Template.EmployeeEditEmploymentPayrollModal.events({
                             swal('Validation error', `Hourly rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
                             return
                         } else {
-                            hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)                                            
-                        }                                        
+                            hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)
+                        }
                     }
                 }
-            }        
+            }
         }
     } else {
-        let selectedGrade = Template.instance().selectedGrade.get();        
+        let selectedGrade = Template.instance().selectedGrade.get();
         if(selectedGrade) {
             let grade = PayGrades.findOne({_id: selectedGrade})
             if(grade && grade.netPayAlternativeCurrency) {
@@ -105,8 +104,8 @@ Template.EmployeeEditEmploymentPayrollModal.events({
                         swal('Validation error', `Hourly rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
                         return
                     } else {
-                        hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)                                            
-                    }                                        
+                        hourlyRateObj[grade.netPayAlternativeCurrency] = parseFloat(hourlyRateInAlternateCurrency)
+                    }
                 }
             }
         }
@@ -157,7 +156,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         let hasNetPayAllocationAsBoolean = (hasNetPayAllocation === "true")
         let amountAsNumber = parseFloat(foreignCurrencyAmount)
 
-        Meteor.call('account/netPayAllocation', user._id, hasNetPayAllocationAsBoolean, 
+        Meteor.call('account/netPayAllocation', user._id, hasNetPayAllocationAsBoolean,
             foreignCurrencyCode, rateToBaseCurrency, amountAsNumber, (err, res) => {
             if (res){
                 swal({
@@ -279,7 +278,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
             return
         }
         let newPromotionPosition = $('[name=newPromotionPosition]').val()
-        
+
         if(!newPromotionPosition) {
             return
         }
@@ -301,7 +300,7 @@ Template.EmployeeEditEmploymentPayrollModal.events({
 
         Meteor.call('account/saveNewPromotion', user._id, newPromotion, (err, res) => {
             tmpl.isTryingToAddNewPromotion.set(false);
-            
+
             if(!err) {
                 let selectedEmployee = Session.get('employeesList_selectedEmployee');
                 selectedEmployee.employeeProfile = user.employeeProfile || {};
@@ -374,7 +373,7 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
     //         })
     //     }
     //   }
-  }, 
+  },
   'allPayGrades': () => {
     return PayGrades.find({
         businessId: Session.get('context')
@@ -419,7 +418,7 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
         if(user) {
             let netPayAllocation = user.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
-                return (netPayAllocation.hasNetPayAllocation === true) ? "selected" : ''   
+                return (netPayAllocation.hasNetPayAllocation === true) ? "selected" : ''
             }
         }
     },
@@ -428,7 +427,7 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
         if(user) {
             let netPayAllocation = user.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
-                return (netPayAllocation.foreignCurrency === currency) ? "selected" : ''   
+                return (netPayAllocation.foreignCurrency === currency) ? "selected" : ''
             }
         }
     },
@@ -453,14 +452,14 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
     hourlyRate: function(currency) {
         let user = Template.instance().getEditUser();
         if(user) {
-            return (user.employeeProfile.employment 
+            return (user.employeeProfile.employment
                 && user.employeeProfile.employment.hourlyRate
                 && user.employeeProfile.employment.hourlyRate[currency]) || ''
         }
         return ''
     },
     alternateCurrency: function() {
-        let selectedGrade = Template.instance().selectedGrade.get();        
+        let selectedGrade = Template.instance().selectedGrade.get();
         if(selectedGrade) {
             let grade = PayGrades.findOne({_id: selectedGrade})
             if(grade) {
@@ -482,21 +481,21 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
     },
     'isEmployeePromotionEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.isEmployeePromotionEnabled
         }
     },
     'directEmployeeManagerEnabled': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             return businessUnitCustomConfig.directEmployeeManagerEnabled
         }
     },
     'showFirstTabSpinner': function() {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
-        
+
         if(businessUnitCustomConfig) {
             if(businessUnitCustomConfig.directEmployeeManagerEnabled) {
                 return Template.instance().showFirstTabSpinner.get();
@@ -568,7 +567,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
   self.subscribe("paygrades", Session.get('context'));
   self.subscribe('employees', Session.get('context'));
 
-  
+
   self.isTryingToAddNewPromotion = new ReactiveVar();
 
   self.changePayTypesForSelectedPayGrade = (selectedGrade) => {
@@ -582,7 +581,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
         //--
         let selectedEmployee = Session.get('employeesList_selectedEmployee')
 
-        if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade 
+        if(selectedEmployee.employeeProfile.employment.paygrade === selectedGrade
             && (selectedEmployee.employeeProfile.employment.paytypes)
             && (selectedEmployee.employeeProfile.employment.paytypes.length > 0)) {
           paytypes = selectedEmployee.employeeProfile.employment.paytypes;
@@ -610,7 +609,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
                 }
             }
           });
-        } else {            
+        } else {
             paytypes = grade.payTypes.map(x => {
               return x;
           });
@@ -651,7 +650,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
           }
         }
       }
-      
+
     Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
         if(!err) {
             self.businessUnitCustomConfig.set(res)
@@ -665,7 +664,7 @@ Template.EmployeeEditEmploymentPayrollModal.onRendered(function () {
   let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
   $('[name="employmentPosition"]').val(selectedEmployee.employeeProfile.employment.position);
-  $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);     
+  $('[name="employmentStatus"]').val(selectedEmployee.employeeProfile.employment.status);
 
 //   $('select.dropdown').dropdown();
     setTimeout(function() {

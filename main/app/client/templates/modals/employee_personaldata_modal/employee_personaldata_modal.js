@@ -71,6 +71,35 @@ Template.EmployeePersonalDataModal.events({
 
               swal({
                   title: "Success",
+                  text: "Username and Password was reset successfully",
+                  confirmButtonClass: "btn-success",
+                  type: "success",
+                  confirmButtonText: "OK"
+              });
+            } else {
+                console.log(err);
+                swal('Error', err.message, 'error')
+            }
+        });
+    },
+    'click #resetPassword': function(e, tmpl) {
+        let user = Template.instance().getEditUser();
+
+        $('#resetPassword').text('Sending. Please wait ...')
+        tmpl.$('#resetPassword').attr('disabled', true)
+        Meteor.call('accounts/resetToDefaultPassword', Session.get('context'), user._id, (err, res) => {
+            $('#resetPassword').text('Reset Password')
+            tmpl.$('#resetPassword').attr('disabled', false);
+
+            if (res){
+             tmpl.setEditUser(user);
+
+              let selectedSessionUser = Session.get('employeesList_selectedEmployee')
+              
+              Session.set('employeesList_selectedEmployee', selectedSessionUser)
+
+              swal({
+                  title: "Success",
                   text: "Password was reset successfully",
                   confirmButtonClass: "btn-success",
                   type: "success",
@@ -312,6 +341,12 @@ Template.EmployeePersonalDataModal.helpers({
     hasEmployeeAccess: () => {
       let canManageEmployeeData = Core.hasEmployeeAccess(Meteor.userId())
       return canManageEmployeeData;
+    },
+    'showResetPasswordButton': function() {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.showResetPasswordButton
+        }
     }
 });
 
@@ -320,6 +355,8 @@ Template.EmployeePersonalDataModal.helpers({
 /*****************************************************************************/
 Template.EmployeePersonalDataModal.onCreated(function () {
     let self = this;
+    let businessUnitId = Session.get('context')
+    self.businessUnitCustomConfig = new ReactiveVar()
 
     self.getEditUser = () => {
       return Session.get('employeePersonalData');
@@ -334,6 +371,14 @@ Template.EmployeePersonalDataModal.onCreated(function () {
       selectedEmployee.emails = [];
     }
     self.setEditUser(selectedEmployee);
+
+        self.autorun(function(){
+            Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
+                if(!err) {
+                    self.businessUnitCustomConfig.set(res)
+                }
+            })
+        })
 });
 
 Template.EmployeePersonalDataModal.onRendered(function () {

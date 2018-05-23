@@ -67,16 +67,13 @@ Template.TimeCreate2.events({
 
         let duration = $('#duration').val();
         let durationAsNumber = parseInt(duration)
-
         let hoursToTimeWriteForCurrentDay = tmpl.hoursToTimeWriteForCurrentDay.get()
-
         let timeDoc = {
             employeeId: Meteor.userId(),
             activity: activityId,
             day: day,
             businessId: Session.get('context')
         }
-
         let isOvertimeEnabled = false;
         const businessUnitCustomConfig = tmpl.businessUnitCustomConfig.get();
         if(businessUnitCustomConfig) {
@@ -87,9 +84,8 @@ Template.TimeCreate2.events({
         if(businessUnitCustomConfig) {
             maxHoursInDayForTimeWritingPerLocationEnabled = businessUnitCustomConfig.maxHoursInDayForTimeWritingPerLocationEnabled
         }
-
         if(maxHoursInDayForTimeWritingPerLocationEnabled) {
-            let location = $('#locations').val() || "";            
+            let location = $('#locations').val() || "";
             timeDoc.locationId = location
         } else {
             if(isOvertimeEnabled) {
@@ -108,10 +104,9 @@ Template.TimeCreate2.events({
                     swal('Validation error', "You cannot record time more than your number of hours left for the day", 'error')
                     return
                 }
-            }    
+            }
         }
-
-        timeDoc.duration = durationAsNumber;
+          timeDoc.duration = durationAsNumber;
 
         let note = $('#note').val() || "";
         timeDoc.note = note;
@@ -122,7 +117,6 @@ Template.TimeCreate2.events({
             timeDoc.costCenter = costElementId
         }
 
-        //--
         Meteor.call('time/create', timeDoc, function(err, res) {
             if(!err) {
                 swal('Successful', "Time recorded successful", 'success')
@@ -238,12 +232,14 @@ Template.TimeCreate2.helpers({
 /*****************************************************************************/
 Template.TimeCreate2.onCreated(function () {
     let self = this;
+
     self.profile = new ReactiveDict();
     self.project = new ReactiveVar();
     self.costCenter = new ReactiveVar();
     self.selectedElement = new ReactiveVar("project");
 
     self.datesForTimeWriting = new ReactiveVar()
+
     self.datesForTimeWriting.set(self.data)
 
     self.currentDayIndex = new ReactiveVar()
@@ -278,20 +274,21 @@ Template.TimeCreate2.onCreated(function () {
         var dayEnd = moment(dayToFindTimesFor).endOf('day').toDate();
 
         let timesRecordedForDay = TimeWritings.find({
-            employeeId: Meteor.userId(), 
+            employeeId: Meteor.userId(),
             day: {$gte: dayStart, $lt: dayEnd}
         }).fetch();
-
-        let numberOfHoursTimewritedFor = 0
+         console.log("timesRecordedForDay")
+         console.log(timesRecordedForDay)
+                let numberOfHoursTimewritedFor = 0
         timesRecordedForDay.forEach(aTime => {
             numberOfHoursTimewritedFor += aTime.duration
         })
-        
         const businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get();
         if(businessUnitCustomConfig) {
             const maxHoursInDayForTimeWriting = businessUnitCustomConfig.maxHoursInDayForTimeWriting || 8
             self.hoursToTimeWriteForCurrentDay.set(maxHoursInDayForTimeWriting - numberOfHoursTimewritedFor)
         }
+
         //--
         const employee = Meteor.users.findOne({_id: Meteor.userId()})
         if(employee) {
@@ -301,7 +298,7 @@ Template.TimeCreate2.onCreated(function () {
 
             if(employeePositionId) {
                 let position = EntityObjects.findOne({_id: employeePositionId, otype: 'Position'})
-    
+
                 let getLocationWithHoursSet = (entity) => {
                     let possibleUnitId = entity.parentId
                     if(possibleUnitId) {
@@ -323,6 +320,8 @@ Template.TimeCreate2.onCreated(function () {
                 getLocationWithHoursSet(position)
             }
         }
+
+
     });
 
     Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, res) {
@@ -336,7 +335,7 @@ Template.TimeCreate2.onRendered(function () {
     let self = this;
 
     $("html, body").animate({ scrollTop: 0 }, "slow");
-    
+
     // $('#TimeCreate').prop('disabled', true);
 
     // self.autorun(function() {

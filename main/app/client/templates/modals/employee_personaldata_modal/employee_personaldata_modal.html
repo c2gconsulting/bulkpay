@@ -56,7 +56,7 @@
                                       value="{{profile.othernames}}"/>
                                 </div>
                             </div>
-                            
+
                             <div class="">
                                 <label for="otherNames" class="col-sm-4 control-label">Maiden Name</label>
                                 <div class="col-sm-8">
@@ -103,7 +103,7 @@
                                     {{#datepicker employeeProfile.dateOfBirth}}
                                         <input name="dateOfBirth" type="text" class="form-control datepicker" data-field="dateOfBirth" />
                                     {{/datepicker}}
-                                </div>  
+                                </div>
                             </div>
                             <div class="">
                                 <label for="gender" class="col-sm-4 control-label">Gender</label>
@@ -171,7 +171,7 @@
                                         <option value=""></option>
                                         <option value="christianity">Christianity</option>
                                         <option value="islam">Islam</option>
-                                        <option value="other">Other</option> 
+                                        <option value="other">Other</option>
                                     </select>
                                 </div>
                             </div>
@@ -212,7 +212,11 @@
                   {{#if hasEmployeeAccess}}
                     <button class="btn btn-primary mr5 ladda-button pull-left" id="sendEnrollmentEmail"
                         title="Please note! It'll require this user to change his password">Send Enrollment Email</button>
-                    <button class="btn btn-primary mr5 ladda-button pull-left" id="resetUsernameAndPassword">Reset Password</button>
+                    {{#if showResetPasswordButton}}
+                    <button class="btn btn-primary mr5 ladda-button pull-left" id="resetPassword">Reset Password</button>
+                      {{else}}
+                    <button class="btn btn-primary mr5 ladda-button pull-left" id="resetUsernameAndPassword">Reset Username and Password</button>
+                               {{/if}}
                  {{/if}}
               </div>
           </div>

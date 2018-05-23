@@ -278,9 +278,13 @@ Template.LeaveCreate.onCreated(function () {
         return weekDates.length
     }
 
+
     self.getDurationOfWeekDaysInHours = function(startDate, endDate) {        
         let startDateMoment = moment(startDate)
+        startDateMoment.add(1, 'hours');       // There is a reason for adding 1 hour
+  
         let endDateMoment = moment(endDate)
+         endDateMoment.add(1, 'hours');
         if(endDateMoment.hour() === 0 && endDateMoment.minute() === 0) {
             endDateMoment.endOf('day')
         }
