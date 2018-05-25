@@ -246,7 +246,7 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
         return Template.instance().currentTravelRequest.get()
     },
     'getEmployeeNameById': function(employeeId){
-        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+        return Meteor.users.findOne({_id: employeeId}).profile.fullName;
     },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy

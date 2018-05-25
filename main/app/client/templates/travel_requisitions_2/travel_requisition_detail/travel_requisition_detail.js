@@ -36,7 +36,7 @@ Template.TravelRequisition2Detail.helpers({
         }
     },
     'getEmployeeNameById': function(employeeId){
-        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+        return Meteor.users.findOne({_id: employeeId}).profile.fullName;
     },
 
     isBreakfastIncluded(index){

@@ -283,6 +283,17 @@ Template.TimeCreate2.onCreated(function () {
         timesRecordedForDay.forEach(aTime => {
             numberOfHoursTimewritedFor += aTime.duration
         })
+        if (numberOfHoursTimewritedFor <= 12){
+               $('#TimeCreate').prop('disabled', false);
+
+            } else {
+
+
+              $('#TimeCreate').prop('disabled', true);
+            swal('Validation error', "You cannot timewrite more than 12 hours", 'error')
+
+
+          }
         const businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get();
         if(businessUnitCustomConfig) {
             const maxHoursInDayForTimeWriting = businessUnitCustomConfig.maxHoursInDayForTimeWriting || 8
