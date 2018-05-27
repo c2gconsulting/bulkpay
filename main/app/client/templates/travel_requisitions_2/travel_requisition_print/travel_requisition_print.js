@@ -36,9 +36,16 @@ Template.TravelRequisition2Print.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
         }
     },
-    'getEmployeeNameById': function(employeeId){
-        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    'getEmployeeFullName': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.profile.fullName;
+        else
+        return ""
     },
+    // 'getEmployeeNameById': function(employeeId){
+    //         return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    // },
 
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -167,11 +174,11 @@ Template.TravelRequisition2Print.helpers({
 /* TravelRequisition2Print: Lifecycle Hooks */
 /*****************************************************************************/
 Template.TravelRequisition2Print.onCreated(function () {
-
     console.log(Router.current());
 
     let self = this;
     let businessUnitId = Router.current().params._id;
+    self.subscribe("allEmployees", Router.current().params._id);
     self.subscribe("travelcities",  Router.current().params._id);
     self.subscribe("hotels",  Router.current().params._id);
     self.subscribe("airlines",  Router.current().params._id);
