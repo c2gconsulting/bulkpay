@@ -50,7 +50,7 @@ let getEmployeedEmployees = (paygrade, period, businessId, businessUnitConfig) =
                     //     users.push(aUser)
                     // }
 
-                    if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year()) 
+                    if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year())
                         || dateLimitMoment.isAfter(userHireDateMoment)) {
                         users.push(aUser)
                     }
@@ -142,7 +142,7 @@ Meteor.methods({
         //get all payroll result for specified period if employee is authorized
         check(period, String);
         check(businessId, String);
-        
+
         if(!Core.hasPayrollAccess(Meteor.userId())){
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
@@ -316,7 +316,7 @@ Meteor.methods({
         this.unblock();
 
         if(!businessId) {
-            throw new Meteor.Error(401, "Unauthorized");            
+            throw new Meteor.Error(401, "Unauthorized");
         }
 
         Payruns.remove({period, businessId: businessId})
@@ -362,14 +362,14 @@ Meteor.methods({
         const DateLimit = new Date(firsDayOfPeriod);
 
         let businessUnitConfig = BusinessUnitCustomConfigs.findOne({businessId: businessId})
-        
+
         //get all selected employees --Condition-- if employees selected, ideally there should be no paygrade
         if (employees.length === 0 && paygrades.length > 0) {
             res = getEmployeedEmployees(paygrades, period, businessId, businessUnitConfig);
             //res contains employees ready for payment processing
 
             if (res && res.length > 0) {
-                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId, 
+                payObj = processEmployeePay(Meteor.userId(), res, annuals, businessId,
                     period, businessUnitConfig, retroactivePayrun, false);
             }
         } else if (employees.length > 0) {
@@ -391,7 +391,7 @@ Meteor.methods({
                         'employeeProfile.employment.status': 'Active',
                         'businessIds': businessId
                     }).fetch();
-                    
+
                     let dateLimitMoment = moment(DateLimit)
                     let dateLimitMonth = dateLimitMoment.month()
                     let dateLimitYear = dateLimitMoment.year()
@@ -405,7 +405,7 @@ Meteor.methods({
                             //     users.push(aUser)
                             // }
 
-                            if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year()) 
+                            if( (dateLimitMoment.month() === userHireDateMoment.month() && dateLimitMoment.year() === userHireDateMoment.year())
                                 || dateLimitMoment.isAfter(userHireDateMoment)) {
                                 users.push(aUser)
                             }
@@ -424,7 +424,7 @@ Meteor.methods({
                     }).fetch();
                 }
             }
-            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, 
+            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId,
                 period, businessUnitConfig, retroactivePayrun, false);
         } else {
             users = Meteor.users.find({
@@ -438,7 +438,7 @@ Meteor.methods({
                 'businessIds': businessId
             }).fetch();
 
-            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId, 
+            payObj = users && processEmployeePay(Meteor.userId(), users, annuals, businessId,
                 period, businessUnitConfig, retroactivePayrun, false);
         }
 
@@ -465,7 +465,7 @@ Meteor.methods({
                     x.payrunDoneBy = userId
                     x.requirePayrollApproval = requirePayrollApproval
                     x.approvals = approvals
-                    
+
                     Payruns.insert(x);
                })
                payObj.result.forEach(x => {
@@ -496,10 +496,10 @@ Meteor.methods({
 
 // // use oop
 // instantiate payment object for employee with props for all methods required
-processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig, 
+processEmployeePay = function (currentUserId, employees, includedAnnuals, businessId, period, businessUnitConfig,
     isRetroActivePayrunEnabled, isDoingARetroActivePayrunNow) {
     // console.log(`employees for payrun before elimination: `, employees.map(x => x._id))
-    
+
     let paygrades = [];
     let payresult = [];  // holds result that will be sent to client
     let payrun = [];  //holds payrun for storing if not simulation
@@ -545,14 +545,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     const payrunPeriodForPrevMonth = prevMonthMoment.format("MMYYYY")
                     let prevMonth = payrunPeriodForPrevMonth.substring(0, 2)
                     let prevMonthYear = payrunPeriodForPrevMonth.substring(2)
-                    
+
                     let doesEmpHavePayrunForPrevMonth = Payruns.findOne({
                         period: payrunPeriodForPrevMonth,
                         employeeId: x._id
                     })
                     if(!doesEmpHavePayrunForPrevMonth) {
-                        let retroactivity = processEmployeePay(Meteor.userId(), [x], includedAnnuals, businessId, 
-                            {month: prevMonth, year: prevMonthYear}, 
+                        let retroactivity = processEmployeePay(Meteor.userId(), [x], includedAnnuals, businessId,
+                            {month: prevMonth, year: prevMonthYear},
                             businessUnitConfig, isRetroActivePayrunEnabled, true);
                         let retroactivityResult = retroactivity.result
                         let retroactivityError = retroactivity.error
@@ -564,9 +564,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }
                 }
                 const employeeResult = {
-                    businessId: businessId, 
-                    employeeId: x._id, 
-                    period: periodFormat, 
+                    businessId: businessId,
+                    employeeId: x._id,
+                    period: periodFormat,
                     payment : []
                 }; //holds every payment to be saved for employee in payrun
                 //--
@@ -578,7 +578,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                 let numDaysEmployeeCanWorkInMonth = getDaysEmployeeCanWorkInMonth(x, firsDayOfPeriodAsDate)
                 let totalNumWeekDaysInMonth = getWeekDays(firsDayOfPeriodAsDate, moment(firsDayOfPeriodAsDate).endOf('month').toDate()).length
-                
+
                 let employeePositionId = x.employeeProfile.employment.position
                 //--
                 let companyWideMaxHours = businessUnitConfig.maxHoursInDayForTimeWriting || 8
@@ -590,7 +590,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 if(businessUnitConfig.payrun && businessUnitConfig.payrun.startFromPrevMonth) {
                     const monthStartDay = businessUnitConfig.payrun.monthStartDay
                     const monthEndDay = businessUnitConfig.payrun.monthEndDay
-                    
+
                     const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
                     startDate = moment(new Date(firsDayOfPeriod)).subtract(1, 'month').add(monthStartDay -1, 'day').startOf('day').toDate();
                     endDate = moment(new Date(firsDayOfPeriod)).add(monthEndDay - 1, 'day').endOf('day').toDate();
@@ -598,7 +598,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     const firsDayOfPeriod = `${period.month}-01-${period.year} GMT`;
 
                     startDate = moment(new Date(firsDayOfPeriod)).startOf('month').toDate();
-                    endDate = moment(startDate).endOf('month').toDate();    
+                    endDate = moment(startDate).endOf('month').toDate();
                 }
                 console.log(`startDate: `, startDate)
                 console.log(`endDate: `, endDate)
@@ -607,13 +607,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     maxHoursInDayForTimeWriting: {$exists: true},
                     otype: 'Location'
                 }).fetch()
-                const projectsPayDetails = 
+                const projectsPayDetails =
                     getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
-                
-                const costCentersPayDetails = 
+
+                const costCentersPayDetails =
                     getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
-                // {duration: , fraction: }                
+                // {duration: , fraction: }
 
                 let totalHoursWorkedInPeriod = projectsPayDetails.duration + costCentersPayDetails.duration
                 //--
@@ -716,7 +716,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     //import additonal pay and duduction value based on employeeProfile.employeeId for period in collection AdditionalPayments.
                     const addPay = AdditionalPayments.find({businessId: businessId, employee: x.employeeProfile.employeeId, period: periodFormat}).fetch();
                     //include additional pay to match paytype values
-                    
+
                     if(addPay && addPay.length > 0) {
                         let formattedPay = getPaytypeIdandValue(addPay, businessId) || [];
                         if(formattedPay && formattedPay.length > 0) {
@@ -776,11 +776,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 let b = {};
                                 b.code = boundary[xx].code;
                                 b.value = boundary[xx].value;
-                                
+
                                 if(!x.hourlyRate) {
                                     clone.push(b)
                                 } else {
-                                    if(currentEmployeeInPayrunLoop.employeeProfile 
+                                    if(currentEmployeeInPayrunLoop.employeeProfile
                                         && currentEmployeeInPayrunLoop.employeeProfile.employment
                                         && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
                                         && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
@@ -796,7 +796,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             let formula = x.value;
                             let old = formula;
                             if(x.hourlyRate) {
-                                if(currentEmployeeInPayrunLoop.employeeProfile 
+                                if(currentEmployeeInPayrunLoop.employeeProfile
                                     && currentEmployeeInPayrunLoop.employeeProfile.employment
                                     && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
                                     && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
@@ -818,7 +818,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         if(paytypes[i].hourlyRate) {
                                             let payBasedOnHours = 0
 
-                                            if(currentEmployeeInPayrunLoop.employeeProfile 
+                                            if(currentEmployeeInPayrunLoop.employeeProfile
                                                 && currentEmployeeInPayrunLoop.employeeProfile.employment
                                                 && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate
                                                 && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
@@ -840,7 +840,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             } else {
                                                 payTypeAmount = paytypes[i].value
                                             }
-    
+
                                             if(x.currency === tenant.baseCurrency.iso && paytypes[i].currency !== tenant.baseCurrency.iso) {
                                                 payTypeAmount = convertForeignCurrencyToBaseCurrency(paytypes[i], parseFloat(payTypeAmount), currencyRatesForPeriod)
                                             }
@@ -849,7 +849,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         }
                                     }
                                 }
-                                
+
                                 //do the same for all contansts and replace the values
                                 //will find a better way of doing this... NOTE
                                 let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
@@ -912,7 +912,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                     //if add to total, add wt to totalsBucket
                                     totalsBucket += x.addToTotal ? parseFloat(x.parsedValue) : 0;
-                                    
+
                                     //--
                                     //add parsed value to defaultTax bucket if paytype is taxable
                                     if(tenant.baseCurrency.iso === x.currency) {
@@ -921,7 +921,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         defaultTaxBucket += x.taxable ? convertForeignCurrencyToBaseCurrency(x, parseFloat(x.parsedValue), currencyRatesForPeriod) : 0
                                     }
                                     // console.log(`defaultTaxBucket`, defaultTaxBucket)
-                                    
+
                                     //--
                                     //for reliefs add to relief bucket
                                     if(tenant.baseCurrency.iso === x.currency) {
@@ -1002,7 +1002,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     let projectsPay = []
 
                                     businessUnitConfig.payrun = businessUnitConfig.payrun || {}
-                                    businessUnitConfig.payrun.fullPayOnTimeRecorded = businessUnitConfig.payrun.fullPayOnTimeRecorded || false                                    
+                                    businessUnitConfig.payrun.fullPayOnTimeRecorded = businessUnitConfig.payrun.fullPayOnTimeRecorded || false
 
                                     if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
                                         let processProjectAndCostCenterPay = (x) => {
@@ -1025,11 +1025,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             if(!x.hourlyRate) {
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
-                                                costCenterPayAmount = costCentersPayDetails.fraction * value                                                    
+                                                costCenterPayAmount = costCentersPayDetails.fraction * value
                                             } else {
                                                 if(totalHoursWorkedInPeriod > 0) {
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
-                                                    costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value    
+                                                    costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
                                                 }
                                             }
 
@@ -1072,10 +1072,10 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 if(projectsAssignedToEmployee.length === 0) {
                                                     costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                                                     value = costCenterPayAmount
-        
+
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
                                                     processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
-        
+
                                                     if(tenant.baseCurrency.iso !== x.currency) {
                                                         costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
                                                         // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth}) * currency rate`});
@@ -1088,12 +1088,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
                                                     processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
-        
+
                                                     if(tenant.baseCurrency.iso !== x.currency) {
                                                         projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
                                                     }
                                                     // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-        
+
                                                     projectsPay.push({
                                                         projectId: projectsAssignedToEmployee[0]._id,
                                                         durationInHours: 0,
@@ -1102,7 +1102,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 }
                                                 processing.push({code: `Pay from projects(NGN)`, derived: projectPayAmount});
                                                 processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
-        
+
                                                 processing.push({code: x.code, derived: value});
                                             }
                                         }
@@ -1130,7 +1130,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                     //--
                                     switch (x.type) {
-                                        case 'Benefit':                                            
+                                        case 'Benefit':
                                             //add to payslip benefit if display in payslip
                                             if (x.addToTotal) {
                                                 let paymentObj = {
@@ -1138,7 +1138,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     title: x.title,
                                                     code: x.code,
                                                     currency: x.currency || "",
-                                                    value, 
+                                                    value,
                                                     valueInForeignCurrency
                                                 }
                                                 benefit.push(paymentObj);
@@ -1218,18 +1218,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 })
                                             }
                                     }
-                                    
+
                                     //add value to result
                                     employeeResult.payment.push({
-                                        id: x._id, reference: 'Paytype', 
-                                        amountLC: value, amountPC: valueInForeignCurrency, 
-                                        
-                                        projectPayAmount: projectPayAmount, 
+                                        id: x._id, reference: 'Paytype',
+                                        amountLC: value, amountPC: valueInForeignCurrency,
+
+                                        projectPayAmount: projectPayAmount,
                                         costCenterPayAmount: costCenterPayAmount,
                                         projectsPay: projectsPay,
 
-                                        code: x.code, description: x.title, 
-                                        type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type 
+                                        code: x.code, description: x.title,
+                                        type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type
                                     });
                                     log.push({paytype: x.code, input: input, processing: processing});
                                 } else {
@@ -1242,7 +1242,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 //
                             }
                         } else {
-                            
+
                         }
                     })
                     // console.log(`paymentsAccountingForCurrency: `, JSON.stringify(paymentsAccountingForCurrency))
@@ -1266,26 +1266,26 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             let processing = pensionLog.processing
 
                             if(!businessUnitConfig.payrun.fullPayOnTimeRecorded) {
-                                processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});                    
+                                processing.push({code: pension.code + "_EE - (Employee contribution (accounting) for resumption date)", derived: ` ${employeePenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
                                 processing.push({code: pension.code + "_ER - (Employer contribution (accounting) for resumption date)", derived: ` ${employerPenContrib} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
-            
+
                                 employeePenContrib = employeePenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                                 employerPenContrib = employerPenContrib * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                             } else {
-                                processing.push({code: pension.code + "_EE - (Employee contribution)", derived: ` ${employeePenContrib}`});                    
+                                processing.push({code: pension.code + "_EE - (Employee contribution)", derived: ` ${employeePenContrib}`});
                                 processing.push({code: pension.code + "_ER - (Employer contribution)", derived: ` ${employerPenContrib}`});
                             }
                         }
-                        
+
                         //populate result for employee and employer pension contribution
                         if(pension) {
-                            employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                                amountLC: employeePenContrib, amountPC: '', 
-                                code: pension.code + '_EE', 
+                            employeeResult.payment.push({id: pension._id, reference: 'Pension',
+                                amountLC: employeePenContrib, amountPC: '',
+                                code: pension.code + '_EE',
                                 description: pension.name + ' Employee', type: 'Deduction'});
-                            employeeResult.payment.push({id: pension._id, reference: 'Pension', 
-                                amountLC: employerPenContrib, amountPC: '', 
-                                code: pension.code + '_ER', 
+                            employeeResult.payment.push({id: pension._id, reference: 'Pension',
+                                amountLC: employerPenContrib, amountPC: '',
+                                code: pension.code + '_ER',
                                 description: pension.name + ' Employer', type: 'Others'});
 
                             if(!paymentsAccountingForCurrency.deduction['NGN']) {
@@ -1309,7 +1309,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 value: employerPenContrib
                             })
                         }
-                        
+
                         if(pensionLog) {   //add pension calculation log
                             log.push(pensionLog)
                         }
@@ -1322,18 +1322,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     let netTaxLocal = 0
                     let netTaxForeign = 0
                     let taxLog = null
-                    
+
                     const effectiveTaxDetails = Tax.findOne({isUsingEffectiveTaxRate: true, employees: x._id, status: 'Active'});
 
                     const sfWithholdingTaxDetails = Tax.findOne({
-                        usingSuccessFactorsWithholdingTaxRate: true, 
-                        employees: currentEmployeeInPayrunLoop._id, 
+                        usingSuccessFactorsWithholdingTaxRate: true,
+                        employees: currentEmployeeInPayrunLoop._id,
                         status: 'Active'
                     });
-                    
+
                     if(effectiveTaxDetails) {
                         const taxComputationInput = [
-                            {code: 'Effective Tax Rate', value: effectiveTaxDetails.effectiveTaxRate}, 
+                            {code: 'Effective Tax Rate', value: effectiveTaxDetails.effectiveTaxRate},
                             // {code: 'TaxBucket', value: taxBucket}
                         ];
 
@@ -1383,14 +1383,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                             let taxCurrencies = Object.keys(taxableIncomeInDiffCurrencies)
                             taxCurrencies.forEach(aCurrency => {
-                                let taxableIncome = taxableIncomeInDiffCurrencies[aCurrency]        
+                                let taxableIncome = taxableIncomeInDiffCurrencies[aCurrency]
 
                                 if(!paymentsAccountingForCurrency.deduction[aCurrency]) {
                                     paymentsAccountingForCurrency.deduction[aCurrency] = {payments: []}
                                 }
 
                                 if(aCurrency === tenant.baseCurrency.iso) {
-                                    netTaxLocal = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)                                    
+                                    netTaxLocal = (taxableIncome * effectiveTaxDetails.effectiveTaxRate)
                                     paymentsAccountingForCurrency.deduction[aCurrency].payments.push({
                                         title: tax.name,
                                         code: tax.code,
@@ -1412,7 +1412,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                 }
                                 //--
                                 taxComputationInput.push({
-                                    code: `TaxBucket(${aCurrency})`, 
+                                    code: `TaxBucket(${aCurrency})`,
                                     value: taxableIncome
                                 })
                                 //--
@@ -1423,9 +1423,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             taxLog = {paytype: effectiveTaxDetails.code, input: taxComputationInput, processing: taxProcessing};
 
                             employeeResult.payment.push({
-                                id: tax._id, reference: 'Tax', 
-                                amountLC: netTaxLocal, amountPC: netTaxForeign, 
-                                code: tax.code, description: tax.name, 
+                                id: tax._id, reference: 'Tax',
+                                amountLC: netTaxLocal, amountPC: netTaxForeign,
+                                code: tax.code, description: tax.name,
                                 type: 'Deduction'
                             });
                         }
@@ -1453,20 +1453,20 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     if(taxBucket.frequency === 'Monthly') {
                                         valueAsNum = (valueAsNum / 12)
                                         taxComputationInput.push({
-                                            code: `TaxBucket(${taxBucket.currency})`, 
+                                            code: `TaxBucket(${taxBucket.currency})`,
                                             value: `${valueAsNum} / 12`
                                         })
-    
+
                                         netTaxLocal = valueAsNum * sfWithholdingTaxDetails.successFactorsTaxRate
                                     } else {
                                         taxComputationInput.push({
-                                            code: `TaxBucket(${taxBucket.currency})`, 
+                                            code: `TaxBucket(${taxBucket.currency})`,
                                             value: `${valueAsNum} `
-                                        })    
+                                        })
                                     }
 
                                     taxComputationInput.push({
-                                        code: `TaxBucket(${taxBucket.currency})`, 
+                                        code: `TaxBucket(${taxBucket.currency})`,
                                         value: valueAsNum
                                     })
                                 }
@@ -1479,8 +1479,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         taxLog = {paytype: sfWithholdingTaxDetails.code, input: taxComputationInput, processing: taxProcessing};
 
                         //populate result for tax
-                        employeeResult.payment.push({id: taxBucketId, reference: 'Tax', 
-                            amountLC: netTaxLocal, amountPC: '', code: sfWithholdingTaxDetails.code, 
+                        employeeResult.payment.push({id: taxBucketId, reference: 'Tax',
+                            amountLC: netTaxLocal, amountPC: '', code: sfWithholdingTaxDetails.code,
                             description: sfWithholdingTaxDetails.name, type: 'Deduction'});
                         //--
                         if(!paymentsAccountingForCurrency.deduction[`${taxBucketCurrency}`]) {
@@ -1526,17 +1526,17 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         //populate result for tax
                         if(tax.currency) {
                             if(tenant.baseCurrency.iso === tax.currency) {
-                                employeeResult.payment.push({id: tax._id, reference: 'Tax', 
-                                amountLC: netTaxLocal, amountPC: '', code: tax.code, 
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax',
+                                amountLC: netTaxLocal, amountPC: '', code: tax.code,
                                 description: tax.name, type: 'Deduction'});
                             } else {
-                                employeeResult.payment.push({id: tax._id, reference: 'Tax', 
-                                amountLC: netTaxForeign, amountPC: '', code: tax.code, 
+                                employeeResult.payment.push({id: tax._id, reference: 'Tax',
+                                amountLC: netTaxForeign, amountPC: '', code: tax.code,
                                 description: tax.name, type: 'Deduction'});
-                            }    
+                            }
                         } else {
-                            employeeResult.payment.push({id: tax._id, reference: 'Tax', 
-                            amountLC: netTaxLocal, amountPC: '', code: tax.code, 
+                            employeeResult.payment.push({id: tax._id, reference: 'Tax',
+                            amountLC: netTaxLocal, amountPC: '', code: tax.code,
                             description: tax.name, type: 'Deduction'});
                         }
                         //--
@@ -1579,13 +1579,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     final.log = log; //payrun processing log
 
                     final.payslip = {benefit: benefit, deduction: deduction}; //pension and tax are also deduction
-                    
+
                     final.payslip.deduction.push({
                         payTypeId: tax._id,
-                        title: tax.code, 
-                        code: tax.name, 
+                        title: tax.code,
+                        code: tax.name,
                         currency: tax.currency ? tax.currency : 'NGN',
-                        value: tax.currency ? (tax.currency === tenant.baseCurrency.iso ? netTaxLocal * -1 : netTaxForeign * -1) : netTaxLocal * -1, 
+                        value: tax.currency ? (tax.currency === tenant.baseCurrency.iso ? netTaxLocal * -1 : netTaxForeign * -1) : netTaxLocal * -1,
                         valueInForeignCurrency: 0
                     }); // negate add tax to deduction
                     //--End of Tax processing
@@ -1595,21 +1595,21 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             let valueInForeignCurrency = ''
                             final.payslip.deduction.push({
                                 payTypeId: pension._id,
-                                title: `${pension.code}_EE`, 
-                                code: `${pension.name} Employee`, 
-                                value: employeePenContrib * -1, 
+                                title: `${pension.code}_EE`,
+                                code: `${pension.name} Employee`,
+                                value: employeePenContrib * -1,
                                 valueInForeignCurrency
                             });
                             // if(pension.displayEmployerInPayslip) {
                                 valueInForeignCurrency = ''
                                 final.payslip.others = others.concat([{
                                     payTypeId: pension._id,
-                                    title: `${pension.code}_ER`, 
-                                    code: `${pension.name} Employer`, 
-                                    value: employerPenContrib, 
+                                    title: `${pension.code}_ER`,
+                                    code: `${pension.name} Employer`,
+                                    value: employerPenContrib,
                                     valueInForeignCurrency
                                 }]); //if employer contribution (displayEmployerInPayslip) add to other payments
-                            // }    
+                            // }
                         }
                     } else {
                         final.payslip.others = others
@@ -1642,24 +1642,24 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             //--
                             if(aPayCategory === 'benefit') {
                                 if(netPayWithCurrencyDelineation[aCurrency]) {
-                                    netPayWithCurrencyDelineation[aCurrency] = 
-                                        netPayWithCurrencyDelineation[aCurrency] + total    
+                                    netPayWithCurrencyDelineation[aCurrency] =
+                                        netPayWithCurrencyDelineation[aCurrency] + total
                                 } else {
-                                    netPayWithCurrencyDelineation[aCurrency] = total    
+                                    netPayWithCurrencyDelineation[aCurrency] = total
                                 }
                             } else if(aPayCategory === 'deduction') {
-                                if(netPayWithCurrencyDelineation[aCurrency]) { 
-                                    netPayWithCurrencyDelineation[aCurrency] =  
-                                        netPayWithCurrencyDelineation[aCurrency] + total     
-                                } else { 
-                                    netPayWithCurrencyDelineation[aCurrency] = total     
-                                } 
+                                if(netPayWithCurrencyDelineation[aCurrency]) {
+                                    netPayWithCurrencyDelineation[aCurrency] =
+                                        netPayWithCurrencyDelineation[aCurrency] + total
+                                } else {
+                                    netPayWithCurrencyDelineation[aCurrency] = total
+                                }
                                 //--
                                 if(deductionWithCurrencyDelineation[aCurrency]) {
-                                    deductionWithCurrencyDelineation[aCurrency] = 
-                                        deductionWithCurrencyDelineation[aCurrency] + total    
+                                    deductionWithCurrencyDelineation[aCurrency] =
+                                        deductionWithCurrencyDelineation[aCurrency] + total
                                 } else {
-                                    deductionWithCurrencyDelineation[aCurrency] = total    
+                                    deductionWithCurrencyDelineation[aCurrency] = total
                                 }
                             } else if(aPayCategory === 'others') {// Do nothing
                             }
@@ -1675,11 +1675,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     netPayCurrencies.forEach(currency => {
                         if(currency === tenant.baseCurrency.iso) {
                             employeeResult.payment.push({
-                                reference: 'Standard', 
-                                amountLC: netPayWithCurrencyDelineation[currency], 
-                                amountPC: netPayWithCurrencyDelineation[currency], 
-                                code: 'NMP', 
-                                description: 'Net Payment', 
+                                reference: 'Standard',
+                                amountLC: netPayWithCurrencyDelineation[currency],
+                                amountPC: netPayWithCurrencyDelineation[currency],
+                                code: 'NMP',
+                                description: 'Net Payment',
                                 type: 'netPayment'
                             });
                             let totalToUse = 0
@@ -1690,11 +1690,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                             final.payslip['netPayment'] = netPayWithCurrencyDelineation[currency]
                         } else {
                             employeeResult.payment.push({
-                                reference: 'Standard_' + currency, 
-                                amountLC: netPayWithCurrencyDelineation[currency], 
-                                amountPC: netPayWithCurrencyDelineation[currency], 
-                                code: 'NMP', 
-                                description: 'Net Payment '  + currency, 
+                                reference: 'Standard_' + currency,
+                                amountLC: netPayWithCurrencyDelineation[currency],
+                                amountPC: netPayWithCurrencyDelineation[currency],
+                                code: 'NMP',
+                                description: 'Net Payment '  + currency,
                                 type: 'netPayment'
                             });
                             let totalToUse = 0
@@ -1710,23 +1710,23 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     deductionCurrencies.forEach(currency => {
                         if(currency === tenant.baseCurrency.iso) {
                             employeeResult.payment.push({
-                                reference: 'Standard-1', 
-                                amountLC: deductionWithCurrencyDelineation[currency], 
-                                amountPC: deductionWithCurrencyDelineation[currency], 
-                                code: 'TDEDUCT', 
-                                description: 'Total Deduction', 
+                                reference: 'Standard-1',
+                                amountLC: deductionWithCurrencyDelineation[currency],
+                                amountPC: deductionWithCurrencyDelineation[currency],
+                                code: 'TDEDUCT',
+                                description: 'Total Deduction',
                                 type: 'totalDeduction' });
-                            
+
                             final.payslip['totalDeduction'] = deductionWithCurrencyDelineation[currency]
                         } else {
                             employeeResult.payment.push({
-                                reference: 'Standard-1_' + currency, 
-                                amountLC: deductionWithCurrencyDelineation[currency], 
-                                amountPC: deductionWithCurrencyDelineation[currency], 
-                                code: 'TDEDUCT', 
-                                description: 'Total Deduction ' + currency, 
+                                reference: 'Standard-1_' + currency,
+                                amountLC: deductionWithCurrencyDelineation[currency],
+                                amountPC: deductionWithCurrencyDelineation[currency],
+                                code: 'TDEDUCT',
+                                description: 'Total Deduction ' + currency,
                                 type: 'totalDeduction' });
-                            
+
                             final.payslip['totalDeduction_' + currency] = deductionWithCurrencyDelineation[currency]
                         }
                     })
@@ -1780,7 +1780,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     if(grade) {
                         final.payslip.employee.grade = grade.code;
                     } else {
-                        final.payslip.employee.grade = "";                        
+                        final.payslip.employee.grade = "";
                     }
                     final.error = true;
 
@@ -1883,7 +1883,7 @@ function convertForeignCurrencyToBaseCurrency(payTypeDetails, amountInLocalCurre
 function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRatesForPeriod) {
     if(payGrade) {
         let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
-    
+
         let currencyInPeriod = _.find(currencyRatesForPeriod, (aCurrency) => {
             return aCurrency.code === netPayAlternativeCurrency
         })
@@ -1899,7 +1899,7 @@ function getNetPayInForeignCurrency(amountInLocalCurrency, payGrade, currencyRat
     }
 }
 
-function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, 
+function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth,
         employeeUserId, businessUnitConfig, locationsWithMaxHours, employeeData) {
     // const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
@@ -1914,7 +1914,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
 
         if(!employeeData.successFactors) {
             queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 project: {$exists : true},
                 day: {$gte: startDate, $lt: endDate},
                 employeeId: employeeUserId,
@@ -1925,12 +1925,12 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
                 _id: {
                   "empUserId": "$employeeId",
                   "project": "$project"
-                }, 
+                },
                 duration: { $sum: "$duration" }
             }
         } else {
             queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 'successFactorsCostCenter': {$exists : true},
                 day: {$gte: startDate, $lt: endDate},
                 employeeId: employeeUserId,
@@ -1941,11 +1941,18 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
                 _id: {
                   "empUserId": "$employeeId",
                   "project": "$successFactorsCostCenter"
-                }, 
+                },
                 duration: { $sum: "$duration" }
             }
         }
-    
+    console.log("queryObj")
+    console.log(queryObj)
+
+    console.log("groupingQuery")
+    console.log(groupingQuery)
+
+
+
         let allProjectTimesInMonth = TimeWritings.aggregate([
             { $match: queryObj},
             { $group: groupingQuery }
@@ -1953,7 +1960,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
         //--
         // let totalWorkHoursInYear = 2080
         // let numberOfMonthsInYear = 12
-    
+
         if(allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let projectDurations = []
 
@@ -1961,20 +1968,20 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
             allProjectTimesInMonth.forEach(aProjectTime => {
                 totalProjectsDuration += aProjectTime.duration
                 projectDurations.push({
-                    project: aProjectTime._id.project, 
+                    project: aProjectTime._id.project,
                     duration: aProjectTime.duration
                 })
             })
             // const fraction = totalProjectsDuration * numberOfMonthsInYear / totalWorkHoursInYear
             const fraction = totalProjectsDuration / (totalNumWeekDaysInMonth * companyWideMaxHours)
-            
+
             return {duration: totalProjectsDuration, fraction, projectDurations}
         } else {
             return {duration: 0, fraction: 0, projectDurations: []}
         }
     } else {
         let queryObj = {
-            businessId: businessId, 
+            businessId: businessId,
             $or: [
                 {project: {$exists : true}},
                 {"successFactorsCostCenter": {$exists: true}}
@@ -1983,7 +1990,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
             employeeId: employeeUserId,
             status: 'Approved'
         }
-    
+
         let allProjectTimesInMonth = TimeWritings.aggregate([
             { $match: queryObj},
             { $group: {
@@ -1991,7 +1998,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
                 "empUserId": "$employeeId",
                 "project": "$project",
                 "locationId": "$locationId"
-              }, 
+              },
               count: {$sum: 1},
               duration: { $sum: "$duration" }
             } }
@@ -2008,7 +2015,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
 
             allProjectTimesInMonth.forEach(aProjectTime => {
                 projectDurations.push({
-                    project: aProjectTime._id.project, 
+                    project: aProjectTime._id.project,
                     duration: aProjectTime.duration
                 })
                 totalDuration += aProjectTime.duration
@@ -2016,7 +2023,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
                 if(!aProjectTime._id.locationId) {
                     noLocationDuration.duration = aProjectTime.duration
                     noLocationDuration.count = aProjectTime.count
-                } else {                    
+                } else {
                     const foundLocation = _.find(locationsWithMaxHours, loc => {
                         return loc._id === aProjectTime._id.locationId
                     })
@@ -2032,7 +2039,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
                 }
             })
             if(noLocationDuration.duration > 0) {
-                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours)) 
+                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours))
                                 * (noLocationDuration.count / totalNumWeekDaysInMonth))
             }
             console.log(`[Projects] With location max hours! duration: ${totalDuration}, fraction: ${fraction}`)
@@ -2043,7 +2050,7 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
     }
 }
 
-function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, 
+function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
         totalNumWeekDaysInMonth, employeeUserId, businessUnitConfig, locationsWithMaxHours) {
     // const firsDayOfPeriod = `${periodMonth}-01-${periodYear} GMT`;
 
@@ -2055,13 +2062,13 @@ function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
 
     if(!businessUnitConfig.maxHoursInDayForTimeWritingPerLocationEnabled) {
         let queryObj = {
-            businessId: businessId, 
+            businessId: businessId,
             costCenter: {$exists : true},
             day: {$gte: startDate, $lt: endDate},
             employeeId: employeeUserId,
             status: 'Approved'
         }
-    
+
         let allCostCenterTimesInMonth = TimeWritings.aggregate([
             { $match: queryObj},
             { $group: {_id: "$employeeId", duration: { $sum: "$duration" }}}
@@ -2082,20 +2089,20 @@ function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
         }
     } else {
         let queryObj = {
-            businessId: businessId, 
+            businessId: businessId,
             costCenter: {$exists : true},
             day: {$gte: startDate, $lt: endDate},
             employeeId: employeeUserId,
             status: 'Approved'
         }
-    
+
         let allCostCenterTimesInMonth = TimeWritings.aggregate([
             { $match: queryObj},
             { $group: {
                 _id: {
                   "empUserId": "$employeeId",
                   "locationId": "$locationId"
-                }, 
+                },
                 count: {$sum: 1},
                 duration: { $sum: "$duration" }
             } }
@@ -2116,7 +2123,7 @@ function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
                 if(!aCostCenterTime._id.locationId) {
                     noLocationDuration.duration = aCostCenterTime.duration
                     noLocationDuration.count = aCostCenterTime.count
-                } else {                    
+                } else {
                     const foundLocation = _.find(locationsWithMaxHours, loc => {
                         return loc._id === aCostCenterTime._id.locationId
                     })
@@ -2132,7 +2139,7 @@ function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
                 }
             })
             if(noLocationDuration.duration > 0) {
-                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours)) 
+                fraction += ((noLocationDuration.duration / (noLocationDuration.count * companyWideMaxHours))
                                 * (noLocationDuration.count / totalNumWeekDaysInMonth))
             }
             console.log(`[CostCenters] With location max hours! duration: ${totalDuration}, fraction: ${fraction}`)
@@ -2247,10 +2254,10 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
             if(tax.taxableIncomeFormula) {
                 let formula = tax.taxableIncomeFormula;
                 processing.push({code: `Taxable Income`, derived: tax.taxableIncomeFormula });
-    
+
                 let rules = new ruleJS();
                 rules.init();
-        
+
                 console.log(`paytypes.length: `, paytypes.length)
                 console.log(`paytypes: `, paytypes)
                 for (var i = 0; i < paytypes.length; i++) {
@@ -2258,7 +2265,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     console.log(`code: `, code)
                     const pattern = `\\b${code}\\b`;
                     const regex = new RegExp(pattern, "g");
-    
+
                     let replaceValue;
                     if(!isNaN(paytypes[i].parsedValue)) {
                         replaceValue = paytypes[i].parsedValue;
@@ -2271,10 +2278,10 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                             replaceValue = convertForeignCurrencyToBaseCurrency(paytypes[i], replaceValue, currencyRatesForPeriod)
                         }
                     }
-                    
+
                     formula = formula.replace(regex, replaceValue);
                 }
-    
+
                 let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
                 k.forEach(c => {
                     const code = c.code ? c.code.toUpperCase() : c.code;
@@ -2283,21 +2290,21 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     formula = formula.replace(regex, c.value);
                 });
                 console.log(`formula: `, formula)
-        
+
                 var parsed = rules.parse(formula, '');
-    
+
                 console.log(`taxable income = `, parsed)
-    
+
                 if (parsed.result !== null && !isNaN(parsed.result)) {
                     taxableIncome = parsed.result.toFixed(2)
                     processing.push({code: `Taxable Income`, derived: taxableIncome });
                 } else {
                     console.log(`Error! Parsed taxable income NOT a number.`)
-    
+
                     //--One more level of regex replacing ... tired to make it truly recursive
                     let newRules = new ruleJS();
                     newRules.init();
-    
+
                     for (var i = 0; i < paytypes.length; i++) {
                         const code = paytypes[i].code;
                         const pattern = `\\b${code}\\b`;
@@ -2309,16 +2316,16 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                         } else {
                             replaceValue = paytypes[i].value
                         }
-    
+
                         if(!isNaN(replaceValue)) {
                             if(paytypes[i].currency !== tenant.baseCurrency.iso) {
                                 replaceValue = convertForeignCurrencyToBaseCurrency(paytypes[i], replaceValue, currencyRatesForPeriod)
                             }
-                        }    
-        
+                        }
+
                         formula = formula.replace(regex, replaceValue);
                     }
-    
+
                     let k = Constants.find({'businessId': businessId, 'status': 'Active'}).fetch();  //limit constant to only Bu constant
                     k.forEach(c => {
                         const code = c.code ? c.code.toUpperCase() : c.code;
@@ -2328,7 +2335,7 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
                     });
                     console.log(`final formula: `, formula)
                     parsed = newRules.parse(formula, '');
-    
+
                     console.log(`final taxable income = `, parsed)
                     if (parsed.result !== null && !isNaN(parsed.result)) {
                         taxableIncome = parsed.result.toFixed(2)
@@ -2345,19 +2352,19 @@ function calculateTax(relief, taxBucket, grossIncomeBucket, tax, paytypes, busin
         const grossIncomeRelief = (tax.grossIncomeRelief / 100) * grossIncomeBucket;
         processing.push({code: 'Gross Income Relief', derived: '(grossIncomeRelief / 100) * grossIncomeBucket'});
         processing.push({code: 'Gross Income Relief', derived: grossIncomeRelief });
-    
+
         const consolidatedRelief = tax.consolidatedRelief;
         processing.push({code: `Consolidated Relief defined in ${tax.code}`, derived: consolidatedRelief });
-        
+
         const totalRelief = grossIncomeRelief + consolidatedRelief + relief;
         processing.push({code: `Total Relief`, derived: 'grossIncomeRelief + consolidatedRelief + relief' });
         processing.push({code: `Total Relief`, derived: totalRelief });
 
-    
-        taxableIncome = taxBucket - totalRelief;        
+
+        taxableIncome = taxBucket - totalRelief;
 
         processing.push({code: `Taxable Income`, derived: 'taxBucket - totalRelief' });
-        processing.push({code: `Taxable Income`, derived: taxableIncome });    
+        processing.push({code: `Taxable Income`, derived: taxableIncome });
     }
 
     let totalTax = 0;

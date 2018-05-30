@@ -39,6 +39,9 @@ let TravelRequestHelper = {
         var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
         return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
     },
+    formatDate2(dateVal){
+        return moment(dateVal).format('DD MMM YYYY');
+    },
 
     formatDate: function (date) {
         var d = new Date(date),
@@ -87,8 +90,8 @@ let TravelRequestHelper = {
                 subject: emailSubject,
                 html: SSR.render("TravelRequestNotification2", {
                     itenerary: itenerary,
-                    departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-                    returnDate: TravelRequestHelper.formatDate(returnDate),
+                    departureDate: TravelRequestHelper.formatDate2(currentTravelRequest.trips[0].departureDate),
+                    returnDate: TravelRequestHelper.formatDate2(returnDate),
                     travelType: travelType,
                     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
                     status: currentTravelRequest.status,
@@ -263,7 +266,7 @@ let TravelRequestHelper = {
                 currentTravelRequest.status = "Cancelled";
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                
+
                 otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
