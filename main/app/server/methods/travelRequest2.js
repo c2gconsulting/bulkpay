@@ -78,13 +78,6 @@ let TravelRequestHelper = {
                     itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
                 }
             }
-            console.log("currentTravelRequest7")
-            console.log(currentTravelRequest)
-
-            console.log("returnDate")
-            console.log(returnDate)
-
-
 
             //Todo, itenerary, employee full name
             SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
@@ -96,7 +89,6 @@ let TravelRequestHelper = {
                     itenerary: itenerary,
                     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
                     returnDate: TravelRequestHelper.formatDate(returnDate),
-
                     travelType: travelType,
                     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
                     status: currentTravelRequest.status,
@@ -335,12 +327,8 @@ let TravelRequestHelper = {
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                console.log("currentTravelRequest1")
-                console.log(currentTravelRequest)
-                }else{
+            }else{
                 currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
-                  console.log("currentTravelRequest2")
-                  console.log(currentTravelRequest)
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
