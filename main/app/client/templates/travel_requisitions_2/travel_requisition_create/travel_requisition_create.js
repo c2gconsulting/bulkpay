@@ -1051,7 +1051,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             
 
                var responseDate1 = moment(startDate).format('DD/MM/YYYY');
-               var responseDate2 = moment(startendDateDate).format('DD/MM/YYYY');
+               var responseDate2 = moment(endDate).format('DD/MM/YYYY');
 
 
               console.log("responseDate1")
