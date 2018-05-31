@@ -1019,16 +1019,31 @@ Template.TravelRequisition2Create.onCreated(function () {
             let totalDuration = 0;
 
             if (tripType === "Return"){
-                const startDate = moment(currentTravelRequest.trips[i].departureDate);
-                const endDate = moment(currentTravelRequest.trips[i].returnDate)
-                const responseDate = moment(startDate).format('DD/MM/YYYY');
-                const responseDate2 = moment(endDate).format('DD/MM/YYYY');
+              const startDate = currentTravelRequest.trips[i].departureDate
+              const endDate = currentTravelRequest.trips[i].returnDate
+              console.log("startDate")
+              console.log(startDate)
 
-                console.log("responseDate")
-                console.log(responseDate)
-
-                console.log("responseDate2")
-                console.log(responseDate2)
+              console.log("endDate")
+              console.log(endDate)
+              // const responseDate = moment(startDate).format('DD/MM/YYYY');
+              // const responseDate2 = moment(endDate).format('DD/MM/YYYY');
+              //
+              // console.log("responseDate")
+              // console.log(responseDate)
+              //
+              // console.log("responseDate2")
+              // console.log(responseDate2)
+                // const startDate = moment(currentTravelRequest.trips[i].departureDate);
+                // const endDate = moment(currentTravelRequest.trips[i].returnDate)
+                // const responseDate = moment(startDate).format('DD/MM/YYYY');
+                // const responseDate2 = moment(endDate).format('DD/MM/YYYY');
+                //
+                // console.log("responseDate")
+                // console.log(responseDate)
+                //
+                // console.log("responseDate2")
+                // console.log(responseDate2)
 
                 totalDuration = endDate.diff(startDate, 'days');
 
