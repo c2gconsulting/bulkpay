@@ -449,8 +449,34 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
-        currentTravelRequest.trips[i].departureDate = new Date($("#departureDate_" + (i+1)).val());
-        currentTravelRequest.trips[i].returnDate = new Date($("#returnDate_" + (i+1)).val());
+        let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
+        let utcDepartureDate = new Date(Date.UTC(
+            rawDepartureDate.getFullYear(),
+            rawDepartureDate.getMonth(),
+            rawDepartureDate.getDate(),
+            rawDepartureDate.getHours(),
+            rawDepartureDate.getMinutes(),
+            rawDepartureDate.getSeconds(),
+            rawDepartureDate.getMilliseconds()
+        ));
+        console.log(rawDepartureDate);
+        console.log(utcDepartureDate);
+
+        let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
+        let utcReturnDate = new Date(Date.UTC(
+            rawReturnDate.getFullYear(),
+            rawReturnDate.getMonth(),
+            rawReturnDate.getDate(),
+            rawReturnDate.getHours(),
+            rawReturnDate.getMinutes(),
+            rawReturnDate.getSeconds(),
+            rawReturnDate.getMilliseconds()
+        ));
+        console.log(rawReturnDate);
+        console.log(utcReturnDate);
+        
+        currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
+        currentTravelRequest.trips[i].returnDate = utcReturnDate; 
     }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -462,9 +488,34 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
-        currentTravelRequest.trips[i].departureDate = new Date($("#departureDate_" + (i+1)).val());
-        currentTravelRequest.trips[i].returnDate = new Date($("#returnDate_" + (i+1)).val());
-    }
+        let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
+        let utcDepartureDate = new Date(Date.UTC(
+            rawDepartureDate.getFullYear(),
+            rawDepartureDate.getMonth(),
+            rawDepartureDate.getDate(),
+            rawDepartureDate.getHours(),
+            rawDepartureDate.getMinutes(),
+            rawDepartureDate.getSeconds(),
+            rawDepartureDate.getMilliseconds()
+        ));
+        console.log(rawDepartureDate);
+        console.log(utcDepartureDate);
+
+        let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
+        let utcReturnDate = new Date(Date.UTC(
+            rawReturnDate.getFullYear(),
+            rawReturnDate.getMonth(),
+            rawReturnDate.getDate(),
+            rawReturnDate.getHours(),
+            rawReturnDate.getMinutes(),
+            rawReturnDate.getSeconds(),
+            rawReturnDate.getMilliseconds()
+        ));
+        console.log(rawReturnDate);
+        console.log(utcReturnDate);
+        
+        currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
+        currentTravelRequest.trips[i].returnDate = utcReturnDate;  }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
