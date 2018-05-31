@@ -442,6 +442,9 @@ Template.TravelRequisition2Create.events({
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
+    console.log(currentTravelRequest.trips[0].departureDate);
+    console.log(currentTravelRequest.trips[0].returnDate);
+
 },
 "change [id*='returnDate']": function(e, tmpl){
     e.preventDefault()
