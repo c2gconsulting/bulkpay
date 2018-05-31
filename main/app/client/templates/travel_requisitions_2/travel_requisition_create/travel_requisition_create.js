@@ -442,10 +442,10 @@ Template.TravelRequisition2Create.events({
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
-    console.log("departureDate:")
-    console.log(currentTravelRequest.trips[0].departureDate);
-    console.log("returnDate:")
-    console.log(currentTravelRequest.trips[0].returnDate);
+    // console.log("departureDate:")
+    // console.log(currentTravelRequest.trips[0].departureDate);
+    // console.log("returnDate:")
+    // console.log(currentTravelRequest.trips[0].returnDate);
 
 },
 "change [id*='returnDate']": function(e, tmpl){
@@ -464,8 +464,8 @@ Template.TravelRequisition2Create.events({
             rawDepartureDate.getSeconds(),
             rawDepartureDate.getMilliseconds()
         ));
-        console.log(rawDepartureDate);
-        console.log(utcDepartureDate);
+        // console.log(rawDepartureDate);
+        // console.log(utcDepartureDate);
 
         let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
         let utcReturnDate = new Date(Date.UTC(
@@ -477,8 +477,8 @@ Template.TravelRequisition2Create.events({
             rawReturnDate.getSeconds(),
             rawReturnDate.getMilliseconds()
         ));
-        console.log(rawReturnDate);
-        console.log(utcReturnDate);
+        // console.log(rawReturnDate);
+        // console.log(utcReturnDate);
         
         currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
         currentTravelRequest.trips[i].returnDate = utcReturnDate; 
@@ -503,8 +503,8 @@ Template.TravelRequisition2Create.events({
             rawDepartureDate.getSeconds(),
             rawDepartureDate.getMilliseconds()
         ));
-        console.log(rawDepartureDate);
-        console.log(utcDepartureDate);
+        // console.log(rawDepartureDate);
+        // console.log(utcDepartureDate);
 
         let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
         let utcReturnDate = new Date(Date.UTC(
@@ -516,8 +516,8 @@ Template.TravelRequisition2Create.events({
             rawReturnDate.getSeconds(),
             rawReturnDate.getMilliseconds()
         ));
-        console.log(rawReturnDate);
-        console.log(utcReturnDate);
+        // console.log(rawReturnDate);
+        // console.log(utcReturnDate);
         
         currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
         currentTravelRequest.trips[i].returnDate = utcReturnDate;  }
@@ -1106,14 +1106,14 @@ Template.TravelRequisition2Create.onCreated(function () {
               const endDate = moment(currentTravelRequest.trips[i].returnDate)
             
 
-               var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
-               var eNDDATE = moment(endDate).format('DD/MM/YYYY');
+            //    var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
+            //    var eNDDATE = moment(endDate).format('DD/MM/YYYY');
 
 
-              console.log("sTARTDATE")
-              console.log(sTARTDATE)
-              console.log("eNDDATE")
-              console.log(eNDDATE)
+            //   console.log("sTARTDATE")
+            //   console.log(sTARTDATE)
+            //   console.log("eNDDATE")
+            //   console.log(eNDDATE)
       
                 totalDuration = endDate.diff(startDate, 'days');
 
