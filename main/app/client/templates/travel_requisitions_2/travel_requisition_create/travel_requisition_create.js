@@ -442,7 +442,9 @@ Template.TravelRequisition2Create.events({
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
+    console.log("departureDate:")
     console.log(currentTravelRequest.trips[0].departureDate);
+    console.log("returnDate:")
     console.log(currentTravelRequest.trips[0].returnDate);
 
 },
@@ -1104,14 +1106,14 @@ Template.TravelRequisition2Create.onCreated(function () {
               const endDate = moment(currentTravelRequest.trips[i].returnDate)
             
 
-               var responseDate1 = moment(startDate).format('DD/MM/YYYY');
-               var responseDate2 = moment(endDate).format('DD/MM/YYYY');
+               var sTRTDATE = moment(startDate).format('DD/MM/YYYY');
+               var eNDDATE = moment(endDate).format('DD/MM/YYYY');
 
 
-              console.log("responseDate1")
-              console.log(responseDate1)
-              console.log("responseDate2")
-              console.log(responseDate2)
+              console.log("sTARTDATE")
+              console.log(sTARTDATE)
+              console.log("eNDDATE")
+              console.log(eNDDATE)
       
                 totalDuration = endDate.diff(startDate, 'days');
 
