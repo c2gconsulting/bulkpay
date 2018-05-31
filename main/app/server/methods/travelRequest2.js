@@ -35,6 +35,11 @@ let TravelRequestHelper = {
             }
         }
     },
+
+   formatDate: function(date) {
+
+        return moment(date).format('DD-MM-YYYY');
+    },
     formatNumber: function(numberVariable, n, x) {
         var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
         return numberVariable.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
@@ -43,10 +48,13 @@ let TravelRequestHelper = {
         return moment(dateVal).format('DD MMM YYYY');
     },
 
-    formatDate: function (date) {
+
+    formatDate1: function (date) {
         var d = new Date(date),
+        //d.setDate(d.getDate() + 1)
         month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
+        day = '' + (d.getDate() + 1),
+
         year = d.getFullYear();
 
         if (month.length < 2) month = '0' + month;
@@ -90,8 +98,8 @@ let TravelRequestHelper = {
                 subject: emailSubject,
                 html: SSR.render("TravelRequestNotification2", {
                     itenerary: itenerary,
-                    departureDate: TravelRequestHelper.formatDate2(currentTravelRequest.trips[0].departureDate),
-                    returnDate: TravelRequestHelper.formatDate2(returnDate),
+                    departureDate: TravelRequestHelper.formatDate1(currentTravelRequest.trips[0].departureDate),
+                    returnDate: TravelRequestHelper.formatDate1(returnDate),
                     travelType: travelType,
                     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
                     status: currentTravelRequest.status,

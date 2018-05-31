@@ -169,6 +169,8 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.description = $("#description").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
+   console.log("description")
+   console.log(description)
 
 },
 'change [id=budget-code]': function(e, tmpl) {
@@ -1019,6 +1021,15 @@ Template.TravelRequisition2Create.onCreated(function () {
             if (tripType === "Return"){
                 const startDate = moment(currentTravelRequest.trips[i].departureDate);
                 const endDate = moment(currentTravelRequest.trips[i].returnDate)
+                const responseDate = moment(startDate).format('DD/MM/YYYY');
+                const responseDate2 = moment(endDate).format('DD/MM/YYYY');
+
+                console.log("responseDate")
+                console.log(responseDate)
+
+                console.log("responseDate2")
+                console.log(responseDate2)
+
                 totalDuration = endDate.diff(startDate, 'days');
 
                 if (totalDuration < 0){
@@ -1035,6 +1046,7 @@ Template.TravelRequisition2Create.onCreated(function () {
                 }else{
                     const startDate = moment(currentTravelRequest.trips[i].departureDate);
                     const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
+
                     totalDuration = endDate.diff(startDate, 'days');
                     if (totalDuration < 0){
                         totalDuration = 0;
@@ -1047,6 +1059,8 @@ Template.TravelRequisition2Create.onCreated(function () {
 
 
             console.log("Total Duration: " + totalDuration)
+
+
 
             let perDiemCost = 0;
             let unadjustedPerDiemCost = 0;
