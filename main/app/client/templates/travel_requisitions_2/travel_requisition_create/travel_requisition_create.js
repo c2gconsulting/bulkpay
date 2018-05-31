@@ -1106,7 +1106,7 @@ Template.TravelRequisition2Create.onCreated(function () {
               const endDate = moment(currentTravelRequest.trips[i].returnDate)
             
 
-               var sTRTDATE = moment(startDate).format('DD/MM/YYYY');
+               var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
                var eNDDATE = moment(endDate).format('DD/MM/YYYY');
 
 
