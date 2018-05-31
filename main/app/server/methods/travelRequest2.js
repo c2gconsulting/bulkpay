@@ -227,9 +227,9 @@ let TravelRequestHelper = {
                 console.log(currentTravelRequest)
             }else{
                 currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
-                console.log("currentTravelRequest2")
-                console.log(currentTravelRequest)
+             
             }
+
 
             return true;
         },
@@ -331,9 +331,12 @@ let TravelRequestHelper = {
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+                console.log("currentTravelRequest1")
+                console.log(currentTravelRequest)
             }else{
                 currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
-
+                console.log("currentTravelRequest2")
+                console.log(currentTravelRequest)
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
