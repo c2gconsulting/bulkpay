@@ -1048,6 +1048,16 @@ Template.TravelRequisition2Create.onCreated(function () {
             if (tripType === "Return"){
               const startDate = moment(currentTravelRequest.trips[i].departureDate)
               const endDate = moment(currentTravelRequest.trips[i].returnDate)
+            
+
+               var responseDate1 = moment(startDate).format('DD/MM/YYYY');
+               var responseDate2 = moment(startendDateDate).format('DD/MM/YYYY');
+
+
+              console.log("responseDate1")
+              console.log(responseDate1)
+              console.log("responseDate2")
+              console.log(responseDate2)
       
                 totalDuration = endDate.diff(startDate, 'days');
 
