@@ -223,8 +223,8 @@ let TravelRequestHelper = {
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-                console.log("currentTravelRequest1")
-                console.log(currentTravelRequest)
+                // console.log("currentTravelRequest1")
+                // console.log(currentTravelRequest)
             }else{
                 currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
              

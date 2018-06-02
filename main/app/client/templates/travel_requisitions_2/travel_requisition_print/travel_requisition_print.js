@@ -43,9 +43,24 @@ Template.TravelRequisition2Print.helpers({
         else
         return ""
     },
+    'getEmployeeEmail': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.emails[0].address;
+        else
+        return "..."
+    },
+    'getEmployeePhoneNumber': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.employeeProfile.phone;
+        else
+        return "..."
+    },
     // 'getEmployeeNameById': function(employeeId){
     //         return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     // },
+
 
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
