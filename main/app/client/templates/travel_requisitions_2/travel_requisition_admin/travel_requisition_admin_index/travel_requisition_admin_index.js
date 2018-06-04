@@ -112,6 +112,7 @@ Template.TravelRequisition2AdminIndex.helpers({
 /*****************************************************************************/
 Template.TravelRequisition2AdminIndex.onCreated(function () {
     let self = this;
+      let businessUnitId = Session.get('context')
 
 
 
