@@ -112,7 +112,8 @@ Template.TravelRequisition2AdminIndex.helpers({
 /*****************************************************************************/
 Template.TravelRequisition2AdminIndex.onCreated(function () {
     let self = this;
-    let businessUnitId = Session.get('context')
+
+
 
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);

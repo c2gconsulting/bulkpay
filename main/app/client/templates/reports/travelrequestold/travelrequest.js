@@ -1,8 +1,8 @@
 
 /*****************************************************************************/
-/* TravelRequestReport: Event Handlers */
+/* TravelRequestReportOld: Event Handlers */
 /*****************************************************************************/
-Template.TravelRequestReport.events({
+Template.TravelRequestReportOld.events({
     'click #getResult': function(e, tmpl) {
         e.preventDefault();
         const startTime = $('[name="startTime"]').val();
@@ -96,13 +96,13 @@ Template.TravelRequestReport.events({
 });
 
 /*****************************************************************************/
-/* TravelRequestReport: Helpers */
+/* TravelRequestReportOld: Helpers */
 /*****************************************************************************/
 Template.registerHelper('formatDate', function(date) {
   return moment(date).format('MMYYYY');
 });
 
-Template.TravelRequestReport.helpers({
+Template.TravelRequestReportOld.helpers({
     'tenant': function(){
         let tenant = Tenants.findOne();
         return tenant.name;
@@ -119,20 +119,15 @@ Template.TravelRequestReport.helpers({
     'travelRequestReports': function() {
         return Template.instance().travelRequestReports.get()
     },
-    'getTravelcityName': function(travelcityId) {
-        const travelcity = Travelcities.findOne({_id: travelcityId})
-
-        if(travelcity) {
-            return travelcity.name
-        }
-    },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
+    },
+    'tripTotalCost': function(travelRequestDetails) {
+        return Template.instance().getTotalTripCost(travelRequestDetails)
     },
     'totalTripCostNGN': function() {
         return Template.instance().totalTripCostNGN.get()
     },
-
     'getSupervisor': function(procurement) {
         return Template.instance().getSupervisor(procurement)
     },
@@ -145,23 +140,14 @@ Template.TravelRequestReport.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequestReport: Lifecycle Hooks */
+/* TravelRequestReportOld: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequestReport.onCreated(function () {
+Template.TravelRequestReportOld.onCreated(function () {
     let self = this;
-  let businessUnitId = Session.get('context')
+
     self.travelRequestReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
-    self.businessUnitCustomConfig = new ReactiveVar()
-    self.currentTravelRequest = new ReactiveVar()
-    self.totalTripCost = new ReactiveVar(0)
-
-        let invokeReason = {}
-        invokeReason.requisitionId = Router.current().params.query.requisitionId
-        invokeReason.reason = 'edit'
-        invokeReason.approverId = null
-
 
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);
@@ -178,51 +164,39 @@ Template.TravelRequestReport.onCreated(function () {
     }
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Description", "Created By","Date required", "Status"]
+        let formattedHeader = ["Description", "Created By", "Unit", "Date required", "Approver", "Trip Cost", "Status"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
-            reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
-                aDatum.status])
+            reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt,
+                self.getSupervisor(aDatum), self.getTotalTripCost(aDatum), aDatum.status])
         })
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Travel Requests Report ${startTime} - ${endTime}`);
     }
-    self.autorun(function() {
 
-        Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
-            if(!err) {
-                self.businessUnitCustomConfig.set(customConfig)
-            }
-        })
+    self.getTotalTripCost = function(travelRequestDetails) {
+        if(travelRequestDetails && travelRequestDetails.tripCosts) {
+            let flightCost = travelRequestDetails.tripCosts.flightCost || 0
+            let accommodationCost = travelRequestDetails.tripCosts.accommodationCost || 0
+            let localTransportCost = travelRequestDetails.tripCosts.localTransportCost || 0
+            let perDiemCost = travelRequestDetails.tripCosts.perDiemCost || 0
+            let miscCosts = travelRequestDetails.tripCosts.miscCosts || 0
 
-        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-        let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
+            let totalTripCost = flightCost + accommodationCost + localTransportCost +
+                perDiemCost + miscCosts
 
-
-        if(travelRequest2Sub.ready()) {
-
-            let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-            self.currentTravelRequest.set(travelRequestDetails)
-
-
+            return totalTripCost
         }
-
-        if(businessUnitSubscription.ready()) {
-            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
-        }
-    })
-
-
+    }
 });
 
-Template.TravelRequestReport.onRendered(function () {
+Template.TravelRequestReportOld.onRendered(function () {
     self.$('select.dropdown').dropdown();
 
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequestReport.onDestroyed(function () {
+Template.TravelRequestReportOld.onDestroyed(function () {
 });

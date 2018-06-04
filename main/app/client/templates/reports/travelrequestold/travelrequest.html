@@ -1,4 +1,4 @@
-<template name="TravelRequestReport">
+<template name="TravelRequestReportOld">
     <div class="pageheader">
         <div class="media">
             <div class="pageicon pull-left">
@@ -69,8 +69,10 @@
                                                       <tr>
                                                           <th>Description</th>
                                                           <th>Created By</th>
+                                                          <th>Unit</th>
                                                           <th>Date required</th>
-
+                                                          <th>Approver</th>
+                                                          <th>Trip Cost (NGN)</th>
                                                           <th>Status</th>
                                                       </tr>
                                                   </thead>
@@ -79,8 +81,10 @@
                                                       <tr title="Requisition reason: {{requisitionReason}}">
                                                           <td nowrap>{{limitText description}}</td>
                                                           <td>{{createdByFullName}}</td>
+                                                          <td>{{unitName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
-
+                                                          <td>{{getSupervisor this}}</td>
+                                                          <td>{{formatMoneyD (tripTotalCost this)}}</td>
                                                           <td>{{status}}</td>
                                                       </tr>
                                                     {{/each}}

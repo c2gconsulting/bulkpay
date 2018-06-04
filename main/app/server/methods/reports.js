@@ -27,7 +27,7 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
 
     let netPayInDiffCurrencies = []
     let netPayTotalsInDiffCurrencies = []
-            
+
     employeePayments.forEach(anEmployeeData => {
         anEmployeeData.payment.forEach(anEmployeePayType => {
             if(anEmployeePayType.id) {
@@ -112,7 +112,7 @@ ReportUtils.getPayTypeHeadersAndTotal = function(employeePayments) {
 
 ReportUtils.getPayTypeValues = function(employeePayments, payTypeHeaders) {
     let payTypeValues = []
-    
+
     let tenantId = Core.getTenantId(Meteor.userId())
     let tenant = Tenants.findOne(tenantId)
 
@@ -184,7 +184,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                 successFactorsCostCenter: aTimeDatum.successFactorsCostCenter,
                 projectName: aTimeDatum.projectDetails.projectName,
                 employees: [{
-                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails,
                     days: [{
                         day: giveMeGoodLookingDate(aTimeDatum.day), duration: aTimeDatum.duration
                     }],
@@ -199,7 +199,7 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                 if(anEmployeeData.employeeDetails._id === aTimeDatum.employeeId) {
                     foundEmployeeDataIndex = employeeIndex
                     return true
-                } 
+                }
             })
             if(foundEmployeeData) {// Same project - Same employee - New time
                 foundEmployeeData.days.push({
@@ -212,9 +212,9 @@ ReportUtils.processedReportDataForProjects = function(timeReportDataFromDb) {
                     employeeTimeTotal = 0
                 }
                 projectInReportData.employees.push({
-                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails,
                     days: [{
-                        day: giveMeGoodLookingDate(aTimeDatum.day), 
+                        day: giveMeGoodLookingDate(aTimeDatum.day),
                         duration: aTimeDatum.duration
                     }],
                     employeeTimeTotal: employeeTimeTotal
@@ -248,7 +248,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
                 unit: aTimeDatum.costCenter,
                 unitName: aTimeDatum.unitDetails ? aTimeDatum.unitDetails.unitName : '',
                 employees: [{
-                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails,
                     employeeTimeTotal: employeeTimeTotal
                 }],
                 unitTotalHours: employeeTimeTotal
@@ -258,7 +258,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
             let foundEmployeeData = _.find(unitEmployeesSoFar, (anEmployeeData) => {
                 if(anEmployeeData.employeeDetails._id === aTimeDatum.employeeId) {
                     return true
-                } 
+                }
             })
             if(foundEmployeeData) {// Same unit - Same employee - New time
                 foundEmployeeData.employeeTimeTotal += aTimeDatum.duration
@@ -268,7 +268,7 @@ ReportUtils.processedReportDataForUnits = function(timeReportDataFromDb) {
                     employeeTimeTotal = 0
                 }
                 unitInReportData.employees.push({
-                    employeeDetails: aTimeDatum.employeeDetails, 
+                    employeeDetails: aTimeDatum.employeeDetails,
                     employeeTimeTotal: employeeTimeTotal
                 })
             }
@@ -319,14 +319,14 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             let queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 $or: [
                     {project: {$exists : true}},
                     {"successFactorsCostCenter": {$exists: true}}
                 ],
                 day: {$gte: startDate, $lte: endDate}
             }
-            if(selectedEmployees && selectedEmployees.length > 0) {                
+            if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.employeeId = {$in: selectedEmployees}
             }
             let timesForProject = TimeWritings.find(queryObj).fetch();
@@ -381,12 +381,12 @@ Meteor.methods({
 
     'reports/timesForEveryoneByProject_Tabular': function(businessId, startDate, endDate, selectedEmployees) {
         const queryObj = {
-            businessId: businessId, 
+            businessId: businessId,
             'successFactorsCostCenter': {$exists : true},
             day: {$gte: startDate, $lt: endDate},
             status: 'Approved'
         }
-        if(selectedEmployees && selectedEmployees.length > 0) {                
+        if(selectedEmployees && selectedEmployees.length > 0) {
             queryObj.employeeId = {$in: selectedEmployees}
         }
 
@@ -394,7 +394,7 @@ Meteor.methods({
             _id: {
               "employeeId": "$employeeId",
               "project": "$successFactorsCostCenter"
-            }, 
+            },
             duration: { $sum: "$duration" }
         }
 
@@ -419,7 +419,7 @@ Meteor.methods({
                 if(employee) {
                     employee.employeeProfile = employee.employeeProfile || {}
                     employee.employeeProfile.employeeId = employee.employeeProfile.employeeId || '---'
-                    
+
                     const firstEmployeeTimeRecord = {
                         _id: timeRecord._id.employeeId,
                         employeeFullName: employee.profile.fullName,
@@ -474,11 +474,11 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             let queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 costCenter: {$exists : true},
                 day: {$gte: startDate, $lte: endDate}
             }
-            if(selectedEmployees && selectedEmployees.length > 0) {                
+            if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.employeeId = {$in: selectedEmployees}
             }
             let timesForUnit = TimeWritings.find(queryObj).fetch();
@@ -528,10 +528,10 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             let queryObj = {
-                businessUnitId: businessId, 
+                businessUnitId: businessId,
                 createdAt: {$gte: startDate, $lte: endDate}
             }
-            if(selectedEmployees && selectedEmployees.length > 0) {                
+            if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.createdBy = {$in: selectedEmployees}
             }
             let procurements = ProcurementRequisitions.find(queryObj).fetch();
@@ -559,10 +559,10 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             let queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 createdAt: {$gte: startDate, $lte: endDate}
             }
-            if(selectedEmployees && selectedEmployees.length > 0) {                
+            if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.employeeId = {$in: selectedEmployees}
             }
             let leavesRequestsCreated = Leaves.find(queryObj).fetch();
@@ -589,8 +589,8 @@ Meteor.methods({
         this.unblock()
         //--
         // let user = Meteor.user()
-        
-        // if (!user || !user.employeeProfile || !user.employeeProfile.employment 
+
+        // if (!user || !user.employeeProfile || !user.employeeProfile.employment
         //     || !user.employeeProfile.employment.position){
         //     return
         // }
@@ -611,7 +611,7 @@ Meteor.methods({
         //     }
         // });
         let queryObj = {
-            businessId: businessId, 
+            businessId: businessId,
             approvedDate: {$gte: startDate, $lte: endDate},
             approvedBy: this.userId
         }
@@ -635,13 +635,13 @@ Meteor.methods({
             throw new Meteor.Error(401, 'Unauthorized');
         } else {
             let queryObj = {
-                businessId: businessId, 
+                businessId: businessId,
                 createdAt: {$gte: startDate, $lte: endDate}
             }
-            if(selectedEmployees && selectedEmployees.length > 0) {                
+            if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.createdBy = {$in: selectedEmployees}
             }
-            let travelRequests = TravelRequisitions.find(queryObj).fetch();
+            let travelRequests = TravelRequisition2s.find(queryObj).fetch();
 
             let biffedUpTravelRequests = travelRequests.map(aTravelRequest => {
                 let employee = Meteor.users.findOne({_id: aTravelRequest.createdBy})
@@ -661,10 +661,10 @@ Meteor.methods({
     'reports/employees': function(findCriteria) {
         check(findCriteria.businessIds, String)
         this.unblock()
-        
+
         return Meteor.users.find(findCriteria).fetch()
     },
-    
+
     /* Export Tax payment
     */
    'exportTaxResult': (businessId, period) => {
@@ -682,7 +682,7 @@ Meteor.methods({
            let taxData = []
 
            const payResults = PayResults.find({businessId: businessId, period: period}).fetch() || []
-           
+
            payResults.forEach(aPayResult => {
                let employee = Meteor.users.findOne({_id: aPayResult.employeeId});
                if(employee) {
@@ -873,11 +873,11 @@ Meteor.methods({
             })
 
             const payrunResults =  Payruns.find({
-                businessId: businessId, 
-                period: {$in: periodsOfTheYear}, 
+                businessId: businessId,
+                period: {$in: periodsOfTheYear},
                 'payment.reference': 'Pension'
             }).fetch();
-            
+
             let employeeIds = _.pluck(payrunResults, 'employeeId')
             let uniqueEmployeeIds = _.uniq(employeeIds)
 
@@ -904,13 +904,13 @@ Meteor.methods({
 
                         if(employeePayrunForPeriod) {
                             const pensionsContribution = _.where(employeePayrunForPeriod.payment, {reference: 'Pension'}); //get all pension pay)
-                            
+
                             if(pensionsContribution.length) {
                                 let pensionDescription;
 
                                 pensionsContribution.forEach(pensionContrib => {
                                     const pensionLength = pensionContrib.code.length;
-                                    
+
                                     const type = pensionContrib.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
                                     if(type === '_EE')
                                         pensionAmounts.employeeContribution  = pensionContrib.amountLC;
@@ -943,11 +943,11 @@ Meteor.methods({
             })
 
             const payrunResults =  Payruns.find({
-                businessId: businessId, 
-                period: {$in: periodsOfTheYear}, 
+                businessId: businessId,
+                period: {$in: periodsOfTheYear},
                 'payment.reference': 'Pension'
             }).fetch();
-            
+
             let employeeIds = _.pluck(payrunResults, 'employeeId')
             let uniqueEmployeeIds = _.uniq(employeeIds)
 
@@ -972,13 +972,13 @@ Meteor.methods({
 
                         if(employeePayrunForPeriod) {
                             const pensionsContribution = _.where(employeePayrunForPeriod.payment, {reference: 'Pension'}); //get all pension pay)
-                            
+
                             if(pensionsContribution.length) {
                                 let pensionDescription;
 
                                 pensionsContribution.forEach(pensionContrib => {
                                     const pensionLength = pensionContrib.code.length;
-                                    
+
                                     const type = pensionContrib.code.substring(pensionLength, pensionLength - 3); //returns _EE or _ER
                                     if(type === '_EE')
                                         pensionAmounts.employeeContribution  = pensionContrib.amountLC;
@@ -999,7 +999,7 @@ Meteor.methods({
 
             periodsOfTheYear.forEach(aPeriod => {
                 genesisRowOfExportData.push("Employee Contribution")
-                genesisRowOfExportData.push("Employer Contribution")                
+                genesisRowOfExportData.push("Employer Contribution")
             })
             pensionData.splice(0, 0, genesisRowOfExportData)
 
@@ -1012,7 +1012,7 @@ Meteor.methods({
                 header.push(aMonth.name)
                 header.push('')
             })
-                
+
             return {fields: header, data: pensionData};
 
             // return pensionData
@@ -1139,8 +1139,8 @@ Meteor.methods({
                 return `${aMonthIndex}${year}`
             })
             const pensionPayrunResults =  Payruns.find({
-                businessId: businessId, 
-                period: {$in: periodsOfTheYear}, 
+                businessId: businessId,
+                period: {$in: periodsOfTheYear},
                 'payment.reference': 'Pension'
             }).fetch();
 
@@ -1181,7 +1181,7 @@ Meteor.methods({
 
                             const benefitsInDiffCurrencies = employeePayresultsForPeriod.payslipWithCurrencyDelineation.benefit
                             const deductionsInDiffCurrencies = employeePayresultsForPeriod.payslipWithCurrencyDelineation.deduction
-                            
+
                             const currencies = Object.keys(deductionsInDiffCurrencies) || []
                             const benefitCurrencies = Object.keys(deductionsInDiffCurrencies) || []
 
@@ -1242,7 +1242,7 @@ Meteor.methods({
                                         taxCodes: [`NetPay_${aCurrency}`]
                                     })
                                 }
-                                
+
                                 const totalBenefits = benefitsInDiffCurrencies[aCurrency].total || 0
                                 benefitsForMonth[`TotalBenefits_${aCurrency}`] = totalBenefits
 

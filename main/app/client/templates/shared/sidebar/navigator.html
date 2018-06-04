@@ -306,6 +306,11 @@
         <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
 
         <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
+        <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
+     
+      
+      
+        
 
         {{#if isTimeWritingReportsActive}}
         <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
@@ -341,10 +346,8 @@
 
         <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
 
-        {{#if isTravelRequisitionActive}}
-        <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
-        {{/if}}
-        {{/if}}
+       
+          {{/if}}
         {{else}}
         {{#if hasProcurementReportsViewAccess}}
         <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
