@@ -92,16 +92,9 @@ Template.TravelRequisition2AdminDetail.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
         }
     },
-    'getEmployeeFullName': function(employeeId) {
-        let employee = Meteor.users.findOne({_id: employeeId});
-        if(employee)
-        return employee.profile.fullName;
-        else
-        return ""
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     },
-    // 'getEmployeeNameById': function(employeeId){
-    //     return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
-    // },
 
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -237,7 +230,6 @@ Template.TravelRequisition2AdminDetail.helpers({
 Template.TravelRequisition2AdminDetail.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context');
-    self.subscribe("allEmployees", Session.get('context'));
     self.subscribe("travelcities", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
