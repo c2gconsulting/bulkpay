@@ -407,7 +407,7 @@ Template.TravelRequisition2Create.events({
     e.preventDefault()
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
- 
+
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
@@ -435,9 +435,9 @@ Template.TravelRequisition2Create.events({
         ));
         console.log(rawReturnDate);
         console.log(utcReturnDate);
-        
-        currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
-        currentTravelRequest.trips[i].returnDate = utcReturnDate; 
+
+        currentTravelRequest.trips[i].departureDate = utcDepartureDate;
+        currentTravelRequest.trips[i].returnDate = utcReturnDate;
     }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -479,9 +479,9 @@ Template.TravelRequisition2Create.events({
         ));
         // console.log(rawReturnDate);
         // console.log(utcReturnDate);
-        
-        currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
-        currentTravelRequest.trips[i].returnDate = utcReturnDate; 
+
+        currentTravelRequest.trips[i].departureDate = utcDepartureDate;
+        currentTravelRequest.trips[i].returnDate = utcReturnDate;
     }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -518,8 +518,8 @@ Template.TravelRequisition2Create.events({
         ));
         // console.log(rawReturnDate);
         // console.log(utcReturnDate);
-        
-        currentTravelRequest.trips[i].departureDate = utcDepartureDate; 
+
+        currentTravelRequest.trips[i].departureDate = utcDepartureDate;
         currentTravelRequest.trips[i].returnDate = utcReturnDate;  }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -1002,6 +1002,10 @@ Template.TravelRequisition2Create.helpers({
 Template.TravelRequisition2Create.onCreated(function () {
 
     let self = this;
+    // let employee = Meteor.user().employeeProfile.employeeId
+    // console.log("employee:")
+    // console.log(employee)
+
 
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null);
@@ -1104,7 +1108,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             if (tripType === "Return"){
               const startDate = moment(currentTravelRequest.trips[i].departureDate)
               const endDate = moment(currentTravelRequest.trips[i].returnDate)
-            
+
 
             //    var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
             //    var eNDDATE = moment(endDate).format('DD/MM/YYYY');
@@ -1114,7 +1118,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             //   console.log(sTARTDATE)
             //   console.log("eNDDATE")
             //   console.log(eNDDATE)
-      
+
                 totalDuration = endDate.diff(startDate, 'days');
 
                 if (totalDuration < 0){

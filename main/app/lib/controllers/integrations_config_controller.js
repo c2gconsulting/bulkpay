@@ -52,6 +52,9 @@ IntegrationsConfigController = BusinessUnitController.extend({
     this.render('SapB1Config')
   },
   showSuccessFactorsConfig: function() {
+    // console.log("this.userid")
+    // console.log(this.params.query.userid)
+    //
     this.render('SuccessFactorsConfig')
   },
   showSapHanaConfig: function() {

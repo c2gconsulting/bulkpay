@@ -227,7 +227,7 @@ let TravelRequestHelper = {
                 // console.log(currentTravelRequest)
             }else{
                 currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
-             
+
             }
 
 
@@ -455,12 +455,17 @@ let TravelRequestHelper = {
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
                 let createdByEmail = "";
                 let supervisorEmail = "";
                 let createdByName = "Employee"
                 let supervisorName = "Supervisor"
+                let budgetHolderEmail = "";
+                let budgetHolderName = "Budget Holder"
                 let createdBySubject = "";
                 let supervisorSubject = "";
+                const budgetHolderSubject = "Please approve travel request for " + createdBy.profile.fullName;
+
 
                 if(currentTravelRequest.status === "Approved By Supervisor"){
                     createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel request";
@@ -481,11 +486,21 @@ let TravelRequestHelper = {
                     console.log(supervisorEmail);
                 }
 
+                if (budgetHolder.emails.length > 0){
+                    budgetHolderEmail = budgetHolder.emails[0].address;
+                    budgetHolderEmail = budgetHolderEmail  + ", bulkpay@c2gconsulting.com";
+                    console.log(budgetHolderEmail);
+                }
+
+
                 //Send to requestor
                 TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
 
                 //Send to Supervisor
                 TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+
+                //Send to Budget holder
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
 
 
             }else{

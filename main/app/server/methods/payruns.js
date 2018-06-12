@@ -1500,6 +1500,9 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         } else {
                             taxBucket = defaultTaxBucket
                         }
+                        if (!tax) {
+                       console.log("currentEmployeeInPayrunLoop: ", currentEmployeeInPayrunLoop)
+                       }
                         let taxCalculationResult = calculateTax(reliefBucket, taxBucket, grossIncomeBucket, tax, paytypes, businessId, totalHoursWorkedInPeriod, currencyRatesForPeriod, tenant);  //@@technicalPaytype
                         netTaxLocal = taxCalculationResult.netTax
 

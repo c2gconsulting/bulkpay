@@ -65,6 +65,9 @@
         </li>
         {{#if isMenuExpanded 'successFactorsIntegrationMenu'}}
         <li><a href="{{pathFor route='successfactors.config'}}">Setup</a></li>
+        <!-- <li><a href="{{pathFor route='successfactors.auth'}}">Setup</a></li> -->
+
+
         {{/if}}
         {{/if}}
         {{/if}}
@@ -94,7 +97,7 @@
         {{#if isMenuExpanded 'administrationMenu'}}
 
             <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
-            
+
             {{#if isAdvancedTravelEnabled}}
             <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">All Travel Requests</a></li>
             {{/if}}
@@ -307,10 +310,10 @@
 
         <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
         <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
-     
-      
-      
-        
+
+
+
+
 
         {{#if isTimeWritingReportsActive}}
         <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
@@ -346,7 +349,7 @@
 
         <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
 
-       
+
           {{/if}}
         {{else}}
         {{#if hasProcurementReportsViewAccess}}

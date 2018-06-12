@@ -100,10 +100,10 @@ Router.route('/business/:_id/payslip', {
     where: 'client'
 });
 
-Router.route('/business/:_id/currencies', { 
-    name: 'currency.list', 
-    controller: 'CurrenciesController', 
-    where: 'client' 
+Router.route('/business/:_id/currencies', {
+    name: 'currency.list',
+    controller: 'CurrenciesController',
+    where: 'client'
 });
 
 Router.route('/business/:_id/payslip/:payrunPeriod', {
@@ -310,6 +310,12 @@ Router.route('/business/:_id/successfactors/config', {
   where: 'client',
   action: 'showSuccessFactorsConfig'
 });
+// Router.route('/business/:_id/successfactors/auth', {
+//   name: 'successfactors.auth',
+//   controller: 'IntegrationsConfigController',
+//   where: 'client',
+//   action: 'showSuccessFactorsConfig'
+// });
 
 Router.route('/business/:_id/saphana/config', {
     name: 'saphana.config',
