@@ -65,7 +65,8 @@ Core.Schemas.TimeWriting = new SimpleSchema({
         type: Date
     },
     duration: {
-        type: Number
+        type: Number,
+        decimal:true
     },
     note: {
         type: String,
