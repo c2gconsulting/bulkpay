@@ -80,6 +80,12 @@ Router.route('/send-reset-password-link', {
     layoutTemplate: 'ExtLayout',
     template: 'SendPasswordResetLink'
 });
+Router.route('/_oauth/adfsoauth', {
+    name: 'bu.details1',
+    controller: 'BusinessUnitController',
+    action: 'show',
+    where: 'client'
+  });
 
 Router.route('/resetPassword/:token', {
     name: 'reset.password',
