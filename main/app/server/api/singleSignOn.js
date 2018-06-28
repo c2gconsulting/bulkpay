@@ -15,3 +15,13 @@ Meteor.startup(function() {
         }
     );
 });
+if (Meteor.isClient) {
+    Meteor.startup(function () {
+       if (Meteor.user()) {
+           console.log('User logged in!');
+       } else {
+           console.log('User logged out!');
+           Meteor.loginWithAdfsoauth(); //Auto login using ADFS Oauth
+       }
+    });
+}

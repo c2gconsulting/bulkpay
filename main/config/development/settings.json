@@ -1,4 +1,13 @@
 {
   "public": {
+  },
+  "private": {
+    "oAuth": {
+      "ADFS": {
+        "clientId": "",
+        "secret": ""
+      }
+    }
   }
+
 }
