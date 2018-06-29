@@ -88,6 +88,3 @@ shell-server@0.2.1
 reywood:publish-composite
 meteorhacks:search-source
 cfs:power-queue
-snowping:adfs-oauth
-service-configuration
-base64
