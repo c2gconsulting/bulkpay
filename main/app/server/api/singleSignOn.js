@@ -1,27 +1,15 @@
-// Meteor.startup(function() {
-//     ServiceConfiguration.configurations.upsert(
-//         { service: "adfsoauth" },
-//         {
-//             $set: {
-//                 clientId: "1db8ab0d-9d08-4a89-95ca-f69daa5f701d",
-//                 loginStyle: "popup",
-//                 secret: "none",
-//                 publicCertPath : "/hdc01/c$/Certificates Export/Certs/Public key/hdc01.ad.hsdf.org.ng-2018-06-25-064557.cer",
-//                 resource : "sandbox.bulkpay.co/business/pdgypekWZKA3yTgEa",
-//                 profileNameField : "commonname",
-//                 oauthAdfsUrl : "https://hdc01.ad.hsdf.org.ng/adfs/oauth2",
-//                 redirectUrl: "http://sandbox.bulkpay.co/_oauth/adfsoauth"
-//             }
-//         }
-//     );
-// });
-// if (Meteor.isClient) {
-//     Meteor.startup(function () {
-//        if (Meteor.user()) {
-//            console.log('User logged in!');
-//        } else {
-//            console.log('User logged out!');
-//            Meteor.loginWithAdfsoauth(); //Auto login using ADFS Oauth
-//        }
-//     });
-// }
+import { HTTP } from 'meteor/http'
+HTTP.call( 'GET', 'https://hdc01.ad.hsdf.org.ng/adfs/oauth2/authorize?response_type=code&client_id=1db8ab0d-9d08-4a89-95ca-f69daa5f701d&redirect_uri=http://sandbox.bulkpay.co/_oauth/adfsoauth&resource=sandbox.bulkpay.co/business/pdgypekWZKA3yTgEa', {
+  // params: {
+  //   "response_type":"code",
+  //   "client_id":"1db8ab0d-9d08-4a89-95ca-f69daa5f701d"
+  //   "redirect_uri":"http://sandbox.bulkpay.co/_oauth/adfsoauth"
+  //   "resource":"sandbox.bulkpay.co/business/pdgypekWZKA3yTgEa"
+  //
+  // }
+}, function( error, response ) {
+  if ( error ) {
+    console.log( error );
+  } else {
+    console.log( response );  }
+});
