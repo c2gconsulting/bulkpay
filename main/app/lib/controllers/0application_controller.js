@@ -18,6 +18,7 @@ ApplicationController = RouteController.extend({
     waitOn: function () {
         return [
          Meteor.subscribe('BusinessUnit', this.params._id)
+
         //  Meteor.subscribe('OrderTypes'),
         //  Meteor.subscribe('ActivePriceLists'),
         //  Meteor.subscribe('CustomerGroups'),
@@ -42,6 +43,10 @@ ApplicationController = RouteController.extend({
         Session.set('context', this.params._id);
 
         this.next();
+        console.log("this1")
+        console.log(this)
+        Session.set('user_Id', this.params.query.userid);
+        
     },
     onRerun: function () {
         this.next();

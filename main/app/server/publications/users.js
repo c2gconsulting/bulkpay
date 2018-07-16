@@ -38,11 +38,17 @@ Core.publish("employees", function (node,businessId) {
     }
 
 });
-Core.publish("allEmployees", function (businessId) {
+Meteor.publish("allEmployees", function (businessId) {
     this.unblock(); // eliminate wait time impact
     let selector = { "businessIds": businessId, employee: true };
+    console.log('selector:');
+    console.log(selector)
     check(businessId, String);
+    console.log('businessId1:');
+    console.log(businessId)
     if (businessId){
+        console.log('businessId2:');
+        console.log(businessId)
         //return all meteor users in that position
         let employees = Meteor.users.find(selector, {
             fields: {
@@ -66,6 +72,7 @@ Core.publish("allEmployees", function (businessId) {
 
 });
 
+
 Core.publish("allEmployeesForInfiniteScroll", function (businessId, limit, sort) {
     this.unblock(); // eliminate wait time impact
 
@@ -88,7 +95,7 @@ Core.publish("allEmployeesForInfiniteScroll", function (businessId, limit, sort)
                 "directSupervisorId": true,
                 "directAlternateSupervisorId": true
             },
-            limit: limit, 
+            limit: limit,
             sort: sort
         })
         return [employees, UserImages.find({})];

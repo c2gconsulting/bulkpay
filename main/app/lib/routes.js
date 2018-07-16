@@ -68,18 +68,34 @@ Router.route('/', {
 //     this.response.end()
 // }, {where: 'server'});
 
-/*
- Router.route('/login', {
- name: 'login',
- layoutTemplate: 'ExtLayout',
- template: 'Login'
- });*/
+
+ // Router.route('/login', {
+ // name: 'login',
+ // controller:'ApplicationController',
+ // layoutTemplate: 'ApplicationLayout',
+ // template: 'Login'
+ // });
+
+ // Router.route('/login', {
+ //     name: 'login',
+ //     layoutTemplate: 'ApplicationLayout',
+ //     template: 'Login',
+ //     onBeforeAction: function () {
+ //         if  (!Meteor.userId() && !Meteor.loggingIn()) {
+ //             this.redirect('/');
+ //             this.stop();
+ //         } else {
+ //             this.next();
+ //         }
+ //     }
+ // });
 
 Router.route('/send-reset-password-link', {
     name: 'send.reset-passwordlink',
     layoutTemplate: 'ExtLayout',
     template: 'SendPasswordResetLink'
 });
+
 // Router.route('/_oauth/adfsoauth', {
 //     name: 'bu.details1',
 //     controller: 'BusinessUnitController',
@@ -92,6 +108,8 @@ Router.route('/resetPassword/:token', {
     layoutTemplate: 'ExtLayout',
     template: 'ResetMyPassword'
 });
+
+
 
 Router.route('/business/:_id', {
     name: 'bu.details',

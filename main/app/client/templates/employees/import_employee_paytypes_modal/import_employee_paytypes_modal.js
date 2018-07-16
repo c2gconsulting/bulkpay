@@ -14,6 +14,8 @@ Template.ImportEmployeePaytypesModal.events({
         })
 
         let allEmployees = Meteor.users.find({"employee": true}).fetch();
+        console.log("allEmployees:")
+        console.log(allEmployees)
         let dataForSampleCsv = allEmployees.map(anEmployee => {
             return {
                 EmployeeUniqueId: anEmployee._id,

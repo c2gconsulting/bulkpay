@@ -191,8 +191,11 @@ Template.TravelRequisition2Print.helpers({
 Template.TravelRequisition2Print.onCreated(function () {
     console.log(Router.current());
 
+
     let self = this;
     let businessUnitId = Router.current().params._id;
+    console.log("businessUnitId from print.js is:")
+    console.log(businessUnitId)
     self.subscribe("allEmployees", Router.current().params._id);
     self.subscribe("travelcities",  Router.current().params._id);
     self.subscribe("hotels",  Router.current().params._id);

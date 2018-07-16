@@ -119,7 +119,7 @@ Meteor.methods({
         }
         return false;
     },
-    "account/customLoginWithEmail": function(userEmail, hashedPassword, businessId) {
+    "account/customLoginWithEmail": function(userEmail, hashedPassword,businessId) {
         if(!userEmail) {
             throw new Meteor.Error(401, "Email not specified");
         }
@@ -131,7 +131,16 @@ Meteor.methods({
             'emails.address': userEmail,
             // 'businessIds': businessId
         })
+        console.log("user is:")
+        console.log(user)
 
+
+                // let user1 = Meteor.users.findOne({
+                //     'employeeProfile.employeeId': employeeId,
+                //     // 'businessIds': businessId
+                // })
+                // console.log("user1 is:")
+                // console.log(user1)
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {
                 throw new Meteor.Error(401, "Sorry, you cannot log-in at the moment. You may have to click the enrollment link sent to your email");
@@ -140,6 +149,8 @@ Meteor.methods({
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
             console.log(`loginResult: `, loginResult)
+            console.log(`myPassword: `, myPassword)
+
 
             if(loginResult.error) {
                 throw loginResult.error
@@ -183,9 +194,9 @@ Meteor.methods({
         }
     },
     "account/customLogin": function(usernameOrEmail, hashedPassword) {
-        if(!usernameOrEmail) {
-            throw new Meteor.Error(401, "Username/Email not specified");
-        }
+        // if(!usernameOrEmail) {
+        //     throw new Meteor.Error(401, "Username/Email not specified");
+        // }
         if(!hashedPassword) {
             throw new Meteor.Error(401, "Password not specified");
         }
@@ -250,7 +261,7 @@ Meteor.methods({
                 }
             }
         } else {
-            throw new Meteor.Error(401, "Username does not exist");
+          //  throw new Meteor.Error(401, "Username does not exist");
         }
     },
     "account/update": function (user, userId) {

@@ -1002,9 +1002,7 @@ Template.TravelRequisition2Create.helpers({
 Template.TravelRequisition2Create.onCreated(function () {
 
     let self = this;
-    // let employee = Meteor.user().employeeProfile.employeeId
-    // console.log("employee:")
-    // console.log(employee)
+
 
 
     self.errorMessage = new ReactiveVar();
