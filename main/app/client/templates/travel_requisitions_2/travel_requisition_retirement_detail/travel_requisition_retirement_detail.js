@@ -87,7 +87,13 @@ Template.TravelRequisition2RetirementDetail.helpers({
 
         }
      },
-   
+     'isRejectedTrips': function() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest) {
+            return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+
+        }
+     },
 
 
     checkWhoToRefund(currency){

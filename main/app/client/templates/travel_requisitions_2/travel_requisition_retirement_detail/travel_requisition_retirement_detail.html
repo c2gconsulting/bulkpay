@@ -508,8 +508,12 @@
                   <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
                   <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
                   {{else}}
+                  {{#if isRejectedTrips}}
                   <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-               
+                  <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
+                  {{else}}
+                  <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+                      {{/if}}
                   {{/if}}
                   <!--<button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
                     </div><!-- panel-footer -->
