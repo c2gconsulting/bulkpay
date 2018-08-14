@@ -36,9 +36,12 @@ Template.TravelRequestReport.events({
 
             Meteor.call('reports/travelRequest', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                  console.log(res)
                 resetButton()
                 if(res){
+                //  console.log(this)
                     tmpl.travelRequestReports.set(res)
+            //        console.log(travelRequestReports)
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
@@ -107,6 +110,19 @@ Template.TravelRequestReport.helpers({
         let tenant = Tenants.findOne();
         return tenant.name;
     },
+    'getBudgetName': function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
+        }
+    },
+    'getBudgetHolderNameById': function(budgetHolderId){
+        return (Meteor.users.findOne({_id: budgetHolderId})).profile.fullName;
+    },
+    'getSupervisorNameById': function(supervisorId){
+        return (Meteor.users.findOne({_id: supervisorId})).profile.fullName;
+    },
     'month': function(){
         return Core.months()
     },
@@ -129,9 +145,9 @@ Template.TravelRequestReport.helpers({
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
     },
-    'totalTripCostNGN': function() {
-        return Template.instance().totalTripCostNGN.get()
-    },
+    // 'totalTripCostNGN': function() {
+    //     return Template.instance().totalTripCostNGN.get()
+    // },
 
     'getSupervisor': function(procurement) {
         return Template.instance().getSupervisor(procurement)
@@ -186,6 +202,7 @@ Template.TravelRequestReport.onCreated(function () {
             reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
                 aDatum.status])
         })
+
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Travel Requests Report ${startTime} - ${endTime}`);
     }

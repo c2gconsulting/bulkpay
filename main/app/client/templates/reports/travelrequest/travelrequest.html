@@ -70,8 +70,13 @@
                                                           <th>Description</th>
                                                           <th>Created By</th>
                                                           <th>Date required</th>
-
                                                           <th>Status</th>
+                                                          <th>Retirement Status</th>
+                                                            <th>budget holder</th>
+                                                              <th>Supervisor</th>
+                                                                <th>Budget code</th>
+                                                                  <th>Total Trip Cost NGN</th>
+                                                                    <th>Total Trip Cost USD</th>
                                                       </tr>
                                                   </thead>
                                                   <tbody>
@@ -80,8 +85,15 @@
                                                           <td nowrap>{{limitText description}}</td>
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
+                                                            <td>{{status}}</td>
+                                                            <td>{{retirementStatus}}</td>
+                                                            <td>{{getBudgetHolderNameById budgetHolderId}}</td>
+                                                            <td>{{getSupervisorNameById supervisorId}}</td>
+                                                              <td>{{getBudgetName budgetCodeId}}</td>
+                                                              <td>{{totalTripCostNGN}}</td>
+                                                                <td>{{totalTripCostUSD}}</td>
 
-                                                          <td>{{status}}</td>
+
                                                       </tr>
                                                     {{/each}}
                                                   </tbody>

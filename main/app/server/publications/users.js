@@ -41,14 +41,14 @@ Core.publish("employees", function (node,businessId) {
 Meteor.publish("allEmployees", function (businessId) {
     this.unblock(); // eliminate wait time impact
     let selector = { "businessIds": businessId, employee: true };
-    // console.log('selector:');
-    // console.log(selector)
+    console.log('selector:');
+    console.log(selector)
     check(businessId, String);
-    // console.log('businessId1:');
-    // console.log(businessId)
+    console.log('businessId1:');
+    console.log(businessId)
     if (businessId){
-        // console.log('businessId2:');
-        // console.log(businessId)
+        console.log('businessId2:');
+        console.log(businessId)
         //return all meteor users in that position
         let employees = Meteor.users.find(selector, {
             fields: {
