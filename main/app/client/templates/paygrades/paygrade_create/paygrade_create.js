@@ -19,7 +19,7 @@ Template.PaygradeCreate.events({
             payTypes: getPaytypes(),
             payTypePositionIds: payTypesPositionOnPayrunExport(),
             enablePensionPayments: $('#enablePensionPayments').is(":checked"),
-            minimumHoursWorkedForPayroll: $('#minimumHoursWorkedForPayroll').val(),
+        //    minimumHoursWorkedForPayroll: $('#minimumHoursWorkedForPayroll').val(),
         };
 
         let currencyCode = $('[name="currencyCode"]').val()
@@ -29,7 +29,7 @@ Template.PaygradeCreate.events({
             let paytypes =  [];
             let assigned = Template.instance().dict.get('assigned');
             //return relevant fields
-            
+
             assigned.forEach((x, payTypeIndex) => {
                 let payment = {};
                 payment.paytype = x._id;
@@ -67,7 +67,7 @@ Template.PaygradeCreate.events({
         };
 
         const applyPayGradePaytypesToEmployees = $('#applyPayGradePaytypesToEmployees').is(":checked");
-        
+
         if(tmpl.data){//edit action for updating tax
             const pygId = tmpl.data._id;
             const code = tmpl.data.code;
@@ -101,7 +101,7 @@ Template.PaygradeCreate.events({
                         $('[name=' + obj.name +']').attr("placeholder", obj.name + ' ' + obj.type);
 
                     })
-                    swal("error", "Please check all components are entired", "error");
+                    swal("error", "Please check all components are entered", "error");
                 }
             });
         }
@@ -271,7 +271,7 @@ Template.PaygradeCreate.onCreated(function () {
                         if(ptype) {
                             delete ptype.paytype;
                             _.extend(x, ptype);
-                            // return x;    
+                            // return x;
                             assignedPaytypesTemp.push(x)
                         }
                     }
@@ -300,7 +300,7 @@ Template.PaygradeCreate.onCreated(function () {
                                     let newX = {...x}
                                     newX.displayInPayslip = true
                                     newX.paySlipPositionId = currentPayGrade.payTypePositionIds.length
- 
+
                                     currentPayGrade.payTypePositionIds.push(newX)
                                 }
                             });
@@ -364,7 +364,7 @@ Template.PaygradeCreate.onCreated(function () {
 Template.PaygradeCreate.onRendered(function () {
     var self = this;
     var oldIndex, newIndex;
-    
+
     if(Template.instance().data) {
         const payGrade = Template.instance().data
 

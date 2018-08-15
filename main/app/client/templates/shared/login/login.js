@@ -42,8 +42,8 @@ Template.login.events({
 					} else {
 						$('div #login_error').addClass('hide');
 						$('div #login_error').html('');
-						console.log("res");
-						console.log(res);
+						// console.log("res");
+						// console.log(res);
 
 						if(res.status === true) {
 							Meteor.loginWithPassword(email, password, function(err){
@@ -223,11 +223,11 @@ Template.login.onCreated(function () {
 								let businessUnitId = Session.get('context');
 								Meteor.subscribe("allEmployees",businessUnitId);
 								let allEmployee = Meteor.users.find({"employee": true}).fetch();
-								console.log("allEmployee:");
-								console.log(allEmployee);
+								// console.log("allEmployee:");
+								// console.log(allEmployee);
 								let userId = Session.get('user_Id');
-								console.log("userId:");
-								console.log(userId);
+								// console.log("userId:");
+								// console.log(userId);
 
 
 
@@ -235,14 +235,14 @@ Template.login.onCreated(function () {
 
 								Session.set("user",user);
 
-								console.log("user is:")
-								console.log(user)
+								// console.log("user is:")
+								// console.log(user)
 
 								if(user && user.customUsername) {
 										let userName = user.customUsername
 										Session.set("user_name",userName);
-										console.log("userName is:")
-										console.log(userName)
+										// console.log("userName is:")
+										// console.log(userName)
 
 										}
 										else {
