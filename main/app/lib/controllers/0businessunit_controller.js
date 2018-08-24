@@ -51,8 +51,8 @@ BusinessUnitController = ApplicationController.extend({
     // },
     onRun: function () {
         this.next();
-        console.log("this")
-        console.log(this.params.query.userid)
+        // console.log("this")
+        // console.log(this.params.query.userid)
    
     },
     onRerun: function () {

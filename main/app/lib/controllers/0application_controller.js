@@ -43,9 +43,9 @@ ApplicationController = RouteController.extend({
         Session.set('context', this.params._id);
 
         this.next();
-        console.log("this1")
-        console.log(this)
-        Session.set('user_Id', this.params.query.userid);
+        // console.log("this1")
+        // console.log(this)
+        // Session.set('user_Id', this.params.query.userid);
 
     },
     onRerun: function () {
