@@ -67,21 +67,26 @@
                                               <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                                   <thead>
                                                       <tr>
+                                                          <th>Testing</th>
                                                           <th>Description</th>
                                                           <th>Created By</th>
                                                           <th>Date required</th>
                                                           <th>Status</th>
                                                           <th>Retirement Status</th>
-                                                            <th>budget holder</th>
-                                                              <th>Supervisor</th>
-                                                                <th>Budget code</th>
-                                                                  <th>Total Trip Cost NGN</th>
-                                                                    <th>Total Trip Cost USD</th>
+                                                          <th>budget holder</th>
+                                                          <th>Supervisor</th>
+                                                          <th>Budget code</th>
+                                                          <th>Total Trip Cost NGN</th>
+                                                          <th>Total Trip Cost USD</th>
+
                                                       </tr>
                                                   </thead>
                                                   <tbody>
                                                     {{#each travelRequestReports}}
                                                       <tr title="Requisition reason: {{requisitionReason}}">
+                                                          <td>{{#with tripData trips}}
+                                                              {{fromId}}
+                                                            {{/with}}</td>
                                                           <td nowrap>{{limitText description}}</td>
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{formatTime createdAt}}</td>
@@ -89,9 +94,10 @@
                                                             <td>{{retirementStatus}}</td>
                                                             <td>{{getBudgetHolderNameById budgetHolderId}}</td>
                                                             <td>{{getSupervisorNameById supervisorId}}</td>
-                                                              <td>{{getBudgetName budgetCodeId}}</td>
-                                                              <td>{{totalTripCostNGN}}</td>
-                                                                <td>{{totalTripCostUSD}}</td>
+                                                            <td>{{getBudgetName budgetCodeId}}</td>
+                                                            <td>{{totalTripCostNGN}}</td>
+                                                            <td>{{totalTripCostUSD}}</td>
+
 
 
                                                       </tr>

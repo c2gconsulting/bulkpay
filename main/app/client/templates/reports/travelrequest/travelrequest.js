@@ -117,8 +117,21 @@ Template.TravelRequestReport.helpers({
             return budget.name
         }
     },
+    getFromIdName: function(_id){
+    return TravelRequisition2s.findOne({_id:_id}).trips[0].fromId;
+  },
+    'getStateName': function(_id) {
+        const travelRequisition2s = TravelRequisition2s.findOne({_id: _id})
+
+        if(travelRequisition2s) {
+            return travelRequisition2s.trips[0].fromId
+        }
+    },
     'getBudgetHolderNameById': function(budgetHolderId){
         return (Meteor.users.findOne({_id: budgetHolderId})).profile.fullName;
+    },
+    'getStateById': function(_id){
+        return (Meteor.users.findOne({_id: _id})).profile.fullName;
     },
     'getSupervisorNameById': function(supervisorId){
         return (Meteor.users.findOne({_id: supervisorId})).profile.fullName;
@@ -158,6 +171,11 @@ Template.TravelRequestReport.helpers({
         }
         return text
     },
+    'tripData':function(trips){
+      if (trips && trips.length > 0) {
+        return trips[0];
+      }
+    }
 });
 
 /*****************************************************************************/

@@ -1,4 +1,5 @@
 
+
 /*****************************************************************************/
 /* TimeWritingReport: Event Handlers */
 /*****************************************************************************/
@@ -38,7 +39,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
@@ -86,7 +87,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject_Tabular', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByProject_Tabular', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res) {
@@ -136,7 +137,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByProject', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
@@ -146,7 +147,7 @@ Template.TimeWritingReport.events({
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
-            });            
+            });
         }
     },
     'click #exportReportForProjects_Tabular': function(e, tmpl) {
@@ -184,7 +185,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByProject_Tabular', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByProject_Tabular', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
@@ -195,7 +196,7 @@ Template.TimeWritingReport.events({
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
-            });            
+            });
         }
     },
     'click #getReportForUnitsForDisplay': function(e, tmpl) {
@@ -233,7 +234,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
@@ -242,7 +243,7 @@ Template.TimeWritingReport.events({
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
-            });            
+            });
         }
     },
     'click #exportReportForUnits': function(e, tmpl) {
@@ -280,7 +281,7 @@ Template.TimeWritingReport.events({
 
             let selectedEmployees = tmpl.selectedEmployees.get()
 
-            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'), 
+            Meteor.call('reports/timesForEveryoneByUnit', Session.get('context'),
                 startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
                 resetButton()
                 if(res){
@@ -290,7 +291,7 @@ Template.TimeWritingReport.events({
                 } else {
                     swal('No result found', err.reason, 'error');
                 }
-            });            
+            });
         }
     },
     'change [name="employee"]': (e, tmpl) => {
@@ -331,7 +332,7 @@ Template.TimeWritingReport.helpers({
             if(project.project) {
                 return project.project === projectCode
             } else {
-                return '---' === projectCode                
+                return '---' === projectCode
             }
         })
         if(projectDuration) {
@@ -418,7 +419,7 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Project Total Hours: ", aDatum.projectTotalHours])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Project Time Report ${startTime} - ${endTime}`);
     }
 
@@ -444,7 +445,7 @@ Template.TimeWritingReport.onCreated(function () {
                     if(project.project) {
                         return project.project === projectCode
                     } else {
-                        return '---' === projectCode                
+                        return '---' === projectCode
                     }
                 })
                 let projectDurationPercentage = ''
@@ -475,7 +476,7 @@ Template.TimeWritingReport.onCreated(function () {
 
         reportData.push(totalsRow)
 
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Project Time Report ${startTime} - ${endTime}`);
     }
 
@@ -497,7 +498,7 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Unit Total Hours: ", aDatum.unitTotalHours])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Cost-Center Time Report ${startTime} - ${endTime}`);
     }
 
@@ -537,7 +538,7 @@ Template.TimeWritingReport.onCreated(function () {
                     if(project.project) {
                         return project.project === projectCode
                     } else {
-                        return '---' === projectCode                
+                        return '---' === projectCode
                     }
                 })
                 if(projectDuration) {
