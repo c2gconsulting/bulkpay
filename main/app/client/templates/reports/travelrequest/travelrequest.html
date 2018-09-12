@@ -67,13 +67,17 @@
                                               <table id="payrollTable" class="table table-striped table-bordered result" cellspacing="0" width="100%">
                                                   <thead>
                                                       <tr>
-                                                          <th>Testing</th>
+                                                          <th>From</th>
+                                                          <th>To</th>
+                                                          <th>Hotel</th>
+                                                          <th>Departure Date</th>
+                                                          <th>Return Date</th>
                                                           <th>Description</th>
                                                           <th>Created By</th>
                                                           <th>Date required</th>
                                                           <th>Status</th>
                                                           <th>Retirement Status</th>
-                                                          <th>budget holder</th>
+                                                          <th>Budget holder</th>
                                                           <th>Supervisor</th>
                                                           <th>Budget code</th>
                                                           <th>Total Trip Cost NGN</th>
@@ -85,8 +89,20 @@
                                                     {{#each travelRequestReports}}
                                                       <tr title="Requisition reason: {{requisitionReason}}">
                                                           <td>{{#with tripData trips}}
-                                                              {{fromId}}
+                                                              {{getTravelcityName fromId}}
                                                             {{/with}}</td>
+                                                            <td>{{#with tripData trips}}
+                                                                {{getTravelcityName toId}}
+                                                              {{/with}}</td>
+                                                              <td>{{#with tripData trips}}
+                                                                  {{getHotelName hotelId}}
+                                                                {{/with}}</td>
+                                                                <td>{{#with tripData trips}}
+                                                                    {{departureDate}}
+                                                                  {{/with}}</td>
+                                                                  <td>{{#with tripData trips}}
+                                                                      {{returnDate}}
+                                                                    {{/with}}</td>
                                                           <td nowrap>{{limitText description}}</td>
                                                           <td>{{createdByFullName}}</td>
                                                           <td>{{formatTime createdAt}}</td>

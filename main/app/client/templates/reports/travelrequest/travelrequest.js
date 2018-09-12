@@ -110,21 +110,25 @@ Template.TravelRequestReport.helpers({
         let tenant = Tenants.findOne();
         return tenant.name;
     },
+    'getTravelcityName': function(fromId) {
+        const travelcity = Travelcities.findOne({_id: fromId})
+
+        if(travelcity) {
+            return travelcity.name
+        }
+    },
+    'getHotelName': function(hotelId) {
+        const hotel = Hotels.findOne({_id: hotelId})
+
+        if(hotel) {
+            return hotel.name
+        }
+    },
     'getBudgetName': function(budgetCodeId) {
         const budget = Budgets.findOne({_id: budgetCodeId})
 
         if(budget) {
             return budget.name
-        }
-    },
-    getFromIdName: function(_id){
-    return TravelRequisition2s.findOne({_id:_id}).trips[0].fromId;
-  },
-    'getStateName': function(_id) {
-        const travelRequisition2s = TravelRequisition2s.findOne({_id: _id})
-
-        if(travelRequisition2s) {
-            return travelRequisition2s.trips[0].fromId
         }
     },
     'getBudgetHolderNameById': function(budgetHolderId){
@@ -147,13 +151,6 @@ Template.TravelRequestReport.helpers({
     },
     'travelRequestReports': function() {
         return Template.instance().travelRequestReports.get()
-    },
-    'getTravelcityName': function(travelcityId) {
-        const travelcity = Travelcities.findOne({_id: travelcityId})
-
-        if(travelcity) {
-            return travelcity.name
-        }
     },
     'isLastIndex': function(array, currentIndex) {
         return (currentIndex === (array.length - 1))
@@ -184,6 +181,11 @@ Template.TravelRequestReport.helpers({
 Template.TravelRequestReport.onCreated(function () {
     let self = this;
   let businessUnitId = Session.get('context')
+  self.subscribe("travelcities", Session.get('context'));
+  self.subscribe("hotels", Session.get('context'));
+  self.subscribe("allEmployees",  Session.get('context'));
+
+
     self.travelRequestReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
@@ -211,14 +213,62 @@ Template.TravelRequestReport.onCreated(function () {
         }
     }
 
+    self.getSupervisorNameById = function(supervisorId) {
+        let supervisor = Meteor.users.findOne({_id: supervisorId})
+        if(supervisor) {
+            return supervisor.profile.fullName || '---'
+        }
+    }
+
+    self.getBudgetHolderNameById = function(budgetHolderId) {
+        let budgetHolder = Meteor.users.findOne({_id: budgetHolderId})
+        if(budgetHolder) {
+            return budgetHolder.profile.fullName || '---'
+        }
+    }
+
+    self.getBudgetName = function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
+        }
+    }
+
+    self.getHotelName = function(hotelId) {
+        const hotel = Hotels.findOne({_id: hotelId})
+
+        if(hotel) {
+            return hotel.name
+        }
+    }
+
+    self.getTravelcityName = function(fromId) {
+        const travelcity = Travelcities.findOne({_id: fromId})
+
+        if(travelcity) {
+            return travelcity.name
+        }
+    }
+    self.getTravelcityName = function(toId) {
+        const travelcity = Travelcities.findOne({_id: toId})
+
+        if(travelcity) {
+            return travelcity.name
+        }
+    }
+
     self.exportProcurementReportData = function(theData, startTime, endTime) {
-        let formattedHeader = ["Description", "Created By","Date required", "Status"]
+      //  let formattedHeader = ["Description", "Created By","Date required", "Status"]
+        let formattedHeader = ["From", "To","Hotel", "Departure Date", "Return Date", "Description", "Created By","Date required","Status","Retirement Status","Budget holder","Supervisor","Budget code","Total Trip Cost NGN","Total Trip Cost USD"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
-            reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
-                aDatum.status])
+            // reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
+            //     aDatum.status])
+reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelcityName(aDatum.trips[0].toId), self.getHotelName(aDatum.trips[0].hotelId),
+  aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
         })
 
         BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
