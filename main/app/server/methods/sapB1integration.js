@@ -60,8 +60,10 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
     let allPaytypes = PayTypes.find({businessId: businessUnitSapConfig.businessId}).fetch();
     let allTaxes = Tax.find({businessId: businessUnitSapConfig.businessId}).fetch()
     let allProjects = Projects.find({businessId: businessUnitSapConfig.businessId}).fetch()
+    // console.log("allProjects is:")
+    // console.log(allProjects)
     let detailedPayRunResults = PayResults.find({
-        period: period, 
+        period: period,
         businessId: businessUnitSapConfig.businessId
     }).fetch();
 
@@ -146,7 +148,7 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
             let sapUnitCostCenterDetails = _.find(businessUnitSapConfig.units, (aUnit) => {
                 return aUnit.unitId === unitId;
             })
-            if(!sapUnitCostCenterDetails  || 
+            if(!sapUnitCostCenterDetails  ||
                 (!sapUnitCostCenterDetails.costCenterCode || sapUnitCostCenterDetails.costCenterCode.length === 0)) {
                 status = false
                 errors.push(`Unit: ${unit.name} does not have an SAP cost center`)
@@ -169,7 +171,7 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                     })
                     //--
                     if(payTypeFullDetails) {
-                        if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' && 
+                        if(businessUnitSapConfig.businessId === 'udrayHAGvXXDgzzGf' &&
                             employee.employeeProfile.employment.paygrade === 'QqMgrdDpasdgP4CZE') {
                             // DeltaTek and employee is of 'National' paygrade
                             if(payTypeFullDetails._id === 'Wd8Smd5fsNfSRfxLg') {// Gross Pay paytype
@@ -192,11 +194,11 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                                 sapConfigToUse = _.find(businessUnitSapConfig.taxes, function (aPayType) {
                                     return aPayType.payTypeId === aPayment.id;
                                 })
-    
+
                             } else {
                                 sapConfigToUse = _.find(businessUnitSapConfig.pensions, function (aPayType) {
                                     return aPayType.pensionId === aPayment.id && (aPayType.pensionCode === aPayment.code);
-                                })    
+                                })
                             }
 
                             if(sapConfigToUse) {
@@ -248,6 +250,7 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                         return aUnitPayment.payTypeId === aPayment.id
                     })
 
+
                     //--
                     if(paymentToAccumulate) {
                         paymentToAccumulate.costCenterPayAmount += (aPayment.costCenterPayAmount || 0)
@@ -282,6 +285,8 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                     }
                     //--
                     let paymentProjectsPay = aPayment.projectsPay || []
+                    console.log("paymentProjectsPay is:")
+                    console.log(paymentProjectsPay)
                     paymentProjectsPay.forEach(aProjectPay => {
                         let payTypeProjectDebitAccountCode = null
                         let payTypeProjectCreditAccountCode = null
@@ -307,6 +312,13 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                         let projectData = _.find(allProjects, (project) => {
                             return (project._id === aProjectPay.projectId)
                         })
+                        // console.log("allProjects 2 is:")
+                        // console.log(allProjects)
+                        // console.log("project Name is")
+                        // console.log(projectName)
+                        //
+                        //     console.log("project Data is")
+                        //     console.log(projectData)
                         if(projectData) {
                             projectName = projectData.name
                         } else {
@@ -320,7 +332,7 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                             let sapUnitProjectDetails = _.find(businessUnitSapConfig.projects, (aProject) => {
                                 return (aProject.projectId === aProjectPay.projectId)
                             })
-                            if(!sapUnitProjectDetails  || 
+                            if(!sapUnitProjectDetails  ||
                                 (!sapUnitProjectDetails.projectSapCode || sapUnitProjectDetails.projectSapCode.length === 0)) {
                                 status = false
                                 if(projectData) {
@@ -334,16 +346,30 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                             projectsBulkSum[aProjectPay.projectId]['payments'] = []
                         }
                         let projectInBulkSum = projectsBulkSum[aProjectPay.projectId]
+                        // console.log("projectInBulkSum is:")
+                        // console.log(projectInBulkSum)
                         let projectBulkSumPayments = projectInBulkSum.payments
+                        // console.log("projectBulkSumPayments is:")
+                        // console.log(projectBulkSumPayments)
 
                         let projectPaymentToAccumulate = _.find(projectBulkSumPayments, (aProjectPayment) => {
                             return aProjectPayment.payTypeId === aPayment.id
                         })
+                        console.log("projectPaymentToAccumulate is:")
+                        console.log(projectPaymentToAccumulate)
+                        console.log("aPayment.id is:")
+                        console.log(aPayment)
                         if(projectPaymentToAccumulate) {
                             if(aProjectPay.payAmount === null || isNaN(aProjectPay.payAmount)) {
                                 aProjectPay.payAmount = 0
                             }
+                            // console.log("aProjectPay is:")
+                            // console.log(aProjectPay)
+                            // console.log("aProjectPay.payAmount is:")
+                            // console.log(aProjectPay.payAmount)
                             projectPaymentToAccumulate.projectPayAmount += aProjectPay.payAmount
+                            // console.log("projectPaymentToAccumulate is:")
+                            // console.log(projectPaymentToAccumulate)
                         } else {
                             if(aProjectPay.payAmount === null || isNaN(aProjectPay.payAmount)) {
                                 aProjectPay.payAmount = 0
@@ -351,16 +377,18 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
 
                             projectBulkSumPayments.push({
                                 payTypeId: aPayment.id,
-                                projectPayAmount: aProjectPay.payAmount, 
+                                projectPayAmount: aProjectPay.payAmount,
                                 description: shortenMemoForSapJournalEntry(aPayment.description, " (Project: ", projectData.name),
                                 payTypeProjectDebitAccountCode: payTypeProjectDebitAccountCode,
                                 payTypeProjectCreditAccountCode: payTypeProjectCreditAccountCode
                             })
+                            // console.log("projectPayAmount is:")
+                            // console.log(projectPayAmount)
                         }
                     })
                 }
             })
-            arrayOfEmployees.push(employeeId)                            
+            arrayOfEmployees.push(employeeId)
         } catch(ex) {
             status = false
             errors.push(`${ex.message}`)
@@ -423,7 +451,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Unauthorized");
         }
         check(businessUnitId, String);
-        this.unblock()        
+        this.unblock()
         //--
         if(unitCostCenterCodesArray && unitCostCenterCodesArray.length > 0) {
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
@@ -455,7 +483,7 @@ Meteor.methods({
             throw new Meteor.Error(404, "Empty project codes data");
         }
     },
-    "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray, 
+    "sapB1integration/updatePayTypeGlAccountCodes": function(businessUnitId, payTypesGLAccountCodesArray,
         taxesGLAccountCodesArray, pensionGLAccountCodesArray){
         if(!this.userId && Core.hasPayrollAccess(this.userId)){
             throw new Meteor.Error(401, "Unauthorized");
@@ -465,7 +493,7 @@ Meteor.methods({
         if(payTypesGLAccountCodesArray && payTypesGLAccountCodesArray.length > 0) {
             let businessUnitSapConfig = SapBusinessUnitConfigs.findOne({businessId: businessUnitId});
             if(businessUnitSapConfig) {
-                SapBusinessUnitConfigs.update(businessUnitSapConfig._id, 
+                SapBusinessUnitConfigs.update(businessUnitSapConfig._id,
                 {$set : {
                     payTypes: payTypesGLAccountCodesArray,
                     taxes: taxesGLAccountCodesArray,
@@ -473,7 +501,7 @@ Meteor.methods({
                 }});
             } else {
                 SapBusinessUnitConfigs.insert({
-                    businessId: businessUnitId, 
+                    businessId: businessUnitId,
                     payTypes: payTypesGLAccountCodesArray,
                     taxes: taxesGLAccountCodesArray,
                     pensions: pensionGLAccountCodesArray
@@ -503,15 +531,15 @@ Meteor.methods({
             }
             let user = Meteor.user();
             let tenantId = user.group;
-            let tenant = Tenants.findOne(tenantId)        
+            let tenant = Tenants.findOne(tenantId)
             let localCurrency = {}
             if (tenant) {
                 localCurrency = tenant.baseCurrency;
             }
-        
+
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult, period, localCurrency)
-            // console.log(`processingResult: ${JSON.stringify(processingResult)}`)
-            
+             console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
                     let connectionUrl = `${businessUnitSapConfig.protocol}://${businessUnitSapConfig.ipAddress}:19080/api/payrun`
@@ -528,6 +556,9 @@ Meteor.methods({
                         unitsBulkSum: processingResult.unitsBulkSum,
                         projectsBulkSum: processingResult.projectsBulkSum,
                     })
+                    console.log("postData is:")
+                    console.log(postData)
+
                     let requestHeaders = {'Content-Type': 'application/json'}
                     let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});
                     let actualServerResponse = serverRes.data.replace(/\//g, "")

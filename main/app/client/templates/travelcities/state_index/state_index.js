@@ -5,7 +5,11 @@ Template.TravelCityIndex.events({
     'click #newPFA': (e,tmpl) => {
         e.preventDefault();
         Modal.show('TravelCityCreate');
-    }
+    },
+    'click #uploadTravelCity': function(e){
+        e.preventDefault();
+        Modal.show('ImportTravelCityModal');
+    },
 });
 
 /*****************************************************************************/

@@ -68,6 +68,8 @@ Template.payruns.events({
     },
     'click #postToSap': (e,tmpl) => {
         let currentPayrun = Template.instance().currentPayrun.get();
+        console.log("currentPayrun:")
+        console.log(currentPayrun)
 
         if(currentPayrun) {
             tmpl.$('#postToSap').text('Please wait ... ');
@@ -81,7 +83,7 @@ Template.payruns.events({
             const month = $('[name="paymentPeriodMonth"]').val();
             const year = $('[name="paymentPeriodYear"]').val();
             let period = `${month}${year}`
-
+            
             Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
                 resetButton()
                 console.log(`res: ${JSON.stringify(res)}`)

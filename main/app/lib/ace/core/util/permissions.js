@@ -8,13 +8,13 @@ Core.Permissions = {
     "EMPLOYEE_SS" : "ess/all",
     "PAYRULES_MANAGE" : "payrules/manage",
     "PAYROLL_MANAGE" : "payroll/manage",
-		
+
 		"RUN_PAYROLL_MANAGE" : "runpayroll/manage",
     "PAYROLL_ADDITIONAL_PAYMENTS_MANAGE" : "payroll_additional_payments/manage",
     "PAYROLL_RESULTS_VIEW" : "payroll_results/view",
     "PAYROLL_APPROVAL_CONFIG_MANAGE" : "payroll_approval_config/manage",
     "PAYROLL_APPROVAL_MANAGE" : "payroll_approval/manage",
-		
+
 		"LEAVE_MANAGE" : "leave/manage",
 	  "PROCUREMENT_REQUISITION_APPROVE": "procurement_requisition/approve",
 	  "TRAVEL_REQUISITION_APPROVE": "travel_requisition/approve",
@@ -23,6 +23,7 @@ Core.Permissions = {
 	  "TRAVEL_REQUISITION_TREAT": "travel_requisition/treat",
 
 	  "PAYROLL_REPORTS_VIEW": "payroll_reports/view",
+		"TRAVEL_REPORTS_VIEW": "travel_reports/view",
 	  "AUDIT_REPORTS_VIEW": "audit_reports/view",
 		"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",
 	  "SUCCESSFACTORS_MANAGE": "successfactors/manage",
@@ -72,6 +73,7 @@ Core.PermissionNames = {
 		"payroll_approval/manage" : "Payroll Approval Manage",
 
 		"payroll_reports/view" : "Payroll Reports View",
+		"travel_reports/view" : "Travel Reports View",
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",
     "successfactors/manage" : "Successfactors Manage",

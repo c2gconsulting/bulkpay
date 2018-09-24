@@ -22,7 +22,12 @@
 
             <div class="row" ng-show="!singleTravelcityView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12">
+                  <span class="mb20 pull-right" id="uploadTravelCity"><a class="btn btn-primary btn-sm">Upload Travel city</a></span>
+                  <span class="mb20 pull-right">&nbsp; &nbsp;</span>
+
                     <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Travel City</button></p>
+
+
                 </div>
             </div>
 
@@ -67,7 +72,7 @@
         <td>{{data.airportPickupDropOffCost}}</td>
         <td>{{data.currency}}</td>
         <td>{{data.isInternational}}</td>
-        <td>{{data.notificationEmail}}</td>        
+        <td>{{data.notificationEmail}}</td>
         <td>
           {{#if condition data.status "eq" "Active"}}
             <span class="label label-success">{{data.status}}</span>

@@ -59,7 +59,7 @@ Template.EmployeeSelectedEntry.events({
           }
       });
     } else {
-      swal('Save error!', 'You did not select a leave entitlement', 'error')      
+      swal('Save error!', 'You did not select a leave entitlement', 'error')
     }
   }
 });
@@ -194,7 +194,7 @@ Template.EmployeeSelectedEntry.helpers({
     let canManagePayroll = Core.hasPayrollApprovalManageAccess(selectedEmployee._id);
     return canManagePayroll;
   },
-  
+
   canSetLeaveEntitlement: () => {
     let userId = Meteor.userId()
 
@@ -241,6 +241,12 @@ Template.EmployeeSelectedEntry.helpers({
     let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(selectedEmployee._id);
 
     return hasPayrollReportsViewAccess;
+  },
+  hasTravelReportsViewAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasTravelReportsViewAccess = Core.hasTravelReportsViewAccess(selectedEmployee._id);
+
+    return hasTravelReportsViewAccess;
   },
   hasAuditReportsViewAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
@@ -328,6 +334,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldTravelRequestTreat = $("[name=travelRequestTreat]").val();
 
         let payrollReportsView = $("[name=payrollReportsView]").val();
+
+        let travelReportsView = $("[name=travelReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
         let procurementReportsView = $("[name=procurementReportsView]").val();
         let successfactorsManage = $("[name=successfactorsManage]").val();
@@ -391,6 +399,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
 
         if(payrollReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.PAYROLL_REPORTS_VIEW)
+        }
+        if(travelReportsView === "true") {
+            arrayOfRoles.push(Core.Permissions.TRAVEL_REPORTS_VIEW)
         }
         if(auditReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.AUDIT_REPORTS_VIEW)
