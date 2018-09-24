@@ -290,6 +290,9 @@
 
 
 
+                {{#if hasTravelReportsViewAccess}}
+                <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
+                {{/if}}
 
         {{#if hasPayrollReportsViewAccess}}
         <li class="parent {{isMenuExpandedFocusClass 'reportsMenu'}}">
@@ -309,10 +312,10 @@
         <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
 
         <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
-
+<!--
         {{#if hasTravelReportsViewAccess}}
         <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
-        {{/if}}
+        {{/if}} -->
 
 
 
