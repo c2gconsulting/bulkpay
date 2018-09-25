@@ -219,6 +219,9 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     'payrun.isMinimumTimeWorkedForPayrollEnabled': {
         type: Boolean
     },
+    'payrun.isProjectsPayrollForDeltatekEngineeringEnabled': {
+        type: Boolean
+    },
     'payrun.fullPayOnTimeRecorded': {
         type: Boolean
     },

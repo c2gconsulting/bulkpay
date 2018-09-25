@@ -53,6 +53,8 @@ SapIntegration.getTaxForBulkSum = function (employeeDetailedPayrunResult, curren
 SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, payRunResults, period, localCurrency) {
     let unitsBulkSum = {}
     let projectsBulkSum = {}
+    // console.log("projectsBulkSum")
+    // console.log(projectsBulkSum)
     let arrayOfEmployees = []
     let status = true
     let errors = []
@@ -285,8 +287,8 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                     }
                     //--
                     let paymentProjectsPay = aPayment.projectsPay || []
-                    console.log("paymentProjectsPay is:")
-                    console.log(paymentProjectsPay)
+                    // console.log("paymentProjectsPay is:")
+                    // console.log(paymentProjectsPay)
                     paymentProjectsPay.forEach(aProjectPay => {
                         let payTypeProjectDebitAccountCode = null
                         let payTypeProjectCreditAccountCode = null
@@ -316,9 +318,9 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                         // console.log(allProjects)
                         // console.log("project Name is")
                         // console.log(projectName)
-                        //
-                        //     console.log("project Data is")
-                        //     console.log(projectData)
+                        
+                            // console.log("project Data is")
+                            // console.log(projectData)
                         if(projectData) {
                             projectName = projectData.name
                         } else {
@@ -355,10 +357,10 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                         let projectPaymentToAccumulate = _.find(projectBulkSumPayments, (aProjectPayment) => {
                             return aProjectPayment.payTypeId === aPayment.id
                         })
-                        console.log("projectPaymentToAccumulate is:")
-                        console.log(projectPaymentToAccumulate)
-                        console.log("aPayment.id is:")
-                        console.log(aPayment)
+                        // console.log("projectPaymentToAccumulate is:")
+                        // console.log(projectPaymentToAccumulate)
+                        // console.log("aPayment.id is:")
+                        // console.log(aPayment)
                         if(projectPaymentToAccumulate) {
                             if(aProjectPay.payAmount === null || isNaN(aProjectPay.payAmount)) {
                                 aProjectPay.payAmount = 0
@@ -538,7 +540,9 @@ Meteor.methods({
             }
 
             let processingResult = SapIntegration.processPayrunResultsForSap(businessUnitSapConfig, payRunResult, period, localCurrency)
-             console.log(`processingResult: ${JSON.stringify(processingResult)}`)
+            //  console.log(`processingResult: ${JSON.stringify(processingResult.projectsBulkSum)}`)
+            //  console.log("processingResult is:")
+            //  console.log(processingResult)
 
             if(processingResult.status === true) {
                 if(processingResult.employees.length > 0) {
@@ -556,8 +560,8 @@ Meteor.methods({
                         unitsBulkSum: processingResult.unitsBulkSum,
                         projectsBulkSum: processingResult.projectsBulkSum,
                     })
-                    console.log("postData is:")
-                    console.log(postData)
+                    // console.log("postData is:")
+                    // console.log(postData)
 
                     let requestHeaders = {'Content-Type': 'application/json'}
                     let serverRes = HTTP.call('POST', connectionUrl, {data: postData, headers: requestHeaders});

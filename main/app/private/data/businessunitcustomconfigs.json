@@ -85,6 +85,9 @@
         "bank": true,
         "accountNumber": true
       },
+      "payrun" : {
+        "isProjectsPayrollForDeltatekEngineeringEnabled" : true
+      },
       "notifyEmployeesOnPayrollApproval": false,
       "showPayrunExportButtonWithProjects": false,
       "showResetPasswordButton": false,

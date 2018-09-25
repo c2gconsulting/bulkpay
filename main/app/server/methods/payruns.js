@@ -998,8 +998,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     }
                                     //--
                                     let projectPayAmount = 0
+                                    // console.log("projectPayAmount")
+                                    // console.log(projectPayAmount)
                                     let costCenterPayAmount = 0
+                                    // console.log("costCenterPayAmount")
+                                    // console.log(costCenterPayAmount)
                                     let projectsPay = []
+                                    // console.log("projectsPay")
+                                    // console.log(projectsPay)
 
                                     businessUnitConfig.payrun = businessUnitConfig.payrun || {}
                                     businessUnitConfig.payrun.fullPayOnTimeRecorded = businessUnitConfig.payrun.fullPayOnTimeRecorded || false
@@ -1009,7 +1015,49 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             projectsPayDetails.projectDurations.forEach(aProject => {
                                                 // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
                                                 const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * companyWideMaxHours)
-                                                let individualProjectPayAmount = fraction * value
+                                                // console.log("fraction 1")
+                                                // console.log(fraction)
+                                                // console.log("aProject.duration")
+                                                // console.log(aProject.duration)
+                                                // console.log("aProject")
+                                                // console.log(aProject)
+                                                // console.log("numDaysEmployeeCanWorkInMonth")
+                                                // console.log(numDaysEmployeeCanWorkInMonth)
+                                                // console.log("companyWideMaxHours")
+                                                // console.log(companyWideMaxHours)
+
+                                        //  if(businessUnitConfig.payrun && businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
+                                        //     let individualProjectPayAmount = value
+                                        //     console.log("individualProjectPayAmount 1")
+                                        //     console.log(individualProjectPayAmount)
+                                        //              }
+                                               // let individualProjectPayAmount = fraction * value
+
+                        if(businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
+                                            let individualProjectPayAmount = value
+                                            // console.log("businessUnitConfig 1")
+                                            // console.log(businessUnitConfig)   
+                                            // console.log("businessUnitConfig.payrun 1")
+                                            // console.log(businessUnitConfig.payrun)   
+                                            // console.log("individualProjectPayAmount 1")
+                                            // console.log(individualProjectPayAmount)    
+                                            if(tenant.baseCurrency.iso !== x.currency) {
+                                                individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
+                                            }
+
+                                            projectsPay.push({
+                                                projectId: aProject.project,
+                                                durationInHours: aProject.duration,
+                                                payAmount: individualProjectPayAmount
+                                            })  
+                                         } else{
+                                                let individualProjectPayAmount = fraction * value ;
+                                                // console.log("fraction 2")
+                                                // console.log(fraction)
+                                                // console.log("value")
+                                                // console.log(value)
+                                                // console.log("individualProjectPayAmount 2")
+                                                // console.log(individualProjectPayAmount)
                                                 if(tenant.baseCurrency.iso !== x.currency) {
                                                     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                                 }
@@ -1019,17 +1067,44 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     durationInHours: aProject.duration,
                                                     payAmount: individualProjectPayAmount
                                                 })
+                                         }
+                                                 
+                                                // if(tenant.baseCurrency.iso !== x.currency) {
+                                                //     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
+                                                // }
+
+                                                // projectsPay.push({
+                                                //     projectId: aProject.project,
+                                                //     durationInHours: aProject.duration,
+                                                //     payAmount: individualProjectPayAmount
+                                                // })
                                             })
                                             let projectsTotalPayInPayTypeCurrency = 0
                                             costCenterPayAmount = 0
 
                                             if(!x.hourlyRate) {
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
+                                                // console.log("projectsTotalPayInPayTypeCurrency")
+                                                // console.log(projectsTotalPayInPayTypeCurrency)
+                                                
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
+
+                                                // console.log("costCenterPayAmount")
+                                                // console.log(costCenterPayAmount)
                                             } else {
                                                 if(totalHoursWorkedInPeriod > 0) {
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                    // console.log("projectsTotalPayInPayTypeCurrency")
+                                                    // console.log(projectsTotalPayInPayTypeCurrency)
+                                                    // console.log("projectsPayDetails")
+                                                    // console.log(projectsPayDetails)
+                                                    // console.log("totalHoursWorkedInPeriod")
+                                                    // console.log(totalHoursWorkedInPeriod)
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                    // console.log("costCenterPayAmount")
+                                                    // console.log(costCenterPayAmount)
+                                                    // console.log("costCentersPayDetails")
+                                                    // console.log(costCentersPayDetails)
                                                 }
                                             }
 
@@ -1040,11 +1115,21 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
 
                                             value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
+                                            // console.log("value")
+                                            // console.log(value)
+                                            // console.log("projectsTotalPayInPayTypeCurrency")
+                                            // console.log(projectsTotalPayInPayTypeCurrency)
+                                            // console.log("costCenterPayAmount")
+                                            // console.log(costCenterPayAmount)
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
+                                                // console.log("projectPayAmount")
+                                                // console.log(projectPayAmount)
                                             } else {
                                                 projectPayAmount = projectsTotalPayInPayTypeCurrency
+                                                // console.log("projectPayAmount")
+                                                // console.log(projectPayAmount)
                                             }
                                             //--
                                             if(tenant.baseCurrency.iso !== x.currency) {
@@ -1074,7 +1159,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     value = costCenterPayAmount
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
+                                                    // console.log("projectPayAmount")
+                                                    // console.log(projectPayAmount)
                                                     processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
+                                                    // console.log("costCenterPayAmount")
+                                                    // console.log(costCenterPayAmount)
 
                                                     if(tenant.baseCurrency.iso !== x.currency) {
                                                         costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
@@ -1084,13 +1173,21 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     }
                                                 } else if(projectsAssignedToEmployee.length === 1) {
                                                     projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                                    // console.log("projectPayAmount")
+                                                    // console.log(projectPayAmount)
                                                     value = projectPayAmount
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
+                                                    // console.log("projectPayAmount")
+                                                    // console.log(projectPayAmount)
                                                     processing.push({code: `Pay from cost centers(${x.currency})`, derived: costCenterPayAmount});
+                                                    // console.log("costCenterPayAmount")
+                                                    // console.log(costCecostCenterPayAmountntersPayDetails)
 
                                                     if(tenant.baseCurrency.iso !== x.currency) {
                                                         projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectPayAmount, currencyRatesForPeriod)
+                                                        // console.log("projectPayAmount")
+                                                        // console.log(projectPayAmount)
                                                     }
                                                     // processing.push({code: x.code + " - (Payment accounting for resumption date)", derived: ` ${value} * (${numDaysEmployeeCanWorkInMonth}) / ${totalNumWeekDaysInMonth})`});
 
@@ -1099,9 +1196,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                         durationInHours: 0,
                                                         payAmount: projectPayAmount
                                                     })
+                                                    // console.log("projectPayAmount")
+                                                    // console.log(projectPayAmount)
                                                 }
                                                 processing.push({code: `Pay from projects(NGN)`, derived: projectPayAmount});
+                                                // console.log("projectPayAmount")
+                                                // console.log(projectPayAmount)
                                                 processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
+                                                // console.log("costCenterPayAmount")
+                                                // console.log(costCenterPayAmount)
 
                                                 processing.push({code: x.code, derived: value});
                                             }
@@ -1231,6 +1334,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         code: x.code, description: x.title,
                                         type: (x.displayInPayslip && !x.addToTotal) ? 'Others': x.type
                                     });
+                                    // console.log("projectPayAmount")
+                                    // console.log(projectPayAmount)
                                     log.push({paytype: x.code, input: input, processing: processing});
                                 } else {
                                     //when there is an error, stop processing this employee and move to the next one
