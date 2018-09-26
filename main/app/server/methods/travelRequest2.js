@@ -609,12 +609,18 @@ let TravelRequestHelper = {
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                const financeApprover = Meteor.users.findOne(currentTravelRequest.financeApproverId);
                 let createdByEmail = "";
                 let supervisorEmail = "";
                 let createdByName = "Employee"
                 let supervisorName = "Supervisor"
+                let financeApproverEmail = "";
+                let financeApproverName = "Finance"
                 let createdBySubject = "";
                 let supervisorSubject = "";
+                const financeApproverSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
+
+
 
                 if(currentTravelRequest.retirementStatus === "Retirement Approved By Supervisor"){
                     createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel retirement";
@@ -635,11 +641,22 @@ let TravelRequestHelper = {
                     console.log(supervisorEmail);
                 }
 
+
+                if (financeApprover.emails.length > 0){
+                    financeApproverEmail = financeApprover.emails[0].address;
+                    financeApproverEmail = financeApproverEmail  + ", bulkpay@c2gconsulting.com";
+                    console.log(financeApproverEmail);
+                }
+
                 //Send to requestor
                 TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
 
                 //Send to Supervisor
                 TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+
+                //Send to Finance
+                TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, financeApproverEmail, financeApproverSubject);
+
 
 
             }else{
