@@ -43,6 +43,18 @@ Template.TravelRequisition2Print.helpers({
         else
         return ""
     },
+    'getBudgetHolderNames': function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            let employeeId = budget.employeeId
+            let employee = Meteor.users.findOne({_id: employeeId});
+            if(employee)
+            return employee.profile.fullName;
+            else
+            return "..."
+        }
+    },
     'getEmployeeEmail': function(employeeId) {
         let employee = Meteor.users.findOne({_id: employeeId});
         if(employee)

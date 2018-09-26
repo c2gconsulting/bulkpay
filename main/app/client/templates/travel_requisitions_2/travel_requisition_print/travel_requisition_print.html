@@ -9,10 +9,15 @@
                 <div class="col-sm-6">
                     <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
                 </div>
+        
                 <div class="col-sm-6">
                     <p class="panel-title">Email Address: {{getEmployeeEmail currentTravelRequest.createdBy}}</p>
                     <p class="panel-title">Phone number: {{getEmployeePhoneNumber currentTravelRequest.createdBy}}</p>
                 </div>
+                <div class="col-sm-6">
+                <h3 class="panel-title pull-right"> Approved By {{getBudgetHolderNames currentTravelRequest.budgetCodeId}}</h3>
+               </div>
+                  
             </div>
 
         </div>
