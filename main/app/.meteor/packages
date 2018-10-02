@@ -29,7 +29,7 @@ random@1.0.10
 ejson@1.0.13
 spacebars
 check@1.2.4
-ecmascript@0.6.1
+ecmascript
 less@2.7.8
 cfs:storage-adapter
 cfs:graphicsmagick

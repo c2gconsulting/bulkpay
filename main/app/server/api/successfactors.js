@@ -2,10 +2,10 @@ import _ from 'underscore';
 import { HTTP } from 'meteor/http'
 let parseString = require('xml2js').parseString;
 
-// PowerQueue = new PowerQueue({ 
+// PowerQueue = new PowerQueue({
 //   isPaused: true,
-//   onEnded: () => { 
-//     console.log(`Queue event processing done!`) 
+//   onEnded: () => {
+//     console.log(`Queue event processing done!`)
 //   }
 // });
 
@@ -19,7 +19,7 @@ var Api = new Restivus({
 
 
 const getOdataResults = (odataResponse) => {
-  if(odataResponse && odataResponse.d && odataResponse.d.results 
+  if(odataResponse && odataResponse.d && odataResponse.d.results
       && odataResponse.d.results.length > 0) {
       return odataResponse.d.results
   } else {
@@ -30,7 +30,7 @@ const getOdataResults = (odataResponse) => {
 let failureResponse = message => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
-  const response = 
+  const response =
   `<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>\
   <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">\
   <Header xmlns="http://schemas.xmlsoap.org/soap/envelope/"></Header>\
@@ -52,7 +52,7 @@ let failureResponse = message => {
 let successResponse = () => {
   let now = moment().format(`YYYY-MM-DDTHH:mm:ss`)
 
-  const response = 
+  const response =
   `<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>\
   <Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">\
   <Header xmlns="http://schemas.xmlsoap.org/soap/envelope/"></Header>\
@@ -86,14 +86,14 @@ let getSfEmployeeIds = (jsonPayLoad) => {
     }
   }
 
-  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ? 
+  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ?
     externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`][0] : null
 
   if(ns7Events) {
     let ns7Event = ns7Events[`${nsPrefix}:event`] ? ns7Events[`${nsPrefix}:event`][0] : null
     if(ns7Event) {
       let ns7Params = ns7Event[`${nsPrefix}:params`] ? ns7Event[`${nsPrefix}:params`][0] : null
-      if(ns7Params) {                                                                                                                                                                                                                                                              
+      if(ns7Params) {
         _.each(ns7Params[`${nsPrefix}:param`], param => {
           if(param.name && param.name[0] === 'personIdExternal') {
             personIdExternal = param.value[0]
@@ -113,7 +113,8 @@ let getSfEmployeeIds = (jsonPayLoad) => {
 
 let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
   console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
-  let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]
+  //let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]  soap:Body
+  let externalEvent = jsonPayLoad['soap:Envelope']['soap:Body'][0]
 
   let personIds = []
   let personIdExternal = "";
@@ -127,7 +128,7 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
     }
   }
 
-  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ? 
+  let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ?
     externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`][0] : null
 
   if(ns7Events) {
@@ -173,7 +174,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
   const empBankInfoQueryUrl = `${baseUrl}/odata/v2/PaymentInformationDetailV3?$filter=PaymentInformationV3_worker eq '${personIdExternal}'&$format=json`
 
   const companyId = config.companyId
-  const username = config.username                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+  const username = config.username
   const password = config.password
 
   let fullUsername = `${username}@${companyId}`
@@ -184,7 +185,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
   }
 
   let getToSync = Meteor.wrapAsync(HTTP.get);
-  
+
   const userRes = getToSync(userQueryUrl, {headers: requestHeaders})
   const empPayCompRecurringRes = getToSync(empPayCompRecurringQueryUrl, {headers: requestHeaders})
   const empJobRes = getToSync(empJobQueryUrl, {headers: requestHeaders})
@@ -194,7 +195,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
   let bulkPayUserParams = {}
   bulkPayUserParams.tenantId = business._groupId
   bulkPayUserParams.roles = {
-    "__global_roles__" : [ 
+    "__global_roles__" : [
         "ess/all"
     ]
   }
@@ -212,7 +213,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
 
       if(userData && userData.d && userData.d.results && userData.d.results.length > 0) {
         let employeeData = userData.d.results[0]
-                
+
         bulkPayUserParams.firstname = employeeData.firstName || ""
         bulkPayUserParams.lastname = employeeData.lastName || ""
         bulkPayUserParams.email = employeeData.email || ""
@@ -243,15 +244,15 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     try {
       let empPayCompRecurringData = JSON.parse(empPayCompRecurringRes.content)
 
-      if(empPayCompRecurringData && empPayCompRecurringData.d 
-          && empPayCompRecurringData.d.results && empPayCompRecurringData.d.results.length > 0) {        
+      if(empPayCompRecurringData && empPayCompRecurringData.d
+          && empPayCompRecurringData.d.results && empPayCompRecurringData.d.results.length > 0) {
         paymentsData = empPayCompRecurringData.d.results
       }
     } catch(e) {
       console.log('EmpPayCompRecurring Error! ', e.message)
     }
   }
-  
+
   if(empJobRes) {
     try {
       let empJobData = JSON.parse(empJobRes.content)
@@ -350,7 +351,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
       let defaultUsername = userFirstName + "." + userLastName
       defaultUsername = defaultUsername.toLowerCase()
       // let defaultUsername = personIdExternal;
-  
+
       accountId = Meteor.users.insert({
         profile: {
           firstname: bulkPayUserParams.firstname,
@@ -371,18 +372,18 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
         businessIds: [business._id],
         group: business._groupId,
         roles: {
-          "__global_roles__" : [ 
+          "__global_roles__" : [
               "ess/all"
           ]
         }
       })
-      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}}) 
+      Meteor.users.update({_id: accountId}, {$set: {customUsername: defaultUsername}})
       Accounts.setPassword(accountId, "123456")
       Partitioner.setUserGroup(accountId, business._groupId);
     } catch(err1) {
       console.log(`Error in alternative user creation! `, err1.message)
     }
-    
+
     // if(bulkPayUserParams.email) {
     //   try {
     //     Accounts.sendEnrollmentEmail(accountId, bulkPayUserParams.email)
@@ -409,7 +410,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
     bpUser.emails = [{
       address: bulkPayUserParams.email,
       verified: false
-    }]    
+    }]
   }
 
   bpUser.employeeProfile = {
@@ -440,10 +441,10 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
 
             let frequency = payment.frequency
             let calcAmount = '0'
-    
+
             if(frequency === 'MON' || frequency === 'Monthly') {
               frequency = "Monthly"
-              
+
               if(payment.calculatedAmount) {
                 if(!isNaN(payment.calculatedAmount)) {
                   calcAmount = (parseFloat(payment.calculatedAmount) * 12) + ''
@@ -453,7 +454,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
               frequency = "Annually"
               calcAmount = payment.calculatedAmount
             }
-    
+
             const payType = PayTypes.findOne({
               'successFactors.externalCode': payment.payComponent,
               businessId: business._id
@@ -466,7 +467,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
               })
               const noAddTotal = ['NTI', 'HMO', 'Life Assurance', 'PayCompValue', 'Pay20% of Gross', 'Less Consolidated Relief', 'Gross_Pay']
               const addTotal = !_.contains(noAddTotal, payment.payComponent)
-    
+
               PayTypes.update({_id: payType._id}, {$set: {
                 code: payTypeWithNoSpace,
                 title: payCompData.name,
@@ -546,7 +547,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
           successFactors: {
             externalCode: positionData.positionCode,
             costCenter: {
-              code: null // I know positions have cost centers on SF. 
+              code: null // I know positions have cost centers on SF.
             }
           }
         })
@@ -561,7 +562,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
 
     let positionParentId;
     const positionsUrl = `${baseUrl}/odata/v2/Position?$filter= code eq '${positionData.positionCode}'&$select=code,costCenter,department,positionTitle,jobTitle,parentPosition&$format=json`
-          
+
     let getToSync = Meteor.wrapAsync(HTTP.get);
     const positionsRes = getToSync(positionsUrl, {headers: requestHeaders})
     if(positionsRes) {
@@ -574,7 +575,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
           if(position.department) {
             const departmentUrl = `${baseUrl}/odata/v2/FODepartment?$filter=externalCode eq '${position.department}'&$select=costCenter,name,description,externalCode,parent&$format=json`
 
-            let getToSync = Meteor.wrapAsync(HTTP.get);  
+            let getToSync = Meteor.wrapAsync(HTTP.get);
             const departmentRes = getToSync(departmentUrl, {headers: requestHeaders})
             if(departmentRes) {
                 let departmentData = JSON.parse(departmentRes.content)
@@ -626,9 +627,9 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
         console.log('Error in Getting employee position!', e.message)
       }
     }
-    
+
     //--
-    
+
     if(payGroupData.code) {
       let payGrade = PayGrades.findOne({
         'successFactors.externalCode': payGroupData.code,
@@ -716,7 +717,7 @@ let fetchEmployeeDetails = (business, config, personIdExternal, pQueueDone) => {
             name: `${payGroupData.code}_TAX`,
             usingSuccessFactorsWithholdingTaxRate: true,
             SuccessFactorsWithholdingTaxBucketPayTypeId: consultancyPayType._id,
-            
+
             successFactorsTaxRate: 0.05,
             employees: [bpUserId],
             status: 'Active'
@@ -868,7 +869,7 @@ if (Meteor.isServer) {
               console.log(`business can't be found in database`)
             }
           })
-        }));        
+        }));
         return successResponse()
       }
     }
@@ -887,7 +888,7 @@ if (Meteor.isServer) {
           return failureResponse(e.message)
         }
         let businessId = decoded.businessId;
-        
+
         let body = [];
         this.request.on('data', (chunk) => {
           body.push(chunk);
@@ -948,18 +949,18 @@ if (Meteor.isServer) {
               // fetchEmployeeDetails(business, config, 'chris.tester')
               // fetchEmployeeDetails(business, config, 'balogun.integrator')
               // fetchEmployeeDetails(business, config, 'black.panther')
-              
+
               // fetchEmployeeDetails(business, config, 'Zek')
 
               // fetchEmployeeDetails(business, config, 'C00007T')
               // fetchEmployeeDetails(business, config, 'E00054')
 
               // fetchEmployeeDetails(business, config, 'efe.rambo')
-              
+
               fetchEmployeeDetails(business, config, 'ishawuru.johnson')
             }
           })
-        }));        
+        }));
         return successResponse()
       }
     }
