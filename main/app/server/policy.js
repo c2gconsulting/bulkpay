@@ -36,5 +36,6 @@ BrowserPolicy.content.allowImageOrigin("secure.gravatar.com");
 BrowserPolicy.content.allowImageOrigin("i0.wp.com");
 BrowserPolicy.content.allowImageOrigin("*.intercomassets.com");
 BrowserPolicy.content.allowImageOrigin("*.cloudinary.com");
+BrowserPolicy.content.allowImageOrigin("*.amazonaws.com");
 
 BrowserPolicy.content.allowEval(__meteor_runtime_config__.ROOT_URL);

@@ -492,6 +492,10 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
         }
     }
 });
+Router.route('/business/:_id/files', {
+    layoutTemplate: 'ExtLayout',
+    template: 'upload',
+});
 
 Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',

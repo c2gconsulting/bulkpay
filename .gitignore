@@ -21,4 +21,7 @@ mup.js
 #for macos
 **/.DS_Store
 
+settings-development.json
+settings-production.json
+
 main/build/*

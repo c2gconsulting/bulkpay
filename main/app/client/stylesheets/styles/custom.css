@@ -147,3 +147,16 @@ ul {
     position: relative !important;
     left: 50% !important;
 }
+.upload-area .alert {
+  position: relative;
+}
+
+.upload-area input[type="file"] {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 100%;
+  opacity: 0;
+}
