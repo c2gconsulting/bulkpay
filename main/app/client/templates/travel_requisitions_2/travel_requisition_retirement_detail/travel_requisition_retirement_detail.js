@@ -39,6 +39,7 @@ Template.TravelRequisition2RetirementDetail.events({
         currentTravelRequest.actualTotalAncilliaryCostNGN = currentTravelRequest.actualTotalEmployeePerdiemNGN + currentTravelRequest.actualTotalAirportTaxiCostNGN + currentTravelRequest.actualTotalGroundTransportCostNGN + currentTravelRequest.actualTotalMiscCostNGN;
         currentTravelRequest.actualTotalAncilliaryCostUSD = currentTravelRequest.actualTotalEmployeePerdiemUSD + currentTravelRequest.actualTotalAirportTaxiCostUSD + currentTravelRequest.actualTotalGroundTransportCostUSD + currentTravelRequest.actualTotalMiscCostUSD;
         currentTravelRequest.additionalRetirementComment = $("#additionalRetirementComment").val();
+        currentTravelRequest.tripReport = $("#tripReport").val();
 
 
         tmpl.currentTravelRequest.set(currentTravelRequest);

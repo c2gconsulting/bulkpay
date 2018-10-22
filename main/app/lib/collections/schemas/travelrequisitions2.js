@@ -338,6 +338,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    tripReport: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     supervisorRetirementComment: {
         type: String,
         defaultValue: '',
