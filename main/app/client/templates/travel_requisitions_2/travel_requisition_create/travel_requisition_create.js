@@ -717,6 +717,7 @@ Template.TravelRequisition2Create.events({
         //explicitely set status
         currentTravelRequest.status = "Draft";
 
+
         Meteor.call('TravelRequest2/createDraft', currentTravelRequest, (err, res) => {
             if (res){
                 swal({

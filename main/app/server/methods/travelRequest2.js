@@ -430,6 +430,65 @@ let TravelRequestHelper = {
 
             return true;
         },
+        "TravelRequest2/createDraft": function(currentTravelRequest){
+            if(!this.userId && Core.hasPayrollAccess(this.userId)){
+                throw new Meteor.Error(401, "Unauthorized");
+            }
+            check(currentTravelRequest.businessId, String);
+            this.unblock()
+
+            currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+            let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+            if (budgetCode){
+                currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+                currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+            }
+
+            if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+                let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+                throw new Meteor.Error(401, errMsg);
+            }
+
+            if(currentTravelRequest._id){
+
+                TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});
+
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                let createdByEmail = "";
+                let supervisorEmail = "";
+                let createdByName = "Employee"
+                let supervisorName = "Supervisor"
+                const createdBySubject = "New travel retirement for " + createdBy.profile.fullName;
+                const supervisorSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
+
+
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
+                }
+
+                if (supervisor.emails.length > 0){
+                    supervisorEmail = supervisor.emails[0].address;
+                    supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
+                    console.log(supervisorEmail);
+                }
+
+                //Send to requestor
+                TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Supervisor
+                TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+
+            }else{
+                let result = TravelRequisition2s.insert(currentTravelRequest);
+            }
+
+            return true;
+        },
         "TravelRequest2/supervisorApprovals": function(currentTravelRequest){
             if(!this.userId && Core.hasPayrollAccess(this.userId)){
                 throw new Meteor.Error(401, "Unauthorized");

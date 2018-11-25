@@ -297,7 +297,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"],
+        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"],
         optional: true
     },
     isStatusSeenByCreator: {

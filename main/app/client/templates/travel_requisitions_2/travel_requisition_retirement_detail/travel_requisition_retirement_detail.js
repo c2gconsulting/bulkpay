@@ -70,6 +70,33 @@ Template.TravelRequisition2RetirementDetail.events({
         });
 
     },
+    'click #new-retirement-save-draft': function(e, tmpl) {
+        e.preventDefault()
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.retirementStatus = "Draft";
+        Meteor.call('TravelRequest2/createDraft', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Trip Retirement Updated",
+                    text: "Your trip requirement draft has been saved",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Your trip requirement could not be saved, reason: " + err.message,
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+        });
+
+    },
+
     'change input[type="file"]' ( event, template ) {
       Modules.client.uploadToAmazonS3( { event: event, template: template } );
     }
@@ -95,6 +122,13 @@ Template.TravelRequisition2RetirementDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
             return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+
+        }
+     },
+     'isDraft': function() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest) {
+            return currentTravelRequest.retirementStatus === "Draft"
 
         }
      },

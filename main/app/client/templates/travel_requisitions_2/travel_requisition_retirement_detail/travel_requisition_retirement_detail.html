@@ -490,8 +490,8 @@
                         <div class="row">
                           <div class="col-lg-12 col-sm-12 col-xs-12 hidden-xs hidden-sm">
                             <label for="tripReport" class="control-label">Trip Report</label>
-                            <textarea class="form-control" rows="9" placeholder="" id="tripReport" name="tripReport"></textarea>
-                          </div>
+                            <textarea class="form-control" rows="9" placeholder="" id="tripReport" name="tripReport" value="{{currentTravelRequest.tripReport}}" disabled></textarea>
+                            </div>
                         </div>
                         <br/>
                         <div class="row">
@@ -514,14 +514,27 @@
                     {{#if isUnretiredTrips}}
                   <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
                   <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
+
                   {{else}}
                   {{#if isRejectedTrips}}
                   <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
                   <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
+
+                  {{else}}
+                  {{#if isDraft}}
+                  <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+                  <button class="btn btn-success mr5 pull-right" id="new-retirement-create" data-dismiss="modal">Submit for Approval</button>
+                  <button class="btn btn-primary mr5 pull-right" id="new-retirement-save-draft" data-dismiss="modal">Save Draft</button>
+              
+
+
                   {{else}}
                   <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+
+
                       {{/if}}
                   {{/if}}
+                    {{/if}}
                   <!--<button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
                     </div><!-- panel-footer -->
                 </div>
