@@ -26,7 +26,7 @@ Template.BudgetIndex.helpers({
 });
 
 Template.singleBudget.helpers({
-    
+
     'getEmployeeNameById': function(employeeId){
         return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     }
@@ -56,6 +56,8 @@ Template.BudgetIndex.onDestroyed(function () {
 Template.singleBudget.events({
     'click .pointer': function(e, tmpl){
         Modal.show('BudgetCreate', this.data);
+        console.log(this)
+        console.log(this.data)
     },
     'click #deleteBudget': function(e, tmpl) {
         event.preventDefault();

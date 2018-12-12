@@ -148,8 +148,8 @@ Meteor.methods({
 
             let myPassword = {digest: hashedPassword, algorithm: 'sha-256'};
             let loginResult = Accounts._checkPassword(user, myPassword);
-            console.log(`loginResult: `, loginResult)
-            console.log(`myPassword: `, myPassword)
+             console.log(`loginResult: `, loginResult)
+            // console.log(`myPassword: `, myPassword)
 
 
             if(loginResult.error) {

@@ -78,5 +78,6 @@ Template.singlePaytype.helpers({
 Template.singlePaytype.events({
     'click .pointer': function(e, tmpl){
         Modal.show('PaytypeCreate', this.data);
+
     }
 });
