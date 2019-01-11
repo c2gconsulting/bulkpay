@@ -396,9 +396,9 @@ Template.LeaveCreate.onCreated(function () {
 
     self.setLeaveDaysLeftBasedOnDaysWorked = function() {
         let suppLeavesForUser = SupplementaryLeaves.findOne({businessId: businessId, employees: {$in: [Meteor.userId()]}});
-        // console.log("suppLeavesForUser is:");
-        // console.log(suppLeavesForUser);
-        let LeaveBalanceInDays = suppLeavesForUser.numberOfLeaveDays
+        console.log("suppLeavesForUser is:");
+        console.log(suppLeavesForUser);
+        // let LeaveBalanceInDays = suppLeavesForUser.numberOfLeaveDays
         // console.log("suppLeavesForUser.numberOfLeaveDays is:");
         // console.log(suppLeavesForUser.numberOfLeaveDays);
 
@@ -447,6 +447,7 @@ Template.LeaveCreate.onCreated(function () {
         // let usedLeaveDays = (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
 
         let usedLeaveDays = (hoursOfLeaveApproved / 24)
+        // console.log("usedLeaveDays is:");
         // console.log(usedLeaveDays);
 
         let availableLeaveDays = (numberOfLeaveDaysLeft) - (usedLeaveDays) + (numSupplementaryLeaveDays);
