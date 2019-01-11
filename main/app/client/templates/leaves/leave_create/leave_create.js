@@ -103,7 +103,7 @@ Template.LeaveCreate.events({
         }
 
         if(allowLeavesInHours) {
-            leaveDoc.duration = durationAsNumber / 24 
+            leaveDoc.duration = durationAsNumber / 24
             leaveDoc.durationInHours = durationAsNumber
         } else {
             leaveDoc.duration = durationAsNumber
@@ -124,7 +124,7 @@ Template.LeaveCreate.events({
                     //--
                     let currentYear = moment().year()
                     let currentYearAsNumber = parseInt(currentYear)
-            
+
                     Meteor.call('leave/create', leaveDoc, currentYearAsNumber, function(err, res) {
                         if(!err) {
                             swal('Successful', "Leave request successful", 'success')
@@ -154,10 +154,10 @@ Template.LeaveCreate.helpers({
             let userPaygrade = user.employeeProfile.employment.paygrade
 
             let allowedLeaveTypes = []
-    
+
             allLeaveTypes.forEach(aLeaveType => {
                 let allowedPaygrades = aLeaveType.payGradeIds
-                
+
                 let isLeaveTypeAllowed = _.find(allowedPaygrades, aPayGrade => {
                     return aPayGrade === userPaygrade
                 })
@@ -233,12 +233,14 @@ Template.LeaveCreate.onCreated(function () {
     let self = this;
     let businessId = Session.get('context')
 
+
+
     self.profile = new ReactiveDict();
     self.isAllowingHoursLeave = new ReactiveVar();
     self.isAllowingHoursLeave.set(false)
 
     self.isHourLeaveRequestsEnabled = new ReactiveVar()
-    
+
     self.numberOfLeaveDaysLeft = new ReactiveVar();
     self.usedLeaveDays = new ReactiveVar();
     self.availableLeaveDays = new ReactiveVar();
@@ -279,10 +281,10 @@ Template.LeaveCreate.onCreated(function () {
     }
 
 
-    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {        
+    self.getDurationOfWeekDaysInHours = function(startDate, endDate) {
         let startDateMoment = moment(startDate)
         startDateMoment.add(1, 'hours');       // There is a reason for adding 1 hour
-  
+
         let endDateMoment = moment(endDate)
          endDateMoment.add(1, 'hours');
         if(endDateMoment.hour() === 0 && endDateMoment.minute() === 0) {
@@ -347,7 +349,7 @@ Template.LeaveCreate.onCreated(function () {
             numberOfDays -= 1;
         }
         console.log(`numberOfLeaveDaysToAward: `, numberOfLeaveDaysToAward)
-        
+
         return numberOfLeaveDaysToAward
     }
 
@@ -356,8 +358,8 @@ Template.LeaveCreate.onCreated(function () {
         if(businessUnitCustomConfig) {
             if(businessUnitCustomConfig.isHourLeaveRequestsEnabled) {
                 let durationInHours = self.getDurationOfWeekDaysInHours(startDate, endDate)
-                let numberOfDaysInHours = Math.floor(durationInHours / 24) 
-        
+                let numberOfDaysInHours = Math.floor(durationInHours / 24)
+
                 if(numberOfDaysInHours < 1) {
                     return durationInHours + ' hours'
                 } else {
@@ -373,7 +375,7 @@ Template.LeaveCreate.onCreated(function () {
     }
 
     self.setLeaveDaysLeftBasedOnFixedEntitlement = function() {
-        Meteor.call("userleaveentitlements/get", Meteor.userId(), function(err, userLeaveEntitlement) {            
+        Meteor.call("userleaveentitlements/get", Meteor.userId(), function(err, userLeaveEntitlement) {
             if(userLeaveEntitlement) {
                 let userDaysLeftHistory = userLeaveEntitlement.leaveDaysLeft
                 let currentYear = moment().year()
@@ -389,11 +391,18 @@ Template.LeaveCreate.onCreated(function () {
                     self.numberOfLeaveDaysLeft.set(foundDaysLeftInYear.daysLeft)
                 }
             }
-        });            
+        });
     }
 
     self.setLeaveDaysLeftBasedOnDaysWorked = function() {
         let suppLeavesForUser = SupplementaryLeaves.findOne({businessId: businessId, employees: {$in: [Meteor.userId()]}});
+        // console.log("suppLeavesForUser is:");
+        // console.log(suppLeavesForUser);
+        let LeaveBalanceInDays = suppLeavesForUser.numberOfLeaveDays
+        // console.log("suppLeavesForUser.numberOfLeaveDays is:");
+        // console.log(suppLeavesForUser.numberOfLeaveDays);
+
+
 
         let user = Meteor.users.findOne(Meteor.userId())
         let numberOfDaysSinceResumption = 0
@@ -409,16 +418,18 @@ Template.LeaveCreate.onCreated(function () {
         let leaveTypesWithoutDeduction = LeaveTypes.find({
             deductFromAnnualLeave: false
         }).fetch();
-      
+
+       // let leaveBalance = supplementaryleaves.find({numberOfLeaveDays:numberOfLeaveDays}).fetch();
+       //
         let theLeaveTypeIds = _.pluck(leaveTypesWithoutDeduction, '_id');
              let hoursOfLeaveApproved = 0
         let userApprovedLeaves = Leaves.find({
-            businessId: businessId, 
+            businessId: businessId,
             employeeId: Meteor.userId(),
             approvalStatus: 'Approved',
           //  type: {$nin: theLeaveTypeIds}
         }).fetch();
-      
+
         userApprovedLeaves.forEach(aLeave => {
             hoursOfLeaveApproved += aLeave.durationInHours
         })
@@ -426,25 +437,33 @@ Template.LeaveCreate.onCreated(function () {
         let numSupplementaryLeaveDays = 0
         if(suppLeavesForUser) {
             numSupplementaryLeaveDays = suppLeavesForUser.numberOfLeaveDays
+            // console.log("numSupplementaryLeaveDays is:");
+            // console.log(numSupplementaryLeaveDays);
         }
-      
+
 
         //--
-        let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption) 
-        let usedLeaveDays = (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
-     
-        let availableLeaveDays = (numberOfLeaveDaysLeft) - (usedLeaveDays);
-    
-        
+        let numberOfLeaveDaysLeft = (0.056 * numberOfDaysSinceResumption)
+        // let usedLeaveDays = (hoursOfLeaveApproved / 24) + numSupplementaryLeaveDays
+
+        let usedLeaveDays = (hoursOfLeaveApproved / 24)
+        // console.log(usedLeaveDays);
+
+        let availableLeaveDays = (numberOfLeaveDaysLeft) - (usedLeaveDays) + (numSupplementaryLeaveDays);
+        // console.log("availableLeaveDays is:");
+        // console.log(availableLeaveDays);
+
+
 
 
 
         self.numberOfLeaveDaysLeft.set(numberOfLeaveDaysLeft.toFixed(2))
         self.usedLeaveDays.set(usedLeaveDays.toFixed(2))
         self.availableLeaveDays.set(availableLeaveDays.toFixed(2))
-  
+
     }
-   
+
+
     self.subscribe('employeeLeaveTypes', businessId);
     let employeeApprovedLeavesSub = self.subscribe('employeeApprovedLeaves', businessId)
     let suppLeavesForUserSub = self.subscribe('supplementaryLeaveForUser', businessId, Meteor.userId())
@@ -453,7 +472,7 @@ Template.LeaveCreate.onCreated(function () {
         if(employeeApprovedLeavesSub.ready() && suppLeavesForUserSub.ready()) {
             Meteor.call('BusinessUnitCustomConfig/getConfig', businessId, function(err, businessUnitCustomConfig) {
                 self.businessUnitCustomConfig.set(businessUnitCustomConfig)
-                
+
                 if(businessUnitCustomConfig.leaveDaysAccrual === 'FixedLeaveEntitlement') {
                     self.setLeaveDaysLeftBasedOnFixedEntitlement()
                 } else if(businessUnitCustomConfig.leaveDaysAccrual === 'NumberOfDaysWorked') {

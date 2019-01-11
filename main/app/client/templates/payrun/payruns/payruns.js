@@ -83,9 +83,11 @@ Template.payruns.events({
             const month = $('[name="paymentPeriodMonth"]').val();
             const year = $('[name="paymentPeriodYear"]').val();
             let period = `${month}${year}`
-            
+
             Meteor.call("sapB1integration/postPayrunResults", Session.get('context'), period, (err, res) => {
                 resetButton()
+                console.log("res is:")
+                console.log(res)
                 console.log(`res: ${JSON.stringify(res)}`)
                 if (!err) {
                     if(res) {
