@@ -11,6 +11,8 @@ Template.LeaveCreate.events({
             // let duration = tmpl.getNumberOfWeekDays(start, end)
 
             let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+            // console.log("durationAsDaysAndHours is:")
+            // console.log(durationAsDaysAndHours)
             $("#duration").val(durationAsDaysAndHours)
         }
     },
@@ -21,6 +23,8 @@ Template.LeaveCreate.events({
             // let duration = tmpl.getNumberOfWeekDays(start, end)
 
             let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start, end)
+            // console.log("durationAsDaysAndHours is:")
+            // console.log(durationAsDaysAndHours)
             $("#duration").val(durationAsDaysAndHours)
         }
     },
@@ -58,6 +62,8 @@ Template.LeaveCreate.events({
 
         if(allowLeavesInHours) {
             let duration = $('#duration').val();
+            console.log("duration is")
+            console.log(duration)
             durationAsNumber = parseInt(duration)
 
             if(isNaN(durationAsNumber)) {
@@ -82,10 +88,21 @@ Template.LeaveCreate.events({
             endDateObj = endDateMoment.toDate()
             console.log(`endDateObj: `, endDateObj)
 
-            durationAsNumber = tmpl.getDurationOfWeekDays(start, endDateMoment) // in days
+          //  durationAsNumber = tmpl.getDurationOfWeekDays(start, endDateMoment) // in days
+            durationAsNumber = Session.get('numberOfHoursInPeriodWeekDays') / 24 // in days
             console.log(`durationAsNumber: `, durationAsNumber)
         }
         console.log(`durationAsNumber: `, durationAsNumber)
+        // let start1 = $("#startDate").val();
+        // let end1 = $("#endDate").val();
+        // if (start1 && end1){
+        //     // let duration = tmpl.getNumberOfWeekDays(start, end)
+        //
+        //     let durationAsDaysAndHours = tmpl.prettifyDurationOfWeekDaysInDaysAndHours(start1, end1)
+        //     console.log("durationAsDaysAndHours is:")
+        //     console.log(durationAsDaysAndHours)
+        //     $("#duration").val(durationAsDaysAndHours)
+        //   }
 
         if(!selectedLeaveType || selectedLeaveType.length === 0) {
             tmpl.inputErrorMsg.set("Please select a leave type")
@@ -108,6 +125,7 @@ Template.LeaveCreate.events({
         } else {
             leaveDoc.duration = durationAsNumber
             leaveDoc.durationInHours = durationAsNumber * 24
+
         }
 
         let leaveType = LeaveTypes.findOne(selectedLeaveType)
@@ -294,6 +312,8 @@ Template.LeaveCreate.onCreated(function () {
         let numberOfHoursInPeriod = endDateMoment.diff(startDateMoment, 'hours')
         console.log(`numberOfHoursInPeriod: `, numberOfHoursInPeriod)
         let numberOfHoursInPeriodWeekDays = numberOfHoursInPeriod
+        // console.log(`numberOfHoursInPeriodWeekDays1: `, numberOfHoursInPeriodWeekDays)
+
         //--
         let numberOfDays = endDateMoment.diff(startDateMoment, 'days')
         console.log(`numberOfDays: `, numberOfDays)
@@ -319,8 +339,8 @@ Template.LeaveCreate.onCreated(function () {
             startDateMomentClone.add(1, 'days');
             numberOfDays -= 1;
         }
-        console.log(`numberOfHoursInPeriodWeekDays: `, numberOfHoursInPeriodWeekDays)
-
+        // console.log(`numberOfHoursInPeriodWeekDays2: `, numberOfHoursInPeriodWeekDays)
+        Session.set('numberOfHoursInPeriodWeekDays', numberOfHoursInPeriodWeekDays)
         return numberOfHoursInPeriodWeekDays
     }
 
