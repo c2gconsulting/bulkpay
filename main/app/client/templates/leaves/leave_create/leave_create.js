@@ -426,14 +426,17 @@ Template.LeaveCreate.onCreated(function () {
 
         let user = Meteor.users.findOne(Meteor.userId())
         let numberOfDaysSinceResumption = 0
-        if(user) {
-            let hireDate = user.employeeProfile.employment.hireDate
-            if(hireDate) {
-                let hireDateAsMoment = moment(hireDate)
-
-                numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
-            }
-        }
+        // if(user) {
+        //     let hireDate = user.employeeProfile.employment.hireDate
+        //     if(hireDate) {
+        //       //  let hireDateAsMoment = moment(hireDate)
+        //         let hireDateAsMoment = 0
+        //
+        //     //    numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
+        //
+        //         numberOfDaysSinceResumption = hireDateAsMoment
+        //     }
+        // }
         //--
         let leaveTypesWithoutDeduction = LeaveTypes.find({
             deductFromAnnualLeave: false
