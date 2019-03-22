@@ -429,15 +429,21 @@ Template.LeaveCreate.onCreated(function () {
         // if(user) {
         //     let hireDate = user.employeeProfile.employment.hireDate
         //     if(hireDate) {
-        //       //  let hireDateAsMoment = moment(hireDate)
-        //         let hireDateAsMoment = 0
+        //         let hireDateAsMoment = moment(hireDate)
         //
-        //     //    numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
-        //
-        //         numberOfDaysSinceResumption = hireDateAsMoment
+        //        numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
         //     }
-        // }
-        //--
+        //  }
+
+        if(user) {
+      //      let hireDate = user.employeeProfile.employment.hireDate
+            let hireDate = "2019-03-22T00:00:00.000Z"
+            if(hireDate) {
+                let hireDateAsMoment = moment(hireDate)
+               numberOfDaysSinceResumption = moment().diff(hireDateAsMoment, 'days')
+            }
+         }
+
         let leaveTypesWithoutDeduction = LeaveTypes.find({
             deductFromAnnualLeave: false
         }).fetch();
