@@ -396,6 +396,8 @@ let TravelRequestHelper = {
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
+                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
                 let createdByEmail = "";
@@ -666,6 +668,8 @@ let TravelRequestHelper = {
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
+                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
                 const financeApprover = Meteor.users.findOne(currentTravelRequest.financeApproverId);
@@ -776,10 +780,10 @@ let TravelRequestHelper = {
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
                 //For retirements no need to involve city by city admin
-                //for (i = 0; i < currentTravelRequest.trips.length; i++) {
+                // for (i = 0; i < currentTravelRequest.trips.length; i++) {
                 //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
                 //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
-                //}
+                // }
 
                 otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 

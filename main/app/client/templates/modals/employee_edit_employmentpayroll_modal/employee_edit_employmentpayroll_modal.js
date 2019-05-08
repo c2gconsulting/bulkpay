@@ -538,7 +538,9 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
 
   self.getPaytypes = () => {
       let assigned = Template.instance().assignedTypes.get();
-      if(assigned){
+      console.log("assigned is")
+      console.log(assigned)
+        if(assigned){
           let wage = assigned.map(x => {
               if(x && x.paytype) {
                 return {paytype: x.paytype, value: x.inputed}
@@ -547,6 +549,7 @@ Template.EmployeeEditEmploymentPayrollModal.onCreated(function () {
         return wage;
       }
   };
+
 
   let selectedEmployee = Session.get('employeesList_selectedEmployee')
   self.setEditUser(selectedEmployee);

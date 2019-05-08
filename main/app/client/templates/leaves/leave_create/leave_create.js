@@ -480,8 +480,7 @@ Template.LeaveCreate.onCreated(function () {
         // console.log(usedLeaveDays);
 
         let availableLeaveDays = (numberOfLeaveDaysLeft) - (usedLeaveDays) + (numSupplementaryLeaveDays);
-        // console.log("availableLeaveDays is:");
-        // console.log(availableLeaveDays);
+
 
 
 
