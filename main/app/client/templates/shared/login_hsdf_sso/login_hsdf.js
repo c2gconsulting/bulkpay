@@ -252,12 +252,12 @@ Template.login_sso.onCreated(function () {
 											}
 										let passWord = "System123!"
 										Session.set("passWord",passWord);
-										// jQuery(function(){
-                                        //  jQuery('#submit').click();
-                                        //    });
-										//  jQuery(function(){
-										// 	 jQuery('#submit').click();
-										// 	 });
+										jQuery(function(){
+                                         jQuery('#submit').click();
+                                           });
+										 jQuery(function(){
+											 jQuery('#submit').click();
+											 });
 							});
 
  });
