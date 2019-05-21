@@ -67,14 +67,14 @@ Router.route('/', {
 //     this.response.write("All emails sent")
 //     this.response.end()
 // }, {where: 'server'});
+//localhost:3000/business/FJe5hXSxCHvR2FBjJ/?userid=C00092&
 
-
- // Router.route('/login', {
- // name: 'login',
- // controller:'ApplicationController',
- // layoutTemplate: 'ApplicationLayout',
- // template: 'Login'
- // });
+ Router.route('/business/sso/FJe5hXSxCHvR2FBjJ', {
+ name: 'login',
+ controller:'ApplicationControllerSso',
+ layoutTemplate: 'ApplicationLayout',
+ template: 'Login'
+ });
 
  // Router.route('/login', {
  //     name: 'login',
@@ -213,6 +213,11 @@ Router.route('/business/:_id/budgets', {
     controller: 'BudgetsController',
     where: 'client'
 });
+Router.route('/business/:_id/variablePay', {
+    name: 'variablePay',
+    controller: 'VariablePayController',
+    where: 'client'
+});
 Router.route('/business/:_id/airlines', {
     name: 'airlines',
     controller: 'AirlinesController',
@@ -340,7 +345,6 @@ Router.route('/business/:_id/successfactors/config', {
 //   where: 'client',
 //   action: 'showSuccessFactorsConfig'
 // });
-
 Router.route('/business/:_id/saphana/config', {
     name: 'saphana.config',
     controller: 'IntegrationsConfigController',
@@ -492,6 +496,20 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
         }
     }
 });
+Router.route('/business/:_id/home2', {
+    name: 'home2',
+    layoutTemplate: 'ExtLayout',
+    template: 'Home2',
+    onBeforeAction: function () {
+        if  (!Meteor.userId() && !Meteor.loggingIn()) {
+            this.redirect('/');
+            this.stop();
+        } else {
+            this.next();
+        }
+    }
+});
+
 Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',
     layoutTemplate: 'ExtLayout',
