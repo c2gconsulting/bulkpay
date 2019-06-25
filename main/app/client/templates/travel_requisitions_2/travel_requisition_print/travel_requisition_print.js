@@ -273,6 +273,8 @@ Template.TravelRequisition2Print.onCreated(function () {
 
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+            console.log("businessUnit is")
+            console.log(businessUnit)
             self.businessUnitLogoUrl.set(businessUnit.logoUrl)
         }
     })
