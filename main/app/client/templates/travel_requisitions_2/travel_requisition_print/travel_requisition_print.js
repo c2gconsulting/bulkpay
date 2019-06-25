@@ -249,7 +249,7 @@ Template.TravelRequisition2Print.onCreated(function () {
         self.isInRetireMode.set(true)
     }
 
-    self.businessUnitLogoUrl = new ReactiveVar()
+  //  self.businessUnitLogoUrl = new ReactiveVar()
 
     self.autorun(function() {
 
@@ -259,7 +259,7 @@ Template.TravelRequisition2Print.onCreated(function () {
             }
         })
 
-        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+    //    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
 
 
@@ -271,14 +271,14 @@ Template.TravelRequisition2Print.onCreated(function () {
 
         }
 
-        if(businessUnitSubscription.ready()) {
-            let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-            console.log("businessUnitId is")
-            console.log(businessUnitId)
-            console.log("businessUnit is")
-            console.log(businessUnit)
-            self.businessUnitLogoUrl.set(businessUnit.logoUrl)
-        }
+        // if(businessUnitSubscription.ready()) {
+        //     let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+        //     console.log("businessUnitId is")
+        //     console.log(businessUnitId)
+        //     console.log("businessUnit is")
+        //     console.log(businessUnit)
+        //     self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+        // }
     })
 
 
