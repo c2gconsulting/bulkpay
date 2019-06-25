@@ -487,14 +487,14 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
     name: 'travelrequests2.printrequisition',
     layoutTemplate: 'ExtLayout',
     template: 'TravelRequisition2Print',
-    onBeforeAction: function () {
-        if  (!Meteor.userId() && !Meteor.loggingIn()) {
-            this.redirect('/');
-            this.stop();
-        } else {
-            this.next();
-        }
-    }
+    // onBeforeAction: function () {
+    //     if  (!Meteor.userId() && !Meteor.loggingIn()) {
+    //         this.redirect('/');
+    //         this.stop();
+    //     } else {
+    //         this.next();
+    //     }
+    // }
 });
 Router.route('/business/:_id/home2', {
     name: 'home2',
@@ -514,14 +514,14 @@ Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',
     layoutTemplate: 'ExtLayout',
     template: 'TravelRequisition2RetirementPrint',
-    onBeforeAction: function () {
-        if  (!Meteor.userId() && !Meteor.loggingIn()) {
-            this.redirect('/');
-            this.stop();
-        } else {
-            this.next();
-        }
-    }
+    // onBeforeAction: function () {
+    //     if  (!Meteor.userId() && !Meteor.loggingIn()) {
+    //         this.redirect('/');
+    //         this.stop();
+    //     } else {
+    //         this.next();
+    //     }
+    // }
 });
 
 
