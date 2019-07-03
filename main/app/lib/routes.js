@@ -489,8 +489,9 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
     template: 'TravelRequisition2Print',
     onBeforeAction: function () {
         if  (!Meteor.userId() && !Meteor.loggingIn()) {
-            this.redirect('/');
-            this.stop();
+              this.next();
+            // this.redirect('/');
+            // this.stop();
         } else {
             this.next();
         }
