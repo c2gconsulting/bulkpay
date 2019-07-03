@@ -36,7 +36,7 @@ Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {
     });
 });
 
-Core.publish("TravelRequest2", function (requisitionId) {
+Meteor.publish("TravelRequest2", function (requisitionId) {
     return TravelRequisition2s.find({_id: requisitionId});
 });
 Core.publish("TravelRequestToRetire", function (requisitionId) {
