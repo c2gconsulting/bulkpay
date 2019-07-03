@@ -517,8 +517,9 @@ Router.route('/business/:_id/travelrequests2/printretirement', {
     template: 'TravelRequisition2RetirementPrint',
     onBeforeAction: function () {
         if  (!Meteor.userId() && !Meteor.loggingIn()) {
-            this.redirect('/');
-            this.stop();
+                this.next();
+            // this.redirect('/');
+            // this.stop();
         } else {
             this.next();
         }
