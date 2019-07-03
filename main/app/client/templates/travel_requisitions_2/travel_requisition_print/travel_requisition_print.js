@@ -262,18 +262,18 @@ Template.TravelRequisition2Print.onCreated(function () {
 
     //    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let travelRequest2Sub = Meteor.subscribe('TravelRequest2', invokeReason.requisitionId)
-        console.log("travelRequest2Sub is")
-        console.log(travelRequest2Sub)
-
-        console.log("invokeReason.requisitionId is")
-        console.log(invokeReason.requisitionId)
+        // console.log("travelRequest2Sub is")
+        // console.log(travelRequest2Sub)
+        //
+        // console.log("invokeReason.requisitionId is")
+        // console.log(invokeReason.requisitionId)
 
 
         if(travelRequest2Sub.ready()) {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-            console.log("travelRequestDetails is")
-            console.log(travelRequestDetails)
+            // console.log("travelRequestDetails is")
+            // console.log(travelRequestDetails)
             self.currentTravelRequest.set(travelRequestDetails)
 
 
