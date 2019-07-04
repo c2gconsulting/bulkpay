@@ -2,7 +2,7 @@
  * Paytypes publications
  */
 
-Core.publish("airlines", function (businessId) {
+Meteor.publish("airlines", function (businessId) {
     check(businessId, String);
     return Airlines.find({businessId: businessId});
     //enhnace this method..

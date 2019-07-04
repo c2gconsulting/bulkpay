@@ -208,11 +208,12 @@ Template.TravelRequisition2Print.onCreated(function () {
     let businessUnitId = Router.current().params._id;
     console.log("businessUnitId from print.js is:")
     console.log(businessUnitId)
-    self.subscribe("allEmployees", Router.current().params._id);
-    self.subscribe("travelcities",  Router.current().params._id);
-    self.subscribe("hotels",  Router.current().params._id);
-    self.subscribe("airlines",  Router.current().params._id);
-    self.subscribe("budgets",  Router.current().params._id);
+
+    Meteor.subscribe("allEmployees", Router.current().params._id);
+    Meteor.subscribe("travelcities",  Router.current().params._id);
+    Meteor.subscribe("hotels",  Router.current().params._id);
+    Meteor.subscribe("airlines",  Router.current().params._id);
+    Meteor.subscribe("budgets",  Router.current().params._id);
 
     let invokeReason = {}
     invokeReason.requisitionId = Router.current().params.query.requisitionId

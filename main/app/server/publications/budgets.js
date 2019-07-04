@@ -2,10 +2,10 @@
  * Paytypes publications
  */
 
-Core.publish("budgets", function (businessId) {
+Meteor.publish("budgets", function (businessId) {
     if(businessId) {
         check(businessId, String);
-        return Budgets.find({businessId: businessId});    
+        return Budgets.find({businessId: businessId});
     }
     //enhnace this method..
 });
