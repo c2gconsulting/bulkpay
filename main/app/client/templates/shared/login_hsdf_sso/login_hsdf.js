@@ -221,16 +221,16 @@ Template.login_sso.onCreated(function () {
 							self.autorun(function() {
 							//	let businessUnitId = Session.get('context');
 								let businessUnitId = 	"FJe5hXSxCHvR2FBjJ" ;
-								console.log("businessUnitId is:")
-								console.log(businessUnitId)
+								// console.log("businessUnitId is:")
+								// console.log(businessUnitId)
 							//	self.subscribe("allEmployees", Session.get('context'));
 								Meteor.subscribe("allEmployees",businessUnitId);
 								let allEmployee = Meteor.users.find({"employee": true}).fetch();
-								console.log("allEmployee:");
-								console.log(allEmployee);
+								// console.log("allEmployee:");
+								// console.log(allEmployee);
 								let userId = Session.get('user_Id');
-								console.log("userId:");
-								console.log(userId);
+								// console.log("userId:");
+								// console.log(userId);
 
 
 
@@ -238,14 +238,14 @@ Template.login_sso.onCreated(function () {
 
 								Session.set("user",user);
 
-								console.log("user is:")
-								console.log(user)
+								// console.log("user is:")
+								// console.log(user)
 
 								if(user && user.customUsername) {
 										let userName = user.customUsername
 										Session.set("user_name",userName);
-										console.log("userName is:")
-										console.log(userName)
+										// console.log("userName is:")
+										// console.log(userName)
 
 										}
 										else {
