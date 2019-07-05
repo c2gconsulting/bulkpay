@@ -8,10 +8,21 @@ Meteor.publish("travelcities", function (businessId) {
     //enhnace this method..
 });
 
+Meteor.publish("alltravelcities", function () {
+    return Travelcities.find({});
+    // console.log("this is")
+    // console.log(this)
+    console.log("alltravelcities is")
+    console.log(alltravelcities)
+});
+
+
+
+
 /**
  * Paytype
  */
 
-Core.publish("travelcity", function (id) {
+Meteor.publish("travelcity", function (id) {
     return Travelcities.find({_id: id})
 });

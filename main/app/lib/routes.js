@@ -76,6 +76,13 @@ Router.route('/', {
  template: 'Login'
  });
 
+ Router.route('/business/print/sso/FJe5hXSxCHvR2FBjJ', {
+ name: 'loginPrint',
+ controller:'ApplicationControllerPrint',
+ //layoutTemplate: 'ApplicationLayout',
+  template: 'Loading'
+ });
+
  // Router.route('/login', {
  //     name: 'login',
  //     layoutTemplate: 'ApplicationLayout',
@@ -489,9 +496,9 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
     template: 'TravelRequisition2Print',
     onBeforeAction: function () {
         if  (!Meteor.userId() && !Meteor.loggingIn()) {
-              this.next();
-            // this.redirect('/');
-            // this.stop();
+
+            this.redirect('/business/print/sso/FJe5hXSxCHvR2FBjJ');
+            this.stop();
         } else {
             this.next();
         }
@@ -515,15 +522,15 @@ Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',
     layoutTemplate: 'ExtLayout',
     template: 'TravelRequisition2RetirementPrint',
-    onBeforeAction: function () {
-        if  (!Meteor.userId() && !Meteor.loggingIn()) {
-                this.next();
-            // this.redirect('/');
-            // this.stop();
-        } else {
-            this.next();
-        }
-    }
+    // onBeforeAction: function () {
+    //     if  (!Meteor.userId() && !Meteor.loggingIn()) {
+    //             this.next();
+    //         // this.redirect('/');
+    //         // this.stop();
+    //     } else {
+    //         this.next();
+    //     }
+    // }
 });
 
 

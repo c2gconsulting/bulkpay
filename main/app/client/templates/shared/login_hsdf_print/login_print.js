@@ -1,7 +1,7 @@
 /*****************************************************************************/
-/* : Event Handlers */
+/* Login: Event Handlers */
 /*****************************************************************************/
-Template.login_sso.events({
+Template.login_print.events({
 	'submit form':function(e) {
 		e.preventDefault();
 		    let user = Session.get("user_name")
@@ -179,7 +179,7 @@ Template.login_sso.events({
 /*****************************************************************************/
 /* Login: Helpers */
 /*****************************************************************************/
-Template.login_sso.helpers({
+Template.login_print.helpers({
 	tenantUrl: function(){
 		return document.location.hostname; //placeholder
 	},
@@ -194,7 +194,7 @@ Template.login_sso.helpers({
 /*****************************************************************************/
 /* Login: Lifecycle Hooks */
 /*****************************************************************************/
-Template.login_sso.onCreated(function () {
+Template.login_print.onCreated(function () {
 					 let self = this;
 
 			// 	 	let businessUnitId = Session.get('context');
@@ -226,8 +226,8 @@ Template.login_sso.onCreated(function () {
 							//	self.subscribe("allEmployees", Session.get('context'));
 								Meteor.subscribe("allEmployees",businessUnitId);
 								let allEmployee = Meteor.users.find({"employee": true}).fetch();
-								console.log("allEmployee:");
-								console.log(allEmployee);
+								// console.log("allEmployee:");
+								// console.log(allEmployee);
 								let userId = Session.get('user_Id');
 								// console.log("userId:");
 								// console.log(userId);
@@ -242,7 +242,8 @@ Template.login_sso.onCreated(function () {
 								// console.log(user)
 
 								if(user && user.customUsername) {
-										let userName = user.customUsername
+							//			let userName = user.customUsername
+										let userName = "abolade.oyelere"
 										Session.set("user_name",userName);
 										// console.log("userName is:")
 										// console.log(userName)
@@ -250,7 +251,7 @@ Template.login_sso.onCreated(function () {
 										}
 										else {
 											}
-										let passWord = "System123!"
+										let passWord = "uuuuuu"
 										Session.set("passWord",passWord);
 										jQuery(function(){
                                          jQuery('#submit').click();
@@ -262,8 +263,8 @@ Template.login_sso.onCreated(function () {
 
  });
 
-Template.login_sso.onRendered(function () {
+Template.login_print.onRendered(function () {
 });
 
-Template.login_sso.onDestroyed(function () {
+Template.login_print.onDestroyed(function () {
 });

@@ -31,7 +31,7 @@ Template.TravelCityIndex.helpers({
 /*****************************************************************************/
 Template.TravelCityIndex.onCreated(function () {
     let self = this;
-    self.subscribe("travelcities", Session.get('context'));
+  self.subscribe("travelcities", Session.get('context'));
 });
 
 Template.TravelCityIndex.onRendered(function () {

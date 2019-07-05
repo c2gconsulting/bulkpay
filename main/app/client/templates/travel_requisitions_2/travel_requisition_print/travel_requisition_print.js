@@ -124,10 +124,27 @@ Template.TravelRequisition2Print.helpers({
         }
     },
     'getHotelName': function(hotelId) {
+      // const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      // if(currentTravelRequest && hotelId){
+      //   let index = currentTravelRequest.trips.tripIndex
+      //     return currentTravelRequest.trips.hotelId;
+      // }
         const hotel = Hotels.findOne({_id: hotelId})
 
         if(hotel) {
             return hotel.name
+        }
+    },
+
+    'getBudgetName': function(budgetCodeId) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if(currentTravelRequest && budgetCodeId){
+          return currentTravelRequest.budgetCodeId;
+      }
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
         }
     },
     'getAirlineName': function(airlineId) {
@@ -143,13 +160,8 @@ Template.TravelRequisition2Print.helpers({
             return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
         }
     },
-    'getBudgetName': function(budgetCodeId) {
-        const budget = Budgets.findOne({_id: budgetCodeId})
 
-        if(budget) {
-            return budget.name
-        }
-    },
+
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
     },
@@ -204,18 +216,20 @@ Template.TravelRequisition2Print.onCreated(function () {
     console.log(Router.current());
 
 
+
+
     let self = this;
     let businessUnitId = Router.current().params._id;
     console.log("businessUnitId from print.js is:")
     console.log(businessUnitId)
-
-    Meteor.subscribe("allEmployees", Router.current().params._id);
-    Meteor.subscribe("travelcities",  Router.current().params._id);
-    Meteor.subscribe("hotels",  Router.current().params._id);
-    Meteor.subscribe("airlines",  Router.current().params._id);
-    Meteor.subscribe("budgets",  Router.current().params._id);
+    self.subscribe("allEmployees", Router.current().params._id);
+  //  self.subscribe("travelcities",  Router.current().params._id);
+    self.subscribe("hotels",  Router.current().params._id);
+    self.subscribe("airlines",  Router.current().params._id);
+    self.subscribe("budgets",  Router.current().params._id);
 
     let invokeReason = {}
+//    let  businessId = Router.current().params._id
     invokeReason.requisitionId = Router.current().params.query.requisitionId
     invokeReason.reason = 'edit'
     invokeReason.approverId = null
@@ -249,8 +263,6 @@ Template.TravelRequisition2Print.onCreated(function () {
     if(invokeReason.reason === 'retire') {
         self.isInRetireMode.set(true)
     }
-
-
   //  self.businessUnitLogoUrl = new ReactiveVar()
 
     self.autorun(function() {
@@ -262,22 +274,34 @@ Template.TravelRequisition2Print.onCreated(function () {
         })
 
     //    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-        let travelRequest2Sub = Meteor.subscribe('TravelRequest2', invokeReason.requisitionId)
+  let travelcity =    Meteor.subscribe("alltravelcities")
+  console.log("travelcity is")
+  console.log(travelcity)
+
+  if(travelcity.ready()) {
+      let travelcity2 = Travelcities.find({}).fetch();
+      console.log("travelcity2 is")
+      console.log(travelcity2)
+//self.currentTravelRequest.set(travelRequestDetails)
+  }
+  else{
+    console.log("not working")
+  }
+
+
+        let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
         // console.log("travelRequest2Sub is")
         // console.log(travelRequest2Sub)
         //
         // console.log("invokeReason.requisitionId is")
-        // console.log(invokeReason.requisitionId)
+        // consol e.log(invokeReason.requisitionId)
 
 
         if(travelRequest2Sub.ready()) {
-
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-            // console.log("travelRequestDetails is")
-            // console.log(travelRequestDetails)
+            console.log("travelRequestDetails is")
+            console.log(travelRequestDetails)
             self.currentTravelRequest.set(travelRequestDetails)
-
-
         }
 
         // if(businessUnitSubscription.ready()) {

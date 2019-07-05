@@ -161,7 +161,7 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
         let travelRequestsCreatedSub = self.subscribe('TravelRequestsAdminCreated', businessUnitId, limit, sort)
         if(travelRequestsCreatedSub.ready()) {
             self.travelRequestsAdminCreated.set(self.getTravelRequestsAdminCreated(0))
-            //            const mainList = self.getTravelRequestsICreated(0).fetch();
+            // const mainList = self.getTravelRequestsICreated(0).fetch();
             // self.travelRequestsICreated.set(mainList)
             // console.log(mainList)
         }
