@@ -137,10 +137,10 @@ Template.TravelRequisition2Print.helpers({
     },
 
     'getBudgetName': function(budgetCodeId) {
-      const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if(currentTravelRequest && budgetCodeId){
-          return currentTravelRequest.budgetCodeId;
-      }
+      // const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      // if(currentTravelRequest && budgetCodeId){
+      //     return currentTravelRequest.budgetCodeId;
+      // }
         const budget = Budgets.findOne({_id: budgetCodeId})
 
         if(budget) {
