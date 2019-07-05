@@ -80,7 +80,7 @@ Router.route('/', {
  name: 'loginPrint',
  controller:'ApplicationControllerPrint',
  //layoutTemplate: 'ApplicationLayout',
-  template: 'Loading'
+  template: 'LoadingPrint'
  });
 
  // Router.route('/login', {
