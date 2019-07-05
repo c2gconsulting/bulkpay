@@ -243,7 +243,7 @@ Template.login_print.onCreated(function () {
 
 								if(user && user.customUsername) {
 							//			let userName = user.customUsername
-										let userName = "abolade.oyelere"
+										let userName = "travel.print"
 										Session.set("user_name",userName);
 										// console.log("userName is:")
 										// console.log(userName)
