@@ -522,15 +522,15 @@ Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',
     layoutTemplate: 'ExtLayout',
     template: 'TravelRequisition2RetirementPrint',
-    // onBeforeAction: function () {
-    //     if  (!Meteor.userId() && !Meteor.loggingIn()) {
-    //             this.next();
-    //         // this.redirect('/');
-    //         // this.stop();
-    //     } else {
-    //         this.next();
-    //     }
-    // }
+    onBeforeAction: function () {
+        if  (!Meteor.userId() && !Meteor.loggingIn()) {
+
+            this.redirect('/business/print/sso/FJe5hXSxCHvR2FBjJ');
+            this.stop();
+        } else {
+            this.next();
+        }
+    }
 });
 
 
