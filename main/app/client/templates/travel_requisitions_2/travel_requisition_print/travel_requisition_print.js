@@ -223,13 +223,11 @@ Template.TravelRequisition2Print.onCreated(function () {
     console.log("businessUnitId from print.js is:")
     console.log(businessUnitId)
     self.subscribe("allEmployees", Router.current().params._id);
-  //  self.subscribe("travelcities",  Router.current().params._id);
     self.subscribe("hotels",  Router.current().params._id);
     self.subscribe("airlines",  Router.current().params._id);
     self.subscribe("budgets",  Router.current().params._id);
 
     let invokeReason = {}
-//    let  businessId = Router.current().params._id
     invokeReason.requisitionId = Router.current().params.query.requisitionId
     invokeReason.reason = 'edit'
     invokeReason.approverId = null
@@ -273,20 +271,20 @@ Template.TravelRequisition2Print.onCreated(function () {
             }
         })
 
-    //    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-  let travelcity =    Meteor.subscribe("alltravelcities")
-  console.log("travelcity is")
-  console.log(travelcity)
+        //    let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+        let travelcity =    Meteor.subscribe("alltravelcities")
+        // console.log("travelcity is")
+        // console.log(travelcity)
 
-  if(travelcity.ready()) {
-      let travelcity2 = Travelcities.find({}).fetch();
-      console.log("travelcity2 is")
-      console.log(travelcity2)
-//self.currentTravelRequest.set(travelRequestDetails)
-  }
-  else{
-    console.log("not working")
-  }
+        if(travelcity.ready()) {
+          let travelcity2 = Travelcities.find({}).fetch();
+          // console.log("travelcity2 is")
+          // console.log(travelcity2)
+          //self.currentTravelRequest.set(travelRequestDetails)
+        }
+        else{
+        //  console.log("not working")
+        }
 
 
         let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
@@ -299,8 +297,8 @@ Template.TravelRequisition2Print.onCreated(function () {
 
         if(travelRequest2Sub.ready()) {
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-            console.log("travelRequestDetails is")
-            console.log(travelRequestDetails)
+            // console.log("travelRequestDetails is")
+            // console.log(travelRequestDetails)
             self.currentTravelRequest.set(travelRequestDetails)
         }
 

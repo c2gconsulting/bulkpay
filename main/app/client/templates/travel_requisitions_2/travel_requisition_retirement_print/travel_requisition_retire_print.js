@@ -262,6 +262,7 @@ Template.TravelRequisition2RetirementPrint.onCreated(function () {
 
     let self = this;
     let businessUnitId = Router.current().params._id;
+        self.subscribe("allEmployees", Router.current().params._id);
     self.subscribe("travelcities",  Router.current().params._id);
     self.subscribe("hotels",  Router.current().params._id);
     self.subscribe("airlines",  Router.current().params._id);
