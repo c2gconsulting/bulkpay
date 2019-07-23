@@ -76,13 +76,6 @@ Router.route('/', {
  template: 'Login'
  });
 
- Router.route('/business/print/sso/FJe5hXSxCHvR2FBjJ', {
- name: 'loginPrint',
- controller:'ApplicationControllerPrint',
- //layoutTemplate: 'ApplicationLayout',
-  template: 'LoadingPrint'
- });
-
  // Router.route('/login', {
  //     name: 'login',
  //     layoutTemplate: 'ApplicationLayout',
@@ -493,16 +486,7 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorindex', {
 Router.route('/business/:_id/travelrequests2/printrequisition', {
     name: 'travelrequests2.printrequisition',
     layoutTemplate: 'ExtLayout',
-    template: 'TravelRequisition2Print',
-    onBeforeAction: function () {
-        if  (!Meteor.userId() && !Meteor.loggingIn()) {
-
-            this.redirect('/business/print/sso/FJe5hXSxCHvR2FBjJ');
-            this.stop();
-        } else {
-            this.next();
-        }
-    }
+    template: 'TravelRequisition2Print'
 });
 Router.route('/business/:_id/home2', {
     name: 'home2',
@@ -521,16 +505,7 @@ Router.route('/business/:_id/home2', {
 Router.route('/business/:_id/travelrequests2/printretirement', {
     name: 'travelrequests2.printretirement',
     layoutTemplate: 'ExtLayout',
-    template: 'TravelRequisition2RetirementPrint',
-    onBeforeAction: function () {
-        if  (!Meteor.userId() && !Meteor.loggingIn()) {
-
-            this.redirect('/business/print/sso/FJe5hXSxCHvR2FBjJ');
-            this.stop();
-        } else {
-            this.next();
-        }
-    }
+    template: 'TravelRequisition2RetirementPrint'
 });
 
 

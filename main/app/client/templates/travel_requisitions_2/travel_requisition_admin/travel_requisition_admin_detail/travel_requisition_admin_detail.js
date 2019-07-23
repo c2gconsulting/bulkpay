@@ -228,6 +228,7 @@ Template.TravelRequisition2AdminDetail.helpers({
 /* TravelRequisition2AdminDetail: Lifecycle Hooks */
 /*****************************************************************************/
 Template.TravelRequisition2AdminDetail.onCreated(function () {
+
     let self = this;
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
@@ -272,6 +273,7 @@ Template.TravelRequisition2AdminDetail.onCreated(function () {
     self.businessUnitLogoUrl = new ReactiveVar()
 
     self.autorun(function() {
+      
 
         Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
             if(!err) {
@@ -286,6 +288,8 @@ Template.TravelRequisition2AdminDetail.onCreated(function () {
         if(travelRequest2Sub.ready()) {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
+            console.log("travelRequestDetails is:")
+            console.log(travelRequestDetails)
             self.currentTravelRequest.set(travelRequestDetails)
 
 

@@ -425,40 +425,40 @@ TravelRequests.attachSchema(Core.Schemas.TravelRequest);
  * Core Collections Travelcities
  */
 Travelcities =new Mongo.Collection("travelcities");
-Partitioner.partitionCollection(Travelcities);
+//Partitioner.partitionCollection(Travelcities);
 Travelcities.attachSchema(Core.Schemas.Travelcity);
 
 /**
  * Core Collections Hotel
  */
 Hotels = new Mongo.Collection("hotels");
-Partitioner.partitionCollection(Hotels);
+//Partitioner.partitionCollection(Hotels);
 Hotels.attachSchema(Core.Schemas.Hotel);
 
 /**
  * Core Collections Budget
  */
 Budgets = new Mongo.Collection("budgets");
-Partitioner.partitionCollection(Budgets);
+//Partitioner.partitionCollection(Budgets);
 Budgets.attachSchema(Core.Schemas.Budget);
 
 /**
  * Core Collections Budget
  */
 Airlines = new Mongo.Collection("airlines");
-Partitioner.partitionCollection(Airlines);
+//Partitioner.partitionCollection(Airlines);
 Airlines.attachSchema(Core.Schemas.Airline);
 
 
 EmailSettings = new Mongo.Collection("emailsettings");
-Partitioner.partitionCollection(EmailSettings);
+//Partitioner.partitionCollection(EmailSettings);
 EmailSettings.attachSchema(Core.Schemas.EmailSetting);
 /**
  *
  * Core Collections Budget
  */
 Flightroutes = new Mongo.Collection("flightroutes");
-Partitioner.partitionCollection(Flightroutes);
+//Partitioner.partitionCollection(Flightroutes);
 Flightroutes.attachSchema(Core.Schemas.Flightroute);
 /**
  * Core Collections ProcurementRequisitions

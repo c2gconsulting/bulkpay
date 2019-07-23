@@ -12,9 +12,14 @@ Meteor.publish("alltravelcities", function () {
     return Travelcities.find({});
     // console.log("this is")
     // console.log(this)
-    console.log("alltravelcities is")
-    console.log(alltravelcities)
+    // console.log("alltravelcities is")
+    // console.log(alltravelcities)
 });
+
+// let travelcity = Travelcities.find({businessId: "FJe5hXSxCHvR2FBjJ"});
+//
+// console.log("travelcity is")
+// console.log(travelcity)
 
 
 
