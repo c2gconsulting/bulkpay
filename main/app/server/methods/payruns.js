@@ -1071,11 +1071,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             } else {
                                                 if(totalHoursWorkedInPeriod > 0) {
                                                   if(!businessUnitConfig.isPayrunUsingDailyRate) {
-                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / (totalHoursWorkedInPeriod/12)) * value
+                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
                                                   } else {
-                                                projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value * 2
 
                                                   }
+
 
                                                     console.log("projectsPayDetails")
                                                     console.log(projectsPayDetails)
@@ -1088,8 +1089,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                                     console.log("value")
                                                     console.log(value)
-                                                    console.log("projectsTotalPayInPayTypeCurrency")
-                                                    console.log(projectsTotalPayInPayTypeCurrency)
+
 
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
 
