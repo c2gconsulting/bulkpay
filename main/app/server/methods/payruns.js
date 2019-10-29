@@ -1092,27 +1092,30 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             if(!x.hourlyRate) {
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
-                                                // console.log("projectsTotalPayInPayTypeCurrency")
-                                                // console.log(projectsTotalPayInPayTypeCurrency)
+
 
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
 
-                                                // console.log("costCenterPayAmount")
-                                                // console.log(costCenterPayAmount)
+
                                             } else {
                                                 if(totalHoursWorkedInPeriod > 0) {
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
-                                                    // console.log("projectsTotalPayInPayTypeCurrency")
-                                                    // console.log(projectsTotalPayInPayTypeCurrency)
-                                                    // console.log("projectsPayDetails")
-                                                    // console.log(projectsPayDetails)
-                                                    // console.log("totalHoursWorkedInPeriod")
-                                                    // console.log(totalHoursWorkedInPeriod)
+
+                                                    console.log("projectsPayDetails")
+                                                    console.log(projectsPayDetails)
+
+                                                    console.log("projectsPayDetails.duration")
+                                                    console.log(projectsPayDetails.duration)
+
+                                                    console.log("totalHoursWorkedInPeriod")
+                                                    console.log(totalHoursWorkedInPeriod)
+
+                                                    console.log("value")
+                                                    console.log(value)
+
+
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
-                                                    // console.log("costCenterPayAmount")
-                                                    // console.log(costCenterPayAmount)
-                                                    // console.log("costCentersPayDetails")
-                                                    // console.log(costCentersPayDetails)
+
                                                 }
                                             }
 
@@ -1123,12 +1126,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
 
                                             value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
-                                            // console.log("value")
-                                            // console.log(value)
-                                            // console.log("projectsTotalPayInPayTypeCurrency")
-                                            // console.log(projectsTotalPayInPayTypeCurrency)
-                                            // console.log("costCenterPayAmount")
-                                            // console.log(costCenterPayAmount)
+
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 projectPayAmount = convertForeignCurrencyToBaseCurrency(x, projectsTotalPayInPayTypeCurrency, currencyRatesForPeriod)
