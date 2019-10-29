@@ -330,6 +330,7 @@ Meteor.methods({
 
     "payrun/process": function (obj, businessId) {
         //check if user is in businessId
+
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -993,7 +994,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             if(!businessUnitConfig.isPayrunUsingDailyRate) {
                                               processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${totalHoursWorkedInPeriod} * ${hourlyRate}`})
                                             } else {
-                                              processing.push({code: `Amount earnable in month(${x.currency})`, derived: `(${totalHoursWorkedInPeriod}/12) * 24 * ${hourlyRate}`})
+                                              processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${totalHoursWorkedInPeriod/12} * 24 * ${hourlyRate}`})
 
                                             }
 
