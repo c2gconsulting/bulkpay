@@ -1088,7 +1088,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                                     console.log("value")
                                                     console.log(value)
-
+                                                    console.log("projectsTotalPayInPayTypeCurrency")
+                                                    console.log(projectsTotalPayInPayTypeCurrency)
 
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
 
