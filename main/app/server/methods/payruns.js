@@ -990,7 +990,14 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]) {
                                             const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
                                             processing.push({code: `Hourly Rate(${x.currency})`, derived: `${hourlyRate}`})
-                                            processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${totalHoursWorkedInPeriod} * ${hourlyRate}`})
+                                            if(!businessUnitConfig.isPayrunUsingDailyRate) {
+                                              processing.push({code: `Amount earnable in month(${x.currency})`, derived: `${totalHoursWorkedInPeriod} * ${hourlyRate}`})
+                                            } else {
+                                              processing.push({code: `Amount earnable in month(${x.currency})`, derived: `(${totalHoursWorkedInPeriod}/12) * 24 * ${hourlyRate}`})
+
+                                            }
+
+
                                         } else {
                                             processing.push({code: `Hourly Rate(${x.currency})`, derived: `0`})
                                             value = 0
@@ -1036,11 +1043,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                         if(businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
                                             let individualProjectPayAmount = value
                                             // console.log("businessUnitConfig 1")
-                                            // console.log(businessUnitConfig)   
+                                            // console.log(businessUnitConfig)
                                             // console.log("businessUnitConfig.payrun 1")
-                                            // console.log(businessUnitConfig.payrun)   
+                                            // console.log(businessUnitConfig.payrun)
                                             // console.log("individualProjectPayAmount 1")
-                                            // console.log(individualProjectPayAmount)    
+                                            // console.log(individualProjectPayAmount)
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                             }
@@ -1049,7 +1056,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 projectId: aProject.project,
                                                 durationInHours: aProject.duration,
                                                 payAmount: individualProjectPayAmount
-                                            })  
+                                            })
                                          } else{
                                                 let individualProjectPayAmount = fraction * value ;
                                                 // console.log("fraction 2")
@@ -1068,7 +1075,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     payAmount: individualProjectPayAmount
                                                 })
                                          }
-                                                 
+
                                                 // if(tenant.baseCurrency.iso !== x.currency) {
                                                 //     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                                 // }
@@ -1086,7 +1093,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
                                                 // console.log("projectsTotalPayInPayTypeCurrency")
                                                 // console.log(projectsTotalPayInPayTypeCurrency)
-                                                
+
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
 
                                                 // console.log("costCenterPayAmount")
