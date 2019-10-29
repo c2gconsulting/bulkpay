@@ -1006,14 +1006,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     }
                                     //--
                                     let projectPayAmount = 0
-                                    // console.log("projectPayAmount")
-                                    // console.log(projectPayAmount)
+
                                     let costCenterPayAmount = 0
-                                    // console.log("costCenterPayAmount")
-                                    // console.log(costCenterPayAmount)
+
                                     let projectsPay = []
-                                    // console.log("projectsPay")
-                                    // console.log(projectsPay)
+
 
                                     businessUnitConfig.payrun = businessUnitConfig.payrun || {}
                                     businessUnitConfig.payrun.fullPayOnTimeRecorded = businessUnitConfig.payrun.fullPayOnTimeRecorded || false
@@ -1023,32 +1020,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             projectsPayDetails.projectDurations.forEach(aProject => {
                                                 // const fraction = aProject.duration * (numberOfMonthsInYear / totalWorkHoursInYear)
                                                 const fraction = aProject.duration / (numDaysEmployeeCanWorkInMonth * companyWideMaxHours)
-                                                // console.log("fraction 1")
-                                                // console.log(fraction)
-                                                // console.log("aProject.duration")
-                                                // console.log(aProject.duration)
-                                                // console.log("aProject")
-                                                // console.log(aProject)
-                                                // console.log("numDaysEmployeeCanWorkInMonth")
-                                                // console.log(numDaysEmployeeCanWorkInMonth)
-                                                // console.log("companyWideMaxHours")
-                                                // console.log(companyWideMaxHours)
 
-                                        //  if(businessUnitConfig.payrun && businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
-                                        //     let individualProjectPayAmount = value
-                                        //     console.log("individualProjectPayAmount 1")
-                                        //     console.log(individualProjectPayAmount)
-                                        //              }
-                                               // let individualProjectPayAmount = fraction * value
 
                         if(businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
                                             let individualProjectPayAmount = value
-                                            // console.log("businessUnitConfig 1")
-                                            // console.log(businessUnitConfig)
-                                            // console.log("businessUnitConfig.payrun 1")
-                                            // console.log(businessUnitConfig.payrun)
-                                            // console.log("individualProjectPayAmount 1")
-                                            // console.log(individualProjectPayAmount)
+
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                             }
@@ -1060,12 +1036,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             })
                                          } else{
                                                 let individualProjectPayAmount = fraction * value ;
-                                                // console.log("fraction 2")
-                                                // console.log(fraction)
-                                                // console.log("value")
-                                                // console.log(value)
-                                                // console.log("individualProjectPayAmount 2")
-                                                // console.log(individualProjectPayAmount)
+
                                                 if(tenant.baseCurrency.iso !== x.currency) {
                                                     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
                                                 }
@@ -1099,7 +1070,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                             } else {
                                                 if(totalHoursWorkedInPeriod > 0) {
-                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                  if(!businessUnitConfig.isPayrunUsingDailyRate) {
+                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / (totalHoursWorkedInPeriod/12)) * value
+                                                  } else {
+                                                projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+
+                                                  }
 
                                                     console.log("projectsPayDetails")
                                                     console.log(projectsPayDetails)
