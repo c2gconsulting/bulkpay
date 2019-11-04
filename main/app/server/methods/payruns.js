@@ -787,7 +787,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                         && currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
                                     ) {
                                         const hourlyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.hourlyRate[x.currency]
-                                        b.value = hourlyRate * totalHoursWorkedInPeriod
+                                        if(!businessUnitConfig.isPayrunUsingDailyRate) {
+                                          b.value = hourlyRate * totalHoursWorkedInPeriod
+                                        } else {
+                                          b.value = hourlyRate * 24 * (totalHoursWorkedInPeriod/12)
+                                        }
                                         clone.push(b)
                                     }
                                 }
@@ -1048,15 +1052,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 })
                                          }
 
-                                                // if(tenant.baseCurrency.iso !== x.currency) {
-                                                //     individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
-                                                // }
-
-                                                // projectsPay.push({
-                                                //     projectId: aProject.project,
-                                                //     durationInHours: aProject.duration,
-                                                //     payAmount: individualProjectPayAmount
-                                                // })
                                             })
                                             let projectsTotalPayInPayTypeCurrency = 0
                                             costCenterPayAmount = 0
@@ -1119,7 +1114,12 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 costCenterPayAmount = convertForeignCurrencyToBaseCurrency(x, costCenterPayAmount, currencyRatesForPeriod)
                                             }
                                             processing.push({code: x.code, derived: `(Pay from projects(${x.currency})) + (Pay from cost-center(${x.currency}))`});
-                                            processing.push({code: x.code, derived: value});
+                                            if(!businessUnitConfig.isPayrunUsingDailyRate) {
+                                              processing.push({code: x.code, derived: value});
+                                            } else {
+                                              processing.push({code: x.code, derived: value * 2});
+
+                                            }
                                         }
                                         //--
                                         if(x.isTimeWritingDependent) {
