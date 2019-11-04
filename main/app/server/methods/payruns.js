@@ -907,12 +907,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     x.parsedValue = x.type === 'Deduction' ? parsed.result.toFixed(2) * -1 : parsed.result.toFixed(2);  //defaulting to 2 dp ... Make configurable;
                                     //--
                                     let netPayTypeAmount; //net amount used if payment type is monthly
+                                    console.log("x is:")
+                                    console.log(x)
                                     if(x.frequency === 'Monthly' && !x.additionalPay && !x.hourlyRate) {
                                         netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
 
                                         if(!x.hourlyRate) {
                                             processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
                                         }
+
                                     }
 
                                     //if add to total, add wt to totalsBucket
