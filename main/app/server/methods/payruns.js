@@ -910,11 +910,22 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     console.log("x is:")
                                     console.log(x)
                                     if(x.frequency === 'Monthly' && !x.additionalPay && !x.hourlyRate) {
+                                      if(!businessUnitConfig.isPayrunUsingDailyRate) {
                                         netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
 
                                         if(!x.hourlyRate) {
                                             processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
                                         }
+                                      } else {
+                                        netPayTypeAmount = (x.parsedValue).toFixed(2);
+
+                                        if(!x.hourlyRate) {
+                                            processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
+                                        }
+
+                                      }
+
+
 
                                     }
 
