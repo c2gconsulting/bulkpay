@@ -923,7 +923,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                                         console.log("parsedValue is:")
                                         console.log(x.parsedValue)
-                                        netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+                                        netPayTypeAmount = (x.parsedValue)
 
                                         if(!x.hourlyRate) {
                                             processing.push({code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount});
