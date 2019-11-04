@@ -1048,6 +1048,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                         if(businessUnitConfig.payrun.isProjectsPayrollForDeltatekEngineeringEnabled) {
                                             let individualProjectPayAmount = value
+                                            console.log(`value 12: `, value)
+
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
                                                 individualProjectPayAmount = convertForeignCurrencyToBaseCurrency(x, individualProjectPayAmount, currencyRatesForPeriod)
@@ -1059,6 +1061,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 payAmount: individualProjectPayAmount
                                             })
                                          } else{
+                                           console.log(`value 11: `, value)
+
                                                 let individualProjectPayAmount = fraction * value ;
 
                                                 if(tenant.baseCurrency.iso !== x.currency) {
@@ -1081,6 +1085,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
 
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
+                                                console.log(`value 10: `, value)
+
 
 
                                             } else {
@@ -1108,6 +1114,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
 
                                             value = projectsTotalPayInPayTypeCurrency + costCenterPayAmount
+                                            console.log(`value 9: `, value)
+
 
 
                                             if(tenant.baseCurrency.iso !== x.currency) {
@@ -1138,6 +1146,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             } else {
                                                 // value = 0
                                                 processing.push({code: x.code, derived: value});
+                                                console.log(`value 8: `, value)
+
                                             }
                                         } else {
                                             if(x.hourlyRate && totalHoursWorkedInPeriod > 0 && !x.additionalPay) {
@@ -1150,6 +1160,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 if(projectsAssignedToEmployee.length === 0) {
                                                     costCenterPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
                                                     value = costCenterPayAmount
+                                                    console.log(`value 7: `, value)
+
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
                                                     // console.log("projectPayAmount")
@@ -1166,9 +1178,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     }
                                                 } else if(projectsAssignedToEmployee.length === 1) {
                                                     projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                                    console.log(`value 6: `, value)
+
                                                     // console.log("projectPayAmount")
                                                     // console.log(projectPayAmount)
                                                     value = projectPayAmount
+                                                    console.log(`value 5: `, value)
+
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
                                                     // console.log("projectPayAmount")
@@ -1198,6 +1214,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
                                                 // console.log("costCenterPayAmount")
                                                 // console.log(costCenterPayAmount)
+                                                console.log(`value 4: `, value)
 
                                                 processing.push({code: x.code, derived: value});
                                             }
@@ -1207,6 +1224,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             value = 0;
                                         }
                                         processing.push({code: x.code, derived: value});
+                                        console.log(`value 3: `, value)
+
                                         processing.push({code: `Pay from cost centers(NGN)`, derived: costCenterPayAmount});
                                     }
 
