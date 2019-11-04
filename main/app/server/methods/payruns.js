@@ -1178,12 +1178,16 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     }
                                                 } else if(projectsAssignedToEmployee.length === 1) {
                                                     projectPayAmount = value * ((numDaysEmployeeCanWorkInMonth) / totalNumWeekDaysInMonth)
+                                                    console.log(`projectPayAmount 6: `, projectPayAmount)
+
                                                     console.log(`value 6: `, value)
 
                                                     // console.log("projectPayAmount")
                                                     // console.log(projectPayAmount)
                                                     value = projectPayAmount
                                                     console.log(`value 5: `, value)
+                                                    console.log(`projectPayAmount 5: `, projectPayAmount)
+
 
 
                                                     processing.push({code: `Pay from projects(${x.currency})`, derived: projectPayAmount});
