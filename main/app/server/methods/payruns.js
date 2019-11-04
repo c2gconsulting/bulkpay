@@ -1068,7 +1068,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                   if(!businessUnitConfig.isPayrunUsingDailyRate) {
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
                                                   } else {
-                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value * 2
+                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
 
                                                   }
 
