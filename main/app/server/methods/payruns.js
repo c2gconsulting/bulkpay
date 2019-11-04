@@ -1071,28 +1071,18 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
 
                                                   }
-
-
-                                                    console.log("projectsPayDetails")
-                                                    console.log(projectsPayDetails)
-
-                                                    console.log("projectsPayDetails.duration")
-                                                    console.log(projectsPayDetails.duration)
-
-                                                    console.log("totalHoursWorkedInPeriod")
-                                                    console.log(totalHoursWorkedInPeriod)
-
-                                                    console.log("value")
-                                                    console.log(value)
-
-
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
 
                                                 }
                                             }
 
                                             // processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
-                                            processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
+                                            if(!businessUnitConfig.isPayrunUsingDailyRate) {
+                                              processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
+                                            } else {
+                                              processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency * 2});
+
+                                            }
 
                                             // processing.push({code: `Pay from cost centers(${x.currency})`, derived: `(${costCentersPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                             processing.push({code: `Pay from cost centers(${x.currency})`, derived: `${costCentersPayDetails.fraction} * ${value}`});
