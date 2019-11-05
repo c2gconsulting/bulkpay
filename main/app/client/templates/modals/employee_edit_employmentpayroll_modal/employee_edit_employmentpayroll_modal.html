@@ -7,15 +7,15 @@
                 <div class="panel-heading">
                   <ul class="nav nav-tabs nav-line">
                       <li class="active"><a href=".employment" data-toggle="tab"><strong>Employment Details</strong></a></li>
-                      
+
                       {{#if isEmployeePromotionEnabled}}
-                      <li><a href=".promotions" data-toggle="tab"><strong>Promotions</strong></a></li>                      
+                      <li><a href=".promotions" data-toggle="tab"><strong>Promotions</strong></a></li>
                       {{/if}}
 
                       {{#if hasPayrollAccess}}
                       <li><a href=".payroll" data-toggle="tab"><strong>Payroll details</strong></a></li>
                       {{/if}}
-                      
+
                       <li><a href=".netPayAllocation" data-toggle="tab"><strong>Net Pay Currency Allocation</strong></a></li>
                   </ul>
                 </div>
@@ -63,8 +63,8 @@
                                               </div>
                                           </div>
                                       {{/if}}
-                                    
-                                    
+
+
                                     {{#if directEmployeeManagerEnabled}}
                                         <div class="form-group">
                                             {{#if showFirstTabSpinner}}
@@ -92,7 +92,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-sm-4">
                                                 <div>
                                                 </div>
@@ -199,7 +199,7 @@
                                 <br/>
 
                                 <div class="table-responsive">
-                                    <table class="table table-primary mb60 table-hover">                                                
+                                    <table class="table table-primary mb60 table-hover">
                                         <thead>
                                         <tr>
                                             <th>Pay Grade</th>
@@ -207,7 +207,7 @@
                                             <th>Date of Promotion</th>
 
                                             {{#if isTryingToAddNewPromotion}}
-                                                <th></th>                                        
+                                                <th></th>
                                             {{/if}}
                                         </tr>
                                         </thead>
@@ -301,7 +301,7 @@
                                             <div class="form-group">
                                                 <label class="control-label">    HOURLY RATE</label>
                                             </div>
-                                                
+
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label">{{baseCurrency}}</label>
                                                 <!--<br/>
@@ -311,12 +311,38 @@
                                                     <input name="hourlyRate_NGN" type="text" class="form-control" value="{{hourlyRate 'NGN'}}" {{disableHourlyRate}} />
                                                 </div>
                                             </div>
-            
+
                                             {{#if alternateCurrency}}
                                             <div class="form-group">
                                                 <label class="col-sm-4 control-label">{{alternateCurrency}}</label>
                                                 <div class="col-sm-4">
                                                     <input name="hourlyRate_{{alternateCurrency}}" type="text" class="form-control" value="{{hourlyRate (alternateCurrency)}}" {{disableHourlyRate}} />
+                                                </div>
+                                            </div>
+                                            {{/if}}
+                                        </form>
+                                    </div>
+                                    <div class="row">
+                                        <form class="form-horizontal form-bordered">
+                                            <div class="form-group">
+                                                <label class="control-label">    DAILY RATE</label>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">{{baseCurrency}}</label>
+                                                <!--<br/>
+                                                <label class="col-sm-4 control-label">e.g If 350 NGN is equal is 1 USD, then enter 350</label>
+                                                <br/>-->
+                                                <div class="col-sm-4">
+                                                    <input name="dailyRate_NGN" type="text" class="form-control" value="{{dailyRate 'NGN'}}" {{disableDailyRate}} />
+                                                </div>
+                                            </div>
+
+                                            {{#if alternateCurrency}}
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">{{alternateCurrency}}</label>
+                                                <div class="col-sm-4">
+                                                    <input name="dailyRate_{{alternateCurrency}}" type="text" class="form-control" value="{{dailyRate (alternateCurrency)}}" {{disableDailyRate}} />
                                                 </div>
                                             </div>
                                             {{/if}}

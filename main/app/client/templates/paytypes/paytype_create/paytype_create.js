@@ -38,6 +38,7 @@ Template.PaytypeCreate.events({
             addToTotal: $('[name="addToTotal"]').is(':checked') ? true : false,
             reliefFromTax: $('[name="reliefFromTax"]').is(':checked') ? true : false,
             hourlyRate: $('[name="hourlyRate"]').is(':checked') ? true : false,
+            dailyRate: $('[name="dailyRate"]').is(':checked') ? true : false,
             isTimeWritingDependent: $('#payment-depends-on-time-writing').is(':checked') ? true : false,
             includeWithSapIntegration: $('#include-with-sap-integration').is(':checked') ? true : false
         };

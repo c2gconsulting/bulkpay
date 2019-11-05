@@ -48,6 +48,11 @@ Core.Schemas.PayType = new SimpleSchema({
         defaultValue: false,
         optional: true
     },
+    dailyRate: {
+        type: Boolean,
+        defaultValue: false,
+        optional: true
+    },
     derivative: {
         type: String,
         allowedValues: ["Fixed", "Formula"],

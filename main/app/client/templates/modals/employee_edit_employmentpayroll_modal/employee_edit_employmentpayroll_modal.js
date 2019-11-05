@@ -60,9 +60,14 @@ Template.EmployeeEditEmploymentPayrollModal.events({
     let payTypesArray = tmpl.getPaytypes();
 
     let hourlyRateObj = {}
+    let dailyRateObj = {}
+
 
     let hourlyRateInBaseCurrency = $('[name="hourlyRate_NGN"]').val()
     let hourlyRateInAlternateCurrency = null
+
+    let dailyRateInBaseCurrency = $('[name="dailyRate_NGN"]').val()
+    let dailyRateInAlternateCurrency = null
 
     let selectedGrade = Template.instance().selectedGrade.get();
     if(selectedGrade) {
@@ -111,7 +116,46 @@ Template.EmployeeEditEmploymentPayrollModal.events({
         }
     }
 
-    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateObj, (err, res) => {
+    if(dailyRateInBaseCurrency && dailyRateInBaseCurrency.length > 0) {
+        if(isNaN(dailyRateInBaseCurrency)) {
+            swal('Validation error', `Daily rate(NGN) should be a number`, 'error')
+            return
+        } else {
+            dailyRateObj['NGN'] = parseFloat(dailyRateInBaseCurrency)
+
+            let selectedGrade = Template.instance().selectedGrade.get();
+            if(selectedGrade) {
+                let grade = PayGrades.findOne({_id: selectedGrade})
+                if(grade && grade.netPayAlternativeCurrency) {
+                    if(dailyRateInBaseCurrency && dailyRateInBaseCurrency.length > 0) {
+                        if(isNaN(dailyRateInBaseCurrency)) {
+                            swal('Validation error', `Daily rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
+                            return
+                        } else {
+                            dailyRateObj[grade.netPayAlternativeCurrency] = parseFloat(dailyRateInBaseCurrency)
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        let selectedGrade = Template.instance().selectedGrade.get();
+        if(selectedGrade) {
+            let grade = PayGrades.findOne({_id: selectedGrade})
+            if(grade && grade.netPayAlternativeCurrency) {
+                if(dailyRateInBaseCurrency && dailyRateInBaseCurrency.length > 0) {
+                    if(isNaN(dailyRateInBaseCurrency)) {
+                        swal('Validation error', `Daily rate(${grade.netPayAlternativeCurrency}) should be a number`, 'error')
+                        return
+                    } else {
+                        dailyRateObj[grade.netPayAlternativeCurrency] = parseFloat(dailyRateInBaseCurrency)
+                    }
+                }
+            }
+        }
+    }
+
+    Meteor.call('account/updatePayTypesData', payTypesArray, user._id, hourlyRateObj, dailyRateObj, (err, res) => {
         if (res){
             swal({
                 title: "Success",
@@ -458,6 +502,15 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
         }
         return ''
     },
+    dailyRate: function(currency) {
+        let user = Template.instance().getEditUser();
+        if(user) {
+            return (user.employeeProfile.employment
+                && user.employeeProfile.employment.dailyRate
+                && user.employeeProfile.employment.dailyRate[currency]) || ''
+        }
+        return ''
+    },
     alternateCurrency: function() {
         let selectedGrade = Template.instance().selectedGrade.get();
         if(selectedGrade) {
@@ -474,6 +527,18 @@ Template.EmployeeEditEmploymentPayrollModal.helpers({
         const numPaytypes = allPaytypes.length
         for(let i = 0; i < numPaytypes; i++) {
             if(allPaytypes[i].hourlyRate) {
+                return ''
+            }
+        }
+        return 'disabled'
+    },
+    disableDailyRate: function() {
+        const businessId = Session.get('context')
+
+        const allPaytypes = PayTypes.find({businessId}).fetch() || []
+        const numPaytypes = allPaytypes.length
+        for(let i = 0; i < numPaytypes; i++) {
+            if(allPaytypes[i].dailyRate) {
                 return ''
             }
         }

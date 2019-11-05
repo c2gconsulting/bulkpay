@@ -70,6 +70,14 @@
                             </div><!-- col-sm-4 -->
 
                             <div class="col-sm-3">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-success">
+                                    <input type="checkbox" id="pay-type-daily-rate" checked="{{checked 'dailyRate'}}" name="dailyRate" />
+                                    <label for="pay-type-daily-rate">Daily Rate</label>
+                                </div>
+                            </div><!-- col-sm-4 -->
+
+                            <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Taxable <span class="asterisk important-input">*</span></label>
                                     <select  name="taxable" class="form-control dropdown" >
@@ -117,17 +125,19 @@
                                 </div>
                             </div><!-- col-sm-4 -->
 
-                            <div class="col-sm-3">
-                                <label>&nbsp;</label>
-                                <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="payment-depends-on-time-writing" 
-                                        checked="{{checked 'isTimeWritingDependent'}}" />
-                                    <label for="payment-depends-on-time-writing">Depends on time-writing</label>
-                                </div>
-                            </div><!-- col-sm-4 -->
+
                         </div><!-- row -->
 
                         <div class="row">
+                          <div class="col-sm-3">
+                              <label>&nbsp;</label>
+                              <div class="ckbox ckbox-success">
+                                  <input type="checkbox" id="payment-depends-on-time-writing"
+                                      checked="{{checked 'isTimeWritingDependent'}}" />
+                                  <label for="payment-depends-on-time-writing">Depends on time-writing</label>
+                              </div>
+                          </div><!-- col-sm-4 -->
+
                             <div class="col-sm-3">
                                 <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
@@ -135,7 +145,7 @@
                                     <label for="pay-type-relief-from-tax">Relief from Tax</label>
                                 </div>
                             </div><!-- col-sm-4 -->
-                            
+
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label class="control-label">Status <span class="asterisk important-input">*</span></label>
@@ -146,12 +156,12 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
 
-                            <div class="col-sm-4">
+                            <div class="col-sm-3">
                                 <label>&nbsp;</label>
                                 <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="include-with-sap-integration" 
+                                    <input type="checkbox" id="include-with-sap-integration"
                                         checked="{{checked 'includeWithSapIntegration'}}" />
-                                    <label for="include-with-sap-integration">Include with SAP integration</label>
+                                    <label for="include-with-sap-integration">Include SAP integration</label>
                                 </div>
                             </div><!-- col-sm-4 -->
                         </div><!-- row -->

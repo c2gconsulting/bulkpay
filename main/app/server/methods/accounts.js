@@ -533,7 +533,7 @@ Meteor.methods({
             return true
         }
     },
-    "account/updatePayTypesData": function (payTypesArray, userId, hourlyRate) {
+    "account/updatePayTypesData": function (payTypesArray, userId, hourlyRate, dailyRate) {
         check(userId, String);
         //check(user.businessId, String);
         if (!Meteor.userId()){
@@ -543,7 +543,9 @@ Meteor.methods({
         if (account){
             Meteor.users.update({_id: account._id}, {$set: {
               "employeeProfile.employment.paytypes": payTypesArray,
-              "employeeProfile.employment.hourlyRate": hourlyRate
+              "employeeProfile.employment.hourlyRate": hourlyRate,
+              "employeeProfile.employment.dailyRate": dailyRate
+
             }});
             return true
         } else {
