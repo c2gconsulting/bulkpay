@@ -1121,17 +1121,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                         console.log("not hourly rate")
                                                     }
                                                     else {
-
-
-                                                        if (currentEmployeeInPayrunLoop.employeeProfile && currentEmployeeInPayrunLoop.employeeProfile.employment
-                                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate
-                                                            && currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate[x.currency]) {
-                                                            const dailyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate[x.currency]
-                                                            projectsTotalPayInPayTypeCurrency = totalDaysWorkedInPeriod * dailyRate
-
+                                                          console.log("not hourly rate nor daily rate but using formula")
+                                                            projectsTotalPayInPayTypeCurrency = value
                                                             //cost center not being used for daily rates now
                                                             costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
-                                                        }
+
 
 
 
