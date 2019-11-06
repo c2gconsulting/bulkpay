@@ -1122,7 +1122,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                     }
                                                     else {
                                                           console.log("not hourly rate nor daily rate but using formula")
-                                                            projectsTotalPayInPayTypeCurrency = value
+                                                            projectsTotalPayInPayTypeCurrency = value * totalDaysWorkedInPeriod
                                                             //cost center not being used for daily rates now
                                                             costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
 
