@@ -1091,37 +1091,37 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             })
                                             let projectsTotalPayInPayTypeCurrency = 0
                                             costCenterPayAmount = 0
+           console.log("X")
+           console.log(x)
+                                            if(!x.hourlyRate) {
+                                              if(x.dailyRate) {
+                                                console.log("daily rate")
 
-                                            if(!x.hourlyRate || !x.dailyRate) {
+                                                if(totalDaysWorkedInPeriod > 0) {
+                                                  if(currentEmployeeInPayrunLoop.employeeProfile && currentEmployeeInPayrunLoop.employeeProfile.employment
+                                                      && currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate
+                                                      && currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate[x.currency]) {
+                                                      const dailyRate = currentEmployeeInPayrunLoop.employeeProfile.employment.dailyRate[x.currency]
+                                                       projectsTotalPayInPayTypeCurrency = totalDaysWorkedInPeriod * dailyRate
+
+                                                    //cost center not being used for daily rates now
+                                                    costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                                }
+                                              }
+
+                                              }
+                                              else{
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
 
 
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
                                                 console.log("not hourly rate")
 
-                                            } else {
-                                              if(x.dailyRate) {
-                                                if(totalDaysWorkedInPeriod > 0) {
-                                                    projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+                                            }
+                                          }
+                                            else
+                                            {
 
-                                                    console.log("daily rate working")
-
-                                                    console.log('dailyRate projectsPayDetails is:')
-                                                    console.log(projectsPayDetails)
-
-                                                    console.log('dailyRate projectsPayDetails.duration is:')
-                                                    console.log(projectsPayDetails.duration)
-
-                                                    console.log('dailyRate totalHoursWorkedInPeriod is:')
-                                                    console.log(totalHoursWorkedInPeriod)
-
-                                                    console.log('dailyRate value is:')
-                                                    console.log(value)
-                                                    costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
-                                                }
-                                              }
-                                              else
-                                              {
                                                 if(totalHoursWorkedInPeriod > 0) {
                                                   console.log("hourly rate")
 
@@ -1131,7 +1131,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                                 }
                                               }
 
-                                            }
+
 
                                             // processing.push({code: `Pay from projects(${x.currency})`, derived: `(${projectsPayDetails.duration} / ${totalNumWeekDaysInMonth} * 8) * ${value}`});
                                             processing.push({code: `Pay from projects(${x.currency})`, derived: projectsTotalPayInPayTypeCurrency});
