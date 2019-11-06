@@ -1092,7 +1092,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                             let projectsTotalPayInPayTypeCurrency = 0
                                             costCenterPayAmount = 0
 
-                                            if(!x.hourlyRate) {
+                                            if(!x.hourlyRate || !x.dailyRate) {
                                                 projectsTotalPayInPayTypeCurrency = projectsPayDetails.fraction * value
 
 
