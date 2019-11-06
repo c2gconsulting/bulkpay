@@ -330,14 +330,12 @@ Meteor.methods({
 
     "payrun/process": function (obj, businessId) {
         //check if user is in businessId
-        console.log("it is hitting server")
         if (!this.userId && Core.hasPayrollAccess(this.userId)) {
             throw new Meteor.Error(401, "Unauthorized");
         }
         let userId = Meteor.userId();
         this.unblock();
         console.log(obj);
-        console.log("it is hitting server 2")
 
 
         let employees = obj.employees;
@@ -606,7 +604,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 console.log(`startDate: `, startDate)
                 console.log(`endDate: `, endDate)
 
-                console.log("it is hitting server 3")
 
                 const locationsWithMaxHours = EntityObjects.find({
                     maxHoursInDayForTimeWriting: {$exists: true},
@@ -634,7 +631,6 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     }
                 })
                 //--
-                console.log("it is hitting server 4")
 
                 const pg = x.employeeProfile.employment.paygrade;  //paygrade
                 let pt = x.employeeProfile.employment.paytypes;  //paytype
@@ -1101,11 +1097,15 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
 
                                                 costCenterPayAmount = costCentersPayDetails.fraction * value
+                                                console.log("not hourly rate")
 
                                             } else {
                                               if(x.dailyRate) {
                                                 if(totalDaysWorkedInPeriod > 0) {
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
+
+                                                    console.log("daily rate working")
+
                                                     console.log('dailyRate projectsPayDetails is:')
                                                     console.log(projectsPayDetails)
 
@@ -1123,6 +1123,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                               else
                                               {
                                                 if(totalHoursWorkedInPeriod > 0) {
+                                                  console.log("hourly rate")
+
                                                     projectsTotalPayInPayTypeCurrency = (projectsPayDetails.duration / totalHoursWorkedInPeriod) * value
                                                     costCenterPayAmount = (costCentersPayDetails.duration / totalHoursWorkedInPeriod) * value
 
@@ -2121,11 +2123,9 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
             employeeId: employeeUserId,
             status: 'Approved'
         }
-        console.log("query obj is:")
-        console.log(queryObj)
 
 
-        console.log("it is hitting 5")
+
 
         let allProjectTimesInMonth = TimeWritings.aggregate([
 
@@ -2140,7 +2140,6 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
               duration: { $sum: "$duration" }
             } }
         ]);
-        console.log("it is hitting 6")
 
         if(allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let noLocationDuration = {
