@@ -42,29 +42,9 @@ Template.HotelIndex.onDestroyed(function () {
 /* singleHotel: Helpers */
 /*****************************************************************************/
 Template.singleHotel.events({
-    'click #deleteHotel': function(e, tmpl) {
-        event.preventDefault();
-        let self = this;
-
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this Pension Manager",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        }, () => {
-            const hotelId = self.data._id;
-            const code = self.data.code;
-
-            Meteor.call('hotel/delete', hotelId, (err, res) => {
-                if(!err){
-                    Modal.hide();
-                    swal("Deleted!", `Pension Manager: ${code} has been deleted.`, "success");
-                }
-            });
-        });
+    'click .pointer': function(e, tmpl){
+        e.preventDefault();
+        Modal.show('HotelCreate', this.data);
     }
 })
 Template.singleHotel.helpers({

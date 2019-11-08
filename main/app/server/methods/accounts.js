@@ -131,7 +131,7 @@ Meteor.methods({
             'emails.address': userEmail,
             // 'businessIds': businessId
         })
-        console.log("user is:")
+        console.log("user is:");
         console.log(user)
 
 
