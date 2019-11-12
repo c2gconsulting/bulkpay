@@ -32,6 +32,7 @@ Meteor.methods({
         //    throw new Meteor.Error(403, "You are not authorized to create an order for this location");
         //}
     },
+    
     "hotel/delete": function(id){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
@@ -40,7 +41,7 @@ Meteor.methods({
         Hotels.remove({_id: id});
         return true;
     },
-    "hotel/update": function(id, details){
+    "hotel/update": function(id, updatedHotel){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -49,7 +50,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = Hotels.update(selector, {$set: details} );
+        const result = Hotels.update(selector, {$set: updatedHotel} );
         return result;
     }
 

@@ -21,7 +21,7 @@
 
             <div class="row" ng-show="!singleHotelView" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
                 <div class="col-md-12">
-                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New hotel</button></p>
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Hotel</button></p>
                 </div>
             </div>
 
@@ -56,8 +56,8 @@
 </template>
 
 <template name="singleHotel">
-    <tr>
-        <td class="pointer">{{index}}</td>
+    <tr class="pointer">
+        <td>{{index}}</td>
        
         <td>{{data.name}}</td>
         <td>{{data.dailyRate}}</td>
@@ -71,9 +71,6 @@
           {{else}}
             <span class="label label-danger">{{data.status}}</span>
           {{/if}}
-        </td>
-        <td>
-            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteHotel">Delete</button>
         </td>
     </tr>
 </template>
