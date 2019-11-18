@@ -939,7 +939,13 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                                     //--
                                     let netPayTypeAmount; //net amount used if payment type is monthly
                                     if (x.frequency === 'Monthly' && !x.additionalPay && !x.hourlyRate) {
+                                      if (!businessUnitConfig.isPayrunUsingDailyRate) {
                                         netPayTypeAmount = (x.parsedValue / 12).toFixed(2);
+                                      }
+                                      else {
+                                        netPayTypeAmount = (x.parsedValue).toFixed(2);
+
+                                      }
 
                                         if (!x.hourlyRate) {
                                             processing.push({ code: `${x.code} - Monthly(NET)`, derived: netPayTypeAmount });
