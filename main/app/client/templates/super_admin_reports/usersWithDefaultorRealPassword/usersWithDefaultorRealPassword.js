@@ -31,7 +31,7 @@ Template.UsersWithDefaultorRealPassword.events({
             tmpl.$('#exportReportForUsersWithDefaultPassword').removeAttr('disabled');
         };
 
-        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nokName', 'nokPhone', 'nokAddress', 'ecName', 'ecPhone', 'ecEmail', 'ecAddress']
+        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nextOfKinName', 'nextOfKinPhone', 'nextOfKinAddress', 'emergencyContactName', 'emergencyContactPhone', 'emergencyContactEmail', 'emergencyContactAddress']
         let reportData = Template.instance().usersWithDefaultPassword.get()
 
         BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 

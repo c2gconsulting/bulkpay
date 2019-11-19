@@ -54,14 +54,14 @@ Meteor.methods({
 
         let address = aDaarUser.employeeProfile.address
         
-        let nokName = aDaarUser.employeeProfile.guarantor.fullName
-        let nokAddress = aDaarUser.employeeProfile.guarantor.email
-        let nokPhone = aDaarUser.employeeProfile.guarantor.phone
+        let nextOfKinName = aDaarUser.employeeProfile.guarantor.fullName
+        let nextOfKinAddress = aDaarUser.employeeProfile.guarantor.email
+        let nextOfKinPhone = aDaarUser.employeeProfile.guarantor.phone
 
-        let ec_name = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
-        let ec_phone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
-        let ec_email = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
-        let ec_address = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
+        let emergencyContactName = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let emergencyContactPhone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let emergencyContactEmail = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let emergencyContactAddress = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
 
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})
@@ -108,14 +108,14 @@ Meteor.methods({
 
         let address = aDaarUser.employeeProfile.address
         
-        let nokName = aDaarUser.employeeProfile.guarantor.fullName
-        let nokAddress = aDaarUser.employeeProfile.guarantor.email
-        let nokPhone = aDaarUser.employeeProfile.guarantor.phone
+        let nextOfKinName = aDaarUser.employeeProfile.guarantor.fullName
+        let nextOfKinAddress = aDaarUser.employeeProfile.guarantor.email
+        let nextOfKinPhone = aDaarUser.employeeProfile.guarantor.phone
 
-        let ec_name = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
-        let ec_phone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
-        let ec_email = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
-        let ec_address = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
+        let emergencyContactName = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let emergencyContactPhone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let emergencyContactEmail = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let emergencyContactAddress = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
 
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})        
