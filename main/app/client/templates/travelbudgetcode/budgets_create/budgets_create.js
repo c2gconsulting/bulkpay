@@ -46,7 +46,7 @@ Template.BudgetCreate.events({
                 if(err){
                     swal("Update Failed", `Cannot Update Budget Holder ${code}`, "error");
                 } else {
-                    swal("Successful Update!", `Succesffully update Budget Holder ${code}`, "success");
+                    swal("Successful Update!", `Successfully update Budget Holder ${code}`, "success");
                     Modal.hide("BudgetCreate");
                 }
             });
@@ -75,6 +75,7 @@ Template.BudgetCreate.events({
                 Modal.hide('BudgetCreate');
             } else {
                 console.log(err);
+                swal("Save Failed", "Cannot Create Budget Holder", "error");
             }
         });
     }
@@ -89,7 +90,10 @@ Template.BudgetCreate.events({
         return Template.instance().data ? true:false;
         //use ReactiveVar or reactivedict instead of sessions..
     },
-     'checked': (prop) => {
+    'budget': () => {
+        return Template.instance().data.code;
+    },
+    'checked': (prop) => {
         if(Template.instance().data)
             return Template.instance().data[prop];
         return false;
@@ -102,18 +106,18 @@ Template.BudgetCreate.events({
         return Meteor.users.find({"employee": true});
     },
 
-   selected(context,val) {
-    let self = this;
+    selected(context,val) {
+        let self = this;
 
-    if(Template.instance().data){
-        //get value of the option element
-        //check and return selected if the template instce of data.context == self._id matches
-        if(val){
-            return Template.instance().data[context] === val ? selected="selected" : '';
+        if(Template.instance().data){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return Template.instance().data[context] === val ? selected="selected" : '';
+            }
+            return Template.instance().data[context] === self._id ? selected="selected" : '';
         }
-        return Template.instance().data[context] === self._id ? selected="selected" : '';
-    }
-},
+    },
     'errorMessage': function() {
       return Template.instance().errorMessage.get()
     }

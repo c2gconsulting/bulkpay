@@ -52,6 +52,17 @@ Meteor.methods({
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
 
+        let address = aDaarUser.employeeProfile.address
+        
+        let nextOfKinName = aDaarUser.employeeProfile.guarantor.fullName
+        let nextOfKinAddress = aDaarUser.employeeProfile.guarantor.email
+        let nextOfKinPhone = aDaarUser.employeeProfile.guarantor.phone
+
+        let emergencyContactName = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let emergencyContactPhone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let emergencyContactEmail = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let emergencyContactAddress = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
+
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})
 
@@ -68,12 +79,20 @@ Meteor.methods({
         }
         //--
         let employeeData = {
-            empId: empId,
-            firstName : firstName,
-            lastName: lastName,
-            email: email,
-            parents: parentsText,
-            payGrade: paygrade ? paygrade.code : ''
+          empId: empId,
+          firstName : firstName,
+          lastName: lastName,
+          email: email,
+          address: address,
+          parents: parentsText,
+          payGrade: paygrade ? paygrade.code : '',
+          nextOfKinName: nextOfKinName,
+          nextOfKinPhone: nextOfKinPhone,
+          nextOfKinAddress: nextOfKinAddress,
+          emergencyContactName: emergencyContactName,
+          emergencyContactPhone: emergencyContactPhone,
+          emergencyContactEmail: emergencyContactEmail,
+          emergencyContactAddress: emergencyContactAddress
         }
         returnedDaarUsersWithRealPassword.push(employeeData)
       }
@@ -86,6 +105,17 @@ Meteor.methods({
         let lastName = aDaarUser.profile.lastname
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
+
+        let address = aDaarUser.employeeProfile.address
+        
+        let nextOfKinName = aDaarUser.employeeProfile.guarantor.fullName
+        let nextOfKinAddress = aDaarUser.employeeProfile.guarantor.email
+        let nextOfKinPhone = aDaarUser.employeeProfile.guarantor.phone
+
+        let emergencyContactName = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let emergencyContactPhone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let emergencyContactEmail = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let emergencyContactAddress = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
 
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})        
@@ -106,8 +136,16 @@ Meteor.methods({
             firstName : firstName,
             lastName: lastName,
             email: email,
+            address: address,
             parents: parentsText,
-            payGrade: paygrade ? paygrade.code : ''
+            payGrade: paygrade ? paygrade.code : '',
+            nextOfKinName: nextOfKinName,
+            nextOfKinPhone: nextOfKinPhone,
+            nextOfKinAddress: nextOfKinAddress,
+            emergencyContactName: emergencyContactName,
+            emergencyContactPhone: emergencyContactPhone,
+            emergencyContactEmail: emergencyContactEmail,
+            emergencyContactAddress: emergencyContactAddress
         }
         returnedDaarUsersWithDefaultPassword.push(employeeData)
       }
