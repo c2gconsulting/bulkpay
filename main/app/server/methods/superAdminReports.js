@@ -52,6 +52,17 @@ Meteor.methods({
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
 
+        let address = aDaarUser.employeeProfile.address
+        
+        let nokName = aDaarUser.employeeProfile.guarantor.fullName
+        let nokAddress = aDaarUser.employeeProfile.guarantor.email
+        let nokPhone = aDaarUser.employeeProfile.guarantor.phone
+
+        let ec_name = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let ec_phone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let ec_email = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let ec_address = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
+
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})
 
@@ -68,12 +79,20 @@ Meteor.methods({
         }
         //--
         let employeeData = {
-            empId: empId,
-            firstName : firstName,
-            lastName: lastName,
-            email: email,
-            parents: parentsText,
-            payGrade: paygrade ? paygrade.code : ''
+          empId: empId,
+          firstName : firstName,
+          lastName: lastName,
+          email: email,
+          address: address,
+          parents: parentsText,
+          payGrade: paygrade ? paygrade.code : '',
+          nokName: nokName,
+          nokPhone: nokPhone,
+          nokAddress: nokAddress,
+          ecName: ec_name,
+          ecPhone: ec_phone,
+          ecEmail: ec_email,
+          ecAddress: ec_address
         }
         returnedDaarUsersWithRealPassword.push(employeeData)
       }
@@ -86,6 +105,17 @@ Meteor.methods({
         let lastName = aDaarUser.profile.lastname
         let email = aDaarUser.emails[0] ? aDaarUser.emails[0].address : ''
         let paygradeId = aDaarUser.employeeProfile.employment.paygrade || ""
+
+        let address = aDaarUser.employeeProfile.address
+        
+        let nokName = aDaarUser.employeeProfile.guarantor.fullName
+        let nokAddress = aDaarUser.employeeProfile.guarantor.email
+        let nokPhone = aDaarUser.employeeProfile.guarantor.phone
+
+        let ec_name = aDaarUser.employeeProfile.emergencyContact[0].name ? aDaarUser.employeeProfile.emergencyContact[0].name : ''
+        let ec_phone = aDaarUser.employeeProfile.emergencyContact[0].phone ? aDaarUser.employeeProfile.emergencyContact[0].phone : ''
+        let ec_email = aDaarUser.employeeProfile.emergencyContact[0].email ? aDaarUser.employeeProfile.emergencyContact[0].email : ''
+        let ec_address = aDaarUser.employeeProfile.emergencyContact[0].address ? aDaarUser.employeeProfile.emergencyContact[0].address : ''
 
         // let paygrade = payGrades[paygradeId]
         let paygrade =  _.findWhere(payGrades, {_id: paygradeId})        
@@ -106,8 +136,16 @@ Meteor.methods({
             firstName : firstName,
             lastName: lastName,
             email: email,
+            address: address,
             parents: parentsText,
-            payGrade: paygrade ? paygrade.code : ''
+            payGrade: paygrade ? paygrade.code : '',
+            nokName: nokName,
+            nokPhone: nokPhone,
+            nokAddress: nokAddress,
+            ecName: ec_name,
+            ecPhone: ec_phone,
+            ecEmail: ec_email,
+            ecAddress: ec_address
         }
         returnedDaarUsersWithDefaultPassword.push(employeeData)
       }

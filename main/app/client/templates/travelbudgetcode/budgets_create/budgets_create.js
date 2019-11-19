@@ -46,7 +46,7 @@ Template.BudgetCreate.events({
                 if(err){
                     swal("Update Failed", `Cannot Update Budget Holder ${code}`, "error");
                 } else {
-                    swal("Successful Update!", `Succesffully update Budget Holder ${code}`, "success");
+                    swal("Successful Update!", `Successfully update Budget Holder ${code}`, "success");
                     Modal.hide("BudgetCreate");
                 }
             });

@@ -31,7 +31,7 @@ Template.UsersWithDefaultorRealPassword.events({
             tmpl.$('#exportReportForUsersWithDefaultPassword').removeAttr('disabled');
         };
 
-        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'parents', 'payGrade']
+        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nokName', 'nokPhone', 'nokAddress', 'ecName', 'ecPhone', 'ecEmail', 'ecAddress']
         let reportData = Template.instance().usersWithDefaultPassword.get()
 
         BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
@@ -61,7 +61,7 @@ Template.UsersWithDefaultorRealPassword.events({
             tmpl.$('#exportReportForUsersWithRealPassword').removeAttr('disabled');
         };
 
-        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'parents', 'payGrade']
+        let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nokName', 'nokPhone', 'nokAddress', 'ecName', 'ecPhone', 'ecEmail', 'ecAddress']
         let reportData = Template.instance().usersWithRealPassword.get()
 
         BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
@@ -118,6 +118,7 @@ Template.UsersWithDefaultorRealPassword.onCreated(function () {
 
 Template.UsersWithDefaultorRealPassword.onRendered(function () {
     self.$('select.dropdown').dropdown();
+    console.log(this);
 });
 
 Template.UsersWithDefaultorRealPassword.onDestroyed(function () {

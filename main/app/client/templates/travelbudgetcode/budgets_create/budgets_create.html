@@ -30,9 +30,9 @@
                                         <option value="" >Employees</option>
                                         {{#each employees}}
                                             {{#if isEqual _id (checked 'employeeId')}}
-                                            <option value="{{employeeProfile.employeeId}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            <option value="{{_id}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                             {{else}}
-                                            <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                             {{/if}}
                                         {{/each}} 
                                     </select>
@@ -47,9 +47,9 @@
                                         <option value="" >Employees</option>
                                         {{#each employees}}
                                             {{#if isEqual _id (checked 'financeApproverId')}}
-                                            <option value="{{employeeProfile.employeeId}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            <option value="{{_id}}" selected>{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                             {{else}}
-                                            <option value="{{employeeProfile.employeeId}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
                                             {{/if}}
                                         {{/each}}     
                                      </select>

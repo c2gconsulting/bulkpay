@@ -39,7 +39,7 @@
                                 <select name="travelcityId" style="width: 100%" class="form-control">
                                         <option value="" {{selected "travelcityId" nil}}>None</option>
                                         {{#each travelcityList}}
-                                            <option value="{{travelcityId}}" {{selected "travelcityId" _id}}>{{name}}</option>
+                                            <option value="{{_id}}" {{selected "travelcityId" _id}}>{{name}}</option>
                                         {{/each}}
                                 </select>
                             </div><!-- form-group -->
