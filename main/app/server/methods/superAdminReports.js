@@ -86,13 +86,13 @@ Meteor.methods({
           address: address,
           parents: parentsText,
           payGrade: paygrade ? paygrade.code : '',
-          nokName: nokName,
-          nokPhone: nokPhone,
-          nokAddress: nokAddress,
-          ecName: ec_name,
-          ecPhone: ec_phone,
-          ecEmail: ec_email,
-          ecAddress: ec_address
+          nextOfKinName: nextOfKinName,
+          nextOfKinPhone: nextOfKinPhone,
+          nextOfKinAddress: nextOfKinAddress,
+          emergencyContactName: emergencyContactName,
+          emergencyContactPhone: emergencyContactPhone,
+          emergencyContactEmail: emergencyContactEmail,
+          emergencyContactAddress: emergencyContactAddress
         }
         returnedDaarUsersWithRealPassword.push(employeeData)
       }
@@ -139,13 +139,13 @@ Meteor.methods({
             address: address,
             parents: parentsText,
             payGrade: paygrade ? paygrade.code : '',
-            nokName: nokName,
-            nokPhone: nokPhone,
-            nokAddress: nokAddress,
-            ecName: ec_name,
-            ecPhone: ec_phone,
-            ecEmail: ec_email,
-            ecAddress: ec_address
+            nextOfKinName: nextOfKinName,
+            nextOfKinPhone: nextOfKinPhone,
+            nextOfKinAddress: nextOfKinAddress,
+            emergencyContactName: emergencyContactName,
+            emergencyContactPhone: emergencyContactPhone,
+            emergencyContactEmail: emergencyContactEmail,
+            emergencyContactAddress: emergencyContactAddress
         }
         returnedDaarUsersWithDefaultPassword.push(employeeData)
       }
