@@ -409,6 +409,20 @@ Router.route('/business/:_id/employee/procurementrequisitions/treatlist', {
     where: 'client'
 });
 
+// Time Management
+Router.route('/business/:_id/time/management1', {
+    name: 'time.management1',
+    controller: 'TimeManagementController',
+    action: 'showTimeManagement1',
+    where: 'client'
+});
+
+Router.route('/business/:_id/time/management2', {
+    name: 'time.management2',
+    controller: 'TimeManagementController',
+    action: 'showTimeManagement2',
+    where: 'client'
+});
 // Original Travel Request
 Router.route('/business/:_id/employee/travelrequests', {
     name: 'travelrequests.list',
