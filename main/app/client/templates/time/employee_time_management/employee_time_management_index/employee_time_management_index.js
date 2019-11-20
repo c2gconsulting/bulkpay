@@ -1,13 +1,34 @@
 /*****************************************************************************/
-/* TimeManagement1: Event Handlers */
+/* EmployeeTimeManagement: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TimeManagement1.events({
-    'click #createTravelRequisition  ': function(e, tmpl) {
-        e.preventDefault()
-        Modal.show('TravelRequisition2Create')
+Template.EmployeeTimeManagement.events({
+  'click #createTimeRecordWeekOne': function(e){
+      e.preventDefault();
+      Session.set("weekIndex", "1");
+
+      Router.go('employee.time.management.create',{_id: Session.get('context')});
+  },
+  'click #createTimeRecordWeekTwo': function(e){
+      e.preventDefault();
+      Session.set("weekIndex", "2");
+
+      Router.go('employee.time.management.create', {_id: Session.get('context')});
+  },
+  'click #createTimeRecordWeekThree': function(e){
+        e.preventDefault();
+        Session.set("weekIndex", "3");
+
+        Router.go('employee.time.management.create', {_id: Session.get('context')});
     },
+
+    'click #createTimeRecordWeekFour': function(e){
+          e.preventDefault();
+          Session.set("weekIndex", "4");
+
+          Router.go('employee.time.management.create', {_id: Session.get('context')});
+      },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
@@ -29,17 +50,7 @@ Template.TimeManagement1.events({
         }
 
     },
-    'click .goToPage': function(e, tmpl) {
-        let pageNum = e.currentTarget.getAttribute('data-pageNum')
-        let pageNumAsInt = parseInt(pageNum)
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsICreated(skip)
-        Template.instance().travelRequestsICreated.set(newPageOfProcurements)
-
-        Template.instance().currentPage.set(pageNumAsInt)
-    },
     'click .paginateLeft': function(e, tmpl) {
 
     },
@@ -58,9 +69,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TimeManagement1: Helpers */
+/* EmployeeTimeManagement: Helpers */
 /*****************************************************************************/
-Template.TimeManagement1.helpers({
+Template.EmployeeTimeManagement.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
@@ -79,16 +90,7 @@ Template.TimeManagement1.helpers({
     //     }
 
     // },
-    'numberOfPages': function() {
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
 
-        let result = Math.floor(totalNum/limit)
-        var remainder = totalNum % limit;
-        if (remainder > 0)
-            result += 2;
-        return result;
-    },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
 
@@ -115,66 +117,32 @@ Template.TimeManagement1.helpers({
 });
 
 /*****************************************************************************/
-/* TimeManagement1: Lifecycle Hooks */
+/* EmployeeTimeManagement: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TimeManagement1.onCreated(function () {
+Template.EmployeeTimeManagement.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
+//    Session.set("weekIndex", "1");
 
-    self.NUMBER_PER_PAGE = new ReactiveVar(10);
-    self.currentPage = new ReactiveVar(0);
-    //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsICreated = function(skip) {
-        let sortBy = "createdAt";
-        let sortDirection = -1;
 
-        let options = {};
-        options.sort = {};
-        options.sort[sortBy] = sortDirection;
-        options.limit = self.NUMBER_PER_PAGE.get();
-        options.skip = skip
-
-        return TravelRequisition2s.find({createdBy: Meteor.userId()}, options);
-    }
 
     self.subscribe('getCostElement', businessUnitId)
 
     self.autorun(function() {
-        let limit = self.NUMBER_PER_PAGE.get();
-        let sortBy = "createdAt";
-        let sortDirection =  -1;
-        let sort = {};
-        sort[sortBy] = sortDirection;
 
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
-
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
-
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsICreated', businessUnitId, limit, sort)
-        if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsICreated.set(self.getTravelRequestsICreated(0))
-        }
-        //--
-        if(customConfigSub.ready()) {
-            const customConfig = BusinessUnitCustomConfigs.findOne({businessId: businessUnitId})
-            self.businessUnitCustomConfig.set(customConfig)
-        }
     })
 });
 
-Template.TimeManagement1.onRendered(function () {
+Template.EmployeeTimeManagement.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TimeManagement1.onDestroyed(function () {
+Template.EmployeeTimeManagement.onDestroyed(function () {
 });

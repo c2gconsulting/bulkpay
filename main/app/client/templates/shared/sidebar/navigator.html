@@ -192,7 +192,7 @@
             {{#if isTimeWritingEnabled}}
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
             <li><a href="{{pathFor 'employee.time.management'}}">Time Management</a></li>
-            {{/if}} 
+            {{/if}}
 
             {{#if isLeaveRequestEnabled}}
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
@@ -226,8 +226,6 @@
                 {{#if isAdvancedTravelEnabled}}
                     <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travel Requests</a></li>
                     <li><a href="{{pathFor 'travelrequest2.travelrequisition2retirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Retirements</a></li>
-                    <li><a href="{{pathFor 'time.management1'}}">&nbsp;&nbsp;&nbsp;&nbsp;Time Table</a></li>
-                    <li><a href="{{pathFor 'time.management2'}}">&nbsp;&nbsp;&nbsp;&nbsp;Time Cards</a></li>
                 {{else}}
                     <li><a href="{{pathFor 'travelrequests.list'}}">Travel Request</a></li>
 

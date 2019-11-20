@@ -39,8 +39,11 @@ EmployeesController = BusinessUnitController.extend({
     time: function(){
         this.render('EmployeeTime');
     },
-    timeManagement: function(){ 
+    timeManagement: function(){
         this.render('EmployeeTimeManagement');
+    },
+    timeManagementCreate: function(){
+        this.render('EmployeeTimeManagementCreate');
     },
     approveTime: function(){
         this.render('ApproveEmployeeTime');

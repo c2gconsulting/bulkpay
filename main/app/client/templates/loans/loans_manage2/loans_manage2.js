@@ -21,10 +21,10 @@ Template.LoansList.helpers({
 /* LoansList: Lifecycle Hooks */
 /*****************************************************************************/
 Template.LoansList.onCreated(function () {
-    
+
     let instance = this;
 
-    instance.loans = new ReactiveVar()    
+    instance.loans = new ReactiveVar()
 
     instance.autorun(function () {
         let subscription = instance.subscribe('employeeLoansNoPagination', Session.get('context'));

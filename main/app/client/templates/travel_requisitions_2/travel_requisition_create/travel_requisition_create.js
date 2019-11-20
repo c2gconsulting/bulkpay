@@ -1018,6 +1018,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     let currentTravelRequest = {
         businessId: businessUnitId,
+
         description: "",
         budgetCodeId: "",
         cashAdvanceNotRequired: false,
@@ -1034,8 +1035,7 @@ Template.TravelRequisition2Create.onCreated(function () {
         status: "Pending",
         supervisorId: "",
         budgetHolderId: "",
-        createdBy: Meteor.user()._id,
-        trips: [{
+        trips: {
             tripIndex: 1,
             fromId: "",
             toId: "",
@@ -1066,7 +1066,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             totalDuration: 0,
             totalPerDiem: 0,
             totalHotelCost: 0
-        }]
+        }
     };
 
     self.currentTravelRequest =  new ReactiveVar();

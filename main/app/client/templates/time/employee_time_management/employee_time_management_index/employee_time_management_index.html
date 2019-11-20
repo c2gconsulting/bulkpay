@@ -1,0 +1,77 @@
+<template name="EmployeeTimeManagement">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-fax"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Time Record</li>
+                </ul>
+
+                <h4>Time Records</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="panel">
+            <div class="panel-body">
+                {{#unless Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{> spinner}}
+                    </div>
+                </div>
+                {{/unless}}
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Time Management</h5>
+                            <p class="card-text">.</p>
+                            <a href="#" id="createTimeRecordWeekOne" name="weekOne" class="btn btn-primary">Week 1</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Time Management</h5>
+                            <p class="card-text">.</p>
+                            <a href="#" id="createTimeRecordWeekTwo" name="weekTwo" class="btn btn-primary">Week 2</a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br> <br>
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Time Management</h5>
+                            <p class="card-text">.</p>
+                            <a href="#" id="createTimeRecordWeekThree" name="weekThree" class="btn btn-primary">Week 3</a>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Time Management</h5>
+                            <p class="card-text">.</p>
+                            <a href="#" id="createTimeRecordWeekFour" name="weekFour" class="btn btn-primary">Week 4</a>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
