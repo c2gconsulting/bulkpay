@@ -269,6 +269,13 @@ Router.route('/business/:_id/employee/time', {
     action: 'time',
     where: 'client'
 });
+
+Router.route('/business/:_id/employee/time/management', {
+    name: 'employee.time.management',
+    controller: 'EmployeesController',
+    action: 'timeManagement',
+    where: 'client'
+});
 Router.route('/business/:_id/employee/time/approve', {
     name: 'employee.time.approve',
     controller: 'EmployeesController',

@@ -191,7 +191,8 @@
         {{#if isMenuExpanded 'selfServiceMenu'}}
             {{#if isTimeWritingEnabled}}
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
-            {{/if}}
+            <li><a href="{{pathFor 'employee.time.management'}}">Time Management</a></li>
+            {{/if}} 
 
             {{#if isLeaveRequestEnabled}}
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
