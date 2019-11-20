@@ -64,5 +64,29 @@ Meteor.methods({
         } else {
             throw new Meteor.Error(401, "Unauthorized. You didn't create that time record")
         }
-    }
+    },
+    "timeRecord/create": function(currentTimeRecord){
+        if(!this.userId && Core.hasPayrollAccess(this.userId)){
+            throw new Meteor.Error(401, "Unauthorized");
+        }
+        check(currentTimeRecord.businessId, String);
+        this.unblock()
+
+        currentTimeRecord.supervisorId = (Meteor.users.findOne(currentTimeRecord.createdBy)).directSupervisorId;
+
+        if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+            let errMsg = "Sorry, you have not allowed to create a time record because you are a super admin"
+            throw new Meteor.Error(401, errMsg);
+        }
+        if(currentTimeRecord._id){
+
+            TimeRecord.update(currentTimeRecord._id, {$set: currentTimeRecord})
+            console.log("currentTimeRecord")
+            console.log(currentTimeRecord)
+        }else{
+            currentTimeRecord._id = TimeRecord.insert(currentTimeRecord);
+        }
+
+        return true;
+    },
 })

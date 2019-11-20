@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/* TravelRequisitionCreate: Event Handlers */
+/* TimeRequisitionCreate: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
@@ -7,94 +7,27 @@ Template.EmployeeTimeManagementCreate.events({
 
   'click #new-timeRecord-create': function(e, tmpl) {
       e.preventDefault()
-      console.log("creating time record")
-
-
-
-
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      var numOfDaysOffShore = $(".offShore:checked").length;
+      var numOfDaysOnShore = $(".onShore:checked").length;
+      var numOfDaysWorked = numOfDaysOnShore + numOfDaysOffShore;
+      currentTimeRecord.totalDaysWorkedOnshore = numOfDaysOnShore;
+      currentTimeRecord.totalDaysWorkedOffshore = numOfDaysOffShore;
+      currentTimeRecord.totalDaysWorked = numOfDaysWorked;
 
-      //update projectCode one last final time
-    //  tmpl.currentTimeRecord.set(currentTimeRecord);
+      tmpl.currentTimeRecord.set(currentTimeRecord);
 
-      let fieldsAreValid = true;
-      let validationErrors = '';
+      console.log("currentTimeRecord on create of time record is")
+      console.log(currentTimeRecord)
 
-      /*** VALIDATIONS ***/
-      //check that the projectCode is not hello
-
-      if (currentTimeRecord.projectCode ===""){
-          fieldsAreValid = false;
-          validationErrors += ": projectCode cannot be empty";
-      }
-
-      if( currentTimeRecord.budgetCodeId=="I am not sure")
-      {
-          fieldsAreValid = false;
-          validationErrors += ": select a budget code";
-      }
-      for (i = 0; i < currentTimeRecord.trips.length; i++) {
-          const currentTrip = currentTimeRecord.trips[i];
-
-          // if (currentTrip.transportationMode === ""){
-          //     fieldsAreValid = false;
-          //     validationErrors += ": select transportation mode";
-          // }
-          //console.log(currentTimeRecord.type);
-          if ((currentTimeRecord.type === "Multiple") && ((i + 1) < currentTimeRecord.trips.length)) {
-              const startDate = moment(currentTrip.departureDate);
-              const endDate = moment(currentTimeRecord.trips[i+1].departureDate)
-
-              if (endDate.diff(startDate, 'days') < 0){
-                  fieldsAreValid = false;
-                  validationErrors += ": Return date cannot be earlier than Departure date";
-              }
-          }else{
-              const startDate = moment(currentTrip.departureDate);
-              const endDate = moment(currentTrip.returnDate)
-
-              if (endDate.diff(startDate, 'days') < 0){
-                  fieldsAreValid = false;
-                  validationErrors += ": Return date cannot be earlier than Departure date";
-              }
-          }
-
-          if (currentTimeRecord.trips.length ===1){
-
-
-              if (currentTrip.fromId === ""){
-                  fieldsAreValid = false;
-                  validationErrors += ": select your current location";
-              }
-              if (currentTrip.fromId.selectedIndex == 0){
-                  fieldsAreValid = false;
-                  validationErrors += ": select your current location";
-              }
-              if (currentTrip.toId === ""){
-                  fieldsAreValid = false;
-                  validationErrors += ": select your destination location";
-              }
-              if (currentTrip.hotelId === ""){
-                  fieldsAreValid = false;
-                  validationErrors += ": select a hotel";
-              }
-              //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
-              //    fieldsAreValid = false;
-              //    validationErrors += ": select an airline";
-              //}
-          }
-      }
-
-
-      if (fieldsAreValid){
           //explicitely set status
           currentTimeRecord.status = "Pending";
 
-          Meteor.call('TravelRequest2/create', currentTimeRecord, (err, res) => {
+          Meteor.call('timeRecord/create', currentTimeRecord, (err, res) => {
               if (res){
                   swal({
-                      title: "Travel requisition created",
-                      text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+                      title: "Time record created",
+                      text: "Your Time requisition has been created, a notification has been sent to your supervisor",
                       confirmButtonClass: "btn-success",
                       type: "success",
                       confirmButtonText: "OK"
@@ -102,7 +35,7 @@ Template.EmployeeTimeManagementCreate.events({
               } else {
                   swal({
                       title: "Oops!",
-                      text: "Your travel requisition could not be created, reason: " + err.message,
+                      text: "Your Time record could not be created, reason: " + err.message,
                       confirmButtonClass: "btn-danger",
                       type: "error",
                       confirmButtonText: "OK"
@@ -111,11 +44,9 @@ Template.EmployeeTimeManagementCreate.events({
               }
 
           });
-          Template.instance().errorMessage.set(null);
           Modal.hide('EmployeeTimeManagementCreate');
-      }else{
-          Template.instance().errorMessage.set("Validation errors" + validationErrors);
-      }
+
+
 
   },
   'change [name=projectCode]': function(e, tmpl) {
@@ -190,15 +121,136 @@ Template.EmployeeTimeManagementCreate.events({
 
       console.log("current time record for the week is:")
       console.log(currentTimeRecord)
+
+
+  },
+
+  'change [name=onShoreMonday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreMonday = $('[name="onShoreMonday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.monday = $('[name="onShoreMonday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreTuesday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreTuesday = $('[name="onShoreTuesday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.tuesday = $('[name="onShoreTuesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreWednesday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreWednesday = $('[name="onShoreWednesday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.wednesday = $('[name="onShoreWednesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreThursday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreThursday = $('[name="onShoreThursday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.thursday = $('[name="onShoreThursday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreFriday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreFriday = $('[name="onShoreFriday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.friday = $('[name="onShoreFriday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreSaturday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreMonday = $('[name="onShoreSaturday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.saturday = $('[name="onShoreSaturday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=onShoreSunday]': function(e, tmpl) {
+      e.preventDefault()
+      let onShoreSunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.sunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+
+      console.log("current time record for the Onshore week is:")
+      console.log(currentTimeRecord)
+  },
+
+  'change [name=vehicleOnMonday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnMonday = $('[name="vehicleOnMonday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.monday = $('[name="vehicleOnMonday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnTuesday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnTuesday = $('[name="vehicleOnTuesday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.tuesday = $('[name="vehicleOnTuesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnWednesday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnWednesday = $('[name="vehicleOnWednesday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.wednesday = $('[name="vehicleOnWednesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnThursday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnThursday = $('[name="vehicleOnThursday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.thursday = $('[name="vehicleOnThursday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnFriday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnFriday = $('[name="vehicleOnFriday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.friday = $('[name="vehicleOnFriday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnSaturday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnMonday = $('[name="vehicleOnSaturday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.saturday = $('[name="vehicleOnSaturday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=vehicleOnSunday]': function(e, tmpl) {
+      e.preventDefault()
+      let vehicleOnSunday = $('[name="vehicleOnSunday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.vehicle.sunday = $('[name="vehicleOnSunday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+
+      console.log("current time record for the vehicle week is:")
+      console.log(currentTimeRecord)
+
   }
-
-
 });
 
 
 
 /*****************************************************************************/
-/* TravelRequisitionCreate: Helpers */
+/* TimeRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.EmployeeTimeManagementCreate.helpers({
     'errorMessage': function() {
@@ -238,7 +290,7 @@ Template.EmployeeTimeManagementCreate.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisitionCreate: Lifecycle Hooks */
+/* TimeRequisitionCreate: Lifecycle Hooks */
 /*****************************************************************************/
 Template.EmployeeTimeManagementCreate.onCreated(function () {
 
@@ -260,8 +312,12 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
         projectCode: "",
         chargeCode: "",
         supervisorId: "",
-        budgetHolderId: "",
         totalDaysWorked : 0,
+        totalDaysWorkedOnshore : 0,
+        totalDaysWorkedOffshore : 0,
+        status: "Pending",
+
+
 
         period: {
             year: "",
@@ -279,14 +335,24 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
             saturday:false,
             sunday:false,
             numOfDaysOffShore: 0,
-            numOfDaysOnShore: 0,
-            provideVehicleTransport: false
+            numOfDaysOnShore: 0
+
+        },
+        vehicle:
+          {
+            vehicleWeekIndex: weekIndex,
+            monday:false,
+            tuesday:false,
+            wednesday:false,
+            thursday:false,
+            friday:false,
+            saturday:false,
+            sunday:false
+
         }
 
     };
 
-    console.log("current time record on create is:")
-    console.log(currentTimeRecord)
 
     self.currentTimeRecord =  new ReactiveVar();
     self.currentTimeRecord.set(currentTimeRecord);
@@ -301,12 +367,12 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
     let unitsSubscription = self.subscribe('getCostElement', businessUnitId)
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     //--
-    self.selectedTravelType = new ReactiveVar()
+    self.selectedTimeType = new ReactiveVar()
     self.selectedCurrency = new ReactiveVar()
     self.selectedNumDays = new ReactiveVar()
     self.selectedCostCenter = new ReactiveVar()
     self.selectedstateId = new ReactiveVar()
-    self.selectedtravelcityId = new ReactiveVar()
+    self.selectedTimecityId = new ReactiveVar()
     self.selectedflightrouteId = new ReactiveVar()
 
 
@@ -319,10 +385,10 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
     self.autorun(function(){
 
         // if (invokeReason){
-        //     let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId);
-        //     if(travelRequest2Sub.ready()) {
-        //         let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
-        //         self.currentTimeRecord.set(travelRequestDetails)
+        //     let TimeRequest2Sub = self.subscribe('TimeRequest2', invokeReason.requisitionId);
+        //     if(TimeRequest2Sub.ready()) {
+        //         let TimeRequestDetails = TimeRequisition2s.findOne({_id: invokeReason.requisitionId});
+        //         self.currentTimeRecord.set(TimeRequestDetails)
         //
         //     }
         // }
