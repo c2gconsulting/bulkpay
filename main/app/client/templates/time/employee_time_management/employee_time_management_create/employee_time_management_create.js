@@ -135,16 +135,61 @@ Template.EmployeeTimeManagementCreate.events({
   'change [name=offShoreMonday]': function(e, tmpl) {
       e.preventDefault()
       let offShoreMonday = $('[name="offShoreMonday"]').is(':checked') ? true : false;
-      console.log("offshore monday is")
-      console.log(offShoreMonday)
+
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
       currentTimeRecord.week.monday = $('[name="offShoreMonday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreTuesday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreTuesday = $('[name="offShoreTuesday"]').is(':checked') ? true : false;
 
-      console.log("currentTravelRequest for offshore is:")
-      console.log(currentTravelRequest)
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.tuesday = $('[name="offShoreTuesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreWednesday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreWednesday = $('[name="offShoreWednesday"]').is(':checked') ? true : false;
 
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.wednesday = $('[name="offShoreWednesday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreThursday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreThursday = $('[name="offShoreThursday"]').is(':checked') ? true : false;
 
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.thursday = $('[name="offShoreThursday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreFriday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreFriday = $('[name="offShoreFriday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.friday = $('[name="offShoreFriday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreSaturday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreMonday = $('[name="offShoreSaturday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.saturday = $('[name="offShoreSaturday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+  },
+  'change [name=offShoreSunday]': function(e, tmpl) {
+      e.preventDefault()
+      let offShoreSunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
+
+      let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+      currentTimeRecord.week.sunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
+      tmpl.currentTimeRecord.set(currentTimeRecord);
+
+      console.log("current time record for the week is:")
+      console.log(currentTimeRecord)
   }
 
 
