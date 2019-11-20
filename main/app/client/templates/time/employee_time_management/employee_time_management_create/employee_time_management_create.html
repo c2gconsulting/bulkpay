@@ -48,20 +48,20 @@
                             </thead>
                             <tbody>
 
-                                <tr data-RequisitionId="{{_id}}" class="">
+                                <tr>
                                     <td rowspan="3"><input type="text" id="chargeCode" placeholder="" name="chargeCode" value="{{currentTimeRecord.chargeCode}}" /></td>
                                     <td rowspan="3"><input type="text" id="projectCode" placeholder="" name="projectCode" value="{{currentTimeRecord.projectCode}}" /></td>
                                     <td>Offshore</td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
-                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"  id="offShoreMonday" checked="{{checked 'offShoreMonday'}}" placeholder="" name="offShoreMonday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreTuesday" placeholder="" name="offShoreTuesday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreWednesday" placeholder="" name="offShoreWednesday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreThursday" placeholder="" name="offShoreThursday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreFriday" placeholder="" name="offShoreFriday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreSaturday" placeholder="" name="offShoreSaturday" value="" /></td>
+                                    <td><input type="checkbox"  id="offShoreSunday" placeholder="" name="offShoreSunday" value="" /></td>
                                     <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
                                   </tr>
-                                   <tr data-RequisitionId="{{_id}}" class="">
+                                   <tr>
                                     <td>Onshore</td>
                                     <td><input type="checkbox"/></td>
                                     <td><input type="checkbox"/></td>

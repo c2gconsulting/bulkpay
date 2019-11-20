@@ -167,6 +167,7 @@ Template.TravelRequisition2Create.events({
     e.preventDefault()
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
     currentTravelRequest.description = $("#description").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
    console.log("description")
@@ -1035,7 +1036,9 @@ Template.TravelRequisition2Create.onCreated(function () {
         status: "Pending",
         supervisorId: "",
         budgetHolderId: "",
-        trips: {
+        createdBy: Meteor.user()._id,
+
+        trips:[ {
             tripIndex: 1,
             fromId: "",
             toId: "",
@@ -1066,7 +1069,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             totalDuration: 0,
             totalPerDiem: 0,
             totalHotelCost: 0
-        }
+        }]
     };
 
     self.currentTravelRequest =  new ReactiveVar();
