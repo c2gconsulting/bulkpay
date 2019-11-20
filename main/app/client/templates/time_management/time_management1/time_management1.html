@@ -1,0 +1,171 @@
+<template name="TimeManagement1">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-fax"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Time Table</li>
+                </ul>
+
+                <h4>Time Table</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="panel">
+            <div class="panel-body">
+                {{#unless Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{> spinner}}
+                    </div>
+                </div>
+                {{/unless}}
+
+                {{#if condition travelRequestsICreated.count '>' 0}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>C</th>
+                                    <th>P</th>
+                                    <th>     </th>
+                                    <th>Mon</th>
+                                    <th>Tue</th>
+                                    <th>Wed</th>
+                                    <th>Thur</th>
+                                    <th>Fri</th>
+                                    <th>Sat</th>
+                                    <th>Sun</th>
+                                    <!--<th>&nbsp;</th>-->
+                                </tr>
+                            </thead>
+                            <tbody>
+    
+                                <tr data-RequisitionId="{{_id}}" class="">
+                                    <td rowspan="3"><input /></td>
+                                    <td rowspan="3"><input /></td>
+                                    <td>Offshore</td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                                  </tr>
+                                   <tr data-RequisitionId="{{_id}}" class="">
+                                    <td>Onshore</td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                                  </tr>
+                                  <tr data-RequisitionId="{{_id}}" class="">
+                                    <td>Vehicle</td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <td><input type="checkbox"/></td>
+                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                                  </tr>
+                                
+                              </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="row">
+                        <div class="pull-right">
+                            <ul class="pagination pagination-split pagination-sm pagination-contact">
+                                {{#each (repeat numberOfPages)}}
+                                    {{#if condition currentPage 'eq' this}}
+                                    <li class="active"><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{else}}
+                                    <li><a class="goToPage" data-pageNum="{{this}}">{{this}}</a></li>
+                                    {{/if}}
+                                {{/each}}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {{else}}
+                <div class="row">
+                    <table class="table table-striped table-bordered result" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>C</th>
+                                <th>P</th>
+                                <th>     </th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thur</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                                <th>Sun</th>
+                                <!--<th>&nbsp;</th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr data-RequisitionId="{{_id}}" class="">
+                                <td rowspan="3"><input /></td>
+                                <td rowspan="3"><input /></td>
+                                <td>Offshore</td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                              </tr>
+                               <tr data-RequisitionId="{{_id}}" class="">
+                                <td>Onshore</td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                              </tr>
+                              <tr data-RequisitionId="{{_id}}" class="">
+                                <td>Vehicle</td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <td><input type="checkbox"/></td>
+                                <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                              </tr>
+                            
+                          </tbody>
+                    </table>
+                </div>
+                {{/if}}
+
+            </div>
+        </div>
+    </div>
+</template>
