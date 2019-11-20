@@ -1,0 +1,7 @@
+tr, th {
+    text-align: center;
+}
+
+input[type=checkbox] {
+    zoom: 1.5;
+}

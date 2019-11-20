@@ -98,6 +98,16 @@ Template.TimeManagement2.helpers({
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
+    'month': function(){
+        return Core.months();
+    },
+    'year': function(){
+        let years = [];
+        for (let x = new Date().getFullYear(); x < new Date().getFullYear() + 50; x++) {
+            years.push(String(x));
+        }
+        return years;
+    },
 
     'totalTripCostNGN': function(currentTravelRequest) {
         if(currentTravelRequest) {
@@ -174,6 +184,7 @@ Template.TimeManagement2.onCreated(function () {
 Template.TimeManagement2.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
+    console.log(Core.months())
 });
 
 Template.TimeManagement2.onDestroyed(function () {
