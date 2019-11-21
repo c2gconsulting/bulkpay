@@ -5,7 +5,7 @@ Core.publish("alltimedata", function (businessId) {
 
     let currentId = this.userId;
     let user = Meteor.users.findOne({_id: currentId});
-    if (user &&  user.employeeProfile && 
+    if (user &&  user.employeeProfile &&
         user.employeeProfile.employment && user.employeeProfile.employment.position){
         let positions = EntityObjects.find({"properties.supervisor": user.employeeProfile.employment.position}).fetch().map(x=>{
             return x._id
@@ -22,9 +22,9 @@ Core.publish("alltimedata", function (businessId) {
         const allPositions = getPositions(allSubs);
 
         return [
-            TimeWritings.find({employeeId: {$in: allSubs}}), 
-            Leaves.find({employeeId: {$in: allSubs}}), 
-            LeaveTypes.find({businessId: businessId, status: 'Active'}), 
+            TimeWritings.find({employeeId: {$in: allSubs}}),
+            Leaves.find({employeeId: {$in: allSubs}}),
+            LeaveTypes.find({businessId: businessId, status: 'Active'}),
             EntityObjects.find({_id: {$in: allPositions}})
         ];
     } else {
@@ -37,7 +37,7 @@ Core.publish("timewritings", function (businessId, superviseeUserIds) {
     check(businessId, String);
 
     return [
-        TimeWritings.find({employeeId: {$in: superviseeUserIds}}), 
+        TimeWritings.find({employeeId: {$in: superviseeUserIds}}),
         Leaves.find({employeeId: {$in: superviseeUserIds}})
     ];
 });
@@ -52,7 +52,7 @@ Core.publish("timewritingsformonth", function (businessId, month, year) {
     // const monthMoment = moment().month(monthAsNum).year(yearAsNum)
     // const monthStartMoment = monthMoment.clone().startOf('month')
     // const monthEndMoment = monthMoment.clone().endOf('month')
-    
+
     // const monthStart = monthStartMoment.format('YYYY-MM-DDTHH:mm:ss')
     // const monthEnd = monthEndMoment.format('YYYY-MM-DDTHH:mm:ss')
 
@@ -75,7 +75,7 @@ Core.publish("timesForDay", function (businessId, dayAsDate) {
     var dayEnd = moment(dayAsDate).endOf('day').toDate();
 
     let timesFound = TimeWritings.find({
-        employeeId: this.userId, 
+        employeeId: this.userId,
         day: {$gte: dayStart, $lt: dayEnd}
     });
     return timesFound

@@ -288,12 +288,19 @@ Router.route('/business/:_id/employee/time/management/create', {
     action: 'timeManagementCreate',
     where: 'client'
 });
+Router.route('/business/:_id/employee/time/management/approve', {
+    name: 'employee.time.management.approve',
+    controller: 'EmployeesController',
+    action: 'approveTimeManagementIndex',
+    where: 'client'
+});
 Router.route('/business/:_id/employee/time/approve', {
     name: 'employee.time.approve',
     controller: 'EmployeesController',
     action: 'approveTime',
     where: 'client'
 });
+
 
 Router.route('/business/:_id/projects', {
     name: 'project.list',

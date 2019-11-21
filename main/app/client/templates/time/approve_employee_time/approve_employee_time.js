@@ -57,6 +57,7 @@ Template.ApproveEmployeeTime.onCreated(function () {
                 return x._id
             });
 
+
             Meteor.users.find().fetch({businessIds: businessId}).forEach(aUser => {
                 let userPositionId = aUser.employeeProfile.employment.position
                 if(positions.indexOf(userPositionId) !== -1) {
@@ -119,7 +120,7 @@ Template.ApproveEmployeeTime.onRendered(function () {
         leaves.forEach(x => {
             const user = Meteor.users.findOne({_id: x.employeeId}).profile.fullName;
             let leaveType = LeaveTypes.findOne({_id: x.type})
-            if(leaveType) { 
+            if(leaveType) {
                 const leaveDescription = LeaveTypes.findOne({_id: x.type}).name;
                 const obj = {};
                 obj._id = x._id;
@@ -262,7 +263,7 @@ Template.ApproveEmployeeTime.onRendered(function () {
 
             //         let endDateMoment = moment(endDate)
             //         endDate = endDateMoment.endOf('day').toDate()
-                    
+
             //         Meteor.call('approveTimeDataInPeriod', startDate, endDate, businessId, self.getSupervisees(), function(err, res){
             //             if(res){
             //                 swal('Success', 'Approvals were uccessful', 'success');

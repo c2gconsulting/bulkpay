@@ -1,12 +1,12 @@
 /*****************************************************************************/
-/* EmployeeTimeRecordIndex: Event Handlers */
+/* ApproveEmployeeTimeManagementIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.EmployeeTimeRecordIndex.events({
-    'click #createTimeRecord': function(e, tmpl) {
+Template.ApproveEmployeeTimeManagementIndex.events({
+    'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
-        Router.go('employee.time.management',{_id: Session.get('context')});
+        Modal.show('TravelRequisition2Create')
     },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
@@ -17,17 +17,7 @@ Template.EmployeeTimeRecordIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        const status = $("#status_" + requisitionId).html();
-
-
-
-
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
-          Router.go('employee.time.management',{_id: Session.get('context')});
-        }else{
-            Modal.show('TimeRecordDetail', invokeReason);
-        }
-
+        Modal.show('TravelRequisition2SupervisorDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -35,8 +25,8 @@ Template.EmployeeTimeRecordIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTimeRecordsICreated(skip)
-        Template.instance().timeRecordsICreated.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsBySupervisor(skip)
+        Template.instance().travelRequestsBySupervisor.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -58,30 +48,18 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* EmployeeTimeRecordIndex: Helpers */
+/* ApproveEmployeeTimeManagementIndex: Helpers */
 /*****************************************************************************/
-Template.EmployeeTimeRecordIndex.helpers({
-    'timeRecordsICreated': function() {
-        return Template.instance().timeRecordsICreated.get()
+Template.ApproveEmployeeTimeManagementIndex.helpers({
+    'travelRequestsBySupervisor': function() {
+        return Template.instance().travelRequestsBySupervisor.get()
     },
-    // 'hasUnretiredTrips': function() {
-
-    //     let unretiredCount = TravelRequisition2s.find({
-    //         $and : [
-    //             { retirementStatus: "Not Retired"},
-    //             { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
-    //         ]}).count()
-    //     console.log("Unretired Count: " + unretiredCount);
-    //     if (unretiredCount > 0){
-    //         return true;
-    //     }else{
-    //         return false;
-    //     }
-
-    // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({$and : [
+            { supervisorId: Meteor.userId()},
+            { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+        ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -106,18 +84,13 @@ Template.EmployeeTimeRecordIndex.helpers({
             return totalTripCostNGN;
         }
     },
-    'getPrintUrl': function(currentTravelRequest) {
-        if(currentTravelRequest) {
-            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
-        }
-    }
 
 });
 
 /*****************************************************************************/
-/* EmployeeTimeRecordIndex: Lifecycle Hooks */
+/* ApproveEmployeeTimeManagementIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.EmployeeTimeRecordIndex.onCreated(function () {
+Template.ApproveEmployeeTimeManagementIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -125,23 +98,28 @@ Template.EmployeeTimeRecordIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.timeRecordsICreated = new ReactiveVar()
+    self.travelRequestsBySupervisor = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTimeRecordsICreated = function(skip) {
+    self.getTravelRequestsBySupervisor = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
         let options = {};
         options.sort = {};
+        //options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-
-      return TimeRecord.find({createdBy: Meteor.userId()}, options);
-    }
+        return TravelRequisition2s.find({
+            $and : [
+                { supervisorId: Meteor.userId()},
+                { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+            ]
+        }, options);
+            }
 
     self.subscribe('getCostElement', businessUnitId)
 
@@ -152,17 +130,9 @@ Template.EmployeeTimeRecordIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
-
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
-
-        let timeRecordsCreatedSub = self.subscribe('TimeRecordsICreated', businessUnitId, limit, sort)
-
-        if(timeRecordsCreatedSub.ready()) {
-            self.timeRecordsICreated.set(self.getTimeRecordsICreated(0))
+        let travelRequestsBySupervisorSub = self.subscribe('TravelRequestsBySupervisor', businessUnitId, Meteor.userId());
+        if(travelRequestsBySupervisorSub.ready()) {
+            self.travelRequestsBySupervisor.set(self.getTravelRequestsBySupervisor(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -172,10 +142,10 @@ Template.EmployeeTimeRecordIndex.onCreated(function () {
     })
 });
 
-Template.EmployeeTimeRecordIndex.onRendered(function () {
+Template.ApproveEmployeeTimeManagementIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.EmployeeTimeRecordIndex.onDestroyed(function () {
+Template.ApproveEmployeeTimeManagementIndex.onDestroyed(function () {
 });

@@ -51,6 +51,9 @@ EmployeesController = BusinessUnitController.extend({
     approveTime: function(){
         this.render('ApproveEmployeeTime');
     },
+    approveTimeManagementIndex: function(){
+        this.render('ApproveEmployeeTimeManagementIndex');
+    },
 
     showMyLeaveApprovals: function(){
       this.render('MyLeaveApprovals');

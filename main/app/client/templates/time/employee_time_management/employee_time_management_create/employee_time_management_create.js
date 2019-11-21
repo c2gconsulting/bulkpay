@@ -44,7 +44,7 @@ Template.EmployeeTimeManagementCreate.events({
               }
 
           });
-          Router.go('employee.time.management',{_id: Session.get('context')});
+          Router.go('employee.time.index',{_id: Session.get('context')});
 
 
 
@@ -298,6 +298,21 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
 
     let self = this;
 
+    let currentSupervisor = {}
+
+      let user = Meteor.user()
+      if(user.employeeProfile && user.employeeProfile.employment) {
+
+    let userPosition =  EntityObjects.findOne({"_id": user.employeeProfile.employment.position})
+    let supervisor =     Meteor.users.findOne({"employeeProfile.employment.position": userPosition.properties.supervisor})
+    Session.set("supervisor",supervisor)
+    }
+
+
+
+
+
+
 
 
     self.errorMessage = new ReactiveVar();
@@ -306,6 +321,10 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
     let businessUnitId = Session.get('context');
     let weekIndex = Session.get("weekIndex");
 
+
+  let supervisor = Session.get('supervisor');
+
+
     let currentTimeRecord = {
         businessId: businessUnitId,
         createdBy: Meteor.user()._id,
@@ -313,7 +332,7 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
 
         projectCode: "",
         chargeCode: "",
-        supervisorId: "",
+        supervisorId: supervisor._id,
         totalDaysWorked : 0,
         totalDaysWorkedOnshore : 0,
         totalDaysWorkedOffshore : 0,
