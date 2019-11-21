@@ -74,10 +74,14 @@ Core.Schemas.Vehicle = new SimpleSchema({
 
 Core.Schemas.Period = new SimpleSchema({
     year: {
-      type: String
+      type: String,
+      optional: true
+
     },
     month:{
-      type: String
+      type: String,
+      optional: true
+
     }
 });
 
@@ -111,115 +115,7 @@ Core.Schemas.TimeRecord = new SimpleSchema({
         type: Number,
         optional: true
     },
-    totalEmployeePerdiemUSD: {
-        type: Number, decimal: true,
-        optional: true
-    },
-    totalAirportTaxiCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalAirportTaxiCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalGroundTransportCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalGroundTransportCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalMiscCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalMiscCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalEmployeePerdiemNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalEmployeePerdiemUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalAirportTaxiCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalAirportTaxiCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalGroundTransportCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalGroundTransportCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalMiscCostNGN:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    actualTotalMiscCostUSD:{
-        type: Number, decimal: true,
-        defaultValue: 0
-    },
-    totalFlightCostNGN: {
-        type: Number, decimal: true,
-        optional: true
-    },
-    totalFlightCostUSD: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalHotelCostNGN: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalHotelCostUSD: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalTripCostNGN: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalTripCostUSD: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalAncilliaryCostNGN: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    totalAncilliaryCostUSD: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    actualTotalAncilliaryCostNGN: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
-    actualTotalAncilliaryCostUSD: {
-        type: Number, decimal: true,
-        optional: true,
-        defaultValue: 0
-    },
+
     period: {
         type: Core.Schemas.Period,
         optional: true,

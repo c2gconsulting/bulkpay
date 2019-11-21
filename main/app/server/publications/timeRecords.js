@@ -19,6 +19,7 @@ Core.publish("TimeRecordsICreated", function (businessUnitId) {
     let user = this.userId;
 
     return TimeRecord.find({businessId: businessUnitId, createdBy: this.userId});
+
 });
 
 Core.publish("TimeRecordsAdminCreated", function (businessUnitId) {
@@ -36,7 +37,7 @@ Core.publish("TimeRecordsStatusNotSeen", function (businessUnitId) {
     });
 });
 
-Meteor.publish("TimeRecord2", function (requisitionId) {
+Meteor.publish("TimeRecord", function (requisitionId) {
     return TimeRecord.find({_id: requisitionId});
 });
 Core.publish("TimeRecordToRetire", function (requisitionId) {

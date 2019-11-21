@@ -27,7 +27,7 @@ Template.EmployeeTimeManagementCreate.events({
               if (res){
                   swal({
                       title: "Time record created",
-                      text: "Your Time requisition has been created, a notification has been sent to your supervisor",
+                      text: "Your Time record has been created, a notification has been sent to your supervisor",
                       confirmButtonClass: "btn-success",
                       type: "success",
                       confirmButtonText: "OK"
@@ -44,7 +44,9 @@ Template.EmployeeTimeManagementCreate.events({
               }
 
           });
-          Modal.hide('EmployeeTimeManagementCreate');
+          Router.go('employee.time.management',{_id: Session.get('context')});
+
+
 
 
 
@@ -385,7 +387,7 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
     self.autorun(function(){
 
         // if (invokeReason){
-        //     let TimeRequest2Sub = self.subscribe('TimeRequest2', invokeReason.requisitionId);
+        //     let TimeRequest2Sub = self.subscribe('TimeRecord', invokeReason.requisitionId);
         //     if(TimeRequest2Sub.ready()) {
         //         let TimeRequestDetails = TimeRequisition2s.findOne({_id: invokeReason.requisitionId});
         //         self.currentTimeRecord.set(TimeRequestDetails)

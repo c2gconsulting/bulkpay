@@ -2,3 +2,6 @@
     width: 70%;
     margin-left: 5em;
 }
+.row {
+    align-self: center;
+}

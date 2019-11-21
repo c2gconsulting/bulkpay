@@ -269,6 +269,12 @@ Router.route('/business/:_id/employee/time', {
     action: 'time',
     where: 'client'
 });
+Router.route('/business/:_id/employee/timerecordindex', {
+    name: 'employee.time.index',
+    controller: 'EmployeesController',
+    action: 'showTimeRecordIndex',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/time/management', {
     name: 'employee.time.management',

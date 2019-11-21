@@ -8,3 +8,10 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+tr, th {
+    text-align: center;
+}
+
+input[type=checkbox] {
+    zoom: 1.5;
+}

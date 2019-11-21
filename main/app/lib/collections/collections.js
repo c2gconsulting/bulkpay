@@ -416,7 +416,7 @@ TravelRequisition2s = new Mongo.Collection("travelrequisition2s");
 Partitioner.partitionCollection(TravelRequisition2s);
 TravelRequisition2s.attachSchema(Core.Schemas.TravelRequisition2);
 
-TimeRecord = new Mongo.Collection("travelrecord");
+TimeRecord = new Mongo.Collection("timerecord");
 Partitioner.partitionCollection(TimeRecord);
 TimeRecord.attachSchema(Core.Schemas.TimeRecord);
 /**
