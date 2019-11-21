@@ -98,19 +98,19 @@ Core.Schemas.Vehicle = new SimpleSchema({
 });
 
 Core.Schemas.Period = new SimpleSchema({
-  weekIndex: {
-      type: Number,
-      optional: false,
-      defaultValue: 1
-  },
+    weekIndex: {
+      type: String,
+      optional: false
+
+    },
     year: {
       type: String,
-      optional: true
+      optional: false
 
     },
     month:{
       type: String,
-      optional: true
+      optional: false
 
     }
 });

@@ -53,7 +53,7 @@ Template.TimeRecordSupervisorDetail.events({
         currentTimeRecord.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
         e.preventDefault()
- 
+
 
 
 
@@ -277,13 +277,13 @@ Template.TimeRecordSupervisorDetail.onRendered(function () {
         if(currentTimeRecord.status !== 'Draft' && currentTimeRecord.status !== 'Pending') {
             if(self.isInEditMode.get()) {
                 Modal.hide();
-                swal('Error', "Sorry, you can't edit this travel request. ", 'error')
+                swal('Error', "Sorry, you can't edit this time record. ", 'error')
             }
         } else if(currentTimeRecord.status === 'Pending') {
             self.isInViewMode.set(true)
         } else if(currentTimeRecord.status === 'Approve') {
             if(self.isInEditMode.get()) {
-                swal('Error', "Sorry, you can't edit this travel request. It has been approved", 'error')
+                swal('Error', "Sorry, you can't edit this time record. It has been approved", 'error')
             }
         }
     }

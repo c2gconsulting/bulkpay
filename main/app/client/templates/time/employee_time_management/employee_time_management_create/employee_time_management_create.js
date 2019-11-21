@@ -317,6 +317,9 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
 
     let businessUnitId = Session.get('context');
     let weekIndex = Session.get("weekIndex");
+    let year = Session.get("year");
+    let month = Session.get("month");
+
 
 
     let supervisor = Session.get('supervisor');
@@ -338,8 +341,8 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
 
 
         period: {
-            year: "",
-            month: "",
+            year: year,
+            month: month,
             weekIndex: weekIndex
 
           },

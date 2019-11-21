@@ -4,30 +4,133 @@
 import _ from 'underscore';
 
 Template.EmployeeTimeManagement.events({
-  'click #createTimeRecordWeekOne': function(e){
+  'change [name="paymentPeriod.month"]': (e, tmpl) => {
+      tmpl.selectedMonth.set($(e.target).val());
+  },
+  'change [name="paymentPeriod.year"]': (e, tmpl) => {
+      tmpl.selectedYear.set($(e.target).val());
+  },
+  'hover .table tbody tr': (e,tmpl) => {
+      console.log('hover called');
+  },
+  selectedMonth: function (val) {
+      if(Template.instance().selectedMonth.get()) {
+          return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
+      }
+  },
+  selectedYear: function (val) {
+      if(Template.instance().selectedYear.get()) {
+          return Template.instance().selectedYear.get() === val ? selected="selected" : '';
+      }
+  },
+  'click #createTimeRecordWeekOne': function(e,tmpl){
       e.preventDefault();
+      const month = tmpl.selectedMonth.get()
+      const year = tmpl.selectedYear.get()
+      Session.set("year", year);
+      Session.set("month", month);
       Session.set("weekIndex", "1");
 
-      Router.go('employee.time.management.create',{_id: Session.get('context')});
+      const weekIndex = Session.get("weekIndex")
+      let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+
+      console.log("timeRecordResult is")
+      console.log(timeRecordResult)
+      if(timeRecordResult){
+        swal({
+            title: "Oops!",
+            text: "You have already created a time record for this period",
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+      }else{
+        Router.go('employee.time.management.create', {_id: Session.get('context')});
+      }
+
+  //    Router.go('employee.time.management.create',{_id: Session.get('context')});
   },
-  'click #createTimeRecordWeekTwo': function(e){
+  'click #createTimeRecordWeekTwo': function(e,tmpl){
       e.preventDefault();
+      const month = tmpl.selectedMonth.get()
+      const year = tmpl.selectedYear.get()
+      Session.set("year", year);
+      Session.set("month", month);
       Session.set("weekIndex", "2");
 
-      Router.go('employee.time.management.create', {_id: Session.get('context')});
+      const weekIndex = Session.get("weekIndex")
+      let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+      console.log("timeRecordResult is")
+      console.log(timeRecordResult)
+
+      if(timeRecordResult){
+        swal({
+            title: "Oops!",
+            text: "You have already created a time record for this period",
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
+      }else{
+        Router.go('employee.time.management.create', {_id: Session.get('context')});
+      }
+
+
+
+
+
+
   },
-  'click #createTimeRecordWeekThree': function(e){
+  'click #createTimeRecordWeekThree': function(e,tmpl){
         e.preventDefault();
+        const month = tmpl.selectedMonth.get()
+        const year = tmpl.selectedYear.get()
+        Session.set("year", year);
+        Session.set("month", month);
         Session.set("weekIndex", "3");
 
-        Router.go('employee.time.management.create', {_id: Session.get('context')});
+        const weekIndex = Session.get("weekIndex")
+        let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+        console.log("timeRecordResult is")
+        console.log(timeRecordResult)
+         if(timeRecordResult){
+          swal({
+              title: "Oops!",
+              text: "You have already created a time record for this period",
+              confirmButtonClass: "btn-danger",
+              type: "error",
+              confirmButtonText: "OK"
+          });
+        }else{
+          Router.go('employee.time.management.create', {_id: Session.get('context')});
+        }
+
     },
 
-    'click #createTimeRecordWeekFour': function(e){
+    'click #createTimeRecordWeekFour': function(e,tmpl){
           e.preventDefault();
+          const month = tmpl.selectedMonth.get()
+          const year = tmpl.selectedYear.get()
+          Session.set("year", year);
+          Session.set("month", month);
           Session.set("weekIndex", "4");
 
-          Router.go('employee.time.management.create', {_id: Session.get('context')});
+          const weekIndex = Session.get("weekIndex")
+          let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+          console.log("timeRecordResult is")
+          console.log(timeRecordResult)
+                    if(timeRecordResult){
+            swal({
+                title: "Oops!",
+                text: "You have already created a time record for this period",
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
+          }else{
+            Router.go('employee.time.management.create', {_id: Session.get('context')});
+          }
+
       },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
@@ -112,16 +215,16 @@ Template.EmployeeTimeManagement.helpers({
         return Template.instance().currentPage.get()
     },
 
-    'totalTripCostNGN': function(currentTravelRequest) {
-        if(currentTravelRequest) {
-            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
+    'totalTripCostNGN': function(currentTimeRecord) {
+        if(currentTimeRecord) {
+            currentTimeRecord.totalTripCostNGN = totalTripCostNGN;
 
             return totalTripCostNGN;
         }
     },
-    'getPrintUrl': function(currentTravelRequest) {
-        if(currentTravelRequest) {
-            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
+    'getPrintUrl': function(currentTimeRecord) {
+        if(currentTimeRecord) {
+            return Meteor.absoluteUrl() + 'business/' + currentTimeRecord.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTimeRecord._id
         }
     }
 
@@ -132,22 +235,47 @@ Template.EmployeeTimeManagement.helpers({
 /*****************************************************************************/
 Template.EmployeeTimeManagement.onCreated(function () {
     let self = this;
+    console.log("self is:")
+    console.log(self)
     let businessUnitId = Session.get('context')
+    self.subscribe("allEmployees", Session.get('context'));
+
+
 //    Session.set("weekIndex", "1");
 
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
+    //--
+    self.selectedMonth = new ReactiveVar();
+    self.selectedYear = new ReactiveVar();
+    //--
+    let theMoment = moment();
+    self.selectedMonth.set(theMoment.format('MM'))
+    self.selectedYear.set(theMoment.format('YYYY'))
+    //--
+
+    self.currentTimeRecord = new ReactiveVar()
+
+
 
     self.totalTripCost = new ReactiveVar(0)
 
 
 
     self.subscribe('getCostElement', businessUnitId)
+    self.subscribe("allTimeRecords", Session.get('context'));
 
     self.autorun(function() {
 
+
+        let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
+        let timeRecordSub = self.subscribe("allTimeRecords", Session.get('context'));
+
     })
+
+
+
 });
 
 Template.EmployeeTimeManagement.onRendered(function () {

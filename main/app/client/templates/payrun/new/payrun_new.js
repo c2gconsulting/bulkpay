@@ -10,7 +10,7 @@ let ReportUtils = {}
 
 ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
     let payTypeHeaders = ['EMP ID', 'Employee']
- 
+
     let payGrade =  null;
     let firstUserId = employeePayments[0].employeeId
     let firstUser = Meteor.users.findOne(firstUserId)
@@ -20,9 +20,9 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             payGrade = PayGrades.findOne(payGradeId)
         }
     }
- 
+
      let numPaytypesBeforeSuppl = 0
-    // Supplementary payments are payments like netpay, 
+    // Supplementary payments are payments like netpay,
     // pension employee contrib and pension employer contrib
 
     let numberOfPayments = 0
@@ -37,15 +37,15 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         numberOfPayments = employeePayments[0].payment.length
         numPaytypesBeforeSuppl = payTypeHeaders.length - 2  // EMP ID, Employee
     }
- 
+
     // 5 === 2 for employee id and employee column PLUS 2 for deductions and net pay
     // PLUS 2 for pension employee and pension employer
     let headerColumnSlots = _.range(numberOfPayments - 5).map(x => {
         return {}
     })
- 
+
     payTypeHeaders.push(...headerColumnSlots)
-    //-- 
+    //--
     let localCurrency = Core.getTenantBaseCurrency().iso;
 
     let netPayCurrencyAllocation_Headers = []
@@ -82,7 +82,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
         })
         //--
         let anEmployeeFullData = Meteor.users.findOne(anEmployeeData.employeeId)
-        
+
         if(anEmployeeFullData) {
             let netPayAllocation = anEmployeeFullData.employeeProfile.employment.netPayAllocation
             if(netPayAllocation) {
@@ -105,7 +105,7 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
             }
         }
     })
-    
+
     payTypeHeaders = _.without(payTypeHeaders, null, undefined)
 
     let refinedPayTypeHeaders = []
@@ -176,20 +176,20 @@ ReportUtils.getPayTypeHeaders2 = function(employeePayments) {
                 id: 'netPay',
                 code: 'netPay',
                 description: 'Net Pay'
-            })            
+            })
         }
     }
 
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
     payTypeHeaders.push(...netPayCurrencyAllocation_Headers)
-    
+
     return {payTypeHeaders}
 }
 
 ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
     let groupedPayruns = {}
     let groupedPayresults = {}
-    
+
     payObj.payrun = payObj.payrun || []
     payObj.result = payObj.result || []
 
@@ -222,8 +222,8 @@ ReportUtils.groupEmployeePaymentsByPayGrade = (payObj) => {
 ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
     let payTypeHeaders = ['Name', 'EmpID', 'Job Title', 'Currency', 'Location', 'Project Code', 'Ratio']
 
-    // Supplementary payments are payments like netpay, 
-    // pension employee contrib and pension employer contrib 
+    // Supplementary payments are payments like netpay,
+    // pension employee contrib and pension employer contrib
     //--
     let localCurrency = Core.getTenantBaseCurrency().iso;
     let benefitHeaders = [];
@@ -232,7 +232,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
     const empty = {}
     let headerColumnSlots = _.range(100).map(x => {
         return empty
-    }) 
+    })
     benefitHeaders.push(...headerColumnSlots)
     deductionHeaders.push(...headerColumnSlots)
 
@@ -289,7 +289,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
             }
         })
     })
-    
+
 
     benefitHeaders = _.without(benefitHeaders, empty)
     deductionHeaders = _.without(deductionHeaders, empty)
@@ -298,7 +298,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
 
     if(payGrade.netPayAlternativeCurrency && payGrade.netPayAlternativeCurrency !== localCurrency) {
         let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
-        
+
         supplementaryPayTypeHeaders.push({
             id: 'totalDeduction_' + netPayAlternativeCurrency,
             code: 'totalDeduction_' + netPayAlternativeCurrency,
@@ -324,7 +324,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
 
     payTypeHeaders.push(...benefitHeaders)
     payTypeHeaders.push(...deductionHeaders)
-    
+
 
     payTypeHeaders.push(...supplementaryPayTypeHeaders)
     payTypeHeaders.push('Bank Name')
@@ -335,7 +335,7 @@ ReportUtils.getDetailedPayTypeHeaders2 = function(employeePayments, payGrade) {
 
     console.log(`benefitHeaders: `, benefitHeaders)
     console.log(`deductionHeaders: `, deductionHeaders)
-    
+
     return {payTypeHeaders}
 }
 
@@ -343,7 +343,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
     let payTypeValues = []
     // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
     // console.log(`payTypeHeaders: `, payTypeHeaders)
-    
+
     let payGrade =  null
     let firstUserId = employeePayments[0].employeeId
     let firstUser = Meteor.users.findOne(firstUserId)
@@ -401,12 +401,12 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         let pensionAmount = payDetails.amountLC
                         let pensionAmountAsNumber = parseFloat(pensionAmount)
                         payAmount = pensionAmountAsNumber
-                        
+
                         if(payDetails.code === 'STATPEN_EE') {
                             payAmount *= -1
                         }
                     } else {
-                        payAmount = '---'                        
+                        payAmount = '---'
                     }
                 }
                 aRowOfPayTypeValues.push(payAmount)
@@ -432,7 +432,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                     let payAmount = totalDeduction.amountLC
                     if(totalDeduction.amountLC != totalDeduction.amountPC) {
                         payAmount = totalDeduction.amountPC
-                    }                    
+                    }
                     aRowOfPayTypeValues.push(payAmount)
                 }
             } else {
@@ -445,7 +445,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                     if(found) {
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         if(payslipWithCurrencyDelineation.benefit[localCurrency]) {
-                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)                            
+                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)
                         } else {
                             aRowOfPayTypeValues.push('---')
                         }
@@ -474,11 +474,11 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         let totalBenefit = 0
                         if(payslipWithCurrencyDelineation.benefit[localCurrency]) {
-                            totalBenefit = payslipWithCurrencyDelineation.benefit[localCurrency].total || 0                            
+                            totalBenefit = payslipWithCurrencyDelineation.benefit[localCurrency].total || 0
                         }
                         let totalDeduction = 0
                         if(payslipWithCurrencyDelineation.deduction[localCurrency]) {
-                            totalDeduction = payslipWithCurrencyDelineation.deduction[localCurrency].total || 0                            
+                            totalDeduction = payslipWithCurrencyDelineation.deduction[localCurrency].total || 0
                         }
                         aRowOfPayTypeValues.push(totalBenefit + totalDeduction)
                     }
@@ -505,7 +505,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                     if(found) {
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         if(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency]) {
-                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)                            
+                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)
                         } else {
                             aRowOfPayTypeValues.push('---')
                         }
@@ -539,7 +539,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         let deductions = []
                         if(payslipWithCurrencyDelineation.deduction[localCurrency]) {
-                            deductions = payslipWithCurrencyDelineation.deduction[localCurrency].payments || []                            
+                            deductions = payslipWithCurrencyDelineation.deduction[localCurrency].payments || []
                         }
                         let foundTax = _.find(deductions, aDeduction => {
                             return aDeduction.reference === 'Tax'
@@ -598,7 +598,7 @@ ReportUtils.getPayTypeValues = function(employeePayments, detailedPayrunResults,
 ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrunResults, payTypeHeaders, payGrade) {
     let payTypeValues = []
     // console.log(`detailedPayrunResults: `, JSON.stringify(detailedPayrunResults))
-    
+
     let localCurrency = Core.getTenantBaseCurrency().iso;
     let netPayAlternativeCurrency = payGrade.netPayAlternativeCurrency
 
@@ -740,7 +740,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         let pensionAmount = payDetails.amountLC
                         let pensionAmountAsNumber = parseFloat(pensionAmount)
                         payAmount = pensionAmountAsNumber
-                        
+
                         if(payDetails.code === 'STATPEN_EE') {
                             payAmount *= -1
                         }
@@ -771,7 +771,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     let payAmount = totalDeduction.amountLC
                     if(totalDeduction.amountLC != totalDeduction.amountPC) {
                         payAmount = totalDeduction.amountPC
-                    }                    
+                    }
                     aRowOfPayTypeValues.push(payAmount)
                 }
             } else {
@@ -784,7 +784,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     if(found) {
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         if(payslipWithCurrencyDelineation.benefit[localCurrency]) {
-                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)                            
+                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.benefit[localCurrency].total)
                         } else {
                             aRowOfPayTypeValues.push("'")
                         }
@@ -813,11 +813,11 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         let totalBenefit = 0
                         if(payslipWithCurrencyDelineation.benefit[localCurrency]) {
-                            totalBenefit = payslipWithCurrencyDelineation.benefit[localCurrency].total || 0                            
+                            totalBenefit = payslipWithCurrencyDelineation.benefit[localCurrency].total || 0
                         }
                         let totalDeduction = 0
                         if(payslipWithCurrencyDelineation.deduction[localCurrency]) {
-                            totalDeduction = payslipWithCurrencyDelineation.deduction[localCurrency].total || 0                            
+                            totalDeduction = payslipWithCurrencyDelineation.deduction[localCurrency].total || 0
                         }
                         aRowOfPayTypeValues.push(totalBenefit + totalDeduction)
                     }
@@ -844,7 +844,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                     if(found) {
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         if(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency]) {
-                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)                            
+                            aRowOfPayTypeValues.push(payslipWithCurrencyDelineation.deduction[netPayAlternativeCurrency].total)
                         } else {
                             aRowOfPayTypeValues.push("'")
                         }
@@ -878,7 +878,7 @@ ReportUtils.getDetailedPayTypeValues = function(employeePayments, detailedPayrun
                         let payslipWithCurrencyDelineation = found.payslipWithCurrencyDelineation
                         let deductions = []
                         if(payslipWithCurrencyDelineation.deduction[localCurrency]) {
-                            deductions = payslipWithCurrencyDelineation.deduction[localCurrency].payments || []                            
+                            deductions = payslipWithCurrencyDelineation.deduction[localCurrency].payments || []
                         }
                         let foundTax = _.find(deductions, aDeduction => {
                             return aDeduction.reference === 'Tax'
@@ -944,7 +944,7 @@ ReportUtils.getNetPayInBaseCurrencyIfNetPayCurrencyAllocationExists = function(u
 
             if(rateToBaseCurrency) {
                 let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
-                
+
                 let netPayRemainderInLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
                 if(netPayRemainderInLocalCurrency < 0) {
                     return "'"
@@ -965,7 +965,7 @@ ReportUtils.getNetPayInForeignCurrencyIfNetPayCurrencyAllocationExists = functio
             let rateToBaseCurrency = netPayAllocation.rateToBaseCurrency
             if(rateToBaseCurrency) {
                 let foreignCurrencyToBase = (netPayAllocation.foreignCurrencyAmount * rateToBaseCurrency)
-                
+
                 let netPayinLocalCurrency = netPaymentInBaseCurrency - foreignCurrencyToBase
                 if(netPayinLocalCurrency < 0) {
                     return (netPaymentInBaseCurrency / rateToBaseCurrency)
@@ -1024,7 +1024,7 @@ Template.PayrunNew.events({
         }
         Meteor.call("payrun/process",  params, Session.get('context'), (err, res) => {
             Session.set('currentSelectedPaySlip', null)
-            
+
             if(res) {
                 console.log(`Payrun results: `, res);
                 Session.set('currentPayrunPeriod', res.period);
@@ -1095,10 +1095,10 @@ Template.PayrunNew.events({
                 return aHeader.description || aHeader
             })
             //--
-            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun, 
+            let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun,
                 detailedPayrunResults, payTypeHeaders.payTypeHeaders)
 
-            BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+            BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
                 `Payrun results export`);
         } else {
             swal('Error', 'No payrun results', 'error')
@@ -1125,13 +1125,13 @@ Template.PayrunNew.events({
 
                 let payGrade = PayGrades.findOne(payGradeId)
                 let {payTypeHeaders} = ReportUtils.getDetailedPayTypeHeaders2(payrunRuns, payGrade)
-    
+
                 let formattedHeader = payTypeHeaders.map(aHeader => {
                     return (aHeader.description || aHeader)
                 })
                 console.log(`formattedHeader>>>>>: `, formattedHeader)
                 //--
-                let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, payrunResults, payTypeHeaders, payGrade)    
+                let reportData = ReportUtils.getDetailedPayTypeValues(payrunRuns, payrunResults, payTypeHeaders, payGrade)
                 console.log(`reportData: `, reportData)
 
 
@@ -1140,22 +1140,22 @@ Template.PayrunNew.events({
                     finalDataRows.push([`Pay Grade(${payGrade.code})`])
                 } else {
                     finalDataRows.push([''])
-                    
+
                     finalDataRows = finalDataRows.concat([formattedHeader])
                     finalDataRows.push([`Pay Grade(${payGrade.code})`])
                 }
-                finalDataRows = finalDataRows.concat(reportData)    
+                finalDataRows = finalDataRows.concat(reportData)
 
                 // Meteor.setTimeout(function() {
-                //     BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
-                //         `${payrunRunType} Payrun results ${month}-${year} - ${payGrade.code}`);    
+                //     BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
+                //         `${payrunRunType} Payrun results ${month}-${year} - ${payGrade.code}`);
                 // }, 2000)
             })
 
-            BulkpayExplorer.exportAllData({fields: headers, data: finalDataRows}, 
+            BulkpayExplorer.exportAllData({fields: headers, data: finalDataRows},
                 `${payrunRunType} Payrun results ${month}-${year}`);
 
-            // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+            // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             //     `Payrun results export with project ratios`);
         } else {
             swal('Error', 'No payrun results', 'error')
@@ -1167,7 +1167,7 @@ Template.PayrunNew.events({
 
         var view = Blaze.render(Template.Loading, document.getElementById('spinner'));
 
-        Meteor.call("payrollApprovalConfig/sendPayrunApproveEmails", Session.get('context'), 
+        Meteor.call("payrollApprovalConfig/sendPayrunApproveEmails", Session.get('context'),
             selectedMonth, selectedYear, (err, res) => {
             if(res) {
                 swal("Success", "Notification emails were successfully sent!", "success");
@@ -1225,16 +1225,16 @@ Template.PayrunNew.helpers({
     'numProcessingErrors': () => {
         const payresult = Template.instance().dict.get('payResult');
         let errors = payresult.payObj.error || []
-        
+
         return errors.length;
     },
     'processingErrors': () => {
         const payresult = Template.instance().dict.get('payResult');
         let errors = payresult.payObj.error || []
-        
+
         return errors;
     },
-    
+
     selectedMonth: function (val) {
         if(Template.instance().selectedMonth.get()) {
             return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
@@ -1303,7 +1303,7 @@ Template.PayrunNew.onCreated(function () {
         let selectedGrade = self.grades.get();
         if (includeType)
             self.subscribe("AdditionalPayTypes", selectedGrade, Session.get('context'));
-        
+
         if (Template.instance().subscriptionsReady()) {
             let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
             self.payrollApprovalConfig.set(payrollApprovalConfig)
