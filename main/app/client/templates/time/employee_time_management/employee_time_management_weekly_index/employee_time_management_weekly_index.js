@@ -25,6 +25,8 @@ Template.EmployeeTimeManagement.events({
   },
   'click #createTimeRecordWeekOne': function(e,tmpl){
       e.preventDefault();
+      let user = Meteor.user()
+
       const month = tmpl.selectedMonth.get()
       const year = tmpl.selectedYear.get()
       Session.set("year", year);
@@ -32,10 +34,8 @@ Template.EmployeeTimeManagement.events({
       Session.set("weekIndex", "1");
 
       const weekIndex = Session.get("weekIndex")
-      let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+      let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
 
-      console.log("timeRecordResult is")
-      console.log(timeRecordResult)
       if(timeRecordResult){
         swal({
             title: "Oops!",
@@ -52,6 +52,8 @@ Template.EmployeeTimeManagement.events({
   },
   'click #createTimeRecordWeekTwo': function(e,tmpl){
       e.preventDefault();
+      let user = Meteor.user()
+
       const month = tmpl.selectedMonth.get()
       const year = tmpl.selectedYear.get()
       Session.set("year", year);
@@ -59,9 +61,7 @@ Template.EmployeeTimeManagement.events({
       Session.set("weekIndex", "2");
 
       const weekIndex = Session.get("weekIndex")
-      let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
-      console.log("timeRecordResult is")
-      console.log(timeRecordResult)
+      let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
 
       if(timeRecordResult){
         swal({
@@ -83,6 +83,8 @@ Template.EmployeeTimeManagement.events({
   },
   'click #createTimeRecordWeekThree': function(e,tmpl){
         e.preventDefault();
+        let user = Meteor.user()
+
         const month = tmpl.selectedMonth.get()
         const year = tmpl.selectedYear.get()
         Session.set("year", year);
@@ -90,9 +92,8 @@ Template.EmployeeTimeManagement.events({
         Session.set("weekIndex", "3");
 
         const weekIndex = Session.get("weekIndex")
-        let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
-        console.log("timeRecordResult is")
-        console.log(timeRecordResult)
+        let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+
          if(timeRecordResult){
           swal({
               title: "Oops!",
@@ -109,6 +110,8 @@ Template.EmployeeTimeManagement.events({
 
     'click #createTimeRecordWeekFour': function(e,tmpl){
           e.preventDefault();
+          let user = Meteor.user()
+
           const month = tmpl.selectedMonth.get()
           const year = tmpl.selectedYear.get()
           Session.set("year", year);
@@ -116,10 +119,8 @@ Template.EmployeeTimeManagement.events({
           Session.set("weekIndex", "4");
 
           const weekIndex = Session.get("weekIndex")
-          let timeRecordResult = TimeRecord.findOne({"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
-          console.log("timeRecordResult is")
-          console.log(timeRecordResult)
-                    if(timeRecordResult){
+          let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+        if(timeRecordResult){
             swal({
                 title: "Oops!",
                 text: "You have already created a time record for this period",
@@ -235,13 +236,8 @@ Template.EmployeeTimeManagement.helpers({
 /*****************************************************************************/
 Template.EmployeeTimeManagement.onCreated(function () {
     let self = this;
-    console.log("self is:")
-    console.log(self)
     let businessUnitId = Session.get('context')
     self.subscribe("allEmployees", Session.get('context'));
-
-
-//    Session.set("weekIndex", "1");
 
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()

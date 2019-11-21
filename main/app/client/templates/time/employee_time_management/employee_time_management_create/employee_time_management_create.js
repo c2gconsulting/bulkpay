@@ -121,9 +121,6 @@ Template.EmployeeTimeManagementCreate.events({
       currentTimeRecord.offShoreWeek.sunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
 
-      console.log("current time record for the offShoreWeek is:")
-      console.log(currentTimeRecord)
-
 
   },
 
@@ -182,9 +179,6 @@ Template.EmployeeTimeManagementCreate.events({
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
       currentTimeRecord.onShoreWeek.sunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
-
-      console.log("current time record for the Onshore onShoreWeek is:")
-      console.log(currentTimeRecord)
   },
 
   'change [name=vehicleOnMonday]': function(e, tmpl) {

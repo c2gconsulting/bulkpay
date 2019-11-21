@@ -12,6 +12,60 @@ Template.registerHelper('formatDate', function(date) {
 /* TimeRecordDetail: Helpers */
 /*****************************************************************************/
 Template.TimeRecordDetail.helpers({
+  timeRecordCheckedoffShoreWeek(val){
+     const currentTimeRecord = Template.instance().currentTimeRecord.get();
+     if(val == "monday"){
+         return currentTimeRecord.offShoreWeek.monday === true ? checked="checked" : '';
+     } else if(val == "tuesday"){
+         return currentTimeRecord.offShoreWeek.tuesday === true ? checked="checked" : '';
+     } else if(val == "wednesday"){
+         return currentTimeRecord.offShoreWeek.wednesday === true ? checked="checked" : '';
+     } else if(val == "thursday"){
+         return currentTimeRecord.offShoreWeek.thursday === true ? checked="checked" : '';
+     } else if(val == "friday"){
+         return currentTimeRecord.offShoreWeek.friday === true ? checked="checked" : '';
+     } else if(val == "saturday"){
+         return currentTimeRecord.offShoreWeek.saturday === true ? checked="checked" : '';
+     } else if(val == "sunday"){
+         return currentTimeRecord.offShoreWeek.sunday === true ? checked="checked" : '';
+     }
+ },
+ timeRecordCheckedonShoreWeek(val){
+     const currentTimeRecord = Template.instance().currentTimeRecord.get();
+     if(val == "monday"){
+         return currentTimeRecord.onShoreWeek.monday === true ? checked="checked" : '';
+     } else if(val == "tuesday"){
+         return currentTimeRecord.onShoreWeek.tuesday === true ? checked="checked" : '';
+     } else if(val == "wednesday"){
+         return currentTimeRecord.onShoreWeek.wednesday === true ? checked="checked" : '';
+     } else if(val == "thursday"){
+         return currentTimeRecord.onShoreWeek.thursday === true ? checked="checked" : '';
+     } else if(val == "friday"){
+         return currentTimeRecord.onShoreWeek.friday === true ? checked="checked" : '';
+     } else if(val == "saturday"){
+         return currentTimeRecord.onShoreWeek.saturday === true ? checked="checked" : '';
+     } else if(val == "sunday"){
+         return currentTimeRecord.onShoreWeek.sunday === true ? checked="checked" : '';
+     }
+ },
+ timeRecordCheckedVehicle(val){
+     const currentTimeRecord = Template.instance().currentTimeRecord.get();
+     if(val == "monday"){
+         return currentTimeRecord.vehicle.monday === true ? checked="checked" : '';
+     } else if(val == "tuesday"){
+         return currentTimeRecord.vehicle.tuesday === true ? checked="checked" : '';
+     } else if(val == "wednesday"){
+         return currentTimeRecord.vehicle.wednesday === true ? checked="checked" : '';
+     } else if(val == "thursday"){
+         return currentTimeRecord.vehicle.thursday === true ? checked="checked" : '';
+     } else if(val == "friday"){
+         return currentTimeRecord.vehicle.friday === true ? checked="checked" : '';
+     } else if(val == "saturday"){
+         return currentTimeRecord.vehicle.saturday === true ? checked="checked" : '';
+     } else if(val == "sunday"){
+         return currentTimeRecord.vehicle.sunday === true ? checked="checked" : '';
+     }
+ },
   'errorMessage': function() {
       return Template.instance().errorMessage.get()
   },
