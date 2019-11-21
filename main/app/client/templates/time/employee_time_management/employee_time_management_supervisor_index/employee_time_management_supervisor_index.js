@@ -17,7 +17,7 @@ Template.ApproveEmployeeTimeManagementIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2SupervisorDetail', invokeReason)
+        Modal.show('TimeRecordSupervisorDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.ApproveEmployeeTimeManagementIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsBySupervisor(skip)
-        Template.instance().travelRequestsBySupervisor.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTimeRecordsBySupervisor(skip)
+        Template.instance().timeRecordsBySupervisor.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -51,12 +51,48 @@ Template.registerHelper('repeat', function(max) {
 /* ApproveEmployeeTimeManagementIndex: Helpers */
 /*****************************************************************************/
 Template.ApproveEmployeeTimeManagementIndex.helpers({
-    'travelRequestsBySupervisor': function() {
-        return Template.instance().travelRequestsBySupervisor.get()
+  'errorMessage': function() {
+      return Template.instance().errorMessage.get()
+  },
+  'checked': (prop) => {
+      if(Template.instance().data)
+      return Template.instance().data[prop];
+      return false;
+  },
+
+  selected(context,val) {
+      let self = this;
+
+      if(Template.instance().data){
+          //get value of the option element
+          //check and return selected if the template instce of data.context == self._id matches
+          if(val){
+              return Template.instance().data[context] === val ? selected="selected" : '';
+          }
+          return Template.instance().data[context] === self._id ? selected="selected" : '';
+      }
+  },
+  'getCurrentUserUnitName': function() {
+      let unitId = Template.instance().unitId.get()
+      if(unitId) {
+          let unit = EntityObjects.findOne({_id: unitId});
+          if(unit) {
+              return unit.name
+          }
+      }
+  },
+    timeRecordChecked(val){
+        const currentTimeRecord = Template.instance().currentTimeRecord.get();
+        if(currentTimeRecord && val){
+            return currentTimeRecord.type === val ? checked="checked" : '';
+        }
+    },
+    'timeRecordsBySupervisor': function() {
+        return Template.instance().timeRecordsBySupervisor.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
+        let totalNum = TimeRecord.find({$and : [
             { supervisorId: Meteor.userId()},
             { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
         ]}).count()
@@ -98,12 +134,12 @@ Template.ApproveEmployeeTimeManagementIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsBySupervisor = new ReactiveVar()
+    self.timeRecordsBySupervisor = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsBySupervisor = function(skip) {
+    self.getTimeRecordsBySupervisor = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -113,7 +149,7 @@ Template.ApproveEmployeeTimeManagementIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
+        return TimeRecord.find({
             $and : [
                 { supervisorId: Meteor.userId()},
                 { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
@@ -130,9 +166,9 @@ Template.ApproveEmployeeTimeManagementIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsBySupervisorSub = self.subscribe('TravelRequestsBySupervisor', businessUnitId, Meteor.userId());
+        let travelRequestsBySupervisorSub = self.subscribe('TimeRecordsBySupervisor', businessUnitId, Meteor.userId());
         if(travelRequestsBySupervisorSub.ready()) {
-            self.travelRequestsBySupervisor.set(self.getTravelRequestsBySupervisor(0))
+            self.timeRecordsBySupervisor.set(self.getTimeRecordsBySupervisor(0))
         }
         //--
         if(customConfigSub.ready()) {

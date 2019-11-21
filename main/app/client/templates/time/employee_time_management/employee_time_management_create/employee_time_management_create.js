@@ -70,7 +70,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreMonday = $('[name="offShoreMonday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.monday = $('[name="offShoreMonday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.monday = $('[name="offShoreMonday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreTuesday]': function(e, tmpl) {
@@ -78,7 +78,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreTuesday = $('[name="offShoreTuesday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.tuesday = $('[name="offShoreTuesday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.tuesday = $('[name="offShoreTuesday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreWednesday]': function(e, tmpl) {
@@ -86,7 +86,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreWednesday = $('[name="offShoreWednesday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.wednesday = $('[name="offShoreWednesday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.wednesday = $('[name="offShoreWednesday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreThursday]': function(e, tmpl) {
@@ -94,7 +94,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreThursday = $('[name="offShoreThursday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.thursday = $('[name="offShoreThursday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.thursday = $('[name="offShoreThursday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreFriday]': function(e, tmpl) {
@@ -102,7 +102,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreFriday = $('[name="offShoreFriday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.friday = $('[name="offShoreFriday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.friday = $('[name="offShoreFriday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreSaturday]': function(e, tmpl) {
@@ -110,7 +110,7 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreMonday = $('[name="offShoreSaturday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.saturday = $('[name="offShoreSaturday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.saturday = $('[name="offShoreSaturday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=offShoreSunday]': function(e, tmpl) {
@@ -118,10 +118,10 @@ Template.EmployeeTimeManagementCreate.events({
       let offShoreSunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.sunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
+      currentTimeRecord.offShoreWeek.sunday = $('[name="offShoreSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
 
-      console.log("current time record for the week is:")
+      console.log("current time record for the offShoreWeek is:")
       console.log(currentTimeRecord)
 
 
@@ -132,7 +132,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreMonday = $('[name="onShoreMonday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.monday = $('[name="onShoreMonday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.monday = $('[name="onShoreMonday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreTuesday]': function(e, tmpl) {
@@ -140,7 +140,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreTuesday = $('[name="onShoreTuesday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.tuesday = $('[name="onShoreTuesday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.tuesday = $('[name="onShoreTuesday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreWednesday]': function(e, tmpl) {
@@ -148,7 +148,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreWednesday = $('[name="onShoreWednesday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.wednesday = $('[name="onShoreWednesday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.wednesday = $('[name="onShoreWednesday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreThursday]': function(e, tmpl) {
@@ -156,7 +156,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreThursday = $('[name="onShoreThursday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.thursday = $('[name="onShoreThursday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.thursday = $('[name="onShoreThursday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreFriday]': function(e, tmpl) {
@@ -164,7 +164,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreFriday = $('[name="onShoreFriday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.friday = $('[name="onShoreFriday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.friday = $('[name="onShoreFriday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreSaturday]': function(e, tmpl) {
@@ -172,7 +172,7 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreMonday = $('[name="onShoreSaturday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.saturday = $('[name="onShoreSaturday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.saturday = $('[name="onShoreSaturday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
   },
   'change [name=onShoreSunday]': function(e, tmpl) {
@@ -180,10 +180,10 @@ Template.EmployeeTimeManagementCreate.events({
       let onShoreSunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
 
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-      currentTimeRecord.week.sunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
+      currentTimeRecord.onShoreWeek.sunday = $('[name="onShoreSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
 
-      console.log("current time record for the Onshore week is:")
+      console.log("current time record for the Onshore onShoreWeek is:")
       console.log(currentTimeRecord)
   },
 
@@ -242,9 +242,6 @@ Template.EmployeeTimeManagementCreate.events({
       let currentTimeRecord = tmpl.currentTimeRecord.curValue;
       currentTimeRecord.vehicle.sunday = $('[name="vehicleOnSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
-
-      console.log("current time record for the vehicle week is:")
-      console.log(currentTimeRecord)
 
   }
 });
@@ -322,7 +319,7 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
     let weekIndex = Session.get("weekIndex");
 
 
-  let supervisor = Session.get('supervisor');
+    let supervisor = Session.get('supervisor');
 
 
     let currentTimeRecord = {
@@ -342,12 +339,12 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
 
         period: {
             year: "",
-            month: ""
+            month: "",
+            weekIndex: weekIndex
 
           },
-        week:
+        onShoreWeek:
           {
-            weekIndex: weekIndex,
             monday:false,
             tuesday:false,
             wednesday:false,
@@ -355,13 +352,23 @@ Template.EmployeeTimeManagementCreate.onCreated(function () {
             friday:false,
             saturday:false,
             sunday:false,
-            numOfDaysOffShore: 0,
             numOfDaysOnShore: 0
+
+        },
+        offShoreWeek:
+          {
+            monday:false,
+            tuesday:false,
+            wednesday:false,
+            thursday:false,
+            friday:false,
+            saturday:false,
+            sunday:false,
+            numOfDaysOffShore: 0
 
         },
         vehicle:
           {
-            vehicleWeekIndex: weekIndex,
             monday:false,
             tuesday:false,
             wednesday:false,

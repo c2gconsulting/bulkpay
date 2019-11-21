@@ -1,11 +1,36 @@
 
 
-Core.Schemas.Week = new SimpleSchema({
-    weekIndex: {
-        type: Number,
-        optional: false,
-        defaultValue: 1
+Core.Schemas.offShoreWeek = new SimpleSchema({
+    monday:{
+        type: Boolean,
+        defaultValue: false
     },
+    tuesday:{
+        type: Boolean,
+        defaultValue: false
+    },
+    wednesday:{
+        type: Boolean,
+        defaultValue: false
+    },
+    thursday:{
+        type: Boolean,
+        defaultValue: false
+    },
+    friday:{
+        type: Boolean,
+        defaultValue: false
+    },
+    saturday:{
+        type: Boolean,
+        defaultValue: false
+    },
+    sunday:{
+        type: Boolean,
+        defaultValue: false
+    }
+});
+Core.Schemas.onShoreWeek = new SimpleSchema({
     monday:{
         type: Boolean,
         defaultValue: false
@@ -73,6 +98,11 @@ Core.Schemas.Vehicle = new SimpleSchema({
 });
 
 Core.Schemas.Period = new SimpleSchema({
+  weekIndex: {
+      type: Number,
+      optional: false,
+      defaultValue: 1
+  },
     year: {
       type: String,
       optional: true
@@ -120,8 +150,12 @@ Core.Schemas.TimeRecord = new SimpleSchema({
         type: Core.Schemas.Period,
         optional: true,
     },
-    week: {
-        type: Core.Schemas.Week,
+    onShoreWeek: {
+        type: Core.Schemas.onShoreWeek,
+        optional: true,
+    },
+    offShoreWeek: {
+        type: Core.Schemas.offShoreWeek,
         optional: true,
     },
     vehicle: {

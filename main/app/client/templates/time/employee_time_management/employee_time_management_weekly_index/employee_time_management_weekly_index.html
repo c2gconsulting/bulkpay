@@ -28,33 +28,27 @@
                 </div>
                 {{/unless}}
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-md-offset-2 col-md-3">
-                                <div class="form-group">
-                                    <select name="paymentPeriodMonth" class="form-control dropdown" style="width: 100%">
-                                        <option value="">Select Month</option>
-                                        {{#each month}}
-                                            <option value="{{period}}">{{name}}</option>
-                                        {{/each}}
-                                    </select>
-                                </div><!-- form-group -->
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
-                                        <option value="">Select Year</option>
-                                        {{#each year}}
-                                            <option value="{{this}}">{{this}}</option>
-                                        {{/each}}
-                                    </select>
-                                </div><!-- form-group -->
-                            </div>
-                        </div>
+                <div class="row">
+                    <div class="col-md-3 text-right"><b>Compute payment for:</b></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select name="paymentPeriod.month" class="form-control dropdown" style="width: 100%">
+                                {{#each month}}
+                                    <option value="{{period}}" {{selectedMonth period}}>{{name}}</option>
+                                {{/each}}
+                            </select>
+                        </div><!-- form-group -->
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <select name="paymentPeriod.year" class="form-control dropdown" style="width: 100%">
+                                {{#each year}}
+                                    <option value="{{this}}" {{selectedYear this}}>{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </div><!-- form-group -->
                     </div>
                 </div>
-
 
                 <div class="row">
                     <div class="col-sm-6">

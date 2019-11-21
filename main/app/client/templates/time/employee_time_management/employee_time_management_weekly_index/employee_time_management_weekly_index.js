@@ -72,6 +72,23 @@ Template.registerHelper('repeat', function(max) {
 /* EmployeeTimeManagement: Helpers */
 /*****************************************************************************/
 Template.EmployeeTimeManagement.helpers({
+  'month': function(){
+      return Core.months()
+  },
+  'year': function(){
+      return Core.years();
+  },
+  selectedMonth: function (val) {
+      if(Template.instance().selectedMonth.get()) {
+          return Template.instance().selectedMonth.get() === val ? selected="selected" : '';
+      }
+  },
+  selectedYear: function (val) {
+      if(Template.instance().selectedYear.get()) {
+          return Template.instance().selectedYear.get() === val ? selected="selected" : '';
+      }
+  },
+
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },

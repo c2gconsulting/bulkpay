@@ -42,6 +42,10 @@
                             <thead>
                                 <tr>
                                     <th>Creator</th>
+                                    <th>Month</th>
+
+                                    <th>Week</th>
+
                                     <th>Project Code</th>
                                     <th>Charge Code</th>
 
@@ -55,6 +59,10 @@
                                 {{#each timeRecordsICreated}}
                                 <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                     <td nowrap>{{getCreatedByFullName this}}</td>
+                                    <td>{{period.month}}</td>
+
+                                    <td>{{period.weekIndex}}</td>
+
 
                                     <td>{{projectCode}}</td>
                                     <td>{{chargeCode}}</td>
@@ -105,7 +113,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td nowrap colspan="6"><h5 class="text-muted"><i class="fa fa-exclamation-circle"></i>&nbsp;You have not yet made any travel request</h5></td>
+                                <td nowrap colspan="6"><h5 class="text-muted"><i class="fa fa-exclamation-circle"></i>&nbsp;You have not yet made any time record</h5></td>
                             </tr>
                         </tbody>
                     </table>

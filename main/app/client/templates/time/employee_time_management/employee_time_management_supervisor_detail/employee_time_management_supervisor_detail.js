@@ -1,17 +1,107 @@
 
 /*****************************************************************************/
-/* TimeRecordDetail: Event Handlers */
+/* TimeRecordSupervisorDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
+
+
+
+
+
+Template.TimeRecordSupervisorDetail.events({
+    'click #approve': (e, tmpl) => {
+
+        let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+        currentTimeRecord.status = "Approved By Supervisor";
+
+        currentTimeRecord.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+
+        e.preventDefault()
+            Meteor.call('timeRecord/supervisorApprovals', currentTimeRecord, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Time record has been updated",
+                        text: "Employee travel record has been updated,notification has been sent to the necessary parties",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel record has  not been updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TimeRecordSupervisorDetail');
+
+
+    },
+
+
+
+    'click #reject': (e, tmpl) => {
+
+        let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+        currentTimeRecord.status = "Rejected By Supervisor";
+
+        currentTimeRecord.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+
+        e.preventDefault()
+ 
+
+
+
+
+            Meteor.call('timeRecord/supervisorApprovals', currentTimeRecord, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Time record has been rejected",
+                        text: "Employee travel record has been rejected,notification has been sent to the necessary parties",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Time record has  not been updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TimeRecordSupervisorDetail');
+
+    },
+    'change [id=budget-code]': function(e, tmpl) {
+        e.preventDefault()
+
+        console.log("budget codexxx");
+        let currentTimeRecord = tmpl.currentTimeRecord.curValue;
+        currentTimeRecord.budgetCodeId = $("#budget-code").val();
+        tmpl.currentTimeRecord.set(currentTimeRecord);
+
+    }
+});
+
 
 Template.registerHelper('formatDate', function(date) {
     return moment(date).format('DD-MM-YYYY');
 });
 
 /*****************************************************************************/
-/* TimeRecordDetail: Helpers */
+/* TimeRecordSupervisorDetail: Helpers */
 /*****************************************************************************/
-Template.TimeRecordDetail.helpers({
+Template.TimeRecordSupervisorDetail.helpers({
   'errorMessage': function() {
       return Template.instance().errorMessage.get()
   },
@@ -19,6 +109,12 @@ Template.TimeRecordDetail.helpers({
       if(Template.instance().data)
       return Template.instance().data[prop];
       return false;
+  },
+  timeRecordChecked(val){
+      const currentTimeRecord = Template.instance().currentTimeRecord.get();
+      if(currentTimeRecord && val){
+          return currentTimeRecord.week.monday === val ? checked="checked" : '';
+      }
   },
 
   selected(context,val) {
@@ -33,32 +129,17 @@ Template.TimeRecordDetail.helpers({
           return Template.instance().data[context] === self._id ? selected="selected" : '';
       }
   },
-  'getCurrentUserUnitName': function() {
-      let unitId = Template.instance().unitId.get()
-      if(unitId) {
-          let unit = EntityObjects.findOne({_id: unitId});
-          if(unit) {
-              return unit.name
-          }
-      }
-  },
-    timeRecordChecked(val){
+    travelTypeChecked(val){
         const currentTimeRecord = Template.instance().currentTimeRecord.get();
         if(currentTimeRecord && val){
             return currentTimeRecord.type === val ? checked="checked" : '';
         }
     },
-    'getEmployeeFullName': function(employeeId) {
-        let employee = Meteor.users.findOne({_id: employeeId});
-        if(employee)
-        return employee.profile.fullName;
-        else
-        return ""
-    },
-
-
     'currentTimeRecord': function() {
         return Template.instance().currentTimeRecord.get()
+    },
+    'getEmployeeNameById': function(employeeId){
+        return Meteor.users.findOne({_id: employeeId}).profile.fullName;
     },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
@@ -97,7 +178,9 @@ Template.TimeRecordDetail.helpers({
     'isEqual': (a, b) => {
         return a === b;
     },
-
+    'totalTripCostNGN': function() {
+        return Template.instance().totalTripCostNGN.get()
+    },
     'getPrintUrl': function(currentTimeRecord) {
         if(currentTimeRecord) {
             return Meteor.absoluteUrl() + 'business/' + currentTimeRecord.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTimeRecord._id
@@ -106,15 +189,16 @@ Template.TimeRecordDetail.helpers({
 });
 
 /*****************************************************************************/
-/* TimeRecordDetail: Lifecycle Hooks */
+/* TimeRecordSupervisorDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TimeRecordDetail.onCreated(function () {
-    let self = this;
-    console.log("self is:")
-    console.log(self)
-    let businessUnitId = Session.get('context');
-    self.subscribe("allEmployees", Session.get('context'));
+Template.TimeRecordSupervisorDetail.onCreated(function () {
 
+
+    let self = this;
+    self.errorMessage = new ReactiveVar();
+    self.errorMessage.set(null);
+
+    let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
@@ -134,7 +218,6 @@ Template.TimeRecordDetail.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
-
 
     // self.totalTripCost = new ReactiveVar(0)
     self.amountNonPaybelToEmp = new ReactiveVar(0)
@@ -165,16 +248,13 @@ Template.TimeRecordDetail.onCreated(function () {
         })
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
-        let timeRecordSub = self.subscribe('TimeRecord', invokeReason.requisitionId)
+        let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
 
 
-        if(timeRecordSub.ready()) {
+        if(travelRequest2Sub.ready()) {
 
-            let timeRecordDetails = TimeRecord.findOne({_id: invokeReason.requisitionId})
-
-            console.log("timeRecordDetails is:")
-            console.log(timeRecordDetails)
-            self.currentTimeRecord.set(timeRecordDetails)
+            let travelRequestDetails = TimeRecord.findOne({_id: invokeReason.requisitionId})
+            self.currentTimeRecord.set(travelRequestDetails)
 
 
         }
@@ -188,7 +268,7 @@ Template.TimeRecordDetail.onCreated(function () {
 
 });
 
-Template.TimeRecordDetail.onRendered(function () {
+Template.TimeRecordSupervisorDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -209,5 +289,5 @@ Template.TimeRecordDetail.onRendered(function () {
     }
 });
 
-Template.TimeRecordDetail.onDestroyed(function () {
+Template.TimeRecordSupervisorDetail.onDestroyed(function () {
 });
