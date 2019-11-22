@@ -617,6 +617,11 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                     getFractionForCalcProjectsPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
 
+                // for tenant fanch energy service
+                const projectsPayAndChargePayDetails =
+                    getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
+                // {duration: , fraction: }
+
                 const costCentersPayDetails =
                     getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
@@ -625,7 +630,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
 
                 // make the "12" below dynamic and should be a global level settings
 
-                let totalDaysWorkedInPeriod = totalHoursWorkedInPeriod / 12
+                let totalDaysWorkedInPeriod = projectsPayAndChargePayDetails.duration
                 //--
                 let projectsAssignedToEmployee = []
                 _.each(allProjects, aProject => {
@@ -2212,6 +2217,52 @@ function getFractionForCalcProjectsPayValue(businessId, startDate, endDate, tota
             return { duration: 0, fraction: 0, projectDurations: [] }
         }
     }
+}
+
+// calculating project codes and charge codes for fanch energy service tenant
+function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth,
+    employeeUserId, businessUnitConfig, locationsWithMaxHours, employeeData) {
+
+
+        let queryObj = {
+            businessId: businessId,
+            $or: [
+                { projectCode: { $exists: true } },
+                { chargeCode: { $exists: true } }
+
+            ],
+            createdAt: { $gte: startDate, $lt: endDate },
+            createdBy: employeeUserId,
+            status: 'Approved By Supervisor'
+        }
+
+
+
+
+        let allProjectTimesInMonth = TimeRecord.aggregate([
+
+            { $match: queryObj },
+            {
+                $group: {
+                    _id: {
+                        "empUserId": "createdBy"
+                    },
+                    count: { $sum: 1 },
+                    duration: { $sum: "$totalDaysWorked" }
+                }
+            }
+        ]);
+
+        if (allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
+            let projectDurations = []
+            let totalDuration = allProjectTimesInMonth.duration;
+            let fraction = 0;
+
+            return { fraction, projectDurations, duration: totalDuration }
+        } else {
+            return { duration: 0, fraction: 0, projectDurations: [] }
+        }
+
 }
 
 function getFractionForCalcCostCentersPayValue(businessId, startDate, endDate,
