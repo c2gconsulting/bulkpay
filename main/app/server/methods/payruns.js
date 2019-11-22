@@ -621,6 +621,8 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 const projectsPayAndChargePayDetails =
                     getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
                 // {duration: , fraction: }
+                console.log("projectsPayAndChargePayDetails is:")
+                console.log(projectsPayAndChargePayDetails)
 
                 const costCentersPayDetails =
                     getFractionForCalcCostCentersPayValue(businessId, startDate, endDate, totalNumWeekDaysInMonth, x._id, businessUnitConfig, locationsWithMaxHours, x)
@@ -631,6 +633,7 @@ processEmployeePay = function (currentUserId, employees, includedAnnuals, busine
                 // make the "12" below dynamic and should be a global level settings
 
                 let totalDaysWorkedInPeriod = projectsPayAndChargePayDetails.duration
+
                 //--
                 let projectsAssignedToEmployee = []
                 _.each(allProjects, aProject => {
@@ -2236,6 +2239,9 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             status: 'Approved By Supervisor'
         }
 
+        console.log("queryobj is:")
+        console.log(queryobj)
+
 
 
 
@@ -2253,9 +2259,15 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             }
         ]);
 
+        console.log("allProjectTimesInMonth is:")
+        console.log(allProjectTimesInMonth)
+
         if (allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let projectDurations = []
             let totalDuration = allProjectTimesInMonth.duration;
+            console.log("totalDuration is:")
+            console.log(totalDuration)
+
             let fraction = 0;
 
             return { fraction, projectDurations, duration: totalDuration }
