@@ -2245,7 +2245,7 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
 
 
 
-        let allProjectTimesInMonth = TimeRecord.find(
+        let allProjectTimesInMonth = TimeRecord.aggregate([
 
             { $match: queryObj },
             {
@@ -2257,18 +2257,25 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
                     duration: { $sum: "$totalDaysWorked" }
                 }
             }
-        );
+        ]);
 
         console.log("allProjectTimesInMonth is:")
         console.log(allProjectTimesInMonth)
 
-        if (allProjectTimesInMonth) {
+        if (allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let projectDurations = []
-            let totalDuration = allProjectTimesInMonth.duration;
-            console.log("totalDuration is:")
-            console.log(totalDuration)
-
+            let totalDuration = 0;
             let fraction = 0;
+                        allProjectTimesInMonth.forEach(aProjectTime => {
+                            projectDurations.push({
+                                duration: aProjectTime.duration
+                            })
+                            totalDuration += aProjectTime.duration
+
+                            console.log("totalDuration is:")
+                            console.log(totalDuration)
+
+                          })
 
             return { fraction, projectDurations, duration: totalDuration }
         } else {
