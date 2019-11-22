@@ -243,6 +243,63 @@ Template.EmployeeTimeManagementCreate.events({
       currentTimeRecord.vehicle.sunday = $('[name="vehicleOnSunday"]').is(':checked') ? true : false;
       tmpl.currentTimeRecord.set(currentTimeRecord);
 
+  },
+  'change #onShoreMonday': function(n, bool) {
+    bool = $('#onShoreMonday').is(':checked')
+    $('#offShoreMonday').attr("disabled", bool)
+  },
+  'change #onShoreTuesday': function(n, bool) {
+    bool = $('#onShoreTuesday').is(':checked')
+    $('#offShoreTuesday').attr("disabled", bool)
+  },
+  'change #onShoreWednesday': function(n, bool) {
+    bool = $('#onShoreWednesday').is(':checked')
+    $('#offShoreWednesday').attr("disabled", bool)
+  },
+  'change #onShoreThursday': function(n, bool) {
+    bool = $('#onShoreThursday').is(':checked')
+    $('#offShoreThursday').attr("disabled", bool)
+  },
+  'change #onShoreFriday': function(n, bool) {
+    bool = $('#onShoreFriday').is(':checked')
+    $('#offShoreFriday').attr("disabled", bool)
+  },
+  'change #onShoreSaturday': function(n, bool) {
+    bool = $('#onShoreSaturday').is(':checked')
+    $('#offShoreSaturday').attr("disabled", bool)
+  },
+  'change #onShoreSunday': function(n, bool) {
+    bool = $('#onShoreSunday').is(':checked')
+    $('#offShoreSunday').attr("disabled", bool)
+  },
+
+  'change #offShoreMonday': function(n, bool) {
+    bool = $('#offShoreMonday').is(':checked')
+    $('#onShoreMonday').attr("disabled", bool)
+  },
+  'change #offShoreTuesday': function(n, bool) {
+    bool = $('#offShoreTuesday').is(':checked')
+    $('#onShoreTuesday').attr("disabled", bool)
+  },
+  'change #offShoreWednesday': function(n, bool) {
+    bool = $('#offShoreWednesday').is(':checked')
+    $('#onShoreWednesday').attr("disabled", bool)
+  },
+  'change #offShoreThursday': function(n, bool) {
+    bool = $('#offShoreThursday').is(':checked')
+    $('#onShoreThursday').attr("disabled", bool)
+  },
+  'change #offShoreFriday': function(n, bool) {
+    bool = $('#offShoreFriday').is(':checked')
+    $('#onShoreFriday').attr("disabled", bool)
+  },
+  'change #offShoreSaturday': function(n, bool) {
+    bool = $('#offShoreSaturday').is(':checked')
+    $('#onShoreSaturday').attr("disabled", bool)
+  },
+  'change #offShoreSunday': function(n, bool) {
+    bool = $('#offShoreSunday').is(':checked')
+    $('#onShoreSunday').attr("disabled", bool)
   }
 });
 
@@ -260,7 +317,6 @@ Template.EmployeeTimeManagementCreate.helpers({
         return Template.instance().data[prop];
         return false;
     },
-
     selected(context,val) {
         let self = this;
 
