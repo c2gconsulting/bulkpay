@@ -313,6 +313,14 @@ Template.navigator.helpers({
           return true
       }
     },
+    isNewTimeWritingEnabled: () => {
+      let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+      if(businessUnitCustomConfig) {
+          return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isNewTimeWritingEnabled
+      } else {
+          return true
+      }
+    },
     isTimeWritingReportsActive: () => {
       let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
       if(businessUnitCustomConfig) {

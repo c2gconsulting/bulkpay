@@ -191,10 +191,14 @@
         {{#if isMenuExpanded 'selfServiceMenu'}}
             {{#if isTimeWritingEnabled}}
             <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
-            <li><a href="{{pathFor 'employee.time.index'}}">Time Management</a></li>
-            <li><a href="{{pathFor 'employee.time.management.approve'}}">Approve Time Management</a></li>
 
             {{/if}}
+            {{#if isNewTimeWritingEnabled}}
+            <li><a href="{{pathFor 'employee.time.index'}}">Time Management</a></li>
+
+            {{/if}}
+
+
 
             {{#if isLeaveRequestEnabled}}
             <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
@@ -203,6 +207,13 @@
             {{#if isHmoSetupEnabled}}
             <li><a href="{{pathFor 'hmoplans.changerequest'}}">HMO Plan</a></li>
             {{/if}}
+
+            {{#if hasLeaveApprovalAccess}}
+            {{#if isNewTimeWritingEnabled}}
+            <li><a href="{{pathFor 'employee.time.management.approve'}}">Approve Time Management</a></li>
+            {{/if}}
+            {{/if}}
+
 
             {{#if isLeaveRequestEnabled}}
                 {{#if hasLeaveApprovalAccess}}
