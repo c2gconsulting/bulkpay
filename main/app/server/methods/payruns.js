@@ -2239,12 +2239,6 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             status: 'Approved By Supervisor'
         }
 
-        console.log("queryObj is:")
-        console.log(queryObj)
-
-
-
-
         let allProjectTimesInMonth = TimeRecord.aggregate([
 
             { $match: queryObj },
@@ -2259,9 +2253,6 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             }
         ]);
 
-        console.log("allProjectTimesInMonth is:")
-        console.log(allProjectTimesInMonth)
-
         if (allProjectTimesInMonth && allProjectTimesInMonth.length > 0) {
             let projectDurations = []
             let totalDuration = 0;
@@ -2271,9 +2262,6 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
                                 duration: aProjectTime.duration
                             })
                             totalDuration += aProjectTime.duration
-
-                            console.log("totalDuration is:")
-                            console.log(totalDuration)
 
                           })
 
