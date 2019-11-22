@@ -2239,8 +2239,8 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             status: 'Approved By Supervisor'
         }
 
-        console.log("queryobj is:")
-        console.log(queryobj)
+        console.log("queryObj is:")
+        console.log(queryObj)
 
 
 
