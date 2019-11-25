@@ -2229,11 +2229,11 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
 
         let queryObj = {
             businessId: businessId,
-            $or: [
-                { projectCode: { $exists: true } },
-                { chargeCode: { $exists: true } }
-
-            ],
+            // $or: [
+            //     { projectCode: { $exists: true } },
+            //     { chargeCode: { $exists: true } }
+            //
+            // ],
             createdAt: { $gte: startDate, $lt: endDate },
             createdBy: employeeUserId,
             status: 'Approved By Supervisor'
@@ -2258,10 +2258,15 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             let totalDuration = 0;
             let fraction = 0;
                         allProjectTimesInMonth.forEach(aProjectTime => {
+                          console.log("aProjectTime is:")
+                          console.log(aProjectTime)
                             projectDurations.push({
                                 duration: aProjectTime.duration
                             })
                             totalDuration += aProjectTime.duration
+
+                            console.log("total duration is:")
+                            console.log(totalDuration)
 
                           })
 
