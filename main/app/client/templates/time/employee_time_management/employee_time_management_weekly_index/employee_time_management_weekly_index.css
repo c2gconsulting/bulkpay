@@ -3,5 +3,8 @@
     margin-left: 5em;
 }
 .row {
-    align-self: center;
+    align-items: center;
+}
+.main {
+    text-align: center;
 }
