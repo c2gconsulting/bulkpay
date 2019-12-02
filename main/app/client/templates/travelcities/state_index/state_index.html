@@ -64,8 +64,8 @@
 </template>
 
 <template name="singleTravelcity">
-    <tr>
-        <td class="pointer">{{index}}</td>
+    <tr class="pointer">
+        <td>{{index}}</td>
         <td>{{data.name}}</td>
         <td>{{data.perdiem}}</td>
         <td>{{data.groundTransport}}</td>
@@ -79,9 +79,6 @@
           {{else}}
             <span class="label label-danger">{{data.status}}</span>
           {{/if}}
-        </td>
-        <td>
-            <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteTravelcity">Delete</button>
         </td>
     </tr>
 </template>

@@ -42,6 +42,10 @@ Template.AirlineIndex.onDestroyed(function () {
 /* singleHotel: Helpers */
 /*****************************************************************************/
 Template.singleAirline.events({
+    'click .pointer': function (e,tmpl) {
+        e.preventDefault();
+        Modal.show('AirlineCreate', this.data);
+    },
     'click #deleteAirline': function(e, tmpl) {
         event.preventDefault();
         let self = this;
