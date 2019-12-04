@@ -69,5 +69,9 @@ Template.singleTravelcity.events({
                 }
             });
         });
+    },
+    'click .pointer': function (e,tmpl) {
+        e.preventDefault();
+        Modal.show('TravelCityCreate', this.data);
     }
 })

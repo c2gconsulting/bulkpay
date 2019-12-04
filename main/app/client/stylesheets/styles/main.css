@@ -3376,6 +3376,11 @@ table.dataTable.dtr-inline.collapsed tbody th:first-child:before {
   text-align: right;
   background-color: #f7f7f7;
 }
+
+th {
+  text-align: center;
+}
+
 .table-total {
   float: right;
   -webkit-box-shadow: none;

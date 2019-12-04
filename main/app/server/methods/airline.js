@@ -40,7 +40,7 @@ Meteor.methods({
         Airlines.remove({_id: id});
         return true;
     },
-    "airline/update": function(id, details){
+    "airline/update": function(id, newAirline){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -49,7 +49,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = Airlines.update(selector, {$set: details} );
+        const result = Airlines.update(selector, {$set: newAirline} );
         return result;
     }
 

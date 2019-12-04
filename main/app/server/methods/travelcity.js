@@ -40,7 +40,7 @@ Meteor.methods({
         Travelcities.remove({_id: id});
         return true;
     },
-    "travelcity/update": function(id, details){
+    "travelcity/update": function(id, newTravelcity){
         if(!this.userId){
             throw new Meteor.Error(401, "Unauthorized");
         }
@@ -49,7 +49,7 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-        const result = Travelcities.update(selector, {$set: details} );
+        const result = Travelcities.update(selector, {$set: newTravelcity} );
         return result;
     }
 
