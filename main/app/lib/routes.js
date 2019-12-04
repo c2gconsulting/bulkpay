@@ -460,6 +460,13 @@ Router.route('/business/:_id/employee/travelrequisition2adminindex', {
     where: 'client'
 });
 
+Router.route('/business/:_id/employee/travelrequisitionretirement2adminindex', {
+    name: 'travelrequest2.travelrequisitionretirement2adminindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisitionRetirement2AdminIndex',
+    where: 'client'
+});
+
 Router.route('/business/:_id/employee/travelrequisition2budgetholderindex', {
     name: 'travelrequest2.travelrequisition2budgetholderindex',
     controller: 'RequisitionController',

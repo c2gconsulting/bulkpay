@@ -12,15 +12,15 @@ Template.HotelCreate.events({
 
         swal({
             title: "Are you sure?",
-            text: "You will not be able to recover this Pension Manager",
+            text: "You will not be able to recover this Hotel",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Yes, delete it!",
             closeOnConfirm: false
         }, () => {
-            const hotelId = self.data._id;
-            const code = self.data.code;
+            const hotelId = self._id;
+            const code = self.code;
 
             Meteor.call('hotel/delete', hotelId, (err, res) => {
                 if(!err){
