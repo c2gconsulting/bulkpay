@@ -1,6 +1,6 @@
 
 /*****************************************************************************/
-/* TimeRecordDetail: Event Handlers */
+/* TimeRecordPrint: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
@@ -9,63 +9,10 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TimeRecordDetail: Helpers */
+/* TimeRecordPrint: Helpers */
 /*****************************************************************************/
-Template.TimeRecordDetail.helpers({
-  timeRecordCheckedoffShoreWeek(val){
-     const currentTimeRecord = Template.instance().currentTimeRecord.get();
-     if(val == "monday"){
-         return currentTimeRecord.offShoreWeek.monday === true ? checked="checked" : '';
-     } else if(val == "tuesday"){
-         return currentTimeRecord.offShoreWeek.tuesday === true ? checked="checked" : '';
-     } else if(val == "wednesday"){
-         return currentTimeRecord.offShoreWeek.wednesday === true ? checked="checked" : '';
-     } else if(val == "thursday"){
-         return currentTimeRecord.offShoreWeek.thursday === true ? checked="checked" : '';
-     } else if(val == "friday"){
-         return currentTimeRecord.offShoreWeek.friday === true ? checked="checked" : '';
-     } else if(val == "saturday"){
-         return currentTimeRecord.offShoreWeek.saturday === true ? checked="checked" : '';
-     } else if(val == "sunday"){
-         return currentTimeRecord.offShoreWeek.sunday === true ? checked="checked" : '';
-     }
- },
- timeRecordCheckedonShoreWeek(val){
-     const currentTimeRecord = Template.instance().currentTimeRecord.get();
-     if(val == "monday"){
-         return currentTimeRecord.onShoreWeek.monday === true ? checked="checked" : '';
-     } else if(val == "tuesday"){
-         return currentTimeRecord.onShoreWeek.tuesday === true ? checked="checked" : '';
-     } else if(val == "wednesday"){
-         return currentTimeRecord.onShoreWeek.wednesday === true ? checked="checked" : '';
-     } else if(val == "thursday"){
-         return currentTimeRecord.onShoreWeek.thursday === true ? checked="checked" : '';
-     } else if(val == "friday"){
-         return currentTimeRecord.onShoreWeek.friday === true ? checked="checked" : '';
-     } else if(val == "saturday"){
-         return currentTimeRecord.onShoreWeek.saturday === true ? checked="checked" : '';
-     } else if(val == "sunday"){
-         return currentTimeRecord.onShoreWeek.sunday === true ? checked="checked" : '';
-     }
- },
- timeRecordCheckedVehicle(val){
-     const currentTimeRecord = Template.instance().currentTimeRecord.get();
-     if(val == "monday"){
-         return currentTimeRecord.vehicle.monday === true ? checked="checked" : '';
-     } else if(val == "tuesday"){
-         return currentTimeRecord.vehicle.tuesday === true ? checked="checked" : '';
-     } else if(val == "wednesday"){
-         return currentTimeRecord.vehicle.wednesday === true ? checked="checked" : '';
-     } else if(val == "thursday"){
-         return currentTimeRecord.vehicle.thursday === true ? checked="checked" : '';
-     } else if(val == "friday"){
-         return currentTimeRecord.vehicle.friday === true ? checked="checked" : '';
-     } else if(val == "saturday"){
-         return currentTimeRecord.vehicle.saturday === true ? checked="checked" : '';
-     } else if(val == "sunday"){
-         return currentTimeRecord.vehicle.sunday === true ? checked="checked" : '';
-     }
- },
+Template.TimeRecordPrint.helpers({
+  
   'errorMessage': function() {
       return Template.instance().errorMessage.get()
   },
@@ -150,23 +97,6 @@ Template.TimeRecordDetail.helpers({
             return currentTimeRecord.vehicle.sunday === true ? checked="checked" : '';
         }
     },
-    isReturnTrip(){
-        return Template.instance().currentTimeRecord.get().type === "Return";
-    },
-    isCarModeOfTransport(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "CAR"? '':'none';
-        }
-    },
-    isAirModeOfTransport(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
-        }
-    },
     'getEmployeeFullName': function(employeeId) {
         let employee = Meteor.users.findOne({_id: employeeId});
         if(employee)
@@ -174,86 +104,23 @@ Template.TimeRecordDetail.helpers({
         else
         return ""
     },
+    'getEmployeeEmail': function(employeeId) {
+        let employee = Meteor.users.findOne({_id: employeeId});
+        if(employee)
+        return employee.emails[0].address;
+        else
+        return "..."
+    },
+    'getEmployeePhoneNumber': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+    return employee.employeeProfile.phone;
+    else
+    return "..."
+    },
     // 'getEmployeeNameById': function(employeeId){
     //     return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     // },
-
-    isBreakfastIncluded(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].isBreakfastIncluded? checked="checked" : '';
-        }
-    },
-    provideAirportPickup(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].provideAirportPickup? checked="checked" : '';
-        }
-    },
-    provideGroundTransport(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
-        }
-    },
-    isLunchIncluded(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].isLunchIncluded? checked="checked" : '';
-        }
-    },
-    isDinnerIncluded(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].isDinnerIncluded? checked="checked" : '';
-        }
-    },
-    isIncidentalsIncluded(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].isIncidentalsIncluded? checked="checked" : '';
-        }
-    },
-    isLastLeg(index){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord && index && currentTimeRecord.type ==="Multiple"){
-            return parseInt(index) >= currentTimeRecord.trips.length;
-        }
-    },
-    'getTravelcityName': function(travelcityId) {
-        const travelcity = Travelcities.findOne({_id: travelcityId})
-
-        if(travelcity) {
-            return travelcity.name
-        }
-    },
-    'getHotelName': function(hotelId) {
-        const hotel = Hotels.findOne({_id: hotelId})
-
-        if(hotel) {
-            return hotel.name
-        }
-    },
-    'getAirlineName': function(airlineId) {
-        const airline = Airlines.findOne({_id: airlineId})
-
-        if(airline) {
-            return airline.name
-        }
-    },
-    'getBudgetName': function(budgetCodeId) {
-        const budget = Budgets.findOne({_id: budgetCodeId})
-
-        if(budget) {
-            return budget.name
-        }
-    },
-    cashAdvanceNotRequiredChecked(){
-        const currentTimeRecord = Template.instance().currentTimeRecord.get();
-        if(currentTimeRecord){
-            return currentTimeRecord.cashAdvanceNotRequired? checked="checked" : '';
-        }
-    },
     'currentTimeRecord': function() {
         return Template.instance().currentTimeRecord.get()
     },
@@ -307,21 +174,25 @@ Template.TimeRecordDetail.helpers({
 });
 
 /*****************************************************************************/
-/* TimeRecordDetail: Lifecycle Hooks */
+/* TimeRecordPrint: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TimeRecordDetail.onCreated(function () {
+Template.TimeRecordPrint.onCreated(function () {
     let self = this;
     console.log("self is:")
     console.log(self)
-    let businessUnitId = Session.get('context');
-    self.subscribe("allEmployees", Session.get('context'));
+    let businessUnitId = Router.current().params._id;
+    self.subscribe("allEmployees", Router.current().params._id);
 
-    self.subscribe("travelcities", Session.get('context'));
-    self.subscribe("hotels", Session.get('context'));
-    self.subscribe("airlines", Session.get('context'));
-    self.subscribe("budgets", Session.get('context'));
+    self.subscribe("travelcities", Router.current().params._id);
+    self.subscribe("hotels", Router.current().params._id);
+    self.subscribe("airlines", Router.current().params._id);
+    self.subscribe("budgets", Router.current().params._id);
 
 
+    let invokeReason = {}
+    invokeReason.requisitionId = Router.current().params.query.requisitionId
+    invokeReason.reason = 'edit'
+    invokeReason.approverId = null
 
 
     self.currentTimeRecord = new ReactiveVar()
@@ -334,7 +205,6 @@ Template.TimeRecordDetail.onCreated(function () {
 
     self.businessUnitCustomConfig = new ReactiveVar()
 
-    let invokeReason = self.data;
 
 
     // self.totalTripCost = new ReactiveVar(0)
@@ -389,7 +259,7 @@ Template.TimeRecordDetail.onCreated(function () {
 
 });
 
-Template.TimeRecordDetail.onRendered(function () {
+Template.TimeRecordPrint.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -401,17 +271,17 @@ Template.TimeRecordDetail.onRendered(function () {
         if(currentTimeRecord.status !== 'Draft' && currentTimeRecord.status !== 'Pending') {
             if(self.isInEditMode.get()) {
                 Modal.hide();
-                swal('Error', "Sorry, you can't edit this travel request. ", 'error')
+                swal('Error', "Sorry, you can't edit this time record. ", 'error')
             }
         } else if(currentTimeRecord.status === 'Pending') {
             self.isInViewMode.set(true)
         } else if(currentTimeRecord.status === 'Approve') {
             if(self.isInEditMode.get()) {
-                swal('Error', "Sorry, you can't edit this travel request. It has been approved", 'error')
+                swal('Error', "Sorry, you can't edit this time record. It has been approved", 'error')
             }
         }
     }
 });
 
-Template.TimeRecordDetail.onDestroyed(function () {
+Template.TimeRecordPrint.onDestroyed(function () {
 });

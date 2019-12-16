@@ -514,6 +514,11 @@ Router.route('/business/:_id/travelrequests2/printrequisition', {
     layoutTemplate: 'ExtLayout',
     template: 'TravelRequisition2Print'
 });
+Router.route('/business/:_id/timerecord/printrequisition', {
+    name: 'timerecord.printrequisition',
+    layoutTemplate: 'ExtLayout',
+    template: 'TimeRecordPrint'
+});
 Router.route('/business/:_id/home2', {
     name: 'home2',
     layoutTemplate: 'ExtLayout',

@@ -54,7 +54,7 @@
                                 {{#each timeRecordsBySupervisor}}
                                 <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                     <td nowrap>{{getCreatedByFullName this}}</td>
-                                    <td>{{period.month}}</td>
+                                    <td>{{getMonth period.month}}</td>
 
                                     <td>{{period.weekIndex}}</td>
 
