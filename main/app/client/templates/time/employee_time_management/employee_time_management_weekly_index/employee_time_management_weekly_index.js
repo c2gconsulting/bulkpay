@@ -133,6 +133,56 @@ Template.EmployeeTimeManagement.events({
           }
 
       },
+      'click #createTimeRecordWeekFive': function(e,tmpl){
+        e.preventDefault();
+        let user = Meteor.user()
+
+        const month = tmpl.selectedMonth.get()
+        const year = tmpl.selectedYear.get()
+        Session.set("year", year);
+        Session.set("month", month);
+        Session.set("weekIndex", "5");
+
+        const weekIndex = Session.get("weekIndex")
+        let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+      if(timeRecordResult){
+          swal({
+              title: "Oops!",
+              text: "You have already created a time record for this period",
+              confirmButtonClass: "btn-danger",
+              type: "error",
+              confirmButtonText: "OK"
+          });
+        }else{
+          Router.go('employee.time.management.create', {_id: Session.get('context')});
+        }
+
+    },
+    'click #createTimeRecordWeekSix': function(e,tmpl){
+        e.preventDefault();
+        let user = Meteor.user()
+
+        const month = tmpl.selectedMonth.get()
+        const year = tmpl.selectedYear.get()
+        Session.set("year", year);
+        Session.set("month", month);
+        Session.set("weekIndex", "6");
+
+        const weekIndex = Session.get("weekIndex")
+        let timeRecordResult = TimeRecord.findOne({"createdBy":user._id,"period.year":year,"period.month":month,"period.weekIndex":weekIndex});
+      if(timeRecordResult){
+          swal({
+              title: "Oops!",
+              text: "You have already created a time record for this period",
+              confirmButtonClass: "btn-danger",
+              type: "error",
+              confirmButtonText: "OK"
+          });
+        }else{
+          Router.go('employee.time.management.create', {_id: Session.get('context')});
+        }
+
+    },
     'click .requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
@@ -181,6 +231,9 @@ Template.EmployeeTimeManagement.helpers({
   },
   'year': function(){
       return Core.years();
+  },
+  'weeks': function(){
+      return Template.instance().weeksInMonth.get();
   },
   selectedMonth: function (val) {
       if(Template.instance().selectedMonth.get()) {
@@ -245,6 +298,7 @@ Template.EmployeeTimeManagement.onCreated(function () {
     //--
     self.selectedMonth = new ReactiveVar();
     self.selectedYear = new ReactiveVar();
+    self.weeksInMonth = new ReactiveVar();
     //--
     let theMoment = moment();
     self.selectedMonth.set(theMoment.format('MM'))
@@ -252,7 +306,6 @@ Template.EmployeeTimeManagement.onCreated(function () {
     //--
 
     self.currentTimeRecord = new ReactiveVar()
-
 
 
     self.totalTripCost = new ReactiveVar(0)
@@ -267,6 +320,40 @@ Template.EmployeeTimeManagement.onCreated(function () {
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let timeRecordSub = self.subscribe("allTimeRecords", Session.get('context'));
+
+
+        let weeksInMonth = function (year, month) {
+            let today = new Date();
+            year = today.getFullYear();
+            month = today.getMonth();
+            let firstDayOfMonth = new Date(year, month, 1);
+            let firstDay = firstDayOfMonth.getDay();
+            let lastOfMonth = new Date(year, month+1, 0);
+            let daysInMonth = lastOfMonth.getDate();  
+            switch(daysInMonth) {
+                case 28:
+                    if (firstDay === 1) {
+                        return 4;
+                    } else {
+                        return 5;
+                    }
+                case 29:
+                    return 5;
+                case 30:
+                    if (firstDay === 0) {
+                        return 6;
+                    } else {
+                        return 5;
+                    }
+                case 31:
+                    if (firstDay == 6 || firstDay == 0) {
+                        return 6;
+                    } else {
+                        return 5;
+                    }
+                }
+            }
+            self.weeksInMonth.set(weeksInMonth)
 
     })
 

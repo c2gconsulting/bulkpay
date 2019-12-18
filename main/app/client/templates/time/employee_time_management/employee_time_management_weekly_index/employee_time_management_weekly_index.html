@@ -101,6 +101,36 @@
                         </div>
                     </div>
                 </div>
+
+                <br> <br>
+                {{#if condition weeks '>' 4}}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="main">
+                                    <h5 class="card-title">Time Management</h5>
+                                    <p><i class="fa fa-calendar fa-3x"></i></p>
+                                    <a href="#" id="createTimeRecordWeekFive" name="weekFive" class="btn btn-primary btn-block">Week 5</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{#if condition weeks '>' 5}}
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="main">
+                                    <h5 class="card-title">Time Management</h5>
+                                    <p><i class="fa fa-calendar fa-3x"></i></p>
+                                    <a href="#" id="createTimeRecordWeekSix" name="weekSix" class="btn btn-primary btn-block">Week 6</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                </div>
+                {{/if}}
             </div>
         </div>
     </div>
