@@ -112,9 +112,13 @@ let getSfEmployeeIds = (jsonPayLoad) => {
 }
 
 let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
+  console.log("New hire function is working")
   console.log(`jsonPayLoad: `, JSON.stringify(jsonPayLoad))
   //let externalEvent = jsonPayLoad['S:Envelope']['S:Body'][0]  soap:Body
   let externalEvent = jsonPayLoad['soap:Envelope']['soap:Body'][0]
+  console.log("externalEvent is")
+  console.log(externalEvent)
+
 
   let personIds = []
   let personIdExternal = "";
@@ -130,6 +134,9 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
 
   let ns7Events = externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`] ?
     externalEvent[`${nsPrefix}:ExternalEvent`][0][`${nsPrefix}:events`][0] : null
+
+    console.log("ns7Events is")
+    console.log(ns7Events)
 
   if(ns7Events) {
     let ns7Event = ns7Events[`${nsPrefix}:event`]
@@ -782,6 +789,9 @@ if (Meteor.isServer) {
         console.log(`10: 17pm GMT Current deployment`)
         console.log(`Inside successfactors newhire event endpoint`)
 
+        console.log(`New hire endpoint!!!!`)
+
+
         let decoded;
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
@@ -799,6 +809,7 @@ if (Meteor.isServer) {
         .on('end', Meteor.bindEnvironment(function (error, result) {
           body = Buffer.concat(body).toString();
           console.log(`Got event body: `)
+          console.log(body)
 
           Partitioner.directOperation(function() {
             let business = BusinessUnits.findOne({_id: businessId})
