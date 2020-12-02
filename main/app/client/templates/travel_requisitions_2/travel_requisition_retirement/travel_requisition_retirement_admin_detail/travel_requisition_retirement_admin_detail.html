@@ -544,12 +544,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3"><b>Select Status : </b></div>
+                            <div class="col-md-3"><b>Select Retirement Status : </b></div>
                             <div class="col-md-9">
                                 <div class="form-group">
                                     {{#semanticselect}}
-                                        <select name="status" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
-                                            <option value="">{{setDefaultStatus currentTravelRequest.status}}</option>
+                                        <select name="retirementStatus" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                            <option value="">{{setDefaultStatus currentTravelRequest.retirementStatus}}</option>
                                             {{#each allowedStatus}}
                                                 <option value="{{this}}">{{this}}</option>
                                             {{/each}}

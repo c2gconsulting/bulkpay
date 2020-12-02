@@ -20,12 +20,15 @@ Template.TravelRequisitionRetirement2AdminDetail.events({
             const customConfig = tmpl.travelRequisitionCustomConfig.get();
             let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
+            if (currentTravelRequest.retirementStatus === customConfig.retirementStatus) {
+                // console.log()
+                delete currentTravelRequest.retirementStatus
+            }
+
             currentTravelRequest = {
                 ...currentTravelRequest,
                 ...customConfig,
             }
-
-            delete currentTravelRequest.retirementStatus
 
             Meteor.call('TravelRequest2/editTravelRequisition', currentTravelRequest, (err, res) => {
                 if (res){
@@ -181,7 +184,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
         }
     },
     allowedStatus() {
-        return ["Cancelled","Draft","Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder"]
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"]
     },
     setDefaultStatus(val) {
         return val || 'Status'
