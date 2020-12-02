@@ -88,6 +88,27 @@ Template.TravelRequisition2AdminIndex.helpers({
         const user = Meteor.users.findOne(userId)
         return user ? user.profile.fullName : '...'
     },
+    getSupervisorFullName: (requisition) => {
+        const userId = requisition.supervisorId
+
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
+    getBudgetHolderFullName: (requisition) => {
+        const userId = requisition.budgetHolderId
+
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
+    'getBudgetName': function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
+        } else {
+            return 'NONE'
+        }
+    },
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },

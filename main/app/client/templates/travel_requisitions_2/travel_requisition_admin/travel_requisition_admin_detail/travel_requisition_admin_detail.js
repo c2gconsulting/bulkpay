@@ -6,7 +6,53 @@ import _ from 'underscore';
 
 
 Template.TravelRequisition2AdminDetail.events({
+    "change .selectFields": _.throttle(function(e, tmpl) {
+        const fieldName = $(e.target).attr('name');
+        let inputVal = $(e.target).val().trim();
+        const customConfig = tmpl.travelRequisitionCustomConfig.get();
+        customConfig[fieldName] = inputVal
+        tmpl.travelRequisitionCustomConfig.set(customConfig)
+    }),
 
+    'click #requisition-edit': function(e, tmpl) {
+        const isEdittableFields = Template.instance().isEdittableFields.get()
+        if (isEdittableFields) {
+            const customConfig = tmpl.travelRequisitionCustomConfig.get();
+            let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+            currentTravelRequest = {
+                ...currentTravelRequest,
+                ...customConfig,
+            }
+
+            delete currentTravelRequest.retirementStatus
+
+            Meteor.call('TravelRequest2/editTravelRequisition', currentTravelRequest, (err, res) => {
+                if (res){
+                    swal({
+                        title: "Travel requisition created",
+                        text: "Travel request has been updated",
+                        confirmButtonClass: "btn-success",
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
+                } else {
+                    swal({
+                        title: "Oops!",
+                        text: "Travel request could not be updated, reason: " + err.message,
+                        confirmButtonClass: "btn-danger",
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                    console.log(err);
+                }
+
+            });
+            Template.instance().errorMessage.set(null);
+            Modal.hide('TravelRequisition2AdminDetail');
+        }
+        Template.instance().isEdittableFields.set(!isEdittableFields)
+    },
     'click #requisition-cancel': function(e, tmpl) {
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -68,6 +114,45 @@ Template.registerHelper('formatDate', function(date) {
 Template.TravelRequisition2AdminDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
+    },
+    'isEdittableFields': function() {
+        return Template.instance().isEdittableFields.get()
+    },
+    'getStatusColor': function() {
+        return Template.instance().isEdittableFields.get() ? 'primary' : 'warning'
+    },
+    'getStatusText': function() {
+        return Template.instance().isEdittableFields.get() ? 'Save' : 'Edit'
+    },
+    'employees': () => {
+        return  Meteor.users.find({"employee": true});
+    },
+    'budgets': function() {
+        let currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const businessId = currentTravelRequest.businessId
+
+        return Budgets.find({ businessId })
+    },
+    'getBudgetCodeName': function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
+        } else {
+            return 'Budget Code'
+        }
+    },
+    allowedStatus() {
+        return ["Cancelled","Draft","Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder"]
+    },
+    setDefaultStatus(val) {
+        return val || 'Status'
+    },
+    setDefaultSupervisor(val) {
+        return val ? (Meteor.users.findOne({_id: val})).profile.fullName : 'Supervisor'
+    },
+    setDefaultBudgetHolder(val) {
+        return val ? (Meteor.users.findOne({_id: val})).profile.fullName : 'Budget Holder'
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -239,6 +324,10 @@ Template.TravelRequisition2AdminDetail.onCreated(function () {
 
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null);
+    self.isEdittableFields = new ReactiveVar();
+    self.isEdittableFields.set(false)
+    self.travelRequisitionCustomConfig = new ReactiveVar();
+    self.travelRequisitionCustomConfig.set({})
 
     self.currentTravelRequest = new ReactiveVar()
     self.isInEditMode = new ReactiveVar()

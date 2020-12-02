@@ -24,7 +24,14 @@ Core.publish("TravelRequestsICreated", function (businessUnitId) {
 Core.publish("TravelRequestsAdminCreated", function (businessUnitId) {
 
 
-    return TravelRequisition2s.find({businessId: businessUnitId});
+    const currentTravelRequest = TravelRequisition2s.find({businessId: businessUnitId})
+    console.log('current travel request', currentTravelRequest);
+    return currentTravelRequest;
+    // .map((currentTravelRequest) => {
+    //     currentTravelRequest.supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+    //     currentTravelRequest.budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
+    //     return currentTravelRequest;
+    // });
 });
 
 Core.publish("TravelRequestsStatusNotSeen", function (businessUnitId) {

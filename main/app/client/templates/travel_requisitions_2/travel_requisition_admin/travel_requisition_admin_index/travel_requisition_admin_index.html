@@ -35,6 +35,9 @@
                                 <tr>
                                     <th>Creator</th>
                                     <th>Description</th>
+                                    <th>Supervisor</th>
+                                    <th>Budget Holder</th>
+                                    <th>Budget Code</th>
 
                                     <th>Date created</th>
                                     <th>Status</th>
@@ -46,6 +49,9 @@
                                 <tr data-RequisitionId="{{_id}}" class="pointer requisitionRow">
                                     <td nowrap>{{getCreatedByFullName this}}</td>
                                     <td>{{description}}</td>
+                                    <td>{{getSupervisorFullName this}}</td>
+                                    <td>{{getBudgetHolderFullName this}}</td>
+                                    <td>{{getBudgetName budgetCodeId}}</td>
 
                                     {{#if createdAt}}
                                     <td nowrap>{{formatDate createdAt}}</td>
