@@ -54,6 +54,27 @@ Template.registerHelper('repeat', function(max) {
 /* TravelRequisitionRetirement2AdminIndex: Helpers */
 /*****************************************************************************/
 Template.TravelRequisitionRetirement2AdminIndex.helpers({
+    getSupervisorFullName: (requisition) => {
+        const userId = requisition.supervisorId
+
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
+    getBudgetHolderFullName: (requisition) => {
+        const userId = requisition.budgetHolderId
+
+        const user = Meteor.users.findOne(userId)
+        return user ? user.profile.fullName : '...'
+    },
+    'getBudgetCodeName': function(budgetCodeId) {
+        const budget = Budgets.findOne({_id: budgetCodeId})
+
+        if(budget) {
+            return budget.name
+        } else {
+            return 'Budget Code'
+        }
+    },
     'travelRequestsAdminCreated': function() {
         return Template.instance().travelRequestsAdminCreated.get()
     },

@@ -493,6 +493,73 @@
                             <textarea class="form-control" rows="9" placeholder="" id="tripReport" name="tripReport" value="{{currentTravelRequest.tripReport}}"></textarea>
                             </div>
                         </div>
+                        {{#if isEdittableFields}}
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-3"><b>Select Supervisor : </b></div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    {{#semanticselect}}
+                                        <select name="supervisorId" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                            <option value="">{{setDefaultSupervisor currentTravelRequest.supervisorId}}</option>
+                                            {{#each employees}}
+                                                <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/semanticselect}}
+
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"><b>Select Budget Holder : </b></div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    {{#semanticselect}}
+                                        <select name="budgetHolderId" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                            <option value="">{{setDefaultBudgetHolder currentTravelRequest.budgetHolderId}}</option>
+                                            {{#each employees}}
+                                                <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/semanticselect}}
+
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"><b>Select Budget Code : </b></div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    {{#semanticselect}}
+                                        <select name="budgetCodeId" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                            <option value="">{{getBudgetCodeName currentTravelRequest.budgetCodeId}}</option>
+                                            {{#each budgets}}
+                                                <option value="{{_id}}">{{name}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/semanticselect}}
+
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3"><b>Select Retirement Status : </b></div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    {{#semanticselect}}
+                                        <select name="retirementStatus" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                            <option value="">{{setDefaultStatus currentTravelRequest.retirementStatus}}</option>
+                                            {{#each allowedStatus}}
+                                                <option value="{{this}}">{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/semanticselect}}
+
+                                </div><!-- form-group -->
+                            </div>
+                        </div>
+                        {{/if}}
                         <br/>
                         <div class="row">
                             <div class="col-sm-12">
@@ -512,6 +579,7 @@
 
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button class="btn btn-{{getStatusColor}} mr5 pull-right" id="requisition-edit">{{getStatusText}} Travel Requisition</button>
                     </div><!-- panel-footer -->
                 </div>
             </div>

@@ -3,6 +3,10 @@
 /* TravelRequisition2RetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
+// import '/imports/api/methods.js'
+// import { HTTP } from 'meteor/http'
+
+import { Meteor } from 'meteor/meteor';
 
 Template.TravelRequisition2RetirementDetail.events({
     'change ': function(e, tmpl) {
@@ -98,7 +102,28 @@ Template.TravelRequisition2RetirementDetail.events({
     },
 
     'change input[type="file"]' ( event, template ) {
-      Modules.client.uploadToAmazonS3( { event: event, template: template } );
+      const fileInput = event.target
+    //   var name = event.target.files[0].name;
+    // const formData = new FormData()
+    // var form_data = new FormData();
+    // form_data.append('files', event.target.files[0]);
+    // console.log('form_data', form_data)
+
+    var formdata = new FormData();
+    formdata.append("photoUrl", fileInput.files[0], "report-about-fish.pdf");
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvbXBhbnlOYW1lIjoiYzJnIGNvbnN1bHRpbmciLCJmaXJzdE5hbWUiOiJGaXJzdE5hbWUiLCJsYXN0TmFtZSI6Ikxhc3ROYW1lIiwiZW1haWwiOiJhZGVzYW5taWFrb2xhZGVkb3R1bkBnbWFpbC5jb20iLCJhY3RpdmF0aW9uTGluayI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMC9hY3RpdmF0aW9uIiwicGhvbmVOdW1iZXIiOiIwODE2MTc2Nzc2MiJ9LCJpYXQiOjE1OTU0MjYyMzYsImV4cCI6MTU5NTQyOTgzNn0.ZOT4-PcHT0gSg8kHipmycco1Yx2VcCJRoqEbezCn1R4");
+    myHeaders.append("content-type", "multipart/form-data");
+    myHeaders.append("Content-Type", "multipart/form-data");
+    console.log('myHeaders:', myHeaders.get('Authorization'))
+
+    Meteor.call('uploadFile', {
+        "Content-Type": undefined,
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvbXBhbnlOYW1lIjoiYzJnIGNvbnN1bHRpbmciLCJmaXJzdE5hbWUiOiJGaXJzdE5hbWUiLCJsYXN0TmFtZSI6Ikxhc3ROYW1lIiwiZW1haWwiOiJhZGVzYW5taWFrb2xhZGVkb3R1bkBnbWFpbC5jb20iLCJhY3RpdmF0aW9uTGluayI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMC9hY3RpdmF0aW9uIiwicGhvbmVOdW1iZXIiOiIwODE2MTc2Nzc2MiJ9LCJpYXQiOjE1OTU0MjYyMzYsImV4cCI6MTU5NTQyOTgzNn0.ZOT4-PcHT0gSg8kHipmycco1Yx2VcCJRoqEbezCn1R4"
+    }, formdata);
+
+    //   Modules.client.uploadToAmazonS3( { event: event, template: template } );
     }
 });
 

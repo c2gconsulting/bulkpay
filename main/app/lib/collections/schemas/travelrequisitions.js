@@ -117,6 +117,18 @@ Core.Schemas.TravelRequisition = new SimpleSchema({
     createdBy: {
         type: String
     },
+    supervisorId: {
+        type: String,
+        optional: true
+    },
+    alternativeSupervisorId: {
+        type: String,
+        optional: true
+    },
+    budgetHolderId: {
+        type: String,
+        optional: true
+    },
     supervisorPositionId: {
         type: String,
         optional: true

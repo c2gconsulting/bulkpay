@@ -124,6 +124,13 @@ Partitioner.partitionCollection(Departments);
 Departments.attachSchema(Core.Schemas.Department);
 
 /**
+ * Core Collections Attachments
+ */
+Attachments = new Mongo.Collection("attachments");
+Partitioner.partitionCollection(Attachments);
+Attachments.attachSchema(Core.Schemas.Attachment);
+
+/**
  * Core Collections Divisions
  */
 Divisions = new Mongo.Collection("divisions");
