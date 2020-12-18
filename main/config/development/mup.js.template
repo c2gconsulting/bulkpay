@@ -31,7 +31,7 @@ module.exports = {
          //CLUSTER_PUBLIC_SERVICES: "main, search, notification",
 
         // aws env vars
-         AWS_ACCESS_KEY_ID: "AKIAXGG3IS463K6JSZFU",
+         AWS_ACCESS_KEY_ID: "",
          AWS_SECRET_ACCESS_KEY: "",
 
         // service env vars
