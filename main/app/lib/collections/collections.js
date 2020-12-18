@@ -87,6 +87,13 @@
  }
  }; */
 
+/**
+ * Core Collections Attachments
+ */
+Attachments = new Mongo.Collection("attachments");
+// Partitioner.partitionCollection(Attachments);
+Attachments.attachSchema(Core.Schemas.Attachment);
+
 
 /**
  * Core Collections Businesses
@@ -122,13 +129,6 @@ BusinessUnits.attachSchema(Core.Schemas.BusinessUnit);
 Departments = new Mongo.Collection("departments");
 Partitioner.partitionCollection(Departments);
 Departments.attachSchema(Core.Schemas.Department);
-
-/**
- * Core Collections Attachments
- */
-Attachments = new Mongo.Collection("attachments");
-Partitioner.partitionCollection(Attachments);
-Attachments.attachSchema(Core.Schemas.Attachment);
 
 /**
  * Core Collections Divisions
