@@ -351,6 +351,23 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
     },
+    attachments: function () {
+        // Meteor.Attachment.find({ })
+        console.log('instance()', Template.instance())
+        console.log('Template.instance()()', Template.instance().data)
+        const requisitionId = Template.instance().currentTravelRequest.get()._id
+        console.log('requisitionId', requisitionId)
+        const attachments = Attachments.find({ travelId: requisitionId })
+        console.log('attachments', attachments)
+        return attachments;
+    },
+    getAttachmentName: function (data) {
+        return data.name || data.fileUrl || data.imageUrl
+    },
+
+    getAttachmentUrl: function (data) {
+        return data.fileUrl || data.imageUrl
+    },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
 
@@ -414,6 +431,7 @@ Template.TravelRequisitionRetirement2AdminDetail.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+    self.subscribe("attachments", Session.get('context'));
 
 
 
@@ -431,6 +449,7 @@ Template.TravelRequisitionRetirement2AdminDetail.onCreated(function () {
     self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
+    self.attachments = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
 

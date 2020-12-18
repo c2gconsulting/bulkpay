@@ -10,11 +10,31 @@ Core.Schemas.Attachment = new SimpleSchema({
     businessId: {
         type: String
     },
+    travelId: {
+        type: String,
+        optional: true,
+    },
+    owner: {
+        type: String,
+        optional: true,
+    },
+    userId: {
+        type: String,
+        optional: true,
+    },
     name: {
         type: String,
         optional: true,
     },
-    base64: {
+    fileUrl: {
+        type: String,
+        optional: true,
+    },
+    imageUrl: {
+        type: String,
+        optional: true,
+    },
+    thumbnailUrl: {
         type: String,
         optional: true,
     },

@@ -3,6 +3,7 @@
 /* TravelRequisition2RetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
+import axios from 'axios';
 // import '/imports/api/methods.js'
 // import { HTTP } from 'meteor/http'
 
@@ -101,29 +102,63 @@ Template.TravelRequisition2RetirementDetail.events({
 
     },
 
+    'dropped #dropzone': function (fileObj) {
+        const formData = new FormData()
+    },
+
+    // 'click .remove-file': function(event, template) {
+    //     var fileObj = this;
+    //     if (!fileObj) {
+    //         toastr.warning('No file selected', 'Warning');
+    //         return false;
+    //     }
+    //     fileObj.remove();
+    //     toastr.success('File deleted successfully', 'Success');
+    //     return false;
+    // },
+
     'change input[type="file"]' ( event, template ) {
-      const fileInput = event.target
-    //   var name = event.target.files[0].name;
-    // const formData = new FormData()
-    // var form_data = new FormData();
-    // form_data.append('files', event.target.files[0]);
-    // console.log('form_data', form_data)
+      const formData = new FormData()
 
-    var formdata = new FormData();
-    formdata.append("photoUrl", fileInput.files[0], "report-about-fish.pdf");
+      if (!event.target || !event.target.files[0]) {
+        return;
+      }
+      template.isUploading.set(true)
+      Session.set('isUploading', true)
 
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvbXBhbnlOYW1lIjoiYzJnIGNvbnN1bHRpbmciLCJmaXJzdE5hbWUiOiJGaXJzdE5hbWUiLCJsYXN0TmFtZSI6Ikxhc3ROYW1lIiwiZW1haWwiOiJhZGVzYW5taWFrb2xhZGVkb3R1bkBnbWFpbC5jb20iLCJhY3RpdmF0aW9uTGluayI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMC9hY3RpdmF0aW9uIiwicGhvbmVOdW1iZXIiOiIwODE2MTc2Nzc2MiJ9LCJpYXQiOjE1OTU0MjYyMzYsImV4cCI6MTU5NTQyOTgzNn0.ZOT4-PcHT0gSg8kHipmycco1Yx2VcCJRoqEbezCn1R4");
-    myHeaders.append("content-type", "multipart/form-data");
-    myHeaders.append("Content-Type", "multipart/form-data");
-    console.log('myHeaders:', myHeaders.get('Authorization'))
+      formData.append(event.target.files[0].name, event.target.files[0])
 
-    Meteor.call('uploadFile', {
-        "Content-Type": undefined,
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImNvbXBhbnlOYW1lIjoiYzJnIGNvbnN1bHRpbmciLCJmaXJzdE5hbWUiOiJGaXJzdE5hbWUiLCJsYXN0TmFtZSI6Ikxhc3ROYW1lIiwiZW1haWwiOiJhZGVzYW5taWFrb2xhZGVkb3R1bkBnbWFpbC5jb20iLCJhY3RpdmF0aW9uTGluayI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMC9hY3RpdmF0aW9uIiwicGhvbmVOdW1iZXIiOiIwODE2MTc2Nzc2MiJ9LCJpYXQiOjE1OTU0MjYyMzYsImV4cCI6MTU5NTQyOTgzNn0.ZOT4-PcHT0gSg8kHipmycco1Yx2VcCJRoqEbezCn1R4"
-    }, formdata);
+      axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
+      .then(res => {
+        const businessUnitId = Session.get('context');
+        const currentTravelRequest = template.currentTravelRequest.curValue;
+        const travelId = currentTravelRequest._id || currentTravelRequest.id;
+    
+        const newAttachment = {
+            ...res.data,
+            travelId,
+            name: event.target.files[0].name,
+            owner: Meteor.userId(),
+            businessId: businessUnitId,
+            tenantId: Core.getTenantId()
+        }
 
-    //   Modules.client.uploadToAmazonS3( { event: event, template: template } );
+        Meteor.call('attachment/create', newAttachment, (err, res) => {
+            if (res){
+                template.isUploading.set(false)
+                Session.set('isUploading', false)
+                toastr.success('File successfully uploaded', 'Success')
+            } else {
+                template.isUploading.set(false)
+                Session.set('isUploading', false)
+                toastr.error("Save Failed", "Couldn't Save new attachment", "error");
+            }
+        });
+      })
+      .catch(err => {
+        template.isUploading.set(false)
+        Session.set('isUploading', false)
+      })
     }
 });
 
@@ -136,6 +171,13 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2RetirementDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2RetirementDetail.helpers({
+    // getAttachments: function () {
+    //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
+    //     const businessUnitId = Session.get('context');
+    //     console.log('currentTravelRequest', currentTravelRequest)
+    //     console.log('businessUnitId', businessUnitId)
+    //     return Attachments.find({ businessId: businessUnitId })
+    // },
      'isUnretiredTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
@@ -355,11 +397,17 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+    self.subscribe("attachments", Session.get('context'));
 
 
 
 
     self.currentTravelRequest = new ReactiveVar()
+    self.isUploading = new ReactiveVar()
+    self.isUploading.set(false)
+    Session.set('isUploading', false)
+    self.travelRequestAttachment = new ReactiveVar()
+    self.travelRequestAttachment.set([])
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
@@ -401,6 +449,7 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
+        let attachmentSubscription = self.subscribe('Attachment', invokeReason.attachmentId)
 
 
         if(travelRequest2Sub.ready()) {
@@ -409,6 +458,12 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
             self.currentTravelRequest.set(travelRequestDetails)
 
 
+        }
+
+        if (attachmentSubscription.ready()) {
+            let travelRequestAttachment = Attachments.find({ travelId: invokeReason.requisitionId })
+            console.log('travelRequestAttachment', travelRequestAttachment)
+            self.travelRequestAttachment.set(travelRequestAttachment)
         }
 
         if(businessUnitSubscription.ready()) {

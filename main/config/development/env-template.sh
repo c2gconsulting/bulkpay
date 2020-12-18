@@ -19,7 +19,7 @@ export CLUSTER_SERVICE="main"
 export CLUSTER_PUBLIC_SERVICES="main, search"
 
 # aws env vars
-export AWS_ACCESS_KEY_ID=""
+export AWS_ACCESS_KEY_ID="AKIAXGG3IS463K6JSZFU"
 export AWS_SECRET_ACCESS_KEY=""
 
 # service env vars
