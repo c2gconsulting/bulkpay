@@ -142,25 +142,32 @@ let getSfEmployeeIds2 = (business, config, jsonPayLoad) => {
     let ns7Event = ns7Events[`${nsPrefix}:event`]
     if(ns7Event) {
       ns7Event.forEach(event => {
-        Core.PowerQueue.add(function(pQueueDone) {
-          let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
-          if(ns7Params) {
-            _.each(ns7Params[`${nsPrefix}:param`], param => {
-              if(param.name && param.name[0] === 'personIdExternal') {
-                personIdExternal = param.value[0]
-              } else if(param.name && param.name[0] === 'perPersonUuid') {
-                perPersonUuid = param.value[0]
-              }
-            })
-            console.log(`personIdExternal: `, personIdExternal)
-            console.log(`perPersonUuid: `, perPersonUuid)
-            console.log(``)
-            personIds.push({personIdExternal, perPersonUuid})
+        try {
+          Core.PowerQueue.add(function(pQueueDone) {
+            let ns7Params = event[`${nsPrefix}:params`] ? event[`${nsPrefix}:params`][0] : null
+            console.log("ns7Params is")
+            console.log(ns7Params)
+            if(ns7Params) {
+              _.each(ns7Params[`${nsPrefix}:param`], param => {
+                if(param.name && param.name[0] === 'personIdExternal') {
+                  personIdExternal = param.value[0]
+                } else if(param.name && param.name[0] === 'perPersonUuid') {
+                  perPersonUuid = param.value[0]
+                }
+              })
+              console.log(`personIdExternal: `, personIdExternal)
+              console.log(`perPersonUuid: `, perPersonUuid)
+              console.log(``)
+              personIds.push({personIdExternal, perPersonUuid})
 
-            //--
-            fetchEmployeeDetails(business, config, personIdExternal, pQueueDone)
-          }
-        })
+              //--
+              fetchEmployeeDetails(business, config, personIdExternal, pQueueDone)
+            }
+          })
+        } catch (error) {
+          console.log('Core.PowerQueue error', error)
+          console.log('Core.PowerQueue error', error.message)
+        }
       })
 
       Core.PowerQueue.run();
@@ -796,6 +803,7 @@ if (Meteor.isServer) {
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
         } catch (e) {
+          console.log(`newhire failureResponse ${e.message}`)
           return failureResponse(e.message)
         }
         let businessId = decoded.businessId;
@@ -849,6 +857,7 @@ if (Meteor.isServer) {
         try {
           decoded = JWT.verifyAuthorizationToken(this.urlParams)
         } catch (e) {
+          console.log(`rehire failureResponse ${e.message}`)
           return failureResponse(e.message)
         }
         let businessId = decoded.businessId;
