@@ -255,6 +255,36 @@ let TravelRequestHelper = {
             if(currentTravelRequest._id){
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+                let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+                const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+                const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
+                let createdByEmail = "";
+                let supervisorEmail = "";
+                const createdBySubject = "Updated travel request for " + createdBy.profile.fullName;
+                const supervisorSubject = "Please verify the updated travel request for " + createdBy.profile.fullName;
+
+
+                if (createdBy.emails.length > 0){
+                    createdByEmail = createdBy.emails[0].address;
+                    createdByEmail = createdByEmail + "," + otherPartiesEmail;
+                    console.log(createdByEmail);
+                }
+
+                if (supervisor.emails.length > 0){
+                    supervisorEmail = supervisor.emails[0].address;
+                    supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
+                    console.log(supervisorEmail);
+                }
+
+                console.log('travelreq222 ---createdBy---supervisor', createdBy, supervisor)
+
+                //Send to requestor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+                //Send to Supervisor
+                TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
                 // console.log("currentTravelRequest1")
                 // console.log(currentTravelRequest)
             }else{
