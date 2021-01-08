@@ -30,7 +30,7 @@ Template.TravelRequisitionRetirement2AdminDetail.events({
                 ...customConfig,
             }
 
-            Meteor.call('TravelRequest2/editTravelRequisition', currentTravelRequest, (err, res) => {
+            Meteor.call('TravelRequest2/editTravelRetirement', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition created",
