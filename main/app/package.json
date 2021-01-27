@@ -6,7 +6,7 @@
   "dependencies": {
     "accounting": "^0.4.1",
     "amqplib": "^0.4.1",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "babel-runtime": "^6.18.0",
     "bcrypt": "^0.8.7",
     "blueimp-md5": "^2.6.0",
