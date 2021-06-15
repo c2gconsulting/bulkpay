@@ -18,12 +18,15 @@ Core.Permissions = {
 		"LEAVE_MANAGE" : "leave/manage",
 	  "PROCUREMENT_REQUISITION_APPROVE": "procurement_requisition/approve",
 	  "TRAVEL_REQUISITION_APPROVE": "travel_requisition/approve",
+	  "LOCAL_ERRAND_TRANSPORT_REQUISITION_APPROVE": "local_errand_transport_requisition/approve",
 
 	  "PROCUREMENT_REQUISITION_TREAT": "procurement_requisition/treat",
 	  "TRAVEL_REQUISITION_TREAT": "travel_requisition/treat",
+	  "LOCAL_ERRAND_TRANSPORT_REQUISITION_TREAT": "local_errand_transport_requisition/treat",
 
 	  "PAYROLL_REPORTS_VIEW": "payroll_reports/view",
 		"TRAVEL_REPORTS_VIEW": "travel_reports/view",
+		"LOCAL_ERRAND_TRANSPORT_REPORTS_VIEW": "local_errand_transport_reports/view",
 	  "AUDIT_REPORTS_VIEW": "audit_reports/view",
 		"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",
 	  "SUCCESSFACTORS_MANAGE": "successfactors/manage",
@@ -59,9 +62,11 @@ Core.PermissionNames = {
     "leave/approve" : "Approve Leave",
     "procurement_requisition/approve" : "Approve Procurement Requisition",
     "travel_requisition/approve" : "Approve Travel Requisition",
+    "local_errand_transport_requisition/approve" : "Approve Local Errand Transport Requisition",
 
 		"procurement_requisition/treat" : "Treat Procurement Requisition",
     "travel_requisition/treat" : "Treat Travel Requisition",
+    "local_errand_transport_requisition/treat" : "Treat Local Errand Transport Requisition",
 
 		"payrules/manage" : "Payrules Manage",
 
@@ -74,6 +79,7 @@ Core.PermissionNames = {
 
 		"payroll_reports/view" : "Payroll Reports View",
 		"travel_reports/view" : "Travel Reports View",
+		"local_errand_transport_reports/view" : "Local Errand Transport Reports View",
     "audit_reports/view" : "Audit Reports View",
     "procurement_reports/view" : "Procurement Reports View",
     "successfactors/manage" : "Successfactors Manage",

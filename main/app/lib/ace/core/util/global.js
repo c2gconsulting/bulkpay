@@ -245,11 +245,17 @@ _.extend(Core, {
     hasTravelRequisitionApproveAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TRAVEL_REQUISITION_APPROVE, userId);
     },
+    hasLocalErrandTransportRequisitionApproveAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REQUISITION_APPROVE, userId);
+    },
     hasPayrollReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PAYROLL_REPORTS_VIEW, userId);
     },
     hasTravelReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TRAVEL_REPORTS_VIEW, userId);
+    },
+    hasLocalErrandTransportReportsViewAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REPORTS_VIEW, userId);
     },
     hasAuditReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.AUDIT_REPORTS_VIEW, userId);
@@ -262,6 +268,9 @@ _.extend(Core, {
     },
     hasTravelRequestTreatAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TRAVEL_REQUISITION_TREAT, userId);
+    },
+    hasLocalErrandTransportRequestTreatAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REQUISITION_TREAT, userId);
     },
     hasSuccessfactorManagesAccess: function (userId) {
         return this.hasPermission(Core.Permissions.SUCCESSFACTORS_MANAGE, userId);

@@ -236,6 +236,20 @@ Template.EmployeeSelectedEntry.helpers({
         return true
     }
   },
+  hasLocalErrandTrnasportRequisitionApproveAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let canApproveTrip = Core.hasLocalErrandTrnasportRequisitionApproveAccess(selectedEmployee._id);
+
+    return canApproveTrip;
+  },
+  isLocalErrandTrnasportRequisitionActive: () => {
+    let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+    if(businessUnitCustomConfig) {
+        return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isLocalErrandTrnasportRequisitionActive
+    } else {
+        return true
+    }
+  },
   hasPayrollReportsViewAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
     let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(selectedEmployee._id);
@@ -247,6 +261,12 @@ Template.EmployeeSelectedEntry.helpers({
     let hasTravelReportsViewAccess = Core.hasTravelReportsViewAccess(selectedEmployee._id);
 
     return hasTravelReportsViewAccess;
+  },
+  hasLocalErrandTransportReportsViewAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+    let hasLocalErrandTransportReportsViewAccess = Core.hasLocalErrandTransportReportsViewAccess(selectedEmployee._id);
+
+    return hasLocalErrandTransportReportsViewAccess;
   },
   hasAuditReportsViewAccess: () => {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
@@ -329,12 +349,15 @@ Template.EmployeeSelectedEntry.onCreated(function () {
 
         let shouldApproveProcurementRequisition = $("[name=procurementRequisitionApprove]").val();
         let shouldTravelRequestApprove = $("[name=travelRequestApprove]").val();
+        let shouldLocalErrandTransportRequestApprove = $("[name=localErrandTransportRequestApprove]").val();
 
         let shouldProcurementRequisitionTreat = $("[name=procurementRequisitionTreat]").val();
         let shouldTravelRequestTreat = $("[name=travelRequestTreat]").val();
+        let shouldLocalErrandTransportRequestTreat = $("[name=localErrandTransportRequestTreat]").val();
 
         let payrollReportsView = $("[name=payrollReportsView]").val();
 
+        let localErrandTransportReportsView = $("[name=localErrandTransportReportsView]").val();
         let travelReportsView = $("[name=travelReportsView]").val();
         let auditReportsView = $("[name=auditReportsView]").val();
         let procurementReportsView = $("[name=procurementReportsView]").val();
@@ -390,11 +413,18 @@ Template.EmployeeSelectedEntry.onCreated(function () {
             arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_APPROVE)
         }
 
+        if(shouldLocalErrandTransportRequestApprove === "true") {
+          arrayOfRoles.push(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REQUISITION_APPROVE)
+        }
+
         if(shouldProcurementRequisitionTreat === "true") {
           arrayOfRoles.push(Core.Permissions.PROCUREMENT_REQUISITION_TREAT)
         }
         if(shouldTravelRequestTreat === "true") {
           arrayOfRoles.push(Core.Permissions.TRAVEL_REQUISITION_TREAT)
+        }
+        if(shouldLocalErrandTransportRequestTreat === "true") {
+          arrayOfRoles.push(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REQUISITION_TREAT)
         }
 
         if(payrollReportsView === "true") {
@@ -402,6 +432,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(travelReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.TRAVEL_REPORTS_VIEW)
+        }
+        if(localErrandTransportReportsView === "true") {
+            arrayOfRoles.push(Core.Permissions.LOCAL_ERRAND_TRANSPORT_REPORTS_VIEW)
         }
         if(auditReportsView === "true") {
             arrayOfRoles.push(Core.Permissions.AUDIT_REPORTS_VIEW)

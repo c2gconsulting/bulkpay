@@ -36,6 +36,10 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     isTravelRequisitionActive: {
         type: Boolean
     },
+    // LET - local errand transport
+    isLocalErrandTransportRequisitionActive: {
+        type: Boolean
+    },
     isLeaveRequestActive: {
         type: Boolean
     },
@@ -131,6 +135,11 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
         optional: true,
         blackbox: true
     },
+    localErrandTransportRequestConfig: {
+        type: Object,
+        optional: true,
+        blackbox: true
+    },
     paymentHeadersForPayslip: {// bank: true, accountNumber: true
         type: Object,
         optional: true,
@@ -167,6 +176,19 @@ Core.Schemas.BusinessUnitCustomConfig = new SimpleSchema({
     },
 
     isTravelBudgetsEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    // LET - local errand transport
+    isAdvancedLocalErrandTransportEnabled: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false
+    },
+
+    isLocalErrandTransportBudgetsEnabled: {
         type: Boolean,
         optional: true,
         defaultValue: false
