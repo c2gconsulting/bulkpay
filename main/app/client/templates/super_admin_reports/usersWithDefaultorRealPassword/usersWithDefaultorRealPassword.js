@@ -34,7 +34,7 @@ Template.UsersWithDefaultorRealPassword.events({
         let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nextOfKinName', 'nextOfKinPhone', 'nextOfKinAddress', 'emergencyContactName', 'emergencyContactPhone', 'emergencyContactEmail', 'emergencyContactAddress']
         let reportData = Template.instance().usersWithDefaultPassword.get()
 
-        BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
+        Hub825Explorer.exportAllData({fields: reportColumns, data: reportData}, 
             `Users with default password report`);
         resetButton()
     },
@@ -64,7 +64,7 @@ Template.UsersWithDefaultorRealPassword.events({
         let reportColumns = ['empId', 'firstName', 'lastName', 'email', 'address', 'parents', 'payGrade', 'nextOfKinName', 'nextOfKinPhone', 'nextOfKinAddress', 'emergencyContactName', 'emergencyContactPhone', 'emergencyContactEmail', 'emergencyContactAddress']
         let reportData = Template.instance().usersWithRealPassword.get()
 
-        BulkpayExplorer.exportAllData({fields: reportColumns, data: reportData}, 
+        Hub825Explorer.exportAllData({fields: reportColumns, data: reportData}, 
             `Users with real password report`);
         resetButton()        
     }

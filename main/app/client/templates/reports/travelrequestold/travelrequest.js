@@ -172,7 +172,7 @@ Template.TravelRequestReportOld.onCreated(function () {
             reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt,
                 self.getSupervisor(aDatum), self.getTotalTripCost(aDatum), aDatum.status])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
+        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
             `Travel Requests Report ${startTime} - ${endTime}`);
     }
 

@@ -1,4 +1,4 @@
-BulkpayExplorer = {
+Hub825Explorer = {
     exportAllData: function(data, fileName) {
         var self = this;
         var csv = Papa.unparse(data);

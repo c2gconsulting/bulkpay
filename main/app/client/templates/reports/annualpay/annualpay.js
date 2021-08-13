@@ -71,7 +71,7 @@ AnnualPayReportUtils.processAnnualTaxReportData = (serverRes, year) => {
 
     let dataRows = [secondRowOfHeaders].concat(taxData);
 
-    BulkpayExplorer.exportAllData({
+    Hub825Explorer.exportAllData({
         fields: firstRowOfHeaders, data: dataRows
     }, "Pay Annual Report - " + year);
 }

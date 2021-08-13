@@ -1098,7 +1098,7 @@ Template.PayrunNew.events({
             let reportData = ReportUtils.getPayTypeValues(payResult.payObj.payrun,
                 detailedPayrunResults, payTypeHeaders.payTypeHeaders)
 
-            BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
+            Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
                 `Payrun results export`);
         } else {
             swal('Error', 'No payrun results', 'error')
@@ -1147,15 +1147,15 @@ Template.PayrunNew.events({
                 finalDataRows = finalDataRows.concat(reportData)
 
                 // Meteor.setTimeout(function() {
-                //     BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
+                //     Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
                 //         `${payrunRunType} Payrun results ${month}-${year} - ${payGrade.code}`);
                 // }, 2000)
             })
 
-            BulkpayExplorer.exportAllData({fields: headers, data: finalDataRows},
+            Hub825Explorer.exportAllData({fields: headers, data: finalDataRows},
                 `${payrunRunType} Payrun results ${month}-${year}`);
 
-            // BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
+            // Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
             //     `Payrun results export with project ratios`);
         } else {
             swal('Error', 'No payrun results', 'error')

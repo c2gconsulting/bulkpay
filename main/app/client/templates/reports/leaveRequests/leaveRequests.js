@@ -223,7 +223,7 @@ Template.LeaveRequestsReport.onCreated(function () {
                 aDatum.startDate, aDatum.endDate, approverNames, 
                 aDatum.approvalStatus])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Leave Request Report ${startTime} - ${endTime}`)
     }
 

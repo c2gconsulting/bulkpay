@@ -55,7 +55,7 @@ Template.payruns.events({
                 console.log(res);
                 if(res){
                     //call the export fo
-                    BulkpayExplorer.exportAllData(res, "Payment Report");
+                    Hub825Explorer.exportAllData(res, "Payment Report");
                     resetButton()
                 } else {
                     console.log(err);

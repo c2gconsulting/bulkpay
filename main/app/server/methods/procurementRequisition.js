@@ -9,7 +9,7 @@ let ProcurementRequisitonHelper = {
             
             Email.send({
                 to: supervisorEmail,
-                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+                from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Procurement Requisition created!",
                 html: SSR.render("procurementRequisitionNotification", {
                     user: supervisorFullName,
@@ -34,7 +34,7 @@ let ProcurementRequisitonHelper = {
             
             Email.send({
                 to: supervisorEmail,
-                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
+                from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Procurement Requisition approved and needs to be treated",
                 html: SSR.render("procurementRequisitionNotificationForTreatment", {
                     user: supervisorFullName,
