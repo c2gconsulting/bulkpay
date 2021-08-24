@@ -239,6 +239,23 @@ Template.TravelRequisition2RetirementPrint.helpers({
         }
     },
 
+    attachments: function () {
+      // Meteor.Attachment.find({ })
+      console.log('instance()', Template.instance())
+      console.log('Template.instance()()', Template.instance().data)
+      const requisitionId = Template.instance().currentTravelRequest.get()._id
+      console.log('requisitionId', requisitionId)
+      const attachments = Attachments.find({ travelId: requisitionId })
+      console.log('attachments', attachments)
+      return attachments;
+    },
+    getAttachmentName: function (data) {
+      return data.name || data.fileUrl || data.imageUrl
+    },
+    
+    getAttachmentUrl: function (data) {
+      return data.fileUrl || data.imageUrl
+    },
     'getHumanReadableApprovalState': function(boolean) {
         return boolean ? "Approved" : "Rejected"
     },
@@ -267,6 +284,7 @@ Template.TravelRequisition2RetirementPrint.onCreated(function () {
     self.subscribe("hotels",  Router.current().params._id);
     self.subscribe("airlines",  Router.current().params._id);
     self.subscribe("budgets",  Router.current().params._id);
+    self.subscribe("attachments", Router.current().params._id);
 
     let invokeReason = {}
     invokeReason.requisitionId = Router.current().params.query.requisitionId
