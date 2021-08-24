@@ -239,6 +239,23 @@
                     </div>
                 </div>
             </div>
+            <hr />
+            <h5>Attachments</h5>
+            <ul class="attachments-list">
+                {{#each attachments}}
+                    <li class="">
+                        <a download href="{{getAttachmentUrl this}}" target="_parent">
+                            {{getAttachmentName this}}
+                        </a>
+                    </li>
+                    <div class="clearfix"></div>
+                    <!-- {{#unless this.isUploaded}}
+                        {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=false}}
+                    {{/unless}} -->
+                {{else}}
+                    <p class="help-block">No files uploaded</p>
+                {{/each}}
+            </ul>
             <hr/>
             <div class="row">
                 <div class="col-sm-12">
