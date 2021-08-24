@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisition2Index: Event Handlers */
+/* TravelRequisition2IndexTPC: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2Index.events({
+Template.TravelRequisition2IndexTPC.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -22,7 +22,7 @@ Template.TravelRequisition2Index.events({
 
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder") || (!status.includes('Retire'))){
+        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
             Modal.show('TravelRequisition2Create', invokeReason);
         }else{
             Modal.show('TravelRequisition2Detail', invokeReason);
@@ -58,9 +58,9 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Index: Helpers */
+/* TravelRequisition2IndexTPC: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2Index.helpers({
+Template.TravelRequisition2IndexTPC.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
@@ -81,7 +81,8 @@ Template.TravelRequisition2Index.helpers({
     // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        const tcpTrip = { tripCategory: 'THIRDPARTYCLIENT'}
+        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId(), ...tcpTrip}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -115,9 +116,9 @@ Template.TravelRequisition2Index.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2Index: Lifecycle Hooks */
+/* TravelRequisition2IndexTPC: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2Index.onCreated(function () {
+Template.TravelRequisition2IndexTPC.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -140,7 +141,9 @@ Template.TravelRequisition2Index.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({createdBy: Meteor.userId()}, options);
+        const tcpTrip = { tripCategory: 'THIRD_PARTY_CLIENT'}
+
+        return TravelRequisition2s.find({ createdBy: Meteor.userId(), ...tcpTrip }, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -171,10 +174,10 @@ Template.TravelRequisition2Index.onCreated(function () {
     })
 });
 
-Template.TravelRequisition2Index.onRendered(function () {
+Template.TravelRequisition2IndexTPC.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisition2Index.onDestroyed(function () {
+Template.TravelRequisition2IndexTPC.onDestroyed(function () {
 });
