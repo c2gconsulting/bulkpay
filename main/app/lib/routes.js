@@ -481,6 +481,22 @@ Router.route('/business/:_id/employee/travelrequisition2index', {
     where: 'client'
 });
 
+// OTher Travel Request Categories
+Router.route('/business/:_id/employee/grouptravelrequisition2index', {
+    name: 'travelrequest2.grouptravelrequisition2index',
+    controller: 'RequisitionController',
+    action: 'showGroupTravelRequisition2Index',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/tpctravelrequisition2index', {
+    name: 'travelrequest2.tpctravelrequisition2index',//tpc => third party / client
+    controller: 'RequisitionController',
+    action: 'showTPCTravelRequisition2Index',
+    where: 'client'
+});
+// End of other travel categories
+
 Router.route('/business/:_id/employee/travelrequisition2budgetholderretireindex', {
     name: 'travelrequest2.travelrequisition2budgetholderretireindex',
     controller: 'RequisitionController',

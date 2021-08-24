@@ -76,6 +76,13 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequisition2Index: function() {
         this.render('TravelRequisition2Index')
     },
+    // other travel requisition
+    showGroupTravelRequisition2Index: function() {
+        this.render('TravelRequisition2IndexGroup')
+    },
+    showTPCTravelRequisition2Index: function() {
+        this.render('TravelRequisition2IndexTPC')
+    },
     showTravelRequisition2BudgetHolderRetireIndex: function() {
         this.render('TravelRequisition2BudgetHolderRetireIndex')
     },

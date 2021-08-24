@@ -239,7 +239,30 @@
 
                 {{#if isAdvancedTravelEnabled}}
                     <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travel Requests</a></li>
+                    <!-- Sub category menu -->
+                    <li class="parent {{isMenuExpandedFocusClass 'travelTripsMenu'}}">
+                        <a href="" id="travelTripsMenu">
+                            <!-- <i class="fa fa-user" aria-hidden="true"></i> -->
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;Travel Requests</span>
+                        </a>
+                    </li>
+                    {{#if isSubMenuExpanded 'travelTripsMenu'}}
+                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
+                        <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
+                        <li><a href="{{pathFor 'travelrequest2.tpctravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Third Party/Client Trip</a></li>
+                    {{/if}}
                     <li><a href="{{pathFor 'travelrequest2.travelrequisition2retirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Retirements</a></li>
+
+                    <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
+                        <a href="" id="travelSupervisorMenu">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            <span>Supervisor Approvals</span>
+                        </a>
+                    </li>
+                    {{#if isMenuExpanded 'travelSupervisorMenu'}}
+                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+                    {{/if}}
                 {{else}}
                     <li><a href="{{pathFor 'travelrequests.list'}}">Travel Request</a></li>
 

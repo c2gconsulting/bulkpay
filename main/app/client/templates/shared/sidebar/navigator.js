@@ -141,6 +141,16 @@ Template.navigator.events({
         } else {
             tmpl.expandedMenu.set(menuId)
         }
+    },
+    'click #travelTripsMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedSubMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedSubMenu.set(null)
+        } else {
+            tmpl.expandedSubMenu.set(menuId)
+        }
     }
 });
 
@@ -158,6 +168,20 @@ Template.navigator.helpers({
     'isMenuExpandedFocusClass': function(menuId) {
         let currentExpandedMenuId = Template.instance().expandedMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
+    },
+    'isSubMenuExpanded': function(menuId) {
+        let currentExpandedMenuId = Template.instance().expandedSubMenu.get()
+        return menuId === currentExpandedMenuId
+    },
+    'isSubMenuExpandedFocusClass': function(menuId) {
+        let currentExpandedMenuId = Template.instance().expandedSubMenu.get()
+        return (menuId === currentExpandedMenuId) ? 'active' : ''
+    },
+    addWhiteSpace: function (index) {
+        let whiteSpaces = '';
+        if (!index) return '&nbsp;&nbsp;&nbsp;&nbsp;';
+        for (let i = 0; i < index; i++) whiteSpaces += '&nbsp;&nbsp;';
+        return whiteSpaces;
     },
     hasLeaveApprovalAccess: function () {
         return Core.hasLeaveApprovalAccess(Meteor.userId());
@@ -443,6 +467,7 @@ Template.navigator.onCreated(function () {
 
     //--
     self.expandedMenu = new ReactiveVar()
+    self.expandedSubMenu = new ReactiveVar()
     //--
     self.businessUnitCustomConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
