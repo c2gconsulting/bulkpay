@@ -52,7 +52,7 @@ Template.AnnualPensionReport.events({
 
             Meteor.call('exportAnnualPensionResult', Session.get('context'), year, function(err, res){
                 if(res) {
-                    BulkpayExplorer.exportAllData(res, "Pension Annual Report - " + year);
+                    Hub825Explorer.exportAllData(res, "Pension Annual Report - " + year);
                     resetButton()
                 } else {
                     console.log(err);

@@ -205,7 +205,7 @@ Template.MyLeaveApprovals.onCreated(function () {
             reportData.push([aDatum.createdByFullName, aDatum.description, aDatum.approvedDate, 
                 aDatum.startDate, aDatum.endDate, aDatum.approvalStatus])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `My Leave Approvals Report ${startTime} - ${endTime}`)
     }
 

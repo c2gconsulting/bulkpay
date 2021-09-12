@@ -167,7 +167,7 @@ Template.ProcurementReport.onCreated(function () {
             reportData.push([aDatum.description, aDatum.requisitionReason, aDatum.createdByFullName, aDatum.unitName, aDatum.createdAt, 
                 self.getSupervisor(aDatum), aDatum.status])
         })
-        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData}, 
+        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData}, 
             `Procurement Requisition Report ${startTime} - ${endTime}`);
     }
 

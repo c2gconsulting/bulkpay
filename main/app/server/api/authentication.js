@@ -56,10 +56,12 @@ getUserQuerySelector = function(user) {
  */
 
 Auth.loginWithPassword = function(user, password) {
+    console.log('user, password', user, password)
     var authToken, authenticatingUser, authenticatingUserSelector, hashedToken, passwordVerification, ref;
     if (!user || !password) {
         throw new Meteor.Error(401, 'Unauthorized');
     }
+    console.log('useruseruseruser', user)
     check(user, userValidator);
     check(password, String);
     authenticatingUserSelector = getUserQuerySelector(user);

@@ -61,7 +61,7 @@ Meteor.methods({
                 Email.send({
                     to: user.email,
                     from: "bulkpay@c2gconsulting.com",
-                    subject: "Welcome to BulkPay!",
+                    subject: "Welcome to Hub825Travel!",
                     html: SSR.render("newTenantWelcomeNotification2", {
                         homepage: Meteor.absoluteUrl(),
                         tenant: tenant,

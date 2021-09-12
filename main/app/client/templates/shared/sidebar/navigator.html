@@ -14,406 +14,269 @@
     </div><!-- media -->
 
     {{#if showSideBarLinks}}
-    <h5 class="leftpanel-title">Navigation</h5>
-    <ul class="nav nav-pills nav-stacked">
+      <h5 class="leftpanel-title">Navigation</h5>
+      <ul class="nav nav-pills nav-stacked">
         {{#if hasAdminAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'companyMenu'}}"><a href="" id="companyMenu"><i class="fa fa-university"></i> <span>Company</span></a>
-        </li>
+          <li class="parent {{isMenuExpandedFocusClass 'companyMenu'}}"><a href="" id="companyMenu"><i class="fa fa-university"></i> <span>Company</span></a></li>
         {{/if}}
         {{#if isMenuExpanded 'companyMenu'}}
-        <li><a href="{{pathFor 'bu.profile'}}">Profile</a></li>
-        <li><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
+          <li><a href="{{pathFor 'bu.profile'}}">Profile</a></li>
+          <li><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
         {{/if}}
-
-        {{#if hasPayRulesManageAccess}}
-        <li class="parent {{isMenuExpandedFocusClass  'payRulesMenu'}}">
-            <a href="" id="payRulesMenu"><i class="fa fa-money"></i> <span>Pay Rules</span></a>
-        </li>
-        {{/if}}
-        {{#if isMenuExpanded 'payRulesMenu'}}
-        <li><a href="{{pathFor 'paytypes'}}">Pay Types</a></li>
-        <li><a href="{{pathFor 'constant.list'}}">Constants</a></li>
-        <li><a href="{{pathFor 'currency.list'}}">Currencies</a></li>
-        <li><a href="{{pathFor 'pensions'}}">Pensions</a></li>
-        <li><a href="{{pathFor 'taxes'}}">Taxes</a></li>
-        <li><a href="{{pathFor 'paygroups'}}">Pay Groups</a></li>
-        <li><a href="{{pathFor 'paygrades'}}">{{payGradeLabelPlural}}</a></li>
-        {{/if}}
-
 
         {{#if isSapBusinessOneIntegrationEnabled}}
-            {{#if hasPayrollAccess}}
-                <li class="parent {{isMenuExpandedFocusClass 'sapB1IntegrationMenu'}}">
-                    <a href="" id="sapB1IntegrationMenu">
-                        <i class="fa fa-cog"></i>
-                        <span>SAP B1 Integration</span>
-                    </a>
-                </li>
-            {{/if}}
-            {{#if isMenuExpanded 'sapB1IntegrationMenu'}}
-                <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
-            {{/if}}
-        {{/if}}
-
-        {{#if isSuccessfactorsEnabled}}
-        {{#if hasSuccessfactorsManageAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'successFactorsIntegrationMenu'}}">
-            <a href="" id="successFactorsIntegrationMenu">
+          {{#if hasPayrollAccess}}
+            <li class="parent {{isMenuExpandedFocusClass 'sapB1IntegrationMenu'}}">
+              <a href="" id="sapB1IntegrationMenu">
                 <i class="fa fa-cog"></i>
-                <span>Successfactors Integration</span>
-            </a>
-        </li>
-        {{#if isMenuExpanded 'successFactorsIntegrationMenu'}}
-        <li><a href="{{pathFor route='successfactors.config'}}">Setup</a></li>
-        <!-- <li><a href="{{pathFor route='successfactors.auth'}}">Setup</a></li> -->
-
-
-        {{/if}}
-        {{/if}}
-        {{/if}}
-
-        {{#if isSapHanaEnabled}}
-        {{#if hasSapHanaManageAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'sapHanaIntegrationMenu'}}">
-            <a href="" id="sapHanaIntegrationMenu">
-                <i class="fa fa-cog"></i>
-                <span>SAP HANA Integration</span>
-            </a>
-        </li>
-        {{#if isMenuExpanded 'sapHanaIntegrationMenu'}}
-        <li><a href="{{pathFor route='saphana.config'}}">Setup</a></li>
-        {{/if}}
-        {{/if}}
-        {{/if}}
-
-        {{#if hasEmployeeAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'administrationMenu'}}">
-            <a href="" id="administrationMenu">
-                <i class="fa fa-users"></i>
-                <span>Administration</span>
-            </a>
-        </li>
-        {{/if}}
-        {{#if isMenuExpanded 'administrationMenu'}}
-
-            <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
-
-            {{#if isAdvancedTravelEnabled}}
-            <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">All Travel Requests</a></li>
-            <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">All Travel Retirements</a></li>
-            {{/if}}
-
-            {{#if isTravelBudgetsEnabled}}
-            <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
-            {{/if}}
-
-            {{#if isTravelCitiesEnabled}}
-            <li><a href="{{pathFor 'travelcities'}}">Travel Cities</a></li>
-            {{/if}}
-
-            {{#if isAirlinesEnabled}}
-            <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
-            {{/if}}
-
-            {{#if isAHotelsEnabled}}
-            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
-            {{/if}}
-
-            {{#if isEmailSettingsEnabled}}
-            <li><a href="{{pathFor 'emailsettings'}}">Email Settings</a></li>
-            {{/if}}
-
-        <!--<li class="{{!active "employee.expense"}}"><a href="{{!pathFor 'employee.expense'}}">Employees Expenses</a></li>-->
-
-            {{#if isLeaveRequestEnabled}}
-                {{#if isLeaveAccrualByEntitlement}}
-                    <li><a href="{{pathFor 'leave.entitlement.list'}}">Manage Leave Entitlements</a></li>
-                {{else}}
-                    <li><a href="{{pathFor 'leave.balances.list'}}">Leave Balances</a></li>
-                {{/if}}
-                <li><a href="{{pathFor 'leavetypes'}}">Manage Leave Types</a></li>
-            {{/if}}
-
-            {{#if isTimeTypeEnabled}}
-            <li><a href="{{pathFor 'timetypes'}}">Manage Time Types</a></li>
-            {{/if}}
-
-            {{#if isHmoSetupEnabled}}
-            <li><a href="{{pathFor 'hmoplans'}}">Manage HMO Plans</a></li>
-            {{/if}}
-
-            <!--<li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>-->
-            <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
-        {{/if}}
-
-
-        {{#if hasPayrollAccess}}
-            <li class="parent {{isMenuExpandedFocusClass 'payrunsMenu'}}">
-                <a href="" id="payrunsMenu">
-                    <i class="fa fa-refresh"></i>
-                    <span>Pay Runs</span>
-                </a>
+                <span>SAP B1 Integration</span>
+              </a>
             </li>
+          {{/if}}
+          {{#if isMenuExpanded 'sapB1IntegrationMenu'}}
+              <li><a href="{{pathFor route='sap.config'}}">Setup</a></li>
+          {{/if}}
         {{/if}}
-        {{#if isMenuExpanded 'payrunsMenu'}}
-            {{#if hasRunPayrollManageAccess}}
-                <li><a href="{{pathFor route='payrun.new'}}">New Pay Run</a></li>
-            {{/if}}
 
-            {{#if hasPayrollAdditionalPaymentsManageAccess}}
-                <li><a href="{{pathFor route='additional.pay'}}">Additional Payment/ Deduction</a></li>
+        {{#if isTravelRequisitionActive}}
+          {{#if isAdvancedTravelEnabled}}
+            {{#if hasEmployeeAccess}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelTripsMenu'}}">
+                <a href="" id="travelTripsMenu">
+                  <i class="icon travel" aria-hidden="true"></i>
+                  <span>Travel Requests</span>
+                </a>
+              </li>
             {{/if}}
-
-            <!--<li class="{{active "oneoff"}}"><a href="{{pathFor route='oneoff'}}">One Off Payments</a></li>-->
-
-            {{#if hasPayrollResultsViewAccess}}
-            <li><a href="{{pathFor route='payruns'}}">Payrun Results</a></li>
+            {{#if isMenuExpanded 'travelTripsMenu'}}
+              <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
+              <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
+              <li><a href="{{pathFor 'travelrequest2.tpctravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Third Party/Client Trip</a></li>
             {{/if}}
-
-            {{#if hasPayrollApprovalConfigAccess}}
-            <li><a href="{{pathFor route='payroll.approvalconfig'}}">Payrun Approval Config</a></li>
-            {{/if}}
-
-            {{#if canApprovePayroll}}
-                <li><a href="{{pathFor route='payroll.approval'}}">Payrun Approval</a></li>
-            {{/if}}
+          {{/if}}
         {{/if}}
 
 
         {{#if hasSelfServiceAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'selfServiceMenu'}}">
-            <a href="" id="selfServiceMenu">
-                <i class="fa fa-user" aria-hidden="true"></i>
-                <span>Self Service</span>
-            </a>
-        </li>
-        {{/if}}
+          {{#if isProcurementRequisitionActive}}
+            <li><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
 
-        {{#if isMenuExpanded 'selfServiceMenu'}}
-            {{#if isTimeWritingEnabled}}
-            <li><a href="{{pathFor 'employee.time'}}">Record Time</a></li>
-
-            {{/if}}
-            {{#if isNewTimeWritingEnabled}}
-            <li><a href="{{pathFor 'employee.time.index'}}">Time Management</a></li>
-
+            {{#if isUserASupervisor}}
+              <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Approve Requisitions</a></li>
             {{/if}}
 
-
-
-            {{#if isLeaveRequestEnabled}}
-            <li><a href="{{pathFor 'leave.list'}}">Request Leave</a></li>
+            {{#if hasProcurementRequisitionApproveAccess}}
+              <li><a href="{{pathFor 'procurementrequisition.treatList'}}">Treat Requisitions</a></li>
             {{/if}}
+          {{/if}}
 
-            {{#if isHmoSetupEnabled}}
-            <li><a href="{{pathFor 'hmoplans.changerequest'}}">HMO Plan</a></li>
-            {{/if}}
+          {{#if isTravelRequisitionActive}}
 
-            {{#if hasLeaveApprovalAccess}}
-            {{#if isNewTimeWritingEnabled}}
-            <li><a href="{{pathFor 'employee.time.management.approve'}}">Approve Time Management</a></li>
-            {{/if}}
-            {{/if}}
-
-
-            {{#if isLeaveRequestEnabled}}
-                {{#if hasLeaveApprovalAccess}}
-                <li><a href="{{pathFor 'employee.time.approve'}}">Approve employees Time</a></li>
-                <li><a href="{{pathFor 'leave.myapprovals'}}">My Leave Approvals</a></li>
-                {{/if}}
-            {{/if}}
-
-            {{#if isProcurementRequisitionActive}}
-                <li><a href="{{pathFor 'procurementrequisition.list'}}">Requisitions</a></li>
-
-                {{#if isUserASupervisor}}
-                    <li><a href="{{pathFor 'procurementrequisition.approvalList'}}">Approve Requisitions</a></li>
-                {{/if}}
-
-                {{#if hasProcurementRequisitionApproveAccess}}
-                    <li><a href="{{pathFor 'procurementrequisition.treatList'}}">Treat Requisitions</a></li>
-                {{/if}}
-            {{/if}}
-
-            {{#if isTravelRequisitionActive}}
-
-                {{#if isAdvancedTravelEnabled}}
-                    <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travel Requests</a></li>
-                    <li><a href="{{pathFor 'travelrequest2.travelrequisition2retirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Retirements</a></li>
-                {{else}}
-                    <li><a href="{{pathFor 'travelrequests.list'}}">Travel Request</a></li>
-
-                    {{#if isUserASupervisor}}
-                        {{#if hasTravelRequisitionApproveAccess}}
-                        <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
-                        {{/if}}
-                    {{/if}}
-                {{/if}}
-
-            {{/if}}
-
-            {{#if isLoanEnabled}}
-                <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
-            {{/if}}
-
-
-            <li><a href="{{pathFor 'payslip'}}">View Pay Slip</a></li>
-        {{/if}}
-
-
-        {{#if isTravelRequisitionActive}}
             {{#if isAdvancedTravelEnabled}}
-                {{#if isUserADirectSupervisor}}
-                    <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
-                        <a href="" id="travelSupervisorMenu">
-                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                            <span>Supervisor Approvals</span>
-                        </a>
-                    </li>
-                    {{#if isMenuExpanded 'travelSupervisorMenu'}}
-                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
-                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
-                    {{/if}}
-                {{/if}}
+              <li>
+                <a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">
+                  <i class="fa fa-user" aria-hidden="true"></i>
+                  <span>My Travel Requests</span>
+                </a>
+              </li>
+              <!-- Sub category menu -->
+              <li>
+                <a href="{{pathFor 'travelrequest2.travelrequisition2retirementindex'}}">
+                  <i class="fa fa-book" aria-hidden="true"></i>
+                  <span>Retirements</span>
+                </a>
+              </li>
 
-                {{#if isUserABudgetHolder}}
-                    <li class="parent {{isMenuExpandedFocusClass 'travelBudgetHolderMenu'}}">
-                        <a href="" id="travelBudgetHolderMenu">
-                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                            <span>Budget Holder Approvals</span>
-                        </a>
-                    </li>
-                    {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
-                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
-                        <!--<li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>-->
-                    {{/if}}
-                 {{/if}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
+                  <a href="" id="travelSupervisorMenu">
+                      <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                      <span>Supervisor Approvals</span>
+                  </a>
+              </li>
+              {{#if isMenuExpanded 'travelSupervisorMenu'}}
+                  <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                  <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
 
-                 {{#if isUserATravelFinanceApprover}}
-                    <li class="parent {{isMenuExpandedFocusClass 'travelFinanceMenu'}}">
-                        <a href="" id="travelFinanceMenu">
-                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                            <span>Finance Approvals</span>
-                        </a>
-                    </li>
-                    {{#if isMenuExpanded 'travelFinanceMenu'}}
-                        <li><a href="{{pathFor 'travelrequest2.travelrequisition2financeretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
-                    {{/if}}
+            {{else}}
+              <li><a href="{{pathFor 'travelrequests.list'}}">My Travel Request</a></li>
+
+              {{#if isUserASupervisor}}
+                {{#if hasTravelRequisitionApproveAccess}}
+                  <li><a href="{{pathFor 'travelrequests.treatList'}}">Treat Travel Requests</a></li>
                 {{/if}}
+              {{/if}}
             {{/if}}
-        {{/if}}
-
-
-
-                {{#if hasTravelReportsViewAccess}}
-                <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
-                {{/if}}
-
-        {{#if hasPayrollReportsViewAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'reportsMenu'}}">
-            <a href="" id="reportsMenu">
-                <i class="fa fa-dashboard" aria-hidden="true"></i>
-                <span>Reports</span>
-            </a>
-        </li>
-        {{#if isMenuExpanded 'reportsMenu'}}
-        <li><a href="{{pathFor 'reports.netpay'}}">Net pay report</a></li>
-        <li><a href="{{pathFor 'reports.annualpay'}}">Annual Pay report</a></li>
-
-        <li><a href="{{pathFor 'reports.tax'}}">Tax report</a></li>
-        <li><a href="{{pathFor 'reports.annualtax'}}">Annual Tax report</a></li>
-
-        <li><a href="{{pathFor 'reports.pension'}}">Pension report</a></li>
-        <li><a href="{{pathFor 'reports.annualpension'}}">Annual Pension report</a></li>
-
-        <li><a href="{{pathFor 'reports.comprehensive'}}">Comprehensive report</a></li>
-<!--
-        {{#if hasTravelReportsViewAccess}}
-        <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
-        {{/if}} -->
-
-
-
-
-
-        {{#if isTimeWritingReportsActive}}
-        <li><a href="{{pathFor 'reports.timewriting'}}">Time-writing report</a></li>
-        {{/if}}
-
-        {{#if isProcurementRequisitionActive}}
-        <li><a href="{{pathFor 'reports.employees'}}">Employees report</a></li>
-        {{/if}}
-
-
-        {{#if isLeaveRequestEnabled}}
-        {{#if isProcurementRequisitionActive}}
-        {{else}}
-        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
-        {{/if}}
-        {{/if}}
-        {{/if}}
-        {{/if}}
-
-        {{#if isProcurementRequisitionActive}}
-        {{#if hasAuditReportsViewAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
-            <a href="" id="auditReportsMenu">
-                <i class="fa fa-file-archive-o" aria-hidden="true"></i>
-                <span>Audit Reports</span>
-            </a>
-        </li>
-
-        {{#if isMenuExpanded 'auditReportsMenu'}}
-        {{#if isLeaveRequestEnabled}}
-        <li><a href="{{pathFor 'reports.leaverequests'}}">Leave Requests report</a></li>
-        {{/if}}
-
-        <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
-
 
           {{/if}}
-        {{else}}
-        {{#if hasProcurementReportsViewAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
-            <a href="" id="auditReportsMenu">
+        {{/if}}
+
+
+        {{#if isSuccessfactorsEnabled}}
+          {{#if hasSuccessfactorsManageAccess}}
+            <li class="parent {{isMenuExpandedFocusClass 'successFactorsIntegrationMenu'}}">
+              <a href="" id="successFactorsIntegrationMenu">
+                <i class="fa fa-cog"></i>
+                <span>Successfactors Integration</span>
+              </a>
+            </li>
+            {{#if isMenuExpanded 'successFactorsIntegrationMenu'}}
+              <li><a href="{{pathFor route='successfactors.config'}}">Setup</a></li>
+              <!-- <li><a href="{{pathFor route='successfactors.auth'}}">Setup</a></li> -->
+            {{/if}}
+          {{/if}}
+        {{/if}}
+
+        {{#if isSapHanaEnabled}}
+          {{#if hasSapHanaManageAccess}}
+            <li class="parent {{isMenuExpandedFocusClass 'sapHanaIntegrationMenu'}}">
+              <a href="" id="sapHanaIntegrationMenu">
+                <i class="fa fa-cog"></i>
+                <span>SAP HANA Integration</span>
+              </a>
+            </li>
+            {{#if isMenuExpanded 'sapHanaIntegrationMenu'}}
+              <li><a href="{{pathFor route='saphana.config'}}">Setup</a></li>
+            {{/if}}
+          {{/if}}
+        {{/if}}
+
+        {{#if hasEmployeeAccess}}
+          <li class="parent {{isMenuExpandedFocusClass 'administrationMenu'}}">
+            <a href="" id="administrationMenu">
+              <i class="fa fa-users"></i>
+              <span>Administration</span>
+            </a>
+          </li>
+        {{/if}}
+
+        {{#if isMenuExpanded 'administrationMenu'}}
+          <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+
+          {{#if isAdvancedTravelEnabled}}
+            <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">All Travel Requests</a></li>
+            <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">All Travel Retirements</a></li>
+          {{/if}}
+
+          {{#if isTravelBudgetsEnabled}}
+            <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
+          {{/if}}
+
+          {{#if isTravelCitiesEnabled}}
+            <li><a href="{{pathFor 'travelcities'}}">Travel Cities</a></li>
+          {{/if}}
+
+          {{#if isAirlinesEnabled}}
+            <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
+          {{/if}}
+
+          {{#if isAHotelsEnabled}}
+            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
+          {{/if}}
+
+          {{#if isEmailSettingsEnabled}}
+            <li><a href="{{pathFor 'emailsettings'}}">Email Settings</a></li>
+          {{/if}}
+          <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
+        {{/if}}
+
+        {{#if isTravelRequisitionActive}}
+          {{#if isAdvancedTravelEnabled}}
+            {{#if isUserADirectSupervisor}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
+                <a href="" id="travelSupervisorMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>Supervisor Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelSupervisorMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
+            {{/if}}
+
+            {{#if isUserABudgetHolder}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelBudgetHolderMenu'}}">
+                <a href="" id="travelBudgetHolderMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>Budget Holder Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <!--<li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>-->
+              {{/if}}
+            {{/if}}
+
+            {{#if isUserATravelFinanceApprover}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelFinanceMenu'}}">
+                <a href="" id="travelFinanceMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>Finance Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelFinanceMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2financeretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
+            {{/if}}
+          {{/if}}
+        {{/if}}
+
+        {{#if hasTravelReportsViewAccess}}
+          <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
+        {{/if}}
+
+   
+        {{#if isProcurementRequisitionActive}}
+          <li><a href="{{pathFor 'reports.employees'}}">Employees report</a></li>
+        {{/if}}
+
+
+        {{#if isProcurementRequisitionActive}}
+          {{#if hasAuditReportsViewAccess}}
+            <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
+              <a href="" id="auditReportsMenu">
                 <i class="fa fa-file-archive-o" aria-hidden="true"></i>
                 <span>Audit Reports</span>
-            </a>
-        </li>
+              </a>
+            </li>
 
-        {{#if isMenuExpanded 'auditReportsMenu'}}
-        <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
-        {{/if}}
-        {{/if}}
-        {{/if}}
+            {{#if isMenuExpanded 'auditReportsMenu'}}
+              <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
+            {{/if}}
+
+            {{else}}
+
+            {{#if hasProcurementReportsViewAccess}}
+              <li class="parent {{isMenuExpandedFocusClass 'auditReportsMenu'}}">
+                <a href="" id="auditReportsMenu">
+                  <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+                  <span>Audit Reports</span>
+                </a>
+              </li>
+
+              {{#if isMenuExpanded 'auditReportsMenu'}}
+                <li><a href="{{pathFor 'reports.procurement'}}">Procurement report</a></li>
+              {{/if}}
+            {{/if}}
+          {{/if}}
         {{/if}}
 
 
         {{#if hasAdminAccess}}
-        <li class="parent {{isMenuExpandedFocusClass 'superAdminReportsMenu'}}">
+          <li class="parent {{isMenuExpandedFocusClass 'superAdminReportsMenu'}}">
             <a href="" id="superAdminReportsMenu"><i class="fa fa-university"></i>
-                <span>Super Admin Reports</span>
+              <span>Super Admin Reports</span>
             </a>
-        </li>
-        {{/if}}
-        {{#if isMenuExpanded 'superAdminReportsMenu'}}
-        <li><a href="{{pathFor 'superadmin.reports.users'}}">Users</a></li>
+          </li>
         {{/if}}
 
-        <!--<li class="parent"><a href=""><i class="fa fa-file-archive-o" aria-hidden="true"></i> <span>Reports</span></a>-->
-        <!--<ul class="children">-->
-        <!--<li><a href="#">Salary Register</a></li>-->
-        <!--<li><a href="#">Pension Report</a></li>-->
-        <!--</ul>-->
-        <!--</li>-->
-        <!--<li class="parent"><a href=""><i class="fa fa-archive" aria-hidden="true"></i> <span>Pension Reports</span></a>-->
-        <!--<ul class="children">-->
-        <!--<li><a href="#">Pensioners</a></li>-->
-        <!--</ul>-->
-        <!--</li>-->
+        {{#if isMenuExpanded 'superAdminReportsMenu'}}
+          <li><a href="{{pathFor 'superadmin.reports.users'}}">Users</a></li>
+        {{/if}}
 
         <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
-    </ul>
+      </ul>
     {{/if}}
 
 </div>
