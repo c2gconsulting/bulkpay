@@ -61,7 +61,7 @@
     <td class="pointer">{{index}}</td>
 
     <td>{{data.name}}</td>
-    <td>{{data.email}}</td>
+    <td class="emailnot-email_data">{{data.email}}</td>
     <td>{{data.department}}</td>
 
 
@@ -73,7 +73,20 @@
       {{/if}}
     </td>
     <td>
-        <button type="reset" class="btn btn-danger pull-right btn-sm" id="deleteEmailSetting">Delete</button>
+
+      {{#if SpecialDepart data.department }}
+        <button data-RequisitionId="{{data._id}}" class="btn btn-warning pull-right btn-sm" id="editEmailSetting">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <!-- <button data-RequisitionId="{{data._id}}" class="btn btn-warning pull-right btn-sm" id="editEmailSetting">Edit</button> -->
+      {{else}}
+        <button data-RequisitionId="{{data._id}}" class="btn btn-warning pull-right btn-sm" id="editEmailSetting">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <button type="reset" class="btn btn-danger pull-right btn-sm margin-right-10px" id="deleteEmailSetting">
+            <i class="fa fa-trash-o"></i>
+        </button>
+      {{/if}}
     </td>
 </tr>
 </template>

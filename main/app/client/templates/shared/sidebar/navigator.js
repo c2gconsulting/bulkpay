@@ -143,13 +143,14 @@ Template.navigator.events({
         }
     },
     'click #travelTripsMenu': function(event, tmpl) {
-        let menuId = $(event.currentTarget).attr('id')
+        let menuId = $(event.currentTarget).attr('id');
 
-        let currentExpandedMenu = tmpl.expandedSubMenu.get()
+        let currentExpandedMenu = tmpl.expandedMenu.get();
+        console.log('travelTripsMenu', menuId)
         if(menuId === currentExpandedMenu) {
-            tmpl.expandedSubMenu.set(null)
+            tmpl.expandedMenu.set(null)
         } else {
-            tmpl.expandedSubMenu.set(menuId)
+            tmpl.expandedMenu.set(menuId)
         }
     }
 });

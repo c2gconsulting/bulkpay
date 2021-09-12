@@ -50,13 +50,24 @@ Template.AttachmentsList.events({
             toastr.warning('No file selected', 'Warning');
             return false;
         }
-        Meteor.call('attachment/delete', fileObj._id, (err, res) => {
-            if (res){
-                toastr.success('File deleted successfully', 'Success')
-            } else {
-                console.log(err);
-                toastr.error("Delete Failed", "Couldn't delete an attachment", "error");
-            }
+
+        swal({
+            title: "Are you sure?",
+            text: "You will not be able to recover this Attachment",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: true
+        }, () => {
+            Meteor.call('attachment/delete', fileObj._id, (err, res) => {
+                if (res){
+                    toastr.success('File deleted successfully', 'Success')
+                } else {
+                    console.log(err);
+                    toastr.error("Delete Failed", "Couldn't delete an attachment", "error");
+                }
+            });
         });
     },
 
@@ -105,8 +116,10 @@ Template.AttachmentsList.helpers({
 
     attachments: function () {
         // Meteor.Attachment.find({ })
-        const requisitionId = Template.parentData().requisitionId;
-        const attachments = Attachments.find({ travelId: requisitionId })
+        const requisitionId = Template.parentData() && Template.parentData().requisitionId;
+        const travelId = Template.instance().data && Template.instance().data.requisitionId
+        console.log('attachment list - requisitionId', travelId)
+        const attachments = Attachments.find({ travelId: requisitionId || travelId })
         console.log('attachments', attachments)
         return attachments;
     },
@@ -125,8 +138,10 @@ Template.AttachmentsList.onCreated(function() {
     });
 
     self.attachments = function () {
-        const requisitionId = Template.parentData().requisitionId;
-        const data = Attachments.find({ travelId: requisitionId });
+        const requisitionId = Template.parentData() && Template.parentData().requisitionId;
+        const travelId = Template.instance().data && Template.instance().data.requisitionId
+        console.log('travelId', travelId)
+        const data = Attachments.find({ travelId: requisitionId || travelId });
         console.log('traveldata', data)
         return data;
     }

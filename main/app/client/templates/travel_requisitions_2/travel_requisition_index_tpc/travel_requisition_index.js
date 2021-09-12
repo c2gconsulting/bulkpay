@@ -8,7 +8,7 @@ Template.TravelRequisition2IndexTPC.events({
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
     },
-    'click .requisitionRow': function(e, tmpl) {
+    'click .edit-requisitionRow': function(e, tmpl) {
         e.preventDefault()
         let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
 
@@ -24,11 +24,51 @@ Template.TravelRequisition2IndexTPC.events({
 
         if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
             Modal.show('TravelRequisition2Create', invokeReason);
-        }else{
-            Modal.show('TravelRequisition2Detail', invokeReason);
+        } else if (!status.includes('Retire')) {
+            Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
         }
+    },
+
+    'click .view-requisitionRow': function(e, tmpl) {
+        e.preventDefault()
+        let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
+
+        let invokeReason = {}
+        invokeReason.requisitionId = requisitionId
+        invokeReason.reason = 'edit'
+        invokeReason.approverId = null
+
+        const status = $("#status_" + requisitionId).html();
+
+
+
+
+        Modal.show('TravelRequisition2Detail', invokeReason);
 
     },
+    // 'click .requisitionRow': function(e, tmpl) {
+    //     e.preventDefault()
+    //     let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
+
+    //     let invokeReason = {}
+    //     invokeReason.requisitionId = requisitionId
+    //     invokeReason.reason = 'edit'
+    //     invokeReason.approverId = null
+
+    //     const status = $("#status_" + requisitionId).html();
+
+
+
+
+    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+    //         Modal.show('TravelRequisition2Create', invokeReason);
+    //     } else if (!status.includes('Retire')) {
+    //         Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
+    //     } else{
+    //         Modal.show('TravelRequisition2Detail', invokeReason);
+    //     }
+
+    // },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
         let pageNumAsInt = parseInt(pageNum)
@@ -63,6 +103,21 @@ Template.registerHelper('repeat', function(max) {
 Template.TravelRequisition2IndexTPC.helpers({
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
+    },
+    getStatus: function (status, currentTravelRequest) {
+        const lastApproval = "Approved By Budget Holder";
+        const { trips } = currentTravelRequest;
+        const departureDate = trips && trips[0].departureDate
+        const returnDate = trips && trips[0].returnDate
+        const hasStartedTrip = new Date() > new Date(departureDate);
+        const hasEndedTrip = new Date() > new Date(returnDate);
+        console.log('departureDate', departureDate)
+        if (status === lastApproval && hasStartedTrip && !hasEndedTrip) {
+            return 'Ongoing'
+        } else if (status === lastApproval && hasStartedTrip && hasEndedTrip) {
+            return 'Completed'
+        }
+        return status
     },
     // 'hasUnretiredTrips': function() {
 
