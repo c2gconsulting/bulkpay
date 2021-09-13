@@ -6,9 +6,9 @@ import { HTTP } from 'meteor/http'
  */
 Meteor.methods({
   'attachment/create': function (attachment) {
-    // if (!this.userId) {
-    //   throw new Meteor.Error(401, "Unauthorized");
-    // }
+    if (!this.userId) {
+      throw new Meteor.Error(401, "Unauthorized");
+    }
     let userId = Meteor.userId();
 
     try {

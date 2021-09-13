@@ -83,7 +83,7 @@ let TravelRequestHelper = {
             SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
             Email.send({
                 to: emailTo,
-                from: "Hub825Travel™ Travel Team <bulkpay@c2gconsulting.com>",
+                from: "BulkPay™ Travel Team <bulkpay@c2gconsulting.com>",
                 subject: emailSubject,
                 html: SSR.render("TravelRequestNotification2", {
                     itenerary: itenerary,
@@ -130,7 +130,7 @@ let TravelRequestHelper = {
             SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
             Email.send({
                 to: emailTo,
-                from: "Hub825Travel™ Travel Team <bulkpay@c2gconsulting.com>",
+                from: "BulkPay™ Travel Team <bulkpay@c2gconsulting.com>",
                 subject: emailSubject,
                 html: SSR.render("TravelRetirementNotification2", {
                     itenerary: itenerary,
@@ -180,7 +180,7 @@ let TravelRequestHelper = {
 
                 Email.send({
                     to: supervisorEmail,
-                    from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
+                    from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                     subject: "Travel Request approved and needs to be treated",
                     html: SSR.render("travelRequisitionNotificationForTreatment", {
                         user: supervisorFullName,

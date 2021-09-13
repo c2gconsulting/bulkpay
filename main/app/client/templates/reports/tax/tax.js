@@ -66,7 +66,7 @@ Template.TaxReport.events({
             Meteor.call('exportTaxResult', Session.get('context'), period, function(err, res){
                 if(res){
                     //call the export fo
-                    Hub825Explorer.exportAllData(res, "taxReport");
+                    BulkpayExplorer.exportAllData(res, "taxReport");
                     resetButton()
                 } else {
                     console.log(err);

@@ -236,7 +236,7 @@ CoreRegistry.initData = function () {
             //}
 
             // initialization complete
-            Core.Log.info('Hub825 Core initialization finished.');
+            Core.Log.info('Bulkpay Core initialization finished.');
         }
     }, 1000);
 };

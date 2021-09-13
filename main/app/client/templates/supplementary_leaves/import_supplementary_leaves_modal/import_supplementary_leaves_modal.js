@@ -17,7 +17,7 @@ Template.ImportSupplementaryLeavesModal.events({
 
         let fields = ['EmployeeUniqueId','EmployeeFullName', 'LeaveBalanceInDays']
 
-        Hub825Explorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeeLeaveBalanceSample");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeeLeaveBalanceSample");
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -87,7 +87,7 @@ Template.ImportSupplementaryLeavesModal.events({
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        Hub825Explorer.exportAllData({fields: fields, data: skippedAndErrors}, "RecordsWithError");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "RecordsWithError");
     }
 });
 

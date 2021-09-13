@@ -21,7 +21,7 @@ Template.ImportTravelCityModal.events({
                 NotificationList:aTravelCity.notificationEmail
             }
         })
-        Hub825Explorer.exportAllData({fields: fields, data: dataForSampleCsv},'TravelCityAssignmentSample');
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv},'TravelCityAssignmentSample');
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -92,7 +92,7 @@ Template.ImportTravelCityModal.events({
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        Hub825Explorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeeRecordsWithError");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeeRecordsWithError");
     }
 });
 

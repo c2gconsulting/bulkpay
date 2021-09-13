@@ -23,7 +23,7 @@ Template.ImportEmployeePaytypesModal.events({
                 PaygradeUniqueId: ""
             }
         })
-        Hub825Explorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePaytypesAssignmentSample");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePaytypesAssignmentSample");
     },
     'click #downloadCsvWithAllPaygrades': function(e, tmpl) {
         e.preventDefault()
@@ -36,7 +36,7 @@ Template.ImportEmployeePaytypesModal.events({
                 PaygradeUniqueId: aPayGrade._id
             }
         })
-        Hub825Explorer.exportAllData({fields: fields, data: dataForAllPaygradesCsv}, "AllPaygradesInCompany");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPaygradesCsv}, "AllPaygradesInCompany");
     },
     'click #downloadCsvWithAllPaytypes': function(e, tmpl) {
         e.preventDefault()
@@ -49,7 +49,7 @@ Template.ImportEmployeePaytypesModal.events({
                 PaytypeUniqueId: aPayType._id
             }
         })
-        Hub825Explorer.exportAllData({fields: fields, data: dataForAllPaytypesCsv}, "AllPaytypesInCompany");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPaytypesCsv}, "AllPaytypesInCompany");
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -120,7 +120,7 @@ Template.ImportEmployeePaytypesModal.events({
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        Hub825Explorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeeRecordsWithError");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeeRecordsWithError");
     }
 });
 

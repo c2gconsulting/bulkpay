@@ -5,17 +5,6 @@ Template.EmailSettingIndex.events({
     'click #newPFA': (e,tmpl) => {
         e.preventDefault();
         Modal.show('EmailSettingCreate');
-    },
-    'click #editEmailSetting': (e,tmpl) => {
-        e.preventDefault();
-
-        let requisitionId = e.currentTarget.getAttribute('data-RequisitionId')
-
-        let invokeReason = {}
-        invokeReason.requisitionId = requisitionId
-        invokeReason.reason = 'edit'
-
-        Modal.show('EmailSettingEdit', invokeReason);
     }
 });
 
@@ -78,11 +67,3 @@ Template.singleEmailSetting.events({
         });
     }
 })
-
-Template.singleEmailSetting.helpers({
-    SpecialDepart: function (data) {
-        const [bookingAgent, securityDept] = ["Booking", "Security"];
-
-        return data.includes(bookingAgent) || data.includes(securityDept);
-    }
-});

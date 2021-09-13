@@ -35,7 +35,7 @@ Template.ComprehensiveReport.events({
             Meteor.call('reports/getComprehensivePayResult', Session.get('context'), period, function(err, res) {
                 resetButton()
                 if(res){
-                    Hub825Explorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
+                    BulkpayExplorer.exportAllData(res, `Comprehensive Report ${month}-${year}`);
                 } else {
                     console.log(err);
                     swal('No result found', 'Payroll Result not found for period', 'error');

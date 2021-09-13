@@ -1,6 +1,6 @@
 # bp-core
 
-This repo includes the core transaction services for the core of the Hub825Travel application, including the following:
+This repo includes the core transaction services for the core of the BulkPay application, including the following:
 
 * Main - the central web app and service
 * Logs - the logging and event monitor service
