@@ -46,7 +46,8 @@
 
                                     <th>Date created</th>
                                     <th>Status</th>
-                                    <!--<th>&nbsp;</th>-->
+                                    <th>Actions</th>
+                                    <!-- <th>&nbsp;</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -60,8 +61,11 @@
                                     {{else}}
                                     <td nowrap></td>
                                     {{/if}}
-                                    <td id="status_{{_id}}">{{status}}</td>
-                                    <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
+                                    <td id="status_{{_id}}">{{getStatus status this}}</td>
+                                    <td class="d-flex">
+                                        <i data-RequisitionId="{{_id}}" class="fa fa-eye view-requisitionRow" aria-hidden="true" style="width: 100%;padding: 5px 0;"></i>
+                                        <i data-RequisitionId="{{_id}}" class="fa fa-pencil edit-requisitionRow" aria-hidden="true" style="width: 100%;padding: 5px 0;"></i>
+                                    </td>
                                 </tr>
                                 {{/each}}
                             </tbody>

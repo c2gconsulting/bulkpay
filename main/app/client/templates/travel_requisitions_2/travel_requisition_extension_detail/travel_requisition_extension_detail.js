@@ -22,7 +22,7 @@ const getSelectedItem = (item) => {
   return individuals
 }
 
-Template.TravelRequisition2Create.events({
+Template.TravelRequisition2ExtensionDetail.events({
     "change [name='destinationType']": _.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const destinationType = $(e.currentTarget).val();
@@ -665,22 +665,22 @@ Template.TravelRequisition2Create.events({
         validationErrors += ": select a budget code";
     }
 
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tpcTrip !== 'Client') {
-      currentTravelRequest.tripFor = {
-        noOfIndividuals: $(`[id="noOfIndividuals"]`).val() || 1,
-        individuals: getSelectedItem('individuals')
-      }
-    }
+    // if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tpcTrip !== 'Client') {
+    //   currentTravelRequest.tripFor = {
+    //     noOfIndividuals: $(`[id="noOfIndividuals"]`).val() || 1,
+    //     individuals: getSelectedItem('individuals')
+    //   }
+    // }
 
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && (!currentTravelRequest.tripFor || !currentTravelRequest.tripFor.individuals)) {
-      fieldsAreValid = false;
-      validationErrors += ": select the individual(s) going on this trip";
-    }
+    // if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && (!currentTravelRequest.tripFor || !currentTravelRequest.tripFor.individuals)) {
+    //   fieldsAreValid = false;
+    //   validationErrors += ": select the individual(s) going on this trip";
+    // }
 
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tripFor && (currentTravelRequest.tripFor.individuals.length != currentTravelRequest.tripFor.noOfIndividuals)) {
-      fieldsAreValid = false;
-      validationErrors += ": Invalid number of individual(s) going on this trip";
-    }
+    // if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tripFor && (currentTravelRequest.tripFor.individuals.length != currentTravelRequest.tripFor.noOfIndividuals)) {
+    //   fieldsAreValid = false;
+    //   validationErrors += ": Invalid number of individual(s) going on this trip";
+    // }
 
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
@@ -740,7 +740,7 @@ Template.TravelRequisition2Create.events({
         //explicitely set status
         currentTravelRequest.status = "Pending";
 
-        Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+        Meteor.call('TravelRequest2/createExtension', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Travel requisition created",
@@ -762,7 +762,7 @@ Template.TravelRequisition2Create.events({
 
         });
         Template.instance().errorMessage.set(null);
-        Modal.hide('TravelRequisition2Create');
+        Modal.hide('TravelRequisition2ExtensionDetail');
     }else{
         Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
@@ -873,7 +873,7 @@ Template.TravelRequisition2Create.events({
 
         });
         Template.instance().errorMessage.set(null);
-        Modal.hide('TravelRequisition2Create');
+        Modal.hide('TravelRequisition2ExtensionDetail');
     }else{
         Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
@@ -888,7 +888,7 @@ Template.TravelRequisition2Create.events({
 /*****************************************************************************/
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2Create.helpers({
+Template.TravelRequisition2ExtensionDetail.helpers({
 	activeIfRouteIsIn: function (route) {
       var currentRoute = Router.current();
       // currentRoute.url - http://localhost:3000/business/FJe5hXSxCHvR2FBjJ/employee/grouptravelrequisition2index
@@ -1179,7 +1179,7 @@ Template.TravelRequisition2Create.helpers({
 /*****************************************************************************/
 /* TravelRequisitionCreate: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2Create.onCreated(function () {
+Template.TravelRequisition2ExtensionDetail.onCreated(function () {
 
     let self = this;
 
@@ -1518,7 +1518,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
 });
 
-Template.TravelRequisition2Create.onRendered(function () {
+Template.TravelRequisition2ExtensionDetail.onRendered(function () {
 
 
     /*this.$('.datetimepicker').datetimepicker({
@@ -1528,7 +1528,7 @@ Template.TravelRequisition2Create.onRendered(function () {
 
 });
 
-Template.TravelRequisition2Create.onDestroyed(function () {
+Template.TravelRequisition2ExtensionDetail.onDestroyed(function () {
 });
 
 

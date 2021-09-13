@@ -76,6 +76,13 @@ Router.route('/', {
  template: 'Login'
  });
 
+
+Router.route('sso', {   //single sign on from Oracle
+  name: 'sso',
+  controller: 'Office365Controller',
+  where: 'client'
+});
+
  // Router.route('/login', {
  //     name: 'login',
  //     layoutTemplate: 'ApplicationLayout',
@@ -530,6 +537,12 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorindex', {
     controller: 'RequisitionController',
     action: 'showTravelRequisition2SupervisorIndex',
     where: 'client'
+});
+
+Router.route('/business/:_id/travelrequests2/bookingrequisition', {
+    name: 'travelrequests2.bookingrequisition',
+    layoutTemplate: 'ExtLayout',
+    template: 'TravelRequisition2BookingAgent'
 });
 
 Router.route('/business/:_id/travelrequests2/printrequisition', {

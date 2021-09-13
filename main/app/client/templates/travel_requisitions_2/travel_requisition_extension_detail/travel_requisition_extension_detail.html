@@ -1,10 +1,10 @@
-<template name="TravelRequisition2Create">
+<template name="TravelRequisition2ExtensionDetail">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">New Travel Request</h3>
+                        <h3 class="panel-title">Edit Travel Request</h3>
                     </div>
                     <div class="panel-body">
                         {{#unless Template.subscriptionsReady}}
@@ -19,7 +19,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" />
+                                    <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
                         </div>
@@ -31,7 +31,7 @@
 
                                     <label for="costCenter" class="control-label">Indicate trip type?</label>
                                     {{#semanticselect2}}
-                                    <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown">
+                                    <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
                                         <option value="Project">Project trip</option>
                                         <option value="Cost_Center">Cost Center</option>
                                     </select>
@@ -44,7 +44,7 @@
                                 <div class="form-group">
                                     <label for="budget-code" class="control-label">Which project is this trip related to?</label>
                                     {{#semanticselect2}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown">
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown" disabled>
                                         <option value="NONE">I am not sure</option>
                                         {{#each budgetList}}
                                         <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
@@ -59,7 +59,7 @@
                                 <div class="form-group">
                                     <label for="budget-code" class="control-label">Select trip cost center?</label>
                                     {{#semanticselect2}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown">
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown" disabled>
                                         <option value="NONE">I am not sure</option>
                                         {{#each budgetList}}
                                         <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
@@ -75,14 +75,14 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="noOfIndividuals" class="control-label">No of Individuals going on a trip <span class="asterisk important-input">*</span></label>
-                                    <input type="number" id="noOfIndividuals" class="form-control" placeholder="How many individuals" name="noOfIndividuals" value="{{currentTravelRequest.tripFor.noOfIndividuals}}" />
+                                    <input type="number" id="noOfIndividuals" class="form-control" placeholder="How many individuals" name="noOfIndividuals" value="{{currentTravelRequest.tripFor.noOfIndividuals}}" disabled/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
                             <!-- Select group -->
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="individuals" class="control-label">Select the individuals going on this trip? <span class="asterisk important-input">*</span></label>
-                                    <select name="individuals" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <select name="individuals" multiple="" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
                                         <option value="">Employees</option>
                                         {{#each employees}}
                                             <option value="{{_id}}">{{profile.fullName}}</option>
@@ -100,7 +100,7 @@
 
                                     <label for="tpcTrip" class="control-label">Third Party / Client? <span class="asterisk important-input">*</span></label>
                                     {{#semanticselect2}}
-                                    <select id="tpcTrip" name="tpcTrip" style="width: 100%" class="ui fluid search selection dropdown">
+                                    <select id="tpcTrip" name="tpcTrip" style="width: 100%" class="ui fluid search selection dropdown" disabled>
                                         <option value="Third_Party">Third Party</option>
                                         <option value="Client">Client</option>
                                     </select>
@@ -112,7 +112,7 @@
                                 <div class="form-group">
                                     <label for="individuals" class="control-label">Select the individual going on this trip? <span class="asterisk important-input">*</span></label>
                                     {{#semanticselect2}}
-                                    <select id="individuals" name="individuals" style="width: 100%" class="ui fluid search dropdown">
+                                    <select id="individuals" name="individuals" style="width: 100%" class="ui fluid search dropdown" disabled>
                                         <option value="">Employees</option>
                                         {{#each employees}}
                                             <option value="{{_id}}">{{profile.fullName}}</option>
@@ -129,13 +129,13 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="clientName" class="control-label">Client Name <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientName" class="form-control" placeholder="Firstname Lastname" name="clientName" value="{{fullName}}" />
+                                            <input type="text" id="clientName" class="form-control" placeholder="Firstname Lastname" name="clientName" value="{{fullName}}" disabled/>
                                         </div><!-- form-group -->
                                     </div><!-- col-sm-3 -->
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="clientEmail" class="control-label">Client Email Address <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientEmail" class="form-control" placeholder="Email Address" name="clientEmail" value="{{email}}" />
+                                            <input type="text" id="clientEmail" class="form-control" placeholder="Email Address" name="clientEmail" value="{{email}}" disabled/>
                                         </div><!-- form-group -->
                                     </div><!-- col-sm-3 -->
                                 </div>
@@ -153,8 +153,8 @@
                                 <div class="form-group">
                                     <label for="destinationType" class="control-label">Local/Foreign trip<span class="asterisk important-input">*</span></label>
                                     <ul class="list-inline">
-                                        <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}}/>&nbsp;&nbsp;Local Trip</li>
-                                        <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}}/>&nbsp;&nbsp;International Trip</li>
+                                        <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}} disabled/>&nbsp;&nbsp;Local Trip</li>
+                                        <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}} disabled/>&nbsp;&nbsp;International Trip</li>
                                     </ul>
                                 </div>
                             </div>
@@ -164,8 +164,8 @@
                                 <div class="form-group">
                                     <label for="travelType" class="control-label">Return/ Multiple-stops trip<span class="asterisk important-input">*</span></label>
                                     <ul class="list-inline">
-                                        <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}}/>&nbsp;&nbsp;Return Trip</li>
-                                        <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}}/>&nbsp;&nbsp;Multiple Stops</li>
+                                        <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}} disabled/>&nbsp;&nbsp;Return Trip</li>
+                                        <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}} disabled/>&nbsp;&nbsp;Multiple Stops</li>
                                     </ul>
                                 </div>
                             </div>
@@ -181,7 +181,7 @@
                             <div class="form-group">
                                 <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
-                                <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
+                                <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" disabled>
                                     <option value="None" >None</option>
                                     {{#each travelcityList}}
                                     <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
@@ -194,7 +194,7 @@
                             <div class="form-group">
                                 <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
-                                <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
                                     <option value="None" >None</option>
                                     {{#each travelcityList}}
                                     <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
@@ -308,7 +308,7 @@
 
                                 <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
-                                <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
                                     <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option>
                                     <option value="CAR" {{transportModeSelected "CAR" tripIndex}}>Car</option>
                                     <option value="AIRLINE" {{transportModeSelected "AIRLINE" tripIndex}}>Airline</option>
@@ -322,7 +322,7 @@
                                 <div style="display: {{isAirModeOfTransport this.tripIndex}}">
                                     <label for="airlineId_{{this.tripIndex}}" class="control-label">Preferred Airline</label>
                                     {{#semanticselect2}}
-                                    <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
 
                                         {{#each airlineList this.fromId this.toId}}
                                         <option value="{{_id}}" {{airlineSelected _id ../tripIndex}}>{{name}}</option>
@@ -335,7 +335,7 @@
                                 <div style="display:{{isCarModeOfTransport this.tripIndex}}">
                                     {{#semanticselect2}}
                                     <label for="carOption_{{this.tripIndex}}" class="control-label">Car Options</label>
-                                    <select id="carOption_{{this.tripIndex}}" name="carOption_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <select id="carOption_{{this.tripIndex}}" name="carOption_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
                                         <option value="THIRD_PARTY" {{carOptionSelected "THIRD_PARTY" tripIndex}}>A third party will provide me a car</option>
                                         <option value="OFFICE" {{carOptionSelected "OFFICE" tripIndex}}>I need an office car and driver</option>
                                         <option value="CAR_HIRE" {{carOptionSelected "CAR_HIRE" tripIndex}}>I need a car hire</option>
@@ -351,7 +351,7 @@
                                 <label>&nbsp;</label>
 
                                 <div class="ckbox ckbox-success" style="display: {{isAirModeOfTransport this.tripIndex}}">
-                                    <input type="checkbox" id="provideAirportPickup_{{this.tripIndex}}" name="provideAirportPickup_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideAirportPickup this.tripIndex}}/>
+                                    <input type="checkbox" id="provideAirportPickup_{{this.tripIndex}}" name="provideAirportPickup_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideAirportPickup this.tripIndex}} disabled/>
                                     <label for="provideAirportPickup_{{this.tripIndex}}">I need airport taxi</label>
                                 </div>
 
@@ -364,7 +364,7 @@
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="provideSecurity_{{this.tripIndex}}" name="provideSecurity_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideSecurity this.tripIndex}}/>
+                                    <input type="checkbox" id="provideSecurity_{{this.tripIndex}}" name="provideSecurity_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideSecurity this.tripIndex}} disabled/>
                                     <label for="provideSecurity_{{this.tripIndex}}">I need security</label>
                                 </div>
                             </div>
@@ -373,7 +373,7 @@
                         <div class="col-sm-12 col-lg-6">
                             <div class="form-group">
                                 <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="provideGroundTransport_{{this.tripIndex}}" name="provideGroundTransport_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideGroundTransport this.tripIndex}}/>
+                                    <input type="checkbox" id="provideGroundTransport_{{this.tripIndex}}" name="provideGroundTransport_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideGroundTransport this.tripIndex}} disabled/>
                                     <label for="provideGroundTransport_{{this.tripIndex}}">I need local transportation</label>
                                 </div>
                             </div>
@@ -388,7 +388,7 @@
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="additionalSecurityComment" class="control-label">Additional information on security<span class="asterisk important-input">*</span></label>
-                                <textarea name="additionalSecurityComment" class="form-control" rows="5" placeholder="Description" id="additionalSecurityComment" value="{{currentTravelRequest.additionalSecurityComment}}"></textarea>
+                                <textarea name="additionalSecurityComment" class="form-control" rows="5" placeholder="Description" id="additionalSecurityComment" value="{{currentTravelRequest.additionalSecurityComment}}" disabled></textarea>
                             </div><!-- form-group -->
                         </div><!-- col-sm-3 -->
                     </div>
@@ -399,7 +399,7 @@
                             <div class="form-group">
                                 <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
-                                <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control" disabled>
                                     <option value="H3593">I do not need a Hotel</option>
                                     {{#each hotelList this.toId}}
                                     <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
@@ -428,25 +428,25 @@
                         </div>
                         <div class="col-sm-2">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="isBreakfastIncluded_{{this.tripIndex}}" {{isBreakfastIncluded this.tripIndex}} />
+                                <input type="checkbox" id="isBreakfastIncluded_{{this.tripIndex}}" {{isBreakfastIncluded this.tripIndex}} disabled/>
                                 <label for="isBreakfastIncluded_{{this.tripIndex}}">Breakfast</label>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="isLunchIncluded_{{this.tripIndex}}" {{isLunchIncluded this.tripIndex}} />
+                                <input type="checkbox" id="isLunchIncluded_{{this.tripIndex}}" {{isLunchIncluded this.tripIndex}} disabled/>
                                 <label for="isLunchIncluded_{{this.tripIndex}}">Lunch</label>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="isDinnerIncluded_{{this.tripIndex}}" {{isDinnerIncluded this.tripIndex}} />
+                                <input type="checkbox" id="isDinnerIncluded_{{this.tripIndex}}" {{isDinnerIncluded this.tripIndex}} disabled/>
                                 <label for="isDinnerIncluded_{{this.tripIndex}}">Dinner</label>
                             </div>
                         </div>
                         <div class="col-sm-2">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="isIncidentalsIncluded_{{this.tripIndex}}" {{isIncidentalsIncluded this.tripIndex}} />
+                                <input type="checkbox" id="isIncidentalsIncluded_{{this.tripIndex}}" {{isIncidentalsIncluded this.tripIndex}} disabled/>
                                 <label for="isIncidentalsIncluded_{{this.tripIndex}}">Incidentals</label>
                             </div>
                         </div>
@@ -504,7 +504,7 @@
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <div class="ckbox ckbox-danger">
-                                    <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} />
+                                    <input type="checkbox" id="cashAdvanceNotRequired" name="cashAdvanceNotRequired" value="{{_id}}" {{cashAdvanceNotRequiredChecked}} disabled/>
                                     <label for="cashAdvanceNotRequired">I do not need a cash advance (I will simply retire my expenses when i return)</label>
                                 </div>
                             </div>
@@ -613,7 +613,6 @@
 
 
                     <button class="btn btn-success mr5 pull-right" id="new-requisition-create">Submit for Approval</button>
-                    <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>
                 </div><!-- panel-footer -->
             </div>
         </div>
