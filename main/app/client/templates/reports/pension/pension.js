@@ -58,7 +58,7 @@ Template.PensionReport.events({
             Meteor.call('exportPensionResult', Session.get('context'), period, function(err, res){
                 if(res){
                     //call the export fo
-                    Hub825Explorer.exportAllData(res, "Pension Report");
+                    BulkpayExplorer.exportAllData(res, "Pension Report");
                     resetButton()
                 } else {
                     console.log(err);

@@ -127,8 +127,6 @@ Meteor.methods({
             throw new Meteor.Error(401, "Password not specified");
         }
 
-        console.log('Meteor.users()', Meteor.users.find())
-
         let user = Meteor.users.findOne({
             'emails.address': userEmail,
             // 'businessIds': businessId

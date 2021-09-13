@@ -37,7 +37,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Unauthorized");
         }
         // check if user has permission to delete
-        EmailSettings.remove({_id: id});
+        emailsettings.remove({_id: id});
         return true;
     },
     "emailsetting/update": function(id, details){
@@ -49,8 +49,6 @@ Meteor.methods({
         const selector = {
             _id: id
         };
-
-        delete details.createdAt
         const result = EmailSettings.update(selector, {$set: details} );
         return result;
     }

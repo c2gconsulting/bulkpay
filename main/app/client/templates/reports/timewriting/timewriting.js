@@ -419,7 +419,7 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Project Total Hours: ", aDatum.projectTotalHours])
         })
-        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Project Time Report ${startTime} - ${endTime}`);
     }
 
@@ -476,7 +476,7 @@ Template.TimeWritingReport.onCreated(function () {
 
         reportData.push(totalsRow)
 
-        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Project Time Report ${startTime} - ${endTime}`);
     }
 
@@ -498,7 +498,7 @@ Template.TimeWritingReport.onCreated(function () {
             //--
             reportData.push(["Unit Total Hours: ", aDatum.unitTotalHours])
         })
-        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Cost-Center Time Report ${startTime} - ${endTime}`);
     }
 

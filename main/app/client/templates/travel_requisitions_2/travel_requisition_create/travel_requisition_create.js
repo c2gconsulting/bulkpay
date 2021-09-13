@@ -3,82 +3,7 @@
 /*****************************************************************************/
 import _ from 'underscore';
 
-const getSelectedItem = (item) => {
-  let options = Core.returnSelection($(`[name="${item}"]`));
-  const individuals = [];
-  const users = Meteor.users.find({employee: true});
-  _.each(options, function(option){
-    let user = Meteor.users.findOne({ _id: option })
-    // let user = _.find(users, function(user) {return user._id === option})
-
-    const { emails, profile, _id } = user;
-    const userId = _id || option;
-    const email = emails[0] && emails[0].address;
-    if (user){
-      individuals.push({ ...profile, id: userId, email, });
-    }
-  });
-
-  return individuals
-}
-
 Template.TravelRequisition2Create.events({
-    "change [name='destinationType']": _.throttle(function(e, tmpl) {
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        const destinationType = $(e.currentTarget).val();
-        currentTravelRequest.destinationType = destinationType;
-
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-   }, 200),
-
-   "change [name='clientName']": _.throttle(function(e, tmpl) {
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        const fullName = $(e.currentTarget).val();
-        const [firstName, lastName] = fullName.split(' ');
-        const currentTripFor = currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals;
-
-        const individuals = {
-          ...(currentTripFor && currentTripFor[0]),
-          fullName: fullName,
-          firstname: firstName,
-          lastname: lastName,
-        }
-
-        delete individuals._id;
-
-        const tripFor = {
-          noOfIndividuals: 1,
-          individuals: [individuals]
-        }
-
-        currentTravelRequest.tripFor = tripFor
-
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-   }, 200),
-
-   "change [name='clientEmail']": _.throttle(function(e, tmpl) {
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        const clientEmail = $(e.currentTarget).val();
-        const currentTripFor = currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals;
-
-        const individuals = {
-          ...(currentTripFor && currentTripFor[0]),
-          email: clientEmail,
-        }
-
-        delete individuals._id;
-
-        const tripFor = {
-          noOfIndividuals: 1,
-          individuals: [individuals]
-        }
-
-        currentTravelRequest.tripFor = tripFor
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-   }, 200),
 
     "change [name='travelType']":_.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -110,7 +35,6 @@ Template.TravelRequisition2Create.events({
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    provideSecurity: false,
                     originCityAirportTaxiCost: 0,
                     destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
@@ -144,7 +68,6 @@ Template.TravelRequisition2Create.events({
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    provideSecurity: false,
                     originCityAirportTaxiCost: 0,
                     destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
@@ -176,7 +99,6 @@ Template.TravelRequisition2Create.events({
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    provideSecurity: false,
                     originCityAirportTaxiCost: 0,
                     destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
@@ -208,7 +130,6 @@ Template.TravelRequisition2Create.events({
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
-                    provideSecurity: false,
                     originCityAirportTaxiCost: 0,
                     destinationCityAirportTaxiCost: 0,
                     groundTransportCost: 0,
@@ -242,15 +163,6 @@ Template.TravelRequisition2Create.events({
     currentTravelRequest.cashAdvanceNotRequired = !currentTravelRequest.cashAdvanceNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 },200),
-'change [id=additionalSecurityComment]': function(e, tmpl) {
-  e.preventDefault()
-
-  let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-
-  currentTravelRequest.additionalSecurityComment = $("#additionalSecurityComment").val();
-  tmpl.currentTravelRequest.set(currentTravelRequest);
-
-},
 'click [id=description]': function(e, tmpl) {
     e.preventDefault()
 
@@ -258,6 +170,8 @@ Template.TravelRequisition2Create.events({
 
     currentTravelRequest.description = $("#description").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
+   console.log("description")
+   console.log(description)
 
 },
 'change [id=budget-code]': function(e, tmpl) {
@@ -265,20 +179,6 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.budgetCodeId = $("#budget-code").val();
-    tmpl.currentTravelRequest.set(currentTravelRequest);
-},
-'change [id=costCenter]': function(e, tmpl) {
-    e.preventDefault()
-
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.costCenter = $("#costCenter").val();
-    tmpl.currentTravelRequest.set(currentTravelRequest);
-},
-'change [id=tpcTrip]': function(e, tmpl) {
-    e.preventDefault()
-
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    currentTravelRequest.tpcTrip = $("#tpcTrip").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
 },
 'click [id=add-additional_stop]': function(e, tmpl) {
@@ -298,7 +198,6 @@ Template.TravelRequisition2Create.events({
         carOption: 'CAR_HIRE',
         provideAirportPickup: false,
         provideGroundTransport: false,
-        provideSecurity: false,
         originCityAirportTaxiCost: 0,
         destinationCityAirportTaxiCost: 0,
         groundTransportCost: 0,
@@ -453,18 +352,6 @@ Template.TravelRequisition2Create.events({
     const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
 
     currentTravelRequest.trips[index].provideGroundTransport = !currentTravelRequest.trips[index].provideGroundTransport;
-    tmpl.currentTravelRequest.set(currentTravelRequest);
-
-    tmpl.updateTripNumbers();
-},
-"click [id*='provideSecurity']": function(e, tmpl){
-
-    e.preventDefault()
-
-    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
-
-    currentTravelRequest.trips[index].provideSecurity = !currentTravelRequest.trips[index].provideSecurity;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
     tmpl.updateTripNumbers();
@@ -664,25 +551,6 @@ Template.TravelRequisition2Create.events({
         fieldsAreValid = false;
         validationErrors += ": select a budget code";
     }
-
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tpcTrip !== 'Client') {
-      currentTravelRequest.tripFor = {
-        noOfIndividuals: $(`[id="noOfIndividuals"]`).val() || 1,
-        individuals: getSelectedItem('individuals')
-      }
-    }
-
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && (!currentTravelRequest.tripFor || !currentTravelRequest.tripFor.individuals)) {
-      fieldsAreValid = false;
-      validationErrors += ": select the individual(s) going on this trip";
-    }
-
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tripFor && (currentTravelRequest.tripFor.individuals.length != currentTravelRequest.tripFor.noOfIndividuals)) {
-      fieldsAreValid = false;
-      validationErrors += ": Invalid number of individual(s) going on this trip";
-    }
-
-
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         const currentTrip = currentTravelRequest.trips[i];
 
@@ -889,23 +757,6 @@ Template.TravelRequisition2Create.events({
 /* TravelRequisitionCreate: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2Create.helpers({
-	activeIfRouteIsIn: function (route) {
-      var currentRoute = Router.current();
-      // currentRoute.url - http://localhost:3000/business/FJe5hXSxCHvR2FBjJ/employee/grouptravelrequisition2index
-      // currentRoute.route.getName() - travelrequest2.grouptravelrequisition2index
-      const GROUP_TRIP = 'grouptravelrequisition2index';
-      const INDIVIDUAL_TRIP = 'individualtravelrequisition2index';
-      const TPC_TRIP = 'tpctravelrequisition2index';
-      const RouteName = currentRoute.route.getName().replace('travelrequest2.', '')
-      const isCurrentRoute = RouteName.includes(route);
-      if(RouteName === INDIVIDUAL_TRIP && isCurrentRoute) return 'INDIVIDUAL';
-      if(RouteName === GROUP_TRIP && isCurrentRoute) return 'GROUP';
-      if(RouteName === TPC_TRIP && isCurrentRoute) return 'TPC';
-      return false;
-    },
-    'employees': () => {
-      return Meteor.users.find({employee: true});
-    },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
@@ -923,23 +774,6 @@ Template.TravelRequisition2Create.helpers({
         options.sort[sortBy] = sortDirection;
 
         return  Travelcities.find({},options);
-    },
-    costCenterType: function (item) {
-      const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
-      return false
-    },
-    needSecurity(index){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
-        }
-    },
-    tpcTripType(type){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(!currentTravelRequest || !type) return false
-        if (currentTravelRequest.tpcTrip === type) return type
-        return false
     },
     budgetList() {
         return  Budgets.find();
@@ -1083,12 +917,6 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
-    destinationTypeChecked(val){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && val){
-            return currentTravelRequest.destinationType === val ? checked="checked" : '';
-        }
-    },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
     },
@@ -1122,12 +950,6 @@ Template.TravelRequisition2Create.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
-        }
-    },
-    provideSecurity(index){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? checked="checked" : '';
         }
     },
     isLunchIncluded(index){
@@ -1198,11 +1020,6 @@ Template.TravelRequisition2Create.onCreated(function () {
     let currentTravelRequest = {
         businessId: businessUnitId,
 
-        destinationType: 'Local',
-        costCenter: 'Project',
-        tpcTrip: 'Third_Party',
-        tripFor: {},
-        tripCategory: getActiveTrip() || 'INDIVIDUAL',
         description: "",
         budgetCodeId: "",
         cashAdvanceNotRequired: false,
@@ -1233,7 +1050,6 @@ Template.TravelRequisition2Create.onCreated(function () {
             carOption: 'CAR_HIRE',
             provideAirportPickup: false,
             provideGroundTransport: false,
-            provideSecurity: false,
             originCityAirportTaxiCost: 0,
             destinationCityAirportTaxiCost: 0,
             groundTransportCost: 0,
@@ -1500,15 +1316,7 @@ Template.TravelRequisition2Create.onCreated(function () {
         if (invokeReason){
             let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId);
             if(travelRequest2Sub.ready()) {
-              let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
-              /* Pre-select individual going on trip if there's any */
-              let individuals = (travelRequestDetails.tripFor && travelRequestDetails.tripFor.individuals) || [];
-              const IDs = getIndividualIDs(individuals);
-              if (IDs && IDs.length) {
-                // $('.ui.fluid.dropdown').dropdown('set selected',['Role1','Role2']);
-                $('.ui.fluid.dropdown').dropdown('set selected', IDs);
-              }
-              /* End of Pre-selection */
+                let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
                 self.currentTravelRequest.set(travelRequestDetails)
 
             }
@@ -1530,30 +1338,3 @@ Template.TravelRequisition2Create.onRendered(function () {
 
 Template.TravelRequisition2Create.onDestroyed(function () {
 });
-
-
-/******** UTILITY FUNCTIONS BELOW ***********/
-const getIndividualIDs = (individuals) => {
-  let IDs = _.map(individuals, function(individual) {
-    return individual.id
-  })
-
-  IDs = _.filter(IDs, function (ID) {
-    return ID !== undefined;
-  })
-
-  return IDs
-}
-
-function getActiveTrip () {
-  var currentRoute = Router.current();
-  // currentRoute.url - http://localhost:3000/business/FJe5hXSxCHvR2FBjJ/employee/grouptravelrequisition2index
-  // currentRoute.route.getName() - travelrequest2.grouptravelrequisition2index
-  const GROUP_TRIP = 'grouptravelrequisition2index';
-  // const INDIVIDUAL_TRIP = 'individualtravelrequisition2index';
-  const TPC_TRIP = 'tpctravelrequisition2index';
-  const RouteName = currentRoute.route.getName().replace('travelrequest2.', '')
-  if(RouteName === GROUP_TRIP && RouteName.includes('group')) return 'GROUP';
-  if(RouteName === TPC_TRIP && RouteName.includes('tpc')) return 'THIRD_PARTY_CLIENT';
-  return 'INDIVIDUAL';
-}

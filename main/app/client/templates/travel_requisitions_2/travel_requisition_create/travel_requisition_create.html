@@ -23,25 +23,10 @@
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
                         </div>
-
                         <div class="row">
-                            <!-- Indicate Project or Cost Center trip -->
                             <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="costCenter" class="control-label">Indicate trip type?</label>
-                                    {{#semanticselect2}}
-                                    <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown">
-                                        <option value="Project">Project trip</option>
-                                        <option value="Cost_Center">Cost Center</option>
-                                    </select>
-                                    {{/semanticselect2}}
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            <!-- END::Indicate Project or Department trip -->
-                            {{#if costCenterType 'Project'}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
                                     <label for="budget-code" class="control-label">Which project is this trip related to?</label>
                                     {{#semanticselect2}}
                                     <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown">
@@ -54,115 +39,13 @@
                                     <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
-                            {{else}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="budget-code" class="control-label">Select trip cost center?</label>
-                                    {{#semanticselect2}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="ui fluid search selection dropdown">
-                                        <option value="NONE">I am not sure</option>
-                                        {{#each budgetList}}
-                                        <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
-                                        {{/each}}
-                                    </select>
-                                    {{/semanticselect2}}
-                                    <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            {{/if}}
-
-                            {{#if activeIfRouteIsIn 'group'}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="noOfIndividuals" class="control-label">No of Individuals going on a trip <span class="asterisk important-input">*</span></label>
-                                    <input type="number" id="noOfIndividuals" class="form-control" placeholder="How many individuals" name="noOfIndividuals" value="{{currentTravelRequest.tripFor.noOfIndividuals}}" />
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            <!-- Select group -->
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="individuals" class="control-label">Select the individuals going on this trip? <span class="asterisk important-input">*</span></label>
-                                    <select name="individuals" multiple="" style="width: 100%" class="ui fluid search dropdown form-control">
-                                        <option value="">Employees</option>
-                                        {{#each employees}}
-                                            <option value="{{_id}}">{{profile.fullName}}</option>
-                                        {{/each}}
-                                    </select>
-                                    <!-- <span class="text-warning"><small>Please provide this info, select at least two employees</small></span> -->
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            {{/if}}
-
-                            {{#if activeIfRouteIsIn 'tpc'}}
-                            <!-- Indicate Project or Department trip -->
-                            <div class="col-sm-6">
-                                <div class="form-group">
-
-                                    <label for="tpcTrip" class="control-label">Third Party / Client? <span class="asterisk important-input">*</span></label>
-                                    {{#semanticselect2}}
-                                    <select id="tpcTrip" name="tpcTrip" style="width: 100%" class="ui fluid search selection dropdown">
-                                        <option value="Third_Party">Third Party</option>
-                                        <option value="Client">Client</option>
-                                    </select>
-                                    {{/semanticselect2}}
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            {{#if tpcTripType 'Third_Party'}}
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="individuals" class="control-label">Select the individual going on this trip? <span class="asterisk important-input">*</span></label>
-                                    {{#semanticselect2}}
-                                    <select id="individuals" name="individuals" style="width: 100%" class="ui fluid search dropdown">
-                                        <option value="">Employees</option>
-                                        {{#each employees}}
-                                            <option value="{{_id}}">{{profile.fullName}}</option>
-                                        {{/each}}
-                                    </select>
-                                    {{/semanticselect2}}
-                                    <!-- <span class="text-warning"><small>Please provide this info, select at least two employees</small></span> -->
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-                            {{else}}
-                            <div class="col-sm-12">
-                                {{#each currentTravelRequest.tripFor.individuals }}
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="clientName" class="control-label">Client Name <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientName" class="form-control" placeholder="Firstname Lastname" name="clientName" value="{{fullName}}" />
-                                        </div><!-- form-group -->
-                                    </div><!-- col-sm-3 -->
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="clientEmail" class="control-label">Client Email Address <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientEmail" class="form-control" placeholder="Email Address" name="clientEmail" value="{{email}}" />
-                                        </div><!-- form-group -->
-                                    </div><!-- col-sm-3 -->
-                                </div>
-                                {{/each}}
-                            </div>
-                            {{/if}}
-                            {{/if}}
 
                         </div>
 
 
                         <div class="row">
-                            <!-- Local Or international trip selection -->
-                            <div class="col-sm-10 col-lg-6">
+                            <div class="col-sm-10">
                                 <div class="form-group">
-                                    <label for="destinationType" class="control-label">Local/Foreign trip<span class="asterisk important-input">*</span></label>
-                                    <ul class="list-inline">
-                                        <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}}/>&nbsp;&nbsp;Local Trip</li>
-                                        <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}}/>&nbsp;&nbsp;International Trip</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- End OF LOcal or International trip selection -->
-
-                            <div class="col-sm-10 col-lg-6">
-                                <div class="form-group">
-                                    <label for="travelType" class="control-label">Return/ Multiple-stops trip<span class="asterisk important-input">*</span></label>
                                     <ul class="list-inline">
                                         <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}}/>&nbsp;&nbsp;Return Trip</li>
                                         <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}}/>&nbsp;&nbsp;Multiple Stops</li>
@@ -172,7 +55,8 @@
                             <!--<div class="col-sm-2">
                             <button class="btn btn-danger btn-small mr5 pull-right" id="startProcessing">Reset All</button>
                         </div>-->
-                        </div>
+                    </div>
+
                     <hr/>
 
                     {{#each currentTravelRequest.trips}}
@@ -361,16 +245,7 @@
                     </div>
                     {{#unless isLastLeg this.tripIndex}}
                     <div class="row">
-                        <div class="col-sm-12 col-lg-6">
-                            <div class="form-group">
-                                <div class="ckbox ckbox-success">
-                                    <input type="checkbox" id="provideSecurity_{{this.tripIndex}}" name="provideSecurity_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideSecurity this.tripIndex}}/>
-                                    <label for="provideSecurity_{{this.tripIndex}}">I need security</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-12 col-lg-6">
+                        <div class="col-sm-12">
                             <div class="form-group">
                                 <div class="ckbox ckbox-success">
                                     <input type="checkbox" id="provideGroundTransport_{{this.tripIndex}}" name="provideGroundTransport_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideGroundTransport this.tripIndex}}/>
@@ -379,20 +254,6 @@
                             </div>
                         </div>
                     </div>
-
-
-                    <!-- IF Security was needed...then add security detail/comment -->
-
-                    {{#if needSecurity this.tripIndex}}
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="additionalSecurityComment" class="control-label">Additional information on security<span class="asterisk important-input">*</span></label>
-                                <textarea name="additionalSecurityComment" class="form-control" rows="5" placeholder="Description" id="additionalSecurityComment" value="{{currentTravelRequest.additionalSecurityComment}}"></textarea>
-                            </div><!-- form-group -->
-                        </div><!-- col-sm-3 -->
-                    </div>
-                    {{/if}}
 
                     <div class="row">
                         <div class="col-sm-6">

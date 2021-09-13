@@ -18,7 +18,7 @@ Template.ImportEmployeePositionsModal.events({
 
         let fields = ['EmployeeUniqueId','EmployeeFullName', 'PositionUniqueId']
 
-        Hub825Explorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePositionAssignmentSample");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForSampleCsv}, "EmployeePositionAssignmentSample");
     },
     'click #downloadCsvWithAllPositions': function(e, tmpl) {
         e.preventDefault()
@@ -53,7 +53,7 @@ Template.ImportEmployeePositionsModal.events({
 
         let fields = ['PositionUniqueId', 'PositionName', 'Parents']
 
-        Hub825Explorer.exportAllData({fields: fields, data: dataForAllPositionsCsv}, "AllPositionsInCompany");
+        BulkpayExplorer.exportAllData({fields: fields, data: dataForAllPositionsCsv}, "AllPositionsInCompany");
     },
     "click #employeesFileUpload": function (e, tmpl) {
         e.preventDefault();
@@ -125,7 +125,7 @@ Template.ImportEmployeePositionsModal.events({
         let uploadResponse = tmpl.response.get('response'); // For some weird reason Template.instance() doesn't work
         let skippedAndErrors = Array.prototype.concat(uploadResponse.skipped, uploadResponse.errors)
 
-        Hub825Explorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeePositionRecordsWithError");
+        BulkpayExplorer.exportAllData({fields: fields, data: skippedAndErrors}, "EmployeePositionRecordsWithError");
     }
 });
 

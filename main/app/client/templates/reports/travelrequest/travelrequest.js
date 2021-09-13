@@ -271,7 +271,7 @@ reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelci
   aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
         })
 
-        Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},
+        BulkpayExplorer.exportAllData({fields: formattedHeader, data: reportData},
             `Travel Requests Report ${startTime} - ${endTime}`);
     }
     self.autorun(function() {

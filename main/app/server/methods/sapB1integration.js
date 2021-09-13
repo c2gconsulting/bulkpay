@@ -325,7 +325,7 @@ SapIntegration.processPayrunResultsForSap = function (businessUnitSapConfig, pay
                             projectName = projectData.name
                         } else {
                             status = false
-                            errors.push(`A project which exists for payrun does not exist on the Hub825Travel system`)
+                            errors.push(`A project which exists for payrun does not exist on the BulkPay system`)
                         }
                         //--
                         if(!projectsBulkSum[aProjectPay.projectId]) {

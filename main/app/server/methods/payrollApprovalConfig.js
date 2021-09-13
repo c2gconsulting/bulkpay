@@ -7,7 +7,7 @@ let PayrollApprovalHelper = {
             SSR.compileTemplate("payrunApprovalNotification", Assets.getText("emailTemplates/payrunApprovalNotification.html"));
             Email.send({
                 to: approverEmail,
-                from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
+                from: "BulkPay™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Payrun for Approval!",
                 html: SSR.render("payrunApprovalNotification", {
                     user: approverFullName,

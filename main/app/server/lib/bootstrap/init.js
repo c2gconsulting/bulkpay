@@ -84,8 +84,8 @@ _.extend(Core, {
     //return true;
   },
   initAccount: function() {
-    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "Hub825Travel™";
-    Accounts.emailTemplates.from = process.env.MAIL_FROM || "Hub825Travel™ Team <no-reply@bulkpay.co>";
+    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "BulkPay™";
+    Accounts.emailTemplates.from = process.env.MAIL_FROM || "BulkPay™ Team <no-reply@bulkpay.co>";
 
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
       console.log('login url as', url);
