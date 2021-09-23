@@ -31,29 +31,55 @@ Template.TravelRequisition2Create.events({
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
    }, 200),
+   "change [name='noOfClients']": function (e, tmpl) {
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const numberOfClients = parseInt($(e.currentTarget).val());
+    const { tripFor } = currentTravelRequest;
+    /************* Determine previous number of individuals  ******************/
+    const prevNoOfClients = tripFor.individuals.length;
+    /************* Filter labels and approval levels  ******************/
+    if (prevNoOfClients > numberOfClients) {
+      for (let i = 0; i < prevNoOfClients; i++) {
+        const currentNoOfClients = i + 1;
+        if (currentNoOfClients > numberOfClients) {
+          tripFor.individuals.splice(i, 1);
+        }
+      }
+    } else {
+      for (let i = prevNoOfClients; i < numberOfClients; i++) {
+        // const currentNoOfClients = prevNoOfClients + 1;
+        tripFor.individuals.push({});
+      }
+    }
 
-   "change [name='clientName']": _.throttle(function(e, tmpl) {
+    tmpl.currentTravelRequest.set({
+      ...currentTravelRequest,
+      tripFor: {
+        ...tripFor,
+        noOfIndividuals: numberOfClients
+      }
+    })
+  },
+   "change [name*='clientName']": _.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const fullName = $(e.currentTarget).val();
         const [firstName, lastName] = fullName.split(' ');
         const currentTripFor = currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals;
 
-        const individuals = {
-          ...(currentTripFor && currentTripFor[0]),
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1));
+
+        const individual = {
+          ...(currentTripFor && currentTripFor[index]),
           fullName: fullName,
           firstname: firstName,
           lastname: lastName,
         }
 
-        delete individuals._id;
-
-        const tripFor = {
-          noOfIndividuals: 1,
-          individuals: [individuals]
-        }
+        delete individual._id;
+        const { tripFor } = currentTravelRequest;
+        tripFor.individuals[index] = individual
 
         currentTravelRequest.tripFor = tripFor
-
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
    }, 200),
@@ -63,17 +89,16 @@ Template.TravelRequisition2Create.events({
         const clientEmail = $(e.currentTarget).val();
         const currentTripFor = currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals;
 
-        const individuals = {
-          ...(currentTripFor && currentTripFor[0]),
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1));
+
+        const individual = {
+          ...(currentTripFor && currentTripFor[index]),
           email: clientEmail,
         }
 
-        delete individuals._id;
-
-        const tripFor = {
-          noOfIndividuals: 1,
-          individuals: [individuals]
-        }
+        delete individual._id;
+        const { tripFor } = currentTravelRequest;
+        tripFor.individuals[index] = individual
 
         currentTravelRequest.tripFor = tripFor
         tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -230,6 +255,41 @@ Template.TravelRequisition2Create.events({
                     totalHotelCost: 0
                 }
             ]
+        } else if (($(e.currentTarget).val() === "Single") && (currentTravelRequest.trips.length > 0)){
+                currentTravelRequest.trips = [{
+                    tripIndex: 1,
+                    fromId: "",
+                    toId: "",
+                    departureDate: new Date(),
+                    returnDate: new Date(),
+                    departureTime: "6 AM",
+                    returnTime: "6 AM",
+                    transportationMode: 'AIRLINE',
+                    carOption: 'CAR_HIRE',
+                    provideAirportPickup: false,
+                    provideGroundTransport: false,
+                    provideSecurity: false,
+                    originCityAirportTaxiCost: 0,
+                    destinationCityAirportTaxiCost: 0,
+                    groundTransportCost: 0,
+                    airlineId: "",
+                    airfareCost: 0,
+                    airfareCurrency: "NGN",
+                    hotelId: "H3593",
+                    hotelRate: 0,
+                    destinationCityCurrreny: "NGN",
+                    hotelNotRequired: false,
+                    perDiemCost: 0,
+                    originCityCurrreny: "NGN",
+                    isBreakfastIncluded: false,
+                    isLunchIncluded: false,
+                    isDinnerIncluded: false,
+                    isIncidentalsIncluded: false,
+                    totalDuration: 0,
+                    totalPerDiem: 0,
+                    totalHotelCost: 0
+                }
+            ]
         }
     }
 
@@ -279,6 +339,11 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.tpcTrip = $("#tpcTrip").val();
+    
+    currentTravelRequest.tripFor = {
+        noOfIndividuals: 1,
+        individuals: [{}]
+    }
     tmpl.currentTravelRequest.set(currentTravelRequest);
 },
 'click [id=add-additional_stop]': function(e, tmpl) {
@@ -669,6 +734,16 @@ Template.TravelRequisition2Create.events({
       currentTravelRequest.tripFor = {
         noOfIndividuals: $(`[id="noOfIndividuals"]`).val() || 1,
         individuals: getSelectedItem('individuals')
+      }
+    }
+
+    if (currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals) {
+      const { individuals } = currentTravelRequest.tripFor;
+      for (let i = 0; i < individuals.length; i++) {
+        if (individuals[i] && (!individuals[i].fullName || !individuals[i].email)) {
+          fieldsAreValid = false;
+          validationErrors += ": Fill in the individual(s) details going on this trip";
+        }
       }
     }
 

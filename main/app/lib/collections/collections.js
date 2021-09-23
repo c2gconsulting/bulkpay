@@ -94,6 +94,12 @@ Attachments = new Mongo.Collection("attachments");
 // Partitioner.partitionCollection(Attachments);
 Attachments.attachSchema(Core.Schemas.Attachment);
 
+/**
+ * Core Collections ApprovalsConfigs
+ */
+ApprovalsConfigs = new Mongo.Collection("approvalsconfigs");
+// Partitioner.partitionCollection(ApprovalsConfigs);
+ApprovalsConfigs.attachSchema(Core.Schemas.ApprovalsConfigs);
 
 /**
  * Core Collections Businesses
@@ -445,6 +451,15 @@ Travelcities.attachSchema(Core.Schemas.Travelcity);
 Hotels = new Mongo.Collection("hotels");
 //Partitioner.partitionCollection(Hotels);
 Hotels.attachSchema(Core.Schemas.Hotel);
+
+
+/**
+ * Core Collections StaffCategory
+ */
+StaffCategories = new Mongo.Collection("staffcategories");
+//Partitioner.partitionCollection(StaffCategories);
+StaffCategories.attachSchema(Core.Schemas.StaffCategory);
+
 
 /**
  * Core Collections Budget

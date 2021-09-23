@@ -32,10 +32,14 @@ Template.TravelRequestReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
-            let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedEmployees = tmpl.selectedEmployees.get();
+            let selectedTripCategories = tmpl.selectedTripCategories.get();
+            let status = tmpl.status.get()
+            let statusCategory = tmpl.statusCategory.get() || 'status'
+            const byStatus = { key: statusCategory, value: status }
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, byStatus, function(err, res) {
                   console.log(res)
                 resetButton()
                 if(res){
@@ -79,9 +83,13 @@ Template.TravelRequestReport.events({
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedTripCategories = tmpl.selectedTripCategories.get()
+            let status = tmpl.status.get()
+            let statusCategory = tmpl.statusCategory.get()
+            const byStatus = { key: statusCategory, value: status }
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, byStatus, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.travelRequestReports.set(res)
@@ -95,6 +103,18 @@ Template.TravelRequestReport.events({
     'change [name="employee"]': (e, tmpl) => {
         let selected = Core.returnSelection($(e.target));
         tmpl.selectedEmployees.set(selected)
+    },
+    'change [name="tripCategory"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.selectedTripCategories.set(selected)
+    },
+    'change [name="status"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.status.set(selected)
+    },
+    'change [name="statusCategory"]': (e, tmpl) => {
+        e.preventDefault()
+        tmpl.statusCategory.set(e.target.value)
     }
 });
 
@@ -116,6 +136,18 @@ Template.TravelRequestReport.helpers({
         if(travelcity) {
             return travelcity.name
         }
+    },
+    status: function () {
+        return ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+    },
+    extensionStatus: function () {
+        return ["Cancelled","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+    },
+    retirementStatus: function () {
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved by HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
+    },
+    statusCategory: function () {
+        return Template.instance().statusCategory.get()
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -189,6 +221,9 @@ Template.TravelRequestReport.onCreated(function () {
     self.travelRequestReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
+    self.selectedTripCategories = new ReactiveVar()
+    self.status = new ReactiveVar()
+    self.statusCategory = new ReactiveVar('status')
     self.businessUnitCustomConfig = new ReactiveVar()
     self.currentTravelRequest = new ReactiveVar()
     self.totalTripCost = new ReactiveVar(0)

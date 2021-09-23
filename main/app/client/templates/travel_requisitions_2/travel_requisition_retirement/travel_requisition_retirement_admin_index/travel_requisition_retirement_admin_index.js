@@ -83,7 +83,7 @@ Template.TravelRequisitionRetirement2AdminIndex.helpers({
         let unretiredCount = TravelRequisition2s.find({
             $and : [
                 { retirementStatus: "Not Retired"},
-                { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+                { $or : [ { status : "Pending" }, { status : "Approved by HOD" }, { status : "Approved By MD"}] }
             ]}).count()
         console.log("Unretired Count: " + unretiredCount);
         if (unretiredCount > 0){

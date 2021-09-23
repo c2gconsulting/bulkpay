@@ -16,7 +16,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved By Supervisor";
+        currentTravelRequest.status = "Approved by HOD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -34,7 +34,7 @@ Template.TravelRequisition2SupervisorDetail.events({
 
         if (currentTravelRequest.supervisorComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": Supervisor Comment cannot be empty";
+            validationErrors += ": HOD Comment cannot be empty";
         }
 
         if( currentTravelRequest.budgetCodeId=="I am not sure")
@@ -80,7 +80,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Rejected By Supervisor";
+        currentTravelRequest.status = "Rejected By HOD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -98,7 +98,7 @@ Template.TravelRequisition2SupervisorDetail.events({
 
         if (currentTravelRequest.supervisorComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": Supervisor Comment cannot be empty";
+            validationErrors += ": HOD Comment cannot be empty";
         }
 
         if( currentTravelRequest.budgetCodeId=="I am not sure")

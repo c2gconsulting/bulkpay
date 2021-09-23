@@ -359,7 +359,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved", "Rejected",],
+        allowedValues: ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO",],
         optional: true
     },
     retirementStatus: {
@@ -389,6 +389,24 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     financeApproverId: {
         type: String,
+        optional: true
+    },
+    bstId: {
+        type: String,
+        optional: true
+    },
+    logisticsId: {
+        type: String,
+        optional: true
+    },
+    bstComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    logisticsComment: {
+        type: String,
+        defaultValue: '',
         optional: true
     },
     supervisorComment: {
@@ -424,6 +442,16 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     budgetHolderRetirementComment: {
         type: String,
         defaultValue: '',
+        optional: true
+    },
+    bstProcessed: {
+        type: Boolean,
+        defaultValue: false,
+        optional: true
+    },
+    logisticsProcessed: {
+        type: Boolean,
+        defaultValue: false,
         optional: true
     },
     'approvals': {

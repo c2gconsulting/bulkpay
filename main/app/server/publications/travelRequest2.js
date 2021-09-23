@@ -7,6 +7,14 @@
      return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
  });
 
+ Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
+     return TravelRequisition2s.find({ businessId: businessUnitId });
+ });
+
+ Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, bstId: bstId});
+});
+
  Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {
      return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
  });

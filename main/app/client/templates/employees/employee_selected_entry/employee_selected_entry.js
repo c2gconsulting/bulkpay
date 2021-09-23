@@ -158,6 +158,18 @@ Template.EmployeeSelectedEntry.helpers({
     let canDoSelfService = Core.hasSelfServiceAccess(selectedEmployee._id);
     return canDoSelfService;
   },
+  hasEmployeeLogisticsProcessAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canDoSelfService = Core.hasLogisticsProcessAccess(selectedEmployee._id);
+    return canDoSelfService;
+  },
+  hasEmployeeBSTProcessAccess: () => {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let canDoSelfService = Core.hasBSTProcessAccess(selectedEmployee._id);
+    return canDoSelfService;
+  },
   hasPayRulesManageAccess: function () {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
@@ -316,6 +328,8 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldManageLeave = $("[name=leaveManage]").val();
         let shouldApproveTime = $("[name=timeApprove]").val();
         let shouldManageTime = $("[name=timeManage]").val();
+        let shouldProcessLogistics = $("[name=employeeLogisticsProcess]").val();
+        let shouldProcessBST = $("[name=employeeBSTProcess]").val();
         let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
 
         let shouldManagePayRules = $("[name=payRulesManage]").val();
@@ -350,6 +364,12 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldManageLeave === "true") {
           arrayOfRoles.push(Core.Permissions.LEAVE_MANAGE)
+        }
+        if(shouldProcessLogistics === "true") {
+          arrayOfRoles.push(Core.Permissions.LOGISTICS_PROCESS)
+        }
+        if(shouldProcessBST === "true") {
+          arrayOfRoles.push(Core.Permissions.BST_PROCESS)
         }
         if(shouldApproveTime === "true") {
           arrayOfRoles.push(Core.Permissions.TIME_APPROVE)

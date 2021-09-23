@@ -98,6 +98,15 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequisition2SupervisorIndex: function() {
         this.render('TravelRequisition2SupervisorIndex')
     },
+    showTravelRequisition2BSTIndex: function() {
+        this.render('TravelRequisition2BSTIndex')
+    },
+    showTravelRequisition2LogisticsIndex: function() {
+        this.render('TravelRequisition2LogisticsIndex')
+    },
+    showTravelRequisition2MDIndex: function() {
+        this.render('TravelRequisition2MDIndex')
+    },
     onAfterAction: function () {
     },
     onStop: function () {

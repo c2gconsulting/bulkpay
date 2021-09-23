@@ -9,13 +9,13 @@ Template.TravelRequisition2RetirementPrint.events({
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By Supervisor";
+      currentTravelRequest.retirementStatus = "Retirement Approved by HOD";
 
 
      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been approved by supervisor",
+                 title: "Trip retirement has been Approved by HOD",
                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -37,12 +37,12 @@ Template.TravelRequisition2RetirementPrint.events({
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
          currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By Supervisor";
+         currentTravelRequest.retirementStatus = "Retirement Rejected By HOD";
 
       Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
-                  title: "Trip retirement has been rejected by supervisor",
+                  title: "Trip retirement has been Rejected By HOD",
                   text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                   confirmButtonClass: "btn-success",
                   type: "success",

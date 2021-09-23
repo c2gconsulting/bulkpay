@@ -58,7 +58,7 @@ Template.TravelRequisition2SupervisorIndex.helpers({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
             { supervisorId: Meteor.userId()},
-            { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+            { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -116,7 +116,7 @@ Template.TravelRequisition2SupervisorIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { supervisorId: Meteor.userId()},
-                { $or : [ { status : "Approved By Supervisor" }, { status : "Pending" }, { status : "Rejected By Supervisor"}] }
+                { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
             ]
         }, options);
             }

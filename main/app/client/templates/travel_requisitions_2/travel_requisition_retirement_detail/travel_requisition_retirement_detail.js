@@ -101,65 +101,6 @@ Template.TravelRequisition2RetirementDetail.events({
         });
 
     },
-
-    'dropped #dropzone': function (fileObj) {
-        const formData = new FormData()
-    },
-
-    // 'click .remove-file': function(event, template) {
-    //     var fileObj = this;
-    //     if (!fileObj) {
-    //         toastr.warning('No file selected', 'Warning');
-    //         return false;
-    //     }
-    //     fileObj.remove();
-    //     toastr.success('File deleted successfully', 'Success');
-    //     return false;
-    // },
-
-    'change input[type="file"]' ( event, template ) {
-      const formData = new FormData()
-
-      if (!event.target || !event.target.files[0]) {
-        return;
-      }
-      template.isUploading.set(true)
-      Session.set('isUploading', true)
-
-      formData.append(event.target.files[0].name, event.target.files[0])
-
-      axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
-      .then(res => {
-        const businessUnitId = Session.get('context');
-        const currentTravelRequest = template.currentTravelRequest.curValue;
-        const travelId = currentTravelRequest._id || currentTravelRequest.id;
-    
-        const newAttachment = {
-            ...res.data,
-            travelId,
-            name: event.target.files[0].name,
-            owner: Meteor.userId(),
-            businessId: businessUnitId,
-            tenantId: Core.getTenantId()
-        }
-
-        Meteor.call('attachment/create', newAttachment, (err, res) => {
-            if (res){
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                toastr.success('File successfully uploaded', 'Success')
-            } else {
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                toastr.error("Save Failed", "Couldn't Save new attachment", "error");
-            }
-        });
-      })
-      .catch(err => {
-        template.isUploading.set(false)
-        Session.set('isUploading', false)
-      })
-    }
 });
 
 
@@ -171,13 +112,6 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2RetirementDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2RetirementDetail.helpers({
-    // getAttachments: function () {
-    //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
-    //     const businessUnitId = Session.get('context');
-    //     console.log('currentTravelRequest', currentTravelRequest)
-    //     console.log('businessUnitId', businessUnitId)
-    //     return Attachments.find({ businessId: businessUnitId })
-    // },
      'isUnretiredTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
@@ -188,7 +122,7 @@ Template.TravelRequisition2RetirementDetail.helpers({
      'isRejectedTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
-            return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+            return currentTravelRequest.retirementStatus === "Retirement Rejected By HOD"
 
         }
      },
@@ -403,11 +337,6 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
 
 
     self.currentTravelRequest = new ReactiveVar()
-    self.isUploading = new ReactiveVar()
-    self.isUploading.set(false)
-    Session.set('isUploading', false)
-    self.travelRequestAttachment = new ReactiveVar()
-    self.travelRequestAttachment.set([])
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
@@ -449,7 +378,6 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
-        let attachmentSubscription = self.subscribe('Attachment', invokeReason.attachmentId)
 
 
         if(travelRequest2Sub.ready()) {
@@ -458,12 +386,6 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
             self.currentTravelRequest.set(travelRequestDetails)
 
 
-        }
-
-        if (attachmentSubscription.ready()) {
-            let travelRequestAttachment = Attachments.find({ travelId: invokeReason.requisitionId })
-            console.log('travelRequestAttachment', travelRequestAttachment)
-            self.travelRequestAttachment.set(travelRequestAttachment)
         }
 
         if(businessUnitSubscription.ready()) {

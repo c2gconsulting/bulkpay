@@ -22,7 +22,7 @@ Template.TravelRequisition2IndexGroup.events({
 
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
             Modal.show('TravelRequisition2Create', invokeReason);
         } else if (!status.includes('Retire')) {
             Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -60,7 +60,7 @@ Template.TravelRequisition2IndexGroup.events({
 
 
 
-    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
     //         Modal.show('TravelRequisition2Create', invokeReason);
     //     } else if (!status.includes('Retire')) {
     //         Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -105,7 +105,7 @@ Template.TravelRequisition2IndexGroup.helpers({
         return Template.instance().travelRequestsICreated.get()
     },
     getStatus: function (status, currentTravelRequest) {
-        const lastApproval = "Approved By Budget Holder";
+        const lastApproval = "Approved By MD";
         const { trips } = currentTravelRequest;
         const departureDate = trips && trips[0].departureDate
         const returnDate = trips && trips[0].returnDate
@@ -116,7 +116,7 @@ Template.TravelRequisition2IndexGroup.helpers({
             return 'Ongoing'
         } else if (status === lastApproval && hasStartedTrip && hasEndedTrip) {
             return 'Completed'
-        }
+        }  else if (status.includes('Approved')) return 'Approved'
         return status
     },
     // 'hasUnretiredTrips': function() {
@@ -124,7 +124,7 @@ Template.TravelRequisition2IndexGroup.helpers({
     //     let unretiredCount = TravelRequisition2s.find({
     //         $and : [
     //             { retirementStatus: "Not Retired"},
-    //             { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+    //             { $or : [ { status : "Pending" }, { status : "Approved by HOD" }, { status : "Approved By MD"}] }
     //         ]}).count()
     //     console.log("Unretired Count: " + unretiredCount);
     //     if (unretiredCount > 0){

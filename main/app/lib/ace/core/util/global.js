@@ -202,6 +202,12 @@ _.extend(Core, {
     hasRoleManageAccess: function (userId) {
         return this.hasPermission(Core.Permissions.ROLE_MANAGE, userId);
     },
+    hasLogisticsProcessAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LOGISTICS_PROCESS, userId);
+    },
+    hasBSTProcessAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.BST_PROCESS, userId);
+    },
     hasTimeApprovalAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TIME_APPROVE, userId);
     },

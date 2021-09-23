@@ -57,7 +57,7 @@ Template.TravelRequisition2RetirementIndex.helpers({
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
-            {createdBy: Meteor.userId()},{ status : "Approved By Budget Holder" } ]}).count()
+            {createdBy: Meteor.userId()},{ status : "Approved By MD" } ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,7 +113,7 @@ Template.TravelRequisition2RetirementIndex.onCreated(function () {
 
         return TravelRequisition2s.find({
             $and : [
-                {createdBy: Meteor.userId()},{ status : "Approved By Budget Holder" } ]
+                {createdBy: Meteor.userId()},{ status : "Approved By MD" } ]
         }, options);
     }
 

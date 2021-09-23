@@ -143,7 +143,7 @@ Template.TravelRequisition2AdminDetail.helpers({
         }
     },
     allowedStatus() {
-        return ["Cancelled","Draft","Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder"]
+        return ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
     },
     setDefaultStatus(val) {
         return val || 'Status'

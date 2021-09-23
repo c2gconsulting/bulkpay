@@ -101,72 +101,6 @@ Template.TravelRequisition2BookingAgent.events({
         });
 
     },
-
-    'dropped #dropzone': function (fileObj) {
-        const formData = new FormData()
-    },
-
-    // 'click .remove-file': function(event, template) {
-    //     var fileObj = this;
-    //     if (!fileObj) {
-    //         toastr.warning('No file selected', 'Warning');
-    //         return false;
-    //     }
-    //     fileObj.remove();
-    //     toastr.success('File deleted successfully', 'Success');
-    //     return false;
-    // },
-
-    'change input[type="file"]' ( event, template ) {
-      const formData = new FormData()
-
-      if (!event.target || !event.target.files[0]) {
-        return;
-      }
-      template.isUploading.set(true)
-      Session.set('isUploading', true)
-
-      formData.append(event.target.files[0].name, event.target.files[0])
-
-      axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
-      .then(res => {
-        let businessId = Router.current().params
-        businessId = businessId && businessId._id
-        const businessUnitId = Session.get('context') || businessId;
-        const currentTravelRequest = template.currentTravelRequest.curValue;
-        const travelId = currentTravelRequest._id || currentTravelRequest.id;
-    
-        const newAttachment = {
-            ...res.data,
-            travelId,
-            name: event.target.files[0].name,
-            owner: Meteor.userId(),
-            businessId: businessUnitId,
-            tenantId: Core.getTenantId()
-        }
-
-        if (!Meteor.userId()) {
-            delete newAttachment.owner
-        }
-
-        Meteor.call('attachment/create', newAttachment, (err, res) => {
-            if (res){
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                toastr.success('File successfully uploaded', 'Success')
-            } else {
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                console.log('attachment error ', err)
-                toastr.error("Save Failed", "Couldn't Save new attachment", "error");
-            }
-        });
-      })
-      .catch(err => {
-        template.isUploading.set(false)
-        Session.set('isUploading', false)
-      })
-    }
 });
 
 
@@ -178,13 +112,39 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2BookingAgent: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2BookingAgent.helpers({
-    // getAttachments: function () {
-    //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
-    //     const businessUnitId = Session.get('context');
-    //     console.log('currentTravelRequest', currentTravelRequest)
-    //     console.log('businessUnitId', businessUnitId)
-    //     return Attachments.find({ businessId: businessUnitId })
-    // },
+  'getEmployeeFullName': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+    return employee.profile.fullName;
+    else
+    return ""
+  },
+  'getBudgetHolderNames': function(budgetCodeId) {
+    const budget = Budgets.findOne({_id: budgetCodeId})
+
+    if(budget) {
+      let employeeId = budget.employeeId
+      let employee = Meteor.users.findOne({_id: employeeId});
+      if(employee)
+      return employee.profile.fullName;
+      else
+      return "..."
+    }
+  },
+  'getEmployeeEmail': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+    return employee.emails[0].address;
+    else
+    return "..."
+  },
+  'getEmployeePhoneNumber': function(employeeId) {
+    let employee = Meteor.users.findOne({_id: employeeId});
+    if(employee)
+    return employee.employeeProfile.phone;
+    else
+    return "..."
+  },
      'isUnretiredTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
@@ -195,7 +155,7 @@ Template.TravelRequisition2BookingAgent.helpers({
      'isRejectedTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
-            return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+            return currentTravelRequest.retirementStatus === "Retirement Rejected By HOD"
 
         }
      },
@@ -410,17 +370,11 @@ Template.TravelRequisition2BookingAgent.onCreated(function () {
     self.subscribe("hotels", businessUnitId);
     self.subscribe("airlines", businessUnitId);
     self.subscribe("budgets", businessUnitId);
-    self.subscribe("attachments", businessUnitId);
 
 
 
 
     self.currentTravelRequest = new ReactiveVar()
-    self.isUploading = new ReactiveVar()
-    self.isUploading.set(false)
-    Session.set('isUploading', false)
-    self.travelRequestAttachment = new ReactiveVar()
-    self.travelRequestAttachment.set([])
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
@@ -479,13 +433,6 @@ Template.TravelRequisition2BookingAgent.onCreated(function () {
 
 
         }
-
-        // if (attachmentSubscription.ready()) {
-        //     let travelRequestAttachment = Attachments.find({ travelId: invokeReason.requisitionId })
-        //     console.log('travelRequestAttachment', travelRequestAttachment)
-        //     console.log('invokeReason.requisitionId', invokeReason.requisitionId)
-        //     self.travelRequestAttachment.set(travelRequestAttachment)
-        // }
 
         if(businessUnitSubscription.ready()) {
             let businessUnit = BusinessUnits.findOne({_id: businessUnitId})

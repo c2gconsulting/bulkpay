@@ -47,8 +47,8 @@ module.exports = {
         //other service env vars
          MAIL_URL: "smtp://username:password@smtp.gmail.com:587/",
          //AWS_S3_BUCKET: "",
-         MAIL_SITE_NAME: "Hub825Travel™",
-         MAIL_FROM: "Hub825Travel™ Team <no-reply@bulkpay.co>",
+         MAIL_SITE_NAME: "OILSERV TRIPS™",
+         MAIL_FROM: "OILSERV TRIPS™ Team <no-reply@bulkpay.co>",
 
          JWT_SECRET=""
     },

@@ -360,6 +360,10 @@ fieldset[disabled] .btn-white.active {
 .panel-danger .panel-btns a:hover {
   opacity: 1;
 }
+.modal .panel-body {
+  max-height: 500px;
+  overflow-x: scroll;
+}
 .panel-body,
 .panel-footer {
   padding: 20px;

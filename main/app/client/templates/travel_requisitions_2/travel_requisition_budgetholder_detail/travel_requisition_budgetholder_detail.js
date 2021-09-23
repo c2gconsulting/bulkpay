@@ -10,7 +10,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Approved By Budget Holder";
+        currentTravelRequest.status = "Approved By MD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -28,7 +28,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": Budget Holder Comment cannot be empty";
+            validationErrors += ": MD Comment cannot be empty";
         }
         if (fieldsAreValid){
            Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
@@ -66,7 +66,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Rejected By Budget Holder";
+        currentTravelRequest.status = "Rejected By MD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -84,7 +84,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": Supervisor Comment cannot be empty";
+            validationErrors += ": HOD Comment cannot be empty";
         }
 
 

@@ -184,7 +184,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
         }
     },
     allowedStatus() {
-        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"]
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved by HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
     },
     setDefaultStatus(val) {
         return val || 'Status'
@@ -205,7 +205,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
      'isRejectedTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
-            return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+            return currentTravelRequest.retirementStatus === "Retirement Rejected By HOD"
 
         }
      },

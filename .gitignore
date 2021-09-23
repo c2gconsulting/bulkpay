@@ -17,6 +17,8 @@ node_modules/
 
 #for mup
 mup.js
+mup.js.template
+mup-bulkpay.js
 
 #for macos
 **/.DS_Store

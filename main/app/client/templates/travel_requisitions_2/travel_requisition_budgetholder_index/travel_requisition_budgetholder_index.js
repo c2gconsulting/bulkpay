@@ -59,7 +59,7 @@ Template.TravelRequisition2BudgetHolderIndex.helpers({
         let totalNum = TravelRequisition2s.find({
             $and : [
             { budgetHolderId: Meteor.userId()},
-            { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+            { $or : [ { status : "Approved by HOD" }, { status : "Approved By MD" }, { status : "Rejected By MD"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -128,7 +128,7 @@ Template.TravelRequisition2BudgetHolderIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { budgetHolderId: Meteor.userId()},
-                { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
+                { $or : [ { status : "Approved by HOD" }, { status : "Approved By MD" }, { status : "Rejected By MD"}] }
             ]
         }, options);
     }

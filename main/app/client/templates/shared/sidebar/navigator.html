@@ -87,16 +87,16 @@
                 </a>
               </li>
 
-              <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
+              <!-- <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
                   <a href="" id="travelSupervisorMenu">
                       <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                      <span>Supervisor Approvals</span>
+                      <span>HOD Approvals</span>
                   </a>
               </li>
               {{#if isMenuExpanded 'travelSupervisorMenu'}}
                   <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
                   <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
-              {{/if}}
+              {{/if}} -->
 
             {{else}}
               <li><a href="{{pathFor 'travelrequests.list'}}">My Travel Request</a></li>
@@ -142,6 +142,15 @@
         {{/if}}
 
         {{#if hasEmployeeAccess}}
+          <li>
+            <a href="{{pathFor 'approvalsconfig'}}">
+              <i class="fa fa-cog"></i>
+              <span>Approvals Config</span>
+            </a>
+          </li>
+        {{/if}}
+
+        {{#if hasEmployeeAccess}}
           <li class="parent {{isMenuExpandedFocusClass 'administrationMenu'}}">
             <a href="" id="administrationMenu">
               <i class="fa fa-users"></i>
@@ -151,34 +160,37 @@
         {{/if}}
 
         {{#if isMenuExpanded 'administrationMenu'}}
-          <li><a href="{{pathFor 'employees'}}">Manage Employees</a></li>
+          <li><a href="{{pathFor 'employees'}}">&nbsp;&nbsp;&nbsp;&nbsp;Manage Employees</a></li>
 
           {{#if isAdvancedTravelEnabled}}
-            <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">All Travel Requests</a></li>
-            <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">All Travel Retirements</a></li>
+            <li><a href="{{pathFor 'travelrequest2.travelrequisition2adminindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;All Travel Requests</a></li>
+            <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;All Travel Retirements</a></li>
           {{/if}}
 
+          <li><a href="{{pathFor 'staffcategories'}}">&nbsp;&nbsp;&nbsp;&nbsp;Staff Categories</a></li>
+
           {{#if isTravelBudgetsEnabled}}
-            <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
+            <li><a href="{{pathFor 'budgets'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travels Budget Codes</a></li>
           {{/if}}
 
           {{#if isTravelCitiesEnabled}}
-            <li><a href="{{pathFor 'travelcities'}}">Travel Cities</a></li>
+            <li><a href="{{pathFor 'travelcities'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travel Cities</a></li>
           {{/if}}
 
           {{#if isAirlinesEnabled}}
-            <li><a href="{{pathFor 'airlines'}}">Airlines</a></li>
+            <li><a href="{{pathFor 'airlines'}}">&nbsp;&nbsp;&nbsp;&nbsp;Airlines</a></li>
           {{/if}}
 
           {{#if isAHotelsEnabled}}
-            <li><a href="{{pathFor 'hotels'}}">Hotels</a></li>
+            <li><a href="{{pathFor 'hotels'}}">&nbsp;&nbsp;&nbsp;&nbsp;Hotels</a></li>
           {{/if}}
 
           {{#if isEmailSettingsEnabled}}
-            <li><a href="{{pathFor 'emailsettings'}}">Email Settings</a></li>
+            <li><a href="{{pathFor 'emailsettings'}}">&nbsp;&nbsp;&nbsp;&nbsp;Email Settings</a></li>
           {{/if}}
-          <li><a href="{{pathFor 'project.list'}}">Create/Assign Projects</a></li>
+          <li><a href="{{pathFor 'project.list'}}">&nbsp;&nbsp;&nbsp;&nbsp;Create/Assign Projects</a></li>
         {{/if}}
+
 
         {{#if isTravelRequisitionActive}}
           {{#if isAdvancedTravelEnabled}}
@@ -186,7 +198,7 @@
               <li class="parent {{isMenuExpandedFocusClass 'travelSupervisorMenu'}}">
                 <a href="" id="travelSupervisorMenu">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                  <span>Supervisor Approvals</span>
+                  <span>HOD Approvals</span>
                 </a>
               </li>
               {{#if isMenuExpanded 'travelSupervisorMenu'}}
@@ -195,18 +207,64 @@
               {{/if}}
             {{/if}}
 
-            {{#if isUserABudgetHolder}}
+
+            {{#if isUserAManager}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelmanagerMenu'}}">
+                <a href="" id="travelmanagerMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>MD Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelmanagerMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2mdindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <!-- <li><a href="{{pathFor 'travelrequest2.travelrequisition2supervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li> -->
+              {{/if}}
+            {{/if}}
+
+            {{#if hasLogisticsProcessAccess}}
+            <li>
+              <a href="{{pathFor 'travelrequest2.travelrequisition2logisticsindex'}}">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                <span>Logistics Process</span>
+              </a>
+            </li>
+            {{/if}}
+
+            {{#if hasBSTProcessAccess}}
+            <li>
+              <a href="{{pathFor 'travelrequest2.travelrequisition2bstindex'}}">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                <span>BST Process</span>
+              </a>
+            </li>
+            {{/if}}
+
+            <!-- Other Approvals -->
+            {{#if hasTravelApprovalAccess}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelUserApprovalMenu'}}">
+                <a href="" id="travelUserApprovalMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>{{travelApprovalAccess.approvalLabel}}</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelUserApprovalMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex' query=''}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
+            {{/if}}
+
+            <!-- {{#if isUserABudgetHolder}}
               <li class="parent {{isMenuExpandedFocusClass 'travelBudgetHolderMenu'}}">
                 <a href="" id="travelBudgetHolderMenu">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                  <span>Budget Holder Approvals</span>
+                  <span>MD Approvals</span>
                 </a>
               </li>
               {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
                 <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
-                <!--<li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>-->
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>
               {{/if}}
-            {{/if}}
+            {{/if}} -->
 
             {{#if isUserATravelFinanceApprover}}
               <li class="parent {{isMenuExpandedFocusClass 'travelFinanceMenu'}}">

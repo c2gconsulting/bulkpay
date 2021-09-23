@@ -210,6 +210,16 @@ Router.route('/business/:_id/hotels', {
     controller: 'HotelsController',
     where: 'client'
 });
+Router.route('/business/:_id/staffcategories', {
+    name: 'staffcategories',
+    controller: 'StaffCategoriesController',
+    where: 'client'
+});
+Router.route('/business/:_id/approvalsconfig', {
+    name: 'approvalsconfig',
+    controller: 'ApprovalsConfigController',
+    where: 'client'
+});
 Router.route('/business/:_id/travelcities', {
     name: 'travelcities',
     controller: 'TravelcitiesController',
@@ -538,6 +548,29 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorindex', {
     action: 'showTravelRequisition2SupervisorIndex',
     where: 'client'
 });
+
+
+Router.route('/business/:_id/employee/travelrequisition2bstindex', {
+    name: 'travelrequest2.travelrequisition2bstindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2BSTIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequisition2logisticsindex', {
+    name: 'travelrequest2.travelrequisition2logisticsindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2LogisticsIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequisition2mdindex', {
+    name: 'travelrequest2.travelrequisition2mdindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2MDIndex',
+    where: 'client'
+});
+
 
 Router.route('/business/:_id/travelrequests2/bookingrequisition', {
     name: 'travelrequests2.bookingrequisition',

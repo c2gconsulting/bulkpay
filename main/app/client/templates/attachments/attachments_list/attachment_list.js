@@ -1,3 +1,8 @@
+/*****************************************************************************/
+/* AttachmentList: Event Handlers */
+/*****************************************************************************/
+import axios from 'axios';
+
 Template.AttachmentsList.events({
     // 'dropped #dropzone': function(event, temp) {
     //     FS.Utility.eachFile(event, function(file) {
@@ -11,87 +16,86 @@ Template.AttachmentsList.events({
     //       });
     //     });
     //   },
-    // 'dropped #dropzone': FS.EventHandlers.insertFiles(Media, {
-    //     metadata: function (fileObj) {
-    //         return {
-    //             owner: Meteor.userId(),
-    //             objectType: Session.get('objectType'),
-    //             objectId: Session.get('objectId'),
-    //             tenantId: Core.getTenantId()
-    //         };
-    //     },
-    //     after: function (error, fileObj) {
-    //         if (error){
-    //             if (error.reason){
-    //                 toastr.error(error.reason, 'Error')
-    //             } else {
-    //                 toastr.warning(error, "Warning")
-    //             }
-    //         } else {
-    //             toastr.success('File successfully uploaded', 'Success')
-    //         }
-    //     }
-    // }),
-    // 'dropped #dropzone': function (fileObj) {
-    //   axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
-    //   .then(res => {
-    //     console.log(data)
-    //     toastr.success('File successfully uploaded', 'Success')
-    //   })
-    //   .catch(err => {
-    //       toastr.warning(error, "Warning")
-    //       console.log('then errponse', err)
-    //   })
-    // },
 
-    'click .remove-file': function(event, template) {
-        var fileObj = this;
-        if (!fileObj) {
-            toastr.warning('No file selected', 'Warning');
-            return false;
+    'change input[type="file"]' ( event, template ) {
+      const formData = new FormData()
+
+      if (!event.target || !event.target.files[0]) {
+        return;
+      }
+      template.isUploading.set(true)
+      Session.set('isUploading', true)
+
+      formData.append(event.target.files[0].name, event.target.files[0])
+
+      console.log('running axios post request...')
+      axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
+      .then(res => {
+        try {
+          console.log('running then block...', res.data)
+          console.log("Session.get('context')", Session.get('context'))
+          console.log("Session.get('context')", template)
+          const businessUnitId = Session.get('context');
+          const requisitionId = template.data.requisitionId
+      
+          const newAttachment = {
+            ...res.data,
+            travelId: requisitionId,
+            name: event.target.files[0].name,
+            owner: Meteor.userId(),
+            businessId: businessUnitId,
+            tenantId: Core.getTenantId()
+          }
+
+          console.log('newAttachment', newAttachment)
+  
+          Meteor.call('attachment/create', newAttachment, (err, res) => {
+            if (res){
+              template.isUploading.set(false)
+              Session.set('isUploading', false)
+              toastr.success('File successfully uploaded', 'Success')
+            } else {
+              template.isUploading.set(false)
+              Session.set('isUploading', false)
+              toastr.error("Save Failed", "Couldn't Save new attachment", "error");
+            }
+          });
+        } catch (error) {
+          toastr.error("Save Failed", error.message || error, "error");
+          console.log('error', error)
         }
-
-        swal({
-            title: "Are you sure?",
-            text: "You will not be able to recover this Attachment",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: true
-        }, () => {
-            Meteor.call('attachment/delete', fileObj._id, (err, res) => {
-                if (res){
-                    toastr.success('File deleted successfully', 'Success')
-                } else {
-                    console.log(err);
-                    toastr.error("Delete Failed", "Couldn't delete an attachment", "error");
-                }
-            });
-        });
+      })
+      .catch(err => {
+        template.isUploading.set(false)
+        Session.set('isUploading', false)
+      })
     },
+  'click .remove-file': function(event, template) {
+    var fileObj = this;
+    if (!fileObj) {
+      toastr.warning('No file selected', 'Warning');
+      return false;
+    }
 
-    // 'change #manualInput': FS.EventHandlers.insertFiles(Media, {
-    //     metadata: function (fileObj) {
-    //         return {
-    //             owner: Meteor.userId(),
-    //             objectType: Session.get('objectType'),
-    //             objectId: Session.get('objectId'),
-    //             tenantId: Core.getTenantId()
-    //         };
-    //     },
-    //     after: function (error, fileObj) {
-    //         if (error){
-    //             if (error.reason){
-    //                 toastr.error(error.reason, 'Error')
-    //             } else {
-    //                 toastr.warning("Invalid file format selected or file too large", "Warning")
-    //             }
-    //         } else {
-    //             toastr.success('File successfully uploaded', 'Success')
-    //         }
-    //     }
-    // })
+    swal({
+      title: "Are you sure?",
+      text: "You will not be able to recover this Attachment",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Yes, delete it!",
+      closeOnConfirm: true
+    }, () => {
+      Meteor.call('attachment/delete', fileObj._id, (err, res) => {
+        if (res){
+          toastr.success('File deleted successfully', 'Success')
+        } else {
+          console.log(err);
+          toastr.error("Delete Failed", "Couldn't delete an attachment", "error");
+        }
+      });
+    });
+  },
 });
 
 
@@ -115,12 +119,9 @@ Template.AttachmentsList.helpers({
     },
 
     attachments: function () {
-        // Meteor.Attachment.find({ })
         const requisitionId = Template.parentData() && Template.parentData().requisitionId;
         const travelId = Template.instance().data && Template.instance().data.requisitionId
-        console.log('attachment list - requisitionId', travelId)
         const attachments = Attachments.find({ travelId: requisitionId || travelId })
-        console.log('attachments', attachments)
         return attachments;
     },
 
@@ -132,27 +133,33 @@ Template.AttachmentsList.helpers({
 Template.AttachmentsList.onCreated(function() {
     let instance = this;
 
-    self.attachments = new ReactiveVar()
+    instance.attachments = new ReactiveVar()
+    instance.isUploading = new ReactiveVar()
+    instance.isUploading.set(false)
+    Session.set('isUploading', false)
     instance.autorun(function () {
-        let subscription = instance.subscribe('ObjectsMedia', Session.get('objectType'), Session.get('objectId'));
+      let subscription = instance.subscribe('ObjectsMedia', Session.get('objectType'), Session.get('objectId'));
+      const businessUnitId = Session.get('context');
+      console.log('businessUnitId', businessUnitId)
+      let attachmentSub = instance.subscribe("attachments", businessUnitId);
+
+      if (attachmentSub.ready()) {
+        const requisitionId = instance.data.requisitionId || Template.parentData().requisitionId
+        console.log('requisitionId-requisitionId', requisitionId)
+        console.log('Template.parentData()', Template.parentData())
+        let attachmentRecords = Attachments.find({ travelId: requisitionId });
+        instance.attachments.set(attachmentRecords)
+      }
     });
 
-    self.attachments = function () {
-        const requisitionId = Template.parentData() && Template.parentData().requisitionId;
-        const travelId = Template.instance().data && Template.instance().data.requisitionId
-        console.log('travelId', travelId)
-        const data = Attachments.find({ travelId: requisitionId || travelId });
-        console.log('traveldata', data)
-        return data;
-    }
     instance.media = function() {
-        let selector;
-        selector = {
-            "tenantId": Core.getTenantId(),
-            "objectType": Session.get('objectType'),
-            "objectId": Session.get('objectId')
-        };
-        return Media.find(selector);
+      let selector;
+      selector = {
+          "tenantId": Core.getTenantId(),
+          "objectType": Session.get('objectType'),
+          "objectId": Session.get('objectId')
+      };
+      return Media.find(selector);
     };
 });
 
