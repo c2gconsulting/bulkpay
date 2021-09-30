@@ -7,8 +7,19 @@
      return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
  });
 
+ Core.publish("TravelRequestsByMD", function (businessUnitId, managerId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, managerId: managerId});
+});
+
+Core.publish("TravelRequestsByGCOO", function (businessUnitId, gcooId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, gcooId: gcooId});
+});
+
+Core.publish("TravelRequestsByGCEO", function (businessUnitId, gceoId) {
+   return TravelRequisition2s.find({businessId: businessUnitId, gceoId: gceoId});
+});
  Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
-     return TravelRequisition2s.find({ businessId: businessUnitId });
+     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsId: logisticsId });
  });
 
  Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {

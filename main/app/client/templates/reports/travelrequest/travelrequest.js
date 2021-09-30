@@ -295,15 +295,21 @@ Template.TravelRequestReport.onCreated(function () {
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
       //  let formattedHeader = ["Description", "Created By","Date required", "Status"]
-        let formattedHeader = ["From", "To","Hotel", "Departure Date", "Return Date", "Description", "Created By","Date required","Status","Retirement Status","Budget holder","Supervisor","Budget code","Total Trip Cost NGN","Total Trip Cost USD"]
+        // let formattedHeader = ["From", "To","Hotel", "Departure Date", "Return Date", "Description", "Created By","Date required","Status","Retirement Status","Budget holder","Supervisor","Budget code","Total Trip Cost NGN","Total Trip Cost USD"]
+        let formattedHeader = ["Company code", "Name of Requester", "Name of Approver", "Name of Traveller", "Mode of transport", "Foreign/Local", "Department/Project", "Date of request", "Trip Start date", "Trip End date", "Cost center",
+        "Description", "Amount NGN","Amount USD", "Amount Flight", "Amount Security", "Amount Logistics", "Amount Accommodation", "Per Diem (NGN)", "Per Diem (USD)", "Client related", "Driver", "Vendor"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
             // reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
             //     aDatum.status])
-reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelcityName(aDatum.trips[0].toId), self.getHotelName(aDatum.trips[0].hotelId),
-  aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
+// reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelcityName(aDatum.trips[0].toId), self.getHotelName(aDatum.trips[0].hotelId),
+//   aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
+//         })
+
+reportData.push(['OSL/FRAZ/CLIENT', aDatum.createdByFullName, "Achama Eluwa", "Akolade Adesanmi", aDatum.trips[0].transportationMode, aDatum.destinationType, aDatum.costCenter, aDatum.createdAt, aDatum.trips[0].departureDate, aDatum.trips[0].returnDate, "", 
+aDatum.description, aDatum.totalTripCostNGN,aDatum.totalTripCostUSD, aDatum.totalFlightCostUSD, aDatum.totalSecurityCostNGN, 0, aDatum.totalHotelCostNGN, aDatum.totalEmployeePerdiemNGN, aDatum.totalEmployeePerdiemUSD, "", "", ""])
         })
 
         Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},

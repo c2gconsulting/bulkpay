@@ -108,6 +108,18 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
+    "account/getManager": function (userId) {
+        userId = userId || Meteor.userId();
+        return Meteor.users.findOne({ directManagerId: userId});
+    },
+    "account/gcoo": function (userId) {
+        userId = userId || Meteor.userId();
+        return Meteor.users.findOne({ gcooId: userId});
+    },
+    "account/gceo": function (userId) {
+        userId = userId || Meteor.userId();
+        return Meteor.users.findOne({ gceoId: userId});
+    },
     /*
      * check if current user has password
      */

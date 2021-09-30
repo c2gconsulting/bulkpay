@@ -84,7 +84,7 @@ Template.TravelRequisition2Create.events({
 
    }, 200),
 
-   "change [name='clientEmail']": _.throttle(function(e, tmpl) {
+   "change [name*='clientEmail']": _.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const clientEmail = $(e.currentTarget).val();
         const currentTripFor = currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals;
@@ -131,7 +131,7 @@ Template.TravelRequisition2Create.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -165,7 +165,7 @@ Template.TravelRequisition2Create.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -197,7 +197,7 @@ Template.TravelRequisition2Create.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -229,7 +229,7 @@ Template.TravelRequisition2Create.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -264,7 +264,7 @@ Template.TravelRequisition2Create.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -359,7 +359,7 @@ Template.TravelRequisition2Create.events({
         returnDate: new Date(),
         departureTime: "6 AM",
         returnTime: "6 AM",
-        transportationMode: 'AIRLINE',
+        transportationMode: 'AIR',
         carOption: 'CAR_HIRE',
         provideAirportPickup: false,
         provideGroundTransport: false,
@@ -705,7 +705,7 @@ Template.TravelRequisition2Create.events({
     tmpl.updateTripNumbers();
 },
 
-'click #new-requisition-create': function(e, tmpl) {
+ 'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
@@ -739,6 +739,7 @@ Template.TravelRequisition2Create.events({
 
     if (currentTravelRequest.tripFor && currentTravelRequest.tripFor.individuals) {
       const { individuals } = currentTravelRequest.tripFor;
+      console.log('individuals', individuals)
       for (let i = 0; i < individuals.length; i++) {
         if (individuals[i] && (!individuals[i].fullName || !individuals[i].email)) {
           fieldsAreValid = false;
@@ -803,46 +804,44 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }
-            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
             //}
         }
     }
 
-
     if (fieldsAreValid){
-        //explicitely set status
-        currentTravelRequest.status = "Pending";
+      //explicitely set status
+      currentTravelRequest.status = "Pending";
+      // Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
+      Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'HOD', (err, res) => {
+        if (res){
+          swal({
+            title: "Travel requisition created",
+            text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+            confirmButtonClass: "btn-success",
+            type: "success",
+            confirmButtonText: "OK"
+          });
+        } else {
+          swal({
+            title: "Oops!",
+            text: "Your travel requisition could not be created, reason: " + err.message,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+          });
+          console.log(err);
+        }
 
-        Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-            if (res){
-                swal({
-                    title: "Travel requisition created",
-                    text: "Your travel requisition has been created, a notification has been sent to your supervisor",
-                    confirmButtonClass: "btn-success",
-                    type: "success",
-                    confirmButtonText: "OK"
-                });
-            } else {
-                swal({
-                    title: "Oops!",
-                    text: "Your travel requisition could not be created, reason: " + err.message,
-                    confirmButtonClass: "btn-danger",
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
-                console.log(err);
-            }
-
-        });
-        Template.instance().errorMessage.set(null);
-        Modal.hide('TravelRequisition2Create');
-    }else{
-        Template.instance().errorMessage.set("Validation errors" + validationErrors);
+      });
+      Template.instance().errorMessage.set(null);
+      Modal.hide('TravelRequisition2Create');
+    } else {
+      Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
-
-},
+  },
 
 'click #new-requisition-save-draft': function(e, tmpl) {
     e.preventDefault()
@@ -913,7 +912,7 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }
-            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
             //}
@@ -1158,6 +1157,49 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
+    getLineOfCommand(nextAction, isStatusUpdate){
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
+      const currentUser = Template.instance().currentUser.get();
+      const userPosition = Meteor.userId();
+      const HOD = currentUser.supervisorId;
+      const MANAGER = currentUser.directManagerId;
+      const GCOO = currentUser.gcooId;
+      const GCEO = currentUser.gceoId;
+
+      switch (userPosition) {
+        case HOD: {
+          if (isAIR && nextAction) return 'MANAGER'
+          if (isAIR && isStatusUpdate) return 'Approved by HOD'
+
+          break;
+        }
+
+        case MANAGER: {
+          if (isAIR && nextAction) return 'GCOO'
+          if (isAIR && isStatusUpdate) return 'Approved By MD'
+
+          break;
+        }
+
+        case GCOO: {
+          if (isAIR && nextAction) return 'GCEO'
+          if (isAIR && isStatusUpdate) return 'Approved By GCOO'
+
+          break;
+        }
+
+        case GCEO: {
+          if (isAIR && nextAction) return 'BST'
+          if (isAIR && isStatusUpdate) return 'Approved By GCEO'
+
+          break;
+        }
+
+        default:
+            break;
+      }
+    },
     destinationTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -1166,6 +1208,9 @@ Template.TravelRequisition2Create.helpers({
     },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
+    },
+    isMultipleTrip(){
+        return Template.instance().currentTravelRequest.get().type === "Multiple";
     },
     isCarModeOfTransport(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -1178,7 +1223,7 @@ Template.TravelRequisition2Create.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){
@@ -1262,6 +1307,10 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null);
+    self.currentUser = new ReactiveVar();
+    const userId = Meteor.userId();
+    const currentUser = Meteor.users.findOne({ $or: [{ directManagerId: userId}, { gcooId: userId }, { gceoId: userId }]});
+    self.currentUser.set(currentUser || {});
 
     let businessUnitId = Session.get('context');
     self.subscribe("travelcities", Session.get('context'));
@@ -1304,7 +1353,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             returnDate: new Date(),
             departureTime: "6 AM",
             returnTime: "6 PM",
-            transportationMode: 'AIRLINE',
+            transportationMode: 'AIR',
             carOption: 'CAR_HIRE',
             provideAirportPickup: false,
             provideGroundTransport: false,
@@ -1464,7 +1513,7 @@ Template.TravelRequisition2Create.onCreated(function () {
             currentTravelRequest.trips[i].hotelRate = hotelRate;
             currentTravelRequest.trips[i].destinationCityCurrreny = destinationCityCurrreny
 
-            if (currentTravelRequest.trips[i].transportationMode !== "AIRLINE"){
+            if (currentTravelRequest.trips[i].transportationMode !== "AIR"){
                 currentTravelRequest.trips[i].provideAirportPickup = false;
                 currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
             }

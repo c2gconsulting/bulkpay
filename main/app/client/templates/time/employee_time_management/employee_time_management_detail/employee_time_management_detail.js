@@ -164,7 +164,7 @@ Template.TimeRecordDetail.helpers({
         const currentTimeRecord = Template.instance().currentTimeRecord.get();
 
         if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeFullName': function(employeeId) {

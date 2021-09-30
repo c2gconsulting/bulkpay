@@ -106,7 +106,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -140,7 +140,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -172,7 +172,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -204,7 +204,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                     returnDate: new Date(),
                     departureTime: "6 AM",
                     returnTime: "6 AM",
-                    transportationMode: 'AIRLINE',
+                    transportationMode: 'AIR',
                     carOption: 'CAR_HIRE',
                     provideAirportPickup: false,
                     provideGroundTransport: false,
@@ -294,7 +294,7 @@ Template.TravelRequisition2ExtensionDetail.events({
         returnDate: new Date(),
         departureTime: "6 AM",
         returnTime: "6 AM",
-        transportationMode: 'AIRLINE',
+        transportationMode: 'AIR',
         carOption: 'CAR_HIRE',
         provideAirportPickup: false,
         provideGroundTransport: false,
@@ -728,7 +728,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }
-            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
             //}
@@ -838,7 +838,7 @@ Template.TravelRequisition2ExtensionDetail.events({
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }
-            //if (currentTrip.transportationMode === "AIRLINE" && currentTrip.airlineId === ""){
+            //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
             //}
@@ -1103,7 +1103,7 @@ Template.TravelRequisition2ExtensionDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){
@@ -1229,7 +1229,7 @@ Template.TravelRequisition2ExtensionDetail.onCreated(function () {
             returnDate: new Date(),
             departureTime: "6 AM",
             returnTime: "6 PM",
-            transportationMode: 'AIRLINE',
+            transportationMode: 'AIR',
             carOption: 'CAR_HIRE',
             provideAirportPickup: false,
             provideGroundTransport: false,
@@ -1389,7 +1389,7 @@ Template.TravelRequisition2ExtensionDetail.onCreated(function () {
             currentTravelRequest.trips[i].hotelRate = hotelRate;
             currentTravelRequest.trips[i].destinationCityCurrreny = destinationCityCurrreny
 
-            if (currentTravelRequest.trips[i].transportationMode !== "AIRLINE"){
+            if (currentTravelRequest.trips[i].transportationMode !== "AIR"){
                 currentTravelRequest.trips[i].provideAirportPickup = false;
                 currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
             }

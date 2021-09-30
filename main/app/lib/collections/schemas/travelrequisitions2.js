@@ -74,13 +74,29 @@ Core.Schemas.Trip = new SimpleSchema({
     },
     transportationMode:{
         type: String,
-        defaultValue: 'AIRLINE',
-        allowedValues: ['AIRLINE', 'CAR', 'TRAIN'],
+        defaultValue: 'AIR',
+        allowedValues: ['AIR', 'LAND'],
         optional: true
     },
     provideSecurity: {
         type: Boolean,
         defaultValue: false
+    },
+    driverInformation: {
+        type: String,
+        optional: true
+    },
+    vehicleInformation: {
+        type: String,
+        optional: true
+    },
+    accountNumber: {
+        type: String,
+        optional: true
+    },
+    bankName: {
+        type: String,
+        optional: true
     },
     carOption:{
         type: String,
@@ -190,7 +206,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     costCenter: {
         type: String,
         defaultValue: 'Project',
-        allowedValues: ['Project', 'Cost_Center']
+        allowedValues: ['Project', 'Department']
     },
     tpcTrip: {
         type: String,
@@ -312,6 +328,15 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true,
         defaultValue: 0
     },
+    totalSecurityCostNGN: {
+        type: Number, decimal: true,
+        optional: true
+    },
+    totalSecurityCostUSD: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
     totalHotelCostNGN: {
         type: Number, decimal: true,
         optional: true,
@@ -359,7 +384,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO",],
+        allowedValues: ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
         optional: true
     },
     retirementStatus: {
@@ -383,11 +408,23 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String,
         optional: true
     },
+    managerId: {
+        type: String,
+        optional: true
+    },
     budgetHolderId: {
         type: String,
         optional: true
     },
     financeApproverId: {
+        type: String,
+        optional: true
+    },
+    gcooId: {
+        type: String,
+        optional: true
+    },
+    gceoId: {
         type: String,
         optional: true
     },
@@ -419,6 +456,21 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    managerComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    gcooComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    gceoComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     additionalSecurityComment: {
         type: String,
         defaultValue: '',
@@ -444,12 +496,12 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
-    bstProcessed: {
+    isProcessedByBST: {
         type: Boolean,
         defaultValue: false,
         optional: true
     },
-    logisticsProcessed: {
+    isProcessedByLogistics: {
         type: Boolean,
         defaultValue: false,
         optional: true

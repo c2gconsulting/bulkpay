@@ -17,7 +17,7 @@ Template.TravelRequisition2BSTIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2SupervisorDetail', invokeReason)
+        Modal.show('TravelRequisition2BSTDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.TravelRequisition2BSTIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsBySupervisor(skip)
-        Template.instance().travelRequestsBySupervisor.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByBST(skip)
+        Template.instance().travelRequestsByBST.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -51,14 +51,14 @@ Template.registerHelper('repeat', function(max) {
 /* TravelRequisition2BSTIndex: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2BSTIndex.helpers({
-    'travelRequestsBySupervisor': function() {
-        return Template.instance().travelRequestsBySupervisor.get()
+    'travelRequestsByBST': function() {
+        return Template.instance().travelRequestsByBST.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
-            { supervisorId: Meteor.userId()},
-            { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
+            { bstId: Meteor.userId()},
+            { $or : [{ status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -98,12 +98,12 @@ Template.TravelRequisition2BSTIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsBySupervisor = new ReactiveVar()
+    self.travelRequestsByBST = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsBySupervisor = function(skip) {
+    self.getTravelRequestsByBST = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -116,7 +116,7 @@ Template.TravelRequisition2BSTIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { bstId: Meteor.userId()},
-                { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
+                { $or : [{ status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
             ]
         }, options);
     }
@@ -130,9 +130,9 @@ Template.TravelRequisition2BSTIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsBySupervisorSub = self.subscribe('TravelRequestsByBST', businessUnitId, Meteor.userId());
-        if(travelRequestsBySupervisorSub.ready()) {
-            self.travelRequestsBySupervisor.set(self.getTravelRequestsBySupervisor(0))
+        let travelRequestsByBSTSub = self.subscribe('TravelRequestsByBST', businessUnitId, Meteor.userId());
+        if(travelRequestsByBSTSub.ready()) {
+            self.travelRequestsByBST.set(self.getTravelRequestsByBST(0))
         }
         //--
         if(customConfigSub.ready()) {

@@ -4,26 +4,22 @@
 /*****************************************************************************/
 import _ from 'underscore';
 
-
-
-
-
 Template.TravelRequisition2BSTDetail.events({
-    'click #approve': (e, tmpl) => {
+    'click #processTrip': (e, tmpl) => {
         let supervisorComment = $('[name=supervisorComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved by HOD";
+        currentTravelRequest.status = "Processed By BST";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
         e.preventDefault()
 
         //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        // currentTravelRequest.supervisorComment = $("#supervisorComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
         let fieldsAreValid = true;
@@ -32,18 +28,14 @@ Template.TravelRequisition2BSTDetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.supervisorComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
-        }
-
         if( currentTravelRequest.budgetCodeId=="I am not sure")
         {
             fieldsAreValid = false;
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+            const processed = true
+            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'BST', '', processed, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -70,71 +62,6 @@ Template.TravelRequisition2BSTDetail.events({
         }
 
     },
-
-
-
-    'click #reject': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
-        let budgetCodeId =$('[name=budget-code]').val();
-
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
-        currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Rejected By HOD";
-
-        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-        e.preventDefault()
-
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-        let fieldsAreValid = true;
-        let validationErrors = '';
-
-        /*** VALIDATIONS ***/
-        //check that the description is not hello
-
-        if (currentTravelRequest.supervisorComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
-        }
-
-        if( currentTravelRequest.budgetCodeId=="I am not sure")
-        {
-            fieldsAreValid = false;
-            validationErrors += ": select a budget code";
-        }
-        if (fieldsAreValid){
-
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
-                if (res){
-                    swal({
-                        title: "Travel requisition has been rejected",
-                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-                        confirmButtonClass: "btn-success",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                } else {
-                    swal({
-                        title: "Oops!",
-                        text: "Travel requisition has  not been updated, reason: " + err.message,
-                        confirmButtonClass: "btn-danger",
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                    console.log(err);
-                }
-            });
-            Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2BSTDetail');
-        }else{
-            Template.instance().errorMessage.set("Validation errors" + validationErrors);
-        }
-
-    },
     'change [id=budget-code]': function(e, tmpl) {
         e.preventDefault()
 
@@ -143,7 +70,62 @@ Template.TravelRequisition2BSTDetail.events({
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
-    }
+    },
+    "click [id*='provideSecurity']": function(e, tmpl){
+    
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    
+        currentTravelRequest.trips[index].provideSecurity = !currentTravelRequest.trips[index].provideSecurity;
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
+    'change [id=additionalSecurityComment]': function(e, tmpl) {
+      e.preventDefault()
+    
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    
+      currentTravelRequest.additionalSecurityComment = $("#additionalSecurityComment").val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+    
+    },
+    "change [id*='driverInfo']": function(e, tmpl){
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    
+        currentTravelRequest.trips[index].driver = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
+    "change [id*='accountInfo']": function(e, tmpl){
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    
+        currentTravelRequest.trips[index].accountNumber = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
+    "change [id*='vehicleInfo']": function(e, tmpl){
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    
+        currentTravelRequest.trips[index].vehicle = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
+    "change [id*='bankInfo']": function(e, tmpl){
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    
+        currentTravelRequest.trips[index].bank = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
 });
 
 
@@ -157,6 +139,18 @@ Template.registerHelper('formatDate', function(date) {
 Template.TravelRequisition2BSTDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
+    },
+    provideSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? checked="checked" : '';
+        }
+    },
+    needSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
+        }
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -178,7 +172,7 @@ Template.TravelRequisition2BSTDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){

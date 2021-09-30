@@ -56,13 +56,36 @@
                             <div class="col-sm-10">
                                 <div class="form-group">
                                     <ul class="list-inline">
-                                        <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}} disabled/>&nbsp;&nbsp;Single Trip</li>
+                                        <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}} disabled/>&nbsp;&nbsp;One way</li>
                                         <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}} disabled/>&nbsp;&nbsp;Return Trip</li>
                                         <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}} disabled/>&nbsp;&nbsp;Multiple Stops</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
+
+                        {{#if currentTravelRequest.tripFor}}
+                          {{#if currentTravelRequest.tripFor.individuals}}
+                          <hr>
+                          <label for="individuals-trip" class="control-label">The individual(s) going on this trip?</label>
+                          {{#each currentTravelRequest.tripFor.individuals}}
+                          <div class="row">
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label for="clientName_{{@index}}" class="control-label">FullName <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="clientName_{{@index}}" class="form-control" placeholder="Fullname" name="clientName_{{@index}}" value="{{this.fullName}}" disabled />
+                              </div>
+                            </div>
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                <label for="clientEmail_{{@index}}" class="control-label">Email <span class="asterisk important-input">*</span></label>
+                                <input type="text" id="clientEmail_{{@index}}" class="form-control" placeholder="Email" name="toId_{{@index}}" value="{{this.email}}" disabled />
+                              </div>
+                            </div>
+                          </div>
+                          {{/each}}
+                          {{/if}}
+                        {{/if}}
 
                         <hr/>
 
@@ -144,38 +167,49 @@
 
                                 </div>
                             </div>
-                            <div class="col-sm-5">
-                                <div class="form-group">
-                                                                        
-                                    <div style="display:{{isAirModeOfTransport this.tripIndex}}">
 
-                                        <label for="carOption_{{this.tripIndex}}" class="control-label">Driver's Information</label>
-                                        {{#if condition this.carOption 'eq' 'OFFICE' }}
-                                        <input type="text" id="carOption_{{this.tripIndex}}" class="form-control" placeholder="Car Option" name="carOption_{{this.tripIndex}}" value="{{this.driverId}}"/>
-                                        {{else}}
-                                        {{#semanticselect2}}
-                                        <select name="individuals" style="width: 100%" class="ui fluid search dropdown form-control">
-                                            <option value="">Employees</option>
-                                            {{#each employees}}
-                                                <option value="{{_id}}">{{profile.fullName}}</option>
-                                            {{/each}}
-                                        </select>
-                                        {{/semanticselect2}}
-                                        {{/if}}
-                                    </div>
-                                </div>
+                        </div>
+
+                        <hr>
+                        <div class="row">
+                          <div class="col-sm-3">
+                            <div class="form-group">
+                              <label for="carOption_{{this.tripIndex}}" class="control-label">Driver's Information</label>
+                              {{#if condition this.carOption 'eq' 'OFFICE' }}
+                                <input type="text" id="carOption_{{this.tripIndex}}" class="form-control" placeholder="Car Option" name="carOption_{{this.tripIndex}}" value="{{this.driverId}}"/>
+                              {{else}}
+                                {{#semanticselect2}}
+                                  <select name="individuals" style="width: 100%" class="ui fluid search dropdown form-control">
+                                    <option value="">Employees</option>
+                                    {{#each employees}}
+                                        <option value="{{_id}}">{{profile.fullName}}</option>
+                                    {{/each}}
+                                  </select>
+                                {{/semanticselect2}}
+                              {{/if}}
                             </div>
+                          </div>
 
-                            <div class="col-sm-5">
-                                <div class="form-group">
+                          <div class="col-sm-3">
+                              <div class="form-group">
+                                  <label for="accountInfo_{{this.tripIndex}}" class="control-label">Account information</label>
+                                  <input type="text" id="accountInfo_{{this.tripIndex}}" class="form-control" placeholder="Account Information" name="accountInfo_{{this.tripIndex}}" value="{{this.accountNumber}}"/>
+                              </div>
+                          </div>
 
-                                    <div style="display:{{isAirModeOfTransport this.tripIndex}}">
+                          <div class="col-sm-3">
+                              <div class="form-group">
+                                  <label for="bankInfo_{{this.tripIndex}}" class="control-label">Bank Name</label>
+                                  <input type="text" id="bankInfo_{{this.tripIndex}}" class="form-control" placeholder="Bank Information" name="bankInfo_{{this.tripIndex}}" value="{{this.bankName}}"/>
+                              </div>
+                          </div>
 
-                                        <label for="carOption_{{this.tripIndex}}" class="control-label">Car Information</label>
-                                        <input type="text" id="carOption_{{this.tripIndex}}" class="form-control" placeholder="Car Option" name="carOption_{{this.tripIndex}}" value="{{this.carInformation}}"/>
-                                    </div>
-                                </div>
-                            </div>
+                          <div class="col-sm-3">
+                              <div class="form-group">
+                                  <label for="vehicleInfo_{{this.tripIndex}}" class="control-label">Vehicle</label>
+                                  <input type="text" id="vehicleInfo_{{this.tripIndex}}" class="form-control" placeholder="Vehicle Information" name="vehicleInfo_{{this.tripIndex}}" value="{{this.vehicleInformation}}"/>
+                              </div>
+                          </div>
 
                         </div>
                         {{#unless isLastLeg this.tripIndex}}
@@ -401,7 +435,18 @@
                             <div class="col-sm-12">
                                 <label for="supervisorComment" class="control-label">HOD Comment </label>
                                 <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
-
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="managerComment" class="control-label">MD Comment </label>
+                                <input type="text" id="managerComment" class="form-control" placeholder="" name="managerComment" value="{{currentTravelRequest.managerComment}}" disabled/>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="gcooComment" class="control-label">GCOO Comment </label>
+                                <input type="text" id="gcooComment" class="form-control" placeholder="" name="gcooComment" value="{{currentTravelRequest.gcooComment}}" disabled/>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="gceoComment" class="control-label">GCEO Comment </label>
+                                <input type="text" id="gceoComment" class="form-control" placeholder="" name="gceoComment" value="{{currentTravelRequest.gceoComment}}" disabled/>
                             </div>
                         </div>
                         {{#if errorMessage}}
@@ -416,7 +461,7 @@
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
-                        <button class="btn btn-success mr5 pull-right" id="approve" >Process trip</button>
+                        <button class="btn btn-success mr5 pull-right" id="processTrip" >Process trip</button>
                         <!-- <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button> -->
 
                     </div><!-- panel-footer -->

@@ -92,6 +92,26 @@ Template.navigator.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #travelLogisticsMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelBSTMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
     'click #travelmanagerMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
 
@@ -263,11 +283,19 @@ Template.navigator.helpers({
         }
     },
     isUserAManager: function() {
-        if (Meteor.users.findOne({ managerId: Meteor.userId()})){
+        if (Template.instance().directManager.get()){
             return true;
         } else {
             return false;
         }
+    },
+    isGCEO: function() {
+        if (Template.instance().gceo.get()) return true;
+        return false;
+    },
+    isGCOO: function() {
+        if (Template.instance().gcoo.get()) return true;
+        return false;
     },
     isUserABudgetHolder: function() {
         if (Template.instance().isBudgetHolder.get() === "TRUE"){
@@ -526,6 +554,9 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar();
     self.travelApprovalConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
+    self.directManager = new ReactiveVar();
+    self.gceo = new ReactiveVar();
+    self.gcoo = new ReactiveVar();
 
     self.isBudgetHolder = new ReactiveVar();
     self.isFinanceApprover = new ReactiveVar();
@@ -542,6 +573,19 @@ Template.navigator.onCreated(function () {
             let payrollApprovalConfig = PayrollApprovalConfigs.findOne({businessId: businessUnitId})
             self.payrollApprovalConfig.set(payrollApprovalConfig)
         }
+
+
+        Meteor.call('account/getManager', Meteor.userId(), (err, res) => {
+            if (res) self.directManager.set(res)
+        })
+
+        Meteor.call('account/gcoo', Meteor.userId(), (err, res) => {
+            if (res) self.gcoo.set(res)
+        })
+
+        Meteor.call('account/gceo', Meteor.userId(), (err, res) => {
+            if (res) self.gceo.set(res)
+        })
 
         Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
             if(!err) {

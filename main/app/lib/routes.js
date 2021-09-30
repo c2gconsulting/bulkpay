@@ -220,6 +220,11 @@ Router.route('/business/:_id/approvalsconfig', {
     controller: 'ApprovalsConfigController',
     where: 'client'
 });
+Router.route('/business/:_id/employeelevels', {
+    name: 'employeelevels',
+    controller: 'EmployeeLevelsController',
+    where: 'client'
+});
 Router.route('/business/:_id/travelcities', {
     name: 'travelcities',
     controller: 'TravelcitiesController',
@@ -535,6 +540,20 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorretirementinde
     where: 'client'
 });
 
+Router.route('/business/:_id/employee/travelrequisition2logisticsretirementindex', {
+    name: 'travelrequest2.travelrequisition2logisticsretirementindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2LogisticsRetirementIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequisition2bstretirementindex', {
+    name: 'travelrequest2.travelrequisition2bstretirementindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2BSTRetirementIndex',
+    where: 'client'
+});
+
 Router.route('/business/:_id/employee/travelrequisition2retirementindex', {
     name: 'travelrequest2.travelrequisition2retirementindex',
     controller: 'RequisitionController',
@@ -549,6 +568,20 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorindex', {
     where: 'client'
 });
 
+
+Router.route('/business/:_id/employee/travelrequisition2gcooindex', {
+    name: 'travelrequest2.travelrequisition2gcooindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2GCOOIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequisition2gceoindex', {
+    name: 'travelrequest2.travelrequisition2gceoindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2GCEOIndex',
+    where: 'client'
+});
 
 Router.route('/business/:_id/employee/travelrequisition2bstindex', {
     name: 'travelrequest2.travelrequisition2bstindex',

@@ -214,6 +214,13 @@ Partitioner.partitionCollection(EntityObjects);
 EntityObjects.attachSchema(Core.Schemas.EntityObject);
 
 /**
+ * Core Collections EmployeesLevels
+ */
+ EmployeesLevels = new Mongo.Collection("employeeslevels");
+ // Partitioner.partitionCollection(EmployeesLevels);
+ EmployeesLevels.attachSchema(Core.Schemas.EmployeesLevels);
+ 
+/**
  * Core Collections Loans
  */
 Loans = new Mongo.Collection("loans");

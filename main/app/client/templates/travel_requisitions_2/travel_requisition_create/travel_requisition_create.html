@@ -187,7 +187,7 @@
                                 <div class="form-group">
                                     <label for="travelType" class="control-label">Return/ Multiple-stops trip<span class="asterisk important-input">*</span></label>
                                     <ul class="list-inline">
-                                        <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}}/>&nbsp;&nbsp;Single Trip</li>
+                                        <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}}/>&nbsp;&nbsp;One way</li>
                                         <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}}/>&nbsp;&nbsp;Return Trip</li>
                                         <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}}/>&nbsp;&nbsp;Multiple Stops</li>
                                     </ul>
@@ -333,9 +333,9 @@
                                 <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                                 {{#semanticselect2}}
                                 <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                    <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option>
-                                    <option value="CAR" {{transportModeSelected "CAR" tripIndex}}>Car</option>
-                                    <option value="AIRLINE" {{transportModeSelected "AIRLINE" tripIndex}}>Airline</option>
+                                    <!-- <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option> -->
+                                    <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
+                                    <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
                                 </select>
                                 {{/semanticselect2}}
                             </div><!-- form-group -->
@@ -514,7 +514,18 @@
                     <hr/>
                     {{/each}}
 
-                    {{#unless isReturnTrip}}
+                    <!-- {{#unless isReturnTrip}} -->
+                    <!-- <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <button class="btn btn-primary mr5 pull-right" id="add-additional_stop">Add an additional stop</button>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- {{/unless}} -->
+
+
+                    {{#if isMultipleTrip}}
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
@@ -522,7 +533,7 @@
                             </div>
                         </div>
                     </div>
-                    {{/unless}}
+                    {{/if}}
 
                     <div class="row">
                         <div class="col-sm-12">

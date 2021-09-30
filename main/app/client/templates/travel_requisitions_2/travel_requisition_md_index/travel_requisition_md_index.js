@@ -25,7 +25,7 @@ Template.TravelRequisition2MDIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsBySupervisor(skip)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByMD(skip)
         Template.instance().travelRequestsByMD.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
@@ -57,8 +57,8 @@ Template.TravelRequisition2MDIndex.helpers({
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
-            { supervisorId: Meteor.userId()},
-            { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
+            { managerId: Meteor.userId()},
+            { $or : [ { status : "Approved By MD" }, { status : "Pending" }, { status : "Rejected By MD"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -103,7 +103,7 @@ Template.TravelRequisition2MDIndex.onCreated(function () {
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsBySupervisor = function(skip) {
+    self.getTravelRequestsByMD = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -115,11 +115,11 @@ Template.TravelRequisition2MDIndex.onCreated(function () {
         options.skip = skip
         return TravelRequisition2s.find({
             $and : [
-                { supervisorId: Meteor.userId()},
-                { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
+                { managerId: Meteor.userId()},
+                { $or : [ { status : "Approved By MD" }, { status : "Approved by HOD" }, { status : "Rejected By MD"}] }
             ]
         }, options);
-            }
+    }
 
     self.subscribe('getCostElement', businessUnitId)
 
@@ -130,9 +130,9 @@ Template.TravelRequisition2MDIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsByMDSub = self.subscribe('TravelRequestsBySupervisor', businessUnitId, Meteor.userId());
+        let travelRequestsByMDSub = self.subscribe('TravelRequestsByMD', businessUnitId, Meteor.userId());
         if(travelRequestsByMDSub.ready()) {
-            self.travelRequestsByMD.set(self.getTravelRequestsBySupervisor(0))
+            self.travelRequestsByMD.set(self.getTravelRequestsByMD(0))
         }
         //--
         if(customConfigSub.ready()) {

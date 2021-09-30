@@ -271,7 +271,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeNameById': function(employeeId){

@@ -5,165 +5,127 @@
 import _ from 'underscore';
 
 
-
-
-
 Template.TravelRequisition2LogisticsDetail.events({
-    'click #approve': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
-        let budgetCodeId =$('[name=budget-code]').val();
+  'click #processTrip': (e, tmpl) => {
+    // let supervisorComment = $('[name=supervisorComment]').val();
+    // let budgetCodeId =$('[name=budget-code]').val();
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.isProcessedByLogistics = true;
+    // currentTravelRequest.budgetCodeId = budgetCodeId;
+    currentTravelRequest.status = "Processed By Logistics";
 
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
-        currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved by HOD";
+    currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
-        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
+    e.preventDefault()
 
-        e.preventDefault()
+    //update supervisorComment one last final time
+    currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
 
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
+    let fieldsAreValid = true;
+    let validationErrors = '';
 
-        let fieldsAreValid = true;
-        let validationErrors = '';
+    /*** VALIDATIONS ***/
+    //check that the description is not hello
 
-        /*** VALIDATIONS ***/
-        //check that the description is not hello
-
-        if (currentTravelRequest.supervisorComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
-        }
-
-        if( currentTravelRequest.budgetCodeId=="I am not sure")
-        {
-            fieldsAreValid = false;
-            validationErrors += ": select a budget code";
-        }
-        if (fieldsAreValid){
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
-                if (res){
-                    swal({
-                        title: "Travel requisition has been updated",
-                        text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
-                        confirmButtonClass: "btn-success",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                } else {
-                    swal({
-                        title: "Oops!",
-                        text: "Travel requisition has  not been updated, reason: " + err.message,
-                        confirmButtonClass: "btn-danger",
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                    console.log(err);
-                }
-            });
-            Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2Create');
-        }else{
-            Template.instance().errorMessage.set("Validation errors" + validationErrors);
-        }
-
-    },
-
-
-
-    'click #reject': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
-        let budgetCodeId =$('[name=budget-code]').val();
-
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
-        currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Rejected By HOD";
-
-        currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
-
-        e.preventDefault()
-
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
-        let fieldsAreValid = true;
-        let validationErrors = '';
-
-        /*** VALIDATIONS ***/
-        //check that the description is not hello
-
-        if (currentTravelRequest.supervisorComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
-        }
-
-        if( currentTravelRequest.budgetCodeId=="I am not sure")
-        {
-            fieldsAreValid = false;
-            validationErrors += ": select a budget code";
-        }
-        if (fieldsAreValid){
-
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
-                if (res){
-                    swal({
-                        title: "Travel requisition has been rejected",
-                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
-                        confirmButtonClass: "btn-success",
-                        type: "success",
-                        confirmButtonText: "OK"
-                    });
-                } else {
-                    swal({
-                        title: "Oops!",
-                        text: "Travel requisition has  not been updated, reason: " + err.message,
-                        confirmButtonClass: "btn-danger",
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                    console.log(err);
-                }
-            });
-            Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2LogisticsDetail');
-        }else{
-            Template.instance().errorMessage.set("Validation errors" + validationErrors);
-        }
-
-    },
-    "click [id*='provideSecurity']": function(e, tmpl){
-    
-        e.preventDefault()
-    
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
-    
-        currentTravelRequest.trips[index].provideSecurity = !currentTravelRequest.trips[index].provideSecurity;
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-    
-        tmpl.updateTripNumbers();
-    },
-    'change [id=additionalSecurityComment]': function(e, tmpl) {
-      e.preventDefault()
-    
-      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-    
-      currentTravelRequest.additionalSecurityComment = $("#additionalSecurityComment").val();
-      tmpl.currentTravelRequest.set(currentTravelRequest);
-    },
-    'change [id=budget-code]': function(e, tmpl) {
-        e.preventDefault()
-
-        console.log("budget codexxx");
-        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.budgetCodeId = $("#budget-code").val();
-        tmpl.currentTravelRequest.set(currentTravelRequest);
-
+    if( currentTravelRequest.budgetCodeId=="I am not sure")
+    {
+        fieldsAreValid = false;
+        validationErrors += ": select a budget code";
     }
+    if (fieldsAreValid){
+      const processed = true
+      Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'LOGISTICS', '', processed, (err, res) => {
+        if (res){
+          swal({
+            title: "Travel requisition has been updated",
+            text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+            confirmButtonClass: "btn-success",
+            type: "success",
+            confirmButtonText: "OK"
+          });
+        } else {
+          swal({
+            title: "Oops!",
+            text: "Travel requisition has  not been updated, reason: " + err.message,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+          });
+          console.log(err);
+        }
+      });
+      Template.instance().errorMessage.set(null);
+      Modal.hide('TravelRequisition2Create');
+    } else{
+      Template.instance().errorMessage.set("Validation errors" + validationErrors);
+    }
+
+  },
+  "change [id*='driverInfo']": function(e, tmpl){
+      e.preventDefault()
+  
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+      currentTravelRequest.trips[index].driver = $(e.currentTarget).val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
+  "change [id*='accountInfo']": function(e, tmpl){
+      e.preventDefault()
+  
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+      currentTravelRequest.trips[index].accountNumber = $(e.currentTarget).val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
+  "change [id*='vehicleInfo']": function(e, tmpl){
+      e.preventDefault()
+  
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+      currentTravelRequest.trips[index].vehicle = $(e.currentTarget).val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
+  "change [id*='bankInfo']": function(e, tmpl){
+      e.preventDefault()
+  
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+      currentTravelRequest.trips[index].bank = $(e.currentTarget).val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
+  'change [id=budget-code]': function(e, tmpl) {
+      e.preventDefault()
+
+      console.log("budget codexxx");
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      currentTravelRequest.budgetCodeId = $("#budget-code").val();
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+
+  },
+  "click [id*='provideSecurity']": function(e, tmpl){
+  
+      e.preventDefault()
+  
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+      currentTravelRequest.trips[index].provideSecurity = !currentTravelRequest.trips[index].provideSecurity;
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
+  'change [id=additionalSecurityComment]': function(e, tmpl) {
+    e.preventDefault()
+  
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+  
+    currentTravelRequest.additionalSecurityComment = $("#additionalSecurityComment").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+  
+  },
 });
 
 
@@ -177,6 +139,18 @@ Template.registerHelper('formatDate', function(date) {
 Template.TravelRequisition2LogisticsDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
+    },
+    provideSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? checked="checked" : '';
+        }
+    },
+    needSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
+        }
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -198,7 +172,7 @@ Template.TravelRequisition2LogisticsDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){
@@ -332,12 +306,6 @@ Template.TravelRequisition2LogisticsDetail.helpers({
     },
     'isEqual': (a, b) => {
         return a === b;
-    },
-    needSecurity(index){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
-        }
     },
     'totalTripCostNGN': function() {
         return Template.instance().totalTripCostNGN.get()

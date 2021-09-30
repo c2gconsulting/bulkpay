@@ -274,7 +274,7 @@ Template.ApprovalConfigCreate.helpers({
         numberOfApprovals : 1,
         name : '',
         level: 'Level 1',
-        transportationMode: 'AIRLINE',
+        transportationMode: 'AIR',
         isInternational: false,
         approvals : [{
           approvalUserId: '',

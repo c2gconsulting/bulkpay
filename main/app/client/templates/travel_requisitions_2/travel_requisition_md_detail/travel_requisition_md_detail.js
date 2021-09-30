@@ -10,20 +10,20 @@ import _ from 'underscore';
 
 Template.TravelRequisition2MDDetail.events({
     'click #approve': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
+        let managerComment = $('[name=managerComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.managerComment = managerComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved by MD";
+        currentTravelRequest.status = "Approved By MD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
         e.preventDefault()
 
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        //update managerComment one last final time
+        currentTravelRequest.managerComment = $("#managerComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
         let fieldsAreValid = true;
@@ -32,7 +32,7 @@ Template.TravelRequisition2MDDetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.supervisorComment ===""){
+        if (currentTravelRequest.managerComment ===""){
             fieldsAreValid = false;
             validationErrors += ": MD Comment cannot be empty";
         }
@@ -43,7 +43,7 @@ Template.TravelRequisition2MDDetail.events({
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'MANAGER', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -74,11 +74,11 @@ Template.TravelRequisition2MDDetail.events({
 
 
     'click #reject': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
+        let managerComment = $('[name=managerComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.managerComment = managerComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
         currentTravelRequest.status = "Rejected By MD";
 
@@ -86,8 +86,8 @@ Template.TravelRequisition2MDDetail.events({
 
         e.preventDefault()
 
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        //update managerComment one last final time
+        currentTravelRequest.managerComment = $("#managerComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
         let fieldsAreValid = true;
@@ -96,7 +96,7 @@ Template.TravelRequisition2MDDetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.supervisorComment ===""){
+        if (currentTravelRequest.managerComment ===""){
             fieldsAreValid = false;
             validationErrors += ": MD Comment cannot be empty";
         }
@@ -108,7 +108,7 @@ Template.TravelRequisition2MDDetail.events({
         }
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'MANAGER', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -178,7 +178,7 @@ Template.TravelRequisition2MDDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){
