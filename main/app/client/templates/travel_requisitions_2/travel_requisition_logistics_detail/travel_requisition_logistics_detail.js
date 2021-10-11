@@ -68,7 +68,7 @@ Template.TravelRequisition2LogisticsDetail.events({
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
   
-      currentTravelRequest.trips[index].driver = $(e.currentTarget).val();
+      currentTravelRequest.trips[index].driverInformation = $(e.currentTarget).val();
       tmpl.currentTravelRequest.set(currentTravelRequest);
   },
   "change [id*='accountInfo']": function(e, tmpl){
@@ -86,7 +86,7 @@ Template.TravelRequisition2LogisticsDetail.events({
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
   
-      currentTravelRequest.trips[index].vehicle = $(e.currentTarget).val();
+      currentTravelRequest.trips[index].vehicleInformation = $(e.currentTarget).val();
       tmpl.currentTravelRequest.set(currentTravelRequest);
   },
   "change [id*='bankInfo']": function(e, tmpl){
@@ -95,7 +95,7 @@ Template.TravelRequisition2LogisticsDetail.events({
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
   
-      currentTravelRequest.trips[index].bank = $(e.currentTarget).val();
+      currentTravelRequest.trips[index].bankName = $(e.currentTarget).val();
       tmpl.currentTravelRequest.set(currentTravelRequest);
   },
   'change [id=budget-code]': function(e, tmpl) {
@@ -232,6 +232,12 @@ Template.TravelRequisition2LogisticsDetail.helpers({
     },
     budgetList() {
         return  Budgets.find();
+    },
+    driverInfoSelected(val, index) {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.trips[index].driverInformation === val ? selected="selected" : '';
+        }
     },
     budgetCodeSelected(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();

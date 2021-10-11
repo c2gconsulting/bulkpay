@@ -1160,7 +1160,11 @@ Template.TravelRequisition2Create.helpers({
     getLineOfCommand(nextAction, isStatusUpdate){
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
       const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
-      const currentUser = Template.instance().currentUser.get();
+      let currentUser = Template.instance().currentUser.get();
+      if (Meteor.users.findOne({ directSupervisorId: Meteor.userId() })) return 'HOD'
+      else if (Template.instance().directManager.get()) currentUser = 'MANAGER'
+      else if (Template.instance().gcoo.get()) currentUser = 'GCOO'
+      else if (Template.instance().gceo.get()) currentUser = 'GCEO'
       const userPosition = Meteor.userId();
       const HOD = currentUser.supervisorId;
       const MANAGER = currentUser.directManagerId;
@@ -1170,14 +1174,16 @@ Template.TravelRequisition2Create.helpers({
       switch (userPosition) {
         case HOD: {
           if (isAIR && nextAction) return 'MANAGER'
-          if (isAIR && isStatusUpdate) return 'Approved by HOD'
+          if (isStatusUpdate) return 'Approved by HOD'
+          if (!isAIR && nextAction) return 'MANAGER'
 
           break;
         }
 
         case MANAGER: {
           if (isAIR && nextAction) return 'GCOO'
-          if (isAIR && isStatusUpdate) return 'Approved By MD'
+          if (isStatusUpdate) return 'Approved By MD'
+          if (!isAIR && nextAction) return 'LOGISTICS'
 
           break;
         }
@@ -1185,6 +1191,7 @@ Template.TravelRequisition2Create.helpers({
         case GCOO: {
           if (isAIR && nextAction) return 'GCEO'
           if (isAIR && isStatusUpdate) return 'Approved By GCOO'
+          if (!isAIR && nextAction) return 'LOGISTICS'
 
           break;
         }
@@ -1197,7 +1204,8 @@ Template.TravelRequisition2Create.helpers({
         }
 
         default:
-            break;
+            if (nextAction) return 'HOD'
+            else return 'Pending'
       }
     },
     destinationTypeChecked(val){
@@ -1308,6 +1316,9 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null);
     self.currentUser = new ReactiveVar();
+    self.directManager = new ReactiveVar();
+    self.gceo = new ReactiveVar();
+    self.gcoo = new ReactiveVar();
     const userId = Meteor.userId();
     const currentUser = Meteor.users.findOne({ $or: [{ directManagerId: userId}, { gcooId: userId }, { gceoId: userId }]});
     self.currentUser.set(currentUser || {});
@@ -1318,6 +1329,18 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+
+    Meteor.call('account/getManager', Meteor.userId(), (err, res) => {
+        if (res) self.directManager.set(res)
+    })
+
+    Meteor.call('account/gcoo', Meteor.userId(), (err, res) => {
+        if (res) self.gcoo.set(res)
+    })
+
+    Meteor.call('account/gceo', Meteor.userId(), (err, res) => {
+        if (res) self.gceo.set(res)
+    })
 
     let currentTravelRequest = {
         businessId: businessUnitId,

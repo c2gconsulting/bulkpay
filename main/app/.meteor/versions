@@ -95,6 +95,7 @@ launch-screen@1.1.0
 less@2.7.8
 lindoelio:accounts-office365@0.1.1
 lindoelio:office365-oauth@0.2.0
+littledata:synced-cron@1.5.1
 livedata@1.0.18
 localstorage@1.1.0
 logging@1.1.17

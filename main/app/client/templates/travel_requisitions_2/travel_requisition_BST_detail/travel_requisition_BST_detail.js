@@ -96,7 +96,8 @@ Template.TravelRequisition2BSTDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
     
-        currentTravelRequest.trips[index].driver = $(e.currentTarget).val();
+        currentTravelRequest.trips[index].driverInformation = $(e.currentTarget).val();
+        console.log('currentTravelRequest.trips[index].driverInformation', currentTravelRequest.trips[index].driverInformation)
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
     "change [id*='accountInfo']": function(e, tmpl){
@@ -114,7 +115,7 @@ Template.TravelRequisition2BSTDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
     
-        currentTravelRequest.trips[index].vehicle = $(e.currentTarget).val();
+        currentTravelRequest.trips[index].vehicleInformation = $(e.currentTarget).val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
     "change [id*='bankInfo']": function(e, tmpl){
@@ -123,7 +124,7 @@ Template.TravelRequisition2BSTDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
     
-        currentTravelRequest.trips[index].bank = $(e.currentTarget).val();
+        currentTravelRequest.trips[index].bankName = $(e.currentTarget).val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
 });
@@ -233,6 +234,12 @@ Template.TravelRequisition2BSTDetail.helpers({
     budgetList() {
         return  Budgets.find();
     },
+    driverInfoSelected(val, index) {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].driverInformation === val ? selected="selected" : '';
+        }
+    },
     budgetCodeSelected(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -263,6 +270,9 @@ Template.TravelRequisition2BSTDetail.helpers({
     },
     'currentTravelRequest': function() {
         return Template.instance().currentTravelRequest.get()
+    },
+    'employees': () => {
+      return Meteor.users.find({employee: true});
     },
     'getEmployeeNameById': function(employeeId){
         return Meteor.users.findOne({_id: employeeId}).profile.fullName;
