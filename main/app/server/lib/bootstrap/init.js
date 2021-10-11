@@ -299,5 +299,6 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
+  SyncedCron.start();
   // Core.fixPartitionProblems();
 });
