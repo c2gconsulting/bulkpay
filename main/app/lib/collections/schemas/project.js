@@ -15,6 +15,22 @@ Core.Schemas.Project = new SimpleSchema({
         type: String,
         optional: true
     },
+    "project_number": {
+        type: String,
+        optional: true
+    },
+    "object_number": {
+        type: String,
+        optional: true
+    },
+    "external_project_number": {
+        type: String,
+        optional: true
+    },
+    "project_manager": {
+        type: String,
+        optional: true
+    },
     positionIds: {
         type: [String],
         label: "Positions",
@@ -23,20 +39,36 @@ Core.Schemas.Project = new SimpleSchema({
     businessId: {
         type: String
     },
-    'activities': {
-        type: [Object],
-        optional: true
-    },
-    'activities.$': {
-        type: Object,
-        optional: true
-    },
-    'activities.$.fullcode': {
-        type: String
-    },
-    'activities.$.description': {
-        type: String
-    },
+    // 'activities': {
+    //     type: [Object],
+    //     optional: true
+    // },
+    // 'activities.$': {
+    //     type: Object,
+    //     optional: true
+    // },
+    // 'activities.$.fullcode': {
+    //     type: String
+    // },
+    // 'activities.$.description': {
+    //     type: String
+    // },
+    // "activities.$.wbs_number": {
+    //     type: String,
+    //     optional: true
+    // },
+    // "activities.$.object_number": {
+    //     type: String,
+    //     optional: true
+    // },
+    // "activities.$.external_wbs_number": {
+    //     type: String,
+    //     optional: true
+    // },
+    // "activities.$.wbs_manager": {
+    //     type: String,
+    //     optional: true
+    // },
     status: {
         type: String,
         defaultValue: 'Active',

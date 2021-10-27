@@ -1,0 +1,24 @@
+<template name="LogEntry">
+    <tr class="log-entry">
+        <!-- <td>
+          {{#linkTo route="bills.detail" _id=_id._str }}{{billNumber}}{{/linkTo}}
+        </td> -->
+        <td>{{user.email}}</td>
+        <td>{{toTitleCase collectionName}}</td>
+        <td>{{toUpperCase event}}</td>
+        <td>{{formatTime createdAt}}</td>
+        <td>{{formatTime createdAt 'timeOnly'}}</td>
+<!-- 
+        <td>
+            {{#if newData.IP}}
+            IP: {{newData.IP}}
+
+            {{else}}
+            <i class="glyphicon glyphicon-minus"></i>
+            {{/if}}
+        </td> -->
+        <td>
+            <a target="_blank" href="{{url}}"><i class="{{view}}"></i></a>
+        </td>
+    </tr>
+</template>

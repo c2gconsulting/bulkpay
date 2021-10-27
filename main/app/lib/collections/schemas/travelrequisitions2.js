@@ -218,6 +218,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: 'Local',
         allowedValues: ['Local', 'International']
     },
+    isEmergencyTrip: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false,
+    },
     tripFor: {
         type: Core.Schemas.CreatedOnBehalf,
         optional: true,
@@ -384,13 +389,13 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
+        allowedValues: ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD", "Approved By Budget Holder","Rejected By Budget Holder", "Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
         optional: true
     },
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved", "Rejected"],
+        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By Supervisor", "Retirement Rejected By Supervisor","Retirement Approved Finance","Retirement Rejected Finance"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -429,6 +434,14 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true
     },
     bstId: {
+        type: String,
+        optional: true
+    },
+    departmentOrProjectId: {
+        type: String,
+        optional: true
+    },
+    activityId: {
         type: String,
         optional: true
     },

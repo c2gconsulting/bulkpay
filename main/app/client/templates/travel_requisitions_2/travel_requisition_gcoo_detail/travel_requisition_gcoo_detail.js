@@ -66,6 +66,13 @@ Template.TravelRequisition2GCOODetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2Create');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -131,6 +138,13 @@ Template.TravelRequisition2GCOODetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2GCOODetail');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -346,6 +360,10 @@ Template.TravelRequisition2GCOODetail.onCreated(function () {
     self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
+
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
 

@@ -58,6 +58,13 @@ Template.TravelRequisition2LogisticsDetail.events({
       Template.instance().errorMessage.set(null);
       Modal.hide('TravelRequisition2Create');
     } else{
+        swal({
+            title: "Oops!",
+            text: "Validation errors" + validationErrors,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
       Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
 
@@ -137,6 +144,45 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2LogisticsDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2LogisticsDetail.helpers({
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
@@ -350,6 +396,10 @@ Template.TravelRequisition2LogisticsDetail.onCreated(function () {
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
 
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
+
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
@@ -392,6 +442,7 @@ Template.TravelRequisition2LogisticsDetail.onCreated(function () {
             self.currentTravelRequest.set(travelRequestDetails)
 
 
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
         }
 
         if(businessUnitSubscription.ready()) {

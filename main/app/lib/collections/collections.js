@@ -114,7 +114,13 @@ Businesses.attachSchema(Core.Schemas.Business);
 BusinessUnitCustomConfigs = new Mongo.Collection("businessunitcustomconfigs");
 // Partitioner.partitionCollection(BusinessUnitCustomConfigs);
 BusinessUnitCustomConfigs.attachSchema(Core.Schemas.BusinessUnitCustomConfig);
-
+/**
+ * Core Collections CostCenters
+ */
+ CostCenters = new Mongo.Collection("costcenters");
+ // Partitioner.partitionCollection(CostCenters);
+ CostCenters.attachSchema(Core.Schemas.CostCenter);
+ 
 /**
  * Core Collections SapBusinessUnitConfigs
  */
@@ -219,7 +225,15 @@ EntityObjects.attachSchema(Core.Schemas.EntityObject);
  EmployeesLevels = new Mongo.Collection("employeeslevels");
  // Partitioner.partitionCollection(EmployeesLevels);
  EmployeesLevels.attachSchema(Core.Schemas.EmployeesLevels);
- 
+
+
+/**
+ * Core collection Logs
+ */
+Logs = new Mongo.Collection("logs", { idGeneration: "MONGO" });
+// Partitioner.partitionCollection(Logs, { index: { userId: 1 } });
+Logs.attachSchema(Core.Schemas.Logs);
+
 /**
  * Core Collections Loans
  */
@@ -386,15 +400,16 @@ Constants.attachSchema(Core.Schemas.Constant);
  * Core Collections Projects
  */
 Projects = new Mongo.Collection("projects");
-Partitioner.partitionCollection(Projects);
+// Partitioner.partitionCollection(Projects);
 Projects.attachSchema(Core.Schemas.Project);
 
 /**
  * Core Collections Activities
  */
 Activities = new Mongo.Collection("activities");
-Partitioner.partitionCollection(Activities);
+// Partitioner.partitionCollection(Activities);
 Activities.attachSchema(Core.Schemas.Activity);
+
 
 
 /**

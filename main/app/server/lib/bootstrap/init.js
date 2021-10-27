@@ -7,43 +7,65 @@
  * configure bunyan logging module for reaction server
  * See: https://github.com/trentm/node-bunyan#levels
  */
-const levels = ["FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
-const mode = process.env.NODE_ENV || "production";
+// const levels = ["FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
+// const mode = process.env.NODE_ENV || "production";
+// let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
+
+// if (isDebug === true || mode === "development" && isDebug !== false) {
+//   if (typeof isDebug !== "boolean" && typeof isDebug !== undefined) {
+//     isDebug = isDebug.toUpperCase();
+//   }
+//   if (!_.contains(levels, isDebug)) {
+//     isDebug = "WARN";
+//   }
+// }
+
+// if (process.env.VELOCITY_CI === "1") {
+//   formatOut = process.stdout;
+// } else {
+//   formatOut = logger.format({
+//     outputMode: "short",
+//     levelInString: false
+//   });
+// }
+
+// Core.Log = logger.bunyan.createLogger({
+//   name: "core",
+//   stream: isDebug !== "DEBUG" ? formatOut : process.stdout,
+//   level: "debug"
+// });
+
+
 let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
 
-if (isDebug === true || mode === "development" && isDebug !== false) {
-  if (typeof isDebug !== "boolean" && typeof isDebug !== undefined) {
-    isDebug = isDebug.toUpperCase();
-  }
-  if (!_.contains(levels, isDebug)) {
-    isDebug = "WARN";
-  }
-}
-
-if (process.env.VELOCITY_CI === "1") {
-  formatOut = process.stdout;
-} else {
-  formatOut = logger.format({
-    outputMode: "short",
-    levelInString: false
-  });
-}
-
-Core.Log = logger.bunyan.createLogger({
-  name: "core",
-  stream: isDebug !== "DEBUG" ? formatOut : process.stdout,
-  level: "debug"
+const winston = require("winston");
+const logger = winston.createLogger({
+  level: "warn",
+  format: winston.format.json(),
+  defaultMeta: { service: "user-service" },
+  transports: [
+    //
+    // - Write to all logs with level `info` and below to `combined.log`
+    // - Write all logs error (and below) to `error.log`.
+    //
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  ],
 });
 
-Core.PowerQueue = new PowerQueue({ 
-  isPaused: true,
-  onEnded: () => { 
-    console.log(`Queue event processing done!`) 
-  }
-});
+Core.Log = logger;
 
-// set logging level
-Core.Log.level(isDebug);
+Core.PowerQueue = { add: () => {}, run: () => { }}
+// new PowerQueue({ 
+//   isPaused: true,
+//   onEnded: () => { 
+//     console.log(`Queue event processing done!`) 
+//   }
+// });
+
+// // set logging level
+// Core.Log.level(isDebug);
 
 /**
  * Core methods (server)
@@ -300,5 +322,15 @@ Meteor.startup(function () {
   Core.init();
   Core.startWebHooksJobs()
   SyncedCron.start();
+  if (Meteor.isServer) {
+    const MAIL_URL = process.env.MAIL_URL.split('@smtp');
+    if (!MAIL_URL) return
+    const [username_pass, smtp_url] = MAIL_URL;
+    const [username, pass] = username_pass.split('com:');
+    const NEW_MAIL_URL = `${username}com:${encodeURIComponent(pass)}@smtp${smtp_url}`;
+    process.env.MAIL_URL = NEW_MAIL_URL
+
+    console.log('process.env.MAIL_URL', process.env.MAIL_URL)
+  }
   // Core.fixPartitionProblems();
 });

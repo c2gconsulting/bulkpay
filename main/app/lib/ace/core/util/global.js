@@ -205,6 +205,9 @@ _.extend(Core, {
     hasLogisticsProcessAccess: function (userId) {
         return this.hasPermission(Core.Permissions.LOGISTICS_PROCESS, userId);
     },
+    hasSecurityAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.SECURITY_MANAGE, userId);
+    },
     hasBSTProcessAccess: function (userId) {
         return this.hasPermission(Core.Permissions.BST_PROCESS, userId);
     },
@@ -765,5 +768,101 @@ _.extend(Core, {
             years.push(String(x));
         }
         return years;
+    },
+
+    emailPolyfill: function (eachLine) {
+        return eachLine.email || `${eachLine.lastname}.${eachLine.firstname}@OILSERVLTD-NG.COM`;
+    },
+
+    RestructureEmployee: function (eachLine, password) {
+        function capitalize(str = ""){
+            let string = str.replace(/[_-]/g, " ");
+            string = string.toLowerCase().trim();
+            return string.slice(0, 1).toUpperCase() + string.slice(1)
+        }
+
+        return {
+            "emails" : [
+            {
+                "address" : eachLine.email || "",
+                "verified" : false
+            }
+            ],
+            "profile" : {
+            "fullName" : `${eachLine.firstname} ${eachLine.lastname}`,
+            "firstname" : eachLine.firstname || "",
+            "lastname" : eachLine.lastname || ""
+            },
+            "employee" : true,
+            "employeeProfile" : {
+            "employeeId" : eachLine.employee_number || "",
+            "address" : "",
+            // "dateOfBirth" : ISODate("1973-05-04T00:00:00.000Z"),
+            "gender" : eachLine.gender || "",
+            "maritalStatus" : null,
+            "phone" : eachLine.phone || "",
+            "state" : "",
+            "photo" : null,
+            "guarantor" : {
+                "fullName" : null,
+                "email" : null,
+                "phone" : null,
+                "address" : null,
+                "city" : null,
+                "state" : null
+            },
+            "employment" : {
+                hireDate: new Date(),
+                terminationDate: null,
+                "position" : eachLine.position_code || "",
+                "status" : "Active"
+            },
+            "emergencyContact" : [ 
+                {
+                "name" : null,
+                "email" : null,
+                "phone" : null,
+                "address" : null,
+                "city" : null,
+                "state" : null
+                }
+            ],
+            "payment" : {
+                "paymentMethod" : "",
+                "bank" : "",//Fidelity Bank Plc
+                "accountNumber" : "",//4020169214
+                "accountName" : "",
+                "pensionmanager" : "",
+                "RSAPin" : "",
+                "taxPayerId" : ""
+            }
+            },
+            "salesProfile" : {
+            "salesAreas" : null
+            },
+            "roles" : {
+            "__global_roles__" : [ 
+                "ess/all"
+            ]
+            },
+            "services" : {
+            "password" : {
+                "bcrypt" : password || "$2a$10$PR3Sbybwr6LIuAVPOFCkX.4fAuizRt3Ttc0.60OMCQ0.ouRoYnpyW"
+            }
+            },
+            "businessIds" : [ 
+            "FYTbXLB9whRc4Lkh4" // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+            ],
+            "customUsername" :  `${capitalize(eachLine.firstname)}.${capitalize(eachLine.lastname)}` || "",
+            "_group" : "gqEreTKe3h43z3q2R", // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
+            "group" : "gqEreTKe3h43z3q2R", // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
+            "isUsingDefaultPassword" : true,
+            "position_code": eachLine.position_code || "",
+            "position_description": eachLine.position_description || "",
+            "line_manager_position_code": eachLine.line_manager_position_code || "",
+            "organizational_unit": eachLine.organizational_unit || "",
+            "hod_position_code": eachLine.hod_position_code || "",
+            "cost_center_code": eachLine.cost_center_code || ""
+        }
     }
 });

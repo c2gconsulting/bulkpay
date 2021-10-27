@@ -60,6 +60,21 @@ Template.TravelRequisition2Create.events({
       }
     })
   },
+  "click [id='selectEmergencyTrip']": function(e, tmpl){
+      e.preventDefault()
+      let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+      const isEmergencyTrip = !currentTravelRequest.isEmergencyTrip;
+      const minDate = isEmergencyTrip ? new Date() : new Date(moment().add(5, 'day').format())
+      const trips = currentTravelRequest.trips.map(trip => ({
+        ...trip,
+        departureDate: minDate,
+        returnDate: minDate,
+      }))
+
+      currentTravelRequest.trips = trips;
+      currentTravelRequest.isEmergencyTrip = isEmergencyTrip;
+      tmpl.currentTravelRequest.set(currentTravelRequest);
+  },
    "change [name*='clientName']": _.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const fullName = $(e.currentTarget).val();
@@ -110,6 +125,7 @@ Template.TravelRequisition2Create.events({
         const travelType = $(e.currentTarget).val();
         currentTravelRequest.description = $("#description").val();
         currentTravelRequest.budgetCodeId = $("#budget-code").val();
+        currentTravelRequest.departmentOrProjectId = $("#departmentOrProjectId").val();
         currentTravelRequest.type = travelType;
         currentTravelRequest.totalTripDuration = 0;
         currentTravelRequest.totalEmployeePerdiemNGN = 0;
@@ -121,181 +137,22 @@ Template.TravelRequisition2Create.events({
         currentTravelRequest.totalTripCostNGN = 0;
         currentTravelRequest.totalTripCostUSD = 0;
 
+        const { isEmergencyTrip } = currentTravelRequest;
+        const minDate = isEmergencyTrip ? new Date() : new Date(moment().add(5, 'day').format())
+
         if (travelType && (currentTravelRequest.trips)) {
             if ((travelType === "Return") && (currentTravelRequest.trips.length > 0)) {
-                currentTravelRequest.trips = [{
-                    tripIndex: 1,
-                    fromId: "",
-                    toId: "",
-                    departureDate: new Date(),
-                    returnDate: new Date(),
-                    departureTime: "6 AM",
-                    returnTime: "6 AM",
-                    transportationMode: 'AIR',
-                    carOption: 'CAR_HIRE',
-                    provideAirportPickup: false,
-                    provideGroundTransport: false,
-                    provideSecurity: false,
-                    originCityAirportTaxiCost: 0,
-                    destinationCityAirportTaxiCost: 0,
-                    groundTransportCost: 0,
-                    airlineId: "",
-                    airfareCost: 0,
-                    airfareCurrency: "NGN",
-                    hotelId: "H3593",
-                    hotelRate: 0,
-                    destinationCityCurrreny: "NGN",
-                    hotelNotRequired: false,
-                    perDiemCost: 0,
-                    originCityCurrreny: "NGN",
-                    isBreakfastIncluded: false,
-                    isLunchIncluded: false,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
-                    totalDuration: 0,
-                    totalPerDiem: 0,
-                    totalHotelCost: 0
-                }];
-            }else if (($(e.currentTarget).val() === "Multiple") && (currentTravelRequest.trips.length > 0)){
-                currentTravelRequest.trips = [{
-                    tripIndex: 1,
-                    fromId: "",
-                    toId: "",
-                    departureDate: new Date(),
-                    returnDate: new Date(),
-                    departureTime: "6 AM",
-                    returnTime: "6 AM",
-                    transportationMode: 'AIR',
-                    carOption: 'CAR_HIRE',
-                    provideAirportPickup: false,
-                    provideGroundTransport: false,
-                    provideSecurity: false,
-                    originCityAirportTaxiCost: 0,
-                    destinationCityAirportTaxiCost: 0,
-                    groundTransportCost: 0,
-                    airlineId: "",
-                    airfareCost: 0,
-                    airfareCurrency: "NGN",
-                    hotelId: "H3593",
-                    hotelRate: 0,
-                    destinationCityCurrreny: "NGN",
-                    hotelNotRequired: false,
-                    perDiemCost: 0,
-                    originCityCurrreny: "NGN",
-                    isBreakfastIncluded: false,
-                    isLunchIncluded: false,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
-                    totalDuration: 0,
-                    totalPerDiem: 0,
-                    totalHotelCost: 0
-                },{
-                    tripIndex: 2,
-                    fromId: "",
-                    toId: "",
-                    departureDate: new Date(),
-                    returnDate: new Date(),
-                    departureTime: "6 AM",
-                    returnTime: "6 AM",
-                    transportationMode: 'AIR',
-                    carOption: 'CAR_HIRE',
-                    provideAirportPickup: false,
-                    provideGroundTransport: false,
-                    provideSecurity: false,
-                    originCityAirportTaxiCost: 0,
-                    destinationCityAirportTaxiCost: 0,
-                    groundTransportCost: 0,
-                    airlineId: "",
-                    airfareCost: 0,
-                    airfareCurrency: "NGN",
-                    hotelId: "H3593",
-                    hotelRate: 0,
-                    destinationCityCurrreny: "NGN",
-                    hotelNotRequired: false,
-                    perDiemCost: 0,
-                    originCityCurrreny: "NGN",
-                    isBreakfastIncluded: false,
-                    isLunchIncluded: false,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
-                    totalDuration: 0,
-                    totalPerDiem: 0,
-                    totalHotelCost: 0
-                },{
-                    tripIndex: 3,
-                    fromId: "",
-                    toId: "",
-                    departureDate: new Date(),
-                    returnDate: new Date(),
-                    departureTime: "6 AM",
-                    returnTime: "6 AM",
-                    transportationMode: 'AIR',
-                    carOption: 'CAR_HIRE',
-                    provideAirportPickup: false,
-                    provideGroundTransport: false,
-                    provideSecurity: false,
-                    originCityAirportTaxiCost: 0,
-                    destinationCityAirportTaxiCost: 0,
-                    groundTransportCost: 0,
-                    airlineId: "",
-                    airfareCost: 0,
-                    airfareCurrency: "NGN",
-                    hotelId: "H3593",
-                    hotelRate: 0,
-                    destinationCityCurrreny: "NGN",
-                    hotelNotRequired: false,
-                    perDiemCost: 0,
-                    originCityCurrreny: "NGN",
-                    isBreakfastIncluded: false,
-                    isLunchIncluded: false,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
-                    totalDuration: 0,
-                    totalPerDiem: 0,
-                    totalHotelCost: 0
-                }
-            ]
-        } else if (($(e.currentTarget).val() === "Single") && (currentTravelRequest.trips.length > 0)){
-                currentTravelRequest.trips = [{
-                    tripIndex: 1,
-                    fromId: "",
-                    toId: "",
-                    departureDate: new Date(),
-                    returnDate: new Date(),
-                    departureTime: "6 AM",
-                    returnTime: "6 AM",
-                    transportationMode: 'AIR',
-                    carOption: 'CAR_HIRE',
-                    provideAirportPickup: false,
-                    provideGroundTransport: false,
-                    provideSecurity: false,
-                    originCityAirportTaxiCost: 0,
-                    destinationCityAirportTaxiCost: 0,
-                    groundTransportCost: 0,
-                    airlineId: "",
-                    airfareCost: 0,
-                    airfareCurrency: "NGN",
-                    hotelId: "H3593",
-                    hotelRate: 0,
-                    destinationCityCurrreny: "NGN",
-                    hotelNotRequired: false,
-                    perDiemCost: 0,
-                    originCityCurrreny: "NGN",
-                    isBreakfastIncluded: false,
-                    isLunchIncluded: false,
-                    isDinnerIncluded: false,
-                    isIncidentalsIncluded: false,
-                    totalDuration: 0,
-                    totalPerDiem: 0,
-                    totalHotelCost: 0
-                }
-            ]
+                currentTravelRequest.trips = [Core.tripDetails(1, minDate)];
+            } else if (($(e.currentTarget).val() === "Multiple") && (currentTravelRequest.trips.length > 0)){
+                currentTravelRequest.trips = [Core.tripDetails(1, minDate), Core.tripDetails(2, minDate), Core.tripDetails(3, minDate)]
+            } else if (($(e.currentTarget).val() === "Single") && (currentTravelRequest.trips.length > 0)){
+                currentTravelRequest.trips = [Core.tripDetails(1, minDate)]
+            }
         }
-    }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
-}, 200),
+    }, 200),
 
 "change [name='cashAdvanceNotRequired']":_.throttle(function(e, tmpl) {
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
@@ -326,6 +183,32 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.budgetCodeId = $("#budget-code").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
+'change [id=departmentOrProjectId]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    let { departmentOrProjectId } = currentTravelRequest;
+    departmentOrProjectId = $("#departmentOrProjectId").val() || departmentOrProjectId;
+
+    currentTravelRequest.departmentOrProjectId = departmentOrProjectId;
+    currentTravelRequest.activityId = "";
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+
+    Core.updateTravelActivities(departmentOrProjectId, tmpl.activities)
+},
+'change [id=project_activity-code]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    let { activityId } = currentTravelRequest;
+    activityId = $("#project_activity-code").val() || activityId;
+
+    currentTravelRequest.activityId = activityId;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
 },
 'change [id=costCenter]': function(e, tmpl) {
     e.preventDefault()
@@ -351,39 +234,13 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
-    currentTravelRequest.trips.push({
-        tripIndex: currentTravelRequest.trips.length + 1,
-        fromId: currentTravelRequest.trips[currentTravelRequest.trips.length - 1].toId,
-        toId: "",
-        departureDate: new Date(),
-        returnDate: new Date(),
-        departureTime: "6 AM",
-        returnTime: "6 AM",
-        transportationMode: 'AIR',
-        carOption: 'CAR_HIRE',
-        provideAirportPickup: false,
-        provideGroundTransport: false,
-        provideSecurity: false,
-        originCityAirportTaxiCost: 0,
-        destinationCityAirportTaxiCost: 0,
-        groundTransportCost: 0,
-        airlineId: "",
-        airfareCost: 0,
-        airfareCurrency: "NGN",
-        hotelId: "H3593",
-        hotelRate: 0,
-        destinationCityCurrreny: "NGN",
-        hotelNotRequired: false,
-        perDiemCost: 0,
-        originCityCurrreny: "NGN",
-        isBreakfastIncluded: false,
-        isLunchIncluded: false,
-        isDinnerIncluded: false,
-        isIncidentalsIncluded: false,
-        totalDuration: 0,
-        totalPerDiem: 0,
-        totalHotelCost: 0
-    });
+    const { isEmergencyTrip } = currentTravelRequest;
+    const minDate = isEmergencyTrip ? new Date() : new Date(moment().add(5, 'day').format())
+
+    const fromId = currentTravelRequest.trips[currentTravelRequest.trips.length - 1].toId;
+    const tripIndex = currentTravelRequest.trips.length + 1;
+
+    currentTravelRequest.trips.push(Core.tripDetails(tripIndex, minDate, fromId));
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
@@ -590,28 +447,12 @@ Template.TravelRequisition2Create.events({
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
-        let utcDepartureDate = new Date(Date.UTC(
-            rawDepartureDate.getFullYear(),
-            rawDepartureDate.getMonth(),
-            rawDepartureDate.getDate(),
-            rawDepartureDate.getHours(),
-            rawDepartureDate.getMinutes(),
-            rawDepartureDate.getSeconds(),
-            rawDepartureDate.getMilliseconds()
-        ));
+        let utcDepartureDate = Core.getUTCDate(rawDepartureDate);
         console.log(rawDepartureDate);
         console.log(utcDepartureDate);
 
         let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
-        let utcReturnDate = new Date(Date.UTC(
-            rawReturnDate.getFullYear(),
-            rawReturnDate.getMonth(),
-            rawReturnDate.getDate(),
-            rawReturnDate.getHours(),
-            rawReturnDate.getMinutes(),
-            rawReturnDate.getSeconds(),
-            rawReturnDate.getMilliseconds()
-        ));
+        let utcReturnDate = Core.getUTCDate(rawReturnDate);
         console.log(rawReturnDate);
         console.log(utcReturnDate);
 
@@ -634,28 +475,12 @@ Template.TravelRequisition2Create.events({
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
-        let utcDepartureDate = new Date(Date.UTC(
-            rawDepartureDate.getFullYear(),
-            rawDepartureDate.getMonth(),
-            rawDepartureDate.getDate(),
-            rawDepartureDate.getHours(),
-            rawDepartureDate.getMinutes(),
-            rawDepartureDate.getSeconds(),
-            rawDepartureDate.getMilliseconds()
-        ));
+        let utcDepartureDate = Core.getUTCDate(rawDepartureDate);
         // console.log(rawDepartureDate);
         // console.log(utcDepartureDate);
 
         let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
-        let utcReturnDate = new Date(Date.UTC(
-            rawReturnDate.getFullYear(),
-            rawReturnDate.getMonth(),
-            rawReturnDate.getDate(),
-            rawReturnDate.getHours(),
-            rawReturnDate.getMinutes(),
-            rawReturnDate.getSeconds(),
-            rawReturnDate.getMilliseconds()
-        ));
+        let utcReturnDate = Core.getUTCDate(rawReturnDate);
         // console.log(rawReturnDate);
         // console.log(utcReturnDate);
 
@@ -673,28 +498,12 @@ Template.TravelRequisition2Create.events({
 
     for (i = 0; i < currentTravelRequest.trips.length; i++) {
         let rawDepartureDate = new Date($("#departureDate_" + (i+1)).val());
-        let utcDepartureDate = new Date(Date.UTC(
-            rawDepartureDate.getFullYear(),
-            rawDepartureDate.getMonth(),
-            rawDepartureDate.getDate(),
-            rawDepartureDate.getHours(),
-            rawDepartureDate.getMinutes(),
-            rawDepartureDate.getSeconds(),
-            rawDepartureDate.getMilliseconds()
-        ));
+        let utcDepartureDate = Core.getUTCDate(rawDepartureDate);
         // console.log(rawDepartureDate);
         // console.log(utcDepartureDate);
 
         let rawReturnDate = new Date($("#returnDate_" + (i+1)).val());
-        let utcReturnDate = new Date(Date.UTC(
-            rawReturnDate.getFullYear(),
-            rawReturnDate.getMonth(),
-            rawReturnDate.getDate(),
-            rawReturnDate.getHours(),
-            rawReturnDate.getMinutes(),
-            rawReturnDate.getSeconds(),
-            rawReturnDate.getMilliseconds()
-        ));
+        let utcReturnDate = Core.getUTCDate(rawReturnDate);
         // console.log(rawReturnDate);
         // console.log(utcReturnDate);
 
@@ -707,6 +516,7 @@ Template.TravelRequisition2Create.events({
 
  'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
+    Template.instance().errorMessage.set(null);
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
     //update description one last final time
@@ -724,10 +534,17 @@ Template.TravelRequisition2Create.events({
         validationErrors += ": description cannot be empty";
     }
 
-    if( currentTravelRequest.budgetCodeId=="I am not sure")
+    // if( currentTravelRequest.budgetCodeId=="I am not sure")
+    // {
+    //     fieldsAreValid = false;
+    //     validationErrors += ": select a budget code";
+    // }
+
+    const { costCenter, departmentOrProjectId } = currentTravelRequest;
+    if(departmentOrProjectId == "I am not sure" || !departmentOrProjectId)
     {
         fieldsAreValid = false;
-        validationErrors += ": select a budget code";
+        validationErrors += `: select a ${costCenter} code`;
     }
 
     if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tpcTrip !== 'Client') {
@@ -814,8 +631,32 @@ Template.TravelRequisition2Create.events({
     if (fieldsAreValid){
       //explicitely set status
       currentTravelRequest.status = "Pending";
+      const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
+      let currentUser = Template.instance().currentUser.get();
+      let currentPosition = 'HOD'
+      console.log('currentUser', currentUser);
+      if (tmpl.isHOD.curValue) {
+        currentPosition = 'HOD';
+        currentTravelRequest.status = 'Approved by HOD'
+      }
+      if (tmpl.isALineManager.curValue) {
+        currentPosition = 'MANAGER';
+        currentTravelRequest.status = 'Approved By MD'
+        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
+      }
+      if (currentUser.position_description.includes("Group Chief Operating off")) {
+        currentPosition = "GCOO";
+        currentTravelRequest.status = 'Approved By GCOO'
+        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
+      }
+      if (currentUser.position_description.includes("Group Chief Executive off")) {
+        currentPosition = "GCEO"
+        currentTravelRequest.status = 'Approved By GCEO'
+        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
+      }
       // Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-      Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'HOD', (err, res) => {
+    //   Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, currentPosition, (err, res) => {
+      Meteor.call('TRIPREQUEST/create', currentTravelRequest, currentPosition, (err, res) => {
         if (res){
           swal({
             title: "Travel requisition created",
@@ -839,6 +680,13 @@ Template.TravelRequisition2Create.events({
       Template.instance().errorMessage.set(null);
       Modal.hide('TravelRequisition2Create');
     } else {
+        swal({
+            title: "Oops!",
+            text: "Validation errors" + validationErrors,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
       Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
   },
@@ -949,6 +797,13 @@ Template.TravelRequisition2Create.events({
         Template.instance().errorMessage.set(null);
         Modal.hide('TravelRequisition2Create');
     }else{
+        swal({
+            title: "Oops!",
+            text: "Validation errors" + validationErrors,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
         Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
 
@@ -980,6 +835,53 @@ Template.TravelRequisition2Create.helpers({
     'employees': () => {
       return Meteor.users.find({employee: true});
     },
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    departmentList: () => Template.instance().departments.get(),
+    projectList: () => Template.instance().projects.get(),
+    projectActivities: () => Template.instance().activities.get(),
+    //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
+    //     const { departmentOrProjectId } = currentTravelRequest;
+    //     const activities = Activities.find({ type: 'project', unitOrProjectId: departmentOrProjectId }).fetch();
+    //     return activities;
+    // },
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
@@ -997,17 +899,6 @@ Template.TravelRequisition2Create.helpers({
         options.sort[sortBy] = sortDirection;
 
         return  Travelcities.find({},options);
-    },
-    costCenterType: function (item) {
-      const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
-      return false
-    },
-    needSecurity(index){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
-        }
     },
     tpcTripType(type){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -1070,7 +961,8 @@ Template.TravelRequisition2Create.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     fromIdSelected(val, index){
@@ -1252,12 +1144,6 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
         }
     },
-    provideSecurity(index){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? checked="checked" : '';
-        }
-    },
     isLunchIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
@@ -1277,18 +1163,6 @@ Template.TravelRequisition2Create.helpers({
         }
     },
 
-    selected(context,val) {
-        let self = this;
-
-        if(Template.instance().data){
-            //get value of the option element
-            //check and return selected if the template instce of data.context == self._id matches
-            if(val){
-                return Template.instance().data[context] === val ? selected="selected" : '';
-            }
-            return Template.instance().data[context] === self._id ? selected="selected" : '';
-        }
-    },
     'getCurrentUserUnitName': function() {
         let unitId = Template.instance().unitId.get()
         if(unitId) {
@@ -1315,12 +1189,16 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     self.errorMessage = new ReactiveVar();
     self.errorMessage.set(null);
+    self.hasEmergencyDateUpdate = new ReactiveVar();
+    self.hasEmergencyDateUpdate.set(true);
     self.currentUser = new ReactiveVar();
+    self.isALineManager = new ReactiveVar();
+    self.isHOD = new ReactiveVar();
     self.directManager = new ReactiveVar();
     self.gceo = new ReactiveVar();
     self.gcoo = new ReactiveVar();
     const userId = Meteor.userId();
-    const currentUser = Meteor.users.findOne({ $or: [{ directManagerId: userId}, { gcooId: userId }, { gceoId: userId }]});
+    const currentUser = Meteor.users.findOne(userId);
     self.currentUser.set(currentUser || {});
 
     let businessUnitId = Session.get('context');
@@ -1329,296 +1207,24 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+    self.subscribe("costcenters", Session.get('context'));
+    self.subscribe("projects", Session.get('context'));
 
-    Meteor.call('account/getManager', Meteor.userId(), (err, res) => {
-        if (res) self.directManager.set(res)
-    })
+    Core.queryClient('account/isALineManager', Meteor.userId(), self.directManager)
+    Core.queryClient('account/hod', Meteor.userId(), self.isHOD)
+    Core.queryClient('account/getManager', Meteor.userId(), self.directManager)
+    Core.queryClient('account/user/gcoo', Meteor.userId(), self.gcoo)
+    Core.queryClient('account/user/gceo', Meteor.userId(), self.gceo)
 
-    Meteor.call('account/gcoo', Meteor.userId(), (err, res) => {
-        if (res) self.gcoo.set(res)
-    })
 
-    Meteor.call('account/gceo', Meteor.userId(), (err, res) => {
-        if (res) self.gceo.set(res)
-    })
+    let currentTravelRequest = Core.currentTravelRequest(businessUnitId);
 
-    let currentTravelRequest = {
-        businessId: businessUnitId,
-
-        destinationType: 'Local',
-        costCenter: 'Project',
-        tpcTrip: 'Third_Party',
-        tripFor: {},
-        tripCategory: getActiveTrip() || 'INDIVIDUAL',
-        description: "",
-        budgetCodeId: "",
-        cashAdvanceNotRequired: false,
-        type:"Return",
-        totalTripDuration: 0,
-        totalEmployeePerdiemNGN: 0,
-        totalEmployeePerdiemUSD: 0, totalAirportTaxiCostNGN: 0, totalAirportTaxiCostUSD: 0, totalGroundTransportCostNGN: 0, totalGroundTransportCostUSD: 0,
-        totalFlightCostNGN: 0,
-        totalFlightCostUSD: 0,
-        totalHotelCostNGN: 0,
-        totalHotelCostUSD: 0,
-        totalTripCostNGN: 0,
-        totalTripCostUSD: 0,
-        status: "Pending",
-        supervisorId: "",
-        budgetHolderId: "",
-        createdBy: Meteor.user()._id,
-
-        trips:[ {
-            tripIndex: 1,
-            fromId: "",
-            toId: "",
-            departureDate: new Date(),
-            returnDate: new Date(),
-            departureTime: "6 AM",
-            returnTime: "6 PM",
-            transportationMode: 'AIR',
-            carOption: 'CAR_HIRE',
-            provideAirportPickup: false,
-            provideGroundTransport: false,
-            provideSecurity: false,
-            originCityAirportTaxiCost: 0,
-            destinationCityAirportTaxiCost: 0,
-            groundTransportCost: 0,
-            airlineId: "",
-            airfareCost: 0,
-            airfareCurrency: "NGN",
-            hotelId: "H3593",
-            hotelRate: 0,
-            destinationCityCurrreny: "NGN",
-            hotelNotRequired: false,
-            perDiemCost: 0,
-            originCityCurrreny: "NGN",
-            isBreakfastIncluded: false,
-            isLunchIncluded: false,
-            isDinnerIncluded: false,
-            isIncidentalsIncluded: false,
-            totalDuration: 0,
-            totalPerDiem: 0,
-            totalHotelCost: 0
-        }]
-    };
+    console.log('currentTravelRequest', currentTravelRequest)
 
     self.currentTravelRequest =  new ReactiveVar();
     self.currentTravelRequest.set(currentTravelRequest);
 
-    self.updateTripNumbers = () => {
-
-        let currentTravelRequest = self.currentTravelRequest.curValue;
-        const tripType = currentTravelRequest.type;
-
-        currentTravelRequest.description = $("#description").val();
-        currentTravelRequest.budgetCodeId = $("#budget-code").val();
-
-        let totalTripDuration = 0;
-        let totalEmployeePerdiemNGN = 0;
-        let totalEmployeePerdiemUSD = 0;
-        let totalFlightCostNGN = 0;
-        let totalFlightCostUSD = 0;
-        let totalHotelCostNGN = 0;
-        let totalHotelCostUSD = 0;
-        let totalTripCostNGN = 0;
-        let totalTripCostUSD = 0;
-        let totalAirportTaxiCostNGN = 0;
-        let totalAirportTaxiCostUSD = 0;
-        let totalGroundTransportCostNGN = 0;
-        let totalGroundTransportCostUSD = 0;
-        let totalMiscCostNGN = 0;
-        let totalMiscCostUSD = 0;
-
-        for (i = 0; i < currentTravelRequest.trips.length; i++) {
-
-            const toId = currentTravelRequest.trips[i].toId;
-            const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
-
-
-            let totalDuration = 0;
-
-            if (tripType === "Return"){
-              const startDate = moment(currentTravelRequest.trips[i].departureDate)
-              const endDate = moment(currentTravelRequest.trips[i].returnDate)
-
-
-            //    var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
-            //    var eNDDATE = moment(endDate).format('DD/MM/YYYY');
-
-
-            //   console.log("sTARTDATE")
-            //   console.log(sTARTDATE)
-            //   console.log("eNDDATE")
-            //   console.log(eNDDATE)
-
-                totalDuration = endDate.diff(startDate, 'days');
-
-                if (totalDuration < 0){
-                    totalDuration = 0;
-                }else{
-                    totalDuration = totalDuration + 0.5;
-                    //totalDuration = totalDuration;
-
-                }
-            }else if (tripType === "Multiple"){
-
-                if ((i + 1) >= currentTravelRequest.trips.length){
-                    totalDuration = 0;
-                }else{
-                    const startDate = moment(currentTravelRequest.trips[i].departureDate);
-                    const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
-
-                    totalDuration = endDate.diff(startDate, 'days');
-                    if (totalDuration < 0){
-                        totalDuration = 0;
-                    }else{
-                        totalDuration = totalDuration + 0.5;
-                    }
-                }
-            }
-
-
-
-            console.log("Total Duration: " + totalDuration)
-
-
-
-            let perDiemCost = 0;
-            let unadjustedPerDiemCost = 0;
-            let originCityCurrreny = "NGN";
-            let destinationCityCurrreny = "NGN";
-
-            let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
-            let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
-
-            if(toTravelCity){
-                destinationCityCurrreny = toTravelCity.currency;
-            }
-
-            if(fromTravelCity){
-                originCityCurrreny = fromTravelCity.currency;
-            }
-
-            if (toTravelCity){
-                unadjustedPerDiemCost = toTravelCity.perdiem;
-                perDiemCost = unadjustedPerDiemCost;
-
-                if (currentTravelRequest.trips[i].isBreakfastIncluded){
-                    perDiemCost = perDiemCost - (0.2 * unadjustedPerDiemCost);
-                }
-
-                if (currentTravelRequest.trips[i].isLunchIncluded){
-                    perDiemCost = perDiemCost - (0.3 * unadjustedPerDiemCost);
-                }
-
-                if (currentTravelRequest.trips[i].isDinnerIncluded){
-                    perDiemCost = perDiemCost - (0.4 * unadjustedPerDiemCost);
-                }
-
-                if (currentTravelRequest.trips[i].isIncidentalsIncluded){
-                    perDiemCost = perDiemCost - (0.1 * unadjustedPerDiemCost);
-                }
-            }
-
-            let hotelRate = 0;
-            let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
-            if (hotel){
-                hotelRate = hotel.dailyRate;
-            }
-
-            currentTravelRequest.trips[i].totalHotelCost = (totalDuration - 0.5) * hotelRate;
-
-            currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
-            currentTravelRequest.trips[i].totalDuration = totalDuration;
-            currentTravelRequest.trips[i].perDiemCost = perDiemCost;
-            currentTravelRequest.trips[i].originCityCurrreny = originCityCurrreny;
-            currentTravelRequest.trips[i].hotelRate = hotelRate;
-            currentTravelRequest.trips[i].destinationCityCurrreny = destinationCityCurrreny
-
-            if (currentTravelRequest.trips[i].transportationMode !== "AIR"){
-                currentTravelRequest.trips[i].provideAirportPickup = false;
-                currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
-            }
-
-            if (currentTravelRequest.trips[i].provideAirportPickup){
-                if (fromTravelCity){
-                    currentTravelRequest.trips[i].originCityAirportTaxiCost = fromTravelCity.airportPickupDropOffCost;
-                }else{
-                    currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
-                }
-
-                if (toTravelCity){
-                    currentTravelRequest.trips[i].destinationCityAirportTaxiCost = toTravelCity.airportPickupDropOffCost;
-                }else{
-                    currentTravelRequest.trips[i].destinationCityAirportTaxiCost = 0;
-                }
-
-            }else{
-                currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
-            }
-
-            if (currentTravelRequest.trips[i].provideGroundTransport){
-                if (toTravelCity){
-                    currentTravelRequest.trips[i].groundTransportCost = toTravelCity.groundTransport;
-                }else{
-                    currentTravelRequest.trips[i].groundTransportCost = 0;
-                }
-            }else{
-                currentTravelRequest.trips[i].groundTransportCost = 0;
-            }
-
-            totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
-            if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
-                totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
-            }else{
-                totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
-            }
-
-            if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
-                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
-            }else{
-                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
-            }
-
-            if (toTravelCity && (toTravelCity.currency   === "NGN")){
-                totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
-            }else{
-                totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
-            }
-
-            if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
-                totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-                totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
-            }else{
-                totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-                totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
-            }
-
-
-        }
-
-        totalTripCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalHotelCostNGN;
-        totalTripCostUSD = totalEmployeePerdiemUSD + totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalHotelCostUSD;
-
-
-        currentTravelRequest.totalTripDuration = totalTripDuration;
-        currentTravelRequest.totalEmployeePerdiemNGN = totalEmployeePerdiemNGN;
-        currentTravelRequest.totalEmployeePerdiemUSD = totalEmployeePerdiemUSD;
-        currentTravelRequest.totalAirportTaxiCostNGN = totalAirportTaxiCostNGN;
-        currentTravelRequest.totalAirportTaxiCostUSD = totalAirportTaxiCostUSD;
-        currentTravelRequest.totalGroundTransportCostNGN = totalGroundTransportCostNGN;
-        currentTravelRequest.totalGroundTransportCostUSD = totalGroundTransportCostUSD;
-        currentTravelRequest.totalAncilliaryCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalMiscCostNGN;
-        currentTravelRequest.totalAncilliaryCostUSD = totalEmployeePerdiemUSD + totalAirportTaxiCostUSD + totalGroundTransportCostUSD + totalMiscCostUSD;
-        currentTravelRequest.totalHotelCostNGN = totalHotelCostNGN;
-        currentTravelRequest.totalHotelCostUSD = totalHotelCostUSD;
-        currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
-        currentTravelRequest.totalTripCostUSD = totalTripCostUSD;
-
-        self.currentTravelRequest.set(currentTravelRequest);
-    }
-
+    self.updateTripNumbers = () => Core.tripAnalysis(self);
     // self.subscribe("flights", Session.get('context'));
     self.unitId = new ReactiveVar()
     self.units = new ReactiveVar([])
@@ -1634,6 +1240,16 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.selectedstateId = new ReactiveVar()
     self.selectedtravelcityId = new ReactiveVar()
     self.selectedflightrouteId = new ReactiveVar()
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
+    self.projects = new ReactiveVar()
+    const projects = Projects.find({ businessId: Session.get('context') });
+    self.projects.set(projects);
+    self.departments = new ReactiveVar()
+    const departments = CostCenters.find({ businessId: Session.get('context') });
+    self.departments.set(departments);
+    self.activities = new ReactiveVar();
 
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
@@ -1643,23 +1259,7 @@ Template.TravelRequisition2Create.onCreated(function () {
     let invokeReason = self.data;
 
     self.autorun(function(){
-
-        if (invokeReason){
-            let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId);
-            if(travelRequest2Sub.ready()) {
-              let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
-              /* Pre-select individual going on trip if there's any */
-              let individuals = (travelRequestDetails.tripFor && travelRequestDetails.tripFor.individuals) || [];
-              const IDs = getIndividualIDs(individuals);
-              if (IDs && IDs.length) {
-                // $('.ui.fluid.dropdown').dropdown('set selected',['Role1','Role2']);
-                $('.ui.fluid.dropdown').dropdown('set selected', IDs);
-              }
-              /* End of Pre-selection */
-                self.currentTravelRequest.set(travelRequestDetails)
-
-            }
-        }
+        Core.autorun(invokeReason, self)
     })
 
 
@@ -1677,30 +1277,3 @@ Template.TravelRequisition2Create.onRendered(function () {
 
 Template.TravelRequisition2Create.onDestroyed(function () {
 });
-
-
-/******** UTILITY FUNCTIONS BELOW ***********/
-const getIndividualIDs = (individuals) => {
-  let IDs = _.map(individuals, function(individual) {
-    return individual.id
-  })
-
-  IDs = _.filter(IDs, function (ID) {
-    return ID !== undefined;
-  })
-
-  return IDs
-}
-
-function getActiveTrip () {
-  var currentRoute = Router.current();
-  // currentRoute.url - http://localhost:3000/business/FJe5hXSxCHvR2FBjJ/employee/grouptravelrequisition2index
-  // currentRoute.route.getName() - travelrequest2.grouptravelrequisition2index
-  const GROUP_TRIP = 'grouptravelrequisition2index';
-  // const INDIVIDUAL_TRIP = 'individualtravelrequisition2index';
-  const TPC_TRIP = 'tpctravelrequisition2index';
-  const RouteName = currentRoute.route.getName().replace('travelrequest2.', '')
-  if(RouteName === GROUP_TRIP && RouteName.includes('group')) return 'GROUP';
-  if(RouteName === TPC_TRIP && RouteName.includes('tpc')) return 'THIRD_PARTY_CLIENT';
-  return 'INDIVIDUAL';
-}

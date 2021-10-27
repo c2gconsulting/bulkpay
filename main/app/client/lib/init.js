@@ -111,12 +111,29 @@ if (!_.contains(levels, isDebug)) {
     isDebug = "INFO";
 }
 
-Core.Log = bunyan.createLogger({
-    name: "core-client"
-});
+// Core.Log = bunyan.createLogger({
+//     name: "core-client"
+// });
 
-Core.Log.level(isDebug);
+// Core.Log.level(isDebug);
 
+// const winston = require("winston");
+// const logger = winston.createLogger({
+//   level: "warn",
+//   format: winston.format.json(),
+//   defaultMeta: { service: "user-service" },
+//   transports: [
+//     //
+//     // - Write to all logs with level `info` and below to `combined.log`
+//     // - Write all logs error (and below) to `error.log`.
+//     //
+//     new winston.transports.Console({
+//       format: winston.format.simple(),
+//     }),
+//   ],
+// });
+
+// Core.Log = logger;
 
 // get loggedIn user's token to be used for authentication
 Core.SearchConnection.onReconnect = function() {

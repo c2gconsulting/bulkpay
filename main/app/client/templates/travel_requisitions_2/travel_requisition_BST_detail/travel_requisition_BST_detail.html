@@ -33,21 +33,48 @@
                             </div><!-- col-sm-3 -->
                         </div>
                         <div class="row">
+                            <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                             <div class="col-sm-6">
                                 <div class="form-group">
-
-                                    <label for="budget-code" class="control-label">Which project is this trip related to?</label>
-                                    {{#semanticselect}}
-                                    <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
-                                        {{#each budgetList}}
-                                        <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
-                                        {{/each}}
-                                    </select>
-                                    {{/semanticselect}}
-                                    <span class="text-danger"><small>Please verify that the project is correct, this field cannot also be left blank</small></span>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
-
+                                <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                {{#semanticselect2}}
+                                <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
+                                    {{#each costCenters}}
+                                    <option value="{{id}}" {{selected COSTCENTER id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
+                                {{/semanticselect2}}
+                                </div>
+                            </div>
+                            <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <!-- +++++++++ PROJECT TRIP ++++++++++++-->
+                            {{#if costCenterType 'Project'}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
+                                    </div>
+                                </div>
+                                <!-- +++++++++ IF PROJECT SELECTED, THEN SELECT PROJECT ACTIVITY ++++++++++++-->
+                                {{#if currentTravelRequest.departmentOrProjectId}}
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="project_activity-code" class="control-label">Select work breakdown structure</label>
+                                        <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentActivity}}" disabled/>
+                                    </div>
+                                </div>
+                                {{/if}}
+                                <!-- ELSE -->
+                                <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
+                                {{else}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                        <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
+                                    </div>
+                                </div>
+                            {{/if}}
+                            <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                         </div>
 
 

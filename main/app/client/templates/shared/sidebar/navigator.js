@@ -218,6 +218,9 @@ Template.navigator.helpers({
         let currentExpandedMenuId = Template.instance().expandedSubMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
+    isAuditTrailLinkVisible: function () {
+      return true // Core.isPlatformAdmin() || Core.canViewAuditTrail();
+    },
     addWhiteSpace: function (index) {
         let whiteSpaces = '';
         if (!index) return '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -276,7 +279,8 @@ Template.navigator.helpers({
         }
     },
     isUserADirectSupervisor: function() {
-        if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+        // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+        if (Template.instance().isHod.get()){
             return true;
         } else {
             return false;
@@ -554,6 +558,7 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar();
     self.travelApprovalConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
+    self.isHod = new ReactiveVar();
     self.directManager = new ReactiveVar();
     self.gceo = new ReactiveVar();
     self.gcoo = new ReactiveVar();
@@ -574,6 +579,11 @@ Template.navigator.onCreated(function () {
             self.payrollApprovalConfig.set(payrollApprovalConfig)
         }
 
+
+        Meteor.call('account/hod', Meteor.userId(), (err, res) => {
+            // console.log('res._id !== Meteor.userId()', res && res._id !== Meteor.userId())
+            if (res && res._id !== Meteor.userId()) self.isHod.set(res)
+        })
 
         Meteor.call('account/getManager', Meteor.userId(), (err, res) => {
             if (res) self.directManager.set(res)

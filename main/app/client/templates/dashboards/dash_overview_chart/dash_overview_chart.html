@@ -1,0 +1,19 @@
+<template name="DashOverviewChart">
+    <div class="box panel panel-default">
+        <div class="panel-heading clearfix text-center">
+            <span class="pull-left text-info">Total Bills:</span>
+            <span class="pull-left text-danger">Total Paid Bills</span>
+ 
+        </div>
+        <div class="panel-body">
+        {{#if enableLoading}}
+            <div class="sLoading">
+               {{> spinner}}
+            </div>
+        {{/if}}
+            <div class="chart">
+                <canvas id="salesChart" style="height: 235px;"></canvas>
+            </div>
+        </div>
+    </div>
+</template>

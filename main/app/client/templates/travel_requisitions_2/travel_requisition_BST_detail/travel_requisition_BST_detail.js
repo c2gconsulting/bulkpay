@@ -58,6 +58,13 @@ Template.TravelRequisition2BSTDetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2Create');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -127,6 +134,13 @@ Template.TravelRequisition2BSTDetail.events({
         currentTravelRequest.trips[index].bankName = $(e.currentTarget).val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
+    'change [id=costCenter]': function(e, tmpl) {
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest.costCenter = $("#costCenter").val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
 });
 
 
@@ -138,6 +152,45 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2BSTDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2BSTDetail.helpers({
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
@@ -181,6 +234,15 @@ Template.TravelRequisition2BSTDetail.helpers({
         if(currentTravelRequest && index){
             return currentTravelRequest.trips[parseInt(index) - 1].isBreakfastIncluded? checked="checked" : '';
         }
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    costCenters() {
+        console.log("Session.get('context');", Session.get('context'))
+        return CostCenters.find({ businessId: Session.get('context') });
     },
     provideAirportPickup(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -339,6 +401,7 @@ Template.TravelRequisition2BSTDetail.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+    self.subscribe("costcenters", Session.get('context'));
 
 
 
@@ -350,6 +413,10 @@ Template.TravelRequisition2BSTDetail.onCreated(function () {
     self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
+
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
 

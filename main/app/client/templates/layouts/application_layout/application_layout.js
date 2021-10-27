@@ -3,13 +3,26 @@
 /*****************************************************************************/
 Template.ApplicationLayout.events({
 	'click [name="logout"]': function(e, tmpl) {
-	    	Meteor.logout(function(err) {
-			      if (!err) {
-			          Session.keys = {};
-					    	Router.go('home');
-			      }
-	      });
-    },
+    const email = Meteor.user().emails[0].address;
+    Meteor.logout(function(err) {
+      if (!err) {
+        Session.keys = {};
+        const logObject = {
+          event: "logout",
+          user: { email },
+          collectionName: "users",
+          oldData: {},
+          newData: {},
+        };
+        Meteor.call("logs/createLog", logObject, function (err) {
+          if (err) {
+            console.log("error while logging data", err);
+          }
+        });
+        Router.go('home');
+      }
+    });
+  },
 	'click #sidebar-toggle': function(e, tmpl) {
         if ($('#sidebar-toggle').data('toggle')) {
             $('body').removeClass('sidebar-mini');

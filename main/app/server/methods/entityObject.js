@@ -2,6 +2,22 @@
  *  Entity Object Methods
  */
 Meteor.methods({
+    "entityObject/import":  function(position) {
+        console.log('this.userId', this.userId)
+        const positionCondition = [{name: position.name}, { 'properties.code': position.properties.code }];
+        const positionFound = EntityObjects.findOne({ $and: positionCondition })
+        console.log('positionFound', positionFound)
+        try {
+            if (positionFound) {
+                return EntityObjects.update({ $and: positionCondition }, { $set: position })
+            } else {
+                return EntityObjects.insert(position)
+            }
+        } catch (error) {
+            console.log('entityObject/import - error', error)
+            // throw new Meteor.Error(401, error.message || error);
+        }
+    },
 
     "entityObject/create": function(obj) {
         if (!this.userId) {

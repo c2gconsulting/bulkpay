@@ -24,6 +24,13 @@
           <li><a href="{{pathFor 'bu.details'}}">Org Chart</a></li>
         {{/if}}
 
+
+        {{#if isAuditTrailLinkVisible}}
+        <li><a href="{{pathFor "logs.list"}}" name="settings-sub-menu"><i
+                    class="glyphicon glyphicon-sort-by-attributes-alt"></i> <span>Audit Trail</span></a>
+        </li>
+        {{/if}}
+
         {{#if isSapBusinessOneIntegrationEnabled}}
           {{#if hasPayrollAccess}}
             <li class="parent {{isMenuExpandedFocusClass 'sapB1IntegrationMenu'}}">

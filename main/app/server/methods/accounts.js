@@ -110,15 +110,50 @@ Accounts.onLogin(function (options) {
 Meteor.methods({
     "account/getManager": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ directManagerId: userId});
+        console.log('userId --', userId)
+        const user = Meteor.users.findOne({ _id: userId });
+        console.log('account/getManager user', user);
+        if(!user) return
+        const positionCond = [{'line_manager_position_code': String(user.position_code) }, {'line_manager_position_code': user.position_code }];
+        return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
     },
     "account/gcoo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ gcooId: userId});
+        return Meteor.users.findOne({ $and: [{ _id: userId }, {'position_description': 'Group Chief Operating off'}] });
     },
     "account/gceo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ gceoId: userId});
+        return Meteor.users.findOne({ $and: [{ _id: userId }, { 'position_description': 'Group Chief Executive off' }] });
+    },
+    "account/hod": function (userId) {
+        userId = userId || Meteor.userId();
+        const user = Meteor.users.findOne({ _id: userId });
+        if(!user) return
+        const positionCond = [{'hod_position_code': String(user.position_code) }, {'hod_position_code': user.position_code }]
+        return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
+    },
+    "account/user/hod": function (userId) {
+        userId = userId || Meteor.userId();
+        const user = Meteor.users.findOne({ _id: userId });
+        if(!user) return
+        const positionCond = [{ position_code: String(user.hod_position_code) }, { position_code: user.hod_position_code }];
+        return Meteor.users.findOne({ $or: positionCond });
+    },
+    "account/user/getManager": function (userId) {
+        userId = userId || Meteor.userId();
+        console.log('userId --', userId)
+        const user = Meteor.users.findOne({ _id: userId });
+        console.log('account/user/getManager user', user);
+        if(!user) return
+        return Meteor.users.findOne({ $or: [{ position_code: String(user.line_manager_position_code) }, { position_code: user.line_manager_position_code }] });
+    },
+    "account/user/gcoo": function (userId) {
+        userId = userId || Meteor.userId();
+        return Meteor.users.findOne({ 'position_description': 'Group Chief Operating off' });
+    },
+    "account/user/gceo": function (userId) {
+        userId = userId || Meteor.userId();
+        return Meteor.users.findOne({ 'position_description': 'Group Chief Executive off' });
     },
     /*
      * check if current user has password
@@ -656,6 +691,9 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    'account/isAuthenticated': function () {
+        return Meteor.userId()
+    },
     "account/create": function (user, sendEnrollmentEmail) {
         check(user, Object);
         check(sendEnrollmentEmail, Boolean);
@@ -687,6 +725,57 @@ Meteor.methods({
         if(accountId){
             let roles = ["ess/all"];
             Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+        }
+        if (sendEnrollmentEmail){
+            Accounts.sendEnrollmentEmail(accountId, user.email);
+        }
+        return true
+    },
+    "account/import": function (user, sendEnrollmentEmail) {
+        check(user, Object);
+        check(sendEnrollmentEmail, Boolean);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+
+        let foundAccount =  Meteor.users.findOne({"emails.address": user.email});
+        if (foundAccount){
+
+            Core.Log.info(`RUNNING EMPLOYEE UPDATE for ${eachLine.lastname} ${eachLine.firstname}`)
+            // throw new Meteor.Error(404, "Email already exists");
+            return Meteor.users.update({_id: foundAccount._id}, {$set: {
+                "employeeProfile.employeeId": user.employeeProfile.employeeId,
+                "emails.0.address": user.emails[0].address,
+                "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
+                "profile.workPhone": user.profile.workPhone,
+                "profile.homePhone": user.profile.homePhone,
+                // "employeeProfile.photo": user.employeeProfile.photo,
+                "roles": user.roles,
+                "notifications": user.notifications,
+                "salesProfile": user.salesProfile
+            }});
+        }
+        //also check if employee number is unique ... allowing users to enter thier employee ids for compatibility
+        let numberExist = Meteor.users.findOne({$and: [{"employeeProfile.employeeId": user.employeeId}, {"businessId": {"$in" : [user.businessId]}}]});
+        if (numberExist) return // throw new Meteor.Error(404, "Employee Id already taken ")
+        let options = {};
+        console.log('termination date is ', user.employeeProfile.employment.terminationDate);
+            Core.hasPayrollAccess()
+        options.email = user.email; // tempo
+        options.firstname = user.firstName;
+        options.lastname =  user.lastName;
+        options.employee =  true;
+        options.tenantId = Core.getTenantId(Meteor.userId());
+        //options.roles = ["employee/all"];
+        options.employeeProfile = user.employeeProfile;
+        options.businessIds = [user.businessId];
+        let accountId = Accounts.createUser(options);
+        if(accountId){
+            let roles = ["ess/all"];
+            Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+            Core.Log.info(`CREATED NEW EMPLOYEE: ${eachLine.lastname} ${eachLine.firstname}`)
         }
         if (sendEnrollmentEmail){
             Accounts.sendEnrollmentEmail(accountId, user.email);

@@ -764,6 +764,13 @@ Template.TravelRequisition2ExtensionDetail.events({
         Template.instance().errorMessage.set(null);
         Modal.hide('TravelRequisition2ExtensionDetail');
     }else{
+        swal({
+            title: "Oops!",
+            text: "Validation errors" + validationErrors,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
         Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
 
@@ -875,6 +882,13 @@ Template.TravelRequisition2ExtensionDetail.events({
         Template.instance().errorMessage.set(null);
         Modal.hide('TravelRequisition2ExtensionDetail');
     }else{
+        swal({
+            title: "Oops!",
+            text: "Validation errors" + validationErrors,
+            confirmButtonClass: "btn-danger",
+            type: "error",
+            confirmButtonText: "OK"
+        });
         Template.instance().errorMessage.set("Validation errors" + validationErrors);
     }
 
@@ -1195,66 +1209,7 @@ Template.TravelRequisition2ExtensionDetail.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
 
-    let currentTravelRequest = {
-        businessId: businessUnitId,
-
-        destinationType: 'Local',
-        costCenter: 'Project',
-        tpcTrip: 'Third_Party',
-        tripFor: {},
-        tripCategory: getActiveTrip() || 'INDIVIDUAL',
-        description: "",
-        budgetCodeId: "",
-        cashAdvanceNotRequired: false,
-        type:"Return",
-        totalTripDuration: 0,
-        totalEmployeePerdiemNGN: 0,
-        totalEmployeePerdiemUSD: 0, totalAirportTaxiCostNGN: 0, totalAirportTaxiCostUSD: 0, totalGroundTransportCostNGN: 0, totalGroundTransportCostUSD: 0,
-        totalFlightCostNGN: 0,
-        totalFlightCostUSD: 0,
-        totalHotelCostNGN: 0,
-        totalHotelCostUSD: 0,
-        totalTripCostNGN: 0,
-        totalTripCostUSD: 0,
-        status: "Pending",
-        supervisorId: "",
-        budgetHolderId: "",
-        createdBy: Meteor.user()._id,
-
-        trips:[ {
-            tripIndex: 1,
-            fromId: "",
-            toId: "",
-            departureDate: new Date(),
-            returnDate: new Date(),
-            departureTime: "6 AM",
-            returnTime: "6 PM",
-            transportationMode: 'AIR',
-            carOption: 'CAR_HIRE',
-            provideAirportPickup: false,
-            provideGroundTransport: false,
-            provideSecurity: false,
-            originCityAirportTaxiCost: 0,
-            destinationCityAirportTaxiCost: 0,
-            groundTransportCost: 0,
-            airlineId: "",
-            airfareCost: 0,
-            airfareCurrency: "NGN",
-            hotelId: "H3593",
-            hotelRate: 0,
-            destinationCityCurrreny: "NGN",
-            hotelNotRequired: false,
-            perDiemCost: 0,
-            originCityCurrreny: "NGN",
-            isBreakfastIncluded: false,
-            isLunchIncluded: false,
-            isDinnerIncluded: false,
-            isIncidentalsIncluded: false,
-            totalDuration: 0,
-            totalPerDiem: 0,
-            totalHotelCost: 0
-        }]
-    };
+    let currentTravelRequest = Core.currentTravelRequest(businessUnitId);
 
     self.currentTravelRequest =  new ReactiveVar();
     self.currentTravelRequest.set(currentTravelRequest);

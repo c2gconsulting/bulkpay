@@ -1,0 +1,34 @@
+<template name="DashTopFivePaidBills">
+  <div class="dash-top-distributors">
+      <div class="panel-heading clearfix text-center">
+        <span class="pull-left"><strong>Top 5 Paid Bills</strong></span>
+        <div class="col-xs-3 pull-right text-success">
+        <b>Date</b></div>
+        <div class="col-xs-4 pull-right text-success">
+        <b>Amount</b></div>
+      </div>
+      <div class="panel-body no-padding">
+      {{#if enableLoading}}
+              <div class="sLoading">
+                  {{> spinner}}
+              </div>
+      {{else}}
+        <ul class="nav nav-pills nav-stacked">
+          {{#each outstandingBills}}
+            <li>
+              <a href="#" class="clearfix">
+                <div class="row">
+                  <div class="col-xs-6 text-default">{{_id}}</div>
+                  <div class="col-xs-3 text-success text-success hidden-text"><b>{{formatMoney amountDue tenant.baseCurrency}}</b></div>
+                  <div class="col-xs-3 text-success"><b>{{deadline dueDate}}</b></div>
+                </div>
+              </a>
+            </li>
+          {{else}}
+            <div class="text-center" style="padding-top: 105px; padding-bottom: 105px">No information for the selected period.</div>
+          {{/each}}
+        </ul>
+      {{/if}}
+      </div>
+    </div>
+</template>

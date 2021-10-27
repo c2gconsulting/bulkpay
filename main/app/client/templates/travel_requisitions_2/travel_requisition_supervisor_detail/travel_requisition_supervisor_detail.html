@@ -29,11 +29,11 @@
                                 <div class="form-group">
                                     <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <!-- <div class="col-sm-6">
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project is this trip related to?</label>
@@ -45,9 +45,53 @@
                                     </select>
                                     {{/semanticselect}}
                                     <span class="text-danger"><small>Please verify that the project is correct, this field cannot also be left blank</small></span>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div> -->
 
+
+
+                            <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                {{#semanticselect2}}
+                                <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
+                                    {{#each costCenters}}
+                                    <option value="{{id}}" {{selected COSTCENTER id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
+                                {{/semanticselect2}}
+                                </div>
+                            </div>
+                            <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <!-- +++++++++ PROJECT TRIP ++++++++++++-->
+                            {{#if costCenterType 'Project'}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
+                                    </div>
+                                </div>
+                                <!-- +++++++++ IF PROJECT SELECTED, THEN SELECT PROJECT ACTIVITY ++++++++++++-->
+                                {{#if currentTravelRequest.departmentOrProjectId}}
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="project_activity-code" class="control-label">Select work breakdown structure</label>
+                                        <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentActivity}}" disabled/>
+                                    </div>
+                                </div>
+                                {{/if}}
+                                <!-- ELSE -->
+                                <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
+                                {{else}}
+                                <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                    <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
+                                </div>
+                                </div>
+                            {{/if}}
+                            <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                         </div>
 
 
@@ -94,13 +138,13 @@
                                 <div class="form-group">
                                     <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId}}" disabled />
-                                </div><!-- form-group -->
+                                </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId}}" disabled />
-                                </div><!-- form-group -->
+                                </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-2">
                                 <div class="form-group datetimepicker">
@@ -113,7 +157,7 @@
 
                                     <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
-                                </div><!-- form-group -->
+                                </div>
                             </div>
                             {{#if isReturnTrip}}
                             <div class="col-sm-2">
@@ -127,7 +171,7 @@
                                     <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
                                 </div>
-                                <!-- form-group -->
+                                
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
@@ -137,8 +181,8 @@
                                 <div class="form-group">
                                     <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="transportationMode_{{this.tripIndex}}" class="form-control" placeholder="Transportation Mode" name="transportationMode_{{this.tripIndex}}" value="{{this.transportationMode}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-5">
                                 <div class="form-group">
 
@@ -185,20 +229,20 @@
                                 <div class="form-group">
                                     <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{this.tripIndex}}" value="{{getHotelName this.hotelId}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
                                     <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{formatMoney this.hotelRate}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
                                     <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
@@ -375,7 +419,7 @@
                         <div class="row" >
                             <div class="col-sm-12">
                                 <span class="text-danger">{{errorMessage}}</span>
-                            </div><!-- col-sm-3 -->
+                            </div>
                         </div>
                         {{/if}}
                     </div>

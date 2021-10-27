@@ -1,0 +1,29 @@
+<template name="DashProductReturns">
+    <div class="col-lg-3 col-xs-12">
+        <div class="box box-xs panel panel-default">
+            <div class="panel-heading clearfix">
+                <span class="panel-title pull-left">Bills</span>
+                <div class="pull-right">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{orderFilter}} <i class="glyphicon icon-downarrow"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#all" data-filter="annually">All</a></li>
+                        <li><a href="#annually" data-filter="annually">Year</a></li>
+                        <li><a href="#monthly" data-filter="monthly">Month</a></li>
+                        <li><a href="#week" data-filter="monthly">Week</a></li>
+                        <li><a href="#today" data-filter="monthly">Today</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="panel-body-num">{{totalSum.count}}</div>
+                <div class="clearfix panel-body-num-stat">
+                    <div class="pull-left">Total</div>
+                    {{#if condition orderFilter "neq" "All"}}
+                        <div class="pull-right {{#if condition totalSum.count "gt" totalSum.oldCount}}text-success {{else}} text-danger {{/if}}">
+                            {{formatNumber  totalSum.percentage}}% <i class="glyphicon {{#if condition totalSum.count "gt" totalSum.oldCount}}glyphicon-arrow-up{{else}} glyphicon-arrow-down {{/if}}"></i></div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

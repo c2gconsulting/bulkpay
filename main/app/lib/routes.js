@@ -7,7 +7,7 @@ Router.configure({
     loadingTemplate: "Loading",
 
     onRun: function () {
-        //$(window).scrollTop(0);
+        $(window).scrollTop(0);
         //Core.clearActionView();
         this.next();
     }
@@ -116,6 +116,14 @@ Router.route('/resetPassword/:token', {
     template: 'ResetMyPassword'
 });
 
+
+//Logs Route
+Router.route("/business/:_id/logs", {
+  name: "logs.list",
+  controller: "LogsController",
+  action: "listLogs",
+  where: "client",
+});
 
 
 Router.route('/business/:_id', {

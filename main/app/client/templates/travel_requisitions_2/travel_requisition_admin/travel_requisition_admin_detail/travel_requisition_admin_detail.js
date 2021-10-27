@@ -98,6 +98,13 @@ Template.TravelRequisition2AdminDetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2AdminDetail');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
