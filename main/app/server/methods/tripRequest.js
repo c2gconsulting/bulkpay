@@ -294,20 +294,20 @@ let TravelRequestHelper = {
     }
 
     const currentUser = (Meteor.users.findOne(currentTravelRequest.createdBy));
-    const { line_manager_position_code, hod_position_code } = currentUser;
+    const { lineManagerId, hodPositionId } = currentUser;
     if (hasFlightRequest) {
-      const managerCond = [{'position_code': String(line_manager_position_code) }, {'position_code': line_manager_position_code }];
-      const hodCond = [{'position_code': String(hod_position_code) }, {'position_code': hod_position_code }];
+      const managerCond = [{'positionId': String(lineManagerId) }, {'positionId': lineManagerId }];
+      const hodCond = [{'positionId': String(hodPositionId) }, {'positionId': hodPositionId }];
       currentTravelRequest.supervisor = Meteor.users.findOne({ $or: hodCond })._id;
       currentTravelRequest.managerId = Meteor.users.findOne({ $or: managerCond })._id;
-      currentTravelRequest.gcooId = (Meteor.users.findOne({ 'position_description': 'Group Chief Operating off' }))._id;
-      currentTravelRequest.gceoId = (Meteor.users.findOne({ 'position_description': 'Group Chief Executive off' }))._id;
+      currentTravelRequest.gcooId = (Meteor.users.findOne({ 'positionDesc': 'Group Chief Operating off' }))._id;
+      currentTravelRequest.gceoId = (Meteor.users.findOne({ 'positionDesc': 'Group Chief Executive off' }))._id;
       // BST and LOGISTICS => "roles.__global_roles__" : "logistics/process"
       currentTravelRequest.bstId = (Meteor.users.findOne({ "roles.__global_roles__" : "bst/process" }))._id;
       currentTravelRequest.logisticsId = (Meteor.users.findOne({ "roles.__global_roles__" : "logistics/process" }))._id;
     } else {
-      const positionCond = [{'position_code': String(line_manager_position_code) }, {'position_code': line_manager_position_code }];
-      const hodCond = [{'position_code': String(hod_position_code) }, {'position_code': hod_position_code }];
+      const positionCond = [{'positionId': String(lineManagerId) }, {'positionId': lineManagerId }];
+      const hodCond = [{'positionId': String(hodPositionId) }, {'positionId': hodPositionId }];
       currentTravelRequest.supervisor = Meteor.users.findOne({ $or: hodCond })._id;
       currentTravelRequest.managerId = Meteor.users.findOne({ $or: positionCond })._id;
       // currentTravelRequest.managerId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directManagerId;
@@ -763,9 +763,9 @@ Meteor.methods({
 
       // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
       const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+      const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
       const { managerId, directSupervisorId } = currentUser;
-      const queryByCode = 'position_code', queryByName = 'position_description';
+      const queryByCode = 'positionId', queryByName = 'positionDesc';
       const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
       const hodOrSupervisorCond = { $or: [{ [queryByCode]: String(hodCode) }, { [queryByCode]: hodCode }] };
       const managerCond = { $or: [{ [queryByCode]: String(managerCode) }, { [queryByCode]: managerCode }] };
@@ -783,9 +783,9 @@ Meteor.methods({
       currentTravelRequest.logisticsId = fetchUser(logisticCond)
 
       let isTopLevelUser = false
-      const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code';
+      const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId';
       const topLevelQuery = { $and: [{ _id: this.userId }, {
-        $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(managerCode) }, { [queryByName]: GCOO }, { [queryByName]: GCEO }]
+        $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(managerCode) }, { [queryByName]: GCOO }, { [queryByName]: GCEO }]
       }]}
 
       if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1112,14 +1112,14 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+    const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
     const { managerId, directSupervisorId } = currentUser;
-    const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code', indentifier = 'position_description';
+    const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId', indentifier = 'positionDesc';
     const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
     const hodOrSupervisorCond = { $or: [{ [hodIdentifier]: String(hodCode) }, { [hodIdentifier]: hodCode }] };
     const managerCond = { $or: [{ [managerIdentifier]: String(managerCode) }, { [managerIdentifier]: managerCode }] };
-    const GcooCond = { 'position_description': 'Group Chief Operating off' };
-    const GceoCond = { 'position_description': 'Group Chief Executive off' };
+    const GcooCond = { 'positionDesc': 'Group Chief Operating off' };
+    const GceoCond = { 'positionDesc': 'Group Chief Executive off' };
     const bstCond = { "roles.__global_roles__" : "bst/process" }
     const logisticCond = { "roles.__global_roles__" : "logistics/process" }
     const securityCond = { "roles.__global_roles__" : "security/manage" }
@@ -1133,7 +1133,7 @@ Meteor.methods({
 
     // let isTopLevelUser = false
     // const topLevelQuery = { $and: [{ _id: currentTravelRequest.createdBy }, {
-    //   $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(position_code) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
+    //   $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(positionId) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
     // }]}
 
     // if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1158,7 +1158,7 @@ Meteor.methods({
 
     // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [hodIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [hodIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isHOD = true;
         const fetchedUser = fetchUser(currentTravelRequest.managerId);
@@ -1166,7 +1166,7 @@ Meteor.methods({
       }
 
       if (!nextUserApproval) {
-        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
         if (nextUserApproval) {
           isManager = true;
           const fetchedUser = fetchUser(currentTravelRequest.gcooId);
@@ -1197,7 +1197,7 @@ Meteor.methods({
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [hodIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [hodIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isHOD = true;
         const fetchedUser = fetchUser(currentTravelRequest.managerId);
@@ -1205,7 +1205,7 @@ Meteor.methods({
       }
 
       if (!nextUserApproval) {
-        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
         if (nextUserApproval) {
           isManager = true;
           // SEND TO LOGISTICS TO PROCESS THE LAND TRIP
@@ -1343,14 +1343,14 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+    const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
     const { managerId, directSupervisorId } = currentUser;
-    const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code', indentifier = 'position_description';
+    const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId', indentifier = 'positionDesc';
     const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
     const hodOrSupervisorCond = { $or: [{ [hodIdentifier]: String(hodCode) }, { [hodIdentifier]: hodCode }] };
     const managerCond = { $or: [{ [managerIdentifier]: String(managerCode) }, { [managerIdentifier]: managerCode }] };
-    const GcooCond = { 'position_description': 'Group Chief Operating off' };
-    const GceoCond = { 'position_description': 'Group Chief Executive off' };
+    const GcooCond = { 'positionDesc': 'Group Chief Operating off' };
+    const GceoCond = { 'positionDesc': 'Group Chief Executive off' };
     const bstCond = { "roles.__global_roles__" : "bst/process" }
     const logisticCond = { "roles.__global_roles__" : "logistics/process" }
     const securityCond = { "roles.__global_roles__" : "security/manage" }
@@ -1364,7 +1364,7 @@ Meteor.methods({
 
     // let isTopLevelUser = false
     // const topLevelQuery = { $and: [{ _id: currentTravelRequest.createdBy }, {
-    //   $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(position_code) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
+    //   $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(positionId) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
     // }]}
 
     // if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1389,7 +1389,7 @@ Meteor.methods({
 
     // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isManager = true;
         const fetchedUser = fetchUser(currentTravelRequest.gcooId);
@@ -1419,7 +1419,7 @@ Meteor.methods({
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isManager = true;
         // SEND TO LOGISTICS TO PROCESS THE LAND TRIP
@@ -1544,14 +1544,14 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+    const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
     const { managerId, directSupervisorId } = currentUser;
-    const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code', indentifier = 'position_description';
+    const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId', indentifier = 'positionDesc';
     const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
     const hodOrSupervisorCond = { $or: [{ [hodIdentifier]: String(hodCode) }, { [hodIdentifier]: hodCode }] };
     const managerCond = { $or: [{ [managerIdentifier]: String(managerCode) }, { [managerIdentifier]: managerCode }] };
-    const GcooCond = { 'position_description': 'Group Chief Operating off' };
-    const GceoCond = { 'position_description': 'Group Chief Executive off' };
+    const GcooCond = { 'positionDesc': 'Group Chief Operating off' };
+    const GceoCond = { 'positionDesc': 'Group Chief Executive off' };
     const bstCond = { "roles.__global_roles__" : "bst/process" }
     const logisticCond = { "roles.__global_roles__" : "logistics/process" }
     const securityCond = { "roles.__global_roles__" : "security/manage" }
@@ -1565,7 +1565,7 @@ Meteor.methods({
 
     // let isTopLevelUser = false
     // const topLevelQuery = { $and: [{ _id: currentTravelRequest.createdBy }, {
-    //   $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(position_code) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
+    //   $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(positionId) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
     // }]}
 
     // if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1611,7 +1611,7 @@ Meteor.methods({
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isManager = true;
         // SEND TO LOGISTICS TO PROCESS THE LAND TRIP
@@ -1736,14 +1736,14 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+    const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
     const { managerId, directSupervisorId } = currentUser;
-    const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code', indentifier = 'position_description';
+    const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId', indentifier = 'positionDesc';
     const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
     const hodOrSupervisorCond = { $or: [{ [hodIdentifier]: String(hodCode) }, { [hodIdentifier]: hodCode }] };
     const managerCond = { $or: [{ [managerIdentifier]: String(managerCode) }, { [managerIdentifier]: managerCode }] };
-    const GcooCond = { 'position_description': 'Group Chief Operating off' };
-    const GceoCond = { 'position_description': 'Group Chief Executive off' };
+    const GcooCond = { 'positionDesc': 'Group Chief Operating off' };
+    const GceoCond = { 'positionDesc': 'Group Chief Executive off' };
     const bstCond = { "roles.__global_roles__" : "bst/process" }
     const logisticCond = { "roles.__global_roles__" : "logistics/process" }
     const securityCond = { "roles.__global_roles__" : "security/manage" }
@@ -1757,7 +1757,7 @@ Meteor.methods({
 
     // let isTopLevelUser = false
     // const topLevelQuery = { $and: [{ _id: currentTravelRequest.createdBy }, {
-    //   $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(position_code) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
+    //   $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(positionId) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
     // }]}
 
     // if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1794,7 +1794,7 @@ Meteor.methods({
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isManager = true;
         // SEND TO LOGISTICS TO PROCESS THE LAND TRIP
@@ -1919,14 +1919,14 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const { line_manager_position_code: managerCode, hod_position_code: hodCode, position_code } = currentUser;
+    const { lineManagerId: managerCode, hodPositionId: hodCode, positionId } = currentUser;
     const { managerId, directSupervisorId } = currentUser;
-    const managerIdentifier = 'line_manager_position_code', hodIdentifier = 'hod_position_code', indentifier = 'position_description';
+    const managerIdentifier = 'lineManagerId', hodIdentifier = 'hodPositionId', indentifier = 'positionDesc';
     const GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
     const hodOrSupervisorCond = { $or: [{ [hodIdentifier]: String(hodCode) }, { [hodIdentifier]: hodCode }] };
     const managerCond = { $or: [{ [managerIdentifier]: String(managerCode) }, { [managerIdentifier]: managerCode }] };
-    const GcooCond = { 'position_description': 'Group Chief Operating off' };
-    const GceoCond = { 'position_description': 'Group Chief Executive off' };
+    const GcooCond = { 'positionDesc': 'Group Chief Operating off' };
+    const GceoCond = { 'positionDesc': 'Group Chief Executive off' };
     const bstCond = { "roles.__global_roles__" : "bst/process" }
     const logisticCond = { "roles.__global_roles__" : "logistics/process" }
     const securityCond = { "roles.__global_roles__" : "security/manage" }
@@ -1940,7 +1940,7 @@ Meteor.methods({
 
     // let isTopLevelUser = false
     // const topLevelQuery = { $and: [{ _id: currentTravelRequest.createdBy }, {
-    //   $or: [{[hodIdentifier]: String(position_code)}, { [managerIdentifier]: String(position_code) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
+    //   $or: [{[hodIdentifier]: String(positionId)}, { [managerIdentifier]: String(positionId) }, { [indentifier]: GCOO }, { [indentifier]: GCEO }]
     // }]}
 
     // if (fetchUser(topLevelQuery)) isTopLevelUser = true;
@@ -1977,7 +1977,7 @@ Meteor.methods({
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(position_code) }] });
+      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { [managerIdentifier]: String(positionId) }] });
       if (nextUserApproval) {
         isManager = true;
         // SEND TO LOGISTICS TO PROCESS THE LAND TRIP

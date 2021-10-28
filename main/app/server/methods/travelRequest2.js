@@ -293,20 +293,20 @@ let TravelRequestHelper = {
     }
 
     const currentUser = (Meteor.users.findOne(currentTravelRequest.createdBy));
-    const { line_manager_position_code, hod_position_code } = currentUser;
+    const { lineManagerId, hodPositionId } = currentUser;
     if (hasFlightRequest) {
-      const managerCond = [{'position_code': String(line_manager_position_code) }, {'position_code': line_manager_position_code }];
-      const hodCond = [{'position_code': String(hod_position_code) }, {'position_code': hod_position_code }];
+      const managerCond = [{'positionId': String(lineManagerId) }, {'positionId': lineManagerId }];
+      const hodCond = [{'positionId': String(hodPositionId) }, {'positionId': hodPositionId }];
       currentTravelRequest.supervisor = Meteor.users.findOne({ $or: hodCond })._id;
       currentTravelRequest.managerId = Meteor.users.findOne({ $or: managerCond })._id;
-      currentTravelRequest.gcooId = (Meteor.users.findOne({ 'position_description': 'Group Chief Operating off' }))._id;
-      currentTravelRequest.gceoId = (Meteor.users.findOne({ 'position_description': 'Group Chief Executive off' }))._id;
+      currentTravelRequest.gcooId = (Meteor.users.findOne({ 'positionDesc': 'Group Chief Operating off' }))._id;
+      currentTravelRequest.gceoId = (Meteor.users.findOne({ 'positionDesc': 'Group Chief Executive off' }))._id;
       // BST and LOGISTICS => "roles.__global_roles__" : "logistics/process"
       currentTravelRequest.bstId = (Meteor.users.findOne({ "roles.__global_roles__" : "bst/process" }))._id;
       currentTravelRequest.logisticsId = (Meteor.users.findOne({ "roles.__global_roles__" : "logistics/process" }))._id;
     } else {
-      const positionCond = [{'position_code': String(line_manager_position_code) }, {'position_code': line_manager_position_code }];
-      const hodCond = [{'position_code': String(hod_position_code) }, {'position_code': hod_position_code }];
+      const positionCond = [{'positionId': String(lineManagerId) }, {'positionId': lineManagerId }];
+      const hodCond = [{'positionId': String(hodPositionId) }, {'positionId': hodPositionId }];
       currentTravelRequest.supervisor = Meteor.users.findOne({ $or: hodCond })._id;
       currentTravelRequest.managerId = Meteor.users.findOne({ $or: positionCond })._id;
       // currentTravelRequest.managerId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directManagerId;

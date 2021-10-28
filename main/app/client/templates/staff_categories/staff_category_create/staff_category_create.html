@@ -75,24 +75,11 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="control-label">Position / Level</label>
-                                    <select  name="position" class="form-control dropdown" >
-                                       
-                                        <option value="GCOO" {{selected "position" "GCOO" }}>GCOO</option>
-                                        <option value="GCFO" {{selected "position" "GCFO" }}>GCFO</option>
-                                        <option value="GHHR" {{selected "position" "GHHR" }}>GHHR</option>
-                                        <option value="Executive Management" {{selected "position" "Executive Management" }}>Executive Management</option>
-                                        <option value="Senior Manager" {{selected "position" "Senior Manager" }}>Senior Manager</option>
-                                        <option value="Manager" {{selected "position" "Manager" }}>Manager</option>
-                                        <option value="Snr Engineers" {{selected "position" "Snr Engineers" }}>Snr Engineers</option>
-                                        <option value="Snr Engineers/Coordinators" {{selected "position" "Snr Engineers/Coordinators" }}>Snr Engineers/Coordinators</option>
-                                        <option value="Coordinators" {{selected "position" "Coordinators" }}>Coordinators</option>
-                                        <option value="Engineers" {{selected "position" "Engineers" }}>Engineers</option>
-                                        <option value="Supervisors" {{selected "position" "Supervisors" }}>Supervisors</option>
-                                        <option value="Senior officers" {{selected "position" "Senior officers" }}>Senior officers</option>
-                                        <option value="Officers" {{selected "position" "Officers" }}>Officers</option>
-                                        <option value="Foreman" {{selected "position" "Foreman" }}>Foreman</option>
-                                       
+                                    <label class="control-label">Category / Level</label>
+                                    <select name="categoryType" class="form-control dropdown" >
+                                        {{#each staffCategories}}
+                                            <option value="{{this}}" {{selected categoryType this }}>{{this}}</option>
+                                        {{/each}}
                                     </select>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->

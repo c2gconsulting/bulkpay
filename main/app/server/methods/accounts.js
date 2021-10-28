@@ -114,29 +114,29 @@ Meteor.methods({
         const user = Meteor.users.findOne({ _id: userId });
         console.log('account/getManager user', user);
         if(!user) return
-        const positionCond = [{'line_manager_position_code': String(user.position_code) }, {'line_manager_position_code': user.position_code }];
+        const positionCond = [{'lineManagerId': String(user.positionId) }, {'lineManagerId': user.positionId }];
         return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
     },
     "account/gcoo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ $and: [{ _id: userId }, {'position_description': 'Group Chief Operating off'}] });
+        return Meteor.users.findOne({ $and: [{ _id: userId }, {'positionDesc': 'Group Chief Operating off'}] });
     },
     "account/gceo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ $and: [{ _id: userId }, { 'position_description': 'Group Chief Executive off' }] });
+        return Meteor.users.findOne({ $and: [{ _id: userId }, { 'positionDesc': 'Group Chief Executive off' }] });
     },
     "account/hod": function (userId) {
         userId = userId || Meteor.userId();
         const user = Meteor.users.findOne({ _id: userId });
         if(!user) return
-        const positionCond = [{'hod_position_code': String(user.position_code) }, {'hod_position_code': user.position_code }]
+        const positionCond = [{'hodPositionId': String(user.positionId) }, {'hodPositionId': user.positionId }]
         return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
     },
     "account/user/hod": function (userId) {
         userId = userId || Meteor.userId();
         const user = Meteor.users.findOne({ _id: userId });
         if(!user) return
-        const positionCond = [{ position_code: String(user.hod_position_code) }, { position_code: user.hod_position_code }];
+        const positionCond = [{ positionId: String(user.hodPositionId) }, { positionId: user.hodPositionId }];
         return Meteor.users.findOne({ $or: positionCond });
     },
     "account/user/getManager": function (userId) {
@@ -145,15 +145,15 @@ Meteor.methods({
         const user = Meteor.users.findOne({ _id: userId });
         console.log('account/user/getManager user', user);
         if(!user) return
-        return Meteor.users.findOne({ $or: [{ position_code: String(user.line_manager_position_code) }, { position_code: user.line_manager_position_code }] });
+        return Meteor.users.findOne({ $or: [{ positionId: String(user.lineManagerId) }, { positionId: user.lineManagerId }] });
     },
     "account/user/gcoo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ 'position_description': 'Group Chief Operating off' });
+        return Meteor.users.findOne({ 'positionDesc': 'Group Chief Operating off' });
     },
     "account/user/gceo": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ 'position_description': 'Group Chief Executive off' });
+        return Meteor.users.findOne({ 'positionDesc': 'Group Chief Executive off' });
     },
     /*
      * check if current user has password

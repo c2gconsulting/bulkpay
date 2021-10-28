@@ -42,6 +42,10 @@ Core.Schemas.EntityObject = new SimpleSchema({
         type: String,
         optional: true
     },
+    correspondingStaffCategory: {
+        type: String,
+        optional: true
+    },
     properties: {
         type: Object,
         optional: true,

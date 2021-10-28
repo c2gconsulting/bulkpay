@@ -32,6 +32,7 @@ Core.queryClient = (apiUrl, userId, reactiveVariable) => {
   })
 }
 
+
 Core.updateTravelActivities = (departmentOrProjectId, reactiveVar) => {
   // const { departmentOrProjectId } = currentTravelRequest;
   const activities = Activities.find({ type: 'project', unitOrProjectId: departmentOrProjectId });
@@ -157,14 +158,14 @@ Core.defaultDepartmentAndProject = (self, travelRequestDetails) => {
 
   if (travelRequestDetails.costCenter === 'Project') {
     const project = Projects.findOne(travelRequestDetails.departmentOrProjectId)
-    console.log('project', project)
+    // console.log('project', project)
     const projectDatum = project ? `${project.name} - ${project.external_project_number}` : "I am not sure";
-    console.log('project -- data', projectDatum)
+    // console.log('project -- data', projectDatum)
     self.currentProject.set(projectDatum)
 
     const activity = Activities.findOne(travelRequestDetails.activityId)
-    console.log('activity', activity)
-    console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
+    // console.log('activity', activity)
+    // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
     const datum = activity ? `${activity.description} - ${activity.externalCode}` : "I am not sure";
     self.currentActivity.set(datum)
   }
@@ -184,7 +185,7 @@ Core.autorun = (invokeReason, self) => {
         if (travelRequestDetails) {
           $('#costCenter').dropdown('set selected', travelRequestDetails.costCenter);
           $('#departmentOrProjectId').dropdown('set selected', travelRequestDetails.departmentOrProjectId);
-          console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
+          // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
           if (travelRequestDetails.activityId) $('#project_activity-code').dropdown('set selected', travelRequestDetails.activityId);
         }
         /* Pre-select individual going on trip if there's any */
@@ -221,6 +222,16 @@ Core.tripAnalysis = (self) => {
 
   self.subscribe("activities", 'project', currentTravelRequest.departmentOrProjectId);
 
+
+  const { destinationType } = currentTravelRequest;
+  const isInternational = destinationType === "International"
+  let StaffCategory = StaffCategories.find({ isInternational }).fetch();
+  // console.log('StaffCategoryyyy', StaffCategory)
+
+  const { tripFor } = currentTravelRequest;
+  let individuals = tripFor && tripFor.individuals ? tripFor.individuals : [{}];
+  // console.log('individuals', individuals)
+
   let totalTripDuration = 0;
   let totalEmployeePerdiemNGN = 0;
   let totalEmployeePerdiemUSD = 0;
@@ -238,56 +249,79 @@ Core.tripAnalysis = (self) => {
   let totalMiscCostUSD = 0;
 
   for (i = 0; i < currentTravelRequest.trips.length; i++) {
+    let totalHotelCost = 0;
+    let totalHotelRate = 0;
+    let totalPerDiem = 0;// group perdiem
+    let totalPerDiemCost = 0;// group perdiem multply by days spent on the trip
+    let originCityAirportTaxiCost = 0;
+    let destinationCityAirportTaxiCost = 0;
+    let groundTransportCost = 0;
+
+
+    let totalDuration = 0;
+
+    if (tripType === "Return"){
+      const startDate = moment(currentTravelRequest.trips[i].departureDate)
+      const endDate = moment(currentTravelRequest.trips[i].returnDate)
+
+
+    //    var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
+    //    var eNDDATE = moment(endDate).format('DD/MM/YYYY');
+
+
+    //   console.log("sTARTDATE")
+    //   console.log(sTARTDATE)
+    //   console.log("eNDDATE")
+    //   console.log(eNDDATE)
+
+        totalDuration = endDate.diff(startDate, 'days');
+
+        if (totalDuration < 0){
+            totalDuration = 0;
+        }else{
+            totalDuration = totalDuration + 0.5;
+            //totalDuration = totalDuration;
+
+        }
+    } else if (tripType === "Single") {
+      totalDuration = totalDuration + 0.5;
+    } else if (tripType === "Multiple"){
+
+        if ((i + 1) >= currentTravelRequest.trips.length){
+            totalDuration = 0;
+        }else{
+            const startDate = moment(currentTravelRequest.trips[i].departureDate);
+            const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
+
+            totalDuration = endDate.diff(startDate, 'days');
+            if (totalDuration < 0){
+                totalDuration = 0;
+            }else{
+                totalDuration = totalDuration + 0.5;
+            }
+        }
+    }
+
+
+
+    console.log("Total Duration: " + totalDuration)
+
+
+
+    let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
+    let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
+
+    for (let eI = 0; eI < individuals.length; eI++) {
+      let { staffCategory } = Meteor.user();
+
+      if (currentTravelRequest.tripCategory !== 'INDIVIDUAL') {
+        const individual = individuals[eI];
+        // console.log('individuals[eI]', individuals[eI])
+        if (individual && individual.staffCategory) staffCategory = individual.staffCategory;
+      }
 
       const toId = currentTravelRequest.trips[i].toId;
       const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
-
-
-      let totalDuration = 0;
-
-      if (tripType === "Return"){
-        const startDate = moment(currentTravelRequest.trips[i].departureDate)
-        const endDate = moment(currentTravelRequest.trips[i].returnDate)
-
-
-      //    var sTARTDATE = moment(startDate).format('DD/MM/YYYY');
-      //    var eNDDATE = moment(endDate).format('DD/MM/YYYY');
-
-
-      //   console.log("sTARTDATE")
-      //   console.log(sTARTDATE)
-      //   console.log("eNDDATE")
-      //   console.log(eNDDATE)
-
-          totalDuration = endDate.diff(startDate, 'days');
-
-          if (totalDuration < 0){
-              totalDuration = 0;
-          }else{
-              totalDuration = totalDuration + 0.5;
-              //totalDuration = totalDuration;
-
-          }
-      }else if (tripType === "Multiple"){
-
-          if ((i + 1) >= currentTravelRequest.trips.length){
-              totalDuration = 0;
-          }else{
-              const startDate = moment(currentTravelRequest.trips[i].departureDate);
-              const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
-
-              totalDuration = endDate.diff(startDate, 'days');
-              if (totalDuration < 0){
-                  totalDuration = 0;
-              }else{
-                  totalDuration = totalDuration + 0.5;
-              }
-          }
-      }
-
-
-
-      console.log("Total Duration: " + totalDuration)
 
 
 
@@ -296,19 +330,22 @@ Core.tripAnalysis = (self) => {
       let originCityCurrreny = "NGN";
       let destinationCityCurrreny = "NGN";
 
-      let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
-      let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
+      userStaffCategory = StaffCategory.find((StaffCategory) => StaffCategory.category === staffCategory);
+      userStaffCategory = userStaffCategory || null
+
+      console.log('userStaffCategory', userStaffCategory)
 
       if(toTravelCity){
           destinationCityCurrreny = toTravelCity.currency;
       }
 
       if(fromTravelCity){
+          // originCityCurrreny = fromTravelCity.currency;
           originCityCurrreny = fromTravelCity.currency;
       }
 
-      if (toTravelCity){
-          unadjustedPerDiemCost = toTravelCity.perdiem;
+      if (userStaffCategory){
+          unadjustedPerDiemCost = userStaffCategory.perdiem;
           perDiemCost = unadjustedPerDiemCost;
 
           if (currentTravelRequest.trips[i].isBreakfastIncluded){
@@ -329,79 +366,100 @@ Core.tripAnalysis = (self) => {
       }
 
       let hotelRate = 0;
-      let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
-      if (hotel){
-          hotelRate = hotel.dailyRate;
+      // let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
+      if (userStaffCategory){
+          hotelRate = userStaffCategory.hotelDailyRate;
       }
 
-      currentTravelRequest.trips[i].totalHotelCost = (totalDuration - 0.5) * hotelRate;
+      totalHotelCost = ((totalDuration - 0.5) * hotelRate) + totalHotelCost;
+      totalHotelRate = hotelRate + totalHotelRate;
+      totalPerDiem = (totalDuration * perDiemCost) + totalPerDiem;
+      totalPerDiemCost = perDiemCost + totalPerDiemCost;
+    
+      // currentTravelRequest.trips[i].totalHotelCost = (totalDuration - 0.5) * hotelRate;
 
-      currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
+      // currentTravelRequest.trips[i].totalPerDiem = totalDuration * perDiemCost;
       currentTravelRequest.trips[i].totalDuration = totalDuration;
-      currentTravelRequest.trips[i].perDiemCost = perDiemCost;
       currentTravelRequest.trips[i].originCityCurrreny = originCityCurrreny;
-      currentTravelRequest.trips[i].hotelRate = hotelRate;
       currentTravelRequest.trips[i].destinationCityCurrreny = destinationCityCurrreny
+      // currentTravelRequest.trips[i].perDiemCost = perDiemCost;
+      // currentTravelRequest.trips[i].hotelRate = hotelRate;
 
       if (currentTravelRequest.trips[i].transportationMode !== "AIR"){
           currentTravelRequest.trips[i].provideAirportPickup = false;
-          currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
+          // currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
+          originCityAirportTaxiCost = 0;
       }
 
       if (currentTravelRequest.trips[i].provideAirportPickup){
-          if (fromTravelCity){
-              currentTravelRequest.trips[i].originCityAirportTaxiCost = fromTravelCity.airportPickupDropOffCost;
-          }else{
-              currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
+          if (userStaffCategory){
+              originCityAirportTaxiCost = userStaffCategory.airportPickupDropOffCost;
           }
+          // else{
+          //     originCityAirportTaxiCost = 0;
+          // }
 
-          if (toTravelCity){
-              currentTravelRequest.trips[i].destinationCityAirportTaxiCost = toTravelCity.airportPickupDropOffCost;
-          }else{
-              currentTravelRequest.trips[i].destinationCityAirportTaxiCost = 0;
+          if (userStaffCategory){
+              destinationCityAirportTaxiCost = userStaffCategory.airportPickupDropOffCost;
           }
+          // else{
+          //     destinationCityAirportTaxiCost = 0;
+          // }
 
       }else{
-          currentTravelRequest.trips[i].originCityAirportTaxiCost = 0;
+          originCityAirportTaxiCost = 0;
       }
 
       if (currentTravelRequest.trips[i].provideGroundTransport){
-          if (toTravelCity){
-              currentTravelRequest.trips[i].groundTransportCost = toTravelCity.groundTransport;
-          }else{
-              currentTravelRequest.trips[i].groundTransportCost = 0;
+          if (userStaffCategory){
+            groundTransportCost = userStaffCategory.groundTransport;
           }
-      }else{
-          currentTravelRequest.trips[i].groundTransportCost = 0;
+          // else{
+          //     groundTransportCost = 0;
+          // }
       }
+      // else{
+      //     groundTransportCost = 0;
+      // }
 
-      totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
-      if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
-          totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
-      }else{
-          totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
-      }
+    }
 
-      if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
-          totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
-      }else{
-          totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
-      }
 
-      if (toTravelCity && (toTravelCity.currency   === "NGN")){
-          totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
-      }else{
-          totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
-      }
+    currentTravelRequest.trips[i].perDiemCost = totalPerDiemCost;
+    currentTravelRequest.trips[i].hotelRate = totalHotelRate;
+    currentTravelRequest.trips[i].totalHotelCost = totalHotelCost
+    currentTravelRequest.trips[i].totalPerDiem = totalPerDiem;
+    currentTravelRequest.trips[i].originCityAirportTaxiCost = originCityAirportTaxiCost;
+    currentTravelRequest.trips[i].destinationCityAirportTaxiCost = destinationCityAirportTaxiCost;
+    currentTravelRequest.trips[i].groundTransportCost = groundTransportCost;
 
-      if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
-          totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-          totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
-      }else{
-          totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-          totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
-      }
+    totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
 
+    if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
+      totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
+    } else {
+      totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
+    }
+
+    if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
+        totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+    }else{
+        totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
+    }
+
+    if (toTravelCity && (toTravelCity.currency   === "NGN")){
+        totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+    }else{
+        totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
+    }
+
+    if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
+        totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+        totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
+    }else{
+        totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
+        totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
+    }
 
   }
 

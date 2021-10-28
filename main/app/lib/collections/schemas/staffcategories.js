@@ -11,6 +11,10 @@
       type: String
     },
     position: {
+      type: String,
+      optional: true
+    },
+    category: {
       type: String
     },
     name: {

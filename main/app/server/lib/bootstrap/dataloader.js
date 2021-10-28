@@ -5,21 +5,28 @@
 
 /* eslint no-loop-func: 0*/
 
-const EmployeesPositions = (eachLine, otype) => ({
-  name: eachLine.position_description || "",
-  // parentId: "",
-  status: "Active",
-  otype: otype || "Position",
-    // allowedValues: ["Unit", "Position", "Job", "Location"]
-  businessId: "FYTbXLB9whRc4Lkh4", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
-  createdBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
-  lastEditedBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
-  properties: {
-    code: eachLine.position_code
-  },
-  // "successFactors": {},
-  _groupId: "gqEreTKe3h43z3q2R" // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
-})
+const EmployeesPositions = (eachLine, otype, updatedObject) => {
+  let name = updatedObject ? updatedObject["POSITION (AS CONTAINED IN SAP S4HANA)"] : eachLine.name;
+  let correspondingStaffCategory = updatedObject ? updatedObject["CORRESPONDING STAFF CATEGORY"] : "";
+
+  return {
+    name: name || eachLine.positionDesc || "",
+    // parentId: "",
+    status: "Active",
+    otype: otype || "Position",
+    correspondingStaffCategory,
+      // allowedValues: ["Unit", "Position", "Job", "Location"]
+    businessId: "FYTbXLB9whRc4Lkh4", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+    createdBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
+    lastEditedBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
+    properties: {
+      code: eachLine.positionId,
+      correspondingStaffCategory
+    },
+    // "successFactors": {},
+    _groupId: eachLine.group || eachLine._group || "gqEreTKe3h43z3q2R" // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
+  }
+}
 
 const RestructureWBS = (wbs, projectId) => ({
   ...wbs,
@@ -211,7 +218,6 @@ DataLoader = class DataLoader {
           Core.Log.error("Error adding initialisation data to " +
             collection._name + ":", err.message);
         }
-
       });  
     }
   }
@@ -273,9 +279,9 @@ DataLoader = class DataLoader {
    */
    loadProjectData(data, group, jsonFile) {
     const { Projects: Project } = data;
-    Core.Log.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE PROJECTS DATA')
+    console.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE PROJECTS DATA')
     Project.line.map((eachLine) => {
-      Core.Log.info(`CRON JOB IN ACTION: PROJECT DATA FOR ${eachLine.description}`)
+      console.info(`CRON JOB IN ACTION: PROJECT DATA FOR ${eachLine.description}`)
 
       if (Meteor.isServer) {
         try {
@@ -293,7 +299,7 @@ DataLoader = class DataLoader {
 
                   const { wbs: { lines } } = eachLine;
 
-                  Core.Log.info(
+                  console.info(
                     `Importing/Updating ${lines.length} items for ${project.name} WORK-BREAKDOWN-STRUCTURE/ACTIVITIES...` 
                   );
 
@@ -305,7 +311,7 @@ DataLoader = class DataLoader {
                     const currWBS = Activities.findOne({ unitOrProjectId: projectFound._id, externalCode })
                     if (currWBS) Activities.update({ unitOrProjectId: projectFound._id, externalCode }, { $set: wbs })
                     else Activities.insert(wbs)
-                    Core.Log.info(
+                    console.info(
                       `Success importing initialisation ${index + 1} items for ${project.name} WORK-BREAKDOWN-STRUCTURE/ACTIVITIES...` 
                     );
                     return wbsline
@@ -315,7 +321,7 @@ DataLoader = class DataLoader {
 
                   const { wbs: { lines } } = eachLine;
 
-                  Core.Log.info(
+                  console.info(
                     `Importing/Updating ${lines.length} items for ${project.name} WORK-BREAKDOWN-STRUCTURE/ACTIVITIES...` 
                   );
 
@@ -324,25 +330,22 @@ DataLoader = class DataLoader {
                   lines.forEach((wbsline, index) => {
                     const wbs = RestructureWBS(wbsline, currentProject)
                     if(wbsline) Activities.insert(wbs)
-                    Core.Log.info(
+                    console.info(
                       `Success importing initialisation ${index + 1} items for ${project.name} WORK-BREAKDOWN-STRUCTURE/ACTIVITIES...` 
                     );
                     return wbsline
                   });
                 }
               } catch (error) {
-                Core.Log.error('PROJECT ERROR RESPONSE ' + (error.message || error))
+                console.error('PROJECT ERROR RESPONSE ' + (error.message || error))
               }
             })
           })
         } catch (error) {
-          Core.Log.error('FIRST TRYCATCH::PROJECT ERROR RESPONSE ' + (error.message || error))
+          console.error('FIRST TRYCATCH::PROJECT ERROR RESPONSE ' + (error.message || error))
         }
       }
     })
-    // Core.Log.info(
-    //   `Success importing initialisation data to projects for tenant`
-    // );
   }
 
   /**
@@ -355,70 +358,95 @@ DataLoader = class DataLoader {
    */
   loadEmployeeData(data, group, jsonFile) {
     const { Employees } = data;
-    Core.Log.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE EMPLOYEES DATA')
+    console.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE EMPLOYEES DATA')
+    const entityJSON = EJSON.parse(Assets.getText("data/entityObject.json"));
+    console.log('entityJSON', JSON.stringify(entityJSON))
+
+    const anEntityKey = "POSITION (AS CONTAINED IN SAP S4HANA)";
+    const aCategoryKey = "CORRESPONDING STAFF CATEGORY";
+
+    const hashMap = {}
+    entityJSON.Sheet1.forEach((eachEntityJSON) => {
+      const nameKey = eachEntityJSON[anEntityKey].toLowerCase();
+      const name = eachEntityJSON[anEntityKey];
+      const staffCategory = eachEntityJSON[aCategoryKey];
+      hashMap[nameKey] = { ...eachEntityJSON, positionDesc: name, name, staffCategory }
+    })
+
     Employees.line.map((eachLine, index) => {
-      Core.Log.info(`CRON JOB IN ACTION: EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+      console.info(`CRON JOB IN ACTION: EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+
+      let { position_description } = eachLine;
+      position_description = position_description.toLowerCase();
+      let currentPosition = hashMap[position_description];
+
+      if (!currentPosition) {
+        Object.keys(hashMap).map(hMapKey => {
+          const hMap = hashMap[hMapKey];
+          const nameKey = hMap.name.toLowerCase();
+          if (nameKey.includes(position_description)) {
+            // FOR Quick identification during next iterations
+            hashMap[position_description] = hMap;
+            currentPosition = hMap;
+          }
+        })
+      }
+
+      console.log('currentPosition', currentPosition);
+
+      let staffCategory = "", positionName = eachLine.position_description;
+      if (currentPosition) {
+        positionName = currentPosition[anEntityKey];
+        staffCategory = currentPosition.staffCategory;
+      }
+
+      console.log('staffCategory', staffCategory);
 
       const cleanData = {
         ...eachLine,
+        positionDesc: positionName,
+        staffCategory: staffCategory || "",
         email: Core.emailPolyfill(eachLine).toLowerCase()
       }
 
       if (Meteor.isServer) {
         let currentHashedPassword = Package.sha.SHA256('123456');
-        const user = Core.RestructureEmployee(cleanData, currentHashedPassword);
-        /** CHECK IF USER ALREADY EXISTS AND UPDATE OR CREATE IF THEY DON"T */
+
+        console.log('currentHashedPassword', currentHashedPassword)
+        const adminUser = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+        delete adminUser._id;
+        delete adminUser.roles;
+        delete adminUser.services;
+        delete adminUser.gceoId;
+        delete adminUser.gcooId;
+        const user = Core.RestructureEmployee(cleanData, currentHashedPassword, adminUser);
+        // /** CHECK IF USER ALREADY EXISTS AND UPDATE OR CREATE IF THEY DON"T */
         const userFound = Meteor.users.findOne({ 'emails.address': user.emails[0].address });
 
-        // Meteor.loginWithPassword('adesanmiakoladedotun@gmail.com', 'k.code1234', function(err){
-        /** TODO: MOVE USER LOGIN DETAIL TO ENV FILE */
-        const email = 'adesanmiakoladedotun@gmail.com'
-        const password = 'k.code1234'
-        let hashedPassword = Package.sha.SHA256(password)
-
-        Meteor.call('account/customLoginWithEmail', email, hashedPassword, function(err, res) {
-          if(err) {
-            Core.Log.error('CUSTOM LOGIN WITH EMAIL ERROR' + (err || err.message))
+        Partitioner.directOperation(function() {
+          console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
+          if (userFound) {
+            console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+            Meteor.users.update({ customUsername: user.customUsername }, { $set: user })
+            console.info(
+              `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
+            );
           } else {
-            Core.Log.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
-
-            if(res.status === true) {
-
-              if (userFound) {
-                Core.Log.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
-                Meteor.users.update({ customUsername: user.customUsername }, { $set: user })
-                Core.Log.info(
-                  `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
-                );
-                // Meteor.call('account/create')
-              } else {
-                Core.Log.info(`CRON JOB IN ACTION: CREATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
-                const accountId = Meteor.users.insert(user);
-                Accounts.setPassword(accountId, "123456");
-                Partitioner.setUserGroup(accountId, user.group);
-                Core.Log.info(
-                  `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
-                );
-              }
-
-              Meteor.loginWithPassword(email, password, function(err){
-                if (!err) {
-                  var currentRoute = Router.current().route.getName();
-                  // console.log('err', err)
-                }
-              })
-            }
+            console.info(`CRON JOB IN ACTION: CREATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+            const accountId = Meteor.users.insert(user);
+            Accounts.setPassword(accountId, "123456");
+            Partitioner.setUserGroup(accountId, user.group);
+            console.info(
+              `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
+            );
           }
         })
       }
     })
-    // Core.Log.info(
-    //   `Success importing initialisation data to employees for tenant`
-    // );
   }
   
   /**
-   * BootstrapLoader.loadPartitionDataBulk
+   * BootstrapLoader.loadCostCenterData
    * @summary imports collection initialisation data for a specified tenant, using bulk insert
    * @param {Object} collection - The collection to import
    * @param {String} group - The tenant to import data for, default to current Tenant if not provided
@@ -427,67 +455,82 @@ DataLoader = class DataLoader {
    */
   loadCostCenterData(data, group, jsonFile) {
     const { CostCenters: CostCenter } = data;
-    Core.Log.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE COSTCENTERS DATA')
+    console.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE COSTCENTERS DATA')
     CostCenter.line.map((eachLine, index) => {
-      Core.Log.info(`CRON JOB IN ACTION: COSTCENTER DATA FOR ${eachLine.cost_center_description}`)
-
-      const cleanData = {
-        ...eachLine,
-        name: eachLine.cost_center_general_name,
-        description: eachLine.cost_center_description
-      }
+      console.info(`CRON JOB IN ACTION: COSTCENTER DATA FOR ${eachLine.cost_center_description}`)
 
       if (Meteor.isServer) {
-        let currentHashedPassword = Package.sha.SHA256('123456')
-        /** CHECK IF USER ALREADY EXISTS AND UPDATE OR CREATE IF THEY DON"T */
-        const user = Core.RestructureEmployee(cleanData, currentHashedPassword)
-        const email = 'adesanmiakoladedotun@gmail.com'
-        const password = 'k.code1234'
-        let hashedPassword = Package.sha.SHA256(password)
-
-        // Meteor.call('account/customLoginWithEmail', email, hashedPassword, function(err, res) {
-        //   if(err) {
-        //     Core.Log.error('CUSTOM LOGIN WITH EMAIL ERROR' + (err || err.message))
-        //   } else {
-        //     Core.Log.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
-
-        //     if(res.status === true) {
-              try {
-                const costCenter = {
-                  ...eachLine,
-                  name: eachLine.cost_center_general_name,
-                  description: eachLine.cost_center_description,
-                  businessId: "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
-                };
-                const costCenterCondition = [{name: costCenter.name}, { costCenter: costCenter.cost_center }];
-                const costCenterFound = CostCenters.findOne({ name: costCenter.name, cost_center: costCenter.cost_center })
-                if (costCenterFound) {
-                  CostCenters.update({ $and: costCenterCondition }, { $set: costCenter })
-                  Core.Log.info(
-                    `Success importing initialisation ${index + 1} items: ${costCenter.name}` 
-                  );
-                } else {
-                  CostCenters.insert(costCenter)
-                  Core.Log.info(
-                    `Success importing initialisation ${index + 1} items: ${costCenter.name}` 
-                  );
-                }
-              } catch (error) {
-                Core.Log.error('COST CENTER ERROR RESPONSE ' + (error.message || error));
+        Partitioner.directOperation(function() {
+          const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+          const userGroup = Partitioner.getUserGroup(user._id)
+          Partitioner.bindGroup(userGroup, function() {
+            try {
+              const costCenter = {
+                ...eachLine,
+                name: eachLine.cost_center_general_name,
+                description: eachLine.cost_center_description,
+                businessId: "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+              };
+              const costCenterCondition = [{name: costCenter.name}, { costCenter: costCenter.cost_center }];
+              const costCenterFound = CostCenters.findOne({ name: costCenter.name, cost_center: costCenter.cost_center })
+              if (costCenterFound) {
+                CostCenters.update({ $and: costCenterCondition }, { $set: costCenter })
+                console.info(
+                  `Success importing initialisation ${index + 1} items: ${costCenter.name}` 
+                );
+              } else {
+                CostCenters.insert(costCenter);
+                console.info(
+                  `Success importing initialisation ${index + 1} items: ${costCenter.name}` 
+                );
               }
-              // Meteor.loginWithPassword(email, password, function(err){
-              //   if (!err) {
-              //     var currentRoute = Router.current().route.getName();
-              //   }
-              // })
-        //     }
-        //   }
-        // });
+            } catch (error) {
+              console.error('COST CENTER ERROR RESPONSE ' + (error.message || error));
+            }
+          })
+        });
       }
     })
-    // Core.Log.info(
-    //   `Success importing initialisation data to employees for tenant`
-    // );
+  }
+  
+  /**
+   * BootstrapLoader.loadStaffCategoryMapping
+   * @summary imports collection initialisation data for a specified tenant, using bulk insert
+   * @param {Object} collection - The collection to import
+   * @param {String} group - The tenant to import data for, default to current Tenant if not provided
+   * @param {String} jsonFile - path to json File.
+   * @return {Boolean} boolean -  returns true on insert
+   */
+  loadStaffCategoryMapping() {
+    Partitioner.directOperation(function() {
+      const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+      const userGroup = Partitioner.getUserGroup(user._id)
+
+    })
+
+    Partitioner.bindGroup(user.group, function() {
+      try {
+        const entityJSON = Assets.getText("data/entityObject.json");
+        entityJSON.forEach((eachEntityJSON) => {
+          let position = EmployeesPositions(eachLine);
+
+          const anEntityKey = "POSITION (AS CONTAINED IN SAP S4HANA)";
+          const name = eachEntityJSON[anEntityKey].toLowerCase();
+          if (name.includes(position.name)) {
+            position = EmployeesPositions(position, "Position", eachEntityJSON);
+            console.info(`CRON JOB IN ACTION: UPDATING EntityObjects DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+            const positionFound = EntityObjects.findOne({ name: position.name, 'properties.code': position.properties.code })
+            if (positionFound) {
+              EntityObjects.update({ name: position.name, 'properties.code': position.properties.code }, { $set: position })
+            } else {
+              EntityObjects.insert(position)
+            }
+          }
+        })
+      } catch (error) {
+        console.log('EntityObjects ---error', error)
+      }
+    })
   }
 };
 

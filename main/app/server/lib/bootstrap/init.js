@@ -36,6 +36,8 @@
 // });
 
 
+import axios from 'axios'
+
 let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
 
 const winston = require("winston");
@@ -321,8 +323,15 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
+  // console.log('Assets.getText("data/locations.json")', Assets.getText("data/entityObject.json"))
   SyncedCron.start();
   if (Meteor.isServer) {
+    // Import EMPLOYEES, COST CENTERS, AND PROJECTS
+    // Core.apiClient("employees", Loader.loadEmployeeData, () => {
+    //   Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+    //     Core.apiClient("projects", Loader.loadProjectData, () => {})
+    //   })
+    // })
     const MAIL_URL = process.env.MAIL_URL.split('@smtp');
     if (!MAIL_URL) return
     const [username_pass, smtp_url] = MAIL_URL;

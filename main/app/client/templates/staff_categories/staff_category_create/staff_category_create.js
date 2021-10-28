@@ -40,7 +40,7 @@ Template.StaffCategoryCreate.events({
       let airportPickupDropOffCost = parseFloat($('[name=airportPickupDropOffCost]').val());
       // let notificationEmail = $('[name=notificationEmail]').val();
       let currency = $('[name=currency]').val();
-      let position = $('[name=position]').val();
+      let categoryType = $('[name=categoryType]').val();
       console.log('currency:' + currency);
   
         Template.instance().errorMessage.set(null);
@@ -52,7 +52,7 @@ Template.StaffCategoryCreate.events({
           name : name,
           perdiem : perdiem,
           currency : currency,
-          position: position,
+          category: categoryType || "Executive Management",
           isInternational: isInternational,
           groundTransport: groundTransport,
           airportPickupDropOffCost: airportPickupDropOffCost,
@@ -101,7 +101,7 @@ Template.StaffCategoryCreate.events({
       let airportPickupDropOffCost = parseFloat($('[name=airportPickupDropOffCost]').val());
       // let notificationEmail = $('[name=notificationEmail]').val();
       let currency = $('[name=currency]').val();
-      let position = $('[name=position]').val();
+      let categoryType = $('[name=categoryType]').val();
       console.log('currency:' + currency);
   
         Template.instance().errorMessage.set(null);
@@ -115,7 +115,7 @@ Template.StaffCategoryCreate.events({
           name : name,
           perdiem : perdiem,
           currency : currency,
-          position: position,
+          category: categoryType || "Executive Management",
           isInternational: isInternational,
           groundTransport: groundTransport,
           airportPickupDropOffCost: airportPickupDropOffCost,
@@ -161,6 +161,12 @@ Template.StaffCategoryCreate.events({
   Template.StaffCategoryCreate.helpers({
     travelcityList() {
         return  Travelcities.find();
+    },
+    staffCategories() {
+      return Core.StaffCategories
+    },
+    categoryType() {
+      return "category"
     },
    'edit': () => {
     return Template.instance().data ? true:false;

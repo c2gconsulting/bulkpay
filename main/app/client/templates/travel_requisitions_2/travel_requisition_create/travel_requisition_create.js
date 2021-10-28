@@ -3,32 +3,58 @@
 /*****************************************************************************/
 import _ from 'underscore';
 
-const getSelectedItem = (item) => {
-  let options = Core.returnSelection($(`[name="${item}"]`));
+const getSelectedItem = (items) => {
+  let options = typeof items !== 'string' ? items : Core.returnSelection($(`[name="${items}"]`));
   const individuals = [];
   const users = Meteor.users.find({employee: true});
   _.each(options, function(option){
     let user = Meteor.users.findOne({ _id: option })
     // let user = _.find(users, function(user) {return user._id === option})
 
-    const { emails, profile, _id } = user;
+    const { emails, profile, _id, staffCategory } = user;
     const userId = _id || option;
     const email = emails[0] && emails[0].address;
     if (user){
-      individuals.push({ ...profile, id: userId, email, });
+      individuals.push({ ...profile, id: userId, email, staffCategory });
     }
   });
 
   return individuals
 }
 
+const updateIndvidualsGoingOnTrip = (currentTravelRequest) => {
+    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tpcTrip !== 'Client') {
+        currentTravelRequest.tripFor = {
+          noOfIndividuals: $(`[id="noOfIndividuals"]`).val() || 1,
+          individuals: getSelectedItem('individuals')
+        }
+    }
+
+    return currentTravelRequest
+}
+
 Template.TravelRequisition2Create.events({
+    'change [name="individuals"]': _.throttle(function(e, tmpl) {
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        currentTravelRequest = updateIndvidualsGoingOnTrip(currentTravelRequest);
+        let errorMessage = "";
+        currentTravelRequest.tripFor.individuals.map(individual => {
+            if (individual && !individual.staffCategory) errorMessage += `${errorMessage ? ', ' : ''} ${individual.firstname}`;
+        })
+
+        if (errorMessage) errorMessage = "Oops! No staff category(s) for " + errorMessage
+        // const individuals = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+        tmpl.staffCategoryErrorMessage.set(errorMessage);
+        tmpl.updateTripNumbers();
+   }, 200),
     "change [name='destinationType']": _.throttle(function(e, tmpl) {
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const destinationType = $(e.currentTarget).val();
         currentTravelRequest.destinationType = destinationType;
 
         tmpl.currentTravelRequest.set(currentTravelRequest);
+        tmpl.updateTripNumbers();
 
    }, 200),
    "change [name='noOfClients']": function (e, tmpl) {
@@ -644,12 +670,12 @@ Template.TravelRequisition2Create.events({
         currentTravelRequest.status = 'Approved By MD'
         if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
       }
-      if (currentUser.position_description.includes("Group Chief Operating off")) {
+      if (currentUser.positionDesc.includes("Group Chief Operating off")) {
         currentPosition = "GCOO";
         currentTravelRequest.status = 'Approved By GCOO'
         if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
       }
-      if (currentUser.position_description.includes("Group Chief Executive off")) {
+      if (currentUser.positionDesc.includes("Group Chief Executive off")) {
         currentPosition = "GCEO"
         currentTravelRequest.status = 'Approved By GCEO'
         if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
@@ -841,6 +867,7 @@ Template.TravelRequisition2Create.helpers({
     costCenters: () => Core.Travel.costCenters,
     carOptions: () => Core.Travel.carOptions,
     currentDepartment: () => Template.instance().currentDepartment.get(),
+    staffCategoryErrorMessage: () => Template.instance().staffCategoryErrorMessage.get(),
     currentProject: () =>Template.instance().currentProject.get(),
     currentActivity: () => Template.instance().currentActivity.get(),
     departmentList: () => Template.instance().departments.get(),
@@ -1116,7 +1143,7 @@ Template.TravelRequisition2Create.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "CAR"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "LAND"? '':'none';
         }
     },
     isAirModeOfTransport(index){
@@ -1188,6 +1215,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
 
     self.errorMessage = new ReactiveVar();
+    self.staffCategoryErrorMessage = new ReactiveVar();
     self.errorMessage.set(null);
     self.hasEmergencyDateUpdate = new ReactiveVar();
     self.hasEmergencyDateUpdate.set(true);
@@ -1209,6 +1237,7 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("budgets", Session.get('context'));
     self.subscribe("costcenters", Session.get('context'));
     self.subscribe("projects", Session.get('context'));
+    self.subscribe("staffcategories", Session.get('context'));
 
     Core.queryClient('account/isALineManager', Meteor.userId(), self.directManager)
     Core.queryClient('account/hod', Meteor.userId(), self.isHOD)

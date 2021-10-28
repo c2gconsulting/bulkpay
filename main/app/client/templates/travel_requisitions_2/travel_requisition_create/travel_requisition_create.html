@@ -44,7 +44,7 @@
               {{#if costCenterType 'Project'}}
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                    <label for="departmentOrProjectId" class="control-label">Which project is this trip related to? <span class="asterisk important-input">*</span></label>
                     {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
                     <select id="departmentOrProjectId" value="{{currentProject}}"  name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
                       <option value="">Select Project</option>
@@ -60,7 +60,7 @@
                 {{#if currentTravelRequest.departmentOrProjectId}}
                   <div class="col-sm-12">
                     <div class="form-group">
-                      <label for="project_activity-code" class="control-label">Select work breakdown structure</label>
+                      <label for="project_activity-code" class="control-label">Select work breakdown structure <span class="asterisk important-input">*</span></label>
                       {{#semanticselect2 currentTravelRequest.activityId}}
                       <select id="project_activity-code" name="project_activity-code" style="width: 100%" class="ui fluid search selection dropdown">
                         <option value="">Select Activity</option>
@@ -78,7 +78,7 @@
                 {{else}}
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                    <label for="departmentOrProjectId" class="control-label">Select Department? <span class="asterisk important-input">*</span></label>
                     {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
                     <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
                       <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
@@ -113,7 +113,9 @@
                         <option value="{{_id}}">{{profile.fullName}}</option>
                       {{/each}}
                     </select>
-                    <!-- <span class="text-warning"><small>Please provide this info, select at least two employees</small></span> -->
+                    {{#if staffCategoryErrorMessage}}
+                      <span class="text-danger"><small>{{staffCategoryErrorMessage}}</small></span>
+                    {{/if}}
                   </div>
                 </div>
               {{/if}}
@@ -143,7 +145,9 @@
                             <option value="{{_id}}">{{profile.fullName}}</option>
                         {{/each}}
                       </select>
-                      <!-- <span class="text-warning"><small>Please provide this info, select at least two employees</small></span> -->
+                      {{#if staffCategoryErrorMessage}}
+                        <span class="text-danger"><small>{{staffCategoryErrorMessage}}</small></span>
+                      {{/if}}
                     </div>
                   </div>
                   <!-- ELSE:: INDIVIDUALS SELECTION FOR EXTERNAL CLIENTS TRIP-->
@@ -369,6 +373,7 @@
                                   <!-- <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option> -->
                                   <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
                                   <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
+                                  <option value="RAIL" {{transportModeSelected "RAIL" tripIndex}}>Rail</option>
                               </select>
                               {{/semanticselect2}}
                           </div>
@@ -427,7 +432,7 @@
                           </div>
                       </div> -->
 
-                      <div class="col-sm-12 col-lg-6">
+                      <div class="col-sm-12">
                           <div class="form-group">
                               <div class="ckbox ckbox-success">
                                   <input type="checkbox" id="provideGroundTransport_{{this.tripIndex}}" name="provideGroundTransport_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideGroundTransport this.tripIndex}}/>
@@ -568,7 +573,7 @@
                   </div>
                   {{/if}}
 
-                  <div class="row">
+                  <!-- <div class="row">
                       <div class="col-sm-12">
                           <div class="form-group">
                               <div class="ckbox ckbox-danger">
@@ -577,7 +582,7 @@
                               </div>
                           </div>
                       </div>
-                  </div>
+                  </div> -->
                   <hr/>
                   <div class="row">
                       <div class="col-sm-12">

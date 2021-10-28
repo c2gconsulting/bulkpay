@@ -21,7 +21,7 @@
 // const emailPolyfill = (eachLine) => eachLine.email || `${eachLine.lastname}.${eachLine.firstname}@OILSERVLTD-NG.COM`;
 
 // const EmployeesPositions = (eachLine, otype) => ({
-//   name: eachLine.position_description || "",
+//   name: eachLine.positionDesc || "",
 //   // parentId: "",
 //   status: "Active",
 //   otype: otype || "Position",
@@ -30,7 +30,7 @@
 //   createdBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
 //   lastEditedBy: 'woW5qkSL6vsma7Nan', // woW5qkSL6vsma7Nan - dev - ZAs6m3LLyZpS2p5K6
 //   properties: {
-//     code: eachLine.position_code
+//     code: eachLine.positionId
 //   },
 //   // "successFactors": {},
 //   _groupId: "gqEreTKe3h43z3q2R" // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
@@ -69,7 +69,7 @@
 //     "employment" : {
 //       hireDate: new Date(),
 //       terminationDate: null,
-//       "position" : eachLine.position_code || "",
+//       "position" : eachLine.positionId || "",
 //       "status" : "Active"
 //     },
 //     "emergencyContact" : [ 
@@ -112,12 +112,12 @@
 //   "_group" : "gqEreTKe3h43z3q2R", // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
 //   "group" : "gqEreTKe3h43z3q2R", // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
 //   "isUsingDefaultPassword" : true,
-//   "position_code": eachLine.position_code || "",
-//   "position_description": eachLine.position_description || "",
-//   "line_manager_position_code": eachLine.line_manager_position_code || "",
-//   "organizational_unit": eachLine.organizational_unit || "",
-//   "hod_position_code": eachLine.hod_position_code || "",
-//   "cost_center_code": eachLine.cost_center_code || ""
+//   "positionId": eachLine.positionId || "",
+//   "positionDesc": eachLine.positionDesc || "",
+//   "lineManagerId": eachLine.lineManagerId || "",
+//   "organizationalUnit": eachLine.organizationalUnit || "",
+//   "hodPositionId": eachLine.hodPositionId || "",
+//   "costCenterId": eachLine.costCenterId || ""
 // })
 
 // const RestructureWBS = (wbs, projectId) => ({

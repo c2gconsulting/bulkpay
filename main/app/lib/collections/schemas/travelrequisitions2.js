@@ -52,7 +52,23 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         optional: true,
     },
+    fromCountry: {
+        type: String,
+        optional: true,
+    },
+    fromCity: {
+        type: String,
+        optional: true,
+    },
     toId: {
+        type: String,
+        optional: true
+    },
+    toCountry: {
+        type: String,
+        optional: true
+    },
+    toCity: {
         type: String,
         optional: true
     },
@@ -75,7 +91,7 @@ Core.Schemas.Trip = new SimpleSchema({
     transportationMode:{
         type: String,
         defaultValue: 'AIR',
-        allowedValues: ['AIR', 'LAND'],
+        allowedValues: ['AIR', 'LAND', 'RAIL'],
         optional: true
     },
     provideSecurity: {
