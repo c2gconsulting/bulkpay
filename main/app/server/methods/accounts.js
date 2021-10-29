@@ -108,52 +108,45 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
-    "account/getManager": function (userId) {
-        userId = userId || Meteor.userId();
-        console.log('userId --', userId)
-        const user = Meteor.users.findOne({ _id: userId });
-        console.log('account/getManager user', user);
-        if(!user) return
-        const positionCond = [{'lineManagerId': String(user.positionId) }, {'lineManagerId': user.positionId }];
-        return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
-    },
-    "account/gcoo": function (userId) {
-        userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ $and: [{ _id: userId }, {'positionDesc': 'Group Chief Operating off'}] });
-    },
-    "account/gceo": function (userId) {
-        userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ $and: [{ _id: userId }, { 'positionDesc': 'Group Chief Executive off' }] });
-    },
     "account/hod": function (userId) {
         userId = userId || Meteor.userId();
-        const user = Meteor.users.findOne({ _id: userId });
-        if(!user) return
-        const positionCond = [{'hodPositionId': String(user.positionId) }, {'hodPositionId': user.positionId }]
-        return Meteor.users.findOne({ $and: [{ _id: userId }, { $or: positionCond }] });
+        const { positionId } = Meteor.user();
+        if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'hodPositionId': positionId }] });
+        return null
     },
-    "account/user/hod": function (userId) {
+    "account/manager": function (userId) {
         userId = userId || Meteor.userId();
-        const user = Meteor.users.findOne({ _id: userId });
-        if(!user) return
-        const positionCond = [{ positionId: String(user.hodPositionId) }, { positionId: user.hodPositionId }];
-        return Meteor.users.findOne({ $or: positionCond });
+        const { positionId } = Meteor.user();
+        if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'lineManagerId': positionId }] });
+        return null
     },
-    "account/user/getManager": function (userId) {
+    // BEGIN: Check IF Is a manager/hod to itself or to anyone on the system
+    "account/isHod": function (userId) {
         userId = userId || Meteor.userId();
-        console.log('userId --', userId)
-        const user = Meteor.users.findOne({ _id: userId });
-        console.log('account/user/getManager user', user);
-        if(!user) return
-        return Meteor.users.findOne({ $or: [{ positionId: String(user.lineManagerId) }, { positionId: user.lineManagerId }] });
+        const { positionId, hodPositionId } = Meteor.user();
+        if (positionId === hodPositionId) return Meteor.user();
+        return null
     },
-    "account/user/gcoo": function (userId) {
+    "account/isManager": function (userId) {
         userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ 'positionDesc': 'Group Chief Operating off' });
+        const { positionId, lineManagerId } = Meteor.user();
+        if (positionId === lineManagerId) return Meteor.user();
+        return null
     },
-    "account/user/gceo": function (userId) {
-        userId = userId || Meteor.userId();
-        return Meteor.users.findOne({ 'positionDesc': 'Group Chief Executive off' });
+    // END: Check IF Is a manager/hod to itself or to anyone on the system
+    "account/gcoo": function (userId) {
+        const user = Meteor.user();
+        let { positionDesc } = user;
+        positionDesc = positionDesc ? positionDesc.toLowerCase() : "";
+        if (positionDesc.includes('group chief operating off')) return user
+        return null
+    },
+    "account/gceo": function (userId) {
+        const user = Meteor.user();
+        let { positionDesc } = user;
+        positionDesc = positionDesc ? positionDesc.toLowerCase() : "";
+        if (positionDesc.includes('group chief executive off')) return user
+        return null
     },
     /*
      * check if current user has password

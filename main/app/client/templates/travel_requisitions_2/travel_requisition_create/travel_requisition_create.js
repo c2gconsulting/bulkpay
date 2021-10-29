@@ -665,7 +665,7 @@ Template.TravelRequisition2Create.events({
         currentPosition = 'HOD';
         currentTravelRequest.status = 'Approved by HOD'
       }
-      if (tmpl.isALineManager.curValue) {
+      if (tmpl.isDirectManager.curValue) {
         currentPosition = 'MANAGER';
         currentTravelRequest.status = 'Approved By MD'
         if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
@@ -1220,13 +1220,11 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.hasEmergencyDateUpdate = new ReactiveVar();
     self.hasEmergencyDateUpdate.set(true);
     self.currentUser = new ReactiveVar();
-    self.isALineManager = new ReactiveVar();
     self.isHOD = new ReactiveVar();
-    self.directManager = new ReactiveVar();
-    self.gceo = new ReactiveVar();
-    self.gcoo = new ReactiveVar();
-    const userId = Meteor.userId();
-    const currentUser = Meteor.users.findOne(userId);
+    self.isDirectManager = new ReactiveVar();
+    self.isGceo = new ReactiveVar();
+    self.isGcoo = new ReactiveVar();
+    const currentUser = Meteor.user();
     self.currentUser.set(currentUser || {});
 
     let businessUnitId = Session.get('context');
@@ -1239,16 +1237,13 @@ Template.TravelRequisition2Create.onCreated(function () {
     self.subscribe("projects", Session.get('context'));
     self.subscribe("staffcategories", Session.get('context'));
 
-    Core.queryClient('account/isALineManager', Meteor.userId(), self.directManager)
-    Core.queryClient('account/hod', Meteor.userId(), self.isHOD)
-    Core.queryClient('account/getManager', Meteor.userId(), self.directManager)
-    Core.queryClient('account/user/gcoo', Meteor.userId(), self.gcoo)
-    Core.queryClient('account/user/gceo', Meteor.userId(), self.gceo)
+    Core.queryClient('account/isHod', Meteor.userId(), self.isHOD)
+    Core.queryClient('account/isManager', Meteor.userId(), self.isDirectManager)
+    Core.queryClient('account/gcoo', Meteor.userId(), self.isGcoo)
+    Core.queryClient('account/gceo', Meteor.userId(), self.isGceo)
 
 
     let currentTravelRequest = Core.currentTravelRequest(businessUnitId);
-
-    console.log('currentTravelRequest', currentTravelRequest)
 
     self.currentTravelRequest =  new ReactiveVar();
     self.currentTravelRequest.set(currentTravelRequest);

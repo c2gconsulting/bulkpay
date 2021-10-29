@@ -231,7 +231,7 @@
                               <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
                               {{#semanticselect2}}
                               <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
-                                  <option value="None" >None</option>
+                                  <option value="" >None</option>
                                   {{#each travelcityList}}
                                   <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
                                   {{/each}}
@@ -244,7 +244,7 @@
                               <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
                               {{#semanticselect2}}
                               <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <option value="None" >None</option>
+                                  <option value="" >None</option>
                                   {{#each travelcityList}}
                                   <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
                                   {{/each}}

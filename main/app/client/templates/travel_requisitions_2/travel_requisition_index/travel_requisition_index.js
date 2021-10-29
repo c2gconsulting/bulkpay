@@ -20,9 +20,35 @@ Template.TravelRequisition2Index.events({
         const status = $("#status_" + requisitionId).html();
 
 
+      //explicitely set status
+      let currentStatus = "Pending";
+      let currentPosition = 'HOD'
+
+      if (tmpl.isHOD.curValue) {
+        currentPosition = 'HOD';
+        currentStatus = 'Approved by HOD'
+      }
+
+      if (tmpl.isDirectManager.curValue) {
+        currentPosition = 'MANAGER';
+        currentStatus = 'Approved By MD'
+      }
+
+      if (tmpl.isGcoo.curValue) {
+        currentPosition = "GCOO";
+        currentStatus = 'Approved By GCOO'
+      }
+
+      if (tmpl.isGceo.curValue) {
+        currentPosition = "GCEO"
+        currentStatus = 'Approved By GCEO'
+      }
+
+      console.log('currentStatus', currentStatus)
+      console.log('status', status)
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
+      if ((status === "Draft") || (status === "Pending") || (status === currentStatus) || (status === "Rejected By HOD") || (status === "Rejected By MD")){
             Modal.show('TravelRequisition2Create', invokeReason);
         } else if (!status.includes('Retire')) {
             Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -182,6 +208,21 @@ Template.TravelRequisition2Index.onCreated(function () {
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
+
+    self.currentUser = new ReactiveVar();
+    self.isHOD = new ReactiveVar();
+    self.isDirectManager = new ReactiveVar();
+    self.isGceo = new ReactiveVar();
+    self.isGcoo = new ReactiveVar();
+    const currentUser = Meteor.user();
+    self.currentUser.set(currentUser || {});
+
+
+    Core.queryClient('account/isHod', Meteor.userId(), self.isHOD)
+    Core.queryClient('account/isManager', Meteor.userId(), self.isDirectManager)
+    Core.queryClient('account/gcoo', Meteor.userId(), self.isGcoo)
+    Core.queryClient('account/gceo', Meteor.userId(), self.isGceo)
+
 
     self.totalTripCost = new ReactiveVar(0)
 

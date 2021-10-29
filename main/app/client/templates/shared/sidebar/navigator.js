@@ -585,7 +585,7 @@ Template.navigator.onCreated(function () {
             if (res && res._id !== Meteor.userId()) self.isHod.set(res)
         })
 
-        Meteor.call('account/getManager', Meteor.userId(), (err, res) => {
+        Meteor.call('account/manager', Meteor.userId(), (err, res) => {
             if (res) self.directManager.set(res)
         })
 

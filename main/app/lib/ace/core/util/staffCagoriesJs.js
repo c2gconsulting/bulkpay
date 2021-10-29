@@ -5,5 +5,6 @@ Core.StaffCategories = [
     "Coordinator",
     "Supervisor",
     "Officer",
-    "Technicians/ Others"
+    "Technicians/ Others",
+    "Client"
 ]

@@ -405,7 +405,7 @@ DataLoader = class DataLoader {
       const cleanData = {
         ...eachLine,
         positionDesc: positionName,
-        staffCategory: staffCategory || "",
+        staffCategory: (staffCategory || "").trim(),
         email: Core.emailPolyfill(eachLine).toLowerCase()
       }
 

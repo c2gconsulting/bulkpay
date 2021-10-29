@@ -318,6 +318,7 @@ Core.tripAnalysis = (self) => {
         const individual = individuals[eI];
         // console.log('individuals[eI]', individuals[eI])
         if (individual && individual.staffCategory) staffCategory = individual.staffCategory;
+        if (!staffCategory && currentTravelRequest.tpcTrip === 'Client') staffCategory = 'Client'
       }
 
       const toId = currentTravelRequest.trips[i].toId;
@@ -330,7 +331,8 @@ Core.tripAnalysis = (self) => {
       let originCityCurrreny = "NGN";
       let destinationCityCurrreny = "NGN";
 
-      userStaffCategory = StaffCategory.find((StaffCategory) => StaffCategory.category === staffCategory);
+      const trimData = (val) => (val || "").trim();
+      let userStaffCategory = StaffCategory.find(({ category }) => trimData(category) === trimData(staffCategory));
       userStaffCategory = userStaffCategory || null
 
       console.log('userStaffCategory', userStaffCategory)
