@@ -176,6 +176,12 @@ Template.EmployeeSelectedEntry.helpers({
     let canDoSelfService = Core.hasBSTProcessAccess(selectedEmployee._id);
     return canDoSelfService;
   },
+  hasFinanceManageAccess: function () {
+    let selectedEmployee = Session.get('employeesList_selectedEmployee');
+
+    let hasFinanceManageAccess = Core.hasFinanceManageAccess(selectedEmployee._id);
+    return hasFinanceManageAccess;
+  },
   hasPayRulesManageAccess: function () {
     let selectedEmployee = Session.get('employeesList_selectedEmployee');
 
@@ -337,6 +343,7 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         let shouldProcessLogistics = $("[name=employeeLogisticsProcess]").val();
         let shouldManageSecurity = $("[name=securityManage]").val();
         let shouldProcessBST = $("[name=employeeBSTProcess]").val();
+        let shouldManageFinance = $("[name=financeManage]").val();
         let shouldHaveEmployeeSelfService = $("[name=employeeSelfService]").val();
 
         let shouldManagePayRules = $("[name=payRulesManage]").val();
@@ -380,6 +387,9 @@ Template.EmployeeSelectedEntry.onCreated(function () {
         }
         if(shouldProcessBST === "true") {
           arrayOfRoles.push(Core.Permissions.BST_PROCESS)
+        }
+        if(shouldManageFinance === "true") {
+          arrayOfRoles.push(Core.Permissions.FINANCE_MANAGE)
         }
         if(shouldApproveTime === "true") {
           arrayOfRoles.push(Core.Permissions.TIME_APPROVE)

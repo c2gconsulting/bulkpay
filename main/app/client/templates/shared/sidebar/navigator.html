@@ -287,7 +287,8 @@
               {{/if}}
             {{/if}}
 
-            {{#if isUserATravelFinanceApprover}}
+            <!-- {{#if isUserATravelFinanceApprover}} -->
+            {{#if hasFinanceManageAccess}}
               <li class="parent {{isMenuExpandedFocusClass 'travelFinanceMenu'}}">
                 <a href="" id="travelFinanceMenu">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>

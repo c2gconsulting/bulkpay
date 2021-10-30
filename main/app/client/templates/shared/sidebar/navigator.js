@@ -325,6 +325,9 @@ Template.navigator.helpers({
     hasBSTProcessAccess: function () {
         return Core.hasBSTProcessAccess(Meteor.userId());
     },
+    hasFinanceManageAccess: function () {
+        return Core.hasFinanceManageAccess(Meteor.userId());
+    },
     isAdvancedTravelEnabled: function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
 

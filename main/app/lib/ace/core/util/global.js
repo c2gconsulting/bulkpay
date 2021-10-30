@@ -211,6 +211,9 @@ _.extend(Core, {
     hasBSTProcessAccess: function (userId) {
         return this.hasPermission(Core.Permissions.BST_PROCESS, userId);
     },
+    hasFinanceManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.FINANCE_MANAGE, userId);
+    },
     hasTimeApprovalAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TIME_APPROVE, userId);
     },
