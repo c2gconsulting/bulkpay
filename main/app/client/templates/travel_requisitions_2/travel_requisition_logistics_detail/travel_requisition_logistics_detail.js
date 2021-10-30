@@ -35,7 +35,7 @@ Template.TravelRequisition2LogisticsDetail.events({
     }
     if (fieldsAreValid){
       const processed = true
-      Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'LOGISTICS', '', processed, (err, res) => {
+      Meteor.call('TRIPREQUEST/logisticsProcess', currentTravelRequest, 'LOGISTICS', '', processed, (err, res) => {
         if (res){
           swal({
             title: "Travel requisition has been updated",
@@ -440,9 +440,14 @@ Template.TravelRequisition2LogisticsDetail.onCreated(function () {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
             self.currentTravelRequest.set(travelRequestDetails)
-
-
             Core.defaultDepartmentAndProject(self, travelRequestDetails)
+
+
+            if (travelRequestDetails) {
+                travelRequestDetails.trips.map(({ tripIndex, driverInformation}) => {
+                    $(`#driverInfo_${tripIndex}`).dropdown('set selected', driverInformation);
+                })
+            }
         }
 
         if(businessUnitSubscription.ready()) {

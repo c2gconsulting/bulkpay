@@ -12,7 +12,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
       currentTravelRequest.retirementStatus = "Retirement Approved Finance";
 
 
-     Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
                  title: "Trip retirement has been approved by Finance",
@@ -39,7 +39,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
          currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
          currentTravelRequest.retirementStatus = "Retirement Rejected Finance";
 
-      Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been rejected by Finance",

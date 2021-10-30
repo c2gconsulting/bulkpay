@@ -56,9 +56,10 @@ Template.TravelRequisition2LogisticsRetirementIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
+        const budegtHolder = { $and: [{ status : "Approved By Budget Holder" }, { $or: [{ 'trips.transportationMode' : "LAND" }, { 'trips.transportationMode' : "RAIL" }] }]}
         let totalNum = TravelRequisition2s.find({$and : [
             { logisticsId: Meteor.userId()},
-            { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved by Logistics" }, { retirementStatus : "Retirement Rejected By Logistics"}] }
+            { $or : [ budegtHolder, { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved by Logistics" }, { retirementStatus : "Retirement Rejected By Logistics"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -113,10 +114,11 @@ Template.TravelRequisition2LogisticsRetirementIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
+        const budegtHolder = { $and: [{ status : "Approved By Budget Holder" }, { $or: [{ 'trips.transportationMode' : "LAND" }, { 'trips.transportationMode' : "RAIL" }] }]}
         return TravelRequisition2s.find({
             $and : [
                 { logisticsId: Meteor.userId()},
-                { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved by Logistics" }, { retirementStatus : "Retirement Rejected By Logistics"}] }
+                { $or : [ budegtHolder, { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved by Logistics" }, { retirementStatus : "Retirement Rejected By Logistics"}] }
             ]
         }, options);
     }

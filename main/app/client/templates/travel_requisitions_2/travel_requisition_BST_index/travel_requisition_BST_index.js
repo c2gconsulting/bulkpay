@@ -56,9 +56,10 @@ Template.TravelRequisition2BSTIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
+        const budegtHolder = { $and: [{ status : "Approved By Budget Holder" }, { 'trips.transportationMode' : "AIR" }]}
         let totalNum = TravelRequisition2s.find({$and : [
             { bstId: Meteor.userId()},
-            { $or : [{ status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
+            { $or : [budegtHolder, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -113,10 +114,12 @@ Template.TravelRequisition2BSTIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
+
+        const budegtHolder = { $and: [{ status : "Approved By Budget Holder" }, { 'trips.transportationMode' : "AIR" }]}
         return TravelRequisition2s.find({
             $and : [
                 { bstId: Meteor.userId()},
-                { $or : [{ status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
+                { $or : [budegtHolder, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By Logistics" }, { status : "Processed By BST" }] }
             ]
         }, options);
     }

@@ -8,14 +8,14 @@ Template.TravelRequisition2BSTRetirementDetail.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-      currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By HOD";
+      currentTravelRequest.bstRetirementComment = $("#bstRetirementComment").val();
+      currentTravelRequest.retirementStatus = "Retirement Approved By BST";
 
 
-     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/bstRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been Approved By HOD",
+                 title: "Trip retirement has been Approved By BST",
                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -36,13 +36,13 @@ Template.TravelRequisition2BSTRetirementDetail.events({
      'click #reject': (e, tmpl) => {
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-         currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By HOD";
+         currentTravelRequest.bstRetirementComment = $("#bstRetirementComment").val();
+         currentTravelRequest.retirementStatus = "Retirement Rejected By BST";
 
-      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/bstRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
-                  title: "Trip retirement has been Rejected By HOD",
+                  title: "Trip retirement has been Rejected By BST",
                   text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                   confirmButtonClass: "btn-success",
                   type: "success",

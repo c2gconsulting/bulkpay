@@ -9,13 +9,13 @@ Template.TravelRequisition2BudgetHolderRetireDetail.events({
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By MD";
+      currentTravelRequest.retirementStatus = "Retirement Approved Budget Holder";
 
 
-     Meteor.call('TravelRequest2/budgetHolderRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/budgetHolderRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been Approved By MD",
+                 title: "Trip retirement has been Approved By Budget Holder",
                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -37,12 +37,12 @@ Template.TravelRequisition2BudgetHolderRetireDetail.events({
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
          currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By MD";
+         currentTravelRequest.retirementStatus = "Retirement Rejected Budget Holder";
 
-      Meteor.call('TravelRequest2/budgetHolderRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/budgetHolderRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
-                  title: "Trip retirement has been Rejected By MD",
+                  title: "Trip retirement has been Rejected By Budget Holder",
                   text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                   confirmButtonClass: "btn-success",
                   type: "success",

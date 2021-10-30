@@ -427,6 +427,7 @@ DataLoader = class DataLoader {
           console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
           if (userFound) {
             console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+            delete user.roles;
             Meteor.users.update({ customUsername: user.customUsername }, { $set: user })
             console.info(
               `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 

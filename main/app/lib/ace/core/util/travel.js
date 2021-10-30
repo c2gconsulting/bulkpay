@@ -280,12 +280,12 @@ Core.tripAnalysis = (self) => {
         if (totalDuration < 0){
             totalDuration = 0;
         }else{
-            totalDuration = totalDuration; // + 0.5;
+            totalDuration = totalDuration || 0.5; // + 0.5;
             //totalDuration = totalDuration;
 
         }
     } else if (tripType === "Single") {
-      totalDuration = totalDuration; // + 0.5;
+      totalDuration = totalDuration || 0.5; // + 0.5;
     } else if (tripType === "Multiple"){
 
         if ((i + 1) >= currentTravelRequest.trips.length){
@@ -298,7 +298,7 @@ Core.tripAnalysis = (self) => {
             if (totalDuration < 0){
                 totalDuration = 0;
             }else{
-                totalDuration = totalDuration; // + 0.5;
+                totalDuration = totalDuration || 0.5; // + 0.5;
             }
         }
     }
@@ -396,14 +396,14 @@ Core.tripAnalysis = (self) => {
 
       if (currentTravelRequest.trips[i].provideAirportPickup){
           if (userStaffCategory){
-              originCityAirportTaxiCost = userStaffCategory.airportPickupDropOffCost;
+              originCityAirportTaxiCost = originCityAirportTaxiCost + (userStaffCategory.airportPickupDropOffCost / 2);
           }
           // else{
           //     originCityAirportTaxiCost = 0;
           // }
 
           if (userStaffCategory){
-              destinationCityAirportTaxiCost = userStaffCategory.airportPickupDropOffCost;
+              destinationCityAirportTaxiCost = destinationCityAirportTaxiCost + (userStaffCategory.airportPickupDropOffCost / 2);
           }
           // else{
           //     destinationCityAirportTaxiCost = 0;

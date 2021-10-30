@@ -12,7 +12,7 @@ Template.TravelRequisition2SupervisorRetirementDetail.events({
       currentTravelRequest.retirementStatus = "Retirement Approved By HOD";
 
 
-     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/supervisorRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
                  title: "Trip retirement has been Approved By HOD",
@@ -39,7 +39,7 @@ Template.TravelRequisition2SupervisorRetirementDetail.events({
          currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
          currentTravelRequest.retirementStatus = "Retirement Rejected By HOD";
 
-      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/supervisorRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been Rejected By HOD",

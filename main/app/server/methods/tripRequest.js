@@ -599,14 +599,53 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const supervisor = currentTravelRequest.supervisorId || (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    currentTravelRequest.supervisorId = supervisor;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode) {
-      currentTravelRequest.budgetHolderId = currentTravelRequest.budgetHolderId || budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    /**
+     * IF trip mode is Air, should go through normal stages of approval
+     * ELSE should skip couple of approvals (GCOO and GCEO respectively) then go to logistics
+     */
+      const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
+      if (skipApprovalTillApprovedByBudgetHolder) return "";
+      const dPosition = position || 'HOD';
+      const isPartOfApprovalFlow = Core.getApprovalConfig(dPosition, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
     }
 
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD, true)
+    currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY, true)
+
+    let isTopLevelUser = Core.hasApprovalLevel();
+    const topLevelQuery = { $and: [{ _id: { $ne: userId } }, { $or: [{ hodPositionId: positionId }, { lineManagerId: positionId }] }] }
+    if (!isTopLevelUser) isTopLevelUser = !!fetchUser(topLevelQuery);
+
+    console.log('isTopLevelUser', isTopLevelUser)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode){
+      currentTravelRequest.budgetCodeId = budgetCode._id
+      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+      // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    }
+
+      // Verify user creating a trip
+      // Core.canCreateTravel()
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
       let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
@@ -869,12 +908,45 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
     }
+
+    const fetchUser = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser;
+      return null
+    }
+
+    const fetchUsers = (conditions) => {
+      const fetchedUsers = Meteor.users.find(conditions);
+      if (fetchedUsers) return fetchedUsers;
+      return []
+    }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
       let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
@@ -2466,12 +2538,33 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
     }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
       let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
@@ -2553,12 +2646,130 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
     }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+
+
+    if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      throw new Meteor.Error(401, errMsg);
+    }
+    if (currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+    } else {
+      let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
+  "TRIPREQUEST/bstRetirements": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+      throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
+    }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+
+
+    if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      throw new Meteor.Error(401, errMsg);
+    }
+    if (currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+    } else {
+      let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
+  "TRIPREQUEST/logisticsRetirements": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+      throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
+    }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
       let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
@@ -2579,12 +2790,33 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    const fetchUserId = (conditions) => {
+      const fetchedUser = Meteor.users.findOne(conditions);
+      if (fetchedUser) return fetchedUser._id;
+      return ''
     }
+
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+    const {
+      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+    const { directSupervisorId, managerId, _id, positionId } = currentUser
+    const userId = _id || Meteor.userId()
+    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
       let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"

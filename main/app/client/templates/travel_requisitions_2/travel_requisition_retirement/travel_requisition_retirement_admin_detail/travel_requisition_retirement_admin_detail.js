@@ -99,7 +99,7 @@ Template.TravelRequisitionRetirement2AdminDetail.events({
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.retirementStatus = "Retirement Submitted";
-        Meteor.call('TravelRequest2/retire', currentTravelRequest, (err, res) => {
+        Meteor.call('TRIPREQUEST/retire', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Trip Retirement Updated",

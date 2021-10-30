@@ -411,7 +411,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved BST","Retirement Rejected BST"],
+        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -513,6 +513,16 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     tripReport: {
         type: String,
         defaultValue: '',
+        optional: true
+    },
+    isGcooTrip: {
+        type: Boolean,
+        defaultValue: false,
+        optional: true
+    },
+    isGceoTrip: {
+        type: Boolean,
+        defaultValue: false,
         optional: true
     },
     supervisorRetirementComment: {
