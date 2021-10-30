@@ -181,7 +181,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {
@@ -223,7 +223,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
         }
     },
     allowedStatus() {
-        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved by HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
     },
     setDefaultStatus(val) {
         return val || 'Status'

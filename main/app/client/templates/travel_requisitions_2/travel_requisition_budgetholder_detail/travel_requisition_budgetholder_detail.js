@@ -10,7 +10,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Approved By MD";
+        currentTravelRequest.status = "Approved By Budget Holder";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -28,10 +28,10 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": MD Comment cannot be empty";
+            validationErrors += ": Budget Holder Comment cannot be empty";
         }
         if (fieldsAreValid){
-           Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+           Meteor.call('TRIPREQUEST/budgetHolderApprovals', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Travel requisition has been approved",
@@ -73,7 +73,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Rejected By MD";
+        currentTravelRequest.status = "Rejected By Budget Holder";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -91,13 +91,13 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
+            validationErrors += ": Budget Holder Comment cannot be empty";
         }
 
 
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/budgetHolderApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -163,7 +163,7 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {

@@ -9,13 +9,13 @@ Template.TravelRequisition2BSTRetirementDetail.events({
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved by HOD";
+      currentTravelRequest.retirementStatus = "Retirement Approved By HOD";
 
 
      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been Approved by HOD",
+                 title: "Trip retirement has been Approved By HOD",
                  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -91,7 +91,7 @@ Template.TravelRequisition2BSTRetirementDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {

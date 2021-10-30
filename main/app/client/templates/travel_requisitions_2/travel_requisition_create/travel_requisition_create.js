@@ -657,29 +657,10 @@ Template.TravelRequisition2Create.events({
     if (fieldsAreValid){
       //explicitely set status
       currentTravelRequest.status = "Pending";
-      const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
-      let currentUser = Template.instance().currentUser.get();
-      let currentPosition = 'HOD'
-      console.log('currentUser', currentUser);
-      if (tmpl.isHOD.curValue) {
-        currentPosition = 'HOD';
-        currentTravelRequest.status = 'Approved by HOD'
-      }
-      if (tmpl.isDirectManager.curValue) {
-        currentPosition = 'MANAGER';
-        currentTravelRequest.status = 'Approved By MD'
-        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
-      }
-      if (currentUser.positionDesc.includes("Group Chief Operating off")) {
-        currentPosition = "GCOO";
-        currentTravelRequest.status = 'Approved By GCOO'
-        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
-      }
-      if (currentUser.positionDesc.includes("Group Chief Executive off")) {
-        currentPosition = "GCEO"
-        currentTravelRequest.status = 'Approved By GCEO'
-        if(!isAIR) currentTravelRequest.status = 'Processed By Logistics'
-      }
+    //   const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
+    //   let currentUser = Template.instance().currentUser.get();
+      const { status, currentPosition } = Core.hasApprovalLevel(currentTravelRequest, true);
+      currentTravelRequest.status = status;
       // Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
     //   Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, currentPosition, (err, res) => {
       Meteor.call('TRIPREQUEST/create', currentTravelRequest, currentPosition, (err, res) => {
@@ -889,7 +870,7 @@ Template.TravelRequisition2Create.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {
@@ -1075,57 +1056,6 @@ Template.TravelRequisition2Create.helpers({
         if(currentTravelRequest && val){
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
-    },
-    getLineOfCommand(nextAction, isStatusUpdate){
-      const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
-      let currentUser = Template.instance().currentUser.get();
-      if (Meteor.users.findOne({ directSupervisorId: Meteor.userId() })) return 'HOD'
-      else if (Template.instance().directManager.get()) currentUser = 'MANAGER'
-      else if (Template.instance().gcoo.get()) currentUser = 'GCOO'
-      else if (Template.instance().gceo.get()) currentUser = 'GCEO'
-      const userPosition = Meteor.userId();
-      const HOD = currentUser.supervisorId;
-      const MANAGER = currentUser.directManagerId;
-      const GCOO = currentUser.gcooId;
-      const GCEO = currentUser.gceoId;
-
-      switch (userPosition) {
-        case HOD: {
-          if (isAIR && nextAction) return 'MANAGER'
-          if (isStatusUpdate) return 'Approved by HOD'
-          if (!isAIR && nextAction) return 'MANAGER'
-
-          break;
-        }
-
-        case MANAGER: {
-          if (isAIR && nextAction) return 'GCOO'
-          if (isStatusUpdate) return 'Approved By MD'
-          if (!isAIR && nextAction) return 'LOGISTICS'
-
-          break;
-        }
-
-        case GCOO: {
-          if (isAIR && nextAction) return 'GCEO'
-          if (isAIR && isStatusUpdate) return 'Approved By GCOO'
-          if (!isAIR && nextAction) return 'LOGISTICS'
-
-          break;
-        }
-
-        case GCEO: {
-          if (isAIR && nextAction) return 'BST'
-          if (isAIR && isStatusUpdate) return 'Approved By GCEO'
-
-          break;
-        }
-
-        default:
-            if (nextAction) return 'HOD'
-            else return 'Pending'
-      }
     },
     destinationTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();

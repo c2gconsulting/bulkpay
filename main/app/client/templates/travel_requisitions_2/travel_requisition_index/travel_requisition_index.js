@@ -26,7 +26,7 @@ Template.TravelRequisition2Index.events({
 
       if (tmpl.isHOD.curValue) {
         currentPosition = 'HOD';
-        currentStatus = 'Approved by HOD'
+        currentStatus = 'Approved By HOD'
       }
 
       if (tmpl.isDirectManager.curValue) {
@@ -150,7 +150,7 @@ Template.TravelRequisition2Index.helpers({
     //     let unretiredCount = TravelRequisition2s.find({
     //         $and : [
     //             { retirementStatus: "Not Retired"},
-    //             { $or : [ { status : "Pending" }, { status : "Approved by HOD" }, { status : "Approved By MD"}] }
+    //             { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
     //         ]}).count()
     //     console.log("Unretired Count: " + unretiredCount);
     //     if (unretiredCount > 0){

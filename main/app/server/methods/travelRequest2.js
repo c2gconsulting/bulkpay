@@ -1110,7 +1110,7 @@ let TravelRequestHelper = {
                 const budgetHolderSubject = "Please approve travel request for " + createdBy.profile.fullName;
 
 
-                if(currentTravelRequest.status === "Approved by HOD"){
+                if(currentTravelRequest.status === "Approved By HOD"){
                     createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel request";
                     supervisorSubject = "You have approved " + createdBy.profile.fullName + "'s travel request";
                 }else{
@@ -1299,7 +1299,7 @@ let TravelRequestHelper = {
 
 
 
-                if(currentTravelRequest.retirementStatus === "Retirement Approved by HOD"){
+                if(currentTravelRequest.retirementStatus === "Retirement Approved By HOD"){
                     createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel retirement";
                     supervisorSubject = "You have approved " + createdBy.profile.fullName + "'s travel retirement";
                 }else{

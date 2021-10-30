@@ -12,7 +12,7 @@ Template.TimeRecordSupervisorDetail.events({
     'click #approve': (e, tmpl) => {
 
         let currentTimeRecord = tmpl.currentTimeRecord.curValue;
-        currentTimeRecord.status = "Approved by HOD";
+        currentTimeRecord.status = "Approved By HOD";
 
         currentTimeRecord.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 

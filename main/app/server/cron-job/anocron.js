@@ -574,3 +574,175 @@
 //     //   })
 //   }
 // })
+
+
+
+
+
+
+
+
+
+
+
+
+// "TRIPREQUEST/budgetHolderApprovals": function(currentTravelRequest){
+//     if (!this.userId && Core.hasPayrollAccess(this.userId)){
+//       throw new Meteor.Error(401, "Unauthorized");
+//     }
+
+//     check(currentTravelRequest.businessId, String);
+//     this.unblock()
+//     /**
+//      * IF trip mode is Air, should go through normal stages of approval
+//      * ELSE should skip couple of approvals (GCOO and GCEO respectively) then go to logistics
+//      */
+//      const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
+//       if (skipApprovalTillApprovedByBudgetHolder) return "";
+//       const dPosition = position || 'HOD';
+//       const isPartOfApprovalFlow = Core.getApprovalConfig(dPosition, currentTravelRequest)
+//       if (position && !isPartOfApprovalFlow) return ""
+//       const fetchedUser = Meteor.users.findOne(conditions);
+//       if (fetchedUser) return fetchedUser._id;
+//       return ''
+//     }
+
+//     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+//     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+//     const {
+//       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+//     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+
+//     const { directSupervisorId, managerId, _id, positionId } = currentUser
+//     const userId = _id || Meteor.userId()
+//     currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
+//     currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD)
+//     currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
+//     currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
+//     currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
+//     currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
+//     currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
+//     currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
+
+//     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+//     console.log('budgetCode', budgetCode);
+//     if (budgetCode){
+//       currentTravelRequest.budgetCodeId = budgetCode._id
+//       currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+//       // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+//     }
+
+//     let isTopLevelUser = Core.hasApprovalLevel();
+//     let approvalLevel, currentPosition, tripByAir;
+//     if (isTopLevelUser) approvalLevel = Core.hasApprovalLevel(currentTravelRequest, true);
+//     if (approvalLevel) currentPosition = approvalLevel.currentPosition;
+//     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
+//       const trip = currentTravelRequest.trips[i];
+//       if (trip.transportationMode === 'AIR') tripByAir = true
+//     }
+//     const { destinationType } = currentTravelRequest;
+//     const isInternationalTrip = destinationType === 'International';
+//     if (currentPosition) {
+//       if(currentPosition == 'HOD' && tripByAir) currentPosition = "MD"
+//       if(currentPosition == 'HOD' && !tripByAir) currentPosition = "BST"
+
+//       if(currentPosition == 'MD' && tripByAir) currentPosition = "GCOO"
+//       if(currentPosition == 'MD' && !tripByAir) currentPosition = "BST"
+
+//       if(currentPosition == 'GCOO' && isInternationalTrip) currentPosition = "GCEO"
+//       if(currentPosition == 'GCOO' && !isInternationalTrip) currentPosition = "BST"
+
+//       if(currentPosition == 'GCEO') currentPosition = "BST"
+//       if(currentPosition == 'GCEO') currentPosition = "BST"
+//     }
+//     if (!currentPosition && tripByAir) currentPosition = "MD";
+//     if (!currentPosition && !tripByAir) currentPosition = "BST";
+
+//     let nextUserApprovalId = "", nextUserApproval = "";
+//     if (currentPosition) nextUserApprovalId = `${currentPosition.toLowerCase()}Id`;
+
+//     if(currentTravelRequest._id){
+//       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+//       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+//       const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
+//       const nextUserApproval = Meteor.users.findOne(nextUserApprovalId);
+//       const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
+//       let createdByEmail = "";
+//       let nextUserApprovalEmail = "";
+//       let createdByName = "Employee"
+//       let nextUserApprovalName = "Supervisor"
+//       let budgetHolderEmail = "";
+//       let budgetHolderName = "Budget Holder"
+//       let createdBySubject = "";
+//       let supervisorSubject = "";
+//       const bookingAgentSubject = "Process ticket booking for " + createdBy.profile.fullName + "'s travel request";
+//       const securityDeptSubject = "Process security for " + createdBy.profile.fullName + "'s travel request";
+//       let nextUserApprovalSubject = "Please approve travel request for " + createdBy.profile.fullName;
+//       if (currentPosition === "BST") {
+//         nextUserApprovalSubject = "Please approve travel request for " + createdBy.profile.fullName;
+//       }
+
+
+//       if(currentTravelRequest.status === "Approved By Budget Holder"){
+//         createdBySubject = "Budget Holder: " + budgetHolder.profile.fullName + " has approved your travel request";
+//         budgetHolderSubject = "You have approved " + createdBy.profile.fullName + "'s travel request";
+//       } else {
+//         createdBySubject = "Budget Holder: " + budgetHolder.profile.fullName + " has rejected your travel request";
+//         budgetHolderSubject = "You have rejected " + createdBy.profile.fullName + "'s travel request";
+//       }
+//       if (createdBy.emails.length > 0){
+//         createdByEmail = createdBy.emails[0].address;
+//         createdByEmail = createdByEmail + "," + otherPartiesEmail;
+//         console.log(createdByEmail);
+//       }
+
+//       const { tripFor } = currentTravelRequest;
+//       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
+//         const individuals = tripFor;
+//         //  Send Notification to other individual going on this trip
+//         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
+//       }
+
+//       if (budgetHolder.emails.length > 0){
+//         budgetHolderEmail = budgetHolder.emails[0].address;
+//         budgetHolderEmail = budgetHolderEmail + "," + otherPartiesEmail;
+//         console.log(budgetHolderEmail);
+//       }
+
+//       if (nextUserApproval, nextUserApproval.emails.length > 0){
+//         nextUserApprovalEmail = nextUserApproval.emails[0].address;
+//         nextUserApprovalEmail = nextUserApprovalEmail  + ", bulkpay@c2gconsulting.com";
+//         console.log(nextUserApprovalEmail);
+//       }
+
+//       //Send to requestor
+//       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
+
+//       //Send to Budget holder
+//       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
+
+//       if (currentTravelRequest.status === "Approved By Budget Holder") {
+//         //Send to nextUserApproval
+//         TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, nextUserApprovalEmail, nextUserApprovalSubject);
+
+//         // Send to booking agent if it's approved by budgetHolder
+//         if (bookingAgentEmail) {
+//           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+//         }
+//         // Send to security dept if requested and approved by budgetHolder
+//         if (trips.length > 0 && securityDeptSubject) {
+//           for (let t = 0; t < trips.length; t++) {
+//             const { provideSecurity } = trips[t];
+//             if (provideSecurity) {
+//               TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+//             }
+//           }
+//         }
+//       }
+
+//     } else {
+//       let result = TravelRequisition2s.insert(currentTravelRequest);
+//     }
+//     return true;

@@ -45,14 +45,8 @@
                             <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
-                                {{#semanticselect2}}
-                                <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
-                                    {{#each costCenters}}
-                                    <option value="{{id}}" {{selected COSTCENTER id}}>{{name}}</option>
-                                    {{/each}}
-                                </select>
-                                {{/semanticselect2}}
+                                    <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentTravelRequest.costCenter}}" disabled/>
                                 </div>
                             </div>
                             <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->

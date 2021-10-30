@@ -2236,7 +2236,7 @@ function getFractionForCalcProjectsAndChargeCodePayValue(businessId, startDate, 
             // ],
             createdAt: { $gte: startDate, $lt: endDate },
             createdBy: employeeUserId,
-            status: 'Approved by HOD'
+            status: 'Approved By HOD'
         }
 
         let allProjectTimesInMonth = TimeRecord.aggregate([

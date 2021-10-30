@@ -28,13 +28,13 @@ Template.AttachmentsList.events({
 
       formData.append(event.target.files[0].name, event.target.files[0])
 
-      console.log('running axios post request...')
+      // console.log('running axios post request...')
       axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
       .then(res => {
         try {
-          console.log('running then block...', res.data)
-          console.log("Session.get('context')", Session.get('context'))
-          console.log("Session.get('context')", template)
+          // console.log('running then block...', res.data)
+          // console.log("Session.get('context')", Session.get('context'))
+          // console.log("Session.get('context')", template)
           const businessUnitId = Session.get('context');
           const requisitionId = template.data.requisitionId
       
@@ -47,7 +47,7 @@ Template.AttachmentsList.events({
             tenantId: Core.getTenantId()
           }
 
-          console.log('newAttachment', newAttachment)
+          // console.log('newAttachment', newAttachment)
   
           Meteor.call('attachment/create', newAttachment, (err, res) => {
             if (res){
@@ -62,7 +62,7 @@ Template.AttachmentsList.events({
           });
         } catch (error) {
           toastr.error("Save Failed", error.message || error, "error");
-          console.log('error', error)
+          // console.log('error', error)
         }
       })
       .catch(err => {
@@ -90,7 +90,7 @@ Template.AttachmentsList.events({
         if (res){
           toastr.success('File deleted successfully', 'Success')
         } else {
-          console.log(err);
+          // console.log(err);
           toastr.error("Delete Failed", "Couldn't delete an attachment", "error");
         }
       });
@@ -114,7 +114,7 @@ Template.AttachmentsList.helpers({
 
     getUploadStatus: function (status) {
         status =  status || Session.get('isUploading')
-        console.log('Template.parentData().requisitionId;', Template.parentData())
+        // console.log('Template.parentData().requisitionId;', Template.parentData())
         return status ? 'Uploading': 'Add files'
     },
 
@@ -140,13 +140,13 @@ Template.AttachmentsList.onCreated(function() {
     instance.autorun(function () {
       let subscription = instance.subscribe('ObjectsMedia', Session.get('objectType'), Session.get('objectId'));
       const businessUnitId = Session.get('context');
-      console.log('businessUnitId', businessUnitId)
+      // console.log('businessUnitId', businessUnitId)
       let attachmentSub = instance.subscribe("attachments", businessUnitId);
 
       if (attachmentSub.ready()) {
         const requisitionId = instance.data.requisitionId || Template.parentData().requisitionId
-        console.log('requisitionId-requisitionId', requisitionId)
-        console.log('Template.parentData()', Template.parentData())
+        // console.log('requisitionId-requisitionId', requisitionId)
+        // console.log('Template.parentData()', Template.parentData())
         let attachmentRecords = Attachments.find({ travelId: requisitionId });
         instance.attachments.set(attachmentRecords)
       }

@@ -16,7 +16,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.supervisorComment = supervisorComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved by HOD";
+        currentTravelRequest.status = "Approved By HOD";
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -43,7 +43,7 @@ Template.TravelRequisition2SupervisorDetail.events({
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/supervisorApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -115,7 +115,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         }
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/supervisorApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -188,7 +188,7 @@ Template.TravelRequisition2SupervisorDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {

@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <!-- <div class="col-sm-6">
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project is this trip related to?</label>
@@ -46,7 +46,46 @@
                                     {{/semanticselect}}
                                     <span class="text-danger"><small>Please verify that the project is correct, this field cannot also be left blank</small></span>
                                 </div>
+                            </div> -->
+
+
+
+                            <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentTravelRequest.costCenter}}" disabled/>
+                                </div>
                             </div>
+                            <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <!-- +++++++++ PROJECT TRIP ++++++++++++-->
+                            {{#if costCenterType 'Project'}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
+                                    </div>
+                                </div>
+                                <!-- +++++++++ IF PROJECT SELECTED, THEN SELECT PROJECT ACTIVITY ++++++++++++-->
+                                {{#if currentTravelRequest.departmentOrProjectId}}
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="project_activity-code" class="control-label">Select work breakdown structure</label>
+                                        <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentActivity}}" disabled/>
+                                    </div>
+                                </div>
+                                {{/if}}
+                                <!-- ELSE -->
+                                <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
+                                {{else}}
+                                <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                    <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
+                                </div>
+                                </div>
+                            {{/if}}
+                            <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
 
                         </div>
 

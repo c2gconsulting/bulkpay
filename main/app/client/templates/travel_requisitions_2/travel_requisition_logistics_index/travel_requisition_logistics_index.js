@@ -58,7 +58,7 @@ Template.TravelRequisition2LogisticsIndex.helpers({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
             { logisticsId: Meteor.userId()},
-            { $or : [{ status : "Approved by HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
+            { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -116,7 +116,7 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { logisticsId: Meteor.userId()},
-                { $or : [{ status : "Approved by HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
+                { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
             ]
         }, options);
     }

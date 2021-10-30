@@ -35,7 +35,7 @@ Template.TravelRequisition2BSTDetail.events({
         }
         if (fieldsAreValid){
             const processed = true
-            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'BST', '', processed, (err, res) => {
+            Meteor.call('TRIPREQUEST/bstProcess', currentTravelRequest, 'BST', '', processed, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -99,11 +99,17 @@ Template.TravelRequisition2BSTDetail.events({
     },
     "change [id*='driverInfo']": function(e, tmpl){
         e.preventDefault()
-    
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
-    
         currentTravelRequest.trips[index].driverInformation = $(e.currentTarget).val();
+
+        const ddriver = Meteor.users.findOne({_id: currentTravelRequest.trips[index].driverInformation });
+        if (ddriver && ddriver.employeeProfile) {
+            const employeeProfile = ddriver.employeeProfile && ddriver.employeeProfile.payment;
+            currentTravelRequest.trips[index].accountNumber = employeeProfile.accountNumber
+            currentTravelRequest.trips[index].bankName = employeeProfile.bank
+        }
+
         console.log('currentTravelRequest.trips[index].driverInformation', currentTravelRequest.trips[index].driverInformation)
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
@@ -171,7 +177,7 @@ Template.TravelRequisition2BSTDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {
@@ -234,11 +240,6 @@ Template.TravelRequisition2BSTDetail.helpers({
         if(currentTravelRequest && index){
             return currentTravelRequest.trips[parseInt(index) - 1].isBreakfastIncluded? checked="checked" : '';
         }
-    },
-    costCenterType: function (item) {
-      const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
-      return false
     },
     costCenters() {
         console.log("Session.get('context');", Session.get('context'))
@@ -458,6 +459,13 @@ Template.TravelRequisition2BSTDetail.onCreated(function () {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
             self.currentTravelRequest.set(travelRequestDetails)
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
+
+            if (travelRequestDetails) {
+                travelRequestDetails.trips.map(({ tripIndex, driverInformation}) => {
+                    $(`#driverInfo_${tripIndex}`).dropdown('set selected', driverInformation);
+                })
+            }
 
 
         }

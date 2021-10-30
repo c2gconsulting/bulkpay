@@ -109,42 +109,44 @@ Accounts.onLogin(function (options) {
  */
 Meteor.methods({
     "account/hod": function (userId) {
+        const user = Meteor.user();
         userId = userId || Meteor.userId();
-        const { positionId } = Meteor.user();
+        const positionId = user ? user.positionId : "";
         if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'hodPositionId': positionId }] });
         return null
     },
     "account/manager": function (userId) {
+        const user = Meteor.user();
         userId = userId || Meteor.userId();
-        const { positionId } = Meteor.user();
+        const positionId = user ? user.positionId : "";
         if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'lineManagerId': positionId }] });
         return null
     },
     // BEGIN: Check IF Is a manager/hod to itself or to anyone on the system
     "account/isHod": function (userId) {
-        userId = userId || Meteor.userId();
-        const { positionId, hodPositionId } = Meteor.user();
+        const user = Meteor.user();
+        let positionId = user ? user.positionId : "";
+        let hodPositionId = user ? user.hodPositionId : "";
         if (positionId === hodPositionId) return Meteor.user();
         return null
     },
     "account/isManager": function (userId) {
-        userId = userId || Meteor.userId();
-        const { positionId, lineManagerId } = Meteor.user();
-        if (positionId === lineManagerId) return Meteor.user();
+        const user = Meteor.user();
+        let positionId = user ? user.positionId : "";
+        let lineManagerId = user ? user.lineManagerId : "";
+        if (positionId && positionId === lineManagerId) return Meteor.user();
         return null
     },
     // END: Check IF Is a manager/hod to itself or to anyone on the system
     "account/gcoo": function (userId) {
         const user = Meteor.user();
-        let { positionDesc } = user;
-        positionDesc = positionDesc ? positionDesc.toLowerCase() : "";
+        let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
         if (positionDesc.includes('group chief operating off')) return user
         return null
     },
     "account/gceo": function (userId) {
         const user = Meteor.user();
-        let { positionDesc } = user;
-        positionDesc = positionDesc ? positionDesc.toLowerCase() : "";
+        let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
         if (positionDesc.includes('group chief executive off')) return user
         return null
     },

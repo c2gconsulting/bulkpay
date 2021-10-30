@@ -116,7 +116,7 @@ Template.TravelRequisition2MDIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { managerId: Meteor.userId()},
-                { $or : [ { status : "Approved By MD" }, { status : "Approved by HOD" }, { status : "Rejected By MD"}] }
+                { $or : [ { status : "Approved By Budget Holder" }, { status : "Approved By MD" }, { status : "Rejected By MD"}] }
             ]
         }, options);
     }

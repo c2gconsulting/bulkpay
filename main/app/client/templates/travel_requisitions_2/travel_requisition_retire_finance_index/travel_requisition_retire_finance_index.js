@@ -58,7 +58,7 @@ Template.TravelRequisition2FinanceRetireIndex.helpers({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
             { financeApproverId: Meteor.userId()},
-            { $or : [ { retirementStatus : "Retirement Approved by HOD" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
+            { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
@@ -122,7 +122,7 @@ Template.TravelRequisition2FinanceRetireIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { financeApproverId: Meteor.userId()},
-                { $or : [ { retirementStatus : "Retirement Approved by HOD" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
+                { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
             ]
         }, options);
     }

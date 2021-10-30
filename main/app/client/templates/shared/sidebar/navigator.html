@@ -174,7 +174,7 @@
             <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;All Travel Retirements</a></li>
           {{/if}}
 
-          <li><a href="{{pathFor 'staffcategories'}}">&nbsp;&nbsp;&nbsp;&nbsp;Staff Categories</a></li>
+          <li><a href="{{pathFor 'staffcategories'}}">&nbsp;&nbsp;&nbsp;&nbsp;Employee Travel Allowance</a></li>
           <li><a href="{{pathFor 'employeelevels'}}">&nbsp;&nbsp;&nbsp;&nbsp;Employee Levels</a></li>
 
           {{#if isTravelBudgetsEnabled}}
@@ -274,18 +274,18 @@
               {{/if}}
             {{/if}}
 
-            <!-- {{#if isUserABudgetHolder}}
+            {{#if isUserABudgetHolder}}
               <li class="parent {{isMenuExpandedFocusClass 'travelBudgetHolderMenu'}}">
                 <a href="" id="travelBudgetHolderMenu">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-                  <span>MD Approvals</span>
+                  <span>Budget Holder Approvals</span>
                 </a>
               </li>
               {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
                 <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
                 <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>
               {{/if}}
-            {{/if}} -->
+            {{/if}}
 
             {{#if isUserATravelFinanceApprover}}
               <li class="parent {{isMenuExpandedFocusClass 'travelFinanceMenu'}}">

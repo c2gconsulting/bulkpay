@@ -224,7 +224,8 @@ Core.tripAnalysis = (self) => {
 
 
   const { destinationType } = currentTravelRequest;
-  const isInternational = destinationType === "International"
+  const isInternational = destinationType === "International";
+  let Currency = isInternational ? 'USD' : 'NGN';
   let StaffCategory = StaffCategories.find({ isInternational }).fetch();
   // console.log('StaffCategoryyyy', StaffCategory)
 
@@ -258,7 +259,7 @@ Core.tripAnalysis = (self) => {
     let groundTransportCost = 0;
 
 
-    let totalDuration = 0;
+    let totalDuration = 0.5;
 
     if (tripType === "Return"){
       const startDate = moment(currentTravelRequest.trips[i].departureDate)
@@ -279,12 +280,12 @@ Core.tripAnalysis = (self) => {
         if (totalDuration < 0){
             totalDuration = 0;
         }else{
-            totalDuration = totalDuration + 0.5;
+            totalDuration = totalDuration; // + 0.5;
             //totalDuration = totalDuration;
 
         }
     } else if (tripType === "Single") {
-      totalDuration = totalDuration + 0.5;
+      totalDuration = totalDuration; // + 0.5;
     } else if (tripType === "Multiple"){
 
         if ((i + 1) >= currentTravelRequest.trips.length){
@@ -297,7 +298,7 @@ Core.tripAnalysis = (self) => {
             if (totalDuration < 0){
                 totalDuration = 0;
             }else{
-                totalDuration = totalDuration + 0.5;
+                totalDuration = totalDuration; // + 0.5;
             }
         }
     }
@@ -328,8 +329,8 @@ Core.tripAnalysis = (self) => {
 
       let perDiemCost = 0;
       let unadjustedPerDiemCost = 0;
-      let originCityCurrreny = "NGN";
-      let destinationCityCurrreny = "NGN";
+      let originCityCurrreny = Currency;
+      let destinationCityCurrreny = Currency;
 
       const trimData = (val) => (val || "").trim();
       let userStaffCategory = StaffCategory.find(({ category }) => trimData(category) === trimData(staffCategory));
@@ -341,9 +342,9 @@ Core.tripAnalysis = (self) => {
           destinationCityCurrreny = toTravelCity.currency;
       }
 
-      if(fromTravelCity){
+      if(Currency){
           // originCityCurrreny = fromTravelCity.currency;
-          originCityCurrreny = fromTravelCity.currency;
+          originCityCurrreny = Currency;
       }
 
       if (userStaffCategory){
@@ -373,7 +374,7 @@ Core.tripAnalysis = (self) => {
           hotelRate = userStaffCategory.hotelDailyRate;
       }
 
-      totalHotelCost = ((totalDuration - 0.5) * hotelRate) + totalHotelCost;
+      totalHotelCost = ((totalDuration /*- 0.5*/) * hotelRate) + totalHotelCost;
       totalHotelRate = hotelRate + totalHotelRate;
       totalPerDiem = (totalDuration * perDiemCost) + totalPerDiem;
       totalPerDiemCost = perDiemCost + totalPerDiemCost;
@@ -414,7 +415,7 @@ Core.tripAnalysis = (self) => {
 
       if (currentTravelRequest.trips[i].provideGroundTransport){
           if (userStaffCategory){
-            groundTransportCost = userStaffCategory.groundTransport;
+            groundTransportCost = groundTransportCost + userStaffCategory.groundTransport;
           }
           // else{
           //     groundTransportCost = 0;
@@ -433,36 +434,41 @@ Core.tripAnalysis = (self) => {
     currentTravelRequest.trips[i].totalPerDiem = totalPerDiem;
     currentTravelRequest.trips[i].originCityAirportTaxiCost = originCityAirportTaxiCost;
     currentTravelRequest.trips[i].destinationCityAirportTaxiCost = destinationCityAirportTaxiCost;
+
     currentTravelRequest.trips[i].groundTransportCost = groundTransportCost;
+    console.log('groundTransportCost',groundTransportCost)
 
     totalTripDuration = totalTripDuration + currentTravelRequest.trips[i].totalDuration;
 
-    if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
+    // if (currentTravelRequest.trips[i].destinationCityCurrreny  === "NGN"){
+    if (Currency  === "NGN"){
       totalEmployeePerdiemNGN = totalEmployeePerdiemNGN + currentTravelRequest.trips[i].totalPerDiem;
     } else {
       totalEmployeePerdiemUSD = totalEmployeePerdiemUSD + currentTravelRequest.trips[i].totalPerDiem;
     }
 
-    if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
+    // if (fromTravelCity && (fromTravelCity.currency   === "NGN")){
+    if (Currency   === "NGN") {
         totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].originCityAirportTaxiCost;
-    }else{
+    } else{
         totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].originCityAirportTaxiCost;
     }
 
-    if (toTravelCity && (toTravelCity.currency   === "NGN")){
+    // if (toTravelCity && (toTravelCity.currency   === "NGN")){
+    if (Currency   === "NGN") {
         totalAirportTaxiCostNGN = totalAirportTaxiCostNGN + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
-    }else{
+    } else{
         totalAirportTaxiCostUSD = totalAirportTaxiCostUSD + currentTravelRequest.trips[i].destinationCityAirportTaxiCost;
     }
 
-    if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
-        totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-        totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
-    }else{
-        totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration - 0.5) * currentTravelRequest.trips[i].groundTransportCost);
-        totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
+    // if (currentTravelRequest.trips[i].destinationCityCurrreny === "NGN"){
+    if (Currency === "NGN") {
+      totalGroundTransportCostNGN = totalGroundTransportCostNGN + ((totalDuration /*- 0.5*/) * currentTravelRequest.trips[i].groundTransportCost);
+      totalHotelCostNGN = totalHotelCostNGN + currentTravelRequest.trips[i].totalHotelCost;
+    } else {
+      totalGroundTransportCostUSD = totalGroundTransportCostUSD + ((totalDuration /*- 0.5*/) * currentTravelRequest.trips[i].groundTransportCost);
+      totalHotelCostUSD = totalHotelCostUSD + currentTravelRequest.trips[i].totalHotelCost;
     }
-
   }
 
   totalTripCostNGN = totalEmployeePerdiemNGN + totalAirportTaxiCostNGN + totalGroundTransportCostNGN + totalHotelCostNGN;

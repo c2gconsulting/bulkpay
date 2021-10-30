@@ -43,7 +43,7 @@ Template.TravelRequisition2MDDetail.events({
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'MANAGER', true, (err, res) => {
+            Meteor.call('TRIPREQUEST/managerApprovals', currentTravelRequest, 'MANAGER', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -115,7 +115,7 @@ Template.TravelRequisition2MDDetail.events({
         }
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'MANAGER', true, (err, res) => {
+            Meteor.call('TRIPREQUEST/managerApprovals', currentTravelRequest, 'MANAGER', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -194,7 +194,7 @@ Template.TravelRequisition2MDDetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {

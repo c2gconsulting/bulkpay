@@ -39,7 +39,7 @@ Template.TravelRequisition2GCEODetail.events({
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'GCEO', true, (err, res) => {
+            Meteor.call('TRIPREQUEST/gceoApprovals', currentTravelRequest, 'GCEO', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -111,7 +111,7 @@ Template.TravelRequisition2GCEODetail.events({
         }
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, 'GCEO', true, (err, res) => {
+            Meteor.call('TRIPREQUEST/gceoApprovals', currentTravelRequest, 'GCEO', true, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -190,14 +190,6 @@ Template.TravelRequisition2GCEODetail.helpers({
     currentDepartment: () => Template.instance().currentDepartment.get(),
     currentProject: () =>Template.instance().currentProject.get(),
     currentActivity: () => Template.instance().currentActivity.get(),
-    departmentList: () => Template.instance().departments.get(),
-    projectList: () => Template.instance().projects.get(),
-    projectActivities () {
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        const { departmentOrProjectId } = currentTravelRequest;
-        const activities = Activities.find({ type: 'project', unitOrProjectId: departmentOrProjectId }).fetch();
-        return activities;
-    },
     isEmergencyTrip () {
         // let index = this.tripIndex - 1;
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -209,7 +201,7 @@ Template.TravelRequisition2GCEODetail.helpers({
     },
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
-      if (currentTravelRequest.costCenter === item) return item
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
     },
     selected(context,val) {

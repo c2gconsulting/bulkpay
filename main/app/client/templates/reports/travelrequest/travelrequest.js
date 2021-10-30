@@ -138,13 +138,13 @@ Template.TravelRequestReport.helpers({
         }
     },
     status: function () {
-        return ["Cancelled","Draft","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+        return ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
     },
     extensionStatus: function () {
-        return ["Cancelled","Pending","Approved by HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+        return ["Cancelled","Pending","Approved By HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
     },
     retirementStatus: function () {
-        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved by HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
     },
     statusCategory: function () {
         return Template.instance().statusCategory.get()

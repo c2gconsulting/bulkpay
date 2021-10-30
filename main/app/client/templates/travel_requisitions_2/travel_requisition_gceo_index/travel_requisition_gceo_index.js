@@ -58,7 +58,7 @@ Template.TravelRequisition2GCEOIndex.helpers({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let totalNum = TravelRequisition2s.find({$and : [
             { gceoId: Meteor.userId()},
-            { $or : [ { status : "Approved by HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
+            { $or : [ { status : "Approved By HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
         ]}).count()
 
         let result = Math.floor(totalNum/limit)
