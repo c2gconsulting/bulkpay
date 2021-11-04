@@ -7,56 +7,56 @@
  * configure bunyan logging module for reaction server
  * See: https://github.com/trentm/node-bunyan#levels
  */
-// const levels = ["FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
-// const mode = process.env.NODE_ENV || "production";
-// let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
-
-// if (isDebug === true || mode === "development" && isDebug !== false) {
-//   if (typeof isDebug !== "boolean" && typeof isDebug !== undefined) {
-//     isDebug = isDebug.toUpperCase();
-//   }
-//   if (!_.contains(levels, isDebug)) {
-//     isDebug = "WARN";
-//   }
-// }
-
-// if (process.env.VELOCITY_CI === "1") {
-//   formatOut = process.stdout;
-// } else {
-//   formatOut = logger.format({
-//     outputMode: "short",
-//     levelInString: false
-//   });
-// }
-
-// Core.Log = logger.bunyan.createLogger({
-//   name: "core",
-//   stream: isDebug !== "DEBUG" ? formatOut : process.stdout,
-//   level: "debug"
-// });
-
-
-import axios from 'axios'
-
+const levels = ["FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE"];
+const mode = process.env.NODE_ENV || "production";
 let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
 
-const winston = require("winston");
-const logger = winston.createLogger({
-  level: "warn",
-  format: winston.format.json(),
-  defaultMeta: { service: "user-service" },
-  transports: [
-    //
-    // - Write to all logs with level `info` and below to `combined.log`
-    // - Write all logs error (and below) to `error.log`.
-    //
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    }),
-  ],
+if (isDebug === true || mode === "development" && isDebug !== false) {
+  if (typeof isDebug !== "boolean" && typeof isDebug !== undefined) {
+    isDebug = isDebug.toUpperCase();
+  }
+  if (!_.contains(levels, isDebug)) {
+    isDebug = "WARN";
+  }
+}
+
+if (process.env.VELOCITY_CI === "1") {
+  formatOut = process.stdout;
+} else {
+  formatOut = logger.format({
+    outputMode: "short",
+    levelInString: false
+  });
+}
+
+Core.Log = logger.bunyan.createLogger({
+  name: "core",
+  stream: isDebug !== "DEBUG" ? formatOut : process.stdout,
+  level: "debug"
 });
 
-Core.Log = logger;
+
+// import axios from 'axios'
+
+// let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
+
+// const winston = require("winston");
+// const logger = winston.createLogger({
+//   level: "warn",
+//   format: winston.format.json(),
+//   defaultMeta: { service: "user-service" },
+//   transports: [
+//     //
+//     // - Write to all logs with level `info` and below to `combined.log`
+//     // - Write all logs error (and below) to `error.log`.
+//     //
+//     new winston.transports.Console({
+//       format: winston.format.simple(),
+//     }),
+//   ],
+// });
+
+// Core.Log = logger;
 
 Core.PowerQueue = { add: () => {}, run: () => { }}
 // new PowerQueue({ 
@@ -327,11 +327,19 @@ Meteor.startup(function () {
   SyncedCron.start();
   if (Meteor.isServer) {
     // Import EMPLOYEES, COST CENTERS, AND PROJECTS
-    // Core.apiClient("employees", Loader.loadEmployeeData, () => {
-    //   Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
-    //     Core.apiClient("projects", Loader.loadProjectData, () => {})
+    // if (process.env.IMPORT_OILSERV_DATA) {
+    //   Core.apiClient("employees", Loader.loadEmployeeData, () => {
+    //     Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+    //       Core.apiClient("projects", Loader.loadProjectData, () => {})
+    //     })
     //   })
-    // })
+    // }
+
+    // Import Employees, Cost centers, and projects
+    // if (process.env.IMPORT_EMPLOYEE_OILSERV_DATA) {
+    Core.apiClient("employees", Loader.loadEmployeeData, () => {})
+    // }
+
     const MAIL_URL = process.env.MAIL_URL.split('@smtp');
     if (!MAIL_URL) return
     const [username_pass, smtp_url] = MAIL_URL;

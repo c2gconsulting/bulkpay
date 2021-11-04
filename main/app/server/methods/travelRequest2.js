@@ -1,13 +1,19 @@
 import _ from 'underscore';
 
 // const fs = require("fs");
-import mailgun from 'mailgun-js';
+// import mailgun from 'mailgun-js';
 
-const mailgunInstance = mailgun({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-  host: process.env.MAILGUN_HOST,
-});
+// if (Meteor.isServer) {
+  
+//   var formData = new FormData();
+//   console.log('formData', formData)
+// }
+
+// const mailgunInstance = mailgun({
+//   apiKey: process.env.MAILGUN_API_KEY,
+//   domain: process.env.MAILGUN_DOMAIN,
+//   host: process.env.MAILGUN_HOST,
+// });
 
 let TravelRequestHelper = {
   checkWhoToRefund: function(currentTravelRequest, currency){
@@ -66,6 +72,7 @@ let TravelRequestHelper = {
     if(travelcity) {
       return travelcity.name;
     }
+    return travelcityId
   },
   getTravelcityEmail: function(travelcityId) {
     const travelcity = Travelcities.findOne({_id: travelcityId})
@@ -90,39 +97,12 @@ let TravelRequestHelper = {
       
 
       //Todo, itenerary, employee full name
-      // SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
-      // Email.send({
-      //   to: emailTo,
-      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
-      //   subject: emailSubject,
-      //   html: SSR.render("TravelRequestNotification2", {
-      //     itenerary: itenerary,
-      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-      //     returnDate: TravelRequestHelper.formatDate(returnDate),
-      //     travelType: travelType,
-      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.status,
-      //     description: currentTravelRequest.description,
-      //     totalTripDuration: currentTravelRequest.totalTripDuration,
-      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
-      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
-      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
-      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
-      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
-      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
-      //     totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
-      //     totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
-      //     totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
-      //     totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
-      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
-      //   })
-      // });
-      const data = {
+      SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.COMPANY_NOTIFICATION_TEMPLATE,
-        'h:X-Mailgun-Variables': JSON.stringify({
+        html: SSR.render("TravelRequestNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -142,17 +122,44 @@ let TravelRequestHelper = {
           totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
           totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
-        }),
-      }
-
-      mailgunInstance.messages().send(data, (error, body) => {
-        if (error) {
-          console.error('error sending email', error);
-          return error
-        } else {
-          console.log('emails were sent successfully');
-        }
+        })
       });
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   template: process.env.COMPANY_NOTIFICATION_TEMPLATE,
+      //   'h:X-Mailgun-Variables': JSON.stringify({
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.status,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
+      //     totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
+      //     totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
+      //     totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
+      //   }),
+      // }
+
+      // mailgunInstance.messages().send(data, (error, body) => {
+      //   if (error) {
+      //     console.error('error sending email', error);
+      //     return error
+      //   } else {
+      //     console.log('emails were sent successfully');
+      //   }
+      // });
 
       return true
     } catch(e) {
@@ -173,53 +180,12 @@ let TravelRequestHelper = {
       }
 
       //Todo, itenerary, employee full name
-      // SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
-      // Email.send({
-      //   to: emailTo,
-      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
-      //   subject: emailSubject,
-      //   html: SSR.render("TravelRetirementNotification2", {
-      //     itenerary: itenerary,
-      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-      //     returnDate: TravelRequestHelper.formatDate(returnDate),
-      //     travelType: travelType,
-      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.retirementStatus,
-      //     description: currentTravelRequest.description,
-      //     totalTripDuration: currentTravelRequest.totalTripDuration,
-      //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
-      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
-      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
-      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
-      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
-      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
-      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
-      //     totalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostNGN,2),
-      //     totalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostUSD,2),
-      //     actualTotalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemNGN,2),
-      //     actualTotalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemUSD,2),
-      //     actualTotalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostNGN,2),
-      //     actualTotalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostUSD,2),
-      //     actualTotalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostNGN,2),
-      //     actualTotalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostUSD,2),
-      //     actualTotalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostNGN,2),
-      //     actualTotalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostUSD,2),
-      //     actualTotalMiscCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostNGN,2),
-      //     actualTotalMiscCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostUSD,2),
-      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
-      //     whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
-      //     whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
-      //   })
-      // });
-
-
-      //Todo, itenerary, employee full name
-      // SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
-      const data = {
+      SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        'h:X-Mailgun-Variables': JSON.stringify({ 
+        html: SSR.render("TravelRetirementNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -250,10 +216,51 @@ let TravelRequestHelper = {
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
           whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
           whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
-        }),
-      }
+        })
+      });
 
-      mailgunInstance.messages().send(data);
+
+      //Todo, itenerary, employee full name
+      // SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   'h:X-Mailgun-Variables': JSON.stringify({ 
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.retirementStatus,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostNGN,2),
+      //     totalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostUSD,2),
+      //     actualTotalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemNGN,2),
+      //     actualTotalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemUSD,2),
+      //     actualTotalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostNGN,2),
+      //     actualTotalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostUSD,2),
+      //     actualTotalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostNGN,2),
+      //     actualTotalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostUSD,2),
+      //     actualTotalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostNGN,2),
+      //     actualTotalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostUSD,2),
+      //     actualTotalMiscCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostNGN,2),
+      //     actualTotalMiscCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
+      //     whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
+      //     whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
+      //   }),
+      // }
+
+      // mailgunInstance.messages().send(data);
 
       return true
     } catch(e) {

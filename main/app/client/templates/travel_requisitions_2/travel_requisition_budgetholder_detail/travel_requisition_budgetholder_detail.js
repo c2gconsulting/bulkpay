@@ -10,7 +10,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Approved By Budget Holder";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.APPROVED_BY_BUDGETHOLDER;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -73,7 +73,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Rejected By Budget Holder";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.REJECTED_BY_BUDGETHOLDER;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -256,7 +256,8 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     budgetList() {
         return  Budgets.find();
@@ -274,6 +275,7 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -442,12 +444,15 @@ Template.TravelRequisition2BudgetHolderDetail.onRendered(function () {
 
     let currentTravelRequest = self.currentTravelRequest.get()
     if(currentTravelRequest) {
-        if(currentTravelRequest.status !== 'Draft' && currentTravelRequest.status !== 'Pending') {
+        const draft = Core.ALL_TRAVEL_STATUS.DRAFT;
+        const pending = Core.ALL_TRAVEL_STATUS.PENDING;
+
+        if(currentTravelRequest.status !== draft && currentTravelRequest.status !== pending) {
             if(self.isInEditMode.get()) {
                 Modal.hide();
                 swal('Error', "Sorry, you can't edit this travel request. ", 'error')
             }
-        } else if(currentTravelRequest.status === 'Pending') {
+        } else if(currentTravelRequest.status === pending) {
             self.isInViewMode.set(true)
         } else if(currentTravelRequest.status === 'Approve') {
             if(self.isInEditMode.get()) {

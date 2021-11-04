@@ -55,11 +55,9 @@ Template.TravelRequisition2MDIndex.helpers({
         return Template.instance().travelRequestsByMD.get()
     },
     'numberOfPages': function() {
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { managerId: Meteor.userId()},
-            { $or : [ { status : "Approved By MD" }, { status : "Pending" }, { status : "Rejected By MD"}] }
-        ]}).count()
+        let limit = Template.instance().NUMBER_PER_PAGE.get();
+        const { managerCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(managerCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,12 +111,8 @@ Template.TravelRequisition2MDIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
-            $and : [
-                { managerId: Meteor.userId()},
-                { $or : [ { status : "Approved By Budget Holder" }, { status : "Approved By MD" }, { status : "Rejected By MD"}] }
-            ]
-        }, options);
+        const { managerCondition } = Core.getTravelQueries()
+        return TravelRequisition2s.find(managerCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

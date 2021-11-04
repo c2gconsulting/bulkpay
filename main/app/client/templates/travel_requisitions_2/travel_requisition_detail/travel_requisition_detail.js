@@ -81,9 +81,44 @@ Template.TravelRequisition2Detail.helpers({
         else
         return ""
     },
-    // 'getEmployeeNameById': function(employeeId){
-    //     return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
-    // },
+    travelApprovals: function () {
+        let isAirTransportationMode = false;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        
+        const { trips, destinationType } = currentTravelRequest;
+        const isInternationalTrip = destinationType === 'International';
+        for (let i = 0; i < trips.length; i++) {
+            const { transportationMode } = trips[i];
+            if (transportationMode == 'AIR') isAirTransportationMode = true
+        }
+
+        const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
+
+        const { supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsId, bstId } = currentTravelRequest;
+        const { HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+
+        const LOGISTICS_LABEL = { approvalId: logisticsId, label: LOGISTICS };
+        const BST_LABEL = { approvalId: bstId, label: BST };
+
+        const NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? LOGISTICS_LABEL : BST_LABEL;
+        const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
+
+        const dApprovals = [
+            { approvalId: supervisorId, label: HOD },
+            { approvalId: budgetHolderId, label: BUDGETHOLDER },
+            { approvalId: managerId, label: MD },
+            { approvalId: gcooId, label: GCOO },
+            { approvalId: gceoId, label: GCEO },
+            NEXT_APPROVAL_LABEL,
+            SECOND_NEXT_APPROVAL_LABEL,
+            // { approvalId: bstId, label: BST },
+            // { approvalId: logisticsId, label: LOGISTICS },
+        ]
+        return dApprovals;
+    },
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    },
 
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -132,7 +167,8 @@ Template.TravelRequisition2Detail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -140,6 +176,7 @@ Template.TravelRequisition2Detail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})

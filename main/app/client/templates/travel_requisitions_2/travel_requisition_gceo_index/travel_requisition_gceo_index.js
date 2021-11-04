@@ -56,10 +56,8 @@ Template.TravelRequisition2GCEOIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { gceoId: Meteor.userId()},
-            { $or : [ { status : "Approved By HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
-        ]}).count()
+        const { gceoCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(gceoCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,13 +111,9 @@ Template.TravelRequisition2GCEOIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
-            $and : [
-                { gceoId: Meteor.userId()},
-                { $or : [ { status : "Approved By GCEO" }, { status : "Approved By GCOO" }, { status : "Rejected By GCEO"}] }
-            ]
-        }, options);
-            }
+        const { gceoCondition } = Core.getTravelQueries()
+        return TravelRequisition2s.find(gceoCondition, options);
+    }
 
     self.subscribe('getCostElement', businessUnitId)
 

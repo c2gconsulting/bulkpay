@@ -55,11 +55,9 @@ Template.TravelRequisition2SupervisorIndex.helpers({
         return Template.instance().travelRequestsBySupervisor.get()
     },
     'numberOfPages': function() {
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { supervisorId: Meteor.userId()},
-            { $or : [ { status : "Approved By HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
-        ]}).count()
+        let limit = Template.instance().NUMBER_PER_PAGE.get();
+        const { hodOrSupervisorCondition } = Core.getTravelQueries();
+        let totalNum = TravelRequisition2s.find(hodOrSupervisorCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,13 +111,9 @@ Template.TravelRequisition2SupervisorIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
-            $and : [
-                { supervisorId: Meteor.userId()},
-                { $or : [ { status : "Approved By HOD" }, { status : "Pending" }, { status : "Rejected By HOD"}] }
-            ]
-        }, options);
-            }
+        const { hodOrSupervisorCondition } = Core.getTravelQueries();
+        return TravelRequisition2s.find(hodOrSupervisorCondition, options);
+    }
 
     self.subscribe('getCostElement', businessUnitId)
 

@@ -837,6 +837,7 @@ _.extend(Core, {
             "group": group,
             "isUsingDefaultPassword" : true,
             "positionDesc": eachLine.position_description || "",
+            "positionLongText": eachLine.position_long_text || "",
             "positionId": String(eachLine.position_code) || "",
             "lineManagerId": String(eachLine.line_manager_position_code) || "",
             "hodPositionId": String(eachLine.hod_position_code) || "",

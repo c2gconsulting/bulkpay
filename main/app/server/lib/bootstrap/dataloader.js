@@ -28,7 +28,7 @@ const EmployeesPositions = (eachLine, otype, updatedObject) => {
   }
 }
 
-const RestructureWBS = (wbs, projectId) => ({
+const RestructureWBS = (wbs, projectId, businessId) => ({
   ...wbs,
   code: wbs.wbs_number,
   unitOrProjectId: projectId || wbs.unitOrProjectId,
@@ -40,9 +40,9 @@ const RestructureWBS = (wbs, projectId) => ({
   businessId: "FYTbXLB9whRc4Lkh4", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
 })
 
-const RestructureProject = (eachLine) => ({
+const RestructureProject = (eachLine, businessId) => ({
   ...eachLine,
-  businessId: "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+  businessId: businessId || "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
   name: eachLine.description,
   // activities: (eachLine.wbs && eachLine.wbs.lines.map(wbs => RestructureWBS(wbs))) || []
 })
@@ -288,10 +288,11 @@ DataLoader = class DataLoader {
           // const user = Core.RestructureEmployee(eachLine, currentHashedPassword);
           Partitioner.directOperation(function() {
             const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+            const businessId = user.businessIds && user.businessIds[0];
             const userGroup = Partitioner.getUserGroup(user._id)
             Partitioner.bindGroup(userGroup, function() {
               try {
-                const project = RestructureProject(eachLine);
+                const project = RestructureProject(eachLine, businessId);
                 const projectCondition = [{name: project.name}, { project_number: project.project_number }];
                 const projectFound = Projects.findOne({ name: project.name, project_number: project.project_number })
                 if (projectFound) {
@@ -306,7 +307,7 @@ DataLoader = class DataLoader {
                   if (!lines || !lines.length) return
 
                   lines.forEach((wbsline, index) => {
-                    const wbs = RestructureWBS(wbsline, projectFound._id)
+                    const wbs = RestructureWBS(wbsline, projectFound._id, businessId)
                     const { externalCode } = wbs
                     const currWBS = Activities.findOne({ unitOrProjectId: projectFound._id, externalCode })
                     if (currWBS) Activities.update({ unitOrProjectId: projectFound._id, externalCode }, { $set: wbs })
@@ -328,7 +329,7 @@ DataLoader = class DataLoader {
                   if (!lines || !lines.length) return
 
                   lines.forEach((wbsline, index) => {
-                    const wbs = RestructureWBS(wbsline, currentProject)
+                    const wbs = RestructureWBS(wbsline, currentProject, businessId)
                     if(wbsline) Activities.insert(wbs)
                     console.info(
                       `Success importing initialisation ${index + 1} items for ${project.name} WORK-BREAKDOWN-STRUCTURE/ACTIVITIES...` 
@@ -424,7 +425,7 @@ DataLoader = class DataLoader {
         const userFound = Meteor.users.findOne({ 'emails.address': user.emails[0].address });
 
         Partitioner.directOperation(function() {
-          console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
+          // console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
           if (userFound) {
             console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
             delete user.roles;
@@ -463,6 +464,7 @@ DataLoader = class DataLoader {
       if (Meteor.isServer) {
         Partitioner.directOperation(function() {
           const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+          const businessId = user.businessIds && user.businessIds[0];
           const userGroup = Partitioner.getUserGroup(user._id)
           Partitioner.bindGroup(userGroup, function() {
             try {
@@ -470,7 +472,7 @@ DataLoader = class DataLoader {
                 ...eachLine,
                 name: eachLine.cost_center_general_name,
                 description: eachLine.cost_center_description,
-                businessId: "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+                businessId: businessId || "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
               };
               const costCenterCondition = [{name: costCenter.name}, { costCenter: costCenter.cost_center }];
               const costCenterFound = CostCenters.findOne({ name: costCenter.name, cost_center: costCenter.cost_center })

@@ -245,8 +245,9 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     tripCategory: {
         type: String,
-        defaultValue: 'INDIVIDUAL',
-        allowedValues: ['INDIVIDUAL', 'GROUP', 'THIRD_PARTY_CLIENT']
+        defaultValue: Core.ALL_TRIP_CATEGORIES.INDIVIDUAL,
+        // allowedValues: ['INDIVIDUAL', 'GROUP', 'THIRD_PARTY_CLIENT']
+        allowedValues: Core.tripCategories
     },
     businessId: {
         type: String
@@ -405,13 +406,15 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD", "Approved By Budget Holder","Rejected By Budget Holder", "Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
+        allowedValues: Core.travelStatus,
+        // allowedValues: ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD", "Approved By Budget Holder","Rejected By Budget Holder", "Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
         optional: true
     },
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
+        allowedValues: Core.travelRetirementStatus,
+        // allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
         optional: true
     },
     isStatusSeenByCreator: {

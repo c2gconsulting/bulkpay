@@ -162,7 +162,8 @@ Template.TravelRequisition2Index.helpers({
     // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        const { myTripCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(myTripCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -236,8 +237,9 @@ Template.TravelRequisition2Index.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        const individualTrip = { tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] } };
-        return TravelRequisition2s.find({createdBy: Meteor.userId(), ...individualTrip }, options);
+        const { myTripCondition } = Core.getTravelQueries()
+        // const individualTrip = { tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] } };
+        return TravelRequisition2s.find(myTripCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

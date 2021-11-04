@@ -280,7 +280,8 @@ Template.navigator.helpers({
     },
     isUserADirectSupervisor: function() {
         // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
-        if (Template.instance().isHod.get()){
+            console.log('Template.instance().hod.get()', Template.instance().hod.get())
+        if (Template.instance().hod.get()){
             return true;
         } else {
             return false;
@@ -561,7 +562,7 @@ Template.navigator.onCreated(function () {
     self.businessUnitCustomConfig = new ReactiveVar();
     self.travelApprovalConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
-    self.isHod = new ReactiveVar();
+    self.hod = new ReactiveVar();
     self.directManager = new ReactiveVar();
     self.gceo = new ReactiveVar();
     self.gcoo = new ReactiveVar();
@@ -584,8 +585,7 @@ Template.navigator.onCreated(function () {
 
 
         Meteor.call('account/hod', Meteor.userId(), (err, res) => {
-            // console.log('res._id !== Meteor.userId()', res && res._id !== Meteor.userId())
-            if (res && res._id !== Meteor.userId()) self.isHod.set(res)
+            if (res) self.hod.set(res)
         })
 
         Meteor.call('account/manager', Meteor.userId(), (err, res) => {

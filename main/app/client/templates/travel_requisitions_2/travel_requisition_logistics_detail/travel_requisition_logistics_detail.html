@@ -111,7 +111,7 @@
                           <div class="row">
                             <div class="col-sm-6">
                               <div class="form-group">
-                                <label for="clientName_{{@index}}" class="control-label">FullName <span class="asterisk important-input">*</span></label>
+                                <label for="clientName_{{@index}}" class="control-label">Full Name <span class="asterisk important-input">*</span></label>
                                 <input type="text" id="clientName_{{@index}}" class="form-control" placeholder="Fullname" name="clientName_{{@index}}" value="{{this.fullName}}" disabled />
                               </div>
                             </div>
@@ -284,6 +284,8 @@
                         </div>
                         {{/if}}
 
+                        
+                        {{#if this.hotelId}}
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -304,8 +306,9 @@
                                 </div>
                             </div>
                         </div>
+                        {{/if}}
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-sm-4">
                                 <label>My per diem should exclude:</label>
                             </div>
@@ -333,7 +336,7 @@
                                     <label for="isIncidentalsIncluded_{{this.tripIndex}}">Incidentals</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <hr/>

@@ -155,6 +155,7 @@ Template.TravelRequestReport.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getBudgetName': function(budgetCodeId) {
         const budget = Budgets.findOne({_id: budgetCodeId})

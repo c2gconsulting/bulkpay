@@ -170,7 +170,7 @@ Template.TravelRequisition2Create.events({
             if ((travelType === "Return") && (currentTravelRequest.trips.length > 0)) {
                 currentTravelRequest.trips = [Core.tripDetails(1, minDate)];
             } else if (($(e.currentTarget).val() === "Multiple") && (currentTravelRequest.trips.length > 0)){
-                currentTravelRequest.trips = [Core.tripDetails(1, minDate), Core.tripDetails(2, minDate), Core.tripDetails(3, minDate)]
+                currentTravelRequest.trips = [Core.tripDetails(1, minDate), Core.tripDetails(2, minDate)]
             } else if (($(e.currentTarget).val() === "Single") && (currentTravelRequest.trips.length > 0)){
                 currentTravelRequest.trips = [Core.tripDetails(1, minDate)]
             }
@@ -194,6 +194,15 @@ Template.TravelRequisition2Create.events({
   tmpl.currentTravelRequest.set(currentTravelRequest);
 
 },
+'change [id=ineedHotel]': function(e, tmpl) {
+  e.preventDefault()
+
+  let ineedHotel = tmpl.ineedHotel.curValue;
+
+  ineedHotel = !ineedHotel;
+  tmpl.ineedHotel.set(ineedHotel);
+
+},
 'click [id=description]': function(e, tmpl) {
     e.preventDefault()
 
@@ -201,7 +210,7 @@ Template.TravelRequisition2Create.events({
 
     currentTravelRequest.description = $("#description").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
-
+    tmpl.updateTripNumbers();
 },
 'change [id=budget-code]': function(e, tmpl) {
     e.preventDefault()
@@ -656,14 +665,8 @@ Template.TravelRequisition2Create.events({
 
     if (fieldsAreValid){
       //explicitely set status
-      currentTravelRequest.status = "Pending";
-    //   const isAIR = currentTravelRequest.trips.find(trip => trip.transportationMode === "AIR");
-    //   let currentUser = Template.instance().currentUser.get();
-      const { status, currentPosition } = Core.hasApprovalLevel(currentTravelRequest, true);
-      currentTravelRequest.status = status;
-      // Meteor.call('TravelRequest2/create', currentTravelRequest, (err, res) => {
-    //   Meteor.call('TravelRequest2/creation/update/approval', currentTravelRequest, currentPosition, (err, res) => {
-      Meteor.call('TRIPREQUEST/create', currentTravelRequest, currentPosition, (err, res) => {
+      currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.PENDING;
+      Meteor.call('TRIPREQUEST/create', currentTravelRequest, (err, res) => {
         if (res){
           swal({
             title: "Travel requisition created",
@@ -849,6 +852,7 @@ Template.TravelRequisition2Create.helpers({
     carOptions: () => Core.Travel.carOptions,
     currentDepartment: () => Template.instance().currentDepartment.get(),
     staffCategoryErrorMessage: () => Template.instance().staffCategoryErrorMessage.get(),
+    ineedHotel: () => Template.instance().ineedHotel.get(),
     currentProject: () =>Template.instance().currentProject.get(),
     currentActivity: () => Template.instance().currentActivity.get(),
     departmentList: () => Template.instance().departments.get(),
@@ -1101,6 +1105,12 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
         }
     },
+    ineedHotelChecked(){
+        const ineedHotel = Template.instance().ineedHotel.get();
+        if(ineedHotel && index){
+            return ineedHotel? checked="checked" : '';
+        }
+    },
     isLunchIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
@@ -1146,6 +1156,7 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     self.errorMessage = new ReactiveVar();
     self.staffCategoryErrorMessage = new ReactiveVar();
+    self.ineedHotel = new ReactiveVar(false);
     self.errorMessage.set(null);
     self.hasEmergencyDateUpdate = new ReactiveVar();
     self.hasEmergencyDateUpdate.set(true);

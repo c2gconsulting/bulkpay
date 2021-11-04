@@ -111,11 +111,11 @@ if (!_.contains(levels, isDebug)) {
     isDebug = "INFO";
 }
 
-// Core.Log = bunyan.createLogger({
-//     name: "core-client"
-// });
+Core.Log = bunyan.createLogger({
+    name: "core-client"
+});
 
-// Core.Log.level(isDebug);
+Core.Log.level(isDebug);
 
 // const winston = require("winston");
 // const logger = winston.createLogger({

@@ -33,8 +33,9 @@ import _ from 'underscore';
  *
  * see: http://docs.meteor.com/#/full/accounts_oncreateuser
  */
-
 Accounts.onCreateUser(function (options, user) {
+    console.log('onCreateUser - options, user', options, user)
+    options = options || {}
     let tenantId = options.tenantId;
     let roles = {};
 
@@ -57,10 +58,28 @@ Accounts.onCreateUser(function (options, user) {
     user.businessIds = options.businessIds || [];
     user.group = tenantId;
 
-    // assign user to his tenant Partition
-    Partitioner.setUserGroup(user._id, tenantId);
+    const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
+    user = authUser;
+    tenantId = authTenantId;
+
+    if (!userExist) {
+        // assign user to his tenant Partition
+        Partitioner.setUserGroup(user._id, tenantId);
+    }
 
     return user;
+});
+
+// Validate username, sending a specific error message on failure.
+Accounts.validateNewUser((user) => {
+    console.log('user validateNewUser', user)
+  if (Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
+    return true;
+  } else if (user.username && user.username.length >= 3) {
+    return true;
+  } else {
+    throw new Meteor.Error(403, 'Username must have at least 3 characters');
+  }
 });
 
 let getPasswordResetToken = function(user, userId, email) {
@@ -89,6 +108,7 @@ let getPasswordResetToken = function(user, userId, email) {
  * @returns
  */
 Accounts.onLogin(function (options) {
+    console.log('Accounts options login', options)
     /*
      let update = {
      $pullAll: {}
@@ -103,52 +123,77 @@ Accounts.onLogin(function (options) {
     });*/
 });
 
-
 /**
  * Core Account Methods
  */
 Meteor.methods({
     "account/hod": function (userId) {
         const user = Meteor.user();
-        userId = userId || Meteor.userId();
         const positionId = user ? user.positionId : "";
-        if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'hodPositionId': positionId }] });
-        return null
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(hodOrSupervisorCond)
+        // userId = userId || Meteor.userId();
+        // if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'hodPositionId': positionId }] });
+        // return null
     },
     "account/manager": function (userId) {
         const user = Meteor.user();
-        userId = userId || Meteor.userId();
         const positionId = user ? user.positionId : "";
-        if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'lineManagerId': positionId }] });
-        return null
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { managerCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(managerCond)
+        // userId = userId || Meteor.userId();
+        // const positionId = user ? user.positionId : "";
+        // if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'lineManagerId': positionId }] });
+        // return null
     },
     // BEGIN: Check IF Is a manager/hod to itself or to anyone on the system
     "account/isHod": function (userId) {
         const user = Meteor.user();
-        let positionId = user ? user.positionId : "";
-        let hodPositionId = user ? user.hodPositionId : "";
-        if (positionId === hodPositionId) return Meteor.user();
-        return null
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(hodOrSupervisorCond)
+        // const user = Meteor.user();
+        // userId = userId || Meteor.userId();
+        // let positionId = user ? user.positionId : "";
+        // let hodPositionId = user ? user.hodPositionId : "";
+        // if (positionId === hodPositionId) return Meteor.user();
+        // else if (getLineManager(userId, positionId)) return getLineManager(userId, positionId)
+        // return null
     },
     "account/isManager": function (userId) {
         const user = Meteor.user();
-        let positionId = user ? user.positionId : "";
-        let lineManagerId = user ? user.lineManagerId : "";
-        if (positionId && positionId === lineManagerId) return Meteor.user();
-        return null
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { managerCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(managerCond)
+        // let positionId = user ? user.positionId : "";
+        // let lineManagerId = user ? user.lineManagerId : "";
+        // if (positionId && positionId === lineManagerId) return Meteor.user();
+        // return null
     },
     // END: Check IF Is a manager/hod to itself or to anyone on the system
     "account/gcoo": function (userId) {
         const user = Meteor.user();
-        let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
-        if (positionDesc.includes('group chief operating off')) return user
-        return null
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { GcooCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(GcooCond)
+        // let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
+        // if (positionDesc.includes('group chief operating off')) return user
+        // return null
     },
     "account/gceo": function (userId) {
         const user = Meteor.user();
-        let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
-        if (positionDesc.includes('group chief executive off')) return user
-        return null
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const { GceoCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(GceoCond)
+        // let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
+        // if (positionDesc.includes('group chief executive off')) return user
+        // return null
     },
     /*
      * check if current user has password

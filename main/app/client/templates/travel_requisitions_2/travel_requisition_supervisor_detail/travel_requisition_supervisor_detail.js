@@ -287,7 +287,8 @@ Template.TravelRequisition2SupervisorDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     budgetList() {
         return  Budgets.find();
@@ -305,6 +306,7 @@ Template.TravelRequisition2SupervisorDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})

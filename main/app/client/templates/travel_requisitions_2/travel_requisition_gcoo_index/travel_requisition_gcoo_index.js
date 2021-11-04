@@ -56,10 +56,8 @@ Template.TravelRequisition2GCOOIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { gcooId: Meteor.userId()},
-            { $or : [ { status : "Approved By GCOO" }, { status : "Approved By MD" }, { status : "Rejected By GCOO"}] }
-        ]}).count()
+        const { gcooCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(gcooCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,13 +111,9 @@ Template.TravelRequisition2GCOOIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
-            $and : [
-                { gcooId: Meteor.userId()},
-                { $or : [ { status : "Approved By GCOO" }, { status : "Approved By MD" }, { status : "Rejected By GCOO"}] }
-            ]
-        }, options);
-            }
+        const { gcooCondition } = Core.getTravelQueries()
+        return TravelRequisition2s.find(gcooCondition, options);
+    }
 
     self.subscribe('getCostElement', businessUnitId)
 

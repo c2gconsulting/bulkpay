@@ -1,12 +1,12 @@
 import _ from 'underscore';
 
-import mailgun from 'mailgun-js';
+// import mailgun from 'mailgun-js';
 
-const mailgunInstance = mailgun({
-  apiKey: process.env.MAILGUN_API_KEY,
-  domain: process.env.MAILGUN_DOMAIN,
-  host: process.env.MAILGUN_HOST,
-});
+// const mailgunInstance = mailgun({
+//   apiKey: process.env.MAILGUN_API_KEY,
+//   domain: process.env.MAILGUN_DOMAIN,
+//   host: process.env.MAILGUN_HOST,
+// });
 
 let TravelRequestHelper = {
   checkWhoToRefund: function(currentTravelRequest, currency){
@@ -65,6 +65,7 @@ let TravelRequestHelper = {
     if(travelcity) {
       return travelcity.name;
     }
+    return travelcityId
   },
   getTravelcityEmail: function(travelcityId) {
     const travelcity = Travelcities.findOne({_id: travelcityId})
@@ -86,41 +87,13 @@ let TravelRequestHelper = {
         }
       }
 
-      // //Todo, itenerary, employee full name
-      // SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
-      // Email.send({
-      //   to: emailTo,
-      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
-      //   subject: emailSubject,
-      //   html: SSR.render("TravelRequestNotification2", {
-      //     itenerary: itenerary,
-      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-      //     returnDate: TravelRequestHelper.formatDate(returnDate),
-      //     travelType: travelType,
-      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.status,
-      //     description: currentTravelRequest.description,
-      //     totalTripDuration: currentTravelRequest.totalTripDuration,
-      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
-      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
-      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
-      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
-      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
-      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
-      //     totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
-      //     totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
-      //     totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
-      //     totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
-      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
-      //   })
-      // });
-
-      const data = {
+      //Todo, itenerary, employee full name
+      SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.TRAVEL_REQUEST_NOTIFICATION2,
-        'h:X-Mailgun-Variables': JSON.stringify({
+        html: SSR.render("TravelRequestNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -140,17 +113,45 @@ let TravelRequestHelper = {
           totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
           totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
-        }),
-      }
-
-      mailgunInstance.messages().send(data, (error, body) => {
-        if (error) {
-          console.error('error sending email', error);
-          return error
-        } else {
-          console.log('emails were sent successfully');
-        }
+        })
       });
+
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   template: process.env.TRAVEL_REQUEST_NOTIFICATION2,
+      //   'h:X-Mailgun-Variables': JSON.stringify({
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.status,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
+      //     totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
+      //     totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
+      //     totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
+      //   }),
+      // }
+
+      // mailgunInstance.messages().send(data, (error, body) => {
+      //   if (error) {
+      //     console.error('error sending email', error);
+      //     return error
+      //   } else {
+      //     console.log('emails were sent successfully');
+      //   }
+      // });
 
       return true
     } catch(e) {
@@ -170,50 +171,12 @@ let TravelRequestHelper = {
       }
 
       // //Todo, itenerary, employee full name
-      // SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
-      // Email.send({
-      //   to: emailTo,
-      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
-      //   subject: emailSubject,
-      //   html: SSR.render("TravelRetirementNotification2", {
-      //     itenerary: itenerary,
-      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
-      //     returnDate: TravelRequestHelper.formatDate(returnDate),
-      //     travelType: travelType,
-      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.retirementStatus,
-      //     description: currentTravelRequest.description,
-      //     totalTripDuration: currentTravelRequest.totalTripDuration,
-      //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
-      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
-      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
-      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
-      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
-      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
-      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
-      //     totalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostNGN,2),
-      //     totalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostUSD,2),
-      //     actualTotalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemNGN,2),
-      //     actualTotalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemUSD,2),
-      //     actualTotalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostNGN,2),
-      //     actualTotalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostUSD,2),
-      //     actualTotalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostNGN,2),
-      //     actualTotalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostUSD,2),
-      //     actualTotalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostNGN,2),
-      //     actualTotalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostUSD,2),
-      //     actualTotalMiscCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostNGN,2),
-      //     actualTotalMiscCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostUSD,2),
-      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
-      //     whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
-      //     whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
-      //   })
-      // });
-      const data = {
+      SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.TRAVEL_RETIREMENT_NOTIFICATION2,
-        'h:X-Mailgun-Variables': JSON.stringify({ 
+        html: SSR.render("TravelRetirementNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -244,17 +207,55 @@ let TravelRequestHelper = {
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
           whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
           whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
-        }),
-      }
-
-      mailgunInstance.messages().send(data, (error, body) => {
-        if (error) {
-          console.error('error sending email', error);
-          return error
-        } else {
-          console.log('emails were sent successfully');
-        }
+        })
       });
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   template: process.env.TRAVEL_RETIREMENT_NOTIFICATION2,
+      //   'h:X-Mailgun-Variables': JSON.stringify({ 
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.retirementStatus,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostNGN,2),
+      //     totalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostUSD,2),
+      //     actualTotalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemNGN,2),
+      //     actualTotalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemUSD,2),
+      //     actualTotalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostNGN,2),
+      //     actualTotalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostUSD,2),
+      //     actualTotalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostNGN,2),
+      //     actualTotalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostUSD,2),
+      //     actualTotalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostNGN,2),
+      //     actualTotalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostUSD,2),
+      //     actualTotalMiscCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostNGN,2),
+      //     actualTotalMiscCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
+      //     whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
+      //     whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
+      //   }),
+      // }
+
+      // mailgunInstance.messages().send(data, (error, body) => {
+      //   if (error) {
+      //     console.error('error sending email', error);
+      //     return error
+      //   } else {
+      //     console.log('emails were sent successfully');
+      //   }
+      // });
 
       return true
     } catch(e) {
@@ -513,7 +514,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if (currentTravelRequest._id){
@@ -538,11 +539,11 @@ Meteor.methods({
     let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
     if (budgetCode) {
       currentTravelRequest.budgetHolderId = currentTravelRequest.budgetHolderId || budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+      // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
     }
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if(currentTravelRequest._id){
@@ -567,7 +568,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -617,18 +618,18 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
     currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
-    currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD, true)
-    currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO, true)
-    currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO, true)
-    currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST, true)
-    currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS, true)
-    currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE, true)
-    currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY, true)
+    currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD)
+    currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
+    currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
+    currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
+    currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
+    currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
+    currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
 
     let isTopLevelUser = Core.hasApprovalLevel();
     const topLevelQuery = { $and: [{ _id: { $ne: userId } }, { $or: [{ hodPositionId: positionId }, { lineManagerId: positionId }] }] }
@@ -647,7 +648,7 @@ Meteor.methods({
       // Verify user creating a trip
       // Core.canCreateTravel()
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if(currentTravelRequest._id){
@@ -672,7 +673,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -712,7 +713,7 @@ Meteor.methods({
     }
 
     //if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-    //    let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+    //    let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
     //    throw new Meteor.Error(401, errMsg);
     //}
     if (currentTravelRequest._id){
@@ -731,7 +732,9 @@ Meteor.methods({
 
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
-      otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+      if (budgetCode) {
+        otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+      }
 
       const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
       const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
@@ -757,7 +760,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -789,9 +792,8 @@ Meteor.methods({
        * ELSE should skip couple of approvals (GCOO and GCEO respectively) then go to logistics
        */
       const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
-        if (skipApprovalTillApprovedByBudgetHolder) return "";
-        const dPosition = position || 'HOD';
-        const isPartOfApprovalFlow = Core.getApprovalConfig(dPosition, currentTravelRequest)
+        // if (skipApprovalTillApprovedByBudgetHolder) return "";
+        const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
         if (position && !isPartOfApprovalFlow) return ""
         const fetchedUser = Meteor.users.findOne(conditions);
         if (fetchedUser) return fetchedUser._id;
@@ -802,24 +804,24 @@ Meteor.methods({
       const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
       const {
         hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-      } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+      } = Core.getApprovalQueries(currentUser);
 
       const { directSupervisorId, managerId, _id, positionId } = currentUser
       const userId = _id || Meteor.userId()
       currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
-      currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD, true)
-      currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO, true)
-      currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO, true)
-      currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST, true)
-      currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS, true)
-      currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE, true)
-      currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY, true)
+      currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD)
+      currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
+      currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
+      currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
+      currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
+      currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
+      currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
 
-      let isTopLevelUser = Core.hasApprovalLevel();
-      const topLevelQuery = { $and: [{ _id: { $ne: userId } }, { $or: [{ hodPositionId: positionId }, { lineManagerId: positionId }] }] }
-      if (!isTopLevelUser) isTopLevelUser = !!fetchUser(topLevelQuery);
+      // let isTopLevelUser = Core.hasApprovalLevel();
+      // const topLevelQuery = { $and: [{ _id: { $ne: userId } }, { $or: [{ hodPositionId: positionId }, { lineManagerId: positionId }] }] }
+      // if (!isTopLevelUser) isTopLevelUser = !!fetchUser(topLevelQuery);
 
-      console.log('isTopLevelUser', isTopLevelUser)
+      // console.log('isTopLevelUser', isTopLevelUser)
 
       let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
       console.log('budgetCode', budgetCode);
@@ -884,15 +886,15 @@ Meteor.methods({
         //Send to requestor
         TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
 
-        if (!isTopLevelUser) {
+        // if (!isTopLevelUser) {
           //Send to Supervisor
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
-        }
+        TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+        // }
 
-        if (isTopLevelUser) {
-          //Send to Budget holder
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
-        }
+        // if (isTopLevelUser) {
+        //   //Send to Budget holder
+        //   TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
+        // }
       }
 
       return true;
@@ -908,7 +910,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -930,7 +934,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -949,7 +953,7 @@ Meteor.methods({
     if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -977,7 +981,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1015,7 +1019,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -1043,7 +1047,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1075,10 +1079,9 @@ Meteor.methods({
      * IF trip mode is Air, should go through normal stages of approval
      * ELSE should skip couple of approvals (GCOO and GCEO respectively) then go to logistics
      */
-      const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
+    const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
       if (skipApprovalTillApprovedByBudgetHolder) return "";
-      const dPosition = position || 'HOD';
-      const isPartOfApprovalFlow = Core.getApprovalConfig(dPosition, currentTravelRequest)
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
       if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
@@ -1089,7 +1092,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -1117,7 +1120,7 @@ Meteor.methods({
     }
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if(currentTravelRequest._id){
@@ -1154,7 +1157,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1204,7 +1207,9 @@ Meteor.methods({
       if (trip.transportationMode === 'AIR') isTripByAir = true
     }
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -1226,7 +1231,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -1366,7 +1371,7 @@ Meteor.methods({
 
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -1415,8 +1420,9 @@ Meteor.methods({
       }
 
       const { tripFor, trips } = currentTravelRequest;
+      console.log('tripFor', tripFor)
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1447,21 +1453,21 @@ Meteor.methods({
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
         }
 
-        // Send to booking agent if it's approved by budgetHolder
-        if (bookingAgentSubject && bookingAgentEmail) {
-          console.log('bookingAgentEmail', bookingAgentEmail)
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
-        }
+        // // Send to booking agent if it's approved by budgetHolder
+        // if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
+        //   console.log('bookingAgentEmail', bookingAgentEmail)
+        //   TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+        // }
 
-        // Send to security dept if requested and approved by budgetHolder
-        if (trips.length > 0 && securityDeptSubject) {
-          for (let t = 0; t < trips.length; t++) {
-            const { provideSecurity } = trips[t];
-            if (provideSecurity) {
-              TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
-            }
-          }
-        }
+        // // Send to security dept if requested and approved by budgetHolder
+        // if (trips.length > 0 && securityDeptSubject) {
+        //   for (let t = 0; t < trips.length; t++) {
+        //     const { provideSecurity } = trips[t];
+        //     if (provideSecurity) {
+        //       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+        //     }
+        //   }
+        // }
 
       }
     } else {
@@ -1489,7 +1495,9 @@ Meteor.methods({
        if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
-     const fetchUserId = (conditions) => {
+     const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
        const fetchedUser = Meteor.users.findOne(conditions);
        if (fetchedUser) return fetchedUser._id;
        return ''
@@ -1511,7 +1519,7 @@ Meteor.methods({
      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
      const {
        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+     } = Core.getApprovalQueries(currentUser);
  
      const { directSupervisorId, managerId, _id, positionId } = currentUser
      const userId = _id || Meteor.userId()
@@ -1586,7 +1594,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -1625,7 +1633,7 @@ Meteor.methods({
 
       const { tripFor, trips } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1656,20 +1664,20 @@ Meteor.methods({
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
         }
 
-        // Send to booking agent if it's approved by manager
-        if (bookingAgentSubject && bookingAgentEmail) {
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
-        }
+        // // Send to booking agent if it's approved by manager
+        // if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
+        //   TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+        // }
 
-        // Send to security dept if requested and approved by manager
-        if (trips.length > 0 && securityDeptSubject) {
-          for (let t = 0; t < trips.length; t++) {
-            const { provideSecurity } = trips[t];
-            if (provideSecurity) {
-              TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
-            }
-          }
-        }
+        // // Send to security dept if requested and approved by manager
+        // if (trips.length > 0 && securityDeptSubject) {
+        //   for (let t = 0; t < trips.length; t++) {
+        //     const { provideSecurity } = trips[t];
+        //     if (provideSecurity) {
+        //       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+        //     }
+        //   }
+        // }
       }
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
@@ -1696,7 +1704,9 @@ Meteor.methods({
        if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
-     const fetchUserId = (conditions) => {
+     const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
        const fetchedUser = Meteor.users.findOne(conditions);
        if (fetchedUser) return fetchedUser._id;
        return ''
@@ -1718,7 +1728,7 @@ Meteor.methods({
      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
      const {
        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+     } = Core.getApprovalQueries(currentUser);
 
      const { directSupervisorId, managerId, _id, positionId } = currentUser
      const userId = _id || Meteor.userId()
@@ -1803,7 +1813,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -1842,7 +1852,7 @@ Meteor.methods({
 
       const { tripFor, trips } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -1873,20 +1883,20 @@ Meteor.methods({
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
         }
 
-        // Send to booking agent if it's approved by manager
-        if (bookingAgentSubject && bookingAgentEmail) {
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
-        }
+        // // Send to booking agent if it's approved by manager
+        // if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
+        //   TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+        // }
 
-        // Send to security dept if requested and approved by manager
-        if (trips.length > 0 && securityDeptSubject) {
-          for (let t = 0; t < trips.length; t++) {
-            const { provideSecurity } = trips[t];
-            if (provideSecurity) {
-              TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
-            }
-          }
-        }
+        // // Send to security dept if requested and approved by manager
+        // if (trips.length > 0 && securityDeptSubject) {
+        //   for (let t = 0; t < trips.length; t++) {
+        //     const { provideSecurity } = trips[t];
+        //     if (provideSecurity) {
+        //       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+        //     }
+        //   }
+        // }
       }
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
@@ -1913,7 +1923,9 @@ Meteor.methods({
        if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
-     const fetchUserId = (conditions) => {
+     const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
        const fetchedUser = Meteor.users.findOne(conditions);
        if (fetchedUser) return fetchedUser._id;
        return ''
@@ -1935,7 +1947,7 @@ Meteor.methods({
      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
      const {
        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+     } = Core.getApprovalQueries(currentUser);
 
      const { directSupervisorId, managerId, _id, positionId } = currentUser
      const userId = _id || Meteor.userId()
@@ -2020,7 +2032,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -2059,7 +2071,7 @@ Meteor.methods({
 
       const { tripFor, trips } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -2091,19 +2103,19 @@ Meteor.methods({
         }
 
         // Send to booking agent if it's approved by manager
-        if (bookingAgentSubject && bookingAgentEmail) {
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
-        }
+        // if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
+        //   TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+        // }
 
-        // Send to security dept if requested and approved by manager
-        if (trips.length > 0 && securityDeptSubject) {
-          for (let t = 0; t < trips.length; t++) {
-            const { provideSecurity } = trips[t];
-            if (provideSecurity) {
-              TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
-            }
-          }
-        }
+        // // Send to security dept if requested and approved by manager
+        // if (trips.length > 0 && securityDeptSubject) {
+        //   for (let t = 0; t < trips.length; t++) {
+        //     const { provideSecurity } = trips[t];
+        //     if (provideSecurity) {
+        //       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+        //     }
+        //   }
+        // }
       }
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
@@ -2130,7 +2142,9 @@ Meteor.methods({
        if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
-     const fetchUserId = (conditions) => {
+     const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
        const fetchedUser = Meteor.users.findOne(conditions);
        if (fetchedUser) return fetchedUser._id;
        return ''
@@ -2152,7 +2166,7 @@ Meteor.methods({
      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
      const {
        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+     } = Core.getApprovalQueries(currentUser);
 
      const { directSupervisorId, managerId, _id, positionId } = currentUser
      const userId = _id || Meteor.userId()
@@ -2230,7 +2244,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -2269,7 +2283,7 @@ Meteor.methods({
 
       const { tripFor, trips } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -2301,7 +2315,7 @@ Meteor.methods({
         }
 
         // Send to booking agent if it's approved by manager
-        if (bookingAgentSubject && bookingAgentEmail) {
+        if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
         }
 
@@ -2340,7 +2354,9 @@ Meteor.methods({
        if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
-     const fetchUserId = (conditions) => {
+     const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
        const fetchedUser = Meteor.users.findOne(conditions);
        if (fetchedUser) return fetchedUser._id;
        return ''
@@ -2362,7 +2378,7 @@ Meteor.methods({
      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
      const {
        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-     } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+     } = Core.getApprovalQueries(currentUser);
 
      const { directSupervisorId, managerId, _id, positionId } = currentUser
      const userId = _id || Meteor.userId()
@@ -2440,7 +2456,7 @@ Meteor.methods({
     }
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
 
@@ -2479,7 +2495,7 @@ Meteor.methods({
 
       const { tripFor, trips } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -2511,7 +2527,7 @@ Meteor.methods({
         }
 
         // Send to booking agent if it's approved by manager
-        if (bookingAgentSubject && bookingAgentEmail) {
+        if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
         }
 
@@ -2538,7 +2554,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -2548,7 +2566,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -2567,7 +2585,7 @@ Meteor.methods({
     if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if (!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if (currentTravelRequest._id){
@@ -2607,7 +2625,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const individuals = tripFor;
+        const { individuals } = tripFor;
         //  Send Notification to other individual going on this trip
         createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }
@@ -2646,7 +2664,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -2656,7 +2676,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -2676,7 +2696,7 @@ Meteor.methods({
 
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if (currentTravelRequest._id){
@@ -2694,7 +2714,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -2704,7 +2726,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -2724,7 +2746,7 @@ Meteor.methods({
 
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if (currentTravelRequest._id){
@@ -2742,7 +2764,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -2752,7 +2776,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -2772,7 +2796,7 @@ Meteor.methods({
 
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if (currentTravelRequest._id){
@@ -2790,7 +2814,9 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions) => {
+    const fetchUserId = (conditions, position) => {
+      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+      if (position && !isPartOfApprovalFlow) return ""
       const fetchedUser = Meteor.users.findOne(conditions);
       if (fetchedUser) return fetchedUser._id;
       return ''
@@ -2800,7 +2826,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser, currentTravelRequest);
+    } = Core.getApprovalQueries(currentUser);
 
     const { directSupervisorId, managerId, _id, positionId } = currentUser
     const userId = _id || Meteor.userId()
@@ -2819,7 +2845,7 @@ Meteor.methods({
     if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
 
     if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-      let errMsg = "Sorry, you have not allowed to create a travel requisition because you are a super admin"
+      let errMsg = "Sorry, you are not allowed to create a travel requisition because you are a super admin"
       throw new Meteor.Error(401, errMsg);
     }
     if(currentTravelRequest._id){
@@ -2860,7 +2886,7 @@ Meteor.methods({
 
       const { tripFor } = currentTravelRequest;
       if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-          const individuals = tripFor;
+          const { individuals } = tripFor;
           //  Send Notification to other individual going on this trip
           createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
       }

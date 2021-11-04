@@ -56,10 +56,12 @@ Template.TravelRequisition2LogisticsIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { logisticsId: Meteor.userId()},
-            { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
-        ]}).count()
+        const { logisticsCondition } = Core.getTravelQueries()
+        // {$and : [
+        //     { logisticsId: Meteor.userId()},
+        //     { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
+        // ]}
+        let totalNum = TravelRequisition2s.find(logisticsCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -113,12 +115,14 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        return TravelRequisition2s.find({
-            $and : [
-                { logisticsId: Meteor.userId()},
-                { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
-            ]
-        }, options);
+        const { logisticsCondition } = Core.getTravelQueries()
+        // {
+        //     $and : [
+        //         { logisticsId: Meteor.userId()},
+        //         { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
+        //     ]
+        // }
+        return TravelRequisition2s.find(logisticsCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
