@@ -194,6 +194,15 @@ Template.TravelRequisition2Create.events({
   tmpl.currentTravelRequest.set(currentTravelRequest);
 
 },
+'change [id=additionalComment]': function(e, tmpl) {
+  e.preventDefault()
+
+  let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+
+  currentTravelRequest.additionalComment = $("#additionalComment").val();
+  tmpl.currentTravelRequest.set(currentTravelRequest);
+
+},
 'change [id=ineedHotel]': function(e, tmpl) {
   e.preventDefault()
 
@@ -551,6 +560,8 @@ Template.TravelRequisition2Create.events({
 
  'click #new-requisition-create': function(e, tmpl) {
     e.preventDefault()
+    const position = Core.getUserHighestPosition(tmpl.isHOD, tmpl.isDirectManager);
+    console.log('position', position);
     Template.instance().errorMessage.set(null);
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
@@ -666,6 +677,7 @@ Template.TravelRequisition2Create.events({
     if (fieldsAreValid){
       //explicitely set status
       currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.PENDING;
+      currentTravelRequest[`createdBy${position}`] = true;
       Meteor.call('TRIPREQUEST/create', currentTravelRequest, (err, res) => {
         if (res){
           swal({

@@ -217,6 +217,12 @@ Template.TravelRequisition2GCOODetail.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
+        }
+    },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
     },

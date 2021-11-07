@@ -7,6 +7,9 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
+                                {{#if currentTravelRequest.isEmergencyTrip}}
+                                    <p style="font-weight: 900;">Importance: <span style="color: #428bca;font-weight: 900;">Urgent!</span></p>
+                                {{/if}}
                             </div>
                             <div class="col-sm-6">
                                 <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
@@ -91,7 +94,17 @@
 
 
                         <div class="row">
-                            <div class="col-sm-10">
+                            <!-- Local Or international trip selection -->
+                            <div class="col-sm-10 col-lg-6">
+                                <div class="form-group">
+                                    <label for="destinationType" class="control-label">Local/Foreign trip<span class="asterisk important-input">*</span></label>
+                                    <ul class="list-inline">
+                                        <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}} disabled />&nbsp;&nbsp;Local Trip</li>
+                                        <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}} disabled />&nbsp;&nbsp;International Trip</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-lg-6">
                                 <div class="form-group">
                                     <ul class="list-inline">
                                         <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}} disabled/>&nbsp;&nbsp;One way</li>
@@ -243,6 +256,16 @@
                         </div>
                         {{/if}}
 
+                        {{#if currentTravelRequest.additionalComment}}
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="additionalComment" class="control-label">Additional comments related to this trip: </label>
+                                <input type="text" id="additionalComment" class="form-control" placeholder="" name="additionalComment" value="{{currentTravelRequest.additionalComment}}" disabled />
+                            </div>
+                        </div>
+                        {{/if}}
+
                         <!-- <div class="row">
                             <div class="col-sm-4">
                                 <label>My per diem should exclude:</label>
@@ -306,7 +329,7 @@
                         <hr/>
                         {{/each}}
 
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <div class="ckbox ckbox-danger">
@@ -316,7 +339,7 @@
                                 </div>
                             </div>
                         </div>
-                        <hr/>
+                        <hr/> -->
                         <div class="row">
                             <div class="col-sm-12">
                                 <span><strong>Trip Summary</strong></span>

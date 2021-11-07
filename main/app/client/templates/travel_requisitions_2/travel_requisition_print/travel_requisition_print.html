@@ -89,7 +89,17 @@
 
 
             <div class="row">
-                <div class="col-sm-10">
+                <!-- Local Or international trip selection -->
+                <div class="col-sm-10 col-lg-6">
+                    <div class="form-group">
+                        <label for="destinationType" class="control-label">Local/Foreign trip<span class="asterisk important-input">*</span></label>
+                        <ul class="list-inline">
+                            <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}} disabled />&nbsp;&nbsp;Local Trip</li>
+                            <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}} disabled />&nbsp;&nbsp;International Trip</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-lg-6">
                     <div class="form-group">
                         <ul class="list-inline">
                             <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}} disabled/>&nbsp;&nbsp;One way</li>

@@ -175,6 +175,12 @@ Template.TravelRequisition2MDDetail.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
+        }
+    },
     ACTIVITY: () => 'activityId',
     COSTCENTER: () => 'costCenter',
     PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
@@ -221,6 +227,12 @@ Template.TravelRequisition2MDDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
             return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+    },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
         }
     },
     isReturnTrip(){

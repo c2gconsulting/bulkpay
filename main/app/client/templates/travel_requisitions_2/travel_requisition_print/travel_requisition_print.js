@@ -75,6 +75,12 @@ Template.TravelRequisition2Print.helpers({
       return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
     }
   },
+  destinationTypeChecked(val){
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if(currentTravelRequest && val){
+          return currentTravelRequest.destinationType === val ? checked="checked" : '';
+      }
+  },
   'getEmployeeFullName': function(employeeId) {
     let employee = Meteor.users.findOne({_id: employeeId});
     if(employee)
