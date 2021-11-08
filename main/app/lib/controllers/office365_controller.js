@@ -39,7 +39,7 @@ Office365Controller = RouteController.extend({
           //login using office365 single signOn
           this.layout('AuthLayout');
           Meteor.loginWithOffice365({
-              redirect_uri: 'https://eroton.spbc.systems:3000',  //if not already set
+              redirect_uri: 'https://travel.hub825.com',  //if not already set
               requestPermissions: ['offline_access', 'user.read']//if not already set
           },function(err, res){
               if(err){
