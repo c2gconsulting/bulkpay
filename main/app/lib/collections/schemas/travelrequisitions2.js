@@ -513,19 +513,30 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    additionalComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     tripReport: {
         type: String,
         defaultValue: '',
         optional: true
     },
-    isGcooTrip: {
+    createdByHOD: {
         type: Boolean,
-        defaultValue: false,
         optional: true
     },
-    isGceoTrip: {
+    createdByMD: {
         type: Boolean,
-        defaultValue: false,
+        optional: true
+    },
+    createdByGCOO: {
+        type: Boolean,
+        optional: true
+    },
+    createdByGCEO: {
+        type: Boolean,
         optional: true
     },
     supervisorRetirementComment: {
@@ -540,12 +551,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     isProcessedByBST: {
         type: Boolean,
-        defaultValue: false,
         optional: true
     },
     isProcessedByLogistics: {
         type: Boolean,
-        defaultValue: false,
         optional: true
     },
     'approvals': {

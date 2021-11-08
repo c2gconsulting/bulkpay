@@ -116,7 +116,7 @@ Template.TravelRequisition2BSTRetirementIndex.onCreated(function () {
         return TravelRequisition2s.find({
             $and : [
                 { supervisorId: Meteor.userId()},
-                { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved by BST" }, { retirementStatus : "Retirement Rejected By BST"}] }
+                { $or : [ { retirementStatus : "Retirement Approved By HOD" }, { retirementStatus : "Retirement Approved Budget Holder" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Approved by BST" }, { retirementStatus : "Retirement Rejected By BST"}] }
             ]
         }, options);
     }
