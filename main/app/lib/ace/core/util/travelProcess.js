@@ -385,7 +385,12 @@ Core.hasApprovalLevel = (tripInfo = {}, approvalInfo) => {
 
 Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
   let isAirTransportationMode = false;
-  const { trips, destinationType } = tripInfo;
+  const { trips, destinationType, createdByHOD, createdByMD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
+
+  const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
+  const isAboveOrMD = createdByMD || createdByGCOO || createdByGCEO
+  const isAboveOrGCOO = createdByGCOO || createdByGCEO
+  const isAboveOrGCEO = createdByGCEO
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
@@ -393,23 +398,23 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
-  if (isUserPartOfApproval === HOD) {
+  if (!isAboveOrHOD && isUserPartOfApproval === HOD) {
     return Meteor.user();
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === MD) {
+  if (!isAboveOrMD && isAirTransportationMode && isUserPartOfApproval === MD) {
     if (isAirTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === GCOO) {
+  if (!isAboveOrGCOO && isAirTransportationMode && isUserPartOfApproval === GCOO) {
     if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
+    // if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === GCEO) {
+  if (!isAboveOrGCEO && isAirTransportationMode && isUserPartOfApproval === GCEO) {
     if (isInternationalTrip) return Meteor.user();
     return null
   }
@@ -434,9 +439,15 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
 }
 
 
-Core.getNextApproval = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
+Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
   let isAirTransportationMode = false;
-  const { trips, destinationType } = tripInfo;
+  const { trips, destinationType, createdByHOD, createdByMD, createdByMD, createdByGCEO } = tripInfo;
+
+  
+  const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
+  const isAboveOrMD = createdByMD || createdByGCOO || createdByGCEO
+  const isAboveOrGCOO = createdByGCOO || createdByGCEO
+  const isAboveOrGCEO = createdByGCEO
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
@@ -444,39 +455,39 @@ Core.getNextApproval = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
-  if (isUserPartOfApproval === HOD) {
+  if (nextApproval === HOD) {
     return MD
   }
 
-  if (isUserPartOfApproval === MD) {
+  if (nextApproval === MD) {
     if (isAirTransportationMode) return GCOO
     else return LOGISTICS
   }
 
-  if (isUserPartOfApproval === GCOO) {
+  if (nextApproval === GCOO) {
     if (isAirTransportationMode && isInternationalTrip) return GCEO;
     if (isAirTransportationMode && !isInternationalTrip) return BST;
     return BST
   }
 
-  if (isUserPartOfApproval === GCEO) {
+  if (nextApproval === GCEO) {
     if (isInternationalTrip) return BST;
     return BST
   }
 
-  if (isUserPartOfApproval === LOGISTICS) {
+  if (nextApproval === LOGISTICS) {
     return BST
   }
 
-  if (isUserPartOfApproval === BST) {
+  if (nextApproval === BST) {
     return LOGISTICS
   }
 
-  if (isUserPartOfApproval === SECURITY) {
+  if (nextApproval === SECURITY) {
     return BST
   }
 
-  if (isUserPartOfApproval === FINANCE) {
+  if (nextApproval === FINANCE) {
     return ""
   }
 
