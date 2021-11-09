@@ -2301,6 +2301,13 @@ Meteor.methods({
       //Send to BST
       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bstEmail, bstSubject);
 
+      try {
+        Core.journalPosting(currentTravelRequest);
+      } catch (error) {
+        console.log('journalPosting ERROR')
+        console.log(error)
+      }
+
       if (currentTravelRequest.status === "Processed By BST") {
         if (nextUserEmail) {
           // Send to NEXT USER APPROVAL

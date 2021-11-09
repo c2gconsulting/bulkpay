@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-Core.apiClient = (urlPath = "employees", responseHandler, finalHandler) => {
-    const TYPE = urlPath.toUpperCase()
-    /** BEGIN::: DATA IMPORT */
-    console.info(`Startup ::: ${TYPE} CRON JOB IN ACTION`)
+Core.apiClient = (urlPath = "employees", responseHandler, finalHandler, errorHandler) => {
     const hasData = typeof urlPath !== 'string' ? true : false;
     const data = hasData ? urlPath.body : { employee_number: '' };
     const url = hasData ? urlPath.url : urlPath;
+
+    const TYPE = url.toUpperCase()
+    /** BEGIN::: DATA IMPORT */
+    console.info(`Startup ::: ${TYPE} CRON JOB IN ACTION`)
 
     axios
     .post(`http://20.73.168.4:50000/RESTAdapter/${url}`,
@@ -29,9 +30,11 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler) => {
     })
     .catch(function (error) {
         // handle error
-        const ERRORTYPE = urlPath.toUpperCase()
+        const ERRORTYPE = url.toUpperCase()
         console.log(`ERROR WHILE IMPORTING ${ERRORTYPE} data`)
         console.error(error)
+        const err = (error.object_key || error.Errors) ? error : error.message
+        if (errorHandler) errorHandler(err);
     })
     .then(function () {
         console.log(`DONE!!! IMPORTING ${TYPE} data`)

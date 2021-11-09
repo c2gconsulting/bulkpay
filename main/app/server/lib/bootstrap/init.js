@@ -337,7 +337,7 @@ Meteor.startup(function () {
 
     // Import Employees, Cost centers, and projects
     // if (process.env.IMPORT_EMPLOYEE_OILSERV_DATA) {
-    Core.apiClient("employees", Loader.loadEmployeeData, () => {})
+    // Core.apiClient("employees", Loader.loadEmployeeData, () => {})
     // }
 
     const MAIL_URL = process.env.MAIL_URL.split('@smtp');
