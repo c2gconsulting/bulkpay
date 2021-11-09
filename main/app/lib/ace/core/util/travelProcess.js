@@ -414,7 +414,7 @@ Core.hasApprovalLevel = (tripInfo = {}, approvalInfo) => {
 
 Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
   let isAirTransportationMode = false;
-  const { trips, destinationType, createdByHOD, createdByMD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
+  const { trips, destinationType, createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
 
   const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
   const isAboveOrMD = createdByMD || createdByGCOO || createdByGCEO
@@ -427,23 +427,23 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
-  if (!isAboveOrHOD && isUserPartOfApproval === HOD) {
+  if (isUserPartOfApproval === HOD) {
     return Meteor.user();
   }
 
-  if (!isAboveOrMD && isAirTransportationMode && isUserPartOfApproval === MD) {
+  if (isAirTransportationMode && isUserPartOfApproval === MD) {
     if (isAirTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirTransportationMode && isUserPartOfApproval === GCOO) {
+  if (isAirTransportationMode && isUserPartOfApproval === GCOO) {
     if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
     // if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAboveOrGCEO && isAirTransportationMode && isUserPartOfApproval === GCEO) {
+  if (isAirTransportationMode && isUserPartOfApproval === GCEO) {
     if (isInternationalTrip) return Meteor.user();
     return null
   }
@@ -470,7 +470,7 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
 
 Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
   let isAirTransportationMode = false;
-  const { trips, destinationType, createdByHOD, createdByMD, createdByMD, createdByGCEO } = tripInfo;
+  const { trips, destinationType, createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
 
   
   const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
