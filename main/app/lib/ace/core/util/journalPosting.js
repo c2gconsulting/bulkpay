@@ -27,13 +27,17 @@ Core.journalPosting = (travelRequest) => {
   const activity = Activities.findOne(activityId)
   const department = CostCenters.findOne(departmentOrProjectId)
 
-  const body = JSON.stringify({
+  const projectID = project ? project.project_number : "";
+  const wbsID = activity ? activity.code : "";
+  const departmentID = department ? department.cost_center : "";
+
+  const body = {
     "personnel_number": employeeId,
     "trip_id": tripId,
     "trip_description": description,
-    "project_id": project ? project.project_number : "",
-    "wbs_id": activity ? activity.code : "",
-    "department_id": department ? department.cost_center : "",
+    "project_id": projectID,
+    "wbs_id": wbsID,
+    "department_id": departmentID,
     "cost_items": [
       {
         "name": "TOTAL TRIP DURATION",
@@ -99,14 +103,61 @@ Core.journalPosting = (travelRequest) => {
         "reference": "",
       }
     ],
-  })
+  }
 
-  return Core.apiClient({ url: 'postings', body  }, journalPostingSuccess, null, (error) => journalPostingFailed(body, error))
+  const config = { url: 'postings', body: JSON.stringify(body) }
+  const successFN = (resp) => journalPostingSuccess(body, resp);
+  const errorFN = (error) => journalPostingFailed(body, error);
+
+  return Core.apiClient(config, successFN, null, errorFN)
 }
 
-const journalPostingSuccess = (response) => {
+const journalPostingSuccess = (body, response) => {
   console.log('JOURNAL POSTED')
   console.info(response)
+
+  const data = {
+    to: 'adesanmiakoladedotun@gmail.com',
+    from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+    subject: 'JOURNAL POSITING FAILED FOR TRAVEL REQUISITION',
+    html: `
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+        }
+
+        pre {
+          background: black;
+          color: white;
+          padding: 20px;
+          margin-bottom: 30px;
+        }
+
+        h1 {
+          padding: 15px;
+        }
+
+        h2 {
+          padding: 20px
+        }
+      </style>
+      <h1>JOURNAL POSITING FAILED</h1>
+
+      <h2>JOURNAL POSTING ERROR OBJECT:</h2>
+      <pre>
+        ${JSON.stringify(response, undefined, 2)}
+      </pre>
+
+      <h2>JOURNAL POSTING PAYLOAD:</h2>
+      <pre>
+        ${JSON.stringify(body, undefined, 2)}
+      </pre>
+    `,
+  }
+  if (response && response.Errors && response.Errors.lines) {
+    Core.sendMail(data)
+  }
 }
 
 const journalPostingFailed = (body, error) => {
