@@ -152,7 +152,7 @@ Core.defaultDepartmentAndProject = (self, travelRequestDetails) => {
 
   if (travelRequestDetails.costCenter !== 'Project') {
     const department = CostCenters.findOne(travelRequestDetails.departmentOrProjectId);
-    const departmentDatum = department ? `${department.cost_center_general_name} - ${department.functional_area}` : "I am not sure";
+    const departmentDatum = department ? `${department.cost_center_general_name} - ${department.cost_center}` : "I am not sure";
     self.currentDepartment.set(departmentDatum);
   }
 
