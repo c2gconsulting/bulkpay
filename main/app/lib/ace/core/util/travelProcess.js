@@ -348,6 +348,35 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   }
 }
 
+Core.canApprove = (position, tripInfo) => {
+  const { status, isProcessedByLogistics, isProcessedByBST } = tripInfo;
+  switch (position) {
+    case BUDGETHOLDER:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
+
+    case HOD:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${REJECTED_BY_HOD}`.includes(status);
+
+    case MD:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${REJECTED_BY_MD}`.includes(status);
+
+    case GCOO:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${REJECTED_BY_GCOO}`.includes(status);
+
+    case GCEO:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
+
+    case BST:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
+
+    case LOGISTICS:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status) || !isProcessedByLogistics;
+    default:
+      break;
+  }
+}
+
+
 Core.hasApprovalLevel = (tripInfo = {}, approvalInfo) => {
   const { positionId, positionDesc } = Meteor.user();
 
