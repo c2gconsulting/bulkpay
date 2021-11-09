@@ -83,7 +83,7 @@
                       <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown" disabled>
                         <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
                         {{#each departmentList}}
-                        <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{functional_area}}</option>
+                        <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{cost_center}}</option>
                         {{/each}}
                       </select>
                       {{/semanticselect2}}
