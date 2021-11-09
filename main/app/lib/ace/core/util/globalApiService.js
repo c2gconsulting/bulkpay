@@ -4,9 +4,13 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler) => {
     const TYPE = urlPath.toUpperCase()
     /** BEGIN::: DATA IMPORT */
     console.info(`Startup ::: ${TYPE} CRON JOB IN ACTION`)
+    const hasData = typeof urlPath !== 'string' ? true : false;
+    const data = hasData ? urlPath.body : { employee_number: '' };
+    const url = hasData ? urlPath.url : urlPath;
+
     axios
-    .post(`http://20.73.168.4:50000/RESTAdapter/${urlPath}`,
-        { employee_number: '' },
+    .post(`http://20.73.168.4:50000/RESTAdapter/${url}`,
+        data,
         {
             headers: {
                 Authorization: 'Basic QlVMS1BBWV9ERVY6UGFzc3cwcmQlJQ==',

@@ -32,6 +32,29 @@ Core.queryClient = (apiUrl, userId, reactiveVariable) => {
   })
 }
 
+Core.getUserHighestPosition = (isHOD, isMD) => {
+  let position = 'justUser';
+  const user = Meteor.user();
+  const positionId = user ? user.positionId : "";
+  const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+  const { GceoCond, GcooCond } = Core.getApprovalQueries(data, true);
+
+  if (Meteor.isServer) {
+    isMD = Core.getUserApproval({ lineManagerId: positionId })
+    isHOD = Core.getUserApproval(hodOrSupervisorCond)
+  }
+
+  const isGcoo = Core.getUserApproval(GcooCond)
+  const isGceo = Core.getUserApproval(GceoCond)
+
+  console.log('managerCond', isMD)
+
+  if (isHOD) position = 'HOD';
+  if (isMD) position = 'MD';
+  if (isGcoo) position = 'GCOO';
+  if (isGceo) position = 'GCEO';
+  return position
+}
 
 Core.updateTravelActivities = (departmentOrProjectId, reactiveVar) => {
   // const { departmentOrProjectId } = currentTravelRequest;

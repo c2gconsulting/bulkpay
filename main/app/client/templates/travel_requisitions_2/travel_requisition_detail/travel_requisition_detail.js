@@ -165,7 +165,8 @@ Template.TravelRequisition2Detail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {

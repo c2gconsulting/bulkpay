@@ -302,6 +302,35 @@ Template.TravelRequisition2Create.events({
     tmpl.updateTripNumbers();
 
 },
+'click [id*=remove-additional_stop]': function (e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+    const { trips } = currentTravelRequest;
+
+    const newTrips = [];
+    let deletedIndex = 0, fromId;// least index is 1
+    for (let i = 0; i < trips.length; i++) {
+        let currentIndex = i + 1
+        const currentTrip = trips[i];
+        const tripToRemove = index === i;
+        const isFirstLastLeg = (index == 0 || index == trips.length - 1);
+        fromId = (tripToRemove && !isFirstLastLeg) ? trips[i - 1].toId : trips[i].fromId;
+
+        const tripIndex = deletedIndex || currentIndex;
+
+        if (index !== i) {
+            newTrips.push({ ...currentTrip, tripIndex, fromId })
+            if (deletedIndex) deletedIndex = 0
+        } else deletedIndex = currentTrip.tripIndex;
+    }
+
+    currentTravelRequest.trips = newTrips;
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
 "change [id*='fromId']": function(e, tmpl){
     e.preventDefault()
 
@@ -985,7 +1014,7 @@ Template.TravelRequisition2Create.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            // return parseInt(index) >= currentTravelRequest.trips.length;
+            // // return parseInt(index) >= currentTravelRequest.trips.length;
             return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },

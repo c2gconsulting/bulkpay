@@ -9,6 +9,12 @@ body {
   color: #636e7b;
   background-color: #ffffff;
 }
+
+.panel-signin ::-webkit-scrollbar, .panel-signup ::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
 @media screen and (max-width: 1023px) {
   body {
     width: 100%;

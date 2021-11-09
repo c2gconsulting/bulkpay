@@ -270,7 +270,8 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
                 usdDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostUSD;
             }
             if (usdDifference > 0){
-                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                // return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                return "Company to refund " + formatNumber(usdDifference,2) + " USD";
             }else if (usdDifference < 0){
                 return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
             }else{
@@ -282,7 +283,8 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
                 ngnDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostNGN;
             }
             if (ngnDifference > 0){
-                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                // return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                return "Company to refund " + formatNumber(ngnDifference,2) + " NGN";
             }else if (ngnDifference < 0){
                 return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
             }else{
@@ -362,7 +364,8 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {

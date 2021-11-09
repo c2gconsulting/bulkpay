@@ -223,7 +223,7 @@
 
                         <hr>
                         <div class="row">
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                             <div class="form-group">
                               <label for="driverInfo_{{this.tripIndex}}" class="control-label">Driver's Information</label>
                               {{#if condition this.carOption 'eq' 'OFFICE' }}
@@ -242,25 +242,32 @@
                             </div>
                           </div>
 
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                               <div class="form-group">
                                   <label for="accountInfo_{{this.tripIndex}}" class="control-label">Account information</label>
                                   <input type="text" id="accountInfo_{{this.tripIndex}}" class="form-control" placeholder="Account Information" name="accountInfo_{{this.tripIndex}}" value="{{this.accountNumber}}"/>
                               </div>
                           </div>
 
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                               <div class="form-group">
                                   <label for="bankInfo_{{this.tripIndex}}" class="control-label">Bank Name</label>
                                   <input type="text" id="bankInfo_{{this.tripIndex}}" class="form-control" placeholder="Bank Information" name="bankInfo_{{this.tripIndex}}" value="{{this.bankName}}"/>
                               </div>
                           </div>
 
-                          <div class="col-sm-3">
+                          <div class="col-sm-6" style="clear: both;">
                               <div class="form-group">
                                   <label for="vehicleInfo_{{this.tripIndex}}" class="control-label">Vehicle Number/Driver's Phone No.</label>
                                   <input type="text" id="vehicleInfo_{{this.tripIndex}}" class="form-control" placeholder="Vehicle Number/Driver's Phone No." name="vehicleInfo_{{this.tripIndex}}" value="{{this.vehicleInformation}}"/>
                               </div>
+                          </div>
+
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="driverCost_{{this.tripIndex}}" class="control-label">Driver's Amount</label>
+                                <input type="text" id="driverCost_{{this.tripIndex}}" class="form-control" placeholder="Amount Paid to driver" name="driverCost_{{this.tripIndex}}" value="{{this.driverCost}}"/>
+                            </div>
                           </div>
 
                         </div>
@@ -513,7 +520,7 @@
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
-                        <button class="btn btn-success mr5 pull-right" id="processTrip" >Process trip</button>
+                        <button class="btn btn-success mr5 pull-right" id="processTrip" disabled="{{cannotApprove}}" >Process trip</button>
                         <!-- <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button> -->
 
                     </div><!-- panel-footer -->

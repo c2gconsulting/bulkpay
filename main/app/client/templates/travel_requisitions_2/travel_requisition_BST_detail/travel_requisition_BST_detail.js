@@ -35,6 +35,7 @@ Template.TravelRequisition2BSTDetail.events({
         }
         if (fieldsAreValid){
             const processed = true
+            currentTravelRequest.isProcessedByBST = true
             Meteor.call('TRIPREQUEST/bstProcess', currentTravelRequest, 'BST', '', processed, (err, res) => {
                 if (res){
                     swal({
@@ -131,6 +132,15 @@ Template.TravelRequisition2BSTDetail.events({
         currentTravelRequest.trips[index].vehicleInformation = $(e.currentTarget).val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
+    "change [id*='driverCost']": function(e, tmpl){
+        e.preventDefault()
+    
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+  
+        currentTravelRequest.trips[index].driverCost = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+    },
     "change [id*='bankInfo']": function(e, tmpl){
         e.preventDefault()
     
@@ -199,6 +209,11 @@ Template.TravelRequisition2BSTDetail.helpers({
     },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
+    },
+    cannotApprove() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { BST } = Core.Approvals;
+        return !Core.canApprove(BST, currentTravelRequest)
     },
     provideSecurity(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -290,7 +305,8 @@ Template.TravelRequisition2BSTDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {

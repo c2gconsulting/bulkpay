@@ -362,6 +362,14 @@
                               </select>
                           </div>
                       </div><!-- col-sm-12 -->
+                      {{else}}
+                        {{#if condition currentTravelRequest.trips.length "gt" 1 }}
+                          <div class="col-sm-4" style="margin-top: 25px;">
+                            <div class="form-group">
+                                <button class="btn btn-danger mr5 pull-right" id="remove-additional_stop_{{this.tripIndex}}">Remove stop</button>
+                            </div>
+                          </div>
+                        {{/if}}
                       {{/if}}
                   </div>
 

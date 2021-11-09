@@ -186,6 +186,11 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
+    canApprove() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { BUDGETHOLDER } = Core.Approvals;
+        return Core.canApprove(BUDGETHOLDER, currentTravelRequest)
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -254,7 +259,8 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {

@@ -211,6 +211,11 @@ Template.TravelRequisition2SupervisorDetail.helpers({
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
     },
+    canApprove() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { HOD } = Core.Approvals;
+        return Core.canApprove(HOD, currentTravelRequest)
+    },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
@@ -285,7 +290,8 @@ Template.TravelRequisition2SupervisorDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {

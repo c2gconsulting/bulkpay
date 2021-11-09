@@ -102,6 +102,10 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         optional: true
     },
+    driverCost: {
+        type: Number,
+        optional: true
+    },
     vehicleInformation: {
         type: String,
         optional: true

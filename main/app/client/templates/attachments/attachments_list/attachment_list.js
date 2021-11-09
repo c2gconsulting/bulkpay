@@ -108,6 +108,13 @@ Template.AttachmentsList.helpers({
         return data.name || data.fileUrl || data.imageUrl
     },
 
+    canDeleteAttachments: function () {
+      return Template.instance().canDeleteAttachments.get()
+    },
+    canUpload: function () {
+      console.log('Template.instance().cannotUpload.get()', Template.instance().cannotUpload.get())
+      return Template.instance().cannotUpload.get() !== true
+    },
     getAttachmentUrl: function (data) {
         return data.fileUrl || data.imageUrl
     },
@@ -135,6 +142,7 @@ Template.AttachmentsList.onCreated(function() {
 
     instance.attachments = new ReactiveVar()
     instance.isUploading = new ReactiveVar()
+    instance.canDeleteAttachments = new ReactiveVar()
     instance.isUploading.set(false)
     Session.set('isUploading', false)
     instance.autorun(function () {
@@ -145,6 +153,10 @@ Template.AttachmentsList.onCreated(function() {
 
       if (attachmentSub.ready()) {
         const requisitionId = instance.data.requisitionId || Template.parentData().requisitionId
+        if (instance.data.canDelete || Template.parentData().canDelete) {
+          instance.canDeleteAttachments.set(instance.data.canDelete || Template.parentData().canDelete)
+          instance.cannotUpload.set(instance.data.cannotUpload || Template.parentData().cannotUpload)
+        }
         // console.log('requisitionId-requisitionId', requisitionId)
         // console.log('Template.parentData()', Template.parentData())
         let attachmentRecords = Attachments.find({ travelId: requisitionId });

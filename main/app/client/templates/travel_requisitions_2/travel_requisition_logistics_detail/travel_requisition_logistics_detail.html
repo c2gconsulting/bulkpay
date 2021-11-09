@@ -262,12 +262,19 @@
                               </div>
                           </div>
 
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="vehicleInfo_{{this.tripIndex}}" class="control-label">Driver Amount.</label>
-                                <input type="text" id="vehicleInfo_{{this.tripIndex}}" class="form-control" placeholder="Driver Amount." name="vehicleInfo_{{this.tripIndex}}" value="{{this.vehicleInformation}}"/>
+                            <div class="col-sm-6" style="clear: both;">
+                                <div class="form-group">
+                                    <label for="vehicleInfo_{{this.tripIndex}}" class="control-label">Vehicle Number/Driver's Phone No.</label>
+                                    <input type="text" id="vehicleInfo_{{this.tripIndex}}" class="form-control" placeholder="Vehicle Number/Driver's Phone No." name="vehicleInfo_{{this.tripIndex}}" value="{{this.vehicleInformation}}"/>
+                                </div>
                             </div>
-                        </div>
+  
+                            <div class="col-sm-6">
+                              <div class="form-group">
+                                  <label for="driverCost_{{this.tripIndex}}" class="control-label">Amount</label>
+                                  <input type="text" id="driverCost_{{this.tripIndex}}" class="form-control" placeholder="Amount Paid to driver" name="driverCost_{{this.tripIndex}}" value="{{this.driverCost}}"/>
+                              </div>
+                            </div>
 
                         </div>
                         {{#unless isLastLeg this.tripIndex}}
@@ -532,7 +539,9 @@
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
-                        <button class="btn btn-success mr5 pull-right" id="processTrip" >Process trip</button>
+                        <!-- {{#if canApprove}} -->
+                        <button class="btn btn-success mr5 pull-right" id="processTrip" disabled="{{cannotApprove}}" >Process trip</button>
+                        <!-- {{/if}} -->
                         <!-- <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button> -->
 
                     </div><!-- panel-footer -->
