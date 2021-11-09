@@ -352,7 +352,7 @@ Core.canApprove = (position, tripInfo) => {
   const { status, isProcessedByLogistics, isProcessedByBST } = tripInfo;
   switch (position) {
     case BUDGETHOLDER:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_HOD} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
 
     case HOD:
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${REJECTED_BY_HOD}`.includes(status);
