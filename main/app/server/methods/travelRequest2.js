@@ -28,7 +28,8 @@ let TravelRequestHelper = {
         usdDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostUSD;
       }
       if (usdDifference > 0){
-        return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+        // return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+        return "Company to refund " + formatNumber(usdDifference,2) + " USD";
       }else if (usdDifference < 0){
         return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
       }else{
@@ -40,7 +41,8 @@ let TravelRequestHelper = {
         ngnDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostNGN;
       }
       if (ngnDifference > 0){
-        return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+        // return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+        return "Company to refund " + formatNumber(ngnDifference,2) + " NGN";
       } else if (ngnDifference < 0){
         return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
       } else{

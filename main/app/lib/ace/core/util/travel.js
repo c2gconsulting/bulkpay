@@ -42,6 +42,9 @@ Core.getUserHighestPosition = (isHOD, isMD) => {
   if (Meteor.isServer) {
     isMD = Core.getUserApproval({ lineManagerId: positionId })
     isHOD = Core.getUserApproval(hodOrSupervisorCond)
+  } else {
+    isHOD = isHOD && isHOD.curValue;
+    isMD = isMD && isMD.curValue;
   }
 
   const isGcoo = Core.getUserApproval(GcooCond)

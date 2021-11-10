@@ -280,7 +280,6 @@ Template.navigator.helpers({
     },
     isUserADirectSupervisor: function() {
         // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
-            console.log('Template.instance().hod.get()', Template.instance().hod.get())
         if (Template.instance().hod.get()){
             return true;
         } else {
@@ -584,19 +583,19 @@ Template.navigator.onCreated(function () {
         }
 
 
-        Meteor.call('account/hod', Meteor.userId(), (err, res) => {
+        Meteor.call('account/hod', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
             if (res) self.hod.set(res)
         })
 
-        Meteor.call('account/manager', Meteor.userId(), (err, res) => {
+        Meteor.call('account/manager', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
             if (res) self.directManager.set(res)
         })
 
-        Meteor.call('account/gcoo', Meteor.userId(), (err, res) => {
+        Meteor.call('account/gcoo', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
             if (res) self.gcoo.set(res)
         })
 
-        Meteor.call('account/gceo', Meteor.userId(), (err, res) => {
+        Meteor.call('account/gceo', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
             if (res) self.gceo.set(res)
         })
 

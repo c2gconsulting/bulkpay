@@ -110,8 +110,8 @@ Template.TravelRequisition2Detail.helpers({
         const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
 
         const dApprovals = [
-            { approvalId: supervisorId, label: HOD },
             { approvalId: budgetHolderId, label: BUDGETHOLDER },
+            { approvalId: supervisorId, label: HOD },
             { approvalId: managerId, label: MD },
             { approvalId: gcooId, label: GCOO },
             { approvalId: gceoId, label: GCEO },

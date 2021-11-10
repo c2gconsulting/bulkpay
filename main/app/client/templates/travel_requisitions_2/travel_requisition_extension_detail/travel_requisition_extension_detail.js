@@ -657,7 +657,7 @@ Template.TravelRequisition2ExtensionDetail.events({
     if (fieldsAreValid){
       //explicitely set status
       currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.PENDING;
-      Meteor.call('TravelRequest2/createExtension', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/createExtension', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Travel requisition created",

@@ -580,7 +580,26 @@
                         </div>
                         {{#if isEdittableFields}}
                         <hr/>
-                        <div class="row">
+                        {{#each travelApprovals }}
+                            {{#if this.approvalId}}
+                            <div class="row">
+                                <div class="col-md-3"><b>Select {{label}} : </b></div>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        {{#semanticselect}}
+                                            <select name="{{id}}" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                                <option value="">{{setApprovalUser approvalId label}}</option>
+                                                {{#each employees}}
+                                                    <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                {{/each}}
+                                            </select>
+                                        {{/semanticselect}}
+                                    </div>
+                                </div>
+                            </div>
+                            {{/if}}
+                        {{/each}}
+                        <!-- <div class="row">
                             <div class="col-md-3"><b>Select Supervisor : </b></div>
                             <div class="col-md-9">
                                 <div class="form-group">
@@ -611,7 +630,7 @@
 
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="col-md-3"><b>Select Budget Code : </b></div>
                             <div class="col-md-9">

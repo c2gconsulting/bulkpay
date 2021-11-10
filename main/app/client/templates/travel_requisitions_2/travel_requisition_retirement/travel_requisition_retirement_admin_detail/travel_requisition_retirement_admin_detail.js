@@ -207,6 +207,42 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
     'getStatusColor': function() {
         return Template.instance().isEdittableFields.get() ? 'primary' : 'warning'
     },
+    travelApprovals: function () {
+        let isAirTransportationMode = false;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        
+        const { trips, destinationType } = currentTravelRequest;
+        const isInternationalTrip = destinationType === 'International';
+        for (let i = 0; i < trips.length; i++) {
+            const { transportationMode } = trips[i];
+            if (transportationMode == 'AIR') isAirTransportationMode = true
+        }
+
+        const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
+
+        const { supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsId, bstId, financeApproverId } = currentTravelRequest;
+        const { HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS, FINANCE } = Core.Approvals
+
+        const LOGISTICS_LABEL = { approvalId: logisticsId, label: LOGISTICS, id: 'logisticsId' };
+        const BST_LABEL = { approvalId: bstId, label: BST, id: 'bstId' };
+
+        const NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? LOGISTICS_LABEL : BST_LABEL;
+        const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
+
+        const dApprovals = [
+            { approvalId: budgetHolderId, label: BUDGETHOLDER, id: 'budgetHolderId' },
+            { approvalId: supervisorId, label: HOD, id: 'supervisorId' },
+            NEXT_APPROVAL_LABEL,
+            SECOND_NEXT_APPROVAL_LABEL,
+            { approvalId: financeApproverId, label: FINANCE, id: 'financeApproverId' },
+            // { approvalId: bstId, label: BST },
+            // { approvalId: logisticsId, label: LOGISTICS },
+        ]
+        return dApprovals;
+    },
+    setApprovalUser(val, label) {
+        return val ? (Meteor.users.findOne({_id: val})).profile.fullName : label || 'Select Employee to Approve'
+    },
     'getStatusText': function() {
         return Template.instance().isEdittableFields.get() ? 'Save' : 'Edit'
     },

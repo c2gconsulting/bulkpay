@@ -127,73 +127,69 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
-    "account/hod": function (userId) {
+    "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(hodOrSupervisorCond)
-        // userId = userId || Meteor.userId();
-        // if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'hodPositionId': positionId }] });
-        // return null
+        if (Core.getUserApproval(hodOrSupervisorCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ supervisorId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(hodOrSupervisorCond)
     },
-    "account/manager": function (userId) {
+    "account/manager": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { managerCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(managerCond)
-        // userId = userId || Meteor.userId();
-        // const positionId = user ? user.positionId : "";
-        // if (positionId) return Meteor.users.findOne({ $and: [{ _id: { $ne: userId } }, { 'lineManagerId': positionId }] });
-        // return null
+        if (Core.getUserApproval(managerCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ managerId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(managerCond);
     },
     // BEGIN: Check IF Is a manager/hod to itself or to anyone on the system
-    "account/isHod": function (userId) {
+    "account/isHod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(hodOrSupervisorCond)
-        // const user = Meteor.user();
-        // userId = userId || Meteor.userId();
-        // let positionId = user ? user.positionId : "";
-        // let hodPositionId = user ? user.hodPositionId : "";
-        // if (positionId === hodPositionId) return Meteor.user();
-        // else if (getLineManager(userId, positionId)) return getLineManager(userId, positionId)
-        // return null
+        return Core.getUserApproval(hodOrSupervisorCond);
     },
-    "account/isManager": function (userId) {
+    "account/isManager": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { managerCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(managerCond)
-        // let positionId = user ? user.positionId : "";
-        // let lineManagerId = user ? user.lineManagerId : "";
-        // if (positionId && positionId === lineManagerId) return Meteor.user();
-        // return null
+        return Core.getUserApproval(managerCond);
     },
     // END: Check IF Is a manager/hod to itself or to anyone on the system
-    "account/gcoo": function (userId) {
+    "account/gcoo": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { GcooCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(GcooCond)
-        // let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
-        // if (positionDesc.includes('group chief operating off')) return user
-        // return null
+        if (Core.getUserApproval(GcooCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ gcooId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(GcooCond)
     },
-    "account/gceo": function (userId) {
+    "account/gceo": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
         const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
         const { GceoCond } = Core.getApprovalQueries(data, true);
-        return Core.getUserApproval(GceoCond)
-        // let positionDesc = user ? (user.positionDesc || "").toLowerCase() : "";
-        // if (positionDesc.includes('group chief executive off')) return user
-        // return null
+        if (Core.getUserApproval(GceoCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ gceoId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(GceoCond);
     },
     /*
      * check if current user has password

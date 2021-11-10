@@ -159,35 +159,37 @@ Core.getTravelQueries = (retirementQuery) => {
   const user = Meteor.user();
   const userId = user ? user._id : Meteor.userId();
 
-  const hodQueries = [
+  const budgetHolderQueries = [
     { status: PENDING },
+    { status: APPROVED_BY_BUDGETHOLDER },
+    { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
     { status: REJECTED_BY_HOD },
-    // { status: APPROVED_BY_BUDGETHOLDER },
-    // { status: REJECTED_BY_BUDGETHOLDER },
-    // { status: APPROVED_BY_MD },
-    // { status: REJECTED_BY_MD },
-    // { status: APPROVED_BY_GCOO },
-    // { status: REJECTED_BY_GCOO },
-    // { status: APPROVED_BY_GCEO },
-    // { status: REJECTED_BY_GCEO },
-    // { status: PROCESSED_BY_BST },
-    // { status: PROCESSED_BY_LOGISTICS }
+    { status: APPROVED_BY_MD },
+    { status: REJECTED_BY_MD },
+    { status: APPROVED_BY_GCOO },
+    { status: REJECTED_BY_GCOO },
+    { status: APPROVED_BY_GCEO },
+    { status: REJECTED_BY_GCEO },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS }
   ]
 
 
-  const budgetHolderQueries = [
-    { status: APPROVED_BY_HOD },
+  const hodQueries = [
+    // { status: PENDING },
     { status: APPROVED_BY_BUDGETHOLDER },
-    { status: REJECTED_BY_BUDGETHOLDER },
-    // { status: APPROVED_BY_MD },
-    // { status: REJECTED_BY_MD },
-    // { status: APPROVED_BY_GCOO },
-    // { status: REJECTED_BY_GCOO },
-    // { status: APPROVED_BY_GCEO },
-    // { status: REJECTED_BY_GCEO },
-    // { status: PROCESSED_BY_BST },
-    // { status: PROCESSED_BY_LOGISTICS }
+    // { status: REJECTED_BY_BUDGETHOLDER },
+    { status: APPROVED_BY_HOD },
+    { status: REJECTED_BY_HOD },
+    { status: APPROVED_BY_MD },
+    { status: REJECTED_BY_MD },
+    { status: APPROVED_BY_GCOO },
+    { status: REJECTED_BY_GCOO },
+    { status: APPROVED_BY_GCEO },
+    { status: REJECTED_BY_GCEO },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS },
   ]
 
 
@@ -197,12 +199,13 @@ Core.getTravelQueries = (retirementQuery) => {
     // { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_MD },
     { status: REJECTED_BY_MD },
-    // { status: APPROVED_BY_GCOO },
-    // { status: REJECTED_BY_GCOO },
-    // { status: APPROVED_BY_GCEO },
-    // { status: REJECTED_BY_GCEO },
-    // { status: PROCESSED_BY_BST },
-    // { status: PROCESSED_BY_LOGISTICS },
+    { status: APPROVED_BY_GCOO },
+    { status: REJECTED_BY_GCOO },
+    { status: APPROVED_BY_GCEO },
+    { status: REJECTED_BY_GCEO },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS },
+    { $and: [{ createdByHOD: true }, { status: APPROVED_BY_BUDGETHOLDER }] }
   ]
 
   const gcooQueries = [
@@ -213,10 +216,11 @@ Core.getTravelQueries = (retirementQuery) => {
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
     { status: REJECTED_BY_GCOO },
-    // { status: APPROVED_BY_GCEO },
-    // { status: REJECTED_BY_GCEO },
-    // { status: PROCESSED_BY_BST },
-    // { status: PROCESSED_BY_LOGISTICS },
+    { status: APPROVED_BY_GCEO },
+    { status: REJECTED_BY_GCEO },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS },
+    { $and: [{ createdByMD: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     { $and: [{ $or: [{ destinationType: 'Local' }, { destinationType: 'International' }] }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]},
   ]
 
@@ -230,8 +234,9 @@ Core.getTravelQueries = (retirementQuery) => {
     // { status: REJECTED_BY_GCOO },
     { status: APPROVED_BY_GCEO },
     { status: REJECTED_BY_GCEO },
-    // { status: PROCESSED_BY_BST },
-    // { status: PROCESSED_BY_LOGISTICS },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS },
+    { $and: [{ createdByGCOO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     { $and: [{ destinationType: 'International' }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
   ]
 
@@ -247,7 +252,9 @@ Core.getTravelQueries = (retirementQuery) => {
     // { status: REJECTED_BY_GCEO },
     { status: PROCESSED_BY_BST },
     { status: PROCESSED_BY_LOGISTICS },
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
+    { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
+    // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'AIR' }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] }] }
   ]
 
   const logisticsQueries = [
@@ -262,7 +269,9 @@ Core.getTravelQueries = (retirementQuery) => {
     // { status: REJECTED_BY_GCEO },
     { status: PROCESSED_BY_BST },
     { status: PROCESSED_BY_LOGISTICS },
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
+    { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
+    // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
   ]
 
   const myTripCondition = {
@@ -352,7 +361,7 @@ Core.canApprove = (position, tripInfo) => {
   const { status, isProcessedByLogistics, isProcessedByBST } = tripInfo;
   switch (position) {
     case BUDGETHOLDER:
-      return `${PENDING} ${APPROVED_BY_HOD} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
 
     case HOD:
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${REJECTED_BY_HOD}`.includes(status);
@@ -370,7 +379,7 @@ Core.canApprove = (position, tripInfo) => {
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
 
     case LOGISTICS:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status) || !isProcessedByLogistics;
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
     default:
       break;
   }
@@ -411,15 +420,32 @@ Core.hasApprovalLevel = (tripInfo = {}, approvalInfo) => {
   return approvalInfo ? { currentPosition, status } : hasApprovalLevel;
 }
 
-
-Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
-  let isAirTransportationMode = false;
-  const { trips, destinationType, createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
+const getWhereToStartApproval = (tripInfo) => {
+  const { createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
 
   const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
   const isAboveOrMD = createdByMD || createdByGCOO || createdByGCEO
   const isAboveOrGCOO = createdByGCOO || createdByGCEO
   const isAboveOrGCEO = createdByGCEO
+
+  return { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO }
+}
+
+Core.getWhereToStartApproval = getWhereToStartApproval;
+
+Core.canProcessTrip = () => {
+  if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
+    let errMsg = "Sorry, you are not allowed to perform an action on travel requisition because you are not an internal staff memeber"
+    throw new Meteor.Error(401, errMsg);
+  }
+}
+
+Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
+  let isAirTransportationMode = false;
+  const { trips, destinationType, } = tripInfo;
+  const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
+
+  console.log('isAboveOrHOD', isAboveOrHOD)
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
@@ -427,23 +453,23 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
-  if (isUserPartOfApproval === HOD) {
+  if (!isAboveOrHOD && isUserPartOfApproval === HOD) {
     return Meteor.user();
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === MD) {
+  if (!isAboveOrMD && isAirTransportationMode && isUserPartOfApproval === MD) {
     if (isAirTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === GCOO) {
+  if (!isAboveOrGCOO && isAirTransportationMode && isUserPartOfApproval === GCOO) {
     if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
     // if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (isAirTransportationMode && isUserPartOfApproval === GCEO) {
+  if (!isAboveOrGCEO && isAirTransportationMode && isUserPartOfApproval === GCEO) {
     if (isInternationalTrip) return Meteor.user();
     return null
   }
@@ -470,13 +496,8 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
 
 Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
   let isAirTransportationMode = false;
-  const { trips, destinationType, createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
-
-  
-  const isAboveOrHOD = createdByHOD || createdByMD || createdByGCOO || createdByGCEO
-  const isAboveOrMD = createdByMD || createdByGCOO || createdByGCEO
-  const isAboveOrGCOO = createdByGCOO || createdByGCEO
-  const isAboveOrGCEO = createdByGCEO
+  const { trips, destinationType, } = tripInfo;
+  const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
