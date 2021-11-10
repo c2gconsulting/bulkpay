@@ -28,10 +28,14 @@ Template.logsList.events({
         let logs, csv;
         if (Session.get("searchActive")) {
             logs = Template.logsList.__helpers.get("searchLogs").call();
+            if (logs) logs = ReformatForAudit(logs)
             csv = Papa.unparse(logs);
         } else {
             logs = tmpl.logs();
-            csv = Papa.unparse(logs.fetch());
+            console.log('logs- logs', logs)
+            if (logs) logs = ReformatForAudit(logs.fetch(), Meteor.users.find({}))
+            // csv = Papa.unparse(logs.fetch());
+            csv = Papa.unparse(logs);
         }
 
         if (logs.length < 1) {
@@ -398,6 +402,25 @@ function getLimit() {
 function resetlogSearchFilter() {
     delete Session.keys["logsListStatusFilter"];
     delete Session.keys["logsListApprovalStatusFilter"];
+}
+
+const ReformatForAudit = (logs) => {
+    const newLogs = [];
+    for (let i = 0; i < logs.length; i++) {
+        const element = logs[i];
+        newLogs.push({
+            event: element.event,
+            collectionName: element.collectionName,
+            url: element.url,
+            user: element.user.email || "",
+            description: element.newData.description || "",
+            oldDescription: element.oldData.description || "",
+            newStatus: element.newData.status || "",
+            oldStatus: element.oldData.status || "",
+            createdAt: element.createdAt
+        })
+    }
+    return newLogs;
 }
 
 const sortSearchResults = (arrayToSort, sortField, sortDirection) => {

@@ -58,7 +58,7 @@ LogService.logCollection = function(collection, options) {
             collectionName: collectionName,
             docId: doc._id,
             groupId: oldDoc._groupId,
-            event: doc.status || "updated",
+            event: doc.status == oldDoc.status ? 'updated' : doc.status || "updated",
             user: user,
             url: url? `/business/${doc.businessId}${url}${doc._id}` : undefined            
         };
