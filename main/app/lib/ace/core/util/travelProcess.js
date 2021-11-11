@@ -194,8 +194,8 @@ Core.getTravelQueries = (retirementQuery) => {
 
 
   const managerQueries = [
-    // { status: APPROVED_BY_HOD },
     { status: APPROVED_BY_BUDGETHOLDER },
+    { status: APPROVED_BY_HOD },
     // { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_MD },
     { status: REJECTED_BY_MD },
@@ -209,9 +209,9 @@ Core.getTravelQueries = (retirementQuery) => {
   ]
 
   const gcooQueries = [
-    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
+    // { status: APPROVED_BY_HOD },
     { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
@@ -225,9 +225,9 @@ Core.getTravelQueries = (retirementQuery) => {
   ]
 
   const gceoQueries = [
-    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
+    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
@@ -241,9 +241,9 @@ Core.getTravelQueries = (retirementQuery) => {
   ]
 
   const bstQueries = [
-    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
+    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
@@ -258,9 +258,9 @@ Core.getTravelQueries = (retirementQuery) => {
   ]
 
   const logisticsQueries = [
-    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
+    // { status: APPROVED_BY_HOD },
     // { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     // { status: APPROVED_BY_GCOO },
@@ -465,7 +465,7 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
 
   if (!isAboveOrGCOO && isAirTransportationMode && isUserPartOfApproval === GCOO) {
     if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
-    // if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
+    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 

@@ -825,21 +825,21 @@ Meteor.methods({
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const {
-      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser);
+    // const {
+    //   hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    // } = Core.getApprovalQueries(currentUser);
 
-    const { directSupervisorId, managerId, _id, positionId } = currentUser
-    const userId = _id || Meteor.userId()
-    currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
-    currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
-    console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
-    currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
-    currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
-    currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
-    currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
-    currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
-    currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
+    // const { directSupervisorId, managerId, _id, positionId } = currentUser
+    // const userId = _id || Meteor.userId()
+    // currentTravelRequest.supervisorId = directSupervisorId || fetchUserId(hodOrSupervisorCond, Core.Approvals.HOD)
+    // currentTravelRequest.managerId = fetchUserId(managerCond, Core.Approvals.MD, true)
+    // console.log('currentTravelRequest.managerId', currentTravelRequest.managerId);
+    // currentTravelRequest.gcooId = fetchUserId(GcooCond, Core.Approvals.GCOO, true)
+    // currentTravelRequest.gceoId = fetchUserId(GceoCond, Core.Approvals.GCEO, true)
+    // currentTravelRequest.bstId = fetchUserId(bstCond, Core.Approvals.BST, true)
+    // currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
+    // currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
+    // currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
 
     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
     console.log('budgetCode', budgetCode);
@@ -972,13 +972,16 @@ Meteor.methods({
       if (trip.transportationMode === 'AIR') isTripByAir = true
     }
 
-    const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
-      if (skipApprovalTillApprovedByBudgetHolder) return "";
-      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
+    const fetchUser = (conditions) => {
       const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
+      if (fetchedUser) return fetchedUser;
+      return null
+    }
+
+    const fetchUsers = (conditions) => {
+      const fetchedUsers = Meteor.users.find(conditions);
+      if (fetchedUsers) return fetchedUsers;
+      return []
     }
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
@@ -1050,14 +1053,14 @@ Meteor.methods({
 
       // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
       if (isTripByAir) {
-        const fetchedUser = fetchUser(managerCond, true);
+        const fetchedUser = fetchUser(currentTravelRequest.managerId, true);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
       }
 
       // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
       if (!isTripByAir) {
-        const fetchedUser = fetchUser(logisticCond, true);
+        const fetchedUser = fetchUser(currentTravelRequest.logisticsId, true);
         fetchOtherUsers(fetchedUser, logisticCond);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
@@ -1243,65 +1246,57 @@ Meteor.methods({
       }
     }
 
+    const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = Core.getWhereToStartApproval(currentTravelRequest)
+    let nextPosition = 'HOD'
+
     // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (isTripByAir) {
-      nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { hodPositionId: positionId }] });
-      isHOD = !!nextUserApproval;
-      if (nextUserApproval) {
-        const fetchedUser = fetchUser(currentTravelRequest.managerId, true);
-        nextUserApproval = fetchedUser;
-        nextUserEmail = getUserEmail(fetchedUser);
-      }
-
-      if (!nextUserApproval) {
-        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, { lineManagerId: positionId }] });
-        isManager = !!nextUserApproval;
-        if (nextUserApproval) {
-          const fetchedUser = fetchUser(GcooCond, true);
-          nextUserApproval = fetchedUser;
-          nextUserEmail = getUserEmail(fetchedUser);
-        }
-      }
-
-      if (!nextUserApproval) {
-        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, GcooCond] });
-        isGcoo = !!nextUserApproval;
-        if (nextUserApproval) {
-          // SEND TO GCEO TO APPROVE THE AIR AND INTERNATIONAL TRIP
-          if (isInternationalTrip) {
-            const fetchedUser = fetchUser(GceoCond, true);
-            nextUserApproval = fetchedUser;
-            nextUserEmail = getUserEmail(fetchedUser);
-          } else {
-            // SEND TO BST TO PROCESS THE AIR TRIP
-            const fetchedUser = fetchUser(bstCond, true);
-            fetchOtherUsers(fetchedUser, bstCond);
-            nextUserApproval = fetchedUser;
-            nextUserEmail = getUserEmail(fetchedUser);
-            nextUserSubject = "Please process travel request for "
-          }
-        }
-      }
-
-      if (!nextUserApproval) {
-        nextUserApproval = fetchUser({ $and: [{ _id: currentTravelRequest.createdBy }, GceoCond] });
-        isGceo = !!nextUserApproval;
-        if (nextUserApproval) {
-          // SEND TO BST TO PROCESS THE AIR TRIP
-          const fetchedUser = fetchUser(bstCond, true);
-          fetchOtherUsers(fetchedUser, bstCond);
-          nextUserApproval = fetchedUser;
-          nextUserEmail = getUserEmail(fetchedUser);
-          nextUserSubject = "Please process travel request for "
-        }
-      }
-
-      // IF nextUserApproval doesn't exist then send to the manager
-      if (!nextUserApproval) {
+      if (!isAboveOrHOD && !nextUserApproval) {
         const fetchedUser = fetchUser(currentTravelRequest.supervisorId, true);
         console.log('fetchedUser', fetchedUser)
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--HOD'
+      }
+
+      if (!isAboveOrMD && !nextUserApproval) {
+        const fetchedUser = fetchUser(currentTravelRequest.managerId, true);
+        console.log('fetchedUser', fetchedUser)
+        nextUserApproval = fetchedUser;
+        nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--MD'
+      }
+
+      if (!isAboveOrGCOO && !nextUserApproval) {
+        const fetchedUser = fetchUser(currentTravelRequest.gcooId, true);
+        console.log('fetchedUser', fetchedUser)
+        nextUserApproval = fetchedUser;
+        nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--GCOO'
+      }
+
+      if (!isInternationalTrip && !nextUserApproval) {
+        const fetchedUser = fetchUser(currentTravelRequest.bstId, true);
+        console.log('fetchedUser', fetchedUser)
+        nextUserApproval = fetchedUser;
+        nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--BST'
+      }
+
+      if (!isAboveOrGCEO && !nextUserApproval) {
+        const fetchedUser = fetchUser(currentTravelRequest.gceoId, true);
+        console.log('fetchedUser', fetchedUser)
+        nextUserApproval = fetchedUser;
+        nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--GCEO'
+      }
+
+      if (!nextUserApproval) {
+        const fetchedUser = fetchUser(currentTravelRequest.bstId, true);
+        console.log('fetchedUser', fetchedUser)
+        nextUserApproval = fetchedUser;
+        nextUserEmail = getUserEmail(fetchedUser);
+        nextPosition = '--BST--'
       }
     }
 
@@ -1313,7 +1308,7 @@ Meteor.methods({
       const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = Core.getWhereToStartApproval(currentTravelRequest);
 
       if (nextUserApproval || isAboveOrHOD || isAboveOrMD || isAboveOrGCOO || isAboveOrGCEO) {
-        const fetchedUser = fetchUser(logisticCond, true);
+        const fetchedUser = fetchUser(currentTravelRequest.logisticsId, true);
         fetchOtherUsers(fetchedUser, logisticCond);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
@@ -1327,6 +1322,8 @@ Meteor.methods({
         nextUserEmail = getUserEmail(fetchedUser);
       }
     }
+
+    console.log('nextPosition', nextPosition)
 
 
     Core.canProcessTrip();
@@ -1496,7 +1493,7 @@ Meteor.methods({
     //  currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
     //  currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
  
-    //  let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
     //  console.log('budgetCode', budgetCode);
     //  if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
  
@@ -1542,14 +1539,14 @@ Meteor.methods({
 
     // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (isTripByAir) {
-      const fetchedUser = fetchUser(GcooCond, true);
+      const fetchedUser = fetchUser(currentTravelRequest.gcooId, true);
       nextUserApproval = fetchedUser;
       nextUserEmail = getUserEmail(fetchedUser);
     }
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (!isTripByAir) {
-      const fetchedUser = fetchUser(logisticCond, true);
+      const fetchedUser = fetchUser(currentTravelRequest.logisticsId, true);
       fetchOtherUsers(fetchedUser, logisticCond);
       nextUserApproval = fetchedUser;
       nextUserEmail = getUserEmail(fetchedUser);
@@ -1735,12 +1732,12 @@ Meteor.methods({
     if (isTripByAir) {
       // SEND TO GCEO TO APPROVE THE AIR AND INTERNATIONAL TRIP
       if (isInternationalTrip) {
-        const fetchedUser = fetchUser(GceoCond);
+        const fetchedUser = fetchUser(currentTravelRequest.gceoId);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
       } else {
         // SEND TO BST TO PROCESS THE AIR TRIP
-        const fetchedUser = fetchUser(bstCond);
+        const fetchedUser = fetchUser(currentTravelRequest.bstId);
         fetchOtherUsers(fetchedUser, bstCond);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
@@ -1949,19 +1946,12 @@ Meteor.methods({
 
     // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
     if (isTripByAir) {
-      // SEND TO GCEO TO APPROVE THE AIR AND INTERNATIONAL TRIP
-      if (isInternationalTrip) {
-        const fetchedUser = fetchUser(GceoCond);
-        nextUserApproval = fetchedUser;
-        nextUserEmail = getUserEmail(fetchedUser);
-      } else {
         // SEND TO BST TO PROCESS THE AIR TRIP
-        const fetchedUser = fetchUser(bstCond);
+        const fetchedUser = fetchUser(currentTravelRequest.bstId);
         fetchOtherUsers(fetchedUser, bstCond);
         nextUserApproval = fetchedUser;
         nextUserEmail = getUserEmail(fetchedUser);
         nextUserSubject = "Please process travel request for "
-      }
     }
 
     // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
@@ -2242,7 +2232,9 @@ Meteor.methods({
         console.log(error)
       }
 
-      if (currentTravelRequest.status === "Processed By BST") {
+      const { PROCESSED_BY_BST  } = Core.ALL_TRAVEL_STATUS
+
+      if (currentTravelRequest.status === PROCESSED_BY_BST) {
         if (nextUserEmail) {
           // Send to NEXT USER APPROVAL
           nextUserSubject += createdBy.profile.fullName
@@ -2257,13 +2249,18 @@ Meteor.methods({
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
         }
 
+        console.log('bookingAgentEmail', bookingAgentEmail)
+        console.log('isTripByAir', isTripByAir)
+        console.log('bookingAgentSubject', bookingAgentSubject)
+        console.log('isTripByAir && bookingAgentSubject && bookingAgentEmai', isTripByAir && bookingAgentSubject && bookingAgentEmail)
         // Send to booking agent if it's approved by manager
         if (isTripByAir && bookingAgentSubject && bookingAgentEmail) {
+          console.log('--bookingAgentEmail--', bookingAgentEmail)
           TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
         }
 
         // Send to security dept if requested and approved by manager
-        if (trips.length > 0 && securityDeptSubject) {
+        if (trips.length > 0) {
           for (let t = 0; t < trips.length; t++) {
             const { provideSecurity } = trips[t];
             if (provideSecurity) {
@@ -2843,13 +2840,27 @@ Meteor.methods({
 
 const sendNotificationToBookingAgent = (currentTravelRequest) => {
   const { businessId } = currentTravelRequest;
-  const emailSettings = EmailSettings.find({ businessId, department: 'Booking Agent' });
-  return emailSettings.email
+  const bookingAget = 'Booking';
+  const emailSettings = EmailSettings._collection.find({ businessId, department: { '$regex': `${bookingAget}`, '$options': 'i' } }).fetch();
+  let emails = '';
+  for (let i = 0; i < emailSettings.length; i++) {
+    const element = emailSettings[i];
+    const comma = emails ? ', ' : '';
+    emails += element.email + comma;
+  }
+  return emails
 }
 
 
 const sendNotificationToSecurityDept = (currentTravelRequest) => {
   const { businessId } = currentTravelRequest;
-  const emailSettings = EmailSettings.find({ businessId, department: 'Security Dept' });
-  return emailSettings.email
+  const security = 'Security';
+  const emailSettings = EmailSettings._collection.find({ businessId, department: { '$regex': `${security}`, '$options': 'i' } }).fetch();
+  let emails = '';
+  for (let i = 0; i < emailSettings.length; i++) {
+    const element = emailSettings[i];
+    const comma = emails ? ', ' : '';
+    emails += element.email + comma
+  }
+  return emails
 }

@@ -35,7 +35,7 @@ Template.AttachmentsList.events({
           // console.log('running then block...', res.data)
           // console.log("Session.get('context')", Session.get('context'))
           // console.log("Session.get('context')", template)
-          const businessUnitId = Session.get('context');
+          const businessUnitId = Session.get('context') || Router.current().params._id;
           const requisitionId = template.data.requisitionId
       
           const newAttachment = {
@@ -147,7 +147,7 @@ Template.AttachmentsList.onCreated(function() {
     Session.set('isUploading', false)
     instance.autorun(function () {
       let subscription = instance.subscribe('ObjectsMedia', Session.get('objectType'), Session.get('objectId'));
-      const businessUnitId = Session.get('context');
+      const businessUnitId = Session.get('context') || Router.current().params._id;
       // console.log('businessUnitId', businessUnitId)
       let attachmentSub = instance.subscribe("attachments", businessUnitId);
 
