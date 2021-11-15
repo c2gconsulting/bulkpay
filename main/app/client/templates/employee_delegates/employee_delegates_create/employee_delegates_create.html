@@ -1,0 +1,81 @@
+<template name="EmployeeDelegateCreate">
+    <div class="modal fade add-employeedelegate" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">New Delegate</h3>
+                    </div>
+                    <div class="panel-body" style="min-height: 200px;">
+                        <div class="row">
+
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label for="employeedelegate-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    {{#semanticselect2}}
+                                    <select id="employeedelegate-name" name="employeedelegate-name" style="width: 100%" class="ui fluid search dropdown form-control">
+                                        <option value="">{{getEmployeeFullName employeedelegate.userId}}</option>
+                                        {{#each employees}}
+                                            <option value="{{_id}}">{{profile.fullName}}</option>
+                                        {{/each}}
+                                    </select>
+                                    {{/semanticselect2}}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <div class="date">
+                                        <div class="inner-addon left-addon">
+                                            <i class="glyphicon icon-calendar"></i>
+                                            <label for="employeedelegate-startDate" class="control-label">Start Date <span class="asterisk important-input">*</span></label>
+                                            {{#datepicker2 employeedelegate.startDate }}
+                                            <input class="form-control datepicker" type="text" id="employeedelegate-startDate" name="employeedelegate-startDate" placeholder="Return Date" value="{{formatDate2 this.departureDate}}"/>
+                                            {{/datepicker2}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <div class="date">
+                                        <div class="inner-addon left-addon">
+                                            <i class="glyphicon icon-calendar"></i>
+                                            <label for="employeedelegate-endDate" class="control-label">End Date <span class="asterisk important-input">*</span></label>
+                                            {{#datepicker2 employeedelega.endDate }}
+                                            <input class="form-control datepicker" type="text" id="employeedelegate-endDate" name="employeedelegate-endDate" placeholder="Return Date" value="{{formatDate2 this.departureDate}}"/>
+                                            {{/datepicker2}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="employeedelegate-name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="employeedelegate-name" class="form-control" placeholder="Name" ng-model="employeedelegate.name"/>
+                                </div>
+                            </div> -->
+                            <!-- <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="employeedelegate-email" class="control-label">Email <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="employeedelegate-email" class="form-control" placeholder="email" ng-model="employeedelegate.email"/>
+                                </div>
+                            </div> -->
+                        </div>
+
+
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
+
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" id="new-employeedelegate-close" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary mr5" id="save">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
