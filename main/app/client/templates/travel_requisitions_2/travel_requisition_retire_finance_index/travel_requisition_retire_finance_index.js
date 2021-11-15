@@ -56,10 +56,8 @@ Template.TravelRequisition2FinanceRetireIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { financeApproverId: Meteor.userId()},
-            { $or : [{ retirementStatus : "Retirement Approved Budget Holder" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
-        ]}).count()
+        const { financeRetirementCond  } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(financeRetirementCond).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -119,12 +117,8 @@ Template.TravelRequisition2FinanceRetireIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({
-            $and : [
-                { financeApproverId: Meteor.userId()},
-                { $or : [{ retirementStatus : "Retirement Approved Budget Holder" }, { retirementStatus : "Retirement Approved Finance" }, { retirementStatus : "Retirement Rejected Finance"}] }
-            ]
-        }, options);
+        const { financeRetirementCond  } = Core.getTravelQueries()
+        return TravelRequisition2s.find(financeRetirementCond, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

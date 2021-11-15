@@ -9,7 +9,8 @@ Template.TravelRequisition2FinanceRetireDetail.events({
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved Finance";
+      const { RETIREMENT_APPROVED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
+      currentTravelRequest.retirementStatus = RETIREMENT_APPROVED_BY_FINANCE;
 
 
      Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
@@ -37,7 +38,8 @@ Template.TravelRequisition2FinanceRetireDetail.events({
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
          currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected Finance";
+         const { RETIREMENT_REJECTED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
+         currentTravelRequest.retirementStatus = RETIREMENT_REJECTED_BY_FINANCE;
 
       Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
           if (res){
