@@ -130,7 +130,7 @@ Meteor.methods({
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
         if (Core.getUserApproval(hodOrSupervisorCond)) return user;
         if (isAssignedToTreatTripRequest) {
@@ -142,7 +142,7 @@ Meteor.methods({
     "account/manager": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { managerCond } = Core.getApprovalQueries(data, true);
         if (Core.getUserApproval(managerCond)) return user;
         if (isAssignedToTreatTripRequest) {
@@ -155,14 +155,14 @@ Meteor.methods({
     "account/isHod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
         return Core.getUserApproval(hodOrSupervisorCond);
     },
     "account/isManager": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { managerCond } = Core.getApprovalQueries(data, true);
         return Core.getUserApproval(managerCond);
     },
@@ -170,7 +170,7 @@ Meteor.methods({
     "account/gcoo": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { GcooCond } = Core.getApprovalQueries(data, true);
         if (Core.getUserApproval(GcooCond)) return user;
         if (isAssignedToTreatTripRequest) {
@@ -182,7 +182,7 @@ Meteor.methods({
     "account/gceo": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
-        const data = { ...user, hodPositionId: positionId, lineManagerId: positionId }
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
         const { GceoCond } = Core.getApprovalQueries(data, true);
         if (Core.getUserApproval(GceoCond)) return user;
         if (isAssignedToTreatTripRequest) {

@@ -17,7 +17,7 @@ Template.datepicker2.onCreated(function () {
 });
 
 Template.datepicker2.onRendered(function () {
-	const minDate = (this.data && this.data.minDate) || new Date()
+	const minDate = (this.data && this.data.minDate) || this.data || new Date()
 	let options = {format: 'DD MMM YYYY', minDate: minDate};
 	if (this.data && this.data.minDate) options.defaultDate = minDate;
 	else options.defaultDate = this.data;
@@ -35,7 +35,7 @@ Template.transformableDatepicker2.onCreated(function () {
 });
 
 Template.transformableDatepicker2.onRendered(function () {
-	const minDate = (this.data && this.data.minDate) || new Date()
+	const minDate = (this.data && this.data.minDate) || this.data || new Date()
 	let options = {format: 'DD MMM YYYY', minDate: minDate};
 	if (this.data && this.data.minDate) options.defaultDate = minDate;
 	else options.defaultDate = this.data;

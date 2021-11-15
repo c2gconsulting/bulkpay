@@ -333,11 +333,11 @@ Core.getTravelRetirementQueries = () => {
 }
 
 Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
-  const { lineManagerId, hodPositionId, _id: userId,  } = currentUser;
-  let GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off';
+  const { managerId, hodPositionId, _id: userId,  } = currentUser;
+  let GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off', GCFO = 'Group Chief Finance Offic';
   let hodOrSupervisorCond = { positionId: hodPositionId };
-  let managerCond = { positionId: lineManagerId };
-  let GcooCond = { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } };
+  let managerCond = { positionId: managerId };
+  let GcooCond = { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } };
   let GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
   let bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
   let logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
@@ -347,8 +347,8 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   // Check Current User Approval Access
   if (myApprovalAccess) {
     hodOrSupervisorCond = { hodPositionId  };
-    managerCond = { lineManagerId };
-    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
+    managerCond = { managerId };
+    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } }] };
     GceoCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
   } else {}
 

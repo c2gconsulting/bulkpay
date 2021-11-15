@@ -26,10 +26,20 @@
 
 
         {{#if isAuditTrailLinkVisible}}
-        <li><a href="{{pathFor "logs.list"}}" name="settings-sub-menu"><i
+        <li><a href="{{pathFor 'logs.list'}}" name="settings-sub-menu"><i
                     class="glyphicon glyphicon-sort-by-attributes-alt"></i> <span>Audit Trail</span></a>
         </li>
         {{/if}}
+
+        <!-- {{#if isAuditTrailLinkVisible}}
+        <li><a href="{{pathFor 'employeedelegates'}}" name="settings-sub-menu">
+          <span class="fa-stack fa-1x">
+            <i class="fa fa-user fa-stack-1x"></i>
+            <i style="font-size: 16px; margin-top: 7px;" class="fa fa-exchange fa-stack-2x fa-inverse"></i>
+          </span>
+          <span>My Delegates</span></a>
+        </li>
+        {{/if}} -->
 
         {{#if isSapBusinessOneIntegrationEnabled}}
           {{#if hasPayrollAccess}}
@@ -303,7 +313,13 @@
         {{/if}}
 
         {{#if hasTravelReportsViewAccess}}
-          <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
+          <li><a href="{{pathFor 'reports.travelrequisition'}}">
+            <span class="fa-stack fa-1x">
+              <i class="fa fa-print fa-stack-1x" aria-hidden="true"></i>
+              <i style="font-size: 16px; margin-top: 7px;" class="fa fa-plane fa-stack-2x fa-inverse" aria-hidden="true"></i>
+            </span>
+            Travel requests report
+          </a></li>
         {{/if}}
 
    

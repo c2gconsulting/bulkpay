@@ -10,6 +10,10 @@ Core.Schemas.Logs = new SimpleSchema({
         type: String,
         optional: true
     },
+    businessId: {
+        type: String,
+        optional: true
+    },
     user: {
         type: Core.Schemas.LogUser,
         blackbox: true

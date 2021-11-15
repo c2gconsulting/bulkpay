@@ -5,6 +5,32 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2BSTDetail.events({
+    'click #retryJournalPosting': (e, tmpl) => {
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        Meteor.call('TRIPREQUEST/retryJournalPosting', currentTravelRequest, (err, res) => {
+            if (res){
+                swal({
+                    title: "Travel requisition has been updated",
+                    text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
+                    confirmButtonClass: "btn-success",
+                    type: "success",
+                    confirmButtonText: "OK"
+                });
+            } else {
+                swal({
+                    title: "Oops!",
+                    text: "Journal Posting failed, notification has been sent to the support admin",
+                    confirmButtonClass: "btn-danger",
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+                console.log(err);
+            }
+        });
+        Template.instance().errorMessage.set(null);
+        Modal.hide('TravelRequisition2Create');
+
+    },
     'click #processTrip': (e, tmpl) => {
         let supervisorComment = $('[name=supervisorComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
@@ -214,6 +240,11 @@ Template.TravelRequisition2BSTDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         const { BST } = Core.Approvals;
         return !Core.canApprove(BST, currentTravelRequest)
+    },
+    canRetryJournal() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { BST } = Core.Approvals;
+        return !Core.canApprove(BST, currentTravelRequest) && !currentTravelRequest.journalPosted;
     },
     provideSecurity(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();

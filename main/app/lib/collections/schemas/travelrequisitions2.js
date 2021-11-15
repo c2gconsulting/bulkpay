@@ -243,6 +243,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true,
         defaultValue: false,
     },
+    journalPosted: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false,
+    },
     tripFor: {
         type: Core.Schemas.CreatedOnBehalf,
         optional: true,

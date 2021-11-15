@@ -501,6 +501,11 @@ Airlines.attachSchema(Core.Schemas.Airline);
 EmailSettings = new Mongo.Collection("emailsettings");
 //Partitioner.partitionCollection(EmailSettings);
 EmailSettings.attachSchema(Core.Schemas.EmailSetting);
+
+EmployeeDelegates = new Mongo.Collection("employeedelegates");
+//Partitioner.partitionCollection(EmployeeDelegates);
+EmployeeDelegates.attachSchema(Core.Schemas.EmployeeDelegate, { createdBy: 1, userId: 1 });
+
 /**
  *
  * Core Collections Budget

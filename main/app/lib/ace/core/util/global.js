@@ -800,6 +800,10 @@ _.extend(Core, {
         // "account_number": "0039309296",
         // "currency": "NGN",
         // "employment_status": "WITHDRAWN"
+        // "md_position_code": 40000184,
+        // "gceo_position_code": 40000000,
+        // "gcoo_position_code": 40000005,
+        // "gcfo_position_code": 40000104,
 
         const { pay_grade, pay_level, bank_country, bank_code, account_number, currency, employment_status } = eachLine;
         const status = employment_status ? capitalize(employment_status) : "Active";
@@ -836,6 +840,10 @@ _.extend(Core, {
             "customUsername":  `${capitalize(eachLine.firstname)}.${capitalize(eachLine.lastname)}` || "",
             "group": group,
             "isUsingDefaultPassword" : true,
+            "managerId": String(eachLine.md_position_code) || "",
+            "gcfoId": String(eachLine.gcfo_position_code) || "",
+            "gcooId": String(eachLine.gcoo_position_code) || "",
+            "gceoId": String(eachLine.gceo_position_code) || "",
             "positionDesc": eachLine.position_description || "",
             "positionLongText": eachLine.position_long_text || "",
             "positionId": String(eachLine.position_code) || "",

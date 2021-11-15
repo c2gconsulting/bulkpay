@@ -157,6 +157,11 @@ const journalPostingSuccess = (body, response) => {
   }
   if (response && response.Errors && response.Errors.lines) {
     Core.sendMail(data)
+    throw new Meteor.Error(403, "Journal Posting failed");
+  } else {
+    // SUCESS
+    travelRequest.journalPosted = true;
+    TravelRequisition2s.update(travelRequest._id, {$set: travelRequest})
   }
 }
 
@@ -201,4 +206,5 @@ const journalPostingFailed = (body, error) => {
     `,
   }
   Core.sendMail(data)
+  throw new Meteor.Error(400, "Journal Posting failed");
 }

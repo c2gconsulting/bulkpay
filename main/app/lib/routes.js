@@ -258,6 +258,11 @@ Router.route('/business/:_id/emailsettings', {
     controller: 'EmailSettingsController',
     where: 'client'
 });
+Router.route('/business/:_id/employeedelegates', {
+    name: 'employeedelegates',
+    controller: 'EmployeeDelegatesController',
+    where: 'client'
+});
 Router.route('/business/:_id/paygrades', {
     name: 'paygrades',
     controller: 'PaygradesController',

@@ -12,12 +12,14 @@ LogService.logCollection = function(collection, options) {
     let collectionName =  options.collectionName;
     let url = options.url;
     let user = {};
+    let businessId;
     collection.after.insert(function (userId, doc) {
             user.userId = userId || doc.createdBy || doc.userId;
             if (userId && user.userId) {
                 let userObj = Meteor.users.findOne(user.userId);
                 if (userObj) {
                     user.email = userObj.emails[0].address
+                    businessId = userObj.businessIds && userObj.businessIds[0]
                 }
             }
 
@@ -30,6 +32,7 @@ LogService.logCollection = function(collection, options) {
             docId: doc._id,
             groupId: doc._groupId,
             event: "created",
+            businessId,
             user: user,
             url: url? `/business/${doc.businessId}${url}${doc._id}` : undefined
         };
@@ -50,6 +53,7 @@ LogService.logCollection = function(collection, options) {
                 let userObj = Meteor.users.findOne(user.userId);
                 if (userObj) {
                     user.email = userObj.emails[0].address
+                    businessId = userObj.businessIds && userObj.businessIds[0]
                 }
             }
         let logObject = {
@@ -59,6 +63,7 @@ LogService.logCollection = function(collection, options) {
             docId: doc._id,
             groupId: oldDoc._groupId,
             event: doc.status == oldDoc.status ? 'updated' : doc.status || "updated",
+            businessId,
             user: user,
             url: url? `/business/${doc.businessId}${url}${doc._id}` : undefined            
         };
@@ -104,6 +109,7 @@ LogService.logCollection = function(collection, options) {
 
 
 LogService.logCollection(TravelRequisition2s, {collectionName: 'travelrequisition2s', url: '/travelrequests2/printrequisition?requisitionId='});
+LogService.logCollection(Attachments, {collectionName: 'attachments'});
 LogService.logCollection(BusinessUnits, {collectionName: 'businessunits'});
 // LogService.logCollection(IntegrationUsers, {collectionName: 'integrationusers'});
 // LogService.logCollection(Settings, {collectionName: 'settings'});

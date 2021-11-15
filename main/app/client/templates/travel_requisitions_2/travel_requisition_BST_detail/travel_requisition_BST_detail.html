@@ -521,6 +521,9 @@
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
 
                         <button class="btn btn-success mr5 pull-right" id="processTrip" disabled="{{cannotApprove}}" >Process trip</button>
+                        {{#if canRetryJournal }}
+                            <button class="btn btn-warning mr5 pull-right" id="retryJournalPosting" >Retry Journal Posting</button>
+                        {{/if}}
                         <!-- <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button> -->
 
                     </div><!-- panel-footer -->

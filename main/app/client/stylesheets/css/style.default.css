@@ -513,7 +513,11 @@ a:focus {
     background-color: #428bca;
 }
 
-.leftpanel .nav > li > a i {
+.fa-stack, .fa-stack-2x {
+    color: #428bca;
+}
+
+.leftpanel .nav > li > a i:not(.fa-stack, .fa-stack-2x) {
     width: 16px;
     margin-right: 5px;
     color: #428bca;
