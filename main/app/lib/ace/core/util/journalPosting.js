@@ -117,7 +117,7 @@ const journalPostingSuccess = (body, response) => {
   console.info(response)
 
   const data = {
-    to: 'adesanmiakoladedotun@gmail.com',
+    to: 'trips@oilservltd-ng.com, adesanmiakoladedotun@gmail.com',
     from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
     subject: 'JOURNAL POSITING FAILED FOR TRAVEL REQUISITION',
     html: `
@@ -167,7 +167,7 @@ const journalPostingSuccess = (body, response) => {
 
 const journalPostingFailed = (body, error) => {
   const data = {
-    to: 'adesanmiakoladedotun@gmail.com',
+    to: 'trips@oilservltd-ng.com, adesanmiakoladedotun@gmail.com',
     from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
     subject: 'JOURNAL POSITING FAILED FOR TRAVEL REQUISITION',
     html: `

@@ -225,10 +225,10 @@
                         <div class="row">
                           <div class="col-sm-4">
                             <div class="form-group">
-                              <label for="driverInfo_{{this.tripIndex}}" class="control-label">Driver's Information</label>
-                              {{#if condition this.carOption 'eq' 'OFFICE' }}
-                                <input type="text" id="driverInfo_{{this.tripIndex}}" class="form-control" placeholder="Driver Information" name="driverInfo_{{this.tripIndex}}" value="{{this.driverInformation}}"/>
-                              {{else}}
+                              <label for="driverInfo_{{this.tripIndex}}" class="control-label">Employee's Information</label>
+                              <!-- {{#if condition this.carOption 'eq' 'OFFICE' }} -->
+                                <input type="text" id="driverInfo_{{this.tripIndex}}" class="form-control" placeholder="Employee Information" name="driverInfo_{{this.tripIndex}}" value="{{this.driverInformation}}"/>
+                              <!-- {{else}}
                                 {{#semanticselect2}}
                                   <select id="driverInfo_{{this.tripIndex}}" name="driverInfo_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                     <option value="">Employees</option>
@@ -238,7 +238,7 @@
                                     {{/each}}
                                   </select>
                                 {{/semanticselect2}}
-                              {{/if}}
+                              {{/if}} -->
                             </div>
                           </div>
 

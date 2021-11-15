@@ -59,7 +59,7 @@ const RETIREMENT_REJECTED_BY_FINANCE = "Retirement Rejected Finance"
 const RETIREMENT_APPROVED_BY_BUDGETHOLDER =  "Retirement Approved Budget Holder"
 const RETIREMENT_REJECTED_BY_BUDGETHOLDER = "Retirement Rejected Budget Holder"
 const RETIREMENT_APPROVED_BY_BST =  "Retirement Approved BST"
-const RETIREMENT_REJECT_BY_BST = "Retirement Rejected BST"
+const RETIREMENT_REJECTED_BY_BST = "Retirement Rejected BST"
 
 // TRIP Category
 const INDIVIDUAL = 'INDIVIDUAL'
@@ -96,14 +96,12 @@ Core.ALL_TRAVEL_STATUS = {
   RETIREMENT_SUBMITED,
   RETIREMENT_APPROVED_BY_HOD,
   RETIREMENT_REJECTED_BY_HOD,
-  APPROVED_BY_BUDGETHOLDER,
-  REJECTED_BY_BUDGETHOLDER,
   RETIREMENT_APPROVED_BY_FINANCE,
   RETIREMENT_REJECTED_BY_FINANCE,
   RETIREMENT_APPROVED_BY_BUDGETHOLDER,
   RETIREMENT_REJECTED_BY_BUDGETHOLDER,
   RETIREMENT_APPROVED_BY_BST,
-  RETIREMENT_REJECT_BY_BST,
+  RETIREMENT_REJECTED_BY_BST,
 }
 
 Core.travelStatus = [
@@ -130,14 +128,12 @@ Core.travelRetirementStatus = [
   RETIREMENT_SUBMITED,
   RETIREMENT_APPROVED_BY_HOD,
   RETIREMENT_REJECTED_BY_HOD,
-  APPROVED_BY_BUDGETHOLDER,
-  REJECTED_BY_BUDGETHOLDER,
-  RETIREMENT_APPROVED_BY_FINANCE,
-  RETIREMENT_REJECTED_BY_FINANCE,
   RETIREMENT_APPROVED_BY_BUDGETHOLDER,
   RETIREMENT_REJECTED_BY_BUDGETHOLDER,
+  RETIREMENT_APPROVED_BY_FINANCE,
+  RETIREMENT_REJECTED_BY_FINANCE,
   RETIREMENT_APPROVED_BY_BST,
-  RETIREMENT_REJECT_BY_BST,
+  RETIREMENT_REJECTED_BY_BST,
 ]
 
 
@@ -155,7 +151,7 @@ Core.queryUsersExcept = (userId, conditions) => ({ $and: [{ _id: { $ne: userId }
 
 Core.getUserApproval = (conditions) => Meteor.users.findOne(conditions);
 
-Core.getTravelQueries = (retirementQuery) => {
+Core.getTravelQueries = () => {
   const user = Meteor.user();
   const userId = user ? user._id : Meteor.userId();
 
@@ -274,6 +270,37 @@ Core.getTravelQueries = (retirementQuery) => {
     { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
   ]
 
+  // RETIREMENT
+  const hodRetirementQueries = [
+    { retirementStatus: RETIREMENT_SUBMITED },
+    { retirementStatus: RETIREMENT_APPROVED_BY_HOD },
+    { retirementStatus: RETIREMENT_REJECTED_BY_HOD },
+  ]
+
+  const financeRetirementQueries = [
+    { retirementStatus: RETIREMENT_APPROVED_BY_HOD },
+    { retirementStatus: RETIREMENT_APPROVED_BY_FINANCE },
+    { retirementStatus: RETIREMENT_REJECTED_BY_FINANCE },
+    { $and: [{ createdByHOD: true }, { retirementStatus: RETIREMENT_SUBMITED }] },
+    { $and: [{ createdByMD: true }, { retirementStatus: RETIREMENT_SUBMITED }] },
+    { $and: [{ createdByGCOO: true }, { retirementStatus: RETIREMENT_SUBMITED }] },
+    { $and: [{ createdByGCEO: true }, { retirementStatus: RETIREMENT_SUBMITED }] },
+  ]
+
+  const budgetHolderRetirementQueries = [
+    { retirementStatus: RETIREMENT_APPROVED_BY_FINANCE },
+    { retirementStatus: RETIREMENT_APPROVED_BY_BUDGETHOLDER },
+    { retirementStatus: RETIREMENT_REJECTED_BY_BUDGETHOLDER },
+  ]
+
+  const bstRetirementQueries = [
+    { retirementStatus: RETIREMENT_APPROVED_BY_BUDGETHOLDER },
+    { retirementStatus: RETIREMENT_APPROVED_BY_BST },
+    { retirementStatus: RETIREMENT_REJECTED_BY_BST },
+  ]
+
+  // BUILD ACTUAL QUERIES
+
   const myTripCondition = {
     createdBy: userId, tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] }
   };
@@ -314,23 +341,29 @@ Core.getTravelQueries = (retirementQuery) => {
     $and : [{ logisticsId: userId }, { $or : logisticsQueries }]
   };
 
-  if (retirementQuery) {
-    
-  }
+  const hodOrSupervisorRetirementCond = {
+    $and : [{ supervisorId: userId }, { $or : hodRetirementQueries }]
+  };
+
+  const financeRetirementCond = {
+    $and : [{ financeApproverId: userId }, { $or : financeRetirementQueries }]
+  };
+
+  const budgetHolderRetirementCond = {
+    $and : [{ budgetHolderId: userId }, { $or : budgetHolderRetirementQueries }]
+  };
+
+  const bstRetirementCond = {
+    $and : [{ bstId: userId }, { $or : bstRetirementQueries }]
+  };
 
   return {
     hodOrSupervisorCondition, budgetHolderCondition, managerCondition, gcooCondition, gceoCondition, bstCondition, logisticsCondition,
-    myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition
+    myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition,
+    hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
   }
 }
 
-
-Core.getTravelRetirementQueries = () => {
-  const hodOrSupervisorCond = {}
-  return {
-
-  }
-}
 
 Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   const { managerId, hodPositionId, _id: userId,  } = currentUser;
@@ -441,7 +474,7 @@ Core.canProcessTrip = () => {
 }
 
 Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
-  let isAirTransportationMode = false;
+  let isAirRailTransportationMode = false;
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
@@ -450,31 +483,31 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
     const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR') isAirTransportationMode = true
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
   }
 
   if (!isAboveOrHOD && isUserPartOfApproval === HOD) {
     return Meteor.user();
   }
 
-  if (!isAboveOrMD && isAirTransportationMode && isUserPartOfApproval === MD) {
-    if (isAirTransportationMode) return Meteor.user();
+  if (!isAboveOrMD && isAirRailTransportationMode && isUserPartOfApproval === MD) {
+    if (isAirRailTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirTransportationMode && isUserPartOfApproval === GCOO) {
-    if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
+  if (!isAboveOrGCOO && isAirRailTransportationMode && isUserPartOfApproval === GCOO) {
+    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
+    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAboveOrGCEO && isAirTransportationMode && isUserPartOfApproval === GCEO) {
+  if (!isAboveOrGCEO && isAirRailTransportationMode && isUserPartOfApproval === GCEO) {
     if (isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (isUserPartOfApproval === LOGISTICS) {
+  if (!isAirRailTransportationMode && isUserPartOfApproval === LOGISTICS) {
     return Meteor.user();
   }
 
@@ -495,14 +528,14 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
 
 
 Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
-  let isAirTransportationMode = false;
+  let isAirRailTransportationMode = false;
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
     const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR') isAirTransportationMode = true
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
   }
 
   if (nextApproval === HOD) {
@@ -510,13 +543,13 @@ Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
   }
 
   if (nextApproval === MD) {
-    if (isAirTransportationMode) return GCOO
+    if (isAirRailTransportationMode) return GCOO
     else return LOGISTICS
   }
 
   if (nextApproval === GCOO) {
-    if (isAirTransportationMode && isInternationalTrip) return GCEO;
-    if (isAirTransportationMode && !isInternationalTrip) return BST;
+    if (isAirRailTransportationMode && isInternationalTrip) return GCEO;
+    if (isAirRailTransportationMode && !isInternationalTrip) return BST;
     return BST
   }
 
@@ -525,7 +558,7 @@ Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
     return BST
   }
 
-  if (nextApproval === LOGISTICS) {
+  if (!isAirRailTransportationMode && nextApproval === LOGISTICS) {
     return BST
   }
 
@@ -546,13 +579,13 @@ Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
 
 
 Core.runApprovalFlow = (isUserPartOfApproval, tripInfo = { trips: [] }, callback) => {
-  let isAirTransportationMode = false;
+  let isAirRailTransportationMode = false;
   const { trips, destinationType } = tripInfo;
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
     const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR') isAirTransportationMode = true
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
   }
 
   if (isUserPartOfApproval === HOD) {
@@ -560,12 +593,12 @@ Core.runApprovalFlow = (isUserPartOfApproval, tripInfo = { trips: [] }, callback
   }
 
   if (isUserPartOfApproval === MD) {
-    if (isAirTransportationMode) return Meteor.user();
+    if (isAirRailTransportationMode) return Meteor.user();
   }
 
   if (isUserPartOfApproval === GCOO) {
-    if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
+    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
+    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
@@ -574,7 +607,7 @@ Core.runApprovalFlow = (isUserPartOfApproval, tripInfo = { trips: [] }, callback
     return null
   }
 
-  if (isUserPartOfApproval === LOGISTICS) {
+  if (!isAirRailTransportationMode && isUserPartOfApproval === LOGISTICS) {
     return Meteor.user();
   }
 

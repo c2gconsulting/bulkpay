@@ -225,9 +225,9 @@
                           <div class="col-sm-3">
                             <div class="form-group">
                               <label for="driverInfo_{{this.tripIndex}}" class="control-label">Driver's Info.</label>
-                              {{#if condition this.driverInfo 'eq' 'OFFICE' }}
+                              <!-- {{#if condition this.driverInfo 'eq' 'OFFICE' }} -->
                                 <input type="text" id="driverInfo_{{this.tripIndex}}" class="form-control" placeholder="Driver Information" name="driverInfo_{{this.tripIndex}}" value="{{this.driverInformation}}"/>
-                              {{else}}
+                              <!-- {{else}}
                                 {{#semanticselect2}}
                                   <select id="driverInfo_{{this.tripIndex}}" name="driverInfo_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
                                     <option value="">Employees</option>
@@ -237,7 +237,7 @@
                                     {{/each}}
                                   </select>
                                 {{/semanticselect2}}
-                              {{/if}}
+                              {{/if}} -->
                             </div>
                           </div>
 

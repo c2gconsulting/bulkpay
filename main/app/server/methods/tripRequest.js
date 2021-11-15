@@ -240,56 +240,13 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const supervisor = currentTravelRequest.supervisorId || (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    currentTravelRequest.supervisorId = supervisor;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode) {
-      currentTravelRequest.budgetHolderId = currentTravelRequest.budgetHolderId || budgetCode.employeeId;
-      // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-    }
-
     Core.canProcessTrip();
     if(currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-      let createdByEmail = "";
-      let supervisorEmail = "";
-      const createdBySubject = "Updated travel request for " + createdBy.profile.fullName;
-      const supervisorSubject = "Please approve the updated travel request for " + createdBy.profile.fullName;
-
-
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
-      }
-
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-
-      if (supervisor.emails.length > 0){
-        supervisorEmail = supervisor.emails[0].address;
-        supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-        console.log(supervisorEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Supervisor
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
-      // console.log("currentTravelRequest1")
-      // console.log(currentTravelRequest)
+      Core.sendUpdateOrCancellationMail(tripInfo, TravelRequestHelper, true);
     }else{
       currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -303,46 +260,6 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-      const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
-      if (skipApprovalTillApprovedByBudgetHolder) return "";
-      const dPosition = position || 'HOD';
-      const isPartOfApprovalFlow = Core.getApprovalConfig(dPosition, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
-      const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
-    }
-
-    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-    const {
-      hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser);
-
-    const { directSupervisorId, managerId, _id, positionId } = currentUser
-    const userId = _id || Meteor.userId()
-    currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
-    currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD)
-    currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
-    currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
-    currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
-    currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
-    currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
-    currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
-
-    let isTopLevelUser = Core.hasApprovalLevel();
-    const topLevelQuery = { $and: [{ _id: { $ne: userId } }, { $or: [{ hodPositionId: positionId }, { lineManagerId: positionId }] }] }
-    if (!isTopLevelUser) isTopLevelUser = !!fetchUser(topLevelQuery);
-
-    console.log('isTopLevelUser', isTopLevelUser)
-
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode){
-      currentTravelRequest.budgetCodeId = budgetCode._id
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-    }
 
       // Verify user creating a trip
       // Core.canCreateTravel()
@@ -352,42 +269,7 @@ Meteor.methods({
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-      let createdByEmail = "";
-      let supervisorEmail = "";
-      const createdBySubject = "Updated travel retirement for " + createdBy.profile.fullName;
-      const supervisorSubject = "Please approve the updated travel retirement for " + createdBy.profile.fullName;
-
-
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
-      }
-
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-
-      if (supervisor.emails.length > 0){
-        supervisorEmail = supervisor.emails[0].address;
-        supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-        console.log(supervisorEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Supervisor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
-      // console.log("currentTravelRequest1")
-      // console.log(currentTravelRequest)
+      Core.sendRetirementUpdateMail(tripInfo, TravelRequestHelper, true);
     } else{
       currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -401,72 +283,24 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-    }
+    // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+    // let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
+    // if (budgetCode){
+    //   currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+    //   currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+    // }
     if (currentTravelRequest._id){
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      //only invole city by city admin in trip was approved
-      if (currentTravelRequest.status === "Approved By MD"){
-        for (i = 0; i < currentTravelRequest.trips.length; i++) {
-          otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
-          otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
-        }
-      }
+      const tripInfo = currentTravelRequest;
+      const { CANCELLED } = Core.ALL_TRAVEL_STATUS;
 
       //explicitely set status
-      currentTravelRequest.status = "Cancelled";
+      currentTravelRequest.status = CANCELLED;
 
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
-      if (budgetCode) {
-        otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
-      }
-
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
-      let createdByEmail = "";
-      let budgetHolderEmail = "";
-      let createdByName = "Employee"
-      let budgetHolderName = "Budget Holder"
-      let createdBySubject = "";
-      let budgetHolderSubject = "";
-
-      if (currentTravelRequest.status === "Approved By MD"){
-        createdBySubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
-        budgetHolderSubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
-      } else {
-        createdBySubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
-        budgetHolderSubject = "Travel Request for: " + createdBy.profile.fullName + " has been cancelled by the Administrator";
-      }
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
-      }
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-      if (budgetHolder.emails.length > 0){
-        budgetHolderEmail = budgetHolder.emails[0].address;
-        budgetHolderEmail = budgetHolderEmail  + ", bulkpay@c2gconsulting.com";
-        console.log(budgetHolderEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Budget Holder
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, budgetHolderEmail, budgetHolderSubject);
+      Core.sendUpdateOrCancellationMail(tripInfo, TravelRequestHelper);
     }
 
     return true;
@@ -542,96 +376,26 @@ Meteor.methods({
    * @returns 
    */
   "TRIPREQUEST/createExtension": function(currentTravelRequest){
-      if(!this.userId && Core.hasPayrollAccess(this.userId)){
-          throw new Meteor.Error(401, "Unauthorized");
-      }
-      check(currentTravelRequest.businessId, String);
-      this.unblock()
-      /**
-       * IF trip mode is Air, should go through normal stages of approval
-       * ELSE should skip couple of approvals (GCOO and GCEO respectively) then go to logistics
-       */
-       const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
-        // if (skipApprovalTillApprovedByBudgetHolder) return "";
-        const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-        if (position && !isPartOfApprovalFlow) return ""
-        const fetchedUser = Meteor.users.findOne(conditions);
-        if (fetchedUser) return fetchedUser._id;
-        return ''
-      }
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
 
-      // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-      const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const {
-        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-      } = Core.getApprovalQueries(currentUser);
+    // Verify user creating a trip
+    Core.canCreateTravel()
 
-      const { directSupervisorId, managerId, _id, positionId } = currentUser
-      const userId = _id || Meteor.userId()
-      currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
-      currentTravelRequest.managerId = managerId || fetchUser(managerCond, Core.Approvals.MD)
-      currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
-      currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
-      currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
-      currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
-      currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
-      currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
+    if (currentTravelRequest._id) {
+      currentTravelRequest.editted = true;
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+      let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-      console.log('budgetCode', budgetCode);
-      if (budgetCode){
-        currentTravelRequest.budgetCodeId = budgetCode._id
-        currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-        // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-      }
+      const { BUDGETHOLDER, HOD } = Core.Approvals;
+      let nextApproval = BUDGETHOLDER;// HOD
+      Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval);
+    }
 
-      // Verify user creating a trip
-      Core.canCreateTravel()
-
-      if(currentTravelRequest._id){
-
-          TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-          let otherPartiesEmail = "bulkpay@c2gconsulting.com";
-
-          const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-          const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-          let createdByEmail = "";
-          let supervisorEmail = "";
-          let createdByName = "Employee"
-          let supervisorName = "Supervisor"
-          const createdBySubject = "New travel request for " + createdBy.profile.fullName;
-          const supervisorSubject = "Please approve travel request for " + createdBy.profile.fullName;
-
-
-          if (createdBy.emails.length > 0){
-              createdByEmail = createdBy.emails[0].address;
-              createdByEmail = createdByEmail + "," + otherPartiesEmail;
-              console.log(createdByEmail);
-          }
-
-
-          const { tripFor } = currentTravelRequest;
-          if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-              const individuals = tripFor;
-              //  Send Notification to other individual going on this trip
-              createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-          }
-
-
-          if (supervisor.emails.length > 0){
-              supervisorEmail = supervisor.emails[0].address;
-              supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-              console.log(supervisorEmail);
-          }
-
-          //Send to requestor
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-          //Send to Supervisor
-          TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
-      }
-
-      return true;
+    return true;
   },
   "TRIPREQUEST/retire": function(currentTravelRequest){
     if(!this.userId && Core.hasPayrollAccess(this.userId)){
@@ -640,53 +404,22 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-
     Core.canProcessTrip();
 
     if(currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+      const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = Core.getWhereToStartApproval(currentTravelRequest)
+      
+      const { HOD, FINANCE } = Core.Approvals;
+      let nextApproval = HOD;
 
-      otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
-
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-      let createdByEmail = "";
-      let supervisorEmail = "";
-      let createdByName = "Employee"
-      let supervisorName = "Supervisor"
-      const createdBySubject = "New travel retirement for " + createdBy.profile.fullName;
-      const supervisorSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
-
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
+      if (isAboveOrHOD || isAboveOrMD || isAboveOrGCOO || isAboveOrGCEO) {
+        nextApproval = FINANCE
       }
 
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-
-      if (supervisor.emails.length > 0){
-        supervisorEmail = supervisor.emails[0].address;
-        supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-        console.log(supervisorEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Supervisor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval);
     } else{
       let result = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -700,13 +433,6 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
-    let budgetCode = Budgets.findOne(currentTravelRequest.budgetCodeId);
-    if (budgetCode){
-      currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-      currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-    }
-
     Core.canProcessTrip();
 
     if (currentTravelRequest._id){
@@ -714,41 +440,9 @@ Meteor.methods({
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-      let createdByEmail = "";
-      let supervisorEmail = "";
-      let createdByName = "Employee"
-      let supervisorName = "Supervisor"
-      const createdBySubject = "New travel retirement for " + createdBy.profile.fullName;
-      const supervisorSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
-
-
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
-      }
-
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-      if (supervisor.emails.length > 0){
-        supervisorEmail = supervisor.emails[0].address;
-        supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-        console.log(supervisorEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Supervisor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
+      const { HOD } = Core.Approvals;
+      let nextApproval = HOD;
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval);
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -764,7 +458,7 @@ Meteor.methods({
     let isTripByAir;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
-      if (trip.transportationMode === 'AIR') isTripByAir = true
+      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
     }
 
     Core.canProcessTrip();
@@ -795,7 +489,7 @@ Meteor.methods({
     let isTripByAir;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
-      if (trip.transportationMode === 'AIR') isTripByAir = true
+      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
     }
 
     const fetchUser = (conditions) => {
@@ -938,21 +632,11 @@ Meteor.methods({
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      // //only invole city by city admin in trip was approved
-      // if (currentTravelRequest.status === "Approved By Budget Holder"){
-      //     for (i = 0; i < currentTravelRequest.trips.length; i++) {
-      //         otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
-      //         otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
-      //     }
-      // }
-
       otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
 
       const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
       const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
-      const bookingAgentEmail = sendNotificationToBookingAgent(currentTravelRequest);
-      const securityDeptEmail = sendNotificationToSecurityDept(currentTravelRequest);
       let createdByEmail = "";
       let budgetHolderEmail = "";
       let createdByName = "Employee"
@@ -1037,7 +721,7 @@ Meteor.methods({
      let isTripByAir;
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR') isTripByAir = true
+       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
      }
 
     Core.canProcessTrip();
@@ -1075,7 +759,7 @@ Meteor.methods({
      let isTripByAir;
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR') isTripByAir = true
+       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
      }
 
     Core.canProcessTrip();
@@ -1113,7 +797,7 @@ Meteor.methods({
      let isTripByAir;
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR') isTripByAir = true
+       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
      }
  
     Core.canProcessTrip();
@@ -1140,13 +824,13 @@ Meteor.methods({
     return true;
   },
   "TRIPREQUEST/retryJournalPosting": function (currentTravelRequest) {
-    // try {
+    try {
       Core.journalPosting(currentTravelRequest);
-    // } catch (error) {
-    //   console.log('journalPosting ERROR')
-    //   console.log(error)
-    //   throw new Meteor.Error(403, "Journal Posting failed")
-    // }
+    } catch (error) {
+      console.log('journalPosting ERROR')
+      console.log(error)
+      throw new Meteor.Error(403, "Journal Posting failed")
+    }
   },
   "TRIPREQUEST/bstProcess": function (currentTravelRequest) {
     if (!this.userId && Core.hasPayrollAccess(this.userId)){
@@ -1160,9 +844,8 @@ Meteor.methods({
      let isTripByAir;
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR') isTripByAir = true
+       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
      }
- 
 
     Core.canProcessTrip();
 
@@ -1170,13 +853,10 @@ Meteor.methods({
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const { destinationType } = currentTravelRequest;
-      const isInternationalTrip = destinationType === 'International';
-    
-      const { BST, LOGISTICS } = Core.Approvals;
+      const { BST } = Core.Approvals;
       const { PROCESSED_BY_BST } = Core.ALL_TRAVEL_STATUS;
-      let nextApproval = LOGISTICS;
-      if (!isTripByAir) nextApproval = LOGISTICS;
+      let nextApproval = "";
+      if (!isTripByAir) nextApproval = "";
       nextApproval = currentTravelRequest.status === PROCESSED_BY_BST ? nextApproval : "";
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, BST, nextApproval);
 
@@ -1206,7 +886,7 @@ Meteor.methods({
      let isTripByAir;
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR') isTripByAir = true
+       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
      }
  
     Core.canProcessTrip();
@@ -1215,10 +895,7 @@ Meteor.methods({
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const { destinationType } = currentTravelRequest;
-      const isInternationalTrip = destinationType === 'International';
-    
-      const { BST, LOGISTICS } = Core.Approvals;
+      const { LOGISTICS, BST } = Core.Approvals;
       const { PROCESSED_BY_LOGISTICS } = Core.ALL_TRAVEL_STATUS;
       let nextApproval = BST;
       nextApproval = currentTravelRequest.status === PROCESSED_BY_LOGISTICS ? nextApproval : "";
@@ -1237,87 +914,48 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions, position) => {
-      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
-      const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
-    }
-
-    // currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
-    // currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
-
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-
     Core.canProcessTrip();
     if (currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
-
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
-      const financeApprover = Meteor.users.findOne(currentTravelRequest.financeApproverId);
-      let createdByEmail = "";
-      let supervisorEmail = "";
-      let createdByName = "Employee"
-      let supervisorName = "Supervisor"
-      let financeApproverEmail = "";
-      let financeApproverName = "Finance"
-      let createdBySubject = "";
-      let supervisorSubject = "";
-      const financeApproverSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
-
-
-
-      if (currentTravelRequest.retirementStatus === "Retirement Approved By HOD"){
-        createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has approved your travel retirement";
-        supervisorSubject = "You have approved " + createdBy.profile.fullName + "'s travel retirement";
-      } else{
-        createdBySubject = "Supervisor: " + supervisor.profile.fullName + " has rejected your travel retirement";
-        supervisorSubject = "You have rejected " + createdBy.profile.fullName + "'s travel retirement";
-      }
-      if (createdBy.emails.length > 0){
-        createdByEmail = createdBy.emails[0].address;
-        createdByEmail = createdByEmail + "," + otherPartiesEmail;
-        console.log(createdByEmail);
-      }
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-        const { individuals } = tripFor;
-        //  Send Notification to other individual going on this trip
-        createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-      if (supervisor.emails.length > 0){
-        supervisorEmail = supervisor.emails[0].address;
-        supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
-        console.log(supervisorEmail);
-      }
-
-
-      if (financeApprover.emails.length > 0){
-        financeApproverEmail = financeApprover.emails[0].address;
-        financeApproverEmail = financeApproverEmail  + ", bulkpay@c2gconsulting.com";
-        console.log(financeApproverEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Supervisor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, supervisorEmail, supervisorSubject);
-
-      //Send to Finance
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, financeApproverEmail, financeApproverSubject);
+      const { HOD, FINANCE } = Core.Approvals;
+      const { RETIREMENT_APPROVED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = FINANCE;
+      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_HOD ? nextApproval : "";
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, HOD, nextApproval);
     } else{
       let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
+  "TRIPREQUEST/financeRetirements": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+
+    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+    console.log('budgetCode', budgetCode);
+    // if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+
+    Core.canProcessTrip();
+    if(currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+      let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+      const { FINANCE, BUDGETHOLDER } = Core.Approvals;
+      const { RETIREMENT_APPROVED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = BUDGETHOLDER;
+      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_FINANCE ? nextApproval : "";
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, FINANCE, nextApproval);
+
+    }else{
+        let result = TravelRequisition2s.insert(currentTravelRequest);
     }
 
     return true;
@@ -1329,25 +967,15 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions, position) => {
-      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
-      const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
-    }
-
-    // currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
-    // currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
-
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-
-
     Core.canProcessTrip();
     if (currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+      const { BUDGETHOLDER, BST } = Core.Approvals;
+      const { RETIREMENT_APPROVED_BY_BUDGETHOLDER } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = BST;
+      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_BUDGETHOLDER ? nextApproval : "";
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, BUDGETHOLDER, nextApproval);
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -1361,17 +989,6 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    const fetchUserId = (conditions, position) => {
-      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
-      const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
-    }
-
-    // currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
-    // currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
-
     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
     console.log('budgetCode', budgetCode);
     if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
@@ -1380,6 +997,12 @@ Meteor.methods({
     Core.canProcessTrip();
     if (currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+      const { BUDGETHOLDER, BST } = Core.Approvals;
+      const { RETIREMENT_APPROVED_BY_BUDGETHOLDER } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = BUDGETHOLDER;
+      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_BUDGETHOLDER ? nextApproval : "";
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, BST, nextApproval);
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -1402,118 +1025,5 @@ Meteor.methods({
 
     return true;
   },
-  "TRIPREQUEST/financeRetirements": function(currentTravelRequest){
-    if(!this.userId && Core.hasPayrollAccess(this.userId)){
-        throw new Meteor.Error(401, "Unauthorized");
-    }
-    check(currentTravelRequest.businessId, String);
-    this.unblock()
-
-    const fetchUserId = (conditions, position) => {
-      const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
-      if (position && !isPartOfApprovalFlow) return ""
-      const fetchedUser = Meteor.users.findOne(conditions);
-      if (fetchedUser) return fetchedUser._id;
-      return ''
-    }
-
-    // currentTravelRequest.logisticsId = fetchUserId(logisticCond, Core.Approvals.LOGISTICS, true)
-    // currentTravelRequest.financeApproverId = fetchUserId(financeCond, Core.Approvals.FINANCE, true)
-    // currentTravelRequest.securityId = fetchUserId(securityCond, Core.Approvals.SECURITY, true)
-
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-
-    Core.canProcessTrip();
-    if(currentTravelRequest._id){
-      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
-
-      let otherPartiesEmail = "bulkpay@c2gconsulting.com";
-
-      //For retirements no need to involve city by city admin
-      // for (i = 0; i < currentTravelRequest.trips.length; i++) {
-      //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].toId);
-      //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
-      // }
-
-      otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
-
-      const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
-      const financeApprover = Meteor.users.findOne(currentTravelRequest.financeApproverId);
-      let createdByEmail = "";
-      let financeApproverEmail = "";
-      let createdByName = "Employee"
-      let financeApproverName = "Finance"
-      let createdBySubject = "";
-      let financeApproverSubject = "";
-
-      if(currentTravelRequest.retirementStatus === "Retirement Approved Finance"){
-          createdBySubject = "Finance: " + financeApprover.profile.fullName + " has approved " +  createdBy.profile.fullName + "'s travel retirement";
-          financeApproverSubject = "You have approved " + createdBy.profile.fullName + "'s travel retirement";
-      }else{
-          createdBySubject = "Finance: " + financeApprover.profile.fullName + " has rejected your travel retirement";
-          financeApproverSubject = "You have rejected " + createdBy.profile.fullName + "'s travel retirement";
-      }
-      if (createdBy.emails.length > 0){
-          createdByEmail = createdBy.emails[0].address;
-          createdByEmail = createdByEmail + "," + otherPartiesEmail;
-          console.log(createdByEmail);
-      }
-
-
-      const { tripFor } = currentTravelRequest;
-      if (tripFor && tripFor.individuals && tripFor.individuals.length) {
-          const { individuals } = tripFor;
-          //  Send Notification to other individual going on this trip
-          createdByEmail = createdByEmail + individuals.reduce((prev, curr) => prev + ',' + curr.email, '');
-      }
-
-
-      if (financeApprover.emails.length > 0){
-          financeApproverEmail = financeApprover.emails[0].address;
-          financeApproverEmail = financeApproverEmail  + ", bulkpay@c2gconsulting.com";
-          console.log(financeApproverEmail);
-      }
-
-      //Send to requestor
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, createdByEmail, createdBySubject);
-
-      //Send to Finance
-      TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, financeApproverEmail, financeApproverSubject);
-    }else{
-        let result = TravelRequisition2s.insert(currentTravelRequest);
-    }
-
-    return true;
-  }
 
 });
-
-
-const sendNotificationToBookingAgent = (currentTravelRequest) => {
-  const { businessId } = currentTravelRequest;
-  const bookingAget = 'Booking';
-  const emailSettings = EmailSettings._collection.find({ businessId, department: { '$regex': `${bookingAget}`, '$options': 'i' } }).fetch();
-  let emails = '';
-  for (let i = 0; i < emailSettings.length; i++) {
-    const element = emailSettings[i];
-    const comma = emails ? ', ' : '';
-    emails += element.email + comma;
-  }
-  return emails
-}
-
-
-const sendNotificationToSecurityDept = (currentTravelRequest) => {
-  const { businessId } = currentTravelRequest;
-  const security = 'Security';
-  const emailSettings = EmailSettings._collection.find({ businessId, department: { '$regex': `${security}`, '$options': 'i' } }).fetch();
-  let emails = '';
-  for (let i = 0; i < emailSettings.length; i++) {
-    const element = emailSettings[i];
-    const comma = emails ? ', ' : '';
-    emails += element.email + comma
-  }
-  return emails
-}
