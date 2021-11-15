@@ -48,10 +48,3 @@ Core.Schemas.EmployeeDelegate = new SimpleSchema({
         denyUpdate: true
     }
 });
-
-console.log('Core.Schemas.EmployeeDelegate', Core.Schemas.EmployeeDelegate)
-// Core.Schemas.EmployeeDelegate.createIndex({
-//     userId: 1,
-//     createdBy: 1
-// })
-// console.log()
