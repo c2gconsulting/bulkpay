@@ -217,7 +217,7 @@ Core.getTravelQueries = () => {
     { status: PROCESSED_BY_BST },
     { status: PROCESSED_BY_LOGISTICS },
     { $and: [{ createdByMD: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
-    { $and: [{ $or: [{ destinationType: 'Local' }, { destinationType: 'International' }] }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]},
+    // { $and: [{ $or: [{ destinationType: 'Local' }, { destinationType: 'International' }] }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]},
   ]
 
   const gceoQueries = [
@@ -233,7 +233,7 @@ Core.getTravelQueries = () => {
     { status: PROCESSED_BY_BST },
     { status: PROCESSED_BY_LOGISTICS },
     { $and: [{ createdByGCOO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
-    { $and: [{ destinationType: 'International' }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
+    // { $and: [{ destinationType: 'International' }, { 'trips.transportationMode': { $ne: 'LAND' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
   ]
 
   const bstQueries = [
@@ -250,7 +250,7 @@ Core.getTravelQueries = () => {
     { status: PROCESSED_BY_LOGISTICS },
     { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'AIR' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'AIR' }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] }] }
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'LAND' } }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByGCOO: true }, { createdByGCEO: true }] }] }
   ]
 
   const logisticsQueries = [
@@ -267,7 +267,7 @@ Core.getTravelQueries = () => {
     { status: PROCESSED_BY_LOGISTICS },
     // { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_HOD }] }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_HOD }, { createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
   ]
 
   // RETIREMENT
@@ -341,6 +341,10 @@ Core.getTravelQueries = () => {
     $and : [{ logisticsId: userId }, { $or : logisticsQueries }]
   };
 
+  const securityCondition = {
+    securityId: userId
+  };
+
   const hodOrSupervisorRetirementCond = {
     $and : [{ supervisorId: userId }, { $or : hodRetirementQueries }]
   };
@@ -358,7 +362,8 @@ Core.getTravelQueries = () => {
   };
 
   return {
-    hodOrSupervisorCondition, budgetHolderCondition, managerCondition, gcooCondition, gceoCondition, bstCondition, logisticsCondition,
+    hodOrSupervisorCondition, budgetHolderCondition, managerCondition,
+    gcooCondition, gceoCondition, bstCondition, logisticsCondition, securityCondition,
     myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition,
     hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
   }

@@ -603,6 +603,13 @@ Router.route('/business/:_id/employee/travelrequisition2bstindex', {
     where: 'client'
 });
 
+Router.route('/business/:_id/employee/travelrequisition2securityindex', {
+    name: 'travelrequest2.travelrequisition2securityindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2SecurityIndex',
+    where: 'client'
+});
+
 Router.route('/business/:_id/employee/travelrequisition2logisticsindex', {
     name: 'travelrequest2.travelrequisition2logisticsindex',
     controller: 'RequisitionController',

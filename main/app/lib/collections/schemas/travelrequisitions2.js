@@ -453,6 +453,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String,
         optional: true
     },
+    securityId: {
+        type: String,
+        optional: true
+    },
     gcooId: {
         type: String,
         optional: true
@@ -553,7 +557,17 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    financeApproverRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     budgetHolderRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    bstRetirementComment: {
         type: String,
         defaultValue: '',
         optional: true

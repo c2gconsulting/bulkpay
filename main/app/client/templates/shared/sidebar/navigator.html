@@ -57,17 +57,17 @@
 
         {{#if isTravelRequisitionActive}}
           {{#if isAdvancedTravelEnabled}}
-            {{#if hasEmployeeAccess}}
-              <li class="parent {{isMenuExpandedFocusClass 'travelTripsMenu'}}">
-                <a href="" id="travelTripsMenu">
-                  <i class="icon travel" aria-hidden="true"></i>
-                  <span>Travel Requests</span>
-                </a>
-              </li>
-            {{/if}}
+            <li class="parent {{isMenuExpandedFocusClass 'travelTripsMenu'}}">
+              <a href="" id="travelTripsMenu">
+                <i class="icon travel" aria-hidden="true"></i>
+                <span>Travel Requests</span>
+              </a>
+            </li>
             {{#if isMenuExpanded 'travelTripsMenu'}}
-              <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
-              <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
+              {{#if hasBSTProcessAccess}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
+                <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
+               {{/if}}
               <li><a href="{{pathFor 'travelrequest2.tpctravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Third Party/Client Trip</a></li>
             {{/if}}
           {{/if}}
@@ -254,6 +254,15 @@
               <a href="{{pathFor 'travelrequest2.travelrequisition2gceoindex'}}">
                 <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                 <span>GCEO Approvals</span>
+              </a>
+            </li>
+            {{/if}}
+
+            {{#if hasSecurityAccess}}
+            <li>
+              <a href="{{pathFor 'travelrequest2.travelrequisition2securityindex'}}">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                <span>Security Process</span>
               </a>
             </li>
             {{/if}}

@@ -1011,19 +1011,14 @@ Meteor.methods({
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-    console.log('budgetCode', budgetCode);
-    if (budgetCode) currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-
-
     Core.canProcessTrip();
     if (currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
-      const { BUDGETHOLDER, BST } = Core.Approvals;
-      const { RETIREMENT_APPROVED_BY_BUDGETHOLDER } = Core.ALL_TRAVEL_STATUS;
-      let nextApproval = BUDGETHOLDER;
-      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_BUDGETHOLDER ? nextApproval : "";
+      const { BST } = Core.Approvals;
+      const { RETIREMENT_APPROVED_BY_BST } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = null;
+      nextApproval = currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_BST ? nextApproval : "";
       Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, BST, nextApproval);
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);

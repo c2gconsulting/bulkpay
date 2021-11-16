@@ -8,7 +8,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-      currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
+      currentTravelRequest.financeApprovalRetirementComment = $("#financeApprovalRetirementComment").val();
       const { RETIREMENT_APPROVED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
       currentTravelRequest.retirementStatus = RETIREMENT_APPROVED_BY_FINANCE;
 
@@ -37,7 +37,7 @@ Template.TravelRequisition2FinanceRetireDetail.events({
      'click #reject': (e, tmpl) => {
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-         currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
+         currentTravelRequest.financeApprovalRetirementComment = $("#financeApprovalRetirementComment").val();
          const { RETIREMENT_REJECTED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
          currentTravelRequest.retirementStatus = RETIREMENT_REJECTED_BY_FINANCE;
 

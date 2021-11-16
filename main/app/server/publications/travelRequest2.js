@@ -26,6 +26,10 @@ Core.publish("TravelRequestsByGCEO", function (businessUnitId, gceoId) {
     return TravelRequisition2s.find({businessId: businessUnitId, bstId: bstId});
 });
 
+Core.publish("TravelRequestsBySecurity", function (businessUnitId, securityId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, securityId: securityId});
+});
+
  Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {
      return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
  });

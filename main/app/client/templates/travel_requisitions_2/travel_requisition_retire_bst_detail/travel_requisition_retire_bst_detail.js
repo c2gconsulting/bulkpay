@@ -9,7 +9,8 @@ Template.TravelRequisition2BSTRetirementDetail.events({
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
       currentTravelRequest.bstRetirementComment = $("#bstRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By BST";
+      const { RETIREMENT_APPROVED_BY_BST } = Core.ALL_TRAVEL_STATUS;
+      currentTravelRequest.retirementStatus = RETIREMENT_APPROVED_BY_BST;
 
 
      Meteor.call('TRIPREQUEST/bstRetirements', currentTravelRequest, (err, res) => {
@@ -35,9 +36,10 @@ Template.TravelRequisition2BSTRetirementDetail.events({
     },
      'click #reject': (e, tmpl) => {
 
+        const { RETIREMENT_REJECTED_BY_BST } = Core.ALL_TRAVEL_STATUS;
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
          currentTravelRequest.bstRetirementComment = $("#bstRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By BST";
+         currentTravelRequest.retirementStatus = RETIREMENT_REJECTED_BY_BST;
 
       Meteor.call('TRIPREQUEST/bstRetirements', currentTravelRequest, (err, res) => {
           if (res){
