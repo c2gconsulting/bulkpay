@@ -1,0 +1,75 @@
+<template name="ApprovalConfigIndex">
+        <div class="pageheader">
+                <div class="media">
+                    <div class="pageicon pull-left" style="padding: 9px;">
+                        <i class="fa fa-fax"></i>
+                    </div>
+                    <div class="media-body">
+                        <ul class="breadcrumb">
+                            <li><a href=""><i class="glyphicon glyphicon-home"></i></a></li>
+                            <li><a ui-sref="business.overview">Business</a></li>
+                            <li>{{name}}</li>
+                            <li>Approvals Config</li>
+                        </ul>
+        
+                         <h4>Approvals Config</h4> 
+                    </div>
+                </div><!-- media -->
+            </div><!-- pageheader -->
+    <div class="col-md-12">
+        <div class="tab-pane" id="followers">
+
+            <div class="row" ng-show="!singleHoteStaffCategory" style="margin-top: 25px; margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12">
+                    <p class="mb20 pull-right"><button class="btn btn-primary btn-sm" data-toggle="modal" id="newPFA">New Approval Config</button></p>
+                </div>
+            </div>
+            <div class="row" style="margin-left: 10px; margin-right: 10px;">
+                <div class="col-md-12" ng-if="hotels.length > 0">
+                    <div class="table-responsive">
+                        <table class="table table-primary mb60 table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                              
+                                <th>Name of Approval Config</th>
+                                <th>No of Approvals</th>
+                                <th>International / Local</th>
+                                <th>Level</th>
+                                <th>Mode of Transportation</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{#each pfas}}
+                                {{> singleApprovalConfig index=@index data=this}}
+                            {{/each}}
+                            </tbody>
+                        </table>
+                    </div><!-- table-responsive -->
+                </div>
+            </div><!-- row -->
+
+        </div><!-- tab-pane -->
+    </div>
+</template>
+
+<template name="singleApprovalConfig">
+    <tr class="pointer">
+        <td>{{index}}</td>
+       
+        <td>{{data.name}}</td>
+        <td>{{data.numberOfApprovals}}</td>
+        <td>{{#if data.isInternational}} International {{else}} Local {{/if}}</td>
+        <td>{{data.level}}</td>
+        <td>{{data.transportationMode}}</td>
+
+        <td>
+          {{#if condition data.status "eq" "Active"}}
+            <span class="label label-success">{{data.status}}</span>
+          {{else}}
+            <span class="label label-danger">{{data.status}}</span>
+          {{/if}}
+        </td>
+    </tr>
+</template>

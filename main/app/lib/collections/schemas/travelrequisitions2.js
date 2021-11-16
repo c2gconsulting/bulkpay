@@ -52,7 +52,23 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         optional: true,
     },
+    fromCountry: {
+        type: String,
+        optional: true,
+    },
+    fromCity: {
+        type: String,
+        optional: true,
+    },
     toId: {
+        type: String,
+        optional: true
+    },
+    toCountry: {
+        type: String,
+        optional: true
+    },
+    toCity: {
         type: String,
         optional: true
     },
@@ -74,13 +90,33 @@ Core.Schemas.Trip = new SimpleSchema({
     },
     transportationMode:{
         type: String,
-        defaultValue: 'AIRLINE',
-        allowedValues: ['AIRLINE', 'CAR', 'TRAIN'],
+        defaultValue: 'AIR',
+        allowedValues: ['AIR', 'LAND', 'RAIL'],
         optional: true
     },
     provideSecurity: {
         type: Boolean,
         defaultValue: false
+    },
+    driverInformation: {
+        type: String,
+        optional: true
+    },
+    driverCost: {
+        type: Number,
+        optional: true
+    },
+    vehicleInformation: {
+        type: String,
+        optional: true
+    },
+    accountNumber: {
+        type: String,
+        optional: true
+    },
+    bankName: {
+        type: String,
+        optional: true
     },
     carOption:{
         type: String,
@@ -190,7 +226,7 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     costCenter: {
         type: String,
         defaultValue: 'Project',
-        allowedValues: ['Project', 'Cost_Center']
+        allowedValues: ['Project', 'Department']
     },
     tpcTrip: {
         type: String,
@@ -202,14 +238,25 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: 'Local',
         allowedValues: ['Local', 'International']
     },
+    isEmergencyTrip: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false,
+    },
+    journalPosted: {
+        type: Boolean,
+        optional: true,
+        defaultValue: false,
+    },
     tripFor: {
         type: Core.Schemas.CreatedOnBehalf,
         optional: true,
     },
     tripCategory: {
         type: String,
-        defaultValue: 'INDIVIDUAL',
-        allowedValues: ['INDIVIDUAL', 'GROUP', 'THIRD_PARTY_CLIENT']
+        defaultValue: Core.ALL_TRIP_CATEGORIES.INDIVIDUAL,
+        // allowedValues: ['INDIVIDUAL', 'GROUP', 'THIRD_PARTY_CLIENT']
+        allowedValues: Core.tripCategories
     },
     businessId: {
         type: String
@@ -312,6 +359,15 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true,
         defaultValue: 0
     },
+    totalSecurityCostNGN: {
+        type: Number, decimal: true,
+        optional: true
+    },
+    totalSecurityCostUSD: {
+        type: Number, decimal: true,
+        optional: true,
+        defaultValue: 0
+    },
     totalHotelCostNGN: {
         type: Number, decimal: true,
         optional: true,
@@ -359,13 +415,15 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved", "Rejected",],
+        allowedValues: Core.travelStatus,
+        // allowedValues: ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD", "Approved By Budget Holder","Rejected By Budget Holder", "Approved By MD","Rejected By MD", "Approved By GCOO","Rejected By GCOO", "Approved By GCEO","Rejected By GCEO", "Processed By Logistics", "Processed By BST"],
         optional: true
     },
     retirementStatus: {
         type: String,
         defaultValue: 'Not Retired',
-        allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved", "Rejected"],
+        allowedValues: Core.travelRetirementStatus,
+        // allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
         optional: true
     },
     isStatusSeenByCreator: {
@@ -383,6 +441,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String,
         optional: true
     },
+    managerId: {
+        type: String,
+        optional: true
+    },
     budgetHolderId: {
         type: String,
         optional: true
@@ -391,12 +453,65 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String,
         optional: true
     },
+    securityId: {
+        type: String,
+        optional: true
+    },
+    gcooId: {
+        type: String,
+        optional: true
+    },
+    gceoId: {
+        type: String,
+        optional: true
+    },
+    bstId: {
+        type: String,
+        optional: true
+    },
+    departmentOrProjectId: {
+        type: String,
+        optional: true
+    },
+    activityId: {
+        type: String,
+        optional: true
+    },
+    logisticsId: {
+        type: String,
+        optional: true
+    },
+    bstComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    logisticsComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     supervisorComment: {
         type: String,
         defaultValue: '',
         optional: true
     },
     budgetHolderComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    managerComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    gcooComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    gceoComment: {
         type: String,
         defaultValue: '',
         optional: true
@@ -411,9 +526,30 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    additionalComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     tripReport: {
         type: String,
         defaultValue: '',
+        optional: true
+    },
+    createdByHOD: {
+        type: Boolean,
+        optional: true
+    },
+    createdByMD: {
+        type: Boolean,
+        optional: true
+    },
+    createdByGCOO: {
+        type: Boolean,
+        optional: true
+    },
+    createdByGCEO: {
+        type: Boolean,
         optional: true
     },
     supervisorRetirementComment: {
@@ -421,9 +557,27 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    financeApproverRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     budgetHolderRetirementComment: {
         type: String,
         defaultValue: '',
+        optional: true
+    },
+    bstRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    isProcessedByBST: {
+        type: Boolean,
+        optional: true
+    },
+    isProcessedByLogistics: {
+        type: Boolean,
         optional: true
     },
     'approvals': {

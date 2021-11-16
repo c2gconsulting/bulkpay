@@ -92,6 +92,46 @@ Template.navigator.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #travelLogisticsMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelBSTMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelmanagerMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
+    'click #travelUserApprovalMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
     'click #travelBudgetHolderMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
 
@@ -178,6 +218,9 @@ Template.navigator.helpers({
         let currentExpandedMenuId = Template.instance().expandedSubMenu.get()
         return (menuId === currentExpandedMenuId) ? 'active' : ''
     },
+    isAuditTrailLinkVisible: function () {
+      return true // Core.isPlatformAdmin() || Core.canViewAuditTrail();
+    },
     addWhiteSpace: function (index) {
         let whiteSpaces = '';
         if (!index) return '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -200,6 +243,27 @@ Template.navigator.helpers({
             return false
         }
     },
+    hasTravelApprovalAccess: function () {
+        let travelApprovalConfig = Template.instance().travelApprovalConfig.get()
+        console.log('travelApprovalConfig', travelApprovalConfig)
+        if(travelApprovalConfig) {
+            return true
+        } else {
+            return false
+        }
+    },
+    travelApprovalAccess: function () {
+        let travelApprovalConfig = Template.instance().travelApprovalConfig.get()
+        const userId = Meteor.userId();
+        console.log('Meteor.userId()', Meteor.userId());
+        console.log('travelApprovalConfig', travelApprovalConfig)
+        const isCurrentUser = ({ approvalUserId: ID1, approvalAlternativeUserId: ID2 }) => ID1 === userId || ID2 === userId;
+        if(travelApprovalConfig) {
+            return travelApprovalConfig.approvals && travelApprovalConfig.approvals.find((approval) => isCurrentUser(approval))
+        } else {
+            return false
+        }
+    },
     isUserASupervisor: function() {
         let currentUser = Meteor.users.findOne(Meteor.userId())
         if(currentUser && currentUser.employeeProfile && currentUser.employeeProfile.employment) {
@@ -215,14 +279,29 @@ Template.navigator.helpers({
         }
     },
     isUserADirectSupervisor: function() {
-        if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+        // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+        if (Template.instance().hod.get()){
             return true;
         } else {
             return false;
         }
     },
+    isUserAManager: function() {
+        if (Template.instance().directManager.get()){
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isGCEO: function() {
+        if (Template.instance().gceo.get()) return true;
+        return false;
+    },
+    isGCOO: function() {
+        if (Template.instance().gcoo.get()) return true;
+        return false;
+    },
     isUserABudgetHolder: function() {
-
         if (Template.instance().isBudgetHolder.get() === "TRUE"){
             return true;
         }else{
@@ -239,6 +318,18 @@ Template.navigator.helpers({
     hasTravelRequisitionApproveAccess: function () {
         let canApproveTrip = Core.hasTravelRequisitionApproveAccess(Meteor.userId());
         return canApproveTrip;
+    },
+    hasLogisticsProcessAccess: function () {
+        return Core.hasLogisticsProcessAccess(Meteor.userId());
+    },
+    hasBSTProcessAccess: function () {
+        return Core.hasBSTProcessAccess(Meteor.userId());
+    },
+    hasSecurityAccess: function () {
+        return Core.hasSecurityAccess(Meteor.userId());
+    },
+    hasFinanceManageAccess: function () {
+        return Core.hasFinanceManageAccess(Meteor.userId());
     },
     isAdvancedTravelEnabled: function () {
         let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
@@ -287,10 +378,10 @@ Template.navigator.helpers({
         return hasPayrollReportsViewAccess;
     },
 
-        hasTravelReportsViewAccess: function () {
-            let hasTravelReportsViewAccess = Core.hasTravelReportsViewAccess(Meteor.userId());
-            return hasTravelReportsViewAccess;
-        },
+    hasTravelReportsViewAccess: function () {
+        let hasTravelReportsViewAccess = Core.hasTravelReportsViewAccess(Meteor.userId());
+        return hasTravelReportsViewAccess;
+    },
     hasAuditReportsViewAccess: function () {
         let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());
         return hasAuditReportsViewAccess;
@@ -471,7 +562,12 @@ Template.navigator.onCreated(function () {
     self.expandedSubMenu = new ReactiveVar()
     //--
     self.businessUnitCustomConfig = new ReactiveVar();
+    self.travelApprovalConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
+    self.hod = new ReactiveVar();
+    self.directManager = new ReactiveVar();
+    self.gceo = new ReactiveVar();
+    self.gcoo = new ReactiveVar();
 
     self.isBudgetHolder = new ReactiveVar();
     self.isFinanceApprover = new ReactiveVar();
@@ -489,10 +585,33 @@ Template.navigator.onCreated(function () {
             self.payrollApprovalConfig.set(payrollApprovalConfig)
         }
 
+
+        Meteor.call('account/hod', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+            if (res) self.hod.set(res)
+        })
+
+        Meteor.call('account/manager', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+            if (res) self.directManager.set(res)
+        })
+
+        Meteor.call('account/gcoo', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+            if (res) self.gcoo.set(res)
+        })
+
+        Meteor.call('account/gceo', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+            if (res) self.gceo.set(res)
+        })
+
         Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, res) {
             if(!err) {
                 // console.log()
                 self.businessUnitCustomConfig.set(res)
+            }
+        })
+
+        Meteor.call('approvalsConfig/getConfig', businessUnitId, function(err, res) {
+            if(!err) {
+                self.travelApprovalConfig.set(res)
             }
         })
 

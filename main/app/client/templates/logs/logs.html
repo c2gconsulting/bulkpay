@@ -1,0 +1,245 @@
+<template name="logsList">
+    <div class="pageheader">
+        <div class="media">
+            <div class="pageicon pull-left" style="padding: 9px;">
+                <i class="fa fa-fax"></i>
+            </div>
+            <div class="media-body">
+                <ul class="breadcrumb">
+                    <li><a href="{{pathFor 'home'}}"><i class="glyphicon glyphicon-home"></i></a></li>
+                    <li><a ui-sref="business.overview">Business</a></li>
+                    <li>{{name}}</li>
+                    <li>Logs</li>
+                </ul>
+
+                <h4>Audit Trail</h4>
+            </div>
+        </div><!-- media -->
+    </div><!-- pageheader -->
+
+    <div class="contentpanel">
+        <div class="panel">
+
+            <div class="panel-body">
+                {{#unless Template.subscriptionsReady}}
+                <div class="row">
+                    <div class="col-sm-12">
+                        {{> spinner}}
+                    </div>
+                </div>
+                {{/unless}}
+
+                <section class="content sub-content-sec">
+                    <div class="container-fluid bg_white" style="background-color: #e4e7ea; margin-bottom: 20px;">
+                        <form class="">
+                            <div class="row">
+                                <div class="col-lg-12 bg_white ptop10 mb">
+                                    <div class="col-lg-3 col-md-4" style="padding-top: 0px;">
+                                        <div class="form-group">
+                                            <label class="text-muted" style="position: absolute;">From</label>
+                                            <div class="date">
+                                                <div class="inner-addon left-addon">
+                                                    <i class="glyphicon icon-calendar"></i>
+                                                    {{#datepicker startDate }}
+                                                    <input type="text" class="form-control datepicker" size="8"
+                                                        name="from" style="margin-top: 5px;" />
+                                                    {{/datepicker}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4" style="padding-top: 0px;">
+                                        <div class="form-group">
+                                            <label class="text-muted" style="position: absolute;">To</label>
+                                            <div class="date">
+                                                <div class="inner-addon left-addon">
+                                                    <i class="glyphicon icon-calendar"></i>
+                                                    {{#datepicker endDate }}
+                                                    <input type="text" class="form-control datepicker" size="8" name="to" style="margin-top: 5px;" />
+                                                    {{/datepicker}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-4" style="padding-top: 0px;">
+
+                                        <div class="form-group">
+                                            <label class="text-muted">Collection</label>
+                                            {{#selectpicker}}
+                                            <select id="collection" class="form-control selectpicker"
+                                                data-live-search="true" name="by" multiple>
+                                                <option value="users">User</option>
+                                                <option value="travelrequisition2s">Trip Requisition</option>
+                                                <!-- <option value="company">Company</option>
+                                                <option value="integrationusers">Integration Users</option>
+                                                <option value="settings">Settings</option>
+                                                <option value="billpaymenttransactions">Payment Transactions</option>
+                                                <option value="disputes">Disputes</option>
+                                                <option value="transactions">Transactions</option> -->
+                                            </select>
+                                            {{/selectpicker}}
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-3 col-md-4" style="padding-top: 0px;">
+                                        <div class="form-group">
+                                            <label class="text-muted">Event</label>
+                                            {{#selectpicker}}
+                                            <select id="event" class="form-control selectpicker" data-live-search="true"
+                                                name="by" multiple>
+                                                <option value="created">Created</option>
+                                                <option value="updated">Updated</option>
+                                                <option value="deleted">Deleted</option>
+                                                <option value="login">Login</option>
+                                                <option value="logout">Log-Out</option>
+                                                <option value="update-profile">Update Profile</option>
+                                                <option value="set-password">Set Password</option>
+                                                <option value="reset-password">Reset Password</option>
+                                            </select>
+                                            {{/selectpicker}}
+                                        </div>
+                                    </div>
+                                    <!--<div class="clearfix"></div>-->
+                                    <!--<p></p>-->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <!-- <div class="col-lg-3 col-md-4">
+                                        <div class="form-group">
+                                            <label class="text-muted">Log Type</label>
+                                            {{#selectpicker}}
+                                            <select id="type" class="form-control selectpicker" data-live-search="true"
+                                                name="by" multiple>
+                                                <option value="VAT">VAT</option>
+                                                <option value="PENALTY">PENALTY</option>
+                                                <option value="INTEREST">INTEREST</option>
+                                            </select>
+                                            {{/selectpicker}}
+                                        </div>
+                                    </div> -->
+
+                                    <div class="col-lg-3 col-md-4">
+                                        <form role="search" id="batch-search-form" class="hidden-sm hidden-md hidden-xs"
+                                            style="display: inline-block;padding-top: 20px; margin-top: 5px">
+                                            <div class="form-group">
+                                                <div class="inner-addon right-addon">
+                                                    <i class="glyphicon icon-search"></i>
+                                                    <input type="text" id="logSearch" class="form-control"
+                                                        placeholder="Search Trail...">
+                                                </div>
+                                            </div>
+                                        </form>
+
+                                    </div>
+
+                                    <div class="col-md-offset-5 mtl right">
+                                        <button style="margin-left: 15px;" class="btn btn-primary mts pull-right" id="download"> <i class="fa fa-file-excel-o"></i> Download </button>
+                                        <input type="submit" name="commit" value="Refresh Log"
+                                            class="btn btn-success mts pull-right" style="margin-bottom: 17px;">
+                                    </div>
+                                    <div class="clearfix"></div>
+                                    <p></p>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <section class="">
+                    <div class="extra-margin-bottom-10">
+                        <!-- <a href="#" id="download" class="btn btn-default pull-right excel ladda-button"><span
+                                class="ladda-label"><i class="glyphicon glyphicon-download"></i> Export to CSV</span></a> -->
+                        <a href="{{pathFor 'home'}}" class="btn btn-default pull-right" name="reports-home"><i
+                                class="glyphicon glyphicon-signal"></i> Back to Home</a>
+                        <br>
+                    </div>
+
+                    <div>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active no_mobile">
+                                <br />
+                                <table class="table table-hover tr_pointer">
+                                    <thead>
+                                        <tr>
+                                            <td><a href="#sort" class="text-muted" data-key="user.email">User
+                                                    <small><i class="{{sortedBy 'user.email'}}"></i></small></a></td>
+                                            <td><a href="#sort" class="text-muted" data-key="collectionName">Collection
+                                                    <small><i class="{{sortedBy 'collectionName'}}"></i></small></a></td>
+                                            <td><a href="#sort" class="text-muted" data-key="event">Event<small></small><i
+                                                        class="{{sortedBy 'event'}}"></i></a></td>
+                                            <td><a href="#sort" class="text-muted" data-key="createdAt">Date<small><i
+                                                            class="{{sortedBy 'createdAt'}}"></i></small></a></td>
+                                            <td><a href="#sort" class="text-muted" data-key="createdAt">Time
+                                                    <small><i class="{{sortedBy 'createdAt'}}"></i></small></a></td>
+                                            <!-- <td><a class="text-muted" data-key="createdAt">Extra Info
+                                                    <small></small></a></td> -->
+                                            <td><a class="text-muted" data-key="createdAt">View
+                                                    <small></small></a></td>
+                                            <!-- <td>Status</td>
+
+                                            <td><a href="#sort" class="text-muted" data-key="dueDate">Due Date <small><i
+                                                            class="{{sortedBy 'dueDate'}}"></i></small></a></td>
+                                            <td><a href="#sort" class="text-muted" data-key="company.name">Company <small><i
+                                                            class="{{sortedBy 'company.name'}}"></i></small></a></td> -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#if searchActive}}
+                                        {{#if searchQueryReturned}}
+                                        <!-- Showing Seatch -->
+                                        {{#each searchLogs}}
+                                        {{> LogEntry}}
+                                        {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                No logs match your
+                                                search term
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                        {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                <em>Searching for <b>"{{searchText}}"</b>...</em>
+                                            </td>
+                                        </tr>
+                                        {{/if}}
+                                        {{else}}
+                                        {{#each logs}}
+                                        {{> LogEntry}}
+                                        {{else}}
+                                        <tr>
+                                            <td colspan="7">
+                                                No logs were found matching provided filter.
+                                            </td>
+                                        </tr>
+                                        {{/each}}
+                                        {{/if}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {{#if Template.subscriptionsReady}}
+                        {{#if hasMorelogs}}
+                        <div id="showMoreResults" href="#">&nbsp;</div>
+                        {{/if}}
+                        {{#if hasMoreSearchResults}}
+                        <div id="showMoreResults" href="#">&nbsp;</div>
+                        {{/if}}
+                        {{else}}
+                        <div class="col-xs-12">
+                            <div class="loading">{{> spinner}}</div>
+                        </div>
+                        {{/if}}
+                        <!--{{/if }} -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</template>

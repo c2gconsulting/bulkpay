@@ -22,7 +22,7 @@ Template.EmployeeTimeRecordIndex.events({
 
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
           Router.go('employee.time.management',{_id: Session.get('context')});
         }else{
             Modal.show('TimeRecordDetail', invokeReason);

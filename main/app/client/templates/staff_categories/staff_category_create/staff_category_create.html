@@ -1,0 +1,108 @@
+<template name="StaffCategoryCreate">
+    <div class="modal fade add-hotel" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{#if edit}} Edit Employee Travel Allowance - {{hotel}} {{else }}New Employee Travel Allowance{{/if}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="name" class="form-control" placeholder="Name" ng-model="name" value="{{name}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="dailyRate" class="control-label">Hotel Daily Rate<span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="hotelDailyRate" class="form-control" placeholder="Hotel Daily Rate" ng-model="hotelDailyRate" value="{{hotelDailyRate}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="dailyRate" class="control-label">Meal Daily Rate<span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="mealDailyRate" class="form-control" placeholder="Meal Daily Rate" ng-model="mealDailyRate" value="{{mealDailyRate}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+
+                            <div class="col-sm-6">
+                                <div class="ckbox ckbox-danger">
+                                    <input type="checkbox" id="isInternational" name="isInternational" value="" checked="{{checked 'isInternational'}}"/>
+                                    <label for="isInternational">is international</label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="groundTransport" class="control-label">Ground Transport <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="groundTransport" name="groundTransport" class="form-control" value="{{groundTransport}}"/>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="airportPickupDropOffCost" class="control-label">Airport Pickup/Dropoff <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="airportPickupDropOffCost" name="airportPickupDropOffCost" class="form-control" value="{{airportPickupDropOffCost}}"/>
+                                </div>
+                            </div>
+                            
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="perdiem" class="control-label">Per Diem Cost <span class="asterisk important-input">*</span></label>
+                                    <input type="text" name="perdiem" class="form-control" placeholder="perdiem" ng-model="perdiem" value="{{perdiem}}"/>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            
+                            
+                        
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Currency</label>
+                                    <select  name="currency" class="form-control dropdown" >
+                                       
+                                        <option value="NGN" {{selected "currency" "NGN" }}>NGN</option>
+                                        <option value="USD" {{selected "currency" "USD" }}>USD</option>
+                                       
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Category / Level</label>
+                                    <select name="categoryType" class="form-control dropdown" >
+                                        {{#each staffCategories}}
+                                            <option value="{{this}}" {{selected categoryType this }}>{{this}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        </div>
+                      
+
+                       
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" id="new-hotel-close" data-dismiss="modal">Cancel</button>
+                        {{#unless edit}}
+                            <button class="btn btn-primary mr5" id="save">Save</button>
+                        {{else}}
+                            <button class="btn btn-primary mr5" id="update">Update</button>
+                        {{/unless}}
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteHotel">Delete</button>{{/if}}
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

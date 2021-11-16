@@ -164,7 +164,7 @@ Template.TimeRecordDetail.helpers({
         const currentTimeRecord = Template.instance().currentTimeRecord.get();
 
         if(currentTimeRecord && index){
-            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTimeRecord.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeFullName': function(employeeId) {
@@ -225,7 +225,8 @@ Template.TimeRecordDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -233,6 +234,7 @@ Template.TimeRecordDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})

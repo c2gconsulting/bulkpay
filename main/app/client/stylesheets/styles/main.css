@@ -9,6 +9,12 @@ body {
   color: #636e7b;
   background-color: #ffffff;
 }
+
+.panel-signin ::-webkit-scrollbar, .panel-signup ::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
 @media screen and (max-width: 1023px) {
   body {
     width: 100%;
@@ -359,6 +365,10 @@ fieldset[disabled] .btn-white.active {
 .panel-warning .panel-btns a:hover,
 .panel-danger .panel-btns a:hover {
   opacity: 1;
+}
+.modal .panel-body {
+  max-height: 500px;
+  overflow-x: scroll;
 }
 .panel-body,
 .panel-footer {
@@ -1440,7 +1450,10 @@ fieldset[disabled] .btn-white.active {
 .leftpanel .nav > li > a:hover {
   cursor: pointer;
 }
-.leftpanel .nav > li > a i {
+.fa-stack, .fa-stack-2x {
+  color: #428bca;
+}
+.leftpanel .nav > li > a i:not(.fa-stack, .fa-stack-2x) {
   width: 16px;
   margin-right: 5px;
   color: #428bca;

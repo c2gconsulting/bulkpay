@@ -47,6 +47,19 @@ Template.EmployeeProfile.events({
                     type: "success",
                     confirmButtonText: "OK"
                 });
+
+                const logObject = {
+                    event: 'update-profile',
+                    user: { email: user.emails[0].address },
+                    collectionName: 'users',
+                    oldData: {},
+                    newData: {...user}
+                };
+                Meteor.call('logs/createLog', logObject, function(err){
+                    if(err){
+                        console.log('error while logging data', err);
+                    }
+                });
             }
         });
     },
@@ -86,6 +99,18 @@ Template.EmployeeProfile.events({
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
+                });
+                const logObject = {
+                    event: 'update-profile',
+                    user: { email: user.emails[0].address },
+                    collectionName: 'users',
+                    oldData: {},
+                    newData: {...user}
+                };
+                Meteor.call('logs/createLog', logObject, function(err){
+                    if(err){
+                        console.log('error while logging data', err);
+                    }
                 });
             }
         });
@@ -127,6 +152,18 @@ Template.EmployeeProfile.events({
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
+                });
+                const logObject = {
+                    event: 'update-profile',
+                    user: { email: user.emails[0].address },
+                    collectionName: 'users',
+                    oldData: {},
+                    newData: {...user}
+                };
+                Meteor.call('logs/createLog', logObject, function(err){
+                    if(err){
+                        console.log('error while logging data', err);
+                    }
                 });
             }
         });

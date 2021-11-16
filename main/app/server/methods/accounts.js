@@ -33,8 +33,9 @@ import _ from 'underscore';
  *
  * see: http://docs.meteor.com/#/full/accounts_oncreateuser
  */
-
 Accounts.onCreateUser(function (options, user) {
+    console.log('onCreateUser - options, user', options, user)
+    options = options || {}
     let tenantId = options.tenantId;
     let roles = {};
 
@@ -57,10 +58,28 @@ Accounts.onCreateUser(function (options, user) {
     user.businessIds = options.businessIds || [];
     user.group = tenantId;
 
-    // assign user to his tenant Partition
-    Partitioner.setUserGroup(user._id, tenantId);
+    const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
+    user = authUser;
+    tenantId = authTenantId;
+
+    if (!userExist) {
+        // assign user to his tenant Partition
+        Partitioner.setUserGroup(user._id, tenantId);
+    }
 
     return user;
+});
+
+// Validate username, sending a specific error message on failure.
+Accounts.validateNewUser((user) => {
+    console.log('user validateNewUser', user)
+  if (Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
+    return true;
+  } else if (user.username && user.username.length >= 3) {
+    return true;
+  } else {
+    throw new Meteor.Error(403, 'Username must have at least 3 characters');
+  }
 });
 
 let getPasswordResetToken = function(user, userId, email) {
@@ -89,6 +108,7 @@ let getPasswordResetToken = function(user, userId, email) {
  * @returns
  */
 Accounts.onLogin(function (options) {
+    console.log('Accounts options login', options)
     /*
      let update = {
      $pullAll: {}
@@ -103,11 +123,74 @@ Accounts.onLogin(function (options) {
     });*/
 });
 
-
 /**
  * Core Account Methods
  */
 Meteor.methods({
+    "account/hod": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
+        if (Core.getUserApproval(hodOrSupervisorCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ supervisorId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(hodOrSupervisorCond)
+    },
+    "account/manager": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { managerCond } = Core.getApprovalQueries(data, true);
+        if (Core.getUserApproval(managerCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ managerId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(managerCond);
+    },
+    // BEGIN: Check IF Is a manager/hod to itself or to anyone on the system
+    "account/isHod": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(hodOrSupervisorCond);
+    },
+    "account/isManager": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { managerCond } = Core.getApprovalQueries(data, true);
+        return Core.getUserApproval(managerCond);
+    },
+    // END: Check IF Is a manager/hod to itself or to anyone on the system
+    "account/gcoo": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { GcooCond } = Core.getApprovalQueries(data, true);
+        if (Core.getUserApproval(GcooCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ gcooId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(GcooCond)
+    },
+    "account/gceo": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user.positionId : "";
+        const data = { ...user, hodPositionId: positionId, managerId: positionId }
+        const { GceoCond } = Core.getApprovalQueries(data, true);
+        if (Core.getUserApproval(GceoCond)) return user;
+        if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne({ gceoId: data._id });
+            if (isAssigned) return user;
+        }
+        // return Core.getUserApproval(GceoCond);
+    },
     /*
      * check if current user has password
      */
@@ -644,6 +727,9 @@ Meteor.methods({
             throw new Meteor.Error(404, "Account Not found");
         }
     },
+    'account/isAuthenticated': function () {
+        return Meteor.userId()
+    },
     "account/create": function (user, sendEnrollmentEmail) {
         check(user, Object);
         check(sendEnrollmentEmail, Boolean);
@@ -675,6 +761,57 @@ Meteor.methods({
         if(accountId){
             let roles = ["ess/all"];
             Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+        }
+        if (sendEnrollmentEmail){
+            Accounts.sendEnrollmentEmail(accountId, user.email);
+        }
+        return true
+    },
+    "account/import": function (user, sendEnrollmentEmail) {
+        check(user, Object);
+        check(sendEnrollmentEmail, Boolean);
+        if (!Meteor.userId()){
+            throw new Meteor.Error(404, "Unauthorized");
+        }
+
+        let foundAccount =  Meteor.users.findOne({"emails.address": user.email});
+        if (foundAccount){
+
+            Core.Log.info(`RUNNING EMPLOYEE UPDATE for ${eachLine.lastname} ${eachLine.firstname}`)
+            // throw new Meteor.Error(404, "Email already exists");
+            return Meteor.users.update({_id: foundAccount._id}, {$set: {
+                "employeeProfile.employeeId": user.employeeProfile.employeeId,
+                "emails.0.address": user.emails[0].address,
+                "profile.fullName": user.profile.fullName,
+                "profile.firstname": user.profile.firstname,
+                "profile.lastname": user.profile.lastname,
+                "profile.workPhone": user.profile.workPhone,
+                "profile.homePhone": user.profile.homePhone,
+                // "employeeProfile.photo": user.employeeProfile.photo,
+                "roles": user.roles,
+                "notifications": user.notifications,
+                "salesProfile": user.salesProfile
+            }});
+        }
+        //also check if employee number is unique ... allowing users to enter thier employee ids for compatibility
+        let numberExist = Meteor.users.findOne({$and: [{"employeeProfile.employeeId": user.employeeId}, {"businessId": {"$in" : [user.businessId]}}]});
+        if (numberExist) return // throw new Meteor.Error(404, "Employee Id already taken ")
+        let options = {};
+        console.log('termination date is ', user.employeeProfile.employment.terminationDate);
+            Core.hasPayrollAccess()
+        options.email = user.email; // tempo
+        options.firstname = user.firstName;
+        options.lastname =  user.lastName;
+        options.employee =  true;
+        options.tenantId = Core.getTenantId(Meteor.userId());
+        //options.roles = ["employee/all"];
+        options.employeeProfile = user.employeeProfile;
+        options.businessIds = [user.businessId];
+        let accountId = Accounts.createUser(options);
+        if(accountId){
+            let roles = ["ess/all"];
+            Roles.setUserRoles(accountId, _.uniq(roles ), Roles.GLOBAL_GROUP);
+            Core.Log.info(`CREATED NEW EMPLOYEE: ${eachLine.lastname} ${eachLine.firstname}`)
         }
         if (sendEnrollmentEmail){
             Accounts.sendEnrollmentEmail(accountId, user.email);

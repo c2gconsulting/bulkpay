@@ -30,7 +30,8 @@ Core.publish("employees", function (node,businessId) {
                 "employee": true,
                 "profile": true,
                 "employeeProfile": true,
-                "username": true
+                "username": true,
+                "staffCategory": true,
             }
         }),UserImages.find({})];
     } else {
@@ -60,6 +61,7 @@ Meteor.publish("allEmployees", function (businessId) {
                 "username": true,
                 "roles": true,
                 "customUsername": true,
+                "staffCategory": true,
                 "personalEmailAddress": true,
                 "directSupervisorId": true,
                 "directAlternateSupervisorId": true
@@ -123,7 +125,8 @@ Core.publish("subUsers", function (businessId) {
                 "employee": true,
                 "profile": true,
                 "employeeProfile": true,
-                "username": true
+                "username": true,
+                "staffCategory": true,
             }
         }),UserImages.find({})];
     } else {

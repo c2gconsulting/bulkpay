@@ -202,6 +202,18 @@ _.extend(Core, {
     hasRoleManageAccess: function (userId) {
         return this.hasPermission(Core.Permissions.ROLE_MANAGE, userId);
     },
+    hasLogisticsProcessAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.LOGISTICS_PROCESS, userId);
+    },
+    hasSecurityAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.SECURITY_MANAGE, userId);
+    },
+    hasBSTProcessAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.BST_PROCESS, userId);
+    },
+    hasFinanceManageAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.FINANCE_MANAGE, userId);
+    },
     hasTimeApprovalAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TIME_APPROVE, userId);
     },
@@ -759,5 +771,93 @@ _.extend(Core, {
             years.push(String(x));
         }
         return years;
+    },
+
+    emailPolyfill: function (eachLine) {
+        return eachLine.email || `${eachLine.lastname}.${eachLine.firstname}@OILSERVLTD-NG.COM`;
+    },
+
+    RestructureEmployee: function (eachLine, password, existingAdminUser) {
+        function capitalize(str = ""){
+            let string = str.replace(/[_-]/g, " ");
+            string = string.toLowerCase().trim();
+            return string.slice(0, 1).toUpperCase() + string.slice(1)
+        }
+
+        const businessIds = ["FYTbXLB9whRc4Lkh4"]; // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+        const roles = { "__global_roles__" : ["ess/all"] };
+        // password = password || "$2a$10$PR3Sbybwr6LIuAVPOFCkX.4fAuizRt3Ttc0.60OMCQ0.ouRoYnpyW";
+        // const services = { "password" : { "bcrypt" : password } };
+        const staffCategory = eachLine.staffCategory;
+        const group = existingAdminUser.group || "gqEreTKe3h43z3q2R"; // gqEreTKe3h43z3q2R - dev - QyPY7RY4Hc2dqZTem
+
+        console.log('existingAdminUser without Id', JSON.stringify(existingAdminUser));
+
+        // "pay_grade": "COORD 13",
+        // "pay_level": 3,
+        // "bank_country": "NG",
+        // "bank_code": "GTBINGLA",
+        // "account_number": "0039309296",
+        // "currency": "NGN",
+        // "employment_status": "WITHDRAWN"
+        // "md_position_code": 40000184,
+        // "gceo_position_code": 40000000,
+        // "gcoo_position_code": 40000005,
+        // "gcfo_position_code": 40000104,
+
+        const { pay_grade, pay_level, bank_country, bank_code, account_number, currency, employment_status } = eachLine;
+        const status = employment_status ? capitalize(employment_status) : "Active";
+        const bank = bank_code || "";
+        const accountNumber =  account_number || "";
+        const payGrade = pay_grade || "";
+        const bankCountry = bank_country || "";
+        const payLevel = pay_level || "";
+
+        return {
+            ...existingAdminUser,
+            businessIds: existingAdminUser ? existingAdminUser.businessIds : businessIds,
+            staffCategory,
+            roles,
+            "emails": [{"address" : eachLine.email || "","verified" : false}],
+            "profile": {"fullName" : `${eachLine.firstname} ${eachLine.lastname}`,"firstname" : eachLine.firstname || "","lastname" : eachLine.lastname || ""},
+            "employee": true,
+            // services,
+            "employeeProfile": {
+                "employeeId": eachLine.employee_number || "","address" : "",
+                // "dateOfBirth" : ISODate("1973-05-04T00:00:00.000Z"),
+                "gender" : eachLine.gender || "","maritalStatus" : null,"phone" : eachLine.phone || "","state" : "","photo" : null,
+                "guarantor": { "fullName" : null,"email" : null, "phone" : null,"address" : null, "city" : null,"state" : null},
+                "employment": {hireDate: new Date(),terminationDate: null,"position" : eachLine.positionId || "","status" : status },
+                "emergencyContact": [ 
+                    {"name" : null,"email" : null,"phone" : null,"address" : null,"city" : null,"state" : null}
+                ],
+                "payment": {
+                    "paymentMethod" : "", bank, accountNumber, payGrade, bankCountry, payLevel,
+                    "pensionmanager" : "","RSAPin" : "","taxPayerId" : ""
+                }
+            },
+            "salesProfile": { "salesAreas" : null },
+            "customUsername":  `${capitalize(eachLine.firstname)}.${capitalize(eachLine.lastname)}` || "",
+            "group": group,
+            "isUsingDefaultPassword" : true,
+            "managerId": String(eachLine.md_position_code) || "",
+            "gcfoId": String(eachLine.gcfo_position_code) || "",
+            "gcooId": String(eachLine.gcoo_position_code) || "",
+            "gceoId": String(eachLine.gceo_position_code) || "",
+            "positionDesc": eachLine.position_description || "",
+            "positionLongText": eachLine.position_long_text || "",
+            "positionId": String(eachLine.position_code) || "",
+            "lineManagerId": String(eachLine.line_manager_position_code) || "",
+            "hodPositionId": String(eachLine.hod_position_code) || "",
+            "costCenterId": String(eachLine.cost_center_code) || "",
+            "organizationalUnit": String(eachLine.organizational_unit) || "",
+
+            // "position_code": eachLine.position_code || "",
+            // "position_description": eachLine.position_description || "",
+            // "line_manager_position_code": eachLine.line_manager_position_code || "",
+            // "organizationalUnit": eachLine.organizationalUnit || "",
+            // "hod_position_code": eachLine.hod_position_code || "",
+            // "cost_center_code": eachLine.cost_center_code || ""
+        }
     }
 });

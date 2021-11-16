@@ -1,0 +1,1480 @@
+{
+    "Sheet1": [
+        {
+            "S/N": "1",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Chief Executive Officer",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Executive Management",
+            "undefined": "Job Cadre"
+        },
+        {
+            "S/N": "2",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Chief Operating Officer",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Senior Manager",
+            "undefined": "Executive Management"
+        },
+        {
+            "S/N": "3",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Head, Human Resources & CS",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Manager ",
+            "undefined": "Senior Manager"
+        },
+        {
+            "S/N": "4",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Head, Technical Services",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Coordinator",
+            "undefined": "Manager "
+        },
+        {
+            "S/N": "5",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Managing Director, Oilserv",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Supervisor"
+        },
+        {
+            "S/N": "6",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "EPRSM",
+            "CORRESPONDING STAFF CATEGORY": "Manager ",
+            "Oilserv Current Grades": "Officer",
+            "undefined": "Coordinator"
+        },
+        {
+            "S/N": "7",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Legal Advisor",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "Oilserv Current Grades": "Technicians/ Others",
+            "undefined": "Supervisor"
+        },
+        {
+            "S/N": "8",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Head SCM",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management",
+            "undefined": "Officer"
+        },
+        {
+            "S/N": "9",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Integration: default posi",
+            "REMARKS": "Not Available in the system",
+            "undefined": "Technicians/ Others"
+        },
+        {
+            "S/N": "10",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Business Finance Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager ",
+            "undefined": "Trainee Technicians"
+        },
+        {
+            "S/N": "11",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Financial Controller",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "12",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Head, Commercial & Busine",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "13",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Head QHSE",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "14",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "ICT Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "15",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "16",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HSE Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "17",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Strategic Procurement Man",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "18",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Tendering Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "19",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Business Adviser",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "20",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "NCD Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "21",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Planning and Control Lead",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "22",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Construction Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "23",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Senior Project Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "24",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Civil Engineering & Surveying Mgr",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "25",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HDD/HTB Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "26",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Document Control Project",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "27",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "28",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Assets & Logistics Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "29",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Snr Contracts Engr Civil",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "30",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "WH/MM & IM Services Team",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "31",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Procurement Lead (Indirec",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "32",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SCM Strategy & Operations Lead",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "33",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Supply Chain Management Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "34",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Business Support Coordina",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "35",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Head, Security & Communit",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "36",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Security Coordinator - Pr",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "37",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Confidential Secretary",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "38",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SAP Officer - Logistics",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "39",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Senior Internal Auditor",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "40",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Tax Advisor/ Accounts Pay",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "41",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "42",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Enterprise Networks & Dat",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "43",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Systems Admininstrator",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "44",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "External Relations Superv",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "45",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Tendering Officer/Enginee",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "46",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Contract Specialist",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "47",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Site Asset Superv",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "48",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Asset Supervisor Light Duty",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "49",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Asset Supervisor Portable",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "50",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Maintenance Engineer Electrical",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "51",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Maintenance Engineer Light Duty",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "52",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Maintenance Engineer Heavy Duty",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "53",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Logistics Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "54",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "55",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HDD Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "56",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Safety Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "57",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Senior Base Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "58",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "59",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Material Inspector",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "60",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Security Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "61",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Procurement Specialist (D",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "62",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Warehousing & Stores Mgmt",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "63",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Procurement Specialist (Di",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "64",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Demand Planner/P2P Analys",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "65",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Surveyor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "66",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Contracts Engineer",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "67",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Internal Auditor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "68",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Compliance Officer",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "69",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Reconciliations Accountan",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "70",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Finance Operations Lead",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "71",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Estate Supervisor",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "72",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HRBP-Recruitment",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "73",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Accounts Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "74",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Accounts Payable Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "75",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Administrative Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "76",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SAP HR ANALYST",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "77",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Desktop Management & Help",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "78",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HANA BASIC/PRIMAVERA ADMI",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "79",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Compensation & Benefits Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "80",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Security Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "81",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Security Officer-Domestic",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "82",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Community Relations Offic",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "83",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Materials & Inventory Mgm",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "84",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Pet Products/ Paints/ Che",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "85",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Legal Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "86",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Auto Welder Superintenden",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "87",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Auto Welder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "88",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Welder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "89",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Fitter",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "90",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Driver, MD",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "91",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Driver, GCFO",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "92",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Beach Master",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "93",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "94",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Rigging Foreman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "95",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mechanic Foreman 1",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "96",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Electircal Foreman 1",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "97",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mechanic Foreman 2",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "98",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Senior Electrician",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "99",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Light Duty Mech Foreman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "100",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Heavy Duty Electrician Fo",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "101",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Senior Electronic Technic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "102",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Heavy Duty Mechanic (Tru",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "103",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Generator Mechanic/Techn",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "104",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Electical Technician",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "105",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mechanic, Hd",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "106",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Treasury Officer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "107",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Office Assistant",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "108",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Personnal Assistant to GCEO",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "109",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Corporate Driver, GCEO",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "110",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Driver",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "111",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Executive Cook",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "112",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Cook/Steward",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "113",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Laundary Man",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "114",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HSE Coordinator Project",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "115",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "New position",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "116",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Base Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "117",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Asset Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "118",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Special Assistance to GCE",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "119",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Tendering Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "120",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Cost Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "121",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "CIVIL ENGINEER",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "122",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SPECIAL ASSISTANT TO THE GCEO",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "123",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HSE LEAD",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "124",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "TA & Project Process Impr",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "125",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Group Chief Finance Officer",
+            "CORRESPONDING STAFF CATEGORY": "Executive Management"
+        },
+        {
+            "S/N": "126",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Journey Management Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "127",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "External Relations Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "128",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Graduate Trainee Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "129",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HRBP-GENERALIST",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "130",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "GRADUATE TRAINEE",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "131",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Snr Plannning & Control E",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "132",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Front Desk Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "133",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Corporate Driver",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "134",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Head Planning & Control",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "135",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Driver Foreman/Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "136",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Contract & Procurement Se",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "137",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Head Compliance & Interna",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "138",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Compliance Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "139",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Engineering Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "140",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HR RECRUITMENT & PROCESS COORD",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "141",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SAP PROJECT ANALYST",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "142",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "ASSET SUPERVISOR",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "143",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Graduate Trainee Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "144",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Compensation & Benefit Su",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "145",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Corporate Communications Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "146",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Human Resource Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "147",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Logistics Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "148",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Graduate trainee -Project",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "149",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "DOCUMENT CONTROL OFFICER",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "150",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Maintenance Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "151",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Document Controller",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "152",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Procurement Coordinator",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "153",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Cordinator(OB3)",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "154",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Cordinator(OB-OB)",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "155",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Dimension Control Inspect",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "156",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "CHAIN MAN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "157",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "CLO",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "158",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "O & M LEAD",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "159",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "\"LOGISTICS, PROCUREMENT &",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "160",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "O & M OPERATOR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "161",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SECURITY PERSONNEL",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "162",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "GARDENER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "163",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "O&M OPERATOR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "164",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PAINTING & COATING INSPEC",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "165",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "WELDING INSPECTOR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "166",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "CLEANER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "167",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "POST WELD HEAT TREATMENT",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "168",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "OPERATORS' FOREMAN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "169",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Labour 3",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "170",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Site HSE Officer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "171",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Fitter / Welder Mate",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "172",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SITE SUPERVISOR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "173",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "LABOUR 1",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "174",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Depo Inspector",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "175",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SENIOR WELDER MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "176",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "DEPOT INSPECTOR/ADMIN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "177",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "LABOUR 2",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "178",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "LABOUR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "179",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "WELDER MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "180",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PROJECT SITE ADMINISTRATOR",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "181",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HSE OFFICER",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "182",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "DEPOT INSPECTOR",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "183",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Planning & Control Engineer",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "184",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Junior Planning & Control",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "185",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Community Liasion Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "186",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project- cleaner",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "187",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "ICT INTERN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "188",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QHSE INTERN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "189",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project & Engineering Int",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "190",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "INTERN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "191",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "NCDMB Trainee",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "192",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Interns",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "193",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Technical trainee -OSS",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "194",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Multi-Equipment Operator/",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "195",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Graduate trainee -OSS",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "196",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Protocol Officer Port Har",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "197",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Protocol Officer Abuja",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "198",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Protocol Officer Lagos",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "199",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HSE SUPERVISOR",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "200",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Site Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "201",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Interface & Assurance Eng",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "202",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Heavy Duty Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "203",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Enviromental Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "204",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "LIFTING & HOISTING PIC",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "205",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Heavy Duty Electrician",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "206",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Finance Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "207",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Coating Inspector",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "208",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Civil Engineer (Base Depa",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "209",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Surveyor (Base Department",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "210",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Civil Engineer Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "211",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "AKK Chief Site Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "212",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "QA/QC Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        },
+        {
+            "S/N": "213",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Lead Shipping & Expediting",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "214",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Shipping & Expediting Ser",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "215",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Logistics Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "216",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "ENVIROMENTAL SPECIALIST",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "217",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SECURITY INTELLIGENT/CLO",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "218",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PROCUREMENT LEAD",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "219",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Facility Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "220",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Security/Community Relations Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "221",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "AKK ICT LEAD",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "222",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SURVEYOR COORDINATOR",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "223",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Farm Security",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "224",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Base Security",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "225",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Industrial/General Electr",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "226",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "H/D Mechanic(Generator)",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "227",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "H/D Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "228",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "L/D Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "229",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Auto Electrician",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "230",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "ELECTRICIAN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "231",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "RIGGER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "232",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "L/D DRIVER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "233",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "H/D DRIVER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "234",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PWHT MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "235",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "SPOOL TAGGING/FITTER MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "236",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "FITTER MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "237",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "WELDER MATE (OBOB SITE)",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "238",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "TALLY CLARK (OBOB SITE)",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "239",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "GCOO'S GARDENER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "240",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PANEL BEATER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "241",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Helper",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "242",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mason",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "243",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Iron Bender",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "244",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Civil Inspector",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "245",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Civil Foreman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "246",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Iron Fixer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "247",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Iron Bener/Iron Fixer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "248",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Bulldozer Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "249",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Fitters Foreman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "250",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Pipe Fitter",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "251",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Structural Welder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "252",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Light Duty Driver",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "253",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Plumber",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "254",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "255",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Excavator Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "256",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Storekeeper",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "257",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Oiler",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "258",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Crane Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "259",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Pipe Welder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "260",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Welders Mate",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "261",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Grinder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "262",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Scaffolder",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "263",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Heavy Duty Senior Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "264",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Technician",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "265",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Fabrication",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "266",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Light Duty Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "267",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Hydrotest Assistant",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "268",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Chainman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "269",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Concrete Mixer Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "270",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Pipe Layer Operator",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "271",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Foreman",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "272",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Carpenter",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "273",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Survey Assistant",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "274",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Formwork Installer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "275",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mixer",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "276",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Site Nurse LNG",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "277",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Housekeeper",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "278",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Dopper",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "279",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Mechanic",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "280",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Trailermate",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "281",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "PIC Lifting Inspector",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "282",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Relief Nurse",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "283",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "HEAVTY DUTY DRIVER",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "284",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "TRUCK MATE",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "285",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "FLAGMAN",
+            "CORRESPONDING STAFF CATEGORY": "Technicians/ Others"
+        },
+        {
+            "S/N": "286",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Learning & Development Supervisor",
+            "CORRESPONDING STAFF CATEGORY": "Supervisor"
+        },
+        {
+            "S/N": "287",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Project HR",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "288",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "CHIEF LEARNING OFFICER",
+            "REMARKS": "Not Available in the system"
+        },
+        {
+            "S/N": "289",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Performance Management Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "290",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Training Officer",
+            "CORRESPONDING STAFF CATEGORY": "Officer"
+        },
+        {
+            "S/N": "291",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Financial Reporting Accountant",
+            "CORRESPONDING STAFF CATEGORY": "Coordinator"
+        },
+        {
+            "S/N": "292",
+            "POSITION (AS CONTAINED IN SAP S4HANA)": "Technical Sales Manager",
+            "CORRESPONDING STAFF CATEGORY": "Manager "
+        }
+    ]
+}

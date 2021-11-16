@@ -53,7 +53,7 @@ Template.TravelRequisition2RetirementDetail.events({
         e.preventDefault()
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.retirementStatus = "Retirement Submitted";
-        Meteor.call('TravelRequest2/retire', currentTravelRequest, (err, res) => {
+        Meteor.call('TRIPREQUEST/retire', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Trip Retirement Updated",
@@ -101,65 +101,6 @@ Template.TravelRequisition2RetirementDetail.events({
         });
 
     },
-
-    'dropped #dropzone': function (fileObj) {
-        const formData = new FormData()
-    },
-
-    // 'click .remove-file': function(event, template) {
-    //     var fileObj = this;
-    //     if (!fileObj) {
-    //         toastr.warning('No file selected', 'Warning');
-    //         return false;
-    //     }
-    //     fileObj.remove();
-    //     toastr.success('File deleted successfully', 'Success');
-    //     return false;
-    // },
-
-    'change input[type="file"]' ( event, template ) {
-      const formData = new FormData()
-
-      if (!event.target || !event.target.files[0]) {
-        return;
-      }
-      template.isUploading.set(true)
-      Session.set('isUploading', true)
-
-      formData.append(event.target.files[0].name, event.target.files[0])
-
-      axios.post('https://9ic0ul4760.execute-api.eu-west-1.amazonaws.com/dev/upload', formData)
-      .then(res => {
-        const businessUnitId = Session.get('context');
-        const currentTravelRequest = template.currentTravelRequest.curValue;
-        const travelId = currentTravelRequest._id || currentTravelRequest.id;
-    
-        const newAttachment = {
-            ...res.data,
-            travelId,
-            name: event.target.files[0].name,
-            owner: Meteor.userId(),
-            businessId: businessUnitId,
-            tenantId: Core.getTenantId()
-        }
-
-        Meteor.call('attachment/create', newAttachment, (err, res) => {
-            if (res){
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                toastr.success('File successfully uploaded', 'Success')
-            } else {
-                template.isUploading.set(false)
-                Session.set('isUploading', false)
-                toastr.error("Save Failed", "Couldn't Save new attachment", "error");
-            }
-        });
-      })
-      .catch(err => {
-        template.isUploading.set(false)
-        Session.set('isUploading', false)
-      })
-    }
 });
 
 
@@ -171,13 +112,45 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2RetirementDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2RetirementDetail.helpers({
-    // getAttachments: function () {
-    //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
-    //     const businessUnitId = Session.get('context');
-    //     console.log('currentTravelRequest', currentTravelRequest)
-    //     console.log('businessUnitId', businessUnitId)
-    //     return Attachments.find({ businessId: businessUnitId })
-    // },
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
      'isUnretiredTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
@@ -188,7 +161,7 @@ Template.TravelRequisition2RetirementDetail.helpers({
      'isRejectedTrips': function() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest) {
-            return currentTravelRequest.retirementStatus === "Retirement Rejected By Supervisor"
+            return currentTravelRequest.retirementStatus === "Retirement Rejected By HOD"
 
         }
      },
@@ -214,7 +187,8 @@ Template.TravelRequisition2RetirementDetail.helpers({
                 usdDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostUSD;
             }
             if (usdDifference > 0){
-                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                // return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                return "Company to refund " + formatNumber(usdDifference,2) + " USD";
             }else if (usdDifference < 0){
                 return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
             }else{
@@ -226,7 +200,8 @@ Template.TravelRequisition2RetirementDetail.helpers({
                 ngnDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostNGN;
             }
             if (ngnDifference > 0){
-                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                // return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                return "Company to refund " + formatNumber(ngnDifference,2) + " NGN";
             }else if (ngnDifference < 0){
                 return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
             }else{
@@ -238,6 +213,12 @@ Template.TravelRequisition2RetirementDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
             return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+    },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
         }
     },
     isReturnTrip(){
@@ -254,7 +235,7 @@ Template.TravelRequisition2RetirementDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeNameById': function(employeeId){
@@ -300,7 +281,8 @@ Template.TravelRequisition2RetirementDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {
@@ -308,7 +290,8 @@ Template.TravelRequisition2RetirementDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -316,6 +299,7 @@ Template.TravelRequisition2RetirementDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -329,6 +313,13 @@ Template.TravelRequisition2RetirementDetail.helpers({
 
         if(budget) {
             return budget.name
+        }
+    },
+    'getDepartmentName': function(departmentCodeId) {
+        const department = CostCenters.findOne({_id: departmentCodeId})
+
+        if(department) {
+            return department.name
         }
     },
     'currentTravelRequest': function() {
@@ -403,17 +394,16 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
 
 
     self.currentTravelRequest = new ReactiveVar()
-    self.isUploading = new ReactiveVar()
-    self.isUploading.set(false)
-    Session.set('isUploading', false)
-    self.travelRequestAttachment = new ReactiveVar()
-    self.travelRequestAttachment.set([])
     self.isInEditMode = new ReactiveVar()
     self.isInViewMode = new ReactiveVar()
     self.isInApproveMode = new ReactiveVar()
     self.isInApproverEditMode = new ReactiveVar()
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
+
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
 
@@ -449,7 +439,6 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
 
         let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId)
         let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
-        let attachmentSubscription = self.subscribe('Attachment', invokeReason.attachmentId)
 
 
         if(travelRequest2Sub.ready()) {
@@ -457,13 +446,9 @@ Template.TravelRequisition2RetirementDetail.onCreated(function () {
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
             self.currentTravelRequest.set(travelRequestDetails)
 
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
 
-        }
 
-        if (attachmentSubscription.ready()) {
-            let travelRequestAttachment = Attachments.find({ travelId: invokeReason.requisitionId })
-            console.log('travelRequestAttachment', travelRequestAttachment)
-            self.travelRequestAttachment.set(travelRequestAttachment)
         }
 
         if(businessUnitSubscription.ready()) {

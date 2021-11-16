@@ -48,6 +48,18 @@ Template.EmployeeEditEmploymentPayrollModal.events({
                 type: "success",
                 confirmButtonText: "OK"
             });
+            const logObject = {
+                event: 'update-profile',
+                user: { email: user.emails[0].address },
+                collectionName: 'users',
+                oldData: {},
+                newData: {...user}
+            };
+            Meteor.call('logs/createLog', logObject, function(err){
+                if(err){
+                    console.log('error while logging data', err);
+                }
+            });
             Modal.hide('EmployeeEditEmploymentPayrollModal');
         } else {
             console.log(err);
@@ -165,6 +177,18 @@ Template.EmployeeEditEmploymentPayrollModal.events({
                 confirmButtonText: "OK"
             });
             Modal.hide('EmployeeEditEmploymentPayrollModal');
+            const logObject = {
+                event: 'update-profile',
+                user: { email: user.emails[0].address },
+                collectionName: 'users',
+                oldData: {},
+                newData: {...user}
+            };
+            Meteor.call('logs/createLog', logObject, function(err){
+                if(err){
+                    console.log('error while logging data', err);
+                }
+            });
         } else {
             console.log(err);
         }

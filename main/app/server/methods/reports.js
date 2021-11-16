@@ -627,7 +627,7 @@ Meteor.methods({
 
         return biffedUpLeaveRequests
     },
-    'reports/travelRequest': function(businessId, startDate, endDate, selectedEmployees) {
+    'reports/travelRequest': function(businessId, startDate, endDate, selectedEmployees, selectedTripCategories, byStatus) {
         check(businessId, String)
         this.unblock()
         //--
@@ -640,6 +640,12 @@ Meteor.methods({
             }
             if(selectedEmployees && selectedEmployees.length > 0) {
                 queryObj.createdBy = {$in: selectedEmployees}
+            }
+            if(selectedTripCategories && selectedTripCategories.length > 0) {
+                queryObj.tripCategory = {$in: selectedTripCategories}
+            }
+            if (byStatus && byStatus.key && byStatus.value) {
+                queryObj[byStatus.key] = {$in: byStatus.value }
             }
             let travelRequests = TravelRequisition2s.find(queryObj).fetch();
 

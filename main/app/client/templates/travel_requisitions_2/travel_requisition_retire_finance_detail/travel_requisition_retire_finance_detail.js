@@ -8,11 +8,12 @@ Template.TravelRequisition2FinanceRetireDetail.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-      currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved Finance";
+      currentTravelRequest.financeApprovalRetirementComment = $("#financeApprovalRetirementComment").val();
+      const { RETIREMENT_APPROVED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
+      currentTravelRequest.retirementStatus = RETIREMENT_APPROVED_BY_FINANCE;
 
 
-     Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
                  title: "Trip retirement has been approved by Finance",
@@ -36,10 +37,11 @@ Template.TravelRequisition2FinanceRetireDetail.events({
      'click #reject': (e, tmpl) => {
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-         currentTravelRequest.budgetHolderRetirementComment = $("#budgetHolderRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected Finance";
+         currentTravelRequest.financeApprovalRetirementComment = $("#financeApprovalRetirementComment").val();
+         const { RETIREMENT_REJECTED_BY_FINANCE } = Core.ALL_TRAVEL_STATUS;
+         currentTravelRequest.retirementStatus = RETIREMENT_REJECTED_BY_FINANCE;
 
-      Meteor.call('TravelRequest2/financeRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/financeRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been rejected by Finance",
@@ -72,6 +74,45 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2FinanceRetireDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2FinanceRetireDetail.helpers({
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     checkWhoToRefund(currency){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         let formatNumber = function(numberVariable, n, x) {
@@ -85,7 +126,8 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
                 usdDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostUSD;
             }
             if (usdDifference > 0){
-                return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                // return "Employee to refund " + formatNumber(usdDifference,2) + " USD";
+                return "Company to refund " + formatNumber(usdDifference,2) + " USD";
             }else if (usdDifference < 0){
                 return "Company to refund " + formatNumber((-1 * usdDifference),2) + " USD";
             }else{
@@ -97,7 +139,8 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
                 ngnDifference = -1 * currentTravelRequest.actualTotalAncilliaryCostNGN;
             }
             if (ngnDifference > 0){
-                return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                // return "Employee to refund " + formatNumber(ngnDifference,2) + " NGN";
+                return "Company to refund " + formatNumber(ngnDifference,2) + " NGN";
             }else if (ngnDifference < 0){
                 return "Company to refund " + formatNumber((-1 * ngnDifference),2) + " NGN";
             }else{
@@ -109,6 +152,12 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
             return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+    },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
         }
     },
     isReturnTrip(){
@@ -125,7 +174,7 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeNameById': function(employeeId){
@@ -177,7 +226,8 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {
@@ -185,7 +235,8 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -193,6 +244,7 @@ Template.TravelRequisition2FinanceRetireDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -277,6 +329,10 @@ Template.TravelRequisition2FinanceRetireDetail.onCreated(function () {
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
 
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
+
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
@@ -317,6 +373,8 @@ Template.TravelRequisition2FinanceRetireDetail.onCreated(function () {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
             self.currentTravelRequest.set(travelRequestDetails)
+
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
 
 
         }

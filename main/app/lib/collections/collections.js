@@ -94,6 +94,12 @@ Attachments = new Mongo.Collection("attachments");
 // Partitioner.partitionCollection(Attachments);
 Attachments.attachSchema(Core.Schemas.Attachment);
 
+/**
+ * Core Collections ApprovalsConfigs
+ */
+ApprovalsConfigs = new Mongo.Collection("approvalsconfigs");
+// Partitioner.partitionCollection(ApprovalsConfigs);
+ApprovalsConfigs.attachSchema(Core.Schemas.ApprovalsConfigs);
 
 /**
  * Core Collections Businesses
@@ -108,7 +114,13 @@ Businesses.attachSchema(Core.Schemas.Business);
 BusinessUnitCustomConfigs = new Mongo.Collection("businessunitcustomconfigs");
 // Partitioner.partitionCollection(BusinessUnitCustomConfigs);
 BusinessUnitCustomConfigs.attachSchema(Core.Schemas.BusinessUnitCustomConfig);
-
+/**
+ * Core Collections CostCenters
+ */
+ CostCenters = new Mongo.Collection("costcenters");
+ // Partitioner.partitionCollection(CostCenters);
+ CostCenters.attachSchema(Core.Schemas.CostCenter);
+ 
 /**
  * Core Collections SapBusinessUnitConfigs
  */
@@ -206,6 +218,21 @@ UserLeaveEntitlements.attachSchema(Core.Schemas.UserLeaveEntitlement);
 EntityObjects = new Mongo.Collection("entity_objects");
 Partitioner.partitionCollection(EntityObjects);
 EntityObjects.attachSchema(Core.Schemas.EntityObject);
+
+/**
+ * Core Collections EmployeesLevels
+ */
+ EmployeesLevels = new Mongo.Collection("employeeslevels");
+ // Partitioner.partitionCollection(EmployeesLevels);
+ EmployeesLevels.attachSchema(Core.Schemas.EmployeesLevels);
+
+
+/**
+ * Core collection Logs
+ */
+Logs = new Mongo.Collection("logs", { idGeneration: "MONGO" });
+// Partitioner.partitionCollection(Logs, { index: { userId: 1 } });
+Logs.attachSchema(Core.Schemas.Logs);
 
 /**
  * Core Collections Loans
@@ -373,15 +400,16 @@ Constants.attachSchema(Core.Schemas.Constant);
  * Core Collections Projects
  */
 Projects = new Mongo.Collection("projects");
-Partitioner.partitionCollection(Projects);
+// Partitioner.partitionCollection(Projects);
 Projects.attachSchema(Core.Schemas.Project);
 
 /**
  * Core Collections Activities
  */
 Activities = new Mongo.Collection("activities");
-Partitioner.partitionCollection(Activities);
+// Partitioner.partitionCollection(Activities);
 Activities.attachSchema(Core.Schemas.Activity);
+
 
 
 /**
@@ -446,6 +474,15 @@ Hotels = new Mongo.Collection("hotels");
 //Partitioner.partitionCollection(Hotels);
 Hotels.attachSchema(Core.Schemas.Hotel);
 
+
+/**
+ * Core Collections StaffCategory
+ */
+StaffCategories = new Mongo.Collection("staffcategories");
+//Partitioner.partitionCollection(StaffCategories);
+StaffCategories.attachSchema(Core.Schemas.StaffCategory);
+
+
 /**
  * Core Collections Budget
  */
@@ -464,6 +501,11 @@ Airlines.attachSchema(Core.Schemas.Airline);
 EmailSettings = new Mongo.Collection("emailsettings");
 //Partitioner.partitionCollection(EmailSettings);
 EmailSettings.attachSchema(Core.Schemas.EmailSetting);
+
+EmployeeDelegates = new Mongo.Collection("employeedelegates");
+//Partitioner.partitionCollection(EmployeeDelegates);
+EmployeeDelegates.attachSchema(Core.Schemas.EmployeeDelegate, { createdBy: 1, userId: 1 });
+
 /**
  *
  * Core Collections Budget

@@ -30,26 +30,81 @@
                                 <div class="form-group">
                                     <label for="description" class="control-label">Description <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-6">
+                            <!-- <div class="col-sm-6">
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Which project is this trip related to?</label>
                                     <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{getBudgetName currentTravelRequest.budgetCodeId}}" disabled/>
 
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div> -->
+
+
+                            <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                {{#semanticselect2}}
+                                <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
+                                    {{#each costCenters}}
+                                    <option value="{{id}}" {{selected COSTCENTER id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
+                                {{/semanticselect2}}
+                                </div>
+                            </div>
+                            <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->
+                            <!-- +++++++++ PROJECT TRIP ++++++++++++-->
+                            {{#if costCenterType 'Project'}}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
+                                    </div>
+                                </div>
+                                <!-- +++++++++ IF PROJECT SELECTED, THEN SELECT PROJECT ACTIVITY ++++++++++++-->
+                                {{#if currentTravelRequest.departmentOrProjectId}}
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="project_activity-code" class="control-label">Select work breakdown structure</label>
+                                        <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentActivity}}" disabled/>
+                                    </div>
+                                </div>
+                                {{/if}}
+                                <!-- ELSE -->
+                                <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
+                                {{else}}
+                                <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                    <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
+                                </div>
+                                </div>
+                            {{/if}}
+                            <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
 
                         </div>
 
 
                         <div class="row">
-                            <div class="col-sm-10">
+                            <!-- Local Or international trip selection -->
+                            <div class="col-sm-10 col-lg-6">
+                                <div class="form-group">
+                                    <label for="destinationType" class="control-label">Local/Foreign trip<span class="asterisk important-input">*</span></label>
+                                    <ul class="list-inline">
+                                        <li><input type="radio" value="Local" name="destinationType" {{destinationTypeChecked "Local"}} disabled />&nbsp;&nbsp;Local Trip</li>
+                                        <li><input type="radio"  value="International" name="destinationType" {{destinationTypeChecked "International"}} disabled />&nbsp;&nbsp;International Trip</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-10 col-lg-6">
                                 <div class="form-group">
                                     <ul class="list-inline">
+                                        <li><input type="radio" value="Single" name="travelType" {{travelTypeChecked "Single"}} disabled/>&nbsp;&nbsp;One way</li>
                                         <li><input type="radio" value="Return" name="travelType" {{travelTypeChecked "Return"}} disabled/>&nbsp;&nbsp;Return Trip</li>
                                         <li><input type="radio"  value="Multiple" name="travelType" {{travelTypeChecked "Multiple"}} disabled/>&nbsp;&nbsp;Multiple Stops</li>
                                     </ul>
@@ -65,13 +120,13 @@
                                 <div class="form-group">
                                     <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId}}" disabled />
-                                </div><!-- form-group -->
+                                </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId}}" disabled />
-                                </div><!-- form-group -->
+                                </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-2">
                                 <div class="form-group datetimepicker">
@@ -84,7 +139,7 @@
 
                                     <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
-                                </div><!-- form-group -->
+                                </div>
                             </div>
                             {{#if isReturnTrip}}
                             <div class="col-sm-2">
@@ -98,7 +153,7 @@
                                     <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
                                 </div>
-                                <!-- form-group -->
+                                
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
@@ -108,8 +163,8 @@
                                 <div class="form-group">
                                     <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="transportationMode_{{this.tripIndex}}" class="form-control" placeholder="Transportation Mode" name="transportationMode_{{this.tripIndex}}" value="{{this.transportationMode}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-5">
                                 <div class="form-group">
 
@@ -118,11 +173,11 @@
                                         <input type="text" id="airlineId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Airline" name="airlineId_{{this.tripIndex}}" value="{{getAirlineName this.airlineId}}" disabled/>
                                     </div>
 
-                                    <div style="display:{{isCarModeOfTransport this.tripIndex}}">
+                                    <!-- <div style="display:{{isCarModeOfTransport this.tripIndex}}">
 
                                         <label for="carOption_{{this.tripIndex}}" class="control-label">Car Options</label>
                                         <input type="text" id="carOption_{{this.tripIndex}}" class="form-control" placeholder="Car Option" name="carOption_{{this.tripIndex}}" value="{{this.carOption}}" disabled/>
-                                    </div>
+                                    </div> -->
 
                                 </div>
                             </div>
@@ -151,28 +206,41 @@
                             </div>
                         </div>
 
+                        
+                        {{#if this.hotelId}}
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{this.tripIndex}}" value="{{getHotelName this.hotelId}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
                                     <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{formatMoney this.hotelRate}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
                                     <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                         </div>
+                        {{/if}}
 
+                        {{#if currentTravelRequest.additionalComment}}
+                        <hr>
                         <div class="row">
+                            <div class="col-sm-12">
+                                <label for="additionalComment" class="control-label">Additional comments related to this trip: </label>
+                                <input type="text" id="additionalComment" class="form-control" placeholder="" name="additionalComment" value="{{currentTravelRequest.additionalComment}}" disabled />
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        <!-- <div class="row">
                             <div class="col-sm-4">
                                 <label>My per diem should exclude:</label>
                             </div>
@@ -200,7 +268,7 @@
                                     <label for="isIncidentalsIncluded_{{this.tripIndex}}">Incidentals</label>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <hr/>
@@ -353,14 +421,14 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="supervisorComment" class="control-label">Supervisor Approval Comments</label>
+                                <label for="supervisorComment" class="control-label">HOD Approval Comments</label>
                                 <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
 
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="budgetHolderComment" class="control-label">Budget Holder Approval Comments</label>
+                                <label for="budgetHolderComment" class="control-label">MD Approval Comments</label>
                                 <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}" disabled/>
 
                             </div>
@@ -512,7 +580,26 @@
                         </div>
                         {{#if isEdittableFields}}
                         <hr/>
-                        <div class="row">
+                        {{#each travelApprovals }}
+                            {{#if this.approvalId}}
+                            <div class="row">
+                                <div class="col-md-3"><b>Select {{label}} : </b></div>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        {{#semanticselect}}
+                                            <select name="{{id}}" style="width: 100%" class="ui fluid search dropdown form-control selectFields">
+                                                <option value="">{{setApprovalUser approvalId label}}</option>
+                                                {{#each employees}}
+                                                    <option value="{{_id}}">{{employeeProfile.employeeId}} - {{profile.fullName}}</option>
+                                                {{/each}}
+                                            </select>
+                                        {{/semanticselect}}
+                                    </div>
+                                </div>
+                            </div>
+                            {{/if}}
+                        {{/each}}
+                        <!-- <div class="row">
                             <div class="col-md-3"><b>Select Supervisor : </b></div>
                             <div class="col-md-9">
                                 <div class="form-group">
@@ -525,7 +612,7 @@
                                         </select>
                                     {{/semanticselect}}
 
-                                </div><!-- form-group -->
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -541,9 +628,9 @@
                                         </select>
                                     {{/semanticselect}}
 
-                                </div><!-- form-group -->
+                                </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="col-md-3"><b>Select Budget Code : </b></div>
                             <div class="col-md-9">
@@ -557,7 +644,7 @@
                                         </select>
                                     {{/semanticselect}}
 
-                                </div><!-- form-group -->
+                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -573,14 +660,14 @@
                                         </select>
                                     {{/semanticselect}}
 
-                                </div><!-- form-group -->
+                                </div>
                             </div>
                         </div>
                         {{/if}}
                         <br/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="supervisorRetirementComment" class="control-label">Supervisor Retirement Comments</label>
+                                <label for="supervisorRetirementComment" class="control-label">HOD Retirement Comments</label>
                                 <input type="text" id="supervisorRetirementComment" class="form-control" placeholder="" name="supervisorRetirementComment" value="{{currentTravelRequest.supervisorRetirementComment}}" disabled/>
 
                             </div>

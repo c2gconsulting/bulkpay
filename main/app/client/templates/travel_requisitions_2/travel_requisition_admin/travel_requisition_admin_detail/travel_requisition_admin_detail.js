@@ -98,6 +98,13 @@ Template.TravelRequisition2AdminDetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2AdminDetail');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -127,6 +134,44 @@ Template.TravelRequisition2AdminDetail.helpers({
     'employees': () => {
         return  Meteor.users.find({"employee": true});
     },
+    travelApprovals: function () {
+        let isAirTransportationMode = false;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        
+        const { trips, destinationType } = currentTravelRequest;
+        const isInternationalTrip = destinationType === 'International';
+        for (let i = 0; i < trips.length; i++) {
+            const { transportationMode } = trips[i];
+            if (transportationMode == 'AIR') isAirTransportationMode = true
+        }
+
+        const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
+
+        const { supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsId, bstId } = currentTravelRequest;
+        const { HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+
+        const LOGISTICS_LABEL = { approvalId: logisticsId, label: LOGISTICS, id: 'logisticsId' };
+        const BST_LABEL = { approvalId: bstId, label: BST, id: 'bstId' };
+
+        const NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? LOGISTICS_LABEL : BST_LABEL;
+        const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
+
+        const dApprovals = [
+            { approvalId: budgetHolderId, label: BUDGETHOLDER, id: 'budgetHolderId' },
+            { approvalId: supervisorId, label: HOD, id: 'supervisorId' },
+            { approvalId: managerId, label: MD, id: 'managerId' },
+            { approvalId: gcooId, label: GCOO, id: 'gcooId' },
+            { approvalId: gceoId, label: GCEO, id: 'gceoId' },
+            NEXT_APPROVAL_LABEL,
+            SECOND_NEXT_APPROVAL_LABEL,
+            // { approvalId: bstId, label: BST },
+            // { approvalId: logisticsId, label: LOGISTICS },
+        ]
+        return dApprovals;
+    },
+    setApprovalUser(val, label) {
+        return val ? (Meteor.users.findOne({_id: val})).profile.fullName : label || 'Select Employee to Approve'
+    },
     'budgets': function() {
         let currentTravelRequest = Template.instance().currentTravelRequest.get();
         const businessId = currentTravelRequest.businessId
@@ -143,7 +188,7 @@ Template.TravelRequisition2AdminDetail.helpers({
         }
     },
     allowedStatus() {
-        return ["Cancelled","Draft","Pending","Approved By Supervisor", "Rejected By Supervisor","Approved By Budget Holder","Rejected By Budget Holder"]
+        return ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
     },
     setDefaultStatus(val) {
         return val || 'Status'
@@ -160,6 +205,12 @@ Template.TravelRequisition2AdminDetail.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
+        }
+    },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
     },
@@ -174,7 +225,7 @@ Template.TravelRequisition2AdminDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeNameById': function(employeeId){
@@ -220,7 +271,8 @@ Template.TravelRequisition2AdminDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {
@@ -228,7 +280,8 @@ Template.TravelRequisition2AdminDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -236,6 +289,7 @@ Template.TravelRequisition2AdminDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -377,8 +431,8 @@ Template.TravelRequisition2AdminDetail.onCreated(function () {
         if(travelRequest2Sub.ready()) {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-            console.log("travelRequestDetails is:")
-            console.log(travelRequestDetails)
+            // console.log("travelRequestDetails is:")
+            // console.log(travelRequestDetails)
             self.currentTravelRequest.set(travelRequestDetails)
 
 

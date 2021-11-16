@@ -296,15 +296,19 @@
                                             <label for="roleManage" class="col-sm-6 control-label">Role manage</label>
                                             <div class="col-sm-4">
                                                 {{#if doesEmployeeHasRoleManageAccess}}
+                                                    {{#selectpicker}}
                                                     <select class="form-control selectpicker dropdown" data-live-search="true" name="roleManage">
                                                         <option value="true" selected>Yes</option>
                                                         <option value="false">No</option>
                                                     </select>
+                                                    {{/selectpicker}}
                                                 {{else}}
+                                                    {{#selectpicker}}
                                                     <select class="form-control selectpicker dropdown" data-live-search="true" name="roleManage">
                                                         <option value="true">Yes</option>
                                                         <option value="false" selected>No</option>
                                                     </select>
+                                                    {{/selectpicker}}
                                                 {{/if}}
                                             </div>
                                         </div>
@@ -404,6 +408,75 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <label for="securityManage" class="col-sm-6 control-label">Security Access</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasEmployeeSecurityAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="securityManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="securityManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <label for="financeManage" class="col-sm-6 control-label">Manage Finance</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasFinanceManageAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="financeManage">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="financeManage">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <label for="employeeLogisticsProcess" class="col-sm-6 control-label">Process Land trips(Logistics)</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasEmployeeLogisticsProcessAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeLogisticsProcess">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeLogisticsProcess">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="row">
+                                        <label for="employeeBSTProcess" class="col-sm-6 control-label">Process Air trips(BST)</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasEmployeeBSTProcessAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeBSTProcess">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="employeeBSTProcess">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
                                     <!-- <div class="row">
                                         <label for="payRulesManage" class="col-sm-6 control-label">Pay Rules Manage</label>
                                         <div class="col-sm-4">

@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 /*
  * instantiate loader
  */
@@ -141,6 +143,117 @@ CoreRegistry.initData = function () {
     let tenantId = Core.getDefaultTenantId();
     Loader.loadData(Tenants);
     Loader.loadData(BusinessUnitCustomConfigs);
+
+    // /** BEGIN::: EMPLOYEES IMPORT */
+    // Core.Log.info('Startup ::: EMPLOYEES CRON JOB IN ACTION')
+    // axios
+    // .post(
+    //   'http://20.73.168.4:50000/RESTAdapter/employees',
+    //   {
+    //     employee_number: ''
+    //   },
+    //   {
+    //     headers: {
+    //       Authorization: 'Basic QlVMS1BBWV9ERVY6UGFzc3cwcmQlJQ==',
+    //       'Content-Type': 'application/json',
+    //       Cookie:
+    //         'JSESSIONID=5kfVra385oH81KSzlcgDQcm930NrfAHCeEwA_SAP8i4nHR_PRsyEcufSUvz4_frw; saplb_*=(J2EE5011620)5011650'
+    //     },
+    //     proxy: { protocol: 'http',host: '20.73.168.4',port: 50000 }
+    //   }
+    // )
+    // .then(function (response) {
+    //   // handle success
+    //   console.log(JSON.stringify(response.data))
+    //   const { data } =  response;
+    //   Loader.loadEmployeeData(data)
+    //   // const { Employees: { line } }
+    // })
+    // .catch(function (error) {
+    //   // handle error
+    //   console.log(error)
+    // })
+    // .then(function () {
+    //   console.log('err')
+    //   // always executed
+    // })
+    // /** END::: EMPLOYEES IMPORT */
+
+
+
+    // /** BEGIN::: COST CENTERS IMPORT */
+    // Core.Log.info('STARTUP:: COST CENTERS CRON JOB IN ACTION')
+    // axios
+    // .post(
+    //   'http://20.73.168.4:50000/RESTAdapter/costcenters',
+    //   {
+    //     employee_number: ''
+    //   },
+    //   {
+    //     headers: {
+    //       Authorization: 'Basic QlVMS1BBWV9ERVY6UGFzc3cwcmQlJQ==',
+    //       'Content-Type': 'application/json',
+    //       Cookie:
+    //         'JSESSIONID=5kfVra385oH81KSzlcgDQcm930NrfAHCeEwA_SAP8i4nHR_PRsyEcufSUvz4_frw; saplb_*=(J2EE5011620)5011650'
+    //     },
+    //     proxy: { protocol: 'http',host: '20.73.168.4',port: 50000 }
+    //   }
+    // )
+    // .then(function (response) {
+    //   // handle success
+    //   console.log(JSON.stringify(response.data))
+    //   const { data } =  response;
+    //   Loader.loadCostCenterData(data)
+    // })
+    // .catch(function (error) {
+    //   // handle error
+    //   console.log(error)
+    // })
+    // .then(function () {
+    //   console.log('err')
+    //   // always executed
+    // })
+    // /** END::: COST CENTERS IMPORT */
+
+
+
+    // /** BEGIN::: EMPLOYEES IMPORT */
+    // Core.Log.info('STARTUP:: PROJECT CRON JOB IN ACTION')
+    // axios
+    // .post(
+    //   'http://20.73.168.4:50000/RESTAdapter/projects',
+    //   {
+    //     employee_number: ''
+    //   },
+    //   {
+    //     headers: {
+    //       Authorization: 'Basic QlVMS1BBWV9ERVY6UGFzc3cwcmQlJQ==',
+    //       'Content-Type': 'application/json',
+    //       Cookie:
+    //         'JSESSIONID=5kfVra385oH81KSzlcgDQcm930NrfAHCeEwA_SAP8i4nHR_PRsyEcufSUvz4_frw; saplb_*=(J2EE5011620)5011650'
+    //     },
+    //     proxy: { protocol: 'http',host: '20.73.168.4',port: 50000 }
+    //   }
+    // )
+    // .then(function (response) {
+    //   // handle success
+    //   console.log(JSON.stringify(response.data))
+    //   const { data } =  response;
+    //   Loader.loadProjectData(data)
+    //   // const { Employees: { line } }
+    // })
+    // .catch(function (error) {
+    //   // handle error
+    //   console.log(error)
+    // })
+    // .then(function () {
+    //   console.log('err')
+    //   // always executed
+    // })
+    // /** END::: EMPLOYEES IMPORT */
+
+
+    
 
     // start checking once per second if Tenants collection is ready,
     // then load the rest of the fixtures when it is

@@ -10,7 +10,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Approved By Budget Holder";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.APPROVED_BY_BUDGETHOLDER;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -31,7 +31,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
             validationErrors += ": Budget Holder Comment cannot be empty";
         }
         if (fieldsAreValid){
-           Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+           Meteor.call('TRIPREQUEST/budgetHolderApprovals', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Travel requisition has been approved",
@@ -54,6 +54,13 @@ Template.TravelRequisition2BudgetHolderDetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2Create');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -66,7 +73,7 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
         currentTravelRequest.budgetHolderComment = budgetHolderComment;
-        currentTravelRequest.status = "Rejected By Budget Holder";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.REJECTED_BY_BUDGETHOLDER;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
@@ -84,13 +91,13 @@ Template.TravelRequisition2BudgetHolderDetail.events({
 
         if (currentTravelRequest.budgetHolderComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": Supervisor Comment cannot be empty";
+            validationErrors += ": Budget Holder Comment cannot be empty";
         }
 
 
         if (fieldsAreValid){
 
-            Meteor.call('TravelRequest2/budgetHolderApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/budgetHolderApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -113,6 +120,13 @@ Template.TravelRequisition2BudgetHolderDetail.events({
             Template.instance().errorMessage.set(null);
             Modal.hide('TravelRequisition2BudgetHolderDetail');
         }else{
+            swal({
+                title: "Oops!",
+                text: "Validation errors" + validationErrors,
+                confirmButtonClass: "btn-danger",
+                type: "error",
+                confirmButtonText: "OK"
+            });
             Template.instance().errorMessage.set("Validation errors" + validationErrors);
         }
 
@@ -130,13 +144,63 @@ Template.registerHelper('formatDate', function(date) {
 /* TravelRequisition2BudgetHolderDetail: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2BudgetHolderDetail.helpers({
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     'errorMessage': function() {
         return Template.instance().errorMessage.get()
+    },
+    canApprove() {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { BUDGETHOLDER } = Core.Approvals;
+        return Core.canApprove(BUDGETHOLDER, currentTravelRequest)
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && val){
             return currentTravelRequest.type === val ? checked="checked" : '';
+        }
+    },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
         }
     },
     isReturnTrip(){
@@ -153,7 +217,7 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     isBreakfastIncluded(index){
@@ -195,7 +259,8 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {
@@ -203,7 +268,8 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     budgetList() {
         return  Budgets.find();
@@ -221,6 +287,7 @@ Template.TravelRequisition2BudgetHolderDetail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -324,6 +391,11 @@ Template.TravelRequisition2BudgetHolderDetail.onCreated(function () {
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
 
+
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
+
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
@@ -366,6 +438,7 @@ Template.TravelRequisition2BudgetHolderDetail.onCreated(function () {
             self.currentTravelRequest.set(travelRequestDetails)
 
 
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
         }
 
         if(businessUnitSubscription.ready()) {
@@ -383,12 +456,15 @@ Template.TravelRequisition2BudgetHolderDetail.onRendered(function () {
 
     let currentTravelRequest = self.currentTravelRequest.get()
     if(currentTravelRequest) {
-        if(currentTravelRequest.status !== 'Draft' && currentTravelRequest.status !== 'Pending') {
+        const draft = Core.ALL_TRAVEL_STATUS.DRAFT;
+        const pending = Core.ALL_TRAVEL_STATUS.PENDING;
+
+        if(currentTravelRequest.status !== draft && currentTravelRequest.status !== pending) {
             if(self.isInEditMode.get()) {
                 Modal.hide();
                 swal('Error', "Sorry, you can't edit this travel request. ", 'error')
             }
-        } else if(currentTravelRequest.status === 'Pending') {
+        } else if(currentTravelRequest.status === pending) {
             self.isInViewMode.set(true)
         } else if(currentTravelRequest.status === 'Approve') {
             if(self.isInEditMode.get()) {

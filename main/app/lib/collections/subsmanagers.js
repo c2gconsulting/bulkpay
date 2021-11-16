@@ -15,3 +15,5 @@ let defaultCacheSettings = { cacheLimit: 10, expireIn: 5 };
 //CompanySubs = new SubsManager(defaultCacheSettings);
 //StockTransferSub = new SubsManager(defaultCacheSettings);
 //StockAdjustmentSub = new SubsManager(defaultCacheSettings);
+
+// LogSubs = new SubsManager(defaultCacheSettings);

@@ -490,3 +490,16 @@ getPayRegex = function(code){
     const pattern = `\\b${code}\\b`;
     return new RegExp(pattern, "g");
 }
+
+
+/**
+ * converts a text to title case
+ * e.g prince charming => Prince Charming
+ */
+ Template.registerHelper("toTitleCase", function (text) {
+  format = text.replace(/_/g, " ");
+  return format
+    .split(" ")
+    .map((w) => w[0].toUpperCase() + w.substr(1).toLowerCase())
+    .join(" ");
+});

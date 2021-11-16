@@ -18,6 +18,51 @@ Template.TravelRequisition2Detail.helpers({
             return currentTravelRequest.type === val ? checked="checked" : '';
         }
     },
+    destinationTypeChecked(val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && val){
+            return currentTravelRequest.destinationType === val ? checked="checked" : '';
+        }
+    },
+    ACTIVITY: () => 'activityId',
+    COSTCENTER: () => 'costCenter',
+    PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
+    costCenters: () => Core.Travel.costCenters,
+    carOptions: () => Core.Travel.carOptions,
+    currentDepartment: () => Template.instance().currentDepartment.get(),
+    currentProject: () =>Template.instance().currentProject.get(),
+    currentActivity: () => Template.instance().currentActivity.get(),
+    isEmergencyTrip () {
+        // let index = this.tripIndex - 1;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        const minDate = new Date(moment(new Date()).add(5, 'day').format());
+        const isEmergencyTrip = currentTravelRequest.isEmergencyTrip;
+
+        return isEmergencyTrip ? new Date() : minDate;
+    },
+    costCenterType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    selected(context,val) {
+        let self = this;
+        const { currentTravelRequest } = Template.instance();
+
+        if(currentTravelRequest){
+            //get value of the option element
+            //check and return selected if the template instce of data.context == self._id matches
+            if(val){
+                return currentTravelRequest[context] === val ? selected="selected" : '';
+            }
+            return currentTravelRequest[context] === self._id ? selected="selected" : '';
+        }
+    },
+    checkbox(isChecked){
+        console.log('isChecked', isChecked)
+        return isChecked ? checked="checked" : checked="";
+    },
     isReturnTrip(){
         return Template.instance().currentTravelRequest.get().type === "Return";
     },
@@ -32,7 +77,7 @@ Template.TravelRequisition2Detail.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
 
         if(currentTravelRequest && index){
-            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIRLINE"? '':'none';
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === "AIR"? '':'none';
         }
     },
     'getEmployeeFullName': function(employeeId) {
@@ -42,9 +87,44 @@ Template.TravelRequisition2Detail.helpers({
         else
         return ""
     },
-    // 'getEmployeeNameById': function(employeeId){
-    //     return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
-    // },
+    travelApprovals: function () {
+        let isAirTransportationMode = false;
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        
+        const { trips, destinationType } = currentTravelRequest;
+        const isInternationalTrip = destinationType === 'International';
+        for (let i = 0; i < trips.length; i++) {
+            const { transportationMode } = trips[i];
+            if (transportationMode == 'AIR') isAirTransportationMode = true
+        }
+
+        const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
+
+        const { supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsId, bstId } = currentTravelRequest;
+        const { HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+
+        const LOGISTICS_LABEL = { approvalId: logisticsId, label: LOGISTICS };
+        const BST_LABEL = { approvalId: bstId, label: BST };
+
+        const NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? LOGISTICS_LABEL : BST_LABEL;
+        const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
+
+        const dApprovals = [
+            { approvalId: budgetHolderId, label: BUDGETHOLDER },
+            { approvalId: supervisorId, label: HOD },
+            { approvalId: managerId, label: MD },
+            { approvalId: gcooId, label: GCOO },
+            { approvalId: gceoId, label: GCEO },
+            NEXT_APPROVAL_LABEL,
+            SECOND_NEXT_APPROVAL_LABEL,
+            // { approvalId: bstId, label: BST },
+            // { approvalId: logisticsId, label: LOGISTICS },
+        ]
+        return dApprovals;
+    },
+    'getEmployeeNameById': function(employeeId){
+        return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
+    },
 
     isBreakfastIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -85,7 +165,8 @@ Template.TravelRequisition2Detail.helpers({
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
-            return parseInt(index) >= currentTravelRequest.trips.length;
+            // return parseInt(index) >= currentTravelRequest.trips.length;
+            return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
     'getTravelcityName': function(travelcityId) {
@@ -93,7 +174,8 @@ Template.TravelRequisition2Detail.helpers({
 
         if(travelcity) {
             return travelcity.name
-        }
+        } 
+        return travelcityId
     },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
@@ -101,6 +183,7 @@ Template.TravelRequisition2Detail.helpers({
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
@@ -198,6 +281,10 @@ Template.TravelRequisition2Detail.onCreated(function () {
     self.isInTreatMode = new ReactiveVar()
     self.isInRetireMode = new ReactiveVar()
 
+    self.currentDepartment = new ReactiveVar()
+    self.currentProject = new ReactiveVar()
+    self.currentActivity = new ReactiveVar()
+
     self.businessUnitCustomConfig = new ReactiveVar()
 
     let invokeReason = self.data;
@@ -238,6 +325,8 @@ Template.TravelRequisition2Detail.onCreated(function () {
 
             let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
             self.currentTravelRequest.set(travelRequestDetails)
+
+            Core.defaultDepartmentAndProject(self, travelRequestDetails)
 
 
         }

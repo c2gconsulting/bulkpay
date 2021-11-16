@@ -33,9 +33,10 @@ Template.TravelRequestReportOld.events({
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedTripCategories = tmpl.selectedTripCategories.get()
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.travelRequestReports.set(res)
@@ -76,9 +77,10 @@ Template.TravelRequestReportOld.events({
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedTripCategories = tmpl.selectedTripCategories.get()
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.travelRequestReports.set(res)
@@ -92,6 +94,10 @@ Template.TravelRequestReportOld.events({
     'change [name="employee"]': (e, tmpl) => {
         let selected = Core.returnSelection($(e.target));
         tmpl.selectedEmployees.set(selected)
+    },
+    'change [name="tripCategory"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.selectedTripCategories.set(selected)
     }
 });
 
@@ -148,6 +154,7 @@ Template.TravelRequestReportOld.onCreated(function () {
     self.travelRequestReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
+    self.selectedTripCategories = new ReactiveVar()
 
     self.getDateFromString = function(str1) {
         let theDate = moment(str1);

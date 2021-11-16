@@ -32,10 +32,14 @@ Template.TravelRequestReport.events({
             let startTimeAsDate = tmpl.getDateFromString(startTime)
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
-            let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedEmployees = tmpl.selectedEmployees.get();
+            let selectedTripCategories = tmpl.selectedTripCategories.get();
+            let status = tmpl.status.get()
+            let statusCategory = tmpl.statusCategory.get() || 'status'
+            const byStatus = { key: statusCategory, value: status }
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, byStatus, function(err, res) {
                   console.log(res)
                 resetButton()
                 if(res){
@@ -79,9 +83,13 @@ Template.TravelRequestReport.events({
             let endTimeAsDate = tmpl.getDateFromString(endTime)
 
             let selectedEmployees = tmpl.selectedEmployees.get()
+            let selectedTripCategories = tmpl.selectedTripCategories.get()
+            let status = tmpl.status.get()
+            let statusCategory = tmpl.statusCategory.get()
+            const byStatus = { key: statusCategory, value: status }
 
             Meteor.call('reports/travelRequest', Session.get('context'),
-                startTimeAsDate, endTimeAsDate, selectedEmployees, function(err, res) {
+                startTimeAsDate, endTimeAsDate, selectedEmployees, selectedTripCategories, byStatus, function(err, res) {
                 resetButton()
                 if(res){
                     tmpl.travelRequestReports.set(res)
@@ -95,6 +103,18 @@ Template.TravelRequestReport.events({
     'change [name="employee"]': (e, tmpl) => {
         let selected = Core.returnSelection($(e.target));
         tmpl.selectedEmployees.set(selected)
+    },
+    'change [name="tripCategory"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.selectedTripCategories.set(selected)
+    },
+    'change [name="status"]': (e, tmpl) => {
+        let selected = Core.returnSelection($(e.target));
+        tmpl.status.set(selected)
+    },
+    'change [name="statusCategory"]': (e, tmpl) => {
+        e.preventDefault()
+        tmpl.statusCategory.set(e.target.value)
     }
 });
 
@@ -117,12 +137,25 @@ Template.TravelRequestReport.helpers({
             return travelcity.name
         }
     },
+    status: function () {
+        return ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+    },
+    extensionStatus: function () {
+        return ["Cancelled","Pending","Approved By HOD", "Rejected By HOD","Approved By MD","Rejected By MD"]
+    },
+    retirementStatus: function () {
+        return ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance"]
+    },
+    statusCategory: function () {
+        return Template.instance().statusCategory.get()
+    },
     'getHotelName': function(hotelId) {
         const hotel = Hotels.findOne({_id: hotelId})
 
         if(hotel) {
             return hotel.name
         }
+        return hotelId
     },
     'getBudgetName': function(budgetCodeId) {
         const budget = Budgets.findOne({_id: budgetCodeId})
@@ -189,6 +222,9 @@ Template.TravelRequestReport.onCreated(function () {
     self.travelRequestReports = new ReactiveVar()
 
     self.selectedEmployees = new ReactiveVar()
+    self.selectedTripCategories = new ReactiveVar()
+    self.status = new ReactiveVar()
+    self.statusCategory = new ReactiveVar('status')
     self.businessUnitCustomConfig = new ReactiveVar()
     self.currentTravelRequest = new ReactiveVar()
     self.totalTripCost = new ReactiveVar(0)
@@ -260,15 +296,21 @@ Template.TravelRequestReport.onCreated(function () {
 
     self.exportProcurementReportData = function(theData, startTime, endTime) {
       //  let formattedHeader = ["Description", "Created By","Date required", "Status"]
-        let formattedHeader = ["From", "To","Hotel", "Departure Date", "Return Date", "Description", "Created By","Date required","Status","Retirement Status","Budget holder","Supervisor","Budget code","Total Trip Cost NGN","Total Trip Cost USD"]
+        // let formattedHeader = ["From", "To","Hotel", "Departure Date", "Return Date", "Description", "Created By","Date required","Status","Retirement Status","Budget holder","Supervisor","Budget code","Total Trip Cost NGN","Total Trip Cost USD"]
+        let formattedHeader = ["Company code", "Name of Requester", "Name of Approver", "Name of Traveller", "Mode of transport", "Foreign/Local", "Department/Project", "Date of request", "Trip Start date", "Trip End date", "Cost center",
+        "Description", "Amount NGN","Amount USD", "Amount Flight", "Amount Security", "Amount Logistics", "Amount Accommodation", "Per Diem (NGN)", "Per Diem (USD)", "Client related", "Driver", "Vendor"]
 
         let reportData = []
 
         theData.forEach(aDatum => {
             // reportData.push([aDatum.description, aDatum.createdByFullName, aDatum.createdAt,
             //     aDatum.status])
-reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelcityName(aDatum.trips[0].toId), self.getHotelName(aDatum.trips[0].hotelId),
-  aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
+// reportData.push([self.getTravelcityName(aDatum.trips[0].fromId),self.getTravelcityName(aDatum.trips[0].toId), self.getHotelName(aDatum.trips[0].hotelId),
+//   aDatum.trips[0].departureDate,aDatum.trips[0].returnDate,aDatum.description,aDatum.createdByFullName,aDatum.createdAt,aDatum.status,aDatum.retirementStatus,self.getBudgetHolderNameById(aDatum.budgetHolderId),  self.getSupervisorNameById(aDatum.supervisorId),self.getBudgetName(aDatum.budgetCodeId),aDatum.totalTripCostNGN,aDatum.totalTripCostUSD])
+//         })
+
+reportData.push(['OSL/FRAZ/CLIENT', aDatum.createdByFullName, "Achama Eluwa", "Akolade Adesanmi", aDatum.trips[0].transportationMode, aDatum.destinationType, aDatum.costCenter, aDatum.createdAt, aDatum.trips[0].departureDate, aDatum.trips[0].returnDate, "", 
+aDatum.description, aDatum.totalTripCostNGN,aDatum.totalTripCostUSD, aDatum.totalFlightCostUSD, aDatum.totalSecurityCostNGN, 0, aDatum.totalHotelCostNGN, aDatum.totalEmployeePerdiemNGN, aDatum.totalEmployeePerdiemUSD, "", "", ""])
         })
 
         Hub825Explorer.exportAllData({fields: formattedHeader, data: reportData},

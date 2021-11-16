@@ -21,6 +21,12 @@ Template.semanticselect2.onRendered(function () {
 	self.$('select.dropdown').dropdown({
 		forceSelection: true
 	});
+	// console.log('this.data.value', this.data)
+	// if (this.data && typeof this.data === 'string') {
+	// 	self.$('select.dropdown').dropdown('set selected', this.data);
+	// }
+
+	// self.$('select.dropdown').dropdown('set selected', this.data.value);
 });
 
 Template.semanticselect2.onDestroyed(function () {

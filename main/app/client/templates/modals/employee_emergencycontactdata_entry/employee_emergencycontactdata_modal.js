@@ -20,6 +20,18 @@ Template.EmployeeEmergencyContactDataModal.events({
                 confirmButtonText: "OK"
             });
             Modal.hide('EmployeeEmergencyContactDataModal');
+            const logObject = {
+                event: 'update-profile',
+                user: { email: user.emails[0].address },
+                collectionName: 'users',
+                oldData: {},
+                newData: {...user}
+            };
+            Meteor.call('logs/createLog', logObject, function(err){
+                if(err){
+                    console.log('error while logging data', err);
+                }
+            });
         } else {
             console.log(err);
         }

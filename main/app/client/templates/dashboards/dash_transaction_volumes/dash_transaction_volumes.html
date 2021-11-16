@@ -1,0 +1,54 @@
+<template name="DashTransactionVolumes">
+  <div class="col-lg-3 col-xs-12">
+    <div class="box box-xs panel panel-default">
+      <div class="panel-heading clearfix">
+        <span class="panel-title pull-left">Transaction Volumes </span>
+        <div class="pull-right">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{billFilter}} <i
+              class="glyphicon icon-downarrow"></i></a>
+          <ul class="dropdown-menu">
+            <li><a href="#all">All</a></li>
+            <li><a href="#year">Year</a></li>
+            <li><a href="#month">Month</a></li>
+            <li><a href="#week">Week</a></li>
+            <li><a href="#today">Today</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="panel-body">
+        {{#if enableLoading}}
+        <div class="sLoading">
+          {{> spinner}}
+        </div>
+        {{else}}
+        <div class="panel-body-num">{{formatNumberZ result.totalRecord}}</div>
+        <div class="clearfix panel-body-num-stat">
+
+
+
+          {{#if condition orderFilter "neq" "All"}}
+          {{#if result.percentage}}
+          <div class="pull-right {{#if result.negative }} text-danger{{else}}text-success{{/if}}">
+            {{formatNumberZ result.percentage}}% <i
+              class="glyphicon {{#if result.negative}}glyphicon-arrow-down{{else}}glyphicon-arrow-up{{/if}}"></i></div>
+          {{/if}}
+          {{/if}}
+        </div>
+        {{/if}}
+        <div class="pull-left">
+          <!-- <a href="#"> -->
+          {{#if dec}}
+          <span class="slide-left glyphicon glyphicon-chevron-left"></span>
+          {{/if}}
+          <!-- </a> -->
+          {{state.title}}
+          <!-- <a href="#"> -->
+          {{#if inc}}
+          <span class="slide-right glyphicon glyphicon-chevron-right"></span>
+          {{/if}}
+          <!-- </a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

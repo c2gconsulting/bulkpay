@@ -7,6 +7,14 @@ Core.Schemas.Activity = new SimpleSchema({
         type: String,
         optional: true
     },
+    code: {
+        type: String,
+        optional: true
+    },
+    externalCode: {
+        type: String,
+        optional: true
+    },
     fullcode: {
         type: String,
         optional: true
@@ -20,6 +28,14 @@ Core.Schemas.Activity = new SimpleSchema({
     },
     unitOrProjectId: {
         type: String
+    },
+    manager: {
+        type: String,
+        optional: true
+    },
+    managerId: {
+        type: String,
+        optional: true
     },
     businessId: {
         type: String,

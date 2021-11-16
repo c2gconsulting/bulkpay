@@ -147,7 +147,7 @@ Template.EmployeeTimeManagement.events({
 
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
             Modal.show('TravelRequisition2Create', invokeReason);
         }else{
             Modal.show('TravelRequisition2Detail', invokeReason);

@@ -19,12 +19,17 @@ Template.TravelRequisition2IndexTPC.events({
 
         const status = $("#status_" + requisitionId).html();
 
+        const { DRAFT, PENDING, PROCESSED_BY_LOGISTICS, PROCESSED_BY_BST, NOT_RETIRED } = Core.ALL_TRAVEL_STATUS;
+        const isRejected = (status || "").toLowerCase().includes('rejected');
+        // check if not retired
+        const notRetired = (status === PROCESSED_BY_LOGISTICS) || (status !== PROCESSED_BY_BST);
 
+        // const travelRequisition = TravelRequisition2s.findOne({ _id: requisitionId });
+        // notRetired = travelRequisition.retireStstus == NOT_RETIRED
 
-
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+        if ((status === DRAFT) || (status === PENDING) || isRejected){
             Modal.show('TravelRequisition2Create', invokeReason);
-        } else if (!status.includes('Retire')) {
+        } else if (!isRejected && !notRetired) {
             Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
         }
     },
@@ -60,7 +65,7 @@ Template.TravelRequisition2IndexTPC.events({
 
 
 
-    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
     //         Modal.show('TravelRequisition2Create', invokeReason);
     //     } else if (!status.includes('Retire')) {
     //         Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -105,7 +110,7 @@ Template.TravelRequisition2IndexTPC.helpers({
         return Template.instance().travelRequestsICreated.get()
     },
     getStatus: function (status, currentTravelRequest) {
-        const lastApproval = "Approved By Budget Holder";
+        const lastApproval = "Approved By MD";
         const { trips } = currentTravelRequest;
         const departureDate = trips && trips[0].departureDate
         const returnDate = trips && trips[0].returnDate
@@ -116,7 +121,7 @@ Template.TravelRequisition2IndexTPC.helpers({
             return 'Ongoing'
         } else if (status === lastApproval && hasStartedTrip && hasEndedTrip) {
             return 'Completed'
-        }
+        } else if (status.includes('Approved')) return 'Approved'
         return status
     },
     // 'hasUnretiredTrips': function() {
@@ -124,7 +129,7 @@ Template.TravelRequisition2IndexTPC.helpers({
     //     let unretiredCount = TravelRequisition2s.find({
     //         $and : [
     //             { retirementStatus: "Not Retired"},
-    //             { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+    //             { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
     //         ]}).count()
     //     console.log("Unretired Count: " + unretiredCount);
     //     if (unretiredCount > 0){
@@ -136,8 +141,9 @@ Template.TravelRequisition2IndexTPC.helpers({
     // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        const tcpTrip = { tripCategory: 'THIRDPARTYCLIENT'}
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId(), ...tcpTrip}).count()
+        // const tcpTrip = { tripCategory: 'THIRDPARTYCLIENT'}
+        const { thirdPartyTripCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(thirdPartyTripCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -196,9 +202,10 @@ Template.TravelRequisition2IndexTPC.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        const tcpTrip = { tripCategory: 'THIRD_PARTY_CLIENT'}
+        // const tcpTrip = { tripCategory: 'THIRD_PARTY_CLIENT'}
 
-        return TravelRequisition2s.find({ createdBy: Meteor.userId(), ...tcpTrip }, options);
+        const { thirdPartyTripCondition } = Core.getTravelQueries()
+        return TravelRequisition2s.find(thirdPartyTripCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

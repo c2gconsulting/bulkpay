@@ -20,9 +20,35 @@ Template.TravelRequisition2Index.events({
         const status = $("#status_" + requisitionId).html();
 
 
+      //explicitely set status
+      let currentStatus = "Pending";
+      let currentPosition = 'HOD'
+
+      if (tmpl.isHOD.curValue) {
+        currentPosition = 'HOD';
+        currentStatus = 'Approved By HOD'
+      }
+
+      if (tmpl.isDirectManager.curValue) {
+        currentPosition = 'MANAGER';
+        currentStatus = 'Approved By MD'
+      }
+
+      if (tmpl.isGcoo.curValue) {
+        currentPosition = "GCOO";
+        currentStatus = 'Approved By GCOO'
+      }
+
+      if (tmpl.isGceo.curValue) {
+        currentPosition = "GCEO"
+        currentStatus = 'Approved By GCEO'
+      }
+
+      console.log('currentStatus', currentStatus)
+      console.log('status', status)
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+      if ((status === "Draft") || (status === "Pending") || (status === currentStatus) || (status === "Rejected By HOD") || (status === "Rejected By MD")){
             Modal.show('TravelRequisition2Create', invokeReason);
         } else if (!status.includes('Retire')) {
             Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -60,7 +86,7 @@ Template.TravelRequisition2Index.events({
 
 
 
-    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+    //     if ((status === "Draft") || (status === "Pending") || (status === "Rejected By HOD") || (status === "Rejected By MD")){
     //         Modal.show('TravelRequisition2Create', invokeReason);
     //     } else if (!status.includes('Retire')) {
     //         Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -105,7 +131,7 @@ Template.TravelRequisition2Index.helpers({
         return Template.instance().travelRequestsICreated.get()
     },
     getStatus: function (status, currentTravelRequest) {
-        const lastApproval = "Approved By Budget Holder";
+        const lastApproval = "Approved By MD";
         const { trips } = currentTravelRequest;
         const departureDate = trips && trips[0].departureDate
         const returnDate = trips && trips[0].returnDate
@@ -116,7 +142,7 @@ Template.TravelRequisition2Index.helpers({
             return 'Ongoing'
         } else if (status === lastApproval && hasStartedTrip && hasEndedTrip) {
             return 'Completed'
-        }
+        }  else if (status.includes('Approved')) return 'Approved'
         return status
     },
     // 'hasUnretiredTrips': function() {
@@ -124,7 +150,7 @@ Template.TravelRequisition2Index.helpers({
     //     let unretiredCount = TravelRequisition2s.find({
     //         $and : [
     //             { retirementStatus: "Not Retired"},
-    //             { $or : [ { status : "Pending" }, { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder"}] }
+    //             { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
     //         ]}).count()
     //     console.log("Unretired Count: " + unretiredCount);
     //     if (unretiredCount > 0){
@@ -136,7 +162,8 @@ Template.TravelRequisition2Index.helpers({
     // },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        const { myTripCondition } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(myTripCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -183,6 +210,21 @@ Template.TravelRequisition2Index.onCreated(function () {
     self.travelRequestsICreated = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
+    self.currentUser = new ReactiveVar();
+    self.isHOD = new ReactiveVar();
+    self.isDirectManager = new ReactiveVar();
+    self.isGceo = new ReactiveVar();
+    self.isGcoo = new ReactiveVar();
+    const currentUser = Meteor.user();
+    self.currentUser.set(currentUser || {});
+
+
+    Core.queryClient('account/isHod', Meteor.userId(), self.isHOD)
+    Core.queryClient('account/isManager', Meteor.userId(), self.isDirectManager)
+    Core.queryClient('account/gcoo', Meteor.userId(), self.isGcoo)
+    Core.queryClient('account/gceo', Meteor.userId(), self.isGceo)
+
+
     self.totalTripCost = new ReactiveVar(0)
 
     self.getTravelRequestsICreated = function(skip) {
@@ -195,8 +237,9 @@ Template.TravelRequisition2Index.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        const individualTrip = { tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] } };
-        return TravelRequisition2s.find({createdBy: Meteor.userId(), ...individualTrip }, options);
+        const { myTripCondition } = Core.getTravelQueries()
+        // const individualTrip = { tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] } };
+        return TravelRequisition2s.find(myTripCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

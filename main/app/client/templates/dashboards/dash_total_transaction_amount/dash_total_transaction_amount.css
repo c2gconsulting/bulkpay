@@ -1,0 +1,15 @@
+/*****************************************************************************/
+/* DashTotalOrderSales: Style */
+/*****************************************************************************/
+.dash-total-order-sales {
+}
+
+.sLoading{
+    display: block;
+    padding-top: 60px;
+    padding-bottom: 21px;
+    position: relative;
+}
+.sLoading .spinner{
+    z-index: 0 !important;
+}

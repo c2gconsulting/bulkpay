@@ -56,11 +56,8 @@ Template.TravelRequisition2BudgetHolderIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({
-            $and : [
-            { budgetHolderId: Meteor.userId()},
-            { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
-        ]}).count()
+        const { budgetHolderCondition } = Core.getTravelQueries();
+        let totalNum = TravelRequisition2s.find(budgetHolderCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -125,12 +122,8 @@ Template.TravelRequisition2BudgetHolderIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({
-            $and : [
-                { budgetHolderId: Meteor.userId()},
-                { $or : [ { status : "Approved By Supervisor" }, { status : "Approved By Budget Holder" }, { status : "Rejected By Budget Holder"}] }
-            ]
-        }, options);
+        const { budgetHolderCondition } = Core.getTravelQueries();
+        return TravelRequisition2s.find(budgetHolderCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)

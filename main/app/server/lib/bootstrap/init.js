@@ -35,15 +35,39 @@ Core.Log = logger.bunyan.createLogger({
   level: "debug"
 });
 
-Core.PowerQueue = new PowerQueue({ 
-  isPaused: true,
-  onEnded: () => { 
-    console.log(`Queue event processing done!`) 
-  }
-});
 
-// set logging level
-Core.Log.level(isDebug);
+// import axios from 'axios'
+
+// let isDebug = Meteor.settings.isDebug || process.env.REACTION_DEBUG || "INFO";
+
+// const winston = require("winston");
+// const logger = winston.createLogger({
+//   level: "warn",
+//   format: winston.format.json(),
+//   defaultMeta: { service: "user-service" },
+//   transports: [
+//     //
+//     // - Write to all logs with level `info` and below to `combined.log`
+//     // - Write all logs error (and below) to `error.log`.
+//     //
+//     new winston.transports.Console({
+//       format: winston.format.simple(),
+//     }),
+//   ],
+// });
+
+// Core.Log = logger;
+
+Core.PowerQueue = { add: () => {}, run: () => { }}
+// new PowerQueue({ 
+//   isPaused: true,
+//   onEnded: () => { 
+//     console.log(`Queue event processing done!`) 
+//   }
+// });
+
+// // set logging level
+// Core.Log.level(isDebug);
 
 /**
  * Core methods (server)
@@ -84,8 +108,8 @@ _.extend(Core, {
     //return true;
   },
   initAccount: function() {
-    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "Hub825Travel™";
-    Accounts.emailTemplates.from = process.env.MAIL_FROM || "Hub825Travel™ Team <no-reply@bulkpay.co>";
+    Accounts.emailTemplates.siteName = process.env.MAIL_SITE_NAME || "OILSERV TRIPS™";
+    Accounts.emailTemplates.from = process.env.MAIL_FROM || "OILSERV TRIPS™ Team <no-reply@bulkpay.co>";
 
     Accounts.emailTemplates.enrollAccount.html = function (user, url) {
       console.log('login url as', url);
@@ -299,5 +323,31 @@ Meteor.startup(function () {
   Core.initAccount();
   Core.init();
   Core.startWebHooksJobs()
+  // console.log('Assets.getText("data/locations.json")', Assets.getText("data/entityObject.json"))
+  SyncedCron.start();
+  if (Meteor.isServer) {
+    // Import EMPLOYEES, COST CENTERS, AND PROJECTS
+    // if (process.env.IMPORT_OILSERV_DATA) {
+    //   Core.apiClient("employees", Loader.loadEmployeeData, () => {
+    //     Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+    //       Core.apiClient("projects", Loader.loadProjectData, () => {})
+    //     })
+    //   })
+    // }
+
+    // Import Employees, Cost centers, and projects
+    // if (process.env.IMPORT_EMPLOYEE_OILSERV_DATA) {
+    // Core.apiClient("employees", Loader.loadEmployeeData, () => {})
+    // }
+
+    const MAIL_URL = process.env.MAIL_URL.split('@smtp');
+    if (!MAIL_URL) return
+    const [username_pass, smtp_url] = MAIL_URL;
+    const [username, pass] = username_pass.split('com:');
+    const NEW_MAIL_URL = `${username}com:${encodeURIComponent(pass)}@smtp${smtp_url}`;
+    process.env.MAIL_URL = NEW_MAIL_URL
+
+    console.log('process.env.MAIL_URL', process.env.MAIL_URL)
+  }
   // Core.fixPartitionProblems();
 });

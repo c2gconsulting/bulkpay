@@ -1,0 +1,130 @@
+<template name="ApprovalConfigCreate">
+    <div class="modal fade add-hotel" tabindex="-1" role="dialog" data-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{#if edit}} Edit Approval Config - {{hotel}} {{else }}New Approval Config{{/if}}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{#unless Template.subscriptionsReady}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                {{> spinner}}
+                            </div>
+                        </div>
+                        {{/unless}}
+            
+                        <div class="row">
+                            <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="name" class="control-label">Name <span class="asterisk important-input">*</span></label>
+                                        <input type="text" name="approval-name" id="approval-name" class="form-control" placeholder="Name" ng-model="name" value="{{approvalConfig.name}}"/>
+                                    </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="numberOfApprovals" class="control-label">Number of Approvals<span class="asterisk important-input">*</span></label>
+                                    <input type="number" min="1" name="numberOfApprovals" class="form-control" placeholder="Number Of Approvals" ng-model="numberOfApprovals" value="{{approvalConfig.numberOfApprovals}}" />
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-6 -->
+                            <div class="col-sm-6">
+                                <label>&nbsp;</label>
+                                <div class="ckbox ckbox-danger">
+                                    <input type="checkbox" id="isInternational" name="isInternational" checked="{{checked 'isInternational'}}"/>
+                                    <label for="isInternational">is international</label>
+                                </div>
+                            </div><!-- col-sm-6 -->
+                            
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Staff Level<span class="asterisk important-input">*</span></label>
+                                    <select  name="level" class="form-control dropdown" >
+                                       
+                                        <option value="Level 1" {{selected "level" "Level 1" }}>Level 1</option>
+                                        <option value="Level 2" {{selected "level" "Level 2" }}>Level 2</option>
+                                        <option value="Level 3" {{selected "level" "Level 3" }}>Level 3</option>
+                                        <option value="Level 4" {{selected "level" "Level 4" }}>Level 4</option>
+                                        <option value="Level 5" {{selected "level" "Level 5" }}>Level 5</option>
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label">Mode of Transportation<span class="asterisk important-input">*</span></label>
+                                    <select  name="transportationMode" class="form-control dropdown" >
+                                       
+                                        <option value="AIR" {{selected "transportationMode" "AIR" }}>AIR</option>
+                                        <option value="LAND" {{selected "transportationMode" "LAND" }}>LAND</option>
+                                       
+                                    </select>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="text-warning"><small><strong>Note: Do not include a Supervisor/HOD in this configuration as that part of approval is handled systematically due to the dynamics of employees in subject to different Supervisor/HOD.</strong></small></span>
+                            </div>
+                        </div>
+                        <hr/>
+    
+                        {{#each approvalConfig.approvals}}
+                            {{#let object=this object_idx=@index}}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="approvalUserId" class="control-label">
+                                                <span id="approvalLabel_{{@index}}" data-index="{{@index}}" contenteditable="true">{{approvalLabel}}</span>
+                                                <span class="asterisk important-input">*</span>
+                                            </label>
+                                            {{#semanticselect2}}
+                                            <select data-index="{{@index}}" name="approvalUserId_{{@index}}" id="approvalUserId_{{object_idx}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                                <option value="">Employees</option>
+                                                {{#each employees}}
+                                                    <option value="{{_id}}" selected="{{approvalUserIdSelected _id object_idx}}">{{profile.fullName}}</option>
+                                                {{/each}}
+                                            </select>
+                                            {{/semanticselect2}}
+                                        </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="approvalAlternativeUserId" class="control-label">
+                                            <span id="alternativeApprovalLabel_{{@index}}" data-index="{{@index}}" contenteditable="true">{{approvalLabelAlternative}}</span>
+                                        </label>
+                                        {{#semanticselect2}}
+                                        <select data-index="{{@index}}" name="approvalAlternativeUserId_{{@index}}" id="approvalAlternativeUserId_{{@index}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                            <option value="">Employees</option>
+                                            {{#each employees}}
+                                                <option value="{{_id}}" selected="{{approvalAlternativeUserIdSelected _id object_idx}}">{{profile.fullName}}</option>
+                                            {{/each}}
+                                        </select>
+                                        {{/semanticselect2}}
+                                    </div><!-- form-group -->
+                                </div><!-- col-sm-6 -->
+                            </div>
+                            {{/let}}
+                        {{/each}}
+                       
+                        {{#if errorMessage}}
+                          <p class="text-center error">{{errorMessage}}</p>
+                        {{/if}}
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <button type="reset" class="btn btn-danger" id="new-hotel-close" data-dismiss="modal">Cancel</button>
+                        {{#unless edit}}
+                            <button class="btn btn-primary mr5" id="save">Save</button>
+                        {{else}}
+                            <button class="btn btn-primary mr5" id="update">Update</button>
+                        {{/unless}}
+                        {{#if edit}}<button type="reset" class="btn btn-danger pull-right" id="deleteApproval">Delete</button>{{/if}}
+                    </div><!-- panel-footer -->
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

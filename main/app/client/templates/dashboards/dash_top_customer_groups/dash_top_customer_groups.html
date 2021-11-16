@@ -1,0 +1,26 @@
+<template name="DashTopCustomerGroups">
+  <div class="dash-top-customer-groups">
+    <div class="panel-heading clearfix text-center">
+      <span class="panel-title pull-left">Total Transaction Volume by Company</span>
+      <div class="pull-right">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{topCustomerGroupsFilter}} <i class="glyphicon icon-downarrow"></i></a>
+        <ul class="dropdown-menu">
+          <li><a href="#annually">Year</a></li>
+          <li><a href="#month">Month</a></li>
+          <li><a href="#week">Week</a></li>
+          <li><a href="#today">Today</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-body">
+        {{#if enableLoading}}
+            <div class="sLoading">
+                {{> spinner}}
+            </div>
+        {{/if}}
+      <div class="chart">
+        <canvas id="hbChart" style="height: 250px;"></canvas>
+      </div>
+    </div>
+  </div>
+</template>

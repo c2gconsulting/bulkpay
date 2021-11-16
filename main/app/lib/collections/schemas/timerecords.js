@@ -165,7 +165,7 @@ Core.Schemas.TimeRecord = new SimpleSchema({
     status: {
         type: String,
         defaultValue: 'Pending',
-        allowedValues: ["Cancelled","Draft","Pending","Approved By Supervisor", "Rejected By Supervisor"],
+        allowedValues: ["Cancelled","Draft","Pending","Approved By HOD", "Rejected By HOD"],
         optional: true
     },
     isStatusSeenByCreator: {

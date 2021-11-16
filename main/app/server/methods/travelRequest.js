@@ -9,7 +9,7 @@ let TravelRequestHelper = {
             SSR.compileTemplate("travelRequestNotification", Assets.getText("emailTemplates/travelRequestNotification.html"));
             Email.send({
                 to: supervisorEmail,
-                from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
+                from: "OILSERV TRIPS™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Travel Request created!",
                 html: SSR.render("travelRequestNotification", {
                     user: supervisorFullName,
@@ -33,7 +33,7 @@ let TravelRequestHelper = {
             
             Email.send({
                 to: supervisorEmail,
-                from: "Hub825Travel™ Team <eariaroo@c2gconsulting.com>",
+                from: "OILSERV TRIPS™ Team <eariaroo@c2gconsulting.com>",
                 subject: "Travel Request approved and needs to be treated",
                 html: SSR.render("travelRequisitionNotificationForTreatment", {
                     user: supervisorFullName,
