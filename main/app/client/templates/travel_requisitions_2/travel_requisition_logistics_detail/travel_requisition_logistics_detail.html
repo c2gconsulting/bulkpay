@@ -222,9 +222,9 @@
                         </div>
                         <hr>
                         <div class="row">
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                             <div class="form-group">
-                              <label for="driverInfo_{{this.tripIndex}}" class="control-label">Driver's Info.</label>
+                              <label for="driverInfo_{{this.tripIndex}}" class="control-label">Employee's Information</label>
                               <!-- {{#if condition this.driverInfo 'eq' 'OFFICE' }} -->
                                 <input type="text" id="driverInfo_{{this.tripIndex}}" class="form-control" placeholder="Driver Information" name="driverInfo_{{this.tripIndex}}" value="{{this.driverInformation}}"/>
                               <!-- {{else}}
@@ -241,14 +241,14 @@
                             </div>
                           </div>
 
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                               <div class="form-group">
                                   <label for="accountInfo_{{this.tripIndex}}" class="control-label">Account info.</label>
                                   <input type="text" id="accountInfo_{{this.tripIndex}}" class="form-control" placeholder="Account Information" name="accountInfo_{{this.tripIndex}}" value="{{this.accountNumber}}"/>
                               </div>
                           </div>
 
-                          <div class="col-sm-3">
+                          <div class="col-sm-4">
                               <div class="form-group">
                                   <label for="bankInfo_{{this.tripIndex}}" class="control-label">Bank Name</label>
                                   <input type="text" id="bankInfo_{{this.tripIndex}}" class="form-control" placeholder="Bank Information" name="bankInfo_{{this.tripIndex}}" value="{{this.bankName}}"/>
@@ -534,6 +534,9 @@
 
                         <!-- {{#if canApprove}} -->
                         <button class="btn btn-success mr5 pull-right" id="processTrip" disabled="{{cannotApprove}}" >Process trip</button>
+                        {{#if canRetryJournal }}
+                            <button class="btn btn-warning mr5 pull-right" id="retryJournalPosting" >Retry Journal Posting</button>
+                        {{/if}}
                         <!-- {{/if}} -->
                         <!-- <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button> -->
 

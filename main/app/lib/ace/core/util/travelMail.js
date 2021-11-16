@@ -343,7 +343,7 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
  * @param {*} recieverID 
  * @param {*} nextUserID 
  */
- Core.sendRetirementApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, nextUserID) => {
+ Core.sendRetirementApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, nextUserID, subjects) => {
    console.log('currentTravelRequest.retirementStatus, recieverID, nextUserID', currentTravelRequest.retirementStatus, recieverID, nextUserID)
   let otherPartiesEmail = "bulkpay@c2gconsulting.com" + supportmail ? ` ${supportmail}, ` : supportmail;
   const defaultUserData = { profile: {} };
@@ -372,7 +372,7 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
   let otherUserSubject = "Travel retirement process for ";
   // let bookingAgentSubject = "Ticket booking for " + createdBy.profile.fullName + "'s travel retirement";
   // let securityDeptSubject = "Security Notification for " + createdBy.profile.fullName + "'s travel retirement";
-  let createdBySubject = "New travel retirement for " + createdBy.profile.fullName;
+  let createdBySubject = subjects || "New travel retirement for " + createdBy.profile.fullName;
   let supervisorSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
   let budgetHolderSubject = "Please approve travel retirement for " + createdBy.profile.fullName;
   let financeApproverSubject = "Please approve travel retirement for " + createdBy.profile.fullName;

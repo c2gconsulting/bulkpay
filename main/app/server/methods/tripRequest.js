@@ -397,6 +397,28 @@ Meteor.methods({
 
     return true;
   },
+  "TRIPREQUEST/retirementReminder": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+      throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+
+    Core.canProcessTrip();
+
+    if(currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});
+
+      let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+      let nextApproval = null;
+
+      Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval, 'Reminder: Trip is overdue for retirement');
+    } else{
+      let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
   "TRIPREQUEST/retire": function(currentTravelRequest){
     if(!this.userId && Core.hasPayrollAccess(this.userId)){
       throw new Meteor.Error(401, "Unauthorized");

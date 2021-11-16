@@ -261,13 +261,13 @@ Core.getTravelQueries = () => {
     // { status: REJECTED_BY_MD },
     // { status: APPROVED_BY_GCOO },
     // { status: REJECTED_BY_GCOO },
-    { status: APPROVED_BY_GCEO },
+    // { status: APPROVED_BY_GCEO },
     // { status: REJECTED_BY_GCEO },
-    { status: PROCESSED_BY_BST },
+    // { status: PROCESSED_BY_BST },
     { status: PROCESSED_BY_LOGISTICS },
-    { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
+    // { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { status: APPROVED_BY_BUDGETHOLDER }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_HOD }] }, { $or: [{ createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
   ]
 
   // RETIREMENT

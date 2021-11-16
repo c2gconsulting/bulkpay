@@ -72,13 +72,16 @@ SyncedCron.add({
             const endedDate = new Date()
             const travelList = TravelRequisition2s.find({
               "trips.returnDate": { $gte: endedDate },
-              // $and: [{ retirementStatus: "Not Retired" }, { $or: [{ status: "Processed By Logistics" }, { status: "Processed By BST" }] }]
+              $and: [{ retirementStatus: "Not Retired" }, { $or: [{ status: "Processed By Logistics" }, { status: "Processed By BST" }] }]
             }).fetch();
 
             console.log('travelList', JSON.stringify(travelList))
 
             travelList.forEach((eachTravel) => {
               console.log(JSON.stringify(eachTravel));
+              Meteor.call('TRIPREQUEST/retirementReminder', (err, res) => {
+                console.log('TRIPREQUEST/retirementReminder -- err, res', err, res)
+              })
             })
           }
 
