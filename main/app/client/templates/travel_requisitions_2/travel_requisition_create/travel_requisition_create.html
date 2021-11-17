@@ -453,8 +453,8 @@
                       <div class="col-sm-3">
                           <div class="form-group">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="ineedHotel" name="ineedHotel" value="{{this.tripIndex}}" {{ineedHotelChecked ineedHotel}}/>
-                                <label for="ineedHotel">I need Hotel</label>
+                                <input type="checkbox" id="hotelNotRequired_{{this.tripIndex}}" name="hotelNotRequired_{{this.tripIndex}}" value="{{this.tripIndex}}" {{ineedHotelChecked this.tripIndex}}/>
+                                <label for="hotelNotRequired_{{this.tripIndex}}">I need Hotel</label>
                             </div>
                           </div>
                       </div>
@@ -474,7 +474,7 @@
                   </div> -->
                   <!-- {{/if}} -->
 
-                  {{#if ineedHotel}}
+                  {{#if condition this.hotelNotRequired 'eq' false }}
                   <div class="row">
                       <div class="col-sm-6">
                           <div class="form-group">

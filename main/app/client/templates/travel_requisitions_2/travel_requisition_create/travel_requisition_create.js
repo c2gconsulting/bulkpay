@@ -296,6 +296,8 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     const index = parseInt($(e.currentTarget).val()) - 1;
+    console.log('index', index)
+    console.log('currentTravelRequest.trips[index].hotelNotRequired', currentTravelRequest.trips[index].hotelNotRequired)
     currentTravelRequest.trips[index].hotelNotRequired = !currentTravelRequest.trips[index].hotelNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
@@ -1146,10 +1148,12 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
         }
     },
-    ineedHotelChecked(){
-        const ineedHotel = Template.instance().ineedHotel.get();
-        if(ineedHotel && index){
-            return ineedHotel? checked="checked" : '';
+    ineedHotelChecked(index){
+        // const ineedHotel = Template.instance().ineedHotel.get();
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            // return ineedHotel? checked="checked" : '';
+            return !currentTravelRequest.trips[parseInt(index) - 1].hotelNotRequired? checked="checked" : '';
         }
     },
     isLunchIncluded(index){

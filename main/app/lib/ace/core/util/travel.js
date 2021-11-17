@@ -107,10 +107,10 @@ Core.tripDetails = (index, minDate, from) => ({
   airlineId: "",
   airfareCost: 0,
   airfareCurrency: "NGN",
-  hotelId: "H3593",
+  hotelId: "I do not need a Hotel",
   hotelRate: 0,
   destinationCityCurrreny: "NGN",
-  hotelNotRequired: false,
+  hotelNotRequired: true,
   perDiemCost: 0,
   originCityCurrreny: "NGN",
   isBreakfastIncluded: false,
@@ -338,6 +338,9 @@ Core.tripAnalysis = (self) => {
     let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
     let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
 
+    const toId = currentTravelRequest.trips[i].toId;
+    const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
+
     for (let eI = 0; eI < individuals.length; eI++) {
       let { staffCategory } = Meteor.user();
 
@@ -348,8 +351,6 @@ Core.tripAnalysis = (self) => {
         if (!staffCategory && currentTravelRequest.tpcTrip === 'Client') staffCategory = 'Client'
       }
 
-      const toId = currentTravelRequest.trips[i].toId;
-      const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
 
 
 
@@ -397,7 +398,7 @@ Core.tripAnalysis = (self) => {
       let hotelRate = 0;
       // let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
       if (userStaffCategory){
-          hotelRate = userStaffCategory.hotelDailyRate;
+          hotelRate = !hotelNotRequired ? userStaffCategory.hotelDailyRate : 0;
       }
 
       totalHotelCost = ((totalDuration /*- 0.5*/) * hotelRate) + totalHotelCost;
