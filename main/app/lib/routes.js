@@ -228,11 +228,6 @@ Router.route('/business/:_id/approvalsconfig', {
     controller: 'ApprovalsConfigController',
     where: 'client'
 });
-Router.route('/business/:_id/employeelevels', {
-    name: 'employeelevels',
-    controller: 'EmployeeLevelsController',
-    where: 'client'
-});
 Router.route('/business/:_id/travelcities', {
     name: 'travelcities',
     controller: 'TravelcitiesController',
