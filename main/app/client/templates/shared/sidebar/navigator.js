@@ -373,6 +373,10 @@ Template.navigator.helpers({
     //     return Core.hasPayrollApprovalManageAccess(Meteor.userId());
     // },
 
+    hasAuditTrailViewAccess: function () {
+        let hasAuditTrailViewAccess = Core.hasAuditTrailViewAccess(Meteor.userId());
+        return hasAuditTrailViewAccess;
+    },
     hasPayrollReportsViewAccess: function () {
         let hasPayrollReportsViewAccess = Core.hasPayrollReportsViewAccess(Meteor.userId());
         return hasPayrollReportsViewAccess;

@@ -16,6 +16,13 @@ const fetchUsers = (conditions) => {
   return []
 }
 
+const getJustUserEmail = (userData) => {
+  if (userData && userData.emails.length > 0){
+    console.log(userData.emails[0].address);
+    return "" + userData.emails[0].address;
+  }
+}
+
 const fetchOtherUsers = (fetchedUser, conditions) => {
   let assignedFullName, otherUserEmails;
   if (fetchedUser) {

@@ -25,7 +25,7 @@
         {{/if}}
 
 
-        {{#if isAuditTrailLinkVisible}}
+        {{#if hasAuditTrailViewAccess}}
         <li><a href="{{pathFor 'logs.list'}}" name="settings-sub-menu"><i
                     class="glyphicon glyphicon-sort-by-attributes-alt"></i> <span>Audit Trail</span></a>
         </li>
@@ -185,12 +185,20 @@
           {{/if}}
 
           <li><a href="{{pathFor 'staffcategories'}}">&nbsp;&nbsp;&nbsp;&nbsp;Employee Travel Allowance</a></li>
-          <li><a href="{{pathFor 'employeelevels'}}">&nbsp;&nbsp;&nbsp;&nbsp;Employee Levels</a></li>
-
           {{#if isTravelBudgetsEnabled}}
             <li><a href="{{pathFor 'budgets'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travels Budget Codes</a></li>
           {{/if}}
 
+          {{#if hasTravelReportsViewAccess}}
+            <li><a href="{{pathFor 'reports.travelrequisition'}}">
+              <!-- <span class="fa-stack fa-1x">
+                <i class="fa fa-print fa-stack-1x" aria-hidden="true"></i>
+                <i style="font-size: 16px; margin-top: 7px;" class="fa fa-plane fa-stack-2x fa-inverse" aria-hidden="true"></i>
+              </span> -->
+              &nbsp;&nbsp;&nbsp;&nbsp;Travel requests report
+            </a></li>
+          {{/if}}
+    
           {{#if isTravelCitiesEnabled}}
             <li><a href="{{pathFor 'travelcities'}}">&nbsp;&nbsp;&nbsp;&nbsp;Travel Cities</a></li>
           {{/if}}
@@ -206,7 +214,7 @@
           {{#if isEmailSettingsEnabled}}
             <li><a href="{{pathFor 'emailsettings'}}">&nbsp;&nbsp;&nbsp;&nbsp;Email Settings</a></li>
           {{/if}}
-          <li><a href="{{pathFor 'project.list'}}">&nbsp;&nbsp;&nbsp;&nbsp;Create/Assign Projects</a></li>
+          <!-- <li><a href="{{pathFor 'project.list'}}">&nbsp;&nbsp;&nbsp;&nbsp;Create/Assign Projects</a></li> -->
         {{/if}}
 
 
@@ -302,7 +310,7 @@
               </li>
               {{#if isMenuExpanded 'travelBudgetHolderMenu'}}
                 <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
-                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">Approve Retirements</a></li>
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2budgetholderretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
               {{/if}}
             {{/if}}
 
@@ -319,16 +327,6 @@
               {{/if}}
             {{/if}}
           {{/if}}
-        {{/if}}
-
-        {{#if hasTravelReportsViewAccess}}
-          <li><a href="{{pathFor 'reports.travelrequisition'}}">
-            <span class="fa-stack fa-1x">
-              <i class="fa fa-print fa-stack-1x" aria-hidden="true"></i>
-              <i style="font-size: 16px; margin-top: 7px;" class="fa fa-plane fa-stack-2x fa-inverse" aria-hidden="true"></i>
-            </span>
-            Travel requests report
-          </a></li>
         {{/if}}
 
    
@@ -368,17 +366,17 @@
         {{/if}}
 
 
-        {{#if hasAdminAccess}}
+        <!-- {{#if hasAdminAccess}}
           <li class="parent {{isMenuExpandedFocusClass 'superAdminReportsMenu'}}">
             <a href="" id="superAdminReportsMenu"><i class="fa fa-university"></i>
               <span>Super Admin Reports</span>
             </a>
           </li>
-        {{/if}}
+        {{/if}} -->
 
-        {{#if isMenuExpanded 'superAdminReportsMenu'}}
+        <!-- {{#if isMenuExpanded 'superAdminReportsMenu'}}
           <li><a href="{{pathFor 'superadmin.reports.users'}}">Users</a></li>
-        {{/if}}
+        {{/if}} -->
 
         <li class="{{active "home"}}"><a href="{{pathFor route='home'}}"><i class="fa fa-angle-double-left"></i> <span>Dashboard</span></a></li>
       </ul>

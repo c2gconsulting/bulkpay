@@ -260,6 +260,9 @@ _.extend(Core, {
     hasPayrollReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.PAYROLL_REPORTS_VIEW, userId);
     },
+    hasAuditTrailViewAccess: function (userId) {
+        return this.hasPermission(Core.Permissions.AUDIT_TRAIL_VIEW, userId);
+    },
     hasTravelReportsViewAccess: function (userId) {
         return this.hasPermission(Core.Permissions.TRAVEL_REPORTS_VIEW, userId);
     },
