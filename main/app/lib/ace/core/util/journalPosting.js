@@ -39,13 +39,13 @@ Core.journalPosting = (travelRequest) => {
     "wbs_id": wbsID,
     "department_id": departmentID,
     "cost_items": [
-      {
-        "name": "TOTAL TRIP DURATION",
-        "item_text": "TOTAL DAY(S) SPENT ON TRIP",
-        "amount": (totalTripDuration || defaultCost),
-        "currency": currency,
-        "reference": "",
-      },
+      // {
+      //   "name": "TOTAL TRIP DURATION",
+      //   "item_text": "TOTAL DAY(S) SPENT ON TRIP",
+      //   "amount": (totalTripDuration || defaultCost),
+      //   "currency": currency,
+      //   "reference": "",
+      // },
       {
         "name": "TOTAL EMPLOYEE PERDIEM",
         "item_text": "AMOUNT SPENT ON PERDIEM",

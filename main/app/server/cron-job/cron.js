@@ -71,7 +71,7 @@ SyncedCron.add({
           const travelReminder = () => {
             const endedDate = new Date()
             const travelList = TravelRequisition2s.find({
-              "trips.returnDate": { $gte: endedDate },
+              "trips.returnDate": { $lte: endedDate },
               $and: [{ retirementStatus: "Not Retired" }, { $or: [{ status: "Processed By Logistics" }, { status: "Processed By BST" }] }]
             }).fetch();
 
