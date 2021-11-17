@@ -64,11 +64,11 @@
               </a>
             </li>
             {{#if isMenuExpanded 'travelTripsMenu'}}
+              <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
+              <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
               {{#if hasBSTProcessAccess}}
-                <li><a href="{{pathFor 'travelrequest2.travelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Individual Trip</a></li>
-                <li><a href="{{pathFor 'travelrequest2.grouptravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Group Trip</a></li>
-               {{/if}}
-              <li><a href="{{pathFor 'travelrequest2.tpctravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Third Party/Client Trip</a></li>
+                <li><a href="{{pathFor 'travelrequest2.tpctravelrequisition2index'}}">&nbsp;&nbsp;&nbsp;&nbsp;Third Party/Client Trip</a></li>
+              {{/if}}
             {{/if}}
           {{/if}}
         {{/if}}
