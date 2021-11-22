@@ -104,7 +104,7 @@ Core.tripDetails = (index, minDate, from) => ({
   originCityAirportTaxiCost: 0,
   destinationCityAirportTaxiCost: 0,
   groundTransportCost: 0,
-  airlineId: "",
+  airlineId: "third_party_agent_flight",
   airfareCost: 0,
   airfareCurrency: "NGN",
   hotelId: "I do not need a Hotel",

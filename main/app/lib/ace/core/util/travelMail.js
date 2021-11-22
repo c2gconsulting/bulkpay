@@ -310,19 +310,20 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
     }
   
-    let isTripByAir;
+    let isTripByAir, agentCanProcessFlight = false;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
       if (trip.transportationMode === 'AIR') isTripByAir = true
+      if (trip.airlineId === 'third_party_agent_flight') agentCanProcessFlight = true
     }
 
     // Send to booking agent if it's approved by manager
-    if (isBST && isTripByAir) {
+    if (isBST && isTripByAir && agentCanProcessFlight) {
       console.log('--bookingAgentEmail--', bookingAgentEmail)
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, true, true);
     }
 
-    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject, true);
 
   }
 
@@ -339,7 +340,7 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
       TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, otherUserSubject);
     }
 
-    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject, true);
   }
 }
 
@@ -717,19 +718,20 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
     const { otherUserEmails, assignedFullName } = fetchOtherUsers(bst, bstCond)
     TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, bstSubject);
   
-    let isTripByAir;
+    let isTripByAir, agentCanProcessFlight = false;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
       if (trip.transportationMode === 'AIR') isTripByAir = true
+      if (trip.airlineId === 'third_party_agent_flight') agentCanProcessFlight = true
     }
 
     // Send to booking agent if it's approved by manager
-    if (isBST && isTripByAir) {
+    if (isBST && isTripByAir && agentCanProcessFlight) {
       console.log('--bookingAgentEmail--', bookingAgentEmail)
-      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+      TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, true, true);
     }
 
-    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject, true);
   }
 
   //Send to LOGISTICS
@@ -740,7 +742,7 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
     const { otherUserEmails, assignedFullName } = fetchOtherUsers(logistics, logisticCond)
     TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, otherUserEmails, logisticsSubject);
 
-    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+    TravelRequestHelper.sendTravelRequestEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject, true);
   }
 }
 
@@ -905,9 +907,9 @@ Core.sendApprovalMail = (currentTravelRequest, TravelRequestHelper, recieverID, 
     }
 
     console.log('--bookingAgentEmail--', bookingAgentEmail)
-    TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, 'booking agent');
+    TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, bookingAgentEmail, bookingAgentSubject, true, true);
 
-    TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject);
+    TravelRequestHelper.sendTravelRetirementEmail(currentTravelRequest, securityDeptEmail, securityDeptSubject, true);
 
   }
 }

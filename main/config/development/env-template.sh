@@ -48,5 +48,6 @@ export JWT_SECRET=""
 export MAILGUN_DOMAIN=""
 export MAILGUN_API_KEY=""
 export MAILGUN_HOST=api.mailgun.net
+export TRAVEL_REQUEST_EXTERNAL_NOTIFICATION2="travel_request_external_notification2"
 export TRAVEL_REQUEST_NOTIFICATION2=travel_request_notification2
 export TRAVEL_RETIREMENT_NOTIFICATION2=travel_retirement_notification2

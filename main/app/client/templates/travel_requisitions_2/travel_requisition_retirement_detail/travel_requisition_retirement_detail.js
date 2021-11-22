@@ -306,6 +306,9 @@ Template.TravelRequisition2RetirementDetail.helpers({
 
         if(airline) {
             return airline.name
+        } else {
+            if (airlineId === 'third_party_agent_flight') return 'A third party will cater for my flight'
+            if (airlineId === 'company_will_process_flight') return 'Oilserv will cater for my flight'
         }
     },
     'getBudgetName': function(budgetCodeId) {

@@ -76,14 +76,16 @@ let TravelRequestHelper = {
       return travelcity.notificationEmail;
     }
   },
-  sendTravelRequestEmail: function(currentTravelRequest, emailTo, emailSubject, actionType) {
+  sendTravelRequestEmail: function(currentTravelRequest, emailTo, emailSubject, isExternalMail, writeReadOnly) {
     try {
-      const hasBookingAgent = actionType && (actionType.includes('booking') || actionType.includes('Booking'))
-      const lastUrlPath = hasBookingAgent ? 'bookingrequisition' : 'printrequisition';
-      const travelType = currentTravelRequest.type === "Return"?'Return Trip':'Multiple Stops';
-      const returnDate = currentTravelRequest.type === "Return"?currentTravelRequest.trips[0].returnDate:currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
+      // const hasBookingAgent = actionType && (actionType.includes('booking') || actionType.includes('Booking'))
+      const lastUrlPath = writeReadOnly ? 'bookingrequisition' : 'printrequisition';
+      const isTripType = (tripType) => currentTravelRequest.type == tripType;
+      const oneWayOrMultipleStops = isTripType('Single') ? 'One Way Trip' : 'Multiple Stops'
+      const travelType = isTripType("Return") ? 'Return Trip': `${oneWayOrMultipleStops}`;
+      const returnDate = isTripType("Return") ? currentTravelRequest.trips[0].returnDate : currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
       let itenerary = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
-      if (currentTravelRequest.type === "Multiple"){
+      if (isTripType("Multiple")){
         for (i = 1; i < currentTravelRequest.trips.length; i++) {
           itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
         }
@@ -93,7 +95,7 @@ let TravelRequestHelper = {
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.TRAVEL_REQUEST_NOTIFICATION2,
+        template: isExternalMail ? process.env.TRAVEL_REQUEST_EXTERNAL_NOTIFICATION2 : process.env.TRAVEL_REQUEST_NOTIFICATION2,
         'h:X-Mailgun-Variables': JSON.stringify({
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
