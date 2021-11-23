@@ -694,7 +694,7 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
+            if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }
@@ -809,7 +809,7 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
+            if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
                 fieldsAreValid = false;
                 validationErrors += ": select a hotel";
             }

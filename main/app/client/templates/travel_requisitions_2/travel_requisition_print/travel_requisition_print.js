@@ -197,6 +197,7 @@ Template.TravelRequisition2Print.helpers({
     if(hotel) {
       return hotel.name
     }
+    return hotelId || 'I do not need a Hotel'
   },
 
   'getBudgetName': function(budgetCodeId) {

@@ -107,7 +107,7 @@ Core.tripDetails = (index, minDate, from) => ({
   airlineId: "third_party_agent_flight",
   airfareCost: 0,
   airfareCurrency: "NGN",
-  hotelId: "I do not need a Hotel",
+  hotelId: "",
   hotelRate: 0,
   destinationCityCurrreny: "NGN",
   hotelNotRequired: true,
