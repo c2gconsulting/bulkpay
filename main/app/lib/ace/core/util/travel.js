@@ -359,7 +359,8 @@ Core.tripAnalysis = (self) => {
       let originCityCurrreny = Currency;
       let destinationCityCurrreny = Currency;
 
-      const trimData = (val) => (val || "").trim();
+      const toLowerCase = (val) => (val || "").toLowerCase()
+      const trimData = (val) => toLowerCase(val).trim();
       let userStaffCategory = StaffCategory.find(({ category }) => trimData(category) === trimData(staffCategory));
       userStaffCategory = userStaffCategory || null
 
