@@ -48,7 +48,6 @@ Core.publish("TravelRequestsAdminCreated", function (businessUnitId) {
 
 
     const currentTravelRequest = TravelRequisition2s.find({businessId: businessUnitId})
-    console.log('current travel request', currentTravelRequest);
     return currentTravelRequest;
     // .map((currentTravelRequest) => {
     //     currentTravelRequest.supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);

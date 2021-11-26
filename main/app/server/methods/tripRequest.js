@@ -207,6 +207,7 @@ let TravelRequestHelper = {
   }
 }
 
+Core.TravelRequestHelper = TravelRequestHelper
 
 /**
 *  Travel Request Methods
@@ -400,13 +401,13 @@ Meteor.methods({
     return true;
   },
   "TRIPREQUEST/retirementReminder": function(currentTravelRequest){
-    if(!this.userId && Core.hasPayrollAccess(this.userId)){
-      throw new Meteor.Error(401, "Unauthorized");
-    }
+    // if(!this.userId && Core.hasPayrollAccess(this.userId)){
+    //   throw new Meteor.Error(401, "Unauthorized");
+    // }
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    Core.canProcessTrip();
+    // Core.canProcessTrip();
 
     if(currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});

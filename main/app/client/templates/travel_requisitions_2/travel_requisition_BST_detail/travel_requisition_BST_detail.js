@@ -136,8 +136,6 @@ Template.TravelRequisition2BSTDetail.events({
             currentTravelRequest.trips[index].accountNumber = employeeProfile.accountNumber
             currentTravelRequest.trips[index].bankName = employeeProfile.bank
         }
-
-        console.log('currentTravelRequest.trips[index].driverInformation', currentTravelRequest.trips[index].driverInformation)
         tmpl.currentTravelRequest.set(currentTravelRequest);
     },
     "change [id*='accountInfo']": function(e, tmpl){

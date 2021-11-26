@@ -44,7 +44,6 @@ Template.TravelRequisition2Index.events({
         currentStatus = 'Approved By GCEO'
       }
 
-      console.log('currentStatus', currentStatus)
       console.log('status', status)
 
 

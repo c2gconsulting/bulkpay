@@ -297,7 +297,6 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     const index = parseInt($(e.currentTarget).val()) - 1;
     console.log('index', index)
-    console.log('currentTravelRequest.trips[index].hotelNotRequired', currentTravelRequest.trips[index].hotelNotRequired)
     currentTravelRequest.trips[index].hotelNotRequired = !currentTravelRequest.trips[index].hotelNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 

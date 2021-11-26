@@ -240,38 +240,32 @@ Meteor.methods({
             if(loginResult.error) {
                 throw loginResult.error
             } else {
-                let hashedDefaultPassword = Package.sha.SHA256("123456")
-                let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
-                let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
-
-                if(defaultLoginResult.error) {
-                    Meteor.users.update({_id: user._id}, {$set: {
-                        isUsingDefaultPassword: false
-                    }})
-                    return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
-                } else {
-                    Meteor.users.update({_id: user._id}, {$set: {
-                        isUsingDefaultPassword: true
-                    }})
-                }
-                //--
-                if(user.employeeProfile && user.employeeProfile.employment
+                if (user.employeeProfile && user.employeeProfile.employment
                     && user.employeeProfile.employment.status === 'Active') {
-                    return {
-                        status: true,
-                        loginType: 'usingEmail',
-                        userEmail: userEmail
-                    }
-                } else {
-                    if(user.businessIds.length === 0) {
+                    let hashedDefaultPassword = Package.sha.SHA256("123456")
+                    let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+                    let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
+
+                    if(defaultLoginResult.error) {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: false
+                        }})
+                        return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                    } else {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: true
+                        }})
+
+                        let resetPasswordToken = getPasswordResetToken(user, user._id, userEmail)
                         return {
                             status: true,
-                            loginType: 'usingEmail',
+                            loginType: 'usingDefaultPassword',
+                            resetPasswordToken: resetPasswordToken,
                             userEmail: userEmail
                         }
-                    } else {
-                        throw new Meteor.Error(401, "User is not active")
                     }
+                } else {
+                    throw new Meteor.Error(401, "User is not active")
                 }
             }
         } else {
@@ -286,7 +280,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Password not specified");
         }
 
-        let user = Meteor.users.findOne({customUsername: usernameOrEmail})
+        let user = Meteor.users.findOne({customUsername: { '$regex': usernameOrEmail, '$options': 'i' } })
 
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {

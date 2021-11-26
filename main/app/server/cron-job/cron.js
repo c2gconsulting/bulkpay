@@ -53,7 +53,7 @@ SyncedCron.add({
     console.log('every 5 mins every weekend')
     // const now = new Date();
     // return parser.recur().on(new Date()).fullDate();
-    return parser.recur().on(12).hour().onWeekday();
+    return parser.recur().on(0).hour().onWeekday();
     // return parser.cron(`${ now.getMinutes() } ${ now.getHours() } * * *`);
     // return parser.recur().on(0, 8, 20).hour().onWeekend();
     // return parser.text('every 1 mins')
@@ -61,36 +61,36 @@ SyncedCron.add({
   },
   job: function () {
     Core.Log.info('TRAVEL RETIREMENT REMINDER CRON JOB IN ACTION')
+    if (Meteor.isServer) {
+      Partitioner.directOperation(function() {
+        const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+        const userGroup = Partitioner.getUserGroup(user._id)
+        Partitioner.bindGroup(userGroup, function() {
+          try {
+            const travelReminder = () => {
+              const endedDate = new Date()
+              const travelList = TravelRequisition2s.find({
+                "trips.returnDate": { $lte: endedDate },
+                $and: [{ retirementStatus: "Not Retired" }, { $or: [{ status: "Processed By Logistics" }, { status: "Processed By BST" }] }]
+              }).fetch();
 
+              console.log('travelList', JSON.stringify(travelList))
 
-    Partitioner.directOperation(function() {
-      const user = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
-      const userGroup = Partitioner.getUserGroup(user._id)
-      Partitioner.bindGroup(userGroup, function() {
-        try {
-          const travelReminder = () => {
-            const endedDate = new Date()
-            const travelList = TravelRequisition2s.find({
-              "trips.returnDate": { $lte: endedDate },
-              $and: [{ retirementStatus: "Not Retired" }, { $or: [{ status: "Processed By Logistics" }, { status: "Processed By BST" }] }]
-            }).fetch();
-
-            console.log('travelList', JSON.stringify(travelList))
-
-            travelList.forEach((eachTravel) => {
-              console.log(JSON.stringify(eachTravel));
-              Meteor.call('TRIPREQUEST/retirementReminder', (err, res) => {
-                console.log('TRIPREQUEST/retirementReminder -- err, res', err, res)
+              travelList.forEach((eachTravel) => {
+                console.log(JSON.stringify(eachTravel));
+                Meteor.call('TRIPREQUEST/retirementReminder', eachTravel, (err, res) => {
+                  console.log('TRIPREQUEST/retirementReminder -- err, res', err, res)
+                })
               })
-            })
-          }
+            }
 
-          travelReminder();
-        } catch (error) {
-          console.log('CostCenters ---error', error)
-        }
-      })
-    });
-    SyncedCron.remove('WEEKEND\'S CRON JOB SCHEDULE FOR COST CENTERS');
+            travelReminder();
+          } catch (error) {
+            console.log('TRAVEL RETIREMENT REMINDER ---error', error)
+          }
+        })
+      });
+      SyncedCron.remove('WEEKEND\'S CRON JOB SCHEDULE FOR COST CENTERS');
+    }
   }
 })
