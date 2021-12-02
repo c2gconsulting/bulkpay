@@ -248,6 +248,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true,
         defaultValue: false,
     },
+    sapDocumentId: {
+        type: String,
+        optional: true,
+    },
     tripFor: {
         type: Core.Schemas.CreatedOnBehalf,
         optional: true,

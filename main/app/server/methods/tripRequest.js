@@ -849,13 +849,19 @@ Meteor.methods({
     return true;
   },
   "TRIPREQUEST/retryJournalPosting": function (currentTravelRequest) {
+    this.unblock();
+
     try {
-      Core.journalPosting(currentTravelRequest);
+      const data = Core.journalPosting(currentTravelRequest);
+
+      console.log('data', data)
     } catch (error) {
       console.log('journalPosting ERROR')
       console.log(error)
       throw new Meteor.Error(403, "Journal Posting failed")
     }
+  
+    return true
   },
   "TRIPREQUEST/bstProcess": function (currentTravelRequest) {
     if (!this.userId && Core.hasPayrollAccess(this.userId)){

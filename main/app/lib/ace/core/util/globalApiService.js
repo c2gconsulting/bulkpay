@@ -10,7 +10,7 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler, errorHan
     console.info(`Startup ::: ${TYPE} CRON JOB IN ACTION`)
 
     axios
-    .post(`http://20.73.168.4:50000/RESTAdapter/${url}`,
+    .post(`${process.env.OILSERV_SAP_INTEGRATION_URL}/RESTAdapter/${url}`,
         data,
         {
             headers: {
