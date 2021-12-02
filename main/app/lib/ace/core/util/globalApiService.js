@@ -9,6 +9,8 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler, errorHan
     /** BEGIN::: DATA IMPORT */
     console.info(`Startup ::: ${TYPE} CRON JOB IN ACTION`)
 
+    const port_number = process.env.OILSERV_SAP_INTEGRATION_URL.split('http://20.73.168.4:')[1]
+
     axios
     .post(`${process.env.OILSERV_SAP_INTEGRATION_URL}/RESTAdapter/${url}`,
         data,
@@ -18,7 +20,7 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler, errorHan
                 'Content-Type': 'application/json',
                 Cookie: process.env.OILSERV_SAP_INTEGRATION_COOKIE_API_KEY
            },
-            proxy: { protocol: 'http',host: '20.73.168.4',port: 50000 }
+            proxy: { protocol: 'http',host: '20.73.168.4',port: port_number || 50000 }
         }
     )
     .then(function (response) {
