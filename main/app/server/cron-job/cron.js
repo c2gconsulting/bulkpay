@@ -38,7 +38,7 @@ SyncedCron.add({
           Core.apiClient("projects", Loader.loadProjectData, () => {})
         })
       })
-      SyncedCron.remove('WEEKEND\'S CRON JOB SCHEDULE FOR COST CENTERS');
+      // SyncedCron.remove('WEEK DAY\'S CRON JOB SCHEDULE FOR SAP RESOURCES: EMPLOYEES | COST CENTERS | PROJECTS');
     }
   }
 })
