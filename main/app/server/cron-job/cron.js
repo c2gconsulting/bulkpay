@@ -25,8 +25,8 @@ SyncedCron.add({
 
     console.log('every 5 mins every weekend')
     // fires on the 5th minute of every hour during Sat and Sun
-    return parser.recur().on(0).hour().onWeekend();
-    // return parser.recur().on(0).mins().onWeekday();
+    // return parser.recur().on(0).hour().onWeekend();
+    return parser.recur().on(0).hour().onWeekday();
     // return parser.text('every 1 mins')
     // return parser.text('every 5 mins every weekend')
   },
