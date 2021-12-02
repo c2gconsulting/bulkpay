@@ -19,7 +19,7 @@ this.Loader = new DataLoader();
 
 
 SyncedCron.add({
-  name: 'WEEKEND\'S CRON JOB SCHEDULE FOR COST CENTERS',
+  name: 'WEEK DAY\'S CRON JOB SCHEDULE FOR SAP RESOURCES: EMPLOYEES | COST CENTERS | PROJECTS',
   schedule: function (parser) {
     // parser is a later.parse object
 

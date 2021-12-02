@@ -14,9 +14,9 @@ Core.apiClient = (urlPath = "employees", responseHandler, finalHandler, errorHan
         data,
         {
             headers: {
-                Authorization: 'Basic QlVMS1BBWV9ERVY6UGFzc3cwcmQlJQ==',
+                Authorization: process.env.OILSERV_SAP_INTEGRATION_AUTH_KEY,
                 'Content-Type': 'application/json',
-                Cookie: 'JSESSIONID=5kfVra385oH81KSzlcgDQcm930NrfAHCeEwA_SAP8i4nHR_PRsyEcufSUvz4_frw; saplb_*=(J2EE5011620)5011650'
+                Cookie: process.env.OILSERV_SAP_INTEGRATION_COOKIE_API_KEY
            },
             proxy: { protocol: 'http',host: '20.73.168.4',port: 50000 }
         }
