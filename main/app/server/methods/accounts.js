@@ -60,9 +60,9 @@ Accounts.onCreateUser(function (options, user) {
 
     const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
     user = authUser;
-    tenantId = authTenantId;
+    tenantId = authTenantId || tenantId;
 
-    if (!userExist) {
+    if (!userExist && tenantId) {
         // assign user to his tenant Partition
         Partitioner.setUserGroup(user._id, tenantId);
     }
@@ -73,7 +73,7 @@ Accounts.onCreateUser(function (options, user) {
 // Validate username, sending a specific error message on failure.
 Accounts.validateNewUser((user) => {
     console.log('user validateNewUser', user)
-  if (Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
+  if (!Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
     return true;
   } else if (user.username && user.username.length >= 3) {
     return true;

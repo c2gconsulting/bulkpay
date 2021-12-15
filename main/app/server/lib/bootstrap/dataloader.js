@@ -424,7 +424,10 @@ DataLoader = class DataLoader {
             if (userFound) {
               console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
               delete user.roles;
-              Meteor.users.update({ customUsername: user.customUsername }, { $set: user })
+              // delete user.emails;
+              const emailtoFind = user.emails && user.emails[0] && user.emails[0].address
+              if (emailtoFind) delete user.emails
+              Meteor.users.update({ $or: [{ customUsername: user.customUsername }, { 'emails.address': { '$regex': `${emailtoFind}`, '$options': 'i' } }] }, { $set: user })
               console.info(
                 `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
               );
@@ -433,8 +436,15 @@ DataLoader = class DataLoader {
               const accountId = Meteor.users.insert(user);
               Accounts.setPassword(accountId, "123456");
               Partitioner.setUserGroup(accountId, user.group);
-              console.log('Accounts.sendEnrollmentEmail to email address', user.emails[0].address)
-              Accounts.sendEnrollmentEmail(accountId, user.emails[0].address);
+              // const hasEmail = user.emails && user.emails[0] && user.emails[0].address && user.emails[0].address.split('@')[0].length > 1
+              /* START:: Comment out below code - if seeeder not working properly */
+              // const hasEmail = (eachLine.email || "").split('@')[0].length > 1
+              // console.log('Accounts.sendEnrollmentEmail hasEmail', hasEmail)
+              // console.log('Accounts.sendEnrollmentEmail to email address', user.emails[0].address)
+              // if (hasEmail) {
+              //   Accounts.sendEnrollmentEmail(accountId, user.emails[0].address);
+              // }
+              /* END:: Comment out below code - if seeeder not working properly */
               console.info(
                 `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
               );
