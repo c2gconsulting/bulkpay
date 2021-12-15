@@ -126,6 +126,10 @@ Template.header.helpers({
         let businessUnitLogoUrl = Template.instance().businessUnitLogoUrl.get()
         return (businessUnitLogoUrl) ? businessUnitLogoUrl : null
     },
+    includeTripText: function() {
+        let includeTripText = Template.instance().includeTripText.get()
+        return (includeTripText) ? includeTripText : null
+    },
     'isOnMobile': function() {
         return ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )
     }
@@ -136,6 +140,7 @@ Template.header.onCreated(function() {
 
     self.businessUnitName = new ReactiveVar()
     self.businessUnitLogoUrl = new ReactiveVar()
+    self.includeTripText = new ReactiveVar()
 
     self.procurementsToApprove = new ReactiveVar()
     self.procurementsStatusNotSeen = new ReactiveVar()
@@ -186,6 +191,7 @@ Template.header.onCreated(function() {
 
             if(businessUnitCustomConfig && businessUnitCustomConfig.displayLogoInSideBar) {
                 self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+                self.includeTripText.set(businessUnit.includeTripText)
             }
         }
 
