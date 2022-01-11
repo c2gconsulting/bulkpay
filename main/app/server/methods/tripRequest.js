@@ -349,6 +349,18 @@ Meteor.methods({
         // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
       }
 
+      // GET ALL DELEGATES
+      currentTravelRequest = Core.travelDelegateIds('budgetHolderId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('supervisorId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('managerId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('gcooId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('gceoId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('bstId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('logisticsId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('financeApproverId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('securityId', currentTravelRequest);
+      // END OF DELEGATES
+
       // Verify user creating a trip
       Core.canCreateTravel()
       

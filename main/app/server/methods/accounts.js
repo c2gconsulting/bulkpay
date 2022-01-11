@@ -134,7 +134,7 @@ Meteor.methods({
         const { hodOrSupervisorCond } = Core.getApprovalQueries(data, true);
         if (Core.getUserApproval(hodOrSupervisorCond)) return user;
         if (isAssignedToTreatTripRequest) {
-            const isAssigned = TravelRequisition2s.findOne({ supervisorId: data._id });
+            const isAssigned = TravelRequisition2s.findOne({ supervisorIds: data._id });
             if (isAssigned) return user;
         }
         // return Core.getUserApproval(hodOrSupervisorCond)

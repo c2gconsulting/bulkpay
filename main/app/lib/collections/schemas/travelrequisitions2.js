@@ -430,6 +430,51 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         // allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
         optional: true
     },
+    // BudgetHolder delegates
+    budgetHolderIds: {
+        type: [String],
+        optional: true
+    },
+    // supervisor delegates
+    supervisorIds: {
+        type: [String],
+        optional: true
+    },
+    // manager delegates
+    managerIds: {
+        type: [String],
+        optional: true
+    },
+    // GCOO Delegates
+    gcooIds: {
+        type: [String],
+        optional: true
+    },
+    // GCEO Delegates
+    gceoIds: {
+        type: [String],
+        optional: true
+    },
+    // Logistics Delegates
+    logisticsIds: {
+        type: [String],
+        optional: true
+    },
+    // BST Delegates
+    bstIds: {
+        type: [String],
+        optional: true
+    },
+    // Finance Delegates
+    financeApproverIds: {
+        type: [String],
+        optional: true
+    },
+    // Security Delegates
+    securityIds: {
+        type: [String],
+        optional: true
+    },
     isStatusSeenByCreator: {
         type: Boolean,
         defaultValue: false

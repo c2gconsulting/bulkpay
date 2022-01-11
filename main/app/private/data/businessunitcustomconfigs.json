@@ -364,7 +364,7 @@
                   "type": "Date"
               },
               {
-                  "label": "Preferred Airline",
+                  "label": "Entity to Bill",
                   "dbFieldName": "preferredAirline",
                   "type": "String"
               },
@@ -487,7 +487,7 @@
                   "type": "Date"
               },
               {
-                  "label": "Preferred Airline",
+                  "label": "Entity to Bill",
                   "dbFieldName": "preferredAirline",
                   "type": "String"
               },
@@ -634,7 +634,7 @@
                 "type" : "Date"
             },
             {
-                "label" : "Preferred Airline",
+                "label" : "Entity to Bill",
                 "dbFieldName" : "preferredAirline",
                 "type" : "String"
             },
@@ -864,7 +864,7 @@
                 "type" : "Date"
             },
             {
-                "label" : "Preferred Airline",
+                "label" : "Entity to Bill",
                 "dbFieldName" : "preferredAirline",
                 "type" : "String"
             },

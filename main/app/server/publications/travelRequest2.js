@@ -4,38 +4,38 @@
 
 
  Core.publish("TravelRequestsBySupervisor", function (businessUnitId, supervisorId) {
-     return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
+     return TravelRequisition2s.find({businessId: businessUnitId, supervisorIds: supervisorId});
  });
 
  Core.publish("TravelRequestsByMD", function (businessUnitId, managerId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, managerId: managerId});
+    return TravelRequisition2s.find({businessId: businessUnitId, managerIds: managerId});
 });
 
 Core.publish("TravelRequestsByGCOO", function (businessUnitId, gcooId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, gcooId: gcooId});
+    return TravelRequisition2s.find({businessId: businessUnitId, gcooIds: gcooId});
 });
 
 Core.publish("TravelRequestsByGCEO", function (businessUnitId, gceoId) {
-   return TravelRequisition2s.find({businessId: businessUnitId, gceoId: gceoId});
+   return TravelRequisition2s.find({businessId: businessUnitId, gceoIds: gceoId});
 });
  Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
-     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsId: logisticsId });
+     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsIds: logisticsId });
  });
 
  Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, bstId: bstId});
+    return TravelRequisition2s.find({businessId: businessUnitId, bstIds: bstId});
 });
 
 Core.publish("TravelRequestsBySecurity", function (businessUnitId, securityId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, securityId: securityId});
+    return TravelRequisition2s.find({businessId: businessUnitId, securityIds: securityId});
 });
 
  Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {
-     return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderId: budgetHolderId});
+     return TravelRequisition2s.find({businessId: businessUnitId, budgetHolderIds: budgetHolderId});
  });
 
  Core.publish("TravelRequestsByFinanceApprover", function (businessUnitId, financeApproverId) {
-     return TravelRequisition2s.find({businessId: businessUnitId, financeApproverId: financeApproverId});
+     return TravelRequisition2s.find({businessId: businessUnitId, financeApproverIds: financeApproverId});
  });
 
 Core.publish("TravelRequestsICreated", function (businessUnitId) {
