@@ -249,15 +249,19 @@ Core.tripAnalysis = (self) => {
   self.subscribe("activities", 'project', currentTravelRequest.departmentOrProjectId);
 
 
-  const { destinationType } = currentTravelRequest;
+  const { destinationType, costCenter } = currentTravelRequest;
   const isInternational = destinationType === "International";
   let Currency = isInternational ? 'USD' : 'NGN';
   let StaffCategory = StaffCategories.find({ isInternational }).fetch();
   // console.log('StaffCategoryyyy', StaffCategory)
 
-  const { tripFor } = currentTravelRequest;
+  const { tripFor, trips } = currentTravelRequest;
   let individuals = tripFor && tripFor.individuals ? tripFor.individuals : [{}];
   // console.log('individuals', individuals)
+  const isLand = trips && trips.find(trip => trip.transportationMode == 'LAND');
+  const isProjectTrip = costCenter === 'Project';
+  // IF Project tied to Land trip, there shouldn't be perdiem cost;
+  const hasNoPerdiem = (isProjectTrip && isLand);
 
   let totalTripDuration = 0;
   let totalEmployeePerdiemNGN = 0;
@@ -456,10 +460,10 @@ Core.tripAnalysis = (self) => {
     }
 
 
-    currentTravelRequest.trips[i].perDiemCost = totalPerDiemCost;
+    currentTravelRequest.trips[i].perDiemCost = hasNoPerdiem ? 0 : totalPerDiemCost;
     currentTravelRequest.trips[i].hotelRate = totalHotelRate;
     currentTravelRequest.trips[i].totalHotelCost = totalHotelCost
-    currentTravelRequest.trips[i].totalPerDiem = totalPerDiem;
+    currentTravelRequest.trips[i].totalPerDiem = hasNoPerdiem ? 0 : totalPerDiem;
     currentTravelRequest.trips[i].originCityAirportTaxiCost = originCityAirportTaxiCost;
     currentTravelRequest.trips[i].destinationCityAirportTaxiCost = destinationCityAirportTaxiCost;
 

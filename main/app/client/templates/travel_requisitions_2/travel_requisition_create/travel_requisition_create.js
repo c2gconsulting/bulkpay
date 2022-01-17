@@ -260,6 +260,7 @@ Template.TravelRequisition2Create.events({
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.costCenter = $("#costCenter").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
 },
 'change [id=tpcTrip]': function(e, tmpl) {
     e.preventDefault()
