@@ -6,18 +6,18 @@ var qs = require('qs');
 Core.sendMail = (body) => {
   // const API_KEY = process.env.API_KEY
   const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN;
-//   const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY
+  const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY
   const MAILGUN_HOST = process.env.MAILGUN_HOST
 
   var config = {
     url: `https://${MAILGUN_HOST}/v3/${MAILGUN_DOMAIN}/messages`,
     method: 'POST',
-    // auth: {
-    //     'user': 'api',
-    //     'pass': MAILGUN_API_KEY
-    // },
+    auth: {
+        'user': 'api',
+        'pass': MAILGUN_API_KEY
+    },
     headers: {
-        'Authorization': 'Basic YXBpOjhmMGY3NjUwZGRhNWNkN2ZmNjdhZDFkNjEwMjlhOTJjLTJhZjE4M2JhLTU1NmJjNzk2', 
+        // 'Authorization': 'Basic YXBpOjhmMGY3NjUwZGRhNWNkN2ZmNjdhZDFkNjEwMjlhOTJjLTJhZjE4M2JhLTU1NmJjNzk2', 
         'Content-Type': 'application/x-www-form-urlencoded'
     },
     data: qs ? qs.stringify(body) : JSON.stringify(body)

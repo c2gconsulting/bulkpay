@@ -180,7 +180,7 @@ Core.getTravelQueries = () => {
   const userId = user ? user._id : Meteor.userId();
 
   const budgetHolderQueries = [
-    { status: PENDING },
+    // { status: PENDING },
     { status: APPROVED_BY_BUDGETHOLDER },
     { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
@@ -197,7 +197,8 @@ Core.getTravelQueries = () => {
 
 
   const hodQueries = [
-    // { status: PENDING },
+    { status: PENDING },
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: PENDING }] }]},
     { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
@@ -214,6 +215,7 @@ Core.getTravelQueries = () => {
 
 
   const managerQueries = [
+    { status: PENDING },
     { status: APPROVED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
     // { status: REJECTED_BY_BUDGETHOLDER },
@@ -229,6 +231,7 @@ Core.getTravelQueries = () => {
   ]
 
   const gcooQueries = [
+    { status: PENDING },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
@@ -245,6 +248,7 @@ Core.getTravelQueries = () => {
   ]
 
   const gceoQueries = [
+    { status: PENDING },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
@@ -261,6 +265,7 @@ Core.getTravelQueries = () => {
   ]
 
   const bstQueries = [
+    { status: PENDING },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
@@ -278,6 +283,7 @@ Core.getTravelQueries = () => {
   ]
 
   const logisticsQueries = [
+    { status: PENDING },
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
@@ -488,18 +494,12 @@ Core.getWhereToStartApproval = getWhereToStartApproval;
  */
 Core.canProcessTrip = () => {
   if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
-    let errMsg = "Sorry, you are not allowed to perform an action on travel requisition because you are not an internal staff memeber"
+    let errMsg = "Sorry, you are not allowed to perform an action on travel requisition because you are not an internal staff member"
     throw new Meteor.Error(401, errMsg);
   }
 }
 
-/**
- * @description getApprovalConfig - check if position is part of approval process
- * @param {*} position - isUserPartOfApproval
- * @param {*} tripInfo 
- * @returns {Object} Object - current user info
- */
-Core.getApprovalConfig = (position, tripInfo = { trips: [] }) => {
+Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   let isAirRailTransportationMode = false;
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
@@ -512,17 +512,117 @@ Core.getApprovalConfig = (position, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
   }
 
-  if (!isAboveOrHOD && position === HOD) {
+  if (!isAboveOrHOD && recipientPosition === HOD) {
     return Meteor.user();
   }
 
-  if (!isAboveOrMD && isAirRailTransportationMode && position === MD) {
+  if (!isAboveOrMD && isAirRailTransportationMode && recipientPosition === MD) {
     if (isAirRailTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirRailTransportationMode && position === GCOO) {
+  if (!isAboveOrGCOO && isAirRailTransportationMode && recipientPosition === GCOO) {
+    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
+    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
+    return null
+  }
+
+  if (!isAboveOrGCEO && isAirRailTransportationMode && recipientPosition === GCEO) {
+    if (isInternationalTrip) return Meteor.user();
+    return null
+  }
+
+  if (!isAirRailTransportationMode && recipientPosition === LOGISTICS) {
+    return Meteor.user();
+  }
+
+  if (recipientPosition === BST) {
+    return Meteor.user();
+  }
+
+  if (recipientPosition === SECURITY) {
+    return Meteor.user();
+  }
+
+  if (recipientPosition === FINANCE) {
+    return Meteor.user();
+  }
+
+  return null
+}
+
+
+Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
+  let isAirRailTransportationMode = false;
+  const { trips, destinationType, } = tripInfo;
+  const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
+
+  const isInternationalTrip = destinationType === 'International';
+  for (let i = 0; i < trips.length; i++) {
+    const { transportationMode } = trips[i];
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
+  }
+
+  if (nextApproval === HOD) {
+    return MD
+  }
+
+  if (nextApproval === MD) {
+    if (isAirRailTransportationMode) return GCOO
+    else return LOGISTICS
+  }
+
+  if (nextApproval === GCOO) {
+    if (isAirRailTransportationMode && isInternationalTrip) return GCEO;
+    if (isAirRailTransportationMode && !isInternationalTrip) return BST;
+    return BST
+  }
+
+  if (nextApproval === GCEO) {
+    if (isInternationalTrip) return BST;
+    return BST
+  }
+
+  if (!isAirRailTransportationMode && nextApproval === LOGISTICS) {
+    return BST
+  }
+
+  if (nextApproval === BST) {
+    return LOGISTICS
+  }
+
+  if (nextApproval === SECURITY) {
+    return BST
+  }
+
+  if (nextApproval === FINANCE) {
+    return ""
+  }
+
+  return null
+}
+
+
+Core.runApprovalFlow = (isUserPartOfApproval, tripInfo = { trips: [] }, callback) => {
+  let isAirRailTransportationMode = false;
+  const { trips, destinationType } = tripInfo;
+
+  const isInternationalTrip = destinationType === 'International';
+  for (let i = 0; i < trips.length; i++) {
+    const { transportationMode } = trips[i];
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
+  }
+
+  if (isUserPartOfApproval === HOD) {
+    return Meteor.user();
+  }
+
+  if (isUserPartOfApproval === MD) {
+    if (isAirRailTransportationMode) return Meteor.user();
+  }
+
+  if (isUserPartOfApproval === GCOO) {
     if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
     if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
     return null

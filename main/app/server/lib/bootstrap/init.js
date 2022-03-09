@@ -329,11 +329,11 @@ Meteor.startup(function () {
     // Import EMPLOYEES, COST CENTERS, AND PROJECTS
     if (process.env.IMPORT_OILSERV_DATA !== 'false') {
       console.log('SEEDING DATA')
-      Core.apiClient("employees", Loader.loadEmployeeData, () => {
-        Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
-          Core.apiClient("projects", Loader.loadProjectData, () => {})
-        })
-      })
+      // Core.apiClient("employees", Loader.loadEmployeeData, () => {
+      //   Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+      //     Core.apiClient("projects", Loader.loadProjectData, () => {})
+      //   })
+      // })
     }
 
     // Import Employees, Cost centers, and projects

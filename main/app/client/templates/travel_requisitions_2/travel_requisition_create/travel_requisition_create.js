@@ -1029,6 +1029,9 @@ Template.TravelRequisition2Create.helpers({
     budgetList() {
         return  Budgets.find();
     },
+    getCountries() {
+        return Core.getCountriesCapital();
+    },
     airlineList(fromId, toId) {
         let isInternational = false;
         let fromTravelCity = Travelcities.findOne({_id: fromId});

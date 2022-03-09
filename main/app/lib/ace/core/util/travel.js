@@ -280,7 +280,7 @@ Core.tripAnalysis = async (self) => {
   const isLand = trips && trips.find(trip => trip.transportationMode == 'LAND');
   const isProjectTrip = costCenter === 'Project';
   // IF Project tied to Land trip, there shouldn't be perdiem cost;
-  const hasNoPerdiem = (isProjectTrip && isLand);
+  const hasNoPerdiem = true // disable per diem for all trips // (isProjectTrip && isLand);
 
   let totalTripDuration = 0;
   let totalEmployeePerdiemNGN = 0;
