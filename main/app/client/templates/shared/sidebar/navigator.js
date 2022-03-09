@@ -325,6 +325,9 @@ Template.navigator.helpers({
     hasBSTProcessAccess: function () {
         return Core.hasBSTProcessAccess(Meteor.userId());
     },
+    hasBstOrLogisticsProcess() {
+        return Core.hasBSTProcessAccess(Meteor.userId()) || Core.hasLogisticsProcessAccess(Meteor.userId());
+    },
     hasSecurityAccess: function () {
         return Core.hasSecurityAccess(Meteor.userId());
     },

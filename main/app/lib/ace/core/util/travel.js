@@ -23,6 +23,21 @@ Core.Travel = {
       id: 'CAR_HIRE',
       name: 'I need a car hire'
     }
+  ],
+
+  travelTreat: [
+    {
+      id: 'Official',
+      name: 'Official trip'
+    },
+    {
+      id: 'Time-off',
+      name: 'Time-off'
+    },
+    {
+      id: 'Rotation',
+      name: 'Rotation'
+    }
   ]
 };
 
@@ -119,7 +134,9 @@ Core.tripDetails = (index, minDate, from) => ({
   isIncidentalsIncluded: false,
   totalDuration: 0,
   totalPerDiem: 0,
-  totalHotelCost: 0
+  totalHotelCost: 0,
+  fromCountry: '',
+  toCountry: '',
 })
 
 
@@ -130,6 +147,7 @@ Core.currentTravelRequest = (businessUnitId) => ({
 
   destinationType: 'Local',
   costCenter: 'Project',
+  travelTreat: 'Official',
   tpcTrip: 'Third_Party',
   tripFor: {},
   tripCategory: Core.getCurrentTrip() || 'INDIVIDUAL',
@@ -210,6 +228,7 @@ Core.autorun = (invokeReason, self) => {
   
         if (travelRequestDetails) {
           $('#costCenter').dropdown('set selected', travelRequestDetails.costCenter);
+          $('#travelTreat').dropdown('set selected', travelRequestDetails.travelTreat);
           $('#departmentOrProjectId').dropdown('set selected', travelRequestDetails.departmentOrProjectId);
           // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
           if (travelRequestDetails.activityId) $('#project_activity-code').dropdown('set selected', travelRequestDetails.activityId);
@@ -237,7 +256,7 @@ Core.autorun = (invokeReason, self) => {
 /**
  * 
  */
-Core.tripAnalysis = (self) => {
+Core.tripAnalysis = async (self) => {
 
   let currentTravelRequest = self.currentTravelRequest.curValue;
   const tripType = currentTravelRequest.type;

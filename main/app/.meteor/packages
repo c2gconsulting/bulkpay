@@ -90,6 +90,6 @@ meteorhacks:search-source
 cfs:power-queue
 edgee:slingshot
 zimme:iron-router-auth
+littledata:synced-cron
 lindoelio:accounts-office365
 service-configuration
-littledata:synced-cron

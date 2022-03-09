@@ -228,6 +228,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: 'Project',
         allowedValues: ['Project', 'Department']
     },
+    travelTreat: {
+        type: String,
+        defaultValue: 'Official',
+        allowedValues: ['Official', 'Time-off', 'Rotation']
+    },
     tpcTrip: {
         type: String,
         defaultValue: 'Third_Party',

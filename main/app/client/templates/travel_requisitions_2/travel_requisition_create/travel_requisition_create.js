@@ -262,6 +262,14 @@ Template.TravelRequisition2Create.events({
     tmpl.currentTravelRequest.set(currentTravelRequest);
     tmpl.updateTripNumbers();
 },
+'change [id=travelTreat]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.travelTreat = $("#travelTreat").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
 'change [id=tpcTrip]': function(e, tmpl) {
     e.preventDefault()
 
@@ -358,6 +366,37 @@ Template.TravelRequisition2Create.events({
 
     if ((index + 1) < currentTravelRequest.trips.length){
         currentTravelRequest.trips[index + 1].fromId = $(e.currentTarget).val();
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='fromCountry']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].fromCountry = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='toCountry']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].toCountry = $(e.currentTarget).val();
+    //currentTravelRequest.trips[index].airlineId = "";
+    //currentTravelRequest.trips[index].airfareCost = 0;
+    //currentTravelRequest.trips[index].hotelId = "";
+    //currentTravelRequest.trips[index].hotelRate = 0;
+
+    if ((index + 1) < currentTravelRequest.trips.length){
+        currentTravelRequest.trips[index + 1].fromCountry = $(e.currentTarget).val();
     }
 
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -890,9 +929,13 @@ Template.TravelRequisition2Create.helpers({
     },
     ACTIVITY: () => 'activityId',
     COSTCENTER: () => 'costCenter',
+    TRAVELTREAT: () => 'travelTreat',
+    FROMCOUNTRY: () => 'fromCountry',
+    TOCOUNTRY: () => 'toCountry',
     PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
     costCenters: () => Core.Travel.costCenters,
     carOptions: () => Core.Travel.carOptions,
+    travelTreat: () => Core.Travel.travelTreat,
     currentDepartment: () => Template.instance().currentDepartment.get(),
     staffCategoryErrorMessage: () => Template.instance().staffCategoryErrorMessage.get(),
     ineedHotel: () => Template.instance().ineedHotel.get(),
@@ -901,6 +944,23 @@ Template.TravelRequisition2Create.helpers({
     departmentList: () => Template.instance().departments.get(),
     projectList: () => Template.instance().projects.get(),
     projectActivities: () => Template.instance().activities.get(),
+    countries: () => Template.instance().countries.get(),
+    airportFromCities: (index) => {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        Meteor.call('countryAirports', currentTravelRequest.trips[parseInt(index) - 1].fromCountry, function (error, response) {
+            Session.set("airportFromCities", response);
+            return response;
+        });
+        return Session.get("airportFromCities");
+    },
+    airportToCities: (index) => {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        Meteor.call('countryAirports', currentTravelRequest.trips[parseInt(index) - 1].toCountry, function (error, response) {
+            Session.set("airportToCities", response);
+            return response
+        });
+        return Session.get("airportToCities");
+    },
     //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
     //     const { departmentOrProjectId } = currentTravelRequest;
     //     const activities = Activities.find({ type: 'project', unitOrProjectId: departmentOrProjectId }).fetch();
@@ -918,6 +978,11 @@ Template.TravelRequisition2Create.helpers({
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
       if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    travelTreatType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.travelTreat === item) return item
       return false
     },
     selected(context,val) {
@@ -1048,6 +1113,14 @@ Template.TravelRequisition2Create.helpers({
             }
             //return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val ? selected="selected" : '';
         }
+    },
+    isFlight(index, val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            console.log('currentTravelRequest.trips[parseInt(index) - 1].transportationMode', currentTravelRequest.trips[parseInt(index) - 1].transportationMode)
+            return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === 'AIR';
+        }
+        return false;
     },
     departureTimeSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -1260,6 +1333,9 @@ Template.TravelRequisition2Create.onCreated(function () {
     const departments = CostCenters.find({ businessId: Session.get('context') });
     self.departments.set(departments);
     self.activities = new ReactiveVar();
+    self.fromCountry = new ReactiveVar();
+    self.toCountry = new ReactiveVar();
+    
 
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
@@ -1268,7 +1344,10 @@ Template.TravelRequisition2Create.onCreated(function () {
 
     let invokeReason = self.data;
 
-    self.autorun(function(){
+    self.autorun(async function(){
+        self.countries = new ReactiveVar();
+        const countries = await Core.getCountriesCapital();
+        self.countries.set(countries);
         Core.autorun(invokeReason, self)
     })
 

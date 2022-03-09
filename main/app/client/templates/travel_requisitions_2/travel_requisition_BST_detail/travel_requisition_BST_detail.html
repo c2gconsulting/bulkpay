@@ -34,12 +34,18 @@
                                     <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="travelTreat" class="control-label">OFFICIAL / TIME-OFF / ROTATION? <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="travelTreat" class="form-control" placeholder="OFFICIAL / TIME-OFF / ROTATION" name="travelTreat" value="{{currentTravelRequest.travelTreat}}" disabled/>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <!-- <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="budget-code" class="control-label">Which project is this trip related to?</label>
+                                    <label for="budget-code" class="control-label">Project To Be Charged?</label>
                                     {{#semanticselect}}
                                     <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
                                         {{#each budgetList}}
@@ -65,7 +71,7 @@
                             {{#if costCenterType 'Project'}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <label for="departmentOrProjectId" class="control-label">Project To Be Charged?</label>
                                         <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
                                     </div>
                                 </div>
@@ -83,7 +89,7 @@
                                 {{else}}
                                 <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                    <label for="departmentOrProjectId" class="control-label">Department To Be Charged?</label>
                                     <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
                                 </div>
                                 </div>
