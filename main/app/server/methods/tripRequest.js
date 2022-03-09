@@ -84,10 +84,16 @@ let TravelRequestHelper = {
       const oneWayOrMultipleStops = isTripType('Single') ? 'One Way Trip' : 'Multiple Stops'
       const travelType = isTripType("Return") ? 'Return Trip': `${oneWayOrMultipleStops}`;
       const returnDate = isTripType("Return") ? currentTravelRequest.trips[0].returnDate : currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
-      let itenerary = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
+      const fromCountry = currentTravelRequest.trips[0].fromCountry;
+      const toCountry = currentTravelRequest.trips[0].toCountry;
+      const fromAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + fromCountry ? `, ${fromCountry}` : '';
+      const toAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId) + toCountry ? `, ${toCountry}` : '';
+      let itenerary = fromAddress + " - " + toAddress;
       if (isTripType("Multiple")){
         for (i = 1; i < currentTravelRequest.trips.length; i++) {
-          itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
+          let toCountry2 = currentTravelRequest.trips[i].toCountry;
+          toCountry2 = toCountry2 ? `, ${toCountry2}` : '';
+          itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId) + toCountry2;
         }
       }
 

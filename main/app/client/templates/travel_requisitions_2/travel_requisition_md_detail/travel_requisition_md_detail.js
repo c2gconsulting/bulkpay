@@ -306,13 +306,13 @@ Template.TravelRequisition2MDDetail.helpers({
             return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
             return travelcity.name
         } 
-        return travelcityId
+        return travelcityId + `${country ? `, ${country}`: ''}`;
     },
     budgetList() {
         return  Budgets.find();

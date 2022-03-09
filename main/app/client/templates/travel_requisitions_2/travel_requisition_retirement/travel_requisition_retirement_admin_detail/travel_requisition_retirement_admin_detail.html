@@ -125,13 +125,13 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId}}" disabled />
+                                    <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId this.fromCountry}}" disabled />
                                 </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId}}" disabled />
+                                    <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId this.toCountry}}" disabled />
                                 </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-2">

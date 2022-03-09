@@ -911,13 +911,13 @@ Template.TravelRequisition2ExtensionDetail.helpers({
     budgetList() {
         return  Budgets.find();
     },
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
             return travelcity.name
         } 
-        return travelcityId
+        return travelcityId + `${country ? `, ${country}`: ''}`;
     },
     airlineList(fromId, toId) {
         let isInternational = false;
