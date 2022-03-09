@@ -136,7 +136,10 @@ Core.travelRetirementStatus = [
   RETIREMENT_REJECTED_BY_BST,
 ]
 
-
+/**
+ * @description canCreateTravel
+ * @returns {*} void
+ */
 Core.canCreateTravel = () => {
   const { employee, employeeProfile } = Meteor.user();
   const isVerified = () => employeeProfile.employment && employeeProfile.employment.status === 'Active';
@@ -147,10 +150,31 @@ Core.canCreateTravel = () => {
   }
 }
 
+/**
+ * @description queryUsersExcept
+ * @param {*} userId 
+ * @param {*} conditions 
+ * @returns {*} Object - ({ $and: [{ _id: { $ne: userId } }, conditions] })
+ */
 Core.queryUsersExcept = (userId, conditions) => ({ $and: [{ _id: { $ne: userId } }, conditions] })
 
+/**
+ * @description getUserApproval
+ * @param {*} conditions 
+ * @returns {*} Object - Meteor.users.findOne(conditions);
+ */
 Core.getUserApproval = (conditions) => Meteor.users.findOne(conditions);
 
+/**
+ * @description getTravelQueries
+ * @returns {*} Object 
+ * @example {
+    hodOrSupervisorCondition, budgetHolderCondition, managerCondition,
+    gcooCondition, gceoCondition, bstCondition, logisticsCondition, securityCondition,
+    myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition,
+    hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
+  }
+ */
 Core.getTravelQueries = () => {
   const user = Meteor.user();
   const userId = user ? user._id : Meteor.userId();
@@ -314,7 +338,8 @@ Core.getTravelQueries = () => {
   };
 
   const hodOrSupervisorCondition = {
-    $and : [{ supervisorId: userId }, { $or : hodQueries }]
+    // $and : [{ supervisorId: userId }, { $or : hodQueries }]
+    $and : [{ supervisorIds: userId }, { $or : hodQueries }]
   };
 
   const budgetHolderCondition = {
@@ -369,7 +394,12 @@ Core.getTravelQueries = () => {
   }
 }
 
-
+/**
+ * @description getApprovalQueries
+ * @param {*} currentUser 
+ * @param {*} myApprovalAccess 
+ * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+ */
 Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   const { managerId, hodPositionId, _id: userId,  } = currentUser;
   let GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off', GCFO = 'Group Chief Finance Offic';
@@ -395,6 +425,12 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   }
 }
 
+/**
+ * @description canApprove - can User Approve
+ * @param {*} position 
+ * @param {*} tripInfo 
+ * @returns {*} Boolean
+ */
 Core.canApprove = (position, tripInfo) => {
   const { status, isProcessedByLogistics, isProcessedByBST } = tripInfo;
   switch (position) {
@@ -423,41 +459,11 @@ Core.canApprove = (position, tripInfo) => {
   }
 }
 
-
-Core.hasApprovalLevel = (tripInfo = {}, approvalInfo) => {
-  const { positionId, positionDesc } = Meteor.user();
-
-  let status = tripInfo ? tripInfo.status : PENDING, currentPosition = HOD;
-  const position = positionDesc ? positionDesc.toLowerCase() : "";
-  let hasApprovalLevel = false;
-  // if (positionId === hodPositionId) {
-  if (Meteor.users.findOne({ hodPositionId: positionId })) {
-    hasApprovalLevel = true;
-    currentPosition = HOD;
-    status = APPROVED_BY_HOD
-  }
-  // if (positionId === lineManagerId) {
-  if (Meteor.users.findOne({ lineManagerId: positionId })) {
-    hasApprovalLevel = true;
-    currentPosition = 'MANAGER';
-    status = APPROVED_BY_MD
-    // if(!isAIR) status = 'Processed By Logistics'
-  }
-  if (position.includes('group chief operating off')) {
-    hasApprovalLevel = true;
-    currentPosition = GCOO;
-    status = APPROVED_BY_GCOO
-    // if(!isAIR) status = 'Processed By Logistics'
-  }
-  if (position.includes('group chief executive off')) {
-    hasApprovalLevel = true;
-    currentPosition = GCEO
-    status = APPROVED_BY_GCEO
-    // if(!isAIR) status = 'Processed By Logistics'
-  }
-  return approvalInfo ? { currentPosition, status } : hasApprovalLevel;
-}
-
+/**
+ * @description getWhereToStartApproval - get User Position Status
+ * @param {*} tripInfo 
+ * @returns {Object} Object - { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO }
+ */
 const getWhereToStartApproval = (tripInfo) => {
   const { createdByHOD, createdByMD, createdByGCOO, createdByGCEO } = tripInfo;
 
@@ -469,8 +475,17 @@ const getWhereToStartApproval = (tripInfo) => {
   return { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO }
 }
 
+/**
+ * @description getWhereToStartApproval - get User Position Status
+ * @param {*} tripInfo 
+ * @returns {Object} Object - { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO }
+ */
 Core.getWhereToStartApproval = getWhereToStartApproval;
 
+/**
+ * @description canProcessTrip - Verify current user could Process Trip
+ * @returns {*} void - throw error if couldn't process a trip
+ */
 Core.canProcessTrip = () => {
   if(!Meteor.user().employeeProfile || !Meteor.user().employeeProfile.employment) {
     let errMsg = "Sorry, you are not allowed to perform an action on travel requisition because you are not an internal staff memeber"
@@ -478,7 +493,13 @@ Core.canProcessTrip = () => {
   }
 }
 
-Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
+/**
+ * @description getApprovalConfig - check if position is part of approval process
+ * @param {*} position - isUserPartOfApproval
+ * @param {*} tripInfo 
+ * @returns {Object} Object - current user info
+ */
+Core.getApprovalConfig = (position, tripInfo = { trips: [] }) => {
   let isAirRailTransportationMode = false;
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
@@ -491,140 +512,40 @@ Core.getApprovalConfig = (isUserPartOfApproval, tripInfo = { trips: [] }) => {
     if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
   }
 
-  if (!isAboveOrHOD && isUserPartOfApproval === HOD) {
+  if (!isAboveOrHOD && position === HOD) {
     return Meteor.user();
   }
 
-  if (!isAboveOrMD && isAirRailTransportationMode && isUserPartOfApproval === MD) {
+  if (!isAboveOrMD && isAirRailTransportationMode && position === MD) {
     if (isAirRailTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirRailTransportationMode && isUserPartOfApproval === GCOO) {
+  if (!isAboveOrGCOO && isAirRailTransportationMode && position === GCOO) {
     if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
     if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAboveOrGCEO && isAirRailTransportationMode && isUserPartOfApproval === GCEO) {
+  if (!isAboveOrGCEO && isAirRailTransportationMode && position === GCEO) {
     if (isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAirRailTransportationMode && isUserPartOfApproval === LOGISTICS) {
+  if (!isAirRailTransportationMode && position === LOGISTICS) {
     return Meteor.user();
   }
 
-  if (isUserPartOfApproval === BST) {
+  if (position === BST) {
     return Meteor.user();
   }
 
-  if (isUserPartOfApproval === SECURITY) {
+  if (position === SECURITY) {
     return Meteor.user();
   }
 
-  if (isUserPartOfApproval === FINANCE) {
-    return Meteor.user();
-  }
-
-  return null
-}
-
-
-Core.getNextApproval = (nextApproval, tripInfo = { trips: [] }) => {
-  let isAirRailTransportationMode = false;
-  const { trips, destinationType, } = tripInfo;
-  const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
-
-  const isInternationalTrip = destinationType === 'International';
-  for (let i = 0; i < trips.length; i++) {
-    const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
-  }
-
-  if (nextApproval === HOD) {
-    return MD
-  }
-
-  if (nextApproval === MD) {
-    if (isAirRailTransportationMode) return GCOO
-    else return LOGISTICS
-  }
-
-  if (nextApproval === GCOO) {
-    if (isAirRailTransportationMode && isInternationalTrip) return GCEO;
-    if (isAirRailTransportationMode && !isInternationalTrip) return BST;
-    return BST
-  }
-
-  if (nextApproval === GCEO) {
-    if (isInternationalTrip) return BST;
-    return BST
-  }
-
-  if (!isAirRailTransportationMode && nextApproval === LOGISTICS) {
-    return BST
-  }
-
-  if (nextApproval === BST) {
-    return LOGISTICS
-  }
-
-  if (nextApproval === SECURITY) {
-    return BST
-  }
-
-  if (nextApproval === FINANCE) {
-    return ""
-  }
-
-  return null
-}
-
-
-Core.runApprovalFlow = (isUserPartOfApproval, tripInfo = { trips: [] }, callback) => {
-  let isAirRailTransportationMode = false;
-  const { trips, destinationType } = tripInfo;
-
-  const isInternationalTrip = destinationType === 'International';
-  for (let i = 0; i < trips.length; i++) {
-    const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
-  }
-
-  if (isUserPartOfApproval === HOD) {
-    return Meteor.user();
-  }
-
-  if (isUserPartOfApproval === MD) {
-    if (isAirRailTransportationMode) return Meteor.user();
-  }
-
-  if (isUserPartOfApproval === GCOO) {
-    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
-    return null
-  }
-
-  if (isUserPartOfApproval === GCEO) {
-    if (isInternationalTrip) return Meteor.user();
-    return null
-  }
-
-  if (!isAirRailTransportationMode && isUserPartOfApproval === LOGISTICS) {
-    return Meteor.user();
-  }
-
-  if (isUserPartOfApproval === BST) {
-    return Meteor.user();
-  }
-
-  if (isUserPartOfApproval === SECURITY) {
-    return Meteor.user();
-  }
-
-  if (isUserPartOfApproval === FINANCE) {
+  if (position === FINANCE) {
     return Meteor.user();
   }
 
