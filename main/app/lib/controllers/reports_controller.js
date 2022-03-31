@@ -83,6 +83,9 @@ ReportsController = BusinessUnitController.extend({
     travelRequest: function () {
         this.render('TravelRequestReport');
     },
+    localErrandTransportRequest: function () {
+        this.render('LocalErrandTransportRequestReport');
+    },
     employees: function () {
         this.render('EmployeesReport');
     },

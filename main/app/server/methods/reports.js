@@ -658,6 +658,37 @@ Meteor.methods({
             return biffedUpTravelRequests
         }
     },
+    'reports/localErrandTransportRequest': function(businessId, startDate, endDate, selectedEmployees) {
+        check(businessId, String)
+        this.unblock()
+        //--
+        if(Core.hasPayrollAccess(this.userid)) {
+            throw new Meteor.Error(401, 'Unauthorized');
+        } else {
+            let queryObj = {
+                businessId: businessId,
+                createdAt: {$gte: startDate, $lte: endDate}
+            }
+            if(selectedEmployees && selectedEmployees.length > 0) {
+                queryObj.createdBy = {$in: selectedEmployees}
+            }
+            let localErrandTransportRequests = LocalErrandTransportRequisitions.find(queryObj).fetch();
+
+            let biffedUpLocalErrandTransportRequests = localErrandTransportRequests.map(aLocalErrandTransportRequest => {
+                let employee = Meteor.users.findOne({_id: aLocalErrandTransportRequest.createdBy})
+                if(employee) {
+                    aLocalErrandTransportRequest.createdByFullName = employee.profile.fullName
+                }
+                //--
+                let unit = EntityObjects.findOne({_id: aLocalErrandTransportRequest.unitId})
+                if(unit) {
+                    aLocalErrandTransportRequest.unitName = unit.name
+                }
+                return aLocalErrandTransportRequest
+            })
+            return biffedUpLocalErrandTransportRequests
+        }
+    },
     'reports/employees': function(findCriteria) {
         check(findCriteria.businessIds, String)
         this.unblock()

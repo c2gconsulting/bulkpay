@@ -91,6 +91,35 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequisition2SupervisorIndex: function() {
         this.render('TravelRequisition2SupervisorIndex')
     },
+    // Local Errand Transport
+
+    showLocalErrandTransportRequisitionBudgetHolderIndex: function() {
+        this.render('LocalErrandTransportRequisitionBudgetHolderIndex')
+    },
+    showLocalErrandTransportRequisitionAdminIndex: function() {
+        this.render('LocalErrandTransportRequisitionAdminIndex')
+    },
+    showLocalErrandTransportRequisitionRetirementAdminIndex: function() {
+        this.render('LocalErrandTransportRequisitionRetirementAdminIndex')
+    },
+    showLocalErrandTransportRequisitionIndex: function() {
+        this.render('LocalErrandTransportRequisitionIndex')
+    },
+    showLocalErrandTransportRequisitionBudgetHolderRetireIndex: function() {
+        this.render('LocalErrandTransportRequisitionBudgetHolderRetireIndex')
+    },
+    showLocalErrandTransportRequisitionFinanceRetireIndex: function() {
+        this.render('LocalErrandTransportRequisitionFinanceRetireIndex')
+    },
+    showLocalErrandTransportRequisitionSupervisorRetirementIndex: function() {
+        this.render('LocalErrandTransportRequisitionSupervisorRetirementIndex')
+    },
+    showLocalErrandTransportRequisitionRetirementIndex: function() {
+        this.render('LocalErrandTransportRequisitionRetirementIndex')
+    },
+    showLocalErrandTransportRequisitionSupervisorIndex: function() {
+        this.render('LocalErrandTransportRequisitionSupervisorIndex')
+    },
     onAfterAction: function () {
     },
     onStop: function () {

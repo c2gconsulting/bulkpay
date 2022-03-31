@@ -103,6 +103,11 @@
             <li><a href="{{pathFor 'travelrequest2.travelrequisitionretirement2adminindex'}}">All Travel Retirements</a></li>
             {{/if}}
 
+            {{#if isTravelCitiesEnabled}}
+            <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionadminindex'}}">All Local Errand Requests</a></li>
+            <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionretirementadminindex'}}">All Local Errand Retirements</a></li>
+            {{/if}}
+
             {{#if isTravelBudgetsEnabled}}
             <li><a href="{{pathFor 'budgets'}}">Travels Budget Codes</a></li>
             {{/if}}
@@ -252,6 +257,23 @@
 
             {{/if}}
 
+            {{#if isLocalErrandTransportRequisitionActive}}
+
+                {{#if isAdvancedLocalErrandTransportEnabled}}
+                    <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Local Errand Transport Requests</a></li>
+                    <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Local Errand Retirements</a></li>
+                {{else}}
+                    <li><a href="{{pathFor 'localerrandtransportrequests.list'}}">Local Errand Transport Request</a></li>
+
+                    {{#if isUserASupervisor}}
+                        {{#if hasLocalErrandTransportRequisitionApproveAccess}}
+                        <li><a href="{{pathFor 'localerrandtransportrequests.treatList'}}">Treat Local Errand Transport Requests</a></li>
+                        {{/if}}
+                    {{/if}}
+                {{/if}}
+
+            {{/if}}
+
             {{#if isLoanEnabled}}
                 <li><a href="{{pathFor 'loans.manage'}}">Loan</a></li>
             {{/if}}
@@ -303,10 +325,54 @@
             {{/if}}
         {{/if}}
 
+        {{#if isLocalErrandTransportRequisitionActive}}
+            {{#if isAdvancedLocalErrandTransportEnabled}}
+                {{#if isUserADirectSupervisor}}
+                    <li class="parent {{isMenuExpandedFocusClass 'localErrandTransportSupervisorMenu'}}">
+                        <a href="" id="localErrandTransportSupervisorMenu">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            <span>Supervisor Approvals</span>
+                        </a>
+                    </li>
+                    {{#if isMenuExpanded 'localErrandTransportSupervisorMenu'}}
+                        <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionsupervisorindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Local Errand Transports</a></li>
+                        <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionsupervisorretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+                    {{/if}}
+                {{/if}}
 
+                {{#if isUserABudgetHolder}}
+                    <li class="parent {{isMenuExpandedFocusClass 'localErrandTransportBudgetHolderMenu'}}">
+                        <a href="" id="localErrandTransportBudgetHolderMenu">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            <span>Budget Holder Approvals</span>
+                        </a>
+                    </li>
+                    {{#if isMenuExpanded 'localErrandTransportBudgetHolderMenu'}}
+                        <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionbudgetholderindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Local Errand Transports</a></li>
+                        <!--<li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionbudgetholderretireindex'}}">Approve Retirements</a></li>-->
+                    {{/if}}
+                 {{/if}}
+
+                 {{#if isUserALocalErrandTransportFinanceApprover}}
+                    <li class="parent {{isMenuExpandedFocusClass 'localErrandTransportFinanceMenu'}}">
+                        <a href="" id="localErrandTransportFinanceMenu">
+                            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                            <span>Finance Approvals</span>
+                        </a>
+                    </li>
+                    {{#if isMenuExpanded 'localErrandTransportFinanceMenu'}}
+                        <li><a href="{{pathFor 'localerrandtransportrequest.localerrandtransportrequisitionfinanceretireindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+                    {{/if}}
+                {{/if}}
+            {{/if}}
+        {{/if}}
 
                 {{#if hasTravelReportsViewAccess}}
                 <li><a href="{{pathFor 'reports.travelrequisition'}}">Travel requests report</a></li>
+                {{/if}}
+
+                {{#if hasLocalErrandTransportReportsViewAccess}}
+                <li><a href="{{pathFor 'reports.localerrandtransportrequisition'}}">Local errand transport requests report</a></li>
                 {{/if}}
 
         {{#if hasPayrollReportsViewAccess}}

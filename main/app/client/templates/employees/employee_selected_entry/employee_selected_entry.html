@@ -559,6 +559,23 @@
                                                                             </div>
                                                                         </div>
 
+                                                                        <div class="row">
+                                                                            <label for="localErrandTransportReportsView" class="col-sm-6 control-label">Local Errand Transport Request Reports View</label>
+                                                                            <div class="col-sm-4">
+                                                                                {{#if hasLocalErrandTransportReportsViewAccess}}
+                                                                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportReportsView">
+                                                                                        <option value="true" selected>Yes</option>
+                                                                                        <option value="false">No</option>
+                                                                                    </select>
+                                                                                {{else}}
+                                                                                    <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportReportsView">
+                                                                                        <option value="true">Yes</option>
+                                                                                        <option value="false" selected>No</option>
+                                                                                    </select>
+                                                                                {{/if}}
+                                                                            </div>
+                                                                        </div>
+
                                     {{#if isProcurementRequisitionActive}}
                                     <div class="row">
                                         <label for="procurementRequisitionApprove" class="col-sm-6 control-label">Procurement Requisition Approve</label>
@@ -621,6 +638,41 @@
                                                 </select>
                                             {{else}}
                                                 <select class="form-control selectpicker dropdown" data-live-search="true" name="travelRequestTreat">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    {{/if}}
+
+                                    {{#if isLocalErrandTransportRequisitionActive}} <!-- TODO: set to local errand transport-->
+                                    <div class="row">
+                                        <label for="localErrandTransportRequestApprove" class="col-sm-6 control-label">Local Errand Transport Request Approve</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasLocalErrandTransportRequisitionApproveAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportRequestApprove">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportRequestApprove">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="localErrandTransportRequestTreat" class="col-sm-6 control-label">Local Errand Transport Request Treat</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasLocalErrandTransportRequestTreatAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportRequestTreat">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="localErrandTransportRequestTreat">
                                                     <option value="true">Yes</option>
                                                     <option value="false" selected>No</option>
                                                 </select>

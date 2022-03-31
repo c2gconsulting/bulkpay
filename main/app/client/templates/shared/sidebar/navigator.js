@@ -233,6 +233,35 @@ Template.navigator.helpers({
             return false
         }
     },
+    isUserALocalErrandTransportFinanceApprover: function() {
+        if (Template.instance().isFinanceApprover.get() === "TRUE"){
+            return true;
+        }else{
+            return false;
+        }
+    },
+    hasLocalErrandTransportRequisitionApproveAccess: function () {
+        let canApproveTrip = Core.hasLocalErrandTransportRequisitionApproveAccess(Meteor.userId());
+        return canApproveTrip;
+    },
+    isAdvancedLocalErrandTransportEnabled: function () {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isAdvancedLocalErrandTransportEnabled
+        } else {
+            return false
+        }
+    },
+    isLocalErrandTransportRequisitionActive: function () {
+        let businessUnitCustomConfig = Template.instance().businessUnitCustomConfig.get()
+
+        if(businessUnitCustomConfig) {
+            return businessUnitCustomConfig.isActive && businessUnitCustomConfig.isLocalErrandTransportRequisitionActive
+        } else {
+            return false
+        }
+    },
     hasPayrollAccess: function () {
         return Core.hasPayrollAccess(Meteor.userId());
     },
@@ -265,6 +294,11 @@ Template.navigator.helpers({
         hasTravelReportsViewAccess: function () {
             let hasTravelReportsViewAccess = Core.hasTravelReportsViewAccess(Meteor.userId());
             return hasTravelReportsViewAccess;
+        },
+
+        hasLocalErrandTransportReportsViewAccess: function () {
+            let hasLocalErrandTransportReportsViewAccess = Core.hasLocalErrandTransportReportsViewAccess(Meteor.userId());
+            return hasLocalErrandTransportReportsViewAccess;
         },
     hasAuditReportsViewAccess: function () {
         let hasAuditReportsViewAccess = Core.hasAuditReportsViewAccess(Meteor.userId());

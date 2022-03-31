@@ -541,6 +541,84 @@ Router.route('/business/:_id/travelrequests2/printretirement', {
     template: 'TravelRequisition2RetirementPrint'
 });
 
+// Local Errand Transport
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionadminindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionadminindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionAdminIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionretirementadminindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionretirementadminindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionRetirementAdminIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionbudgetholderindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionbudgetholderindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionBudgetHolderIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionbudgetholderretireindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionbudgetholderretireindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionBudgetHolderRetireIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionfinanceretireindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionfinanceretireindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionFinanceRetireIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionsupervisorretirementindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionsupervisorretirementindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionSupervisorRetirementIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionretirementindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionretirementindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionRetirementIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/localerrandtransportrequisitionsupervisorindex', {
+    name: 'localerrandtransportrequest.localerrandtransportrequisitionsupervisorindex',
+    controller: 'RequisitionController',
+    action: 'showLocalErrandTransportRequisitionSupervisorIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/localerrandtransportrequests/printrequisition', {
+    name: 'localerrandtransportrequests.printrequisition',
+    layoutTemplate: 'ExtLayout',
+    template: 'LocalErrandTransportRequisitionPrint'
+});
+
+Router.route('/business/:_id/localerrandtransportrequests/printretirement', {
+    name: 'localerrandtransportrequests.printretirement',
+    layoutTemplate: 'ExtLayout',
+    template: 'LocalErrandTransportRequisitionRetirementPrint'
+});
+
+// End Of Local Errand Transport
 
 Router.route('/business/:_id/reports/netpay', {
     name: 'reports.netpay',
@@ -614,6 +692,13 @@ Router.route('/business/:_id/reports/travelrequisition', {
     name: 'reports.travelrequisition',
     controller: 'ReportsController',
     action: 'travelRequest',
+    where: 'client'
+});
+
+Router.route('/business/:_id/reports/localerrandtransportrequisition', {
+    name: 'reports.localerrandtransportrequisition',
+    controller: 'ReportsController',
+    action: 'localErrandTransportRequest',
     where: 'client'
 });
 
