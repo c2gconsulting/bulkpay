@@ -11,7 +11,7 @@ Template.TravelRequisition2BSTDetail.events({
             if (res){
                 swal({
                     title: "Travel requisition has been updated",
-                    text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
+                    // text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
@@ -66,7 +66,7 @@ Template.TravelRequisition2BSTDetail.events({
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
-                        text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+                        // text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"
@@ -123,6 +123,28 @@ Template.TravelRequisition2BSTDetail.events({
       currentTravelRequest.additionalSecurityComment = $("#additionalSecurityComment").val();
       tmpl.currentTravelRequest.set(currentTravelRequest);
     
+    },
+    "change [id*='accommodation']": function(e, tmpl){
+        e.preventDefault()
+
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+        currentTravelRequest.trips[index].accommodation = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+
+        tmpl.updateTripNumbers();
+    },
+    "change [id*='guestHouseId']": function(e, tmpl){
+        e.preventDefault()
+
+        let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+        const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+        currentTravelRequest.trips[index].guestHouseId = $(e.currentTarget).val();
+        tmpl.currentTravelRequest.set(currentTravelRequest);
+
+        tmpl.updateTripNumbers();
     },
     "change [id*='driverInfo']": function(e, tmpl){
         e.preventDefault()
@@ -213,6 +235,13 @@ Template.TravelRequisition2BSTDetail.helpers({
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
       if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
       return false
+    },
+    hasAccommodation(type, index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].accommodation === type ? '':'none';
+        }
     },
     selected(context,val) {
         let self = this;
@@ -518,8 +547,9 @@ Template.TravelRequisition2BSTDetail.onCreated(function () {
             Core.defaultDepartmentAndProject(self, travelRequestDetails)
 
             if (travelRequestDetails) {
-                travelRequestDetails.trips.map(({ tripIndex, driverInformation}) => {
+                travelRequestDetails.trips.map(({ tripIndex, driverInformation, accommodation }) => {
                     $(`#driverInfo_${tripIndex}`).dropdown('set selected', driverInformation);
+                    $(`#accommodation_${tripIndex}`).dropdown('set selected', accommodation);
                 })
             }
 

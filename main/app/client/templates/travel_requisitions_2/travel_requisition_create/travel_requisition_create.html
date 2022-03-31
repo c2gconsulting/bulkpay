@@ -90,20 +90,22 @@
                 <!-- ELSE -->
                 <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
                 {{else}}
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="departmentOrProjectId" class="control-label">Department To Be Charged? <span class="asterisk important-input">*</span></label>
-                    {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
-                    <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
-                      <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
-                      {{#each departmentList}}
-                      <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{cost_center}}</option>
-                      {{/each}}
-                    </select>
-                    {{/semanticselect2}}
-                    <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
+                  {{#if currentTravelRequest.departmentOrProjectId}}
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="departmentOrProjectId" class="control-label">Department To Be Charged? <span class="asterisk important-input">*</span></label>
+                      {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
+                      <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
+                        <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
+                        {{#each departmentList}}
+                        <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{cost_center}}</option>
+                        {{/each}}
+                      </select>
+                      {{/semanticselect2}}
+                      <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
+                    </div>
                   </div>
-                </div>
+                  {{/if}}
               {{/if}}
               <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
 
@@ -227,22 +229,41 @@
                       </div>
                   </div>
                   <hr/>
-                  {{#if costCenterType 'Department'}}
-                  <div class="row">
-                    <div class="col-sm-10 col-lg-6">
-                        <div class="form-group">
-                            <div class="ckbox ckbox-success" style="display: flex;">
-                                <input type="checkbox" id="selectEmergencyTrip" name="selectEmergencyTrip" value="{{currentTravelRequest.isEmergencyTrip}}" {{checkbox currentTravelRequest.isEmergencyTrip}} />
-                                <label for="selectEmergencyTrip">Is an emergency trip</label>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                  {{/if}}
                   
 
                   {{#each currentTravelRequest.trips}}
-                  <div class="row">
+
+                  <div class="row" style="display: flex; flex-wrap: wrap;">
+                    {{#if isFirstLeg this.tripIndex}}
+                      {{#if costCenterType 'Department'}}
+                      <!-- <div class="row"> -->
+                        <div class="col-sm-10 col-lg-6">
+                            <div class="form-group">
+                                <div class="ckbox ckbox-success" style="display: flex;">
+                                    <input type="checkbox" id="selectEmergencyTrip" name="selectEmergencyTrip" checked="{{currentTravelRequest.isEmergencyTrip}}" {{checkbox currentTravelRequest.isEmergencyTrip}} />
+                                    <label for="selectEmergencyTrip">Is an emergency trip</label>
+                                </div>
+                            </div>
+                        </div>
+                      <!-- </div> -->
+                      {{/if}}
+                    {{/if}}
+                    <!-- <div class="row"> -->
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
+                          {{#semanticselect2}}
+                          <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                              <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
+                              <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
+                              <option value="RAIL" {{transportModeSelected "RAIL" tripIndex}}>Rail</option>
+                          </select>
+                          {{/semanticselect2}}
+                        </div>
+                      </div>
+                    <!-- </div> -->
+
+
                     {{#if isFlight tripIndex}}
                       <!-- +++++++++INDICATE FLIGHT COUNTRY ++++++++++++-->
                       {{#if countries}}
@@ -345,6 +366,7 @@
 
                       <div class="col-sm-2">
                           <div class="form-group">
+                            {{#if costCenterType 'Department'}}
                               <div class="date">
                                   <div class="inner-addon left-addon">
                                       <i class="glyphicon icon-calendar"></i>
@@ -360,6 +382,17 @@
                                       {{/if}}
                                   </div>
                               </div>
+                              {{else}}
+                              <div class="date">
+                                <div class="inner-addon left-addon">
+                                  <i class="glyphicon icon-calendar"></i>
+                                  <label class="control-label">Departure <span class="asterisk important-input">*</span></label>
+                                  {{#datepicker2 currentDate=this.departureDate minDate=isEmergencyTrip }}
+                                  <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate2 this.departureDate}}"/>
+                                  {{/datepicker2}}
+                                </div>
+                              </div>
+                            {{/if}}
                           </div>
                       </div>
                       <div class="col-sm-2">
@@ -463,20 +496,19 @@
                   </div>
 
                   <div class="row">
-                      <div class="col-sm-3">
+                      <!-- <div class="col-sm-3">
                           <div class="form-group">
 
                               <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                               {{#semanticselect2}}
                               <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <!-- <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option> -->
                                   <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
                                   <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
                                   <option value="RAIL" {{transportModeSelected "RAIL" tripIndex}}>Rail</option>
                               </select>
                               {{/semanticselect2}}
                           </div>
-                      </div>
+                      </div> -->
                       <div class="col-sm-5">
                           <div class="form-group">
 
@@ -564,20 +596,12 @@
                   </div> -->
                   <!-- {{/if}} -->
 
-                  {{#if condition this.hotelNotRequired 'eq' false }}
+                  <!-- {{#if condition this.hotelNotRequired 'eq' false }}
                   <div class="row">
                       <div class="col-sm-6">
                           <div class="form-group">
                               <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                               <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" name="hotelId_{{this.tripIndex}}" value="{{this.hotelId}}"/>
-                              <!-- {{#semanticselect2}}
-                              <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <option value="">I do not need a Hotel</option>
-                                  {{#each hotelList this.toId}}
-                                  <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
-                                  {{/each}}
-                              </select>
-                              {{/semanticselect2}} -->
                           </div>
                       </div>
                       <div class="col-sm-2">
@@ -593,7 +617,7 @@
                           </div>
                       </div>
                   </div>
-                  {{/if}}
+                  {{/if}} -->
 
                   <hr>
                   <div class="row">

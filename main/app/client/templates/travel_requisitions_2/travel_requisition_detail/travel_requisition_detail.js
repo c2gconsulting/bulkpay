@@ -100,11 +100,11 @@ Template.TravelRequisition2Detail.helpers({
 
         const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
 
-        const { supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsId, bstId } = currentTravelRequest;
-        const { HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+        const { pmId, supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsIds, bstIds } = currentTravelRequest;
+        const { PM, HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
 
-        const LOGISTICS_LABEL = { approvalId: logisticsId, label: LOGISTICS };
-        const BST_LABEL = { approvalId: bstId, label: BST };
+        const LOGISTICS_LABEL = { approvalId: logisticsIds, label: LOGISTICS };
+        const BST_LABEL = { approvalId: bstIds, label: BST };
 
         const NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? LOGISTICS_LABEL : BST_LABEL;
         const SECOND_NEXT_APPROVAL_LABEL = shouldGotoLogisicsFirst ? BST_LABEL : LOGISTICS_LABEL;
@@ -112,6 +112,7 @@ Template.TravelRequisition2Detail.helpers({
         const dApprovals = [
             { approvalId: budgetHolderId, label: BUDGETHOLDER },
             { approvalId: supervisorId, label: HOD },
+            { approvalId: pmId, label: PM },
             { approvalId: managerId, label: MD },
             { approvalId: gcooId, label: GCOO },
             { approvalId: gceoId, label: GCEO },
@@ -123,6 +124,9 @@ Template.TravelRequisition2Detail.helpers({
         return dApprovals;
     },
     'getEmployeeNameById': function(employeeId){
+        if (typeof employeeId !== 'string') {
+            return employeeId.map(eachEmpId => (Meteor.users.findOne({_id: eachEmpId})).profile.fullName);
+        }
         return (Meteor.users.findOne({_id: employeeId})).profile.fullName;
     },
 

@@ -45,7 +45,7 @@ export MAIL_SITE_NAME="TradeDepot™"
 export MAIL_FROM="TradeDepot™ Team <no-reply@tradedepot.co>"
 export JWT_SECRET=""
 
-export IMPORT_OILSERV_DATA=false
+export IMPORT_OILSERV_DATA=true
 # http://20.73.168.4:50000
 export OILSERV_SAP_INTEGRATION_URL='http://20.73.168.4:50000'
 export OILSERV_SAP_INTEGRATION_COOKIE_API_KEY='JSESSIONID=5kfVra385oH8'

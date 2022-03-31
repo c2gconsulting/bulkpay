@@ -1,5 +1,4 @@
-
-<template name="TravelRequisition2Detail">
+<template name="TravelRequisition2PMDetail">
     <div class="modal fade add-unit" tabindex="-1" role="dialog" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -7,19 +6,18 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-sm-6">
-                                <h3 class="panel-title">Travel Request for {{getEmployeeFullName currentTravelRequest.createdBy}}</h3>
+                                <h3 class="panel-title">Travel Request for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
                                 {{#if currentTravelRequest.isEmergencyTrip}}
                                     <p style="font-weight: 900;">Importance: <span style="color: #428bca;font-weight: 900;">Urgent!</span></p>
                                 {{/if}}
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-6">
                                 <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
                             </div>
-                            <div class="col-sm-2">
+                            <!--<div class="col-sm-1">
                                 <a class="btn btn-primary pull-right" href="{{getPrintUrl currentTravelRequest}}" target="_blank">Print</a>
-                            </div>
+                            </div>-->
                         </div>
-
                     </div>
                     <div class="panel-body">
                         {{#unless Template.subscriptionsReady}}
@@ -48,17 +46,30 @@
                                 <div class="form-group">
 
                                     <label for="budget-code" class="control-label">Project To Be Charged?</label>
-                                    <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{getBudgetName currentTravelRequest.budgetCodeId}}" disabled/>
-
+                                    {{#semanticselect}}
+                                    <select id="budget-code" name="budget-code" style="width: 100%" class="form-control">
+                                        {{#each budgetList}}
+                                        <option value="{{_id}}" {{budgetCodeSelected _id}}>{{name}}</option>
+                                        {{/each}}
+                                    </select>
+                                    {{/semanticselect}}
+                                    <span class="text-danger"><small>Please verify that the project is correct, this field cannot also be left blank</small></span>
                                 </div>
                             </div> -->
+
 
 
                             <!-- +++++++++INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentTravelRequest.costCenter}}" disabled/>
+                                <label for="costCenter" class="control-label">Indicate trip type? <span class="asterisk important-input">*</span></label>
+                                {{#semanticselect2}}
+                                <select id="costCenter" name="costCenter" style="width: 100%" class="ui fluid search selection dropdown" disabled>
+                                    {{#each costCenters}}
+                                    <option value="{{id}}" {{selected COSTCENTER id}}>{{name}}</option>
+                                    {{/each}}
+                                </select>
+                                {{/semanticselect2}}
                                 </div>
                             </div>
                             <!-- +++++++++ IF:: INDICATED PROJECT OR DEPARTMENT TRIP ++++++++++++-->
@@ -91,6 +102,7 @@
                             {{/if}}
                             <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
                         </div>
+
 
 
                         <div class="row">
@@ -137,7 +149,6 @@
                           {{/each}}
                           {{/if}}
                         {{/if}}
-
                         <hr/>
 
                         {{#each currentTravelRequest.trips}}
@@ -164,7 +175,7 @@
                                 <div class="form-group">
 
                                     <label for="departureTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px" placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
+                                    <input type="text" id="departureTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Departure Time" name="departureTime_{{this.tripIndex}}" value="{{this.departureTime}}" disabled/>
                                 </div>
                             </div>
                             {{#if isReturnTrip}}
@@ -177,9 +188,9 @@
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="returnTime_{{this.tripIndex}}" class="control-label">Time <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px" placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
+                                    <input type="text" id="returnTime_{{this.tripIndex}}" class="form-control input-sm" style="font-size: 10px"  placeholder="Return Time" name="returnTime_{{this.tripIndex}}" value="{{this.returnTime}}" disabled/>
                                 </div>
-                                    
+                                
                             </div><!-- col-sm-12 -->
                             {{/if}}
                         </div>
@@ -339,31 +350,7 @@
                                 </div>
                             </div>
                         </div>
-                        <hr> -->
-
-                        {{#if currentTravelRequest._id}}
-                          <label for="individuals-trip" class="control-label">The approval details</label>
-                          {{#each travelApprovals }}
-                            {{#if this.approvalId}}
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="clientName_{{@index}}" class="control-label">Full Name <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientName_{{@index}}" class="form-control" placeholder="Fullname" name="clientName_{{@index}}" value="{{getEmployeeNameById this.approvalId}}" disabled />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label for="clientEmail_{{@index}}" class="control-label">Role <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientEmail_{{@index}}" class="form-control" placeholder="Email" name="toId_{{@index}}" value="{{this.label}}" disabled />
-                                        </div>
-                                    </div>
-                                </div>
-                            {{/if}}
-                          {{/each}}
-                        {{/if}}
-
-                        <hr/>
+                        <hr/> -->
                         <div class="row">
                             <div class="col-sm-12">
                                 <span><strong>Trip Summary</strong></span>
@@ -427,7 +414,6 @@
                                 <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.totalAncilliaryCostUSD "USD"}}</strong></span>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="col-sm-8">
                                 <span>Total Estimated Hotel Cost:</span>
@@ -455,54 +441,27 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="supervisorComment" class="control-label">HOD Comment </label>
-                                <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
-
+                                <label for="pmComment" class="control-label">PM Comment </label>
+                                <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}"/>
                             </div>
                         </div>
-
-                        <!-- <div class="row">
-
+                        {{#if errorMessage}}
+                        <hr>
+                        <div class="row" >
                             <div class="col-sm-12">
-                                <label for="budgetHolderComment" class="control-label">Budget Holder Comment </label>
-                                <input type="text" id="budgetHolderComment" class="form-control" placeholder="" name="budgetHolderComment" value="{{currentTravelRequest.budgetHolderComment}}" disabled/>
-
-                            </div>
-                        </div> -->
-
-                        {{#if currentTravelRequest.managerComment}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label for="managerComment" class="control-label">MD Comment </label>
-                                <input type="text" id="managerComment" class="form-control" placeholder="" name="managerComment" value="{{currentTravelRequest.managerComment}}" disabled/>
-
+                                <span class="text-danger">{{errorMessage}}</span>
                             </div>
                         </div>
                         {{/if}}
-
-                        {{#if currentTravelRequest.gcooComment}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label for="gcooComment" class="control-label">GCOO Comment </label>
-                                <input type="text" id="gcooComment" class="form-control" placeholder="" name="gcooComment" value="{{currentTravelRequest.gcooComment}}" disabled/>
-                            </div>
-                        </div>
-                        {{/if}}
-
-                        {{#if currentTravelRequest.gceoComment}}
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label for="gceoComment" class="control-label">GCEO Comment </label>
-                                <input type="text" id="gceoComment" class="form-control" placeholder="" name="gceoComment" value="{{currentTravelRequest.gceoComment}}" disabled/>
-                            </div>
-                        </div>
-                        {{/if}}
-</div>
+                    </div>
                     <div class="panel-footer">
                         <button type="reset" class="btn btn-danger" data-dismiss="modal">Close</button>
-                         <!--
-                       <button class="btn btn-success mr5 pull-right" id="new-requisition-create" data-dismiss="modal">Submit for Approval</button>
-                        <button class="btn btn-primary mr5 pull-right" id="new-requisition-save-draft">Save Draft</button>-->
+
+                        {{#if canApprove}}
+                        <button class="btn btn-success mr5 pull-right" id="approve" >Approve</button>
+                        <button class="btn btn-danger mr5 pull-right" id="reject" >Reject</button>
+                        {{/if}}
+
                     </div><!-- panel-footer -->
                 </div>
             </div>

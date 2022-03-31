@@ -228,23 +228,11 @@
                         </div>
 
                         <hr>
-                        <div class="row">
+                        <!-- <div class="row">
                           <div class="col-sm-4">
                             <div class="form-group">
                               <label for="driverInfo_{{this.tripIndex}}" class="control-label">Employee's Information</label>
-                              <!-- {{#if condition this.carOption 'eq' 'OFFICE' }} -->
                                 <input type="text" id="driverInfo_{{this.tripIndex}}" class="form-control" placeholder="Employee Information" name="driverInfo_{{this.tripIndex}}" value="{{this.driverInformation}}"/>
-                              <!-- {{else}}
-                                {{#semanticselect2}}
-                                  <select id="driverInfo_{{this.tripIndex}}" name="driverInfo_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                    <option value="">Employees</option>
-                                    <option selected value="{{driverInformation}}">{{getEmployeeNameById driverInformation}}</option>
-                                    {{#each employees}}
-                                        <option value="{{_id}}" {{driverInfoSelected _id this.tripIndex}}>{{profile.fullName}} {{positionDesc}}</option>
-                                    {{/each}}
-                                  </select>
-                                {{/semanticselect2}}
-                              {{/if}} -->
                             </div>
                           </div>
 
@@ -276,7 +264,7 @@
                             </div>
                           </div>
 
-                        </div>
+                        </div> -->
                         {{#unless isLastLeg this.tripIndex}}
                         <div class="row">
                             <div class="col-sm-12 col-lg-6">
@@ -312,19 +300,39 @@
                         {{/if}}
 
                         <div class="row">
-                            <div class="col-sm-6">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <div>
+                                        <label for="accommodation_{{this.tripIndex}}" class="control-label">Accommodation</label>
+                                        {{#semanticselect2}}
+                                        <select id="accommodation_{{this.tripIndex}}" name="accommodation_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                                            <option value="">Select Accommodation</option>
+                                            <option value="Guest House">Guest House</option>
+                                            <option value="Hotel">Hotel</option>
+                                        </select>
+                                        {{/semanticselect2}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" style="display: {{hasAccommodation 'Guest House' this.tripIndex}}">
+                                <div class="form-group">
+                                    <label for="guestHouseId_{{this.tripIndex}}" class="control-label">Guest House <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="guestHouseId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="guestHouseId_{{this.tripIndex}}" value="{{getHotelName this.guestHouseId}}" />
+                                </div><!-- form-group -->
+                            </div>
+                            <div class="col-sm-6" style="display: {{hasAccommodation 'Hotel' this.tripIndex}}">
                                 <div class="form-group">
                                     <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{this.tripIndex}}" value="{{getHotelName this.hotelId}}" disabled/>
+                                    <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{this.tripIndex}}" value="{{getHotelName this.hotelId}}" />
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
-                            <div class="col-sm-2">
+                            <div class="col-sm-2" style="display: {{hasAccommodation 'Hotel' this.tripIndex}}">
                                 <div class="form-group">
                                     <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
                                     <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{formatMoney this.hotelRate}}" disabled/>
                                 </div><!-- form-group -->
                             </div><!-- col-sm-3 -->
-                            <div class="col-sm-1">
+                            <div class="col-sm-1" style="display: {{hasAccommodation 'Hotel' this.tripIndex}}">
                                 <div class="form-group">
                                     <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
                                     <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>

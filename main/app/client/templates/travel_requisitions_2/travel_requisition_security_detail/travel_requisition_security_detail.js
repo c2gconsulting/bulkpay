@@ -11,7 +11,7 @@ Template.TravelRequisition2SecurityDetail.events({
             if (res){
                 swal({
                     title: "Travel requisition has been updated",
-                    text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
+                    // text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
@@ -66,7 +66,7 @@ Template.TravelRequisition2SecurityDetail.events({
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
-                        text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+                        // text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"

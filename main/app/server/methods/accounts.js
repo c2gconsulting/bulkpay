@@ -127,6 +127,18 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
+    "account/pm": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user._id : "";
+        const data = { ...user, pmPositionId: positionId, managerId: positionId }
+        const { pmCond } = Core.getApprovalQueries(data, true);
+        // if (Core.getUserApproval(pmCond)) return user;
+        // if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne(pmCond);
+            if (isAssigned) return user;
+        // }
+        // return Core.getUserApproval(pmCond)
+    },
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";

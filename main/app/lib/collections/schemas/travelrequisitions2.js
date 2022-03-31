@@ -84,6 +84,16 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         optional: true,
     },
+    accommodation: {
+        type: String,
+        // defaultValue: '',
+        allowedValues: ['Hotel', 'Guest House'],
+        optional: true,
+    },
+    guestHouseId: {
+        type: String,
+        optional: true,
+    },
     returnTime: {
         type: String,
         optional: true
@@ -441,6 +451,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true
     },
     // supervisor delegates
+    pmIds: {
+        type: [String],
+        optional: true
+    },
+    // supervisor delegates
     supervisorIds: {
         type: [String],
         optional: true
@@ -486,6 +501,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
     },
     createdBy: {
         type: String
+    },
+    pmId: {
+        type: String,
+        optional: true
     },
     supervisorId: {
         type: String,

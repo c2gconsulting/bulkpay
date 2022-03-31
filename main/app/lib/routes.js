@@ -548,6 +548,13 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorretirementinde
     where: 'client'
 });
 
+Router.route('/business/:_id/employee/travelrequisition2pmretirementindex', {
+    name: 'travelrequest2.travelrequisition2pmretirementindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2PMRetirementIndex',
+    where: 'client'
+});
+
 Router.route('/business/:_id/employee/travelrequisition2logisticsretirementindex', {
     name: 'travelrequest2.travelrequisition2logisticsretirementindex',
     controller: 'RequisitionController',
@@ -573,6 +580,13 @@ Router.route('/business/:_id/employee/travelrequisition2supervisorindex', {
     name: 'travelrequest2.travelrequisition2supervisorindex',
     controller: 'RequisitionController',
     action: 'showTravelRequisition2SupervisorIndex',
+    where: 'client'
+});
+
+Router.route('/business/:_id/employee/travelrequisition2pmindex', {
+    name: 'travelrequest2.travelrequisition2pmindex',
+    controller: 'RequisitionController',
+    action: 'showTravelRequisition2PMIndex',
     where: 'client'
 });
 

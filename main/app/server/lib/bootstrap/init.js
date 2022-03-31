@@ -329,11 +329,11 @@ Meteor.startup(function () {
     // Import EMPLOYEES, COST CENTERS, AND PROJECTS
     if (process.env.IMPORT_OILSERV_DATA !== 'false') {
       console.log('SEEDING DATA')
-      // Core.apiClient("employees", Loader.loadEmployeeData, () => {
-      //   Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
-      //     Core.apiClient("projects", Loader.loadProjectData, () => {})
-      //   })
-      // })
+      Core.apiClient("employees", Loader.loadEmployeeData, () => {
+        Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+          Core.apiClient("projects", Loader.loadProjectData, () => {})
+        })
+      })
     }
 
     // Import Employees, Cost centers, and projects
@@ -350,7 +350,7 @@ Meteor.startup(function () {
     process.env.MAIL_URL = NEW_MAIL_URL
 
     console.log('process.env.MAIL_URL', process.env.MAIL_URL)
-    console.log('process.env.IMPORT_OILSERV_DATA',typeof process.env.IMPORT_OILSERV_DATA)
+    console.log('process.env.IMPORT_OILSERV_DATA', process.env.IMPORT_OILSERV_DATA)
     console.log('process.env.OILSERV_SAP_INTEGRATION_URL', process.env.OILSERV_SAP_INTEGRATION_URL);
     console.log('process.env.OILSERV_SAP_INTEGRATION_COOKIE_API_KEY', process.env.OILSERV_SAP_INTEGRATION_COOKIE_API_KEY);
     console.log('process.env.OILSERV_SAP_INTEGRATION_AUTH_KEY', process.env.OILSERV_SAP_INTEGRATION_AUTH_KEY);

@@ -233,6 +233,19 @@
               {{/if}}
             {{/if}}
 
+            {{#if isUserAPM}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelPMMenu'}}">
+                <a href="" id="travelPMMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>PM Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelPMMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2pmindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2pmretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
+            {{/if}}
+
 
             {{#if isUserAManager}}
               <li class="parent {{isMenuExpandedFocusClass 'travelmanagerMenu'}}">

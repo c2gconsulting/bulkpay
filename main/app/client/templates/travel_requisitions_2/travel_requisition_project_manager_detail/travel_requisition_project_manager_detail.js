@@ -1,6 +1,6 @@
 
 /*****************************************************************************/
-/* TravelRequisition2SupervisorDetail: Event Handlers */
+/* TravelRequisition2PMDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
@@ -8,22 +8,22 @@ import _ from 'underscore';
 
 
 
-Template.TravelRequisition2SupervisorDetail.events({
+Template.TravelRequisition2PMDetail.events({
     'click #approve': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
+        let pmComment = $('[name=pmComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.pmComment = pmComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Approved By HOD";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.APPROVED_BY_PM;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
         e.preventDefault()
 
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        //update pmComment one last final time
+        currentTravelRequest.pmComment = $("#pmComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
         let fieldsAreValid = true;
@@ -32,7 +32,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        // if (currentTravelRequest.supervisorComment ===""){
+        // if (currentTravelRequest.pmComment ===""){
         //     fieldsAreValid = false;
         //     validationErrors += ": HOD Comment cannot be empty";
         // }
@@ -43,7 +43,7 @@ Template.TravelRequisition2SupervisorDetail.events({
             validationErrors += ": select a budget code";
         }
         if (fieldsAreValid){
-            Meteor.call('TRIPREQUEST/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/projectManagerApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
@@ -81,20 +81,20 @@ Template.TravelRequisition2SupervisorDetail.events({
 
 
     'click #reject': (e, tmpl) => {
-        let supervisorComment = $('[name=supervisorComment]').val();
+        let pmComment = $('[name=pmComment]').val();
         let budgetCodeId =$('[name=budget-code]').val();
 
         let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-        currentTravelRequest.supervisorComment = supervisorComment;
+        currentTravelRequest.pmComment = pmComment;
         currentTravelRequest.budgetCodeId = budgetCodeId;
-        currentTravelRequest.status = "Rejected By HOD";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.REJECTED_BY_PM;
 
         currentTravelRequest.businessUnitId = Session.get('context'); //set the business unit id one more time to be safe
 
         e.preventDefault()
 
-        //update supervisorComment one last final time
-        currentTravelRequest.supervisorComment = $("#supervisorComment").val();
+        //update pmComment one last final time
+        currentTravelRequest.pmComment = $("#pmComment").val();
         tmpl.currentTravelRequest.set(currentTravelRequest);
 
         let fieldsAreValid = true;
@@ -103,9 +103,9 @@ Template.TravelRequisition2SupervisorDetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.status == Core.ALL_TRAVEL_STATUS.REJECTED_BY_HOD && currentTravelRequest.supervisorComment ===""){
+        if (currentTravelRequest.status == Core.ALL_TRAVEL_STATUS.REJECTED_BY_PM && currentTravelRequest.pmComment ===""){
             fieldsAreValid = false;
-            validationErrors += ": HOD Comment cannot be empty";
+            validationErrors += ": PM Comment cannot be empty";
         }
 
         if( currentTravelRequest.budgetCodeId=="I am not sure")
@@ -115,7 +115,7 @@ Template.TravelRequisition2SupervisorDetail.events({
         }
         if (fieldsAreValid){
 
-            Meteor.call('TRIPREQUEST/supervisorApprovals', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/projectManagerApprovals', currentTravelRequest, (err, res) => {
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
@@ -136,7 +136,7 @@ Template.TravelRequisition2SupervisorDetail.events({
                 }
             });
             Template.instance().errorMessage.set(null);
-            Modal.hide('TravelRequisition2SupervisorDetail');
+            Modal.hide('TravelRequisition2PMDetail');
         }else{
             swal({
                 title: "Oops!",
@@ -166,9 +166,9 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2SupervisorDetail: Helpers */
+/* TravelRequisition2PMDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2SupervisorDetail.helpers({
+Template.TravelRequisition2PMDetail.helpers({
     ACTIVITY: () => 'activityId',
     COSTCENTER: () => 'costCenter',
     PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
@@ -213,8 +213,8 @@ Template.TravelRequisition2SupervisorDetail.helpers({
     },
     canApprove() {
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        const { HOD } = Core.Approvals;
-        return Core.canApprove(HOD, currentTravelRequest)
+        const { PM } = Core.Approvals;
+        return Core.canApprove(PM, currentTravelRequest)
     },
     travelTypeChecked(val){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -391,9 +391,9 @@ Template.TravelRequisition2SupervisorDetail.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2SupervisorDetail: Lifecycle Hooks */
+/* TravelRequisition2PMDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2SupervisorDetail.onCreated(function () {
+Template.TravelRequisition2PMDetail.onCreated(function () {
 
 
     let self = this;
@@ -476,7 +476,7 @@ Template.TravelRequisition2SupervisorDetail.onCreated(function () {
 
 });
 
-Template.TravelRequisition2SupervisorDetail.onRendered(function () {
+Template.TravelRequisition2PMDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -497,5 +497,5 @@ Template.TravelRequisition2SupervisorDetail.onRendered(function () {
     }
 });
 
-Template.TravelRequisition2SupervisorDetail.onDestroyed(function () {
+Template.TravelRequisition2PMDetail.onDestroyed(function () {
 });

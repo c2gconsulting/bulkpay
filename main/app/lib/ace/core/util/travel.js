@@ -135,8 +135,8 @@ Core.tripDetails = (index, minDate, from) => ({
   totalDuration: 0,
   totalPerDiem: 0,
   totalHotelCost: 0,
-  fromCountry: '',
-  toCountry: '',
+  fromCountry: 'Nigeria',
+  toCountry: 'Nigeria',
 })
 
 
@@ -157,7 +157,7 @@ Core.currentTravelRequest = (businessUnitId) => ({
   // PROJECT BREAK DOWN ACTIVITY ID
   activityId: "",
   cashAdvanceNotRequired: false,
-  isEmergencyTrip: false,
+  isEmergencyTrip: true,
   type:"Return",
   totalTripDuration: 0,
   totalEmployeePerdiemNGN: 0,
@@ -242,7 +242,7 @@ Core.autorun = (invokeReason, self) => {
         }
         /* End of Pre-selection */
         self.currentTravelRequest.set(travelRequestDetails)
-  
+
       }
     }
   } catch (error) {
