@@ -4,6 +4,7 @@
  */
 
 /* eslint no-loop-func: 0*/
+let isSent = false;
 
 const EmployeesPositions = (eachLine, otype, updatedObject) => {
   let name = updatedObject ? updatedObject["POSITION (AS CONTAINED IN SAP S4HANA)"] : eachLine.name;
@@ -37,12 +38,12 @@ const RestructureWBS = (wbs, projectId, businessId) => ({
   managerId: wbs.wbs_manager_number,
   externalCode: wbs.external_wbs_number,
   type: 'project',
-  businessId: "FYTbXLB9whRc4Lkh4", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+  businessId: "TRbx9J5uBpgQ6igps", // TRbx9J5uBpgQ6igps - dev - FJe5hXSxCHvR2FBjJ
 })
 
 const RestructureProject = (eachLine, businessId) => ({
   ...eachLine,
-  businessId: businessId || "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+  businessId: businessId || "TRbx9J5uBpgQ6igps", // TRbx9J5uBpgQ6igps - dev - FJe5hXSxCHvR2FBjJ
   name: eachLine.description,
   // activities: (eachLine.wbs && eachLine.wbs.lines.map(wbs => RestructureWBS(wbs))) || []
 })
@@ -358,93 +359,103 @@ DataLoader = class DataLoader {
    * @return {Boolean} boolean -  returns true on insert
    */
   loadEmployeeData(data, group, jsonFile) {
-    const { Employees } = data;
-    console.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE EMPLOYEES DATA')
-    const entityJSON = EJSON.parse(Assets.getText("data/entityObject.json"));
-    console.log('entityJSON', JSON.stringify(entityJSON))
+    try {
+      const { Employees } = data;
+      console.info('CRON JOB IN ACTION: SET-BACK WHILE WE IMPORT THE EMPLOYEES DATA')
+      const entityJSON = EJSON.parse(Assets.getText("data/entityObject.json"));
+      const entityJSON2 = EJSON.parse(Assets.getText("data/entityObject2.json"));
+      console.log('entityJSON', JSON.stringify(entityJSON))
 
-    const anEntityKey = "POSITION (AS CONTAINED IN SAP S4HANA)";
-    const aCategoryKey = "CORRESPONDING STAFF CATEGORY";
+      const anEntityKey = "POSITION (AS CONTAINED IN SAP S4HANA)";
+      const aCategoryKey = "CORRESPONDING STAFF CATEGORY";
 
-    const hashMap = {}
-    entityJSON.Sheet1.forEach((eachEntityJSON) => {
-      const nameKey = eachEntityJSON[anEntityKey].toLowerCase();
-      const name = eachEntityJSON[anEntityKey];
-      const staffCategory = eachEntityJSON[aCategoryKey];
-      hashMap[nameKey] = { ...eachEntityJSON, positionDesc: name, name, staffCategory }
-    })
+      const hashMap = Core.getPositionCategories(entityJSON);
+      const hashMap2 = Core.getPositionCategories(entityJSON2);
 
-    Employees.line.map((eachLine, index) => {
-      console.info(`CRON JOB IN ACTION: EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+      Employees.line.map((eachLine, index) => {
+        console.info(`CRON JOB IN ACTION: EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
 
-      let { position_description } = eachLine;
-      position_description = position_description.toLowerCase();
-      let currentPosition = hashMap[position_description];
+        let { position_description, position_long_text } = eachLine;
+        position_description = (position_description || position_long_text || "").toLowerCase();
 
-      if (!currentPosition) {
-        Object.keys(hashMap).map(hMapKey => {
-          const hMap = hashMap[hMapKey];
-          const nameKey = hMap.name.toLowerCase();
-          if (nameKey.includes(position_description)) {
-            // FOR Quick identification during next iterations
-            hashMap[position_description] = hMap;
-            currentPosition = hMap;
+        let currentPosition = hashMap[position_description];
+        if (!currentPosition) currentPosition = hashMap2[position_description];
+        if (!currentPosition) currentPosition = Core.getPositonCategory(hashMap, position_description)
+        if (!currentPosition) currentPosition = Core.getPositonCategory(hashMap2, position_description)
+
+        console.log('currentPosition', currentPosition);
+
+        let staffCategory = "", positionName = eachLine.position_description;
+        if (currentPosition) {
+          positionName = currentPosition[anEntityKey];
+          staffCategory = currentPosition.staffCategory;
+        }
+
+        console.log('staffCategory', staffCategory);
+
+        const cleanData = {
+          ...eachLine,
+          positionDesc: positionName,
+          staffCategory: (staffCategory || "").trim(),
+          email: Core.emailPolyfill(eachLine).toLowerCase()
+        }
+
+        if (Meteor.isServer) {
+          let currentHashedPassword = Package.sha.SHA256('123456');
+
+          console.log('currentHashedPassword', currentHashedPassword)
+          const adminUser = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
+          if (!isSent) {
+            console.log('emails[0].address', adminUser.emails[0].address)
+            Accounts.sendEnrollmentEmail(adminUser._id, adminUser.emails[0].address);
+            isSent = true
           }
-        })
-      }
+          delete adminUser._id;
+          delete adminUser.roles;
+          delete adminUser.services;
+          delete adminUser.gceoId;
+          delete adminUser.gcooId;
+          const user = Core.RestructureEmployee(cleanData, currentHashedPassword, adminUser);
+          // /** CHECK IF USER ALREADY EXISTS AND UPDATE OR CREATE IF THEY DON"T */
+          const userFound = Meteor.users.findOne({ 'emails.address': user.emails[0].address });
 
-      console.log('currentPosition', currentPosition);
-
-      let staffCategory = "", positionName = eachLine.position_description;
-      if (currentPosition) {
-        positionName = currentPosition[anEntityKey];
-        staffCategory = currentPosition.staffCategory;
-      }
-
-      console.log('staffCategory', staffCategory);
-
-      const cleanData = {
-        ...eachLine,
-        positionDesc: positionName,
-        staffCategory: (staffCategory || "").trim(),
-        email: Core.emailPolyfill(eachLine).toLowerCase()
-      }
-
-      if (Meteor.isServer) {
-        let currentHashedPassword = Package.sha.SHA256('123456');
-
-        console.log('currentHashedPassword', currentHashedPassword)
-        const adminUser = Meteor.users.findOne({ 'emails.address': 'adesanmiakoladedotun@gmail.com' });
-        delete adminUser._id;
-        delete adminUser.roles;
-        delete adminUser.services;
-        delete adminUser.gceoId;
-        delete adminUser.gcooId;
-        const user = Core.RestructureEmployee(cleanData, currentHashedPassword, adminUser);
-        // /** CHECK IF USER ALREADY EXISTS AND UPDATE OR CREATE IF THEY DON"T */
-        const userFound = Meteor.users.findOne({ 'emails.address': user.emails[0].address });
-
-        Partitioner.directOperation(function() {
-          // console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
-          if (userFound) {
-            console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
-            delete user.roles;
-            Meteor.users.update({ customUsername: user.customUsername }, { $set: user })
-            console.info(
-              `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
-            );
-          } else {
-            console.info(`CRON JOB IN ACTION: CREATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
-            const accountId = Meteor.users.insert(user);
-            Accounts.setPassword(accountId, "123456");
-            Partitioner.setUserGroup(accountId, user.group);
-            console.info(
-              `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
-            );
-          }
-        })
-      }
-    })
+          Partitioner.directOperation(function() {
+            // console.debug('CUSTOM LOGIN WITH EMAIL SUCESSESS RESPONSE')
+            if (userFound) {
+              console.info(`CRON JOB IN ACTION: UPDATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+              delete user.roles;
+              // delete user.emails;
+              const emailtoFind = user.emails && user.emails[0] && user.emails[0].address
+              if (emailtoFind) delete user.emails
+              Meteor.users.update({ $or: [{ customUsername: user.customUsername }, { 'emails.address': { '$regex': `${emailtoFind}`, '$options': 'i' } }] }, { $set: user })
+              console.info(
+                `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
+              );
+            } else {
+              console.info(`CRON JOB IN ACTION: CREATING EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
+              const accountId = Meteor.users.insert(user);
+              Accounts.setPassword(accountId, "123456");
+              Partitioner.setUserGroup(accountId, user.group);
+              // const hasEmail = user.emails && user.emails[0] && user.emails[0].address && user.emails[0].address.split('@')[0].length > 1
+              /* START:: Comment out below code - if seeeder not working properly */
+              // const hasEmail = (eachLine.email || "").split('@')[0].length > 1
+              // console.log('Accounts.sendEnrollmentEmail hasEmail', hasEmail)
+              // console.log('Accounts.sendEnrollmentEmail to email address', user.emails[0].address)
+              // if (hasEmail) {
+              //   Accounts.sendEnrollmentEmail(accountId, user.emails[0].address);
+              // }
+              /* END:: Comment out below code - if seeeder not working properly */
+              console.info(
+                `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
+              );
+            }
+          })
+        }
+      })
+    } catch (error) {
+      console.log('error')
+      console.log(error)
+    }
   }
   
   /**
@@ -472,7 +483,7 @@ DataLoader = class DataLoader {
                 ...eachLine,
                 name: eachLine.cost_center_general_name,
                 description: eachLine.cost_center_description,
-                businessId: businessId || "FJe5hXSxCHvR2FBjJ", // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+                businessId: businessId || "TRbx9J5uBpgQ6igps", // TRbx9J5uBpgQ6igps - dev - FJe5hXSxCHvR2FBjJ
               };
               const costCenterCondition = [{name: costCenter.name}, { costCenter: costCenter.cost_center }];
               const costCenterFound = CostCenters.findOne({ name: costCenter.name, cost_center: costCenter.cost_center })

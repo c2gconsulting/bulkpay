@@ -635,18 +635,18 @@ Template.TravelRequisition2ExtensionDetail.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your current location";
             }
-            if (currentTrip.fromId.selectedIndex == 0){
-                fieldsAreValid = false;
-                validationErrors += ": select your current location";
-            }
+            // if (currentTrip.fromId.selectedIndex == 0){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select your current location";
+            // }
             if (currentTrip.toId === ""){
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select a hotel";
-            }
+            // if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select a hotel";
+            // }
             //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
@@ -749,18 +749,18 @@ Template.TravelRequisition2ExtensionDetail.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your current location";
             }
-            if (currentTrip.fromId.selectedIndex == 0){
-                fieldsAreValid = false;
-                validationErrors += ": select your current location";
-            }
+            // if (currentTrip.fromId.selectedIndex == 0){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select your current location";
+            // }
             if (currentTrip.toId === ""){
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select a hotel";
-            }
+            // if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select a hotel";
+            // }
             //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
@@ -911,13 +911,13 @@ Template.TravelRequisition2ExtensionDetail.helpers({
     budgetList() {
         return  Budgets.find();
     },
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
             return travelcity.name
         } 
-        return travelcityId
+        return travelcityId + `${country ? `, ${country}`: ''}`;
     },
     airlineList(fromId, toId) {
         let isInternational = false;
@@ -1040,7 +1040,7 @@ Template.TravelRequisition2ExtensionDetail.helpers({
         if(hotel) {
             return hotel.name
         }
-        return hotelId
+        return hotelId || 'I do not need a Hotel'
     },
     hotelSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();

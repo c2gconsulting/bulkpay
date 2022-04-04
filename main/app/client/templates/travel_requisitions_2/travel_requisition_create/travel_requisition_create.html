@@ -22,6 +22,20 @@
                   <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" />
                 </div>
               </div>
+
+              <!-- +++++++++INDICATE OFFICIAL OR TIME_OFF OR ROTATION TRIP ++++++++++++-->
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="travelTreat" class="control-label">OFFICIAL / TIME-OFF / ROTATION? <span class="asterisk important-input">*</span></label>
+                  {{#semanticselect2}}
+                  <select id="travelTreat" name="travelTreat" style="width: 100%" class="ui fluid search selection dropdown">
+                    {{#each travelTreat}}
+                      <option value="{{id}}" {{selected TRAVELTREAT id}}>{{name}}</option>
+                    {{/each}}
+                  </select>
+                  {{/semanticselect2}}
+                </div>
+              </div>
             </div>
 
             <!-- **************** START OF SECTION A **********************-->
@@ -44,7 +58,7 @@
               {{#if costCenterType 'Project'}}
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="departmentOrProjectId" class="control-label">Which project is this trip related to? <span class="asterisk important-input">*</span></label>
+                    <label for="departmentOrProjectId" class="control-label">Project To Be Charged? <span class="asterisk important-input">*</span></label>
                     {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
                     <select id="departmentOrProjectId" value="{{currentProject}}"  name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
                       <option value="">Select Project</option>
@@ -76,20 +90,20 @@
                 <!-- ELSE -->
                 <!-- +++++++++ DEPARTMENT TRIP ++++++++++++-->
                 {{else}}
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="departmentOrProjectId" class="control-label">Select Department? <span class="asterisk important-input">*</span></label>
-                    {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
-                    <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
-                      <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
-                      {{#each departmentList}}
-                      <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{cost_center}}</option>
-                      {{/each}}
-                    </select>
-                    {{/semanticselect2}}
-                    <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
+                  <div class="col-sm-6">
+                    <div class="form-group">
+                      <label for="departmentOrProjectId" class="control-label">Department To Be Charged? <span class="asterisk important-input">*</span></label>
+                      {{#semanticselect2 currentTravelRequest.departmentOrProjectId}}
+                      <select id="departmentOrProjectId" value="{{currentDepartment}}" name="departmentOrProjectId" style="width: 100%" class="ui fluid search selection dropdown">
+                        <option value="{{currentTravelRequest.departmentOrProjectId}}">{{currentDepartment}}</option>
+                        {{#each departmentList}}
+                        <option value="{{_id}}" {{selected PROJECT_AND_DEPARTMENT _id}}>{{cost_center_general_name}} - {{cost_center}}</option>
+                        {{/each}}
+                      </select>
+                      {{/semanticselect2}}
+                      <span class="text-warning"><small>Please provide this info, if unsure, select "I am not sure"</small></span>
+                    </div>
                   </div>
-                </div>
               {{/if}}
               <!-- +++++++++END:: INDICATE PROJECT OR DEPARTMENT TRIP ++++++++++++-->
 
@@ -213,49 +227,144 @@
                       </div>
                   </div>
                   <hr/>
-                  <div class="row">
-                    <div class="col-sm-10 col-lg-6">
-                        <div class="form-group">
-                            <div class="ckbox ckbox-success" style="display: flex;">
-                                <input type="checkbox" id="selectEmergencyTrip" name="selectEmergencyTrip" value="{{currentTravelRequest.isEmergencyTrip}}" {{checkbox currentTravelRequest.isEmergencyTrip}} />
-                                <label for="selectEmergencyTrip">Is an emergency trip</label>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
+                  
 
                   {{#each currentTravelRequest.trips}}
-                  <div class="row">
-                      <div class="col-sm-2">
-                          <div class="form-group">
-                              <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
-                              <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{this.fromId}}" />
-                              <!-- {{#semanticselect2}}
-                              <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
-                                  <option value="" >None</option>
-                                  {{#each travelcityList}}
-                                  <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
-                                  {{/each}}
-                              </select>
-                              {{/semanticselect2}} -->
-                          </div>
+
+                  <div class="row" style="display: flex; flex-wrap: wrap;">
+                    {{#if isFirstLeg this.tripIndex}}
+                      {{#if costCenterType 'Department'}}
+                      <!-- <div class="row"> -->
+                        <div class="col-sm-10 col-lg-6">
+                            <div class="form-group">
+                                <div class="ckbox ckbox-success" style="display: flex;">
+                                    <input type="checkbox" id="selectEmergencyTrip" name="selectEmergencyTrip" checked="{{currentTravelRequest.isEmergencyTrip}}" {{checkbox currentTravelRequest.isEmergencyTrip}} />
+                                    <label for="selectEmergencyTrip">Is an emergency trip</label>
+                                </div>
+                            </div>
+                        </div>
+                      <!-- </div> -->
+                      {{/if}}
+                    {{/if}}
+                    <!-- <div class="row"> -->
+                      <div class="col-sm-6">
+                        <div class="form-group">
+                          <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
+                          {{#semanticselect2}}
+                          <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                              <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
+                              <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
+                              <option value="RAIL" {{transportModeSelected "RAIL" tripIndex}}>Rail</option>
+                          </select>
+                          {{/semanticselect2}}
+                        </div>
                       </div>
-                      <div class="col-sm-2">
-                          <div class="form-group">
-                              <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
-                              <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{this.toId}}" />
-                              <!-- {{#semanticselect2}}
-                              <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <option value="" >None</option>
-                                  {{#each travelcityList}}
-                                  <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
-                                  {{/each}}
+                    <!-- </div> -->
+
+
+                    {{#if isFlight tripIndex}}
+                      <!-- +++++++++INDICATE FLIGHT COUNTRY ++++++++++++-->
+                      {{#if countries}}
+                      <div class="col-sm-6">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="fromCountry_{{this.tripIndex}}" class="control-label">From Country? <span class="asterisk important-input">*</span></label>
+                              {{#semanticselect2}}
+                              <select id="fromCountry_{{this.tripIndex}}" name="fromCountry_{{this.tripIndex}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                {{#each countries}}
+                                  <option value="{{name}}" {{selected FROMCOUNTRY id}}>{{name}}</option>
+                                {{/each}}
                               </select>
-                              {{/semanticselect2}} -->
+                              {{/semanticselect2}}
+                            </div>
                           </div>
+  
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="fromId_{{this.tripIndex}}" class="control-label">From Airport Cities <span class="asterisk important-input">*</span></label>
+                              {{#semanticselect2}}
+                              <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                {{#each airportFromCities tripIndex}}
+                                  <option value="{{name}}" {{selected FROMCOUNTRY id}}>{{name}}</option>
+                                {{/each}}
+                              </select>
+                              {{/semanticselect2}}
+                            </div>
+                          </div>
+                        </div>
                       </div>
+                      {{/if}}
+
+                      <!-- +++++++++INDICATE FLIGHT COUNTRY ++++++++++++-->
+                      {{#if countries}}
+                      <div class="col-sm-6">
+                        <div class="row">
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="toCountry_{{this.tripIndex}}" class="control-label">To Country? <span class="asterisk important-input">*</span></label>
+                              {{#semanticselect2}}
+                              <select id="toCountry_{{this.tripIndex}}" name="toCountry_{{this.tripIndex}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                {{#each countries}}
+                                  <option value="{{name}}" {{selected FROMCOUNTRY id}}>{{name}}</option>
+                                {{/each}}
+                              </select>
+                              {{/semanticselect2}}
+                            </div>
+                          </div>
+  
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="toId_{{this.tripIndex}}" class="control-label">To Airport Cities <span class="asterisk important-input">*</span></label>
+                              {{#semanticselect2}}
+                              <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search selection dropdown">
+                                {{#each airportToCities tripIndex}}
+                                  <option value="{{name}}" {{selected FROMCOUNTRY id}}>{{name}}</option>
+                                {{/each}}
+                              </select>
+                              {{/semanticselect2}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {{/if}}
+                    {{else}}
+                      <div class="col-sm-2">
+                        <div class="form-group">
+                            <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
+                            <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{this.fromId}}" />
+                            <!-- {{#semanticselect2}}
+                            <select id="fromId_{{this.tripIndex}}" name="fromId_{{this.tripIndex}}" style="width: 100%"  class="ui fluid search dropdown form-control" data-live-search="true" >
+                                <option value="" >None</option>
+                                {{#each travelcityList}}
+                                <option value="{{_id}}" {{fromIdSelected _id ../tripIndex}}>{{name}}</option>
+                                {{/each}}
+                            </select>
+                            {{/semanticselect2}} -->
+                        </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                      <div class="form-group">
+                          <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
+                          <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{this.toId}}" />
+                          <!-- {{#semanticselect2}}
+                          <select id="toId_{{this.tripIndex}}" name="toId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
+                              <option value="" >None</option>
+                              {{#each travelcityList}}
+                              <option value="{{_id}}" {{toIdSelected _id ../tripIndex}}>{{name}}</option>
+                              {{/each}}
+                          </select>
+                          {{/semanticselect2}} -->
+                      </div>
+                    </div>
+
+                    {{/if}}
+
+
                       <div class="col-sm-2">
                           <div class="form-group">
+                            {{#if costCenterType 'Department'}}
                               <div class="date">
                                   <div class="inner-addon left-addon">
                                       <i class="glyphicon icon-calendar"></i>
@@ -271,6 +380,17 @@
                                       {{/if}}
                                   </div>
                               </div>
+                              {{else}}
+                              <div class="date">
+                                <div class="inner-addon left-addon">
+                                  <i class="glyphicon icon-calendar"></i>
+                                  <label class="control-label">Departure <span class="asterisk important-input">*</span></label>
+                                  {{#datepicker2 currentDate=this.departureDate minDate=isEmergencyTrip }}
+                                  <input class="form-control datepicker" type="text" id="departureDate_{{this.tripIndex}}" name="departureDate_{{this.tripIndex}}" placeholder="Return Date" value="{{formatDate2 this.departureDate}}"/>
+                                  {{/datepicker2}}
+                                </div>
+                              </div>
+                            {{/if}}
                           </div>
                       </div>
                       <div class="col-sm-2">
@@ -374,25 +494,24 @@
                   </div>
 
                   <div class="row">
-                      <div class="col-sm-3">
+                      <!-- <div class="col-sm-3">
                           <div class="form-group">
 
                               <label for="transportationMode_{{this.tripIndex}}" class="control-label">Mode of Transport <span class="asterisk important-input">*</span></label>
                               {{#semanticselect2}}
                               <select id="transportationMode_{{this.tripIndex}}" name="transportationMode_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <!-- <option value="TRAIN" {{transportModeSelected "TRAIN" tripIndex}}>Train</option> -->
-                                  <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
                                   <option value="AIR" {{transportModeSelected "AIR" tripIndex}}>Air</option>
+                                  <option value="LAND" {{transportModeSelected "LAND" tripIndex}}>Land</option>
                                   <option value="RAIL" {{transportModeSelected "RAIL" tripIndex}}>Rail</option>
                               </select>
                               {{/semanticselect2}}
                           </div>
-                      </div>
+                      </div> -->
                       <div class="col-sm-5">
                           <div class="form-group">
 
                               <div style="display: {{isAirModeOfTransport this.tripIndex}}">
-                                  <label for="airlineId_{{this.tripIndex}}" class="control-label">Preferred Airline</label>
+                                  <label for="airlineId_{{this.tripIndex}}" class="control-label">Entity to Bill</label>
                                   {{#semanticselect2}}
                                   <select id="airlineId_{{this.tripIndex}}" name="airlineId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
 
@@ -400,6 +519,7 @@
                                       <option value="{{_id}}" {{airlineSelected _id ../tripIndex}}>{{name}}</option>
                                       {{/each}}
                                       <option value="third_party_agent_flight">A third party will cater for my flight</option>
+                                      <option value="company_will_process_flight">Oilserv will cater for my flight</option>
                                   </select>
                                   {{/semanticselect2}}
                               </div>
@@ -453,8 +573,8 @@
                       <div class="col-sm-3">
                           <div class="form-group">
                             <div class="ckbox ckbox-success">
-                                <input type="checkbox" id="ineedHotel" name="ineedHotel" value="{{this.tripIndex}}" {{ineedHotelChecked ineedHotel}}/>
-                                <label for="ineedHotel">I need Hotel</label>
+                                <input type="checkbox" id="hotelNotRequired_{{this.tripIndex}}" name="hotelNotRequired_{{this.tripIndex}}" value="{{this.tripIndex}}" {{ineedHotelChecked this.tripIndex}}/>
+                                <label for="hotelNotRequired_{{this.tripIndex}}">I need Hotel</label>
                             </div>
                           </div>
                       </div>
@@ -474,20 +594,12 @@
                   </div> -->
                   <!-- {{/if}} -->
 
-                  {{#if ineedHotel}}
+                  <!-- {{#if condition this.hotelNotRequired 'eq' false }}
                   <div class="row">
                       <div class="col-sm-6">
                           <div class="form-group">
                               <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                               <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" name="hotelId_{{this.tripIndex}}" value="{{this.hotelId}}"/>
-                              <!-- {{#semanticselect2}}
-                              <select id="hotelId_{{this.tripIndex}}" name="hotelId_{{this.tripIndex}}" style="width: 100%" class="ui fluid search dropdown form-control">
-                                  <option value="">I do not need a Hotel</option>
-                                  {{#each hotelList this.toId}}
-                                  <option value="{{_id}}" {{hotelSelected _id ../tripIndex}}>{{name}}</option>
-                                  {{/each}}
-                              </select>
-                              {{/semanticselect2}} -->
                           </div>
                       </div>
                       <div class="col-sm-2">
@@ -503,7 +615,7 @@
                           </div>
                       </div>
                   </div>
-                  {{/if}}
+                  {{/if}} -->
 
                   <hr>
                   <div class="row">

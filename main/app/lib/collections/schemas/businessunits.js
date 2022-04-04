@@ -43,6 +43,10 @@ Core.Schemas.BusinessUnit = new SimpleSchema({
         type: String,
         optional: true
     },
+    includeTripText: {
+        type: Boolean,
+        optional: true
+    },
 
     createdAt: {
         type: Date,

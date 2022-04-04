@@ -42,17 +42,21 @@ Template.login_sso.events({
 						$('div #login_error').html('');
 
 						if(res.status === true) {
-							Meteor.loginWithPassword(email, password, function(err){
-								if (!err) {
-									var currentRoute = Router.current().route.getName();
+							if(res.loginType === 'usingDefaultPassword') {
+								Router.go('reset.password', {token: res.resetPasswordToken})
+							} else {
+								Meteor.loginWithPassword(email, password, function(err){
+									if (!err) {
+										var currentRoute = Router.current().route.getName();
 
-									if (currentRoute == "login") {
-											Router.go("home");
-									} else {
-										console.log(`Current route is not login`)
+										if (currentRoute == "login") {
+												Router.go("home");
+										} else {
+											console.log(`Current route is not login`)
+										}
 									}
-								}
-							})
+								})
+							}
 						}
 					}
 				})

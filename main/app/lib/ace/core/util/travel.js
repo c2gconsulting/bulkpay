@@ -23,6 +23,21 @@ Core.Travel = {
       id: 'CAR_HIRE',
       name: 'I need a car hire'
     }
+  ],
+
+  travelTreat: [
+    {
+      id: 'Official',
+      name: 'Official trip'
+    },
+    {
+      id: 'Time-off',
+      name: 'Time-off'
+    },
+    {
+      id: 'Rotation',
+      name: 'Rotation'
+    }
   ]
 };
 
@@ -104,13 +119,13 @@ Core.tripDetails = (index, minDate, from) => ({
   originCityAirportTaxiCost: 0,
   destinationCityAirportTaxiCost: 0,
   groundTransportCost: 0,
-  airlineId: "",
+  airlineId: "third_party_agent_flight",
   airfareCost: 0,
   airfareCurrency: "NGN",
-  hotelId: "H3593",
+  hotelId: "",
   hotelRate: 0,
   destinationCityCurrreny: "NGN",
-  hotelNotRequired: false,
+  hotelNotRequired: true,
   perDiemCost: 0,
   originCityCurrreny: "NGN",
   isBreakfastIncluded: false,
@@ -119,7 +134,9 @@ Core.tripDetails = (index, minDate, from) => ({
   isIncidentalsIncluded: false,
   totalDuration: 0,
   totalPerDiem: 0,
-  totalHotelCost: 0
+  totalHotelCost: 0,
+  fromCountry: 'Nigeria',
+  toCountry: 'Nigeria',
 })
 
 
@@ -130,6 +147,7 @@ Core.currentTravelRequest = (businessUnitId) => ({
 
   destinationType: 'Local',
   costCenter: 'Project',
+  travelTreat: 'Official',
   tpcTrip: 'Third_Party',
   tripFor: {},
   tripCategory: Core.getCurrentTrip() || 'INDIVIDUAL',
@@ -139,7 +157,7 @@ Core.currentTravelRequest = (businessUnitId) => ({
   // PROJECT BREAK DOWN ACTIVITY ID
   activityId: "",
   cashAdvanceNotRequired: false,
-  isEmergencyTrip: false,
+  isEmergencyTrip: true,
   type:"Return",
   totalTripDuration: 0,
   totalEmployeePerdiemNGN: 0,
@@ -210,6 +228,7 @@ Core.autorun = (invokeReason, self) => {
   
         if (travelRequestDetails) {
           $('#costCenter').dropdown('set selected', travelRequestDetails.costCenter);
+          $('#travelTreat').dropdown('set selected', travelRequestDetails.travelTreat);
           $('#departmentOrProjectId').dropdown('set selected', travelRequestDetails.departmentOrProjectId);
           // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
           if (travelRequestDetails.activityId) $('#project_activity-code').dropdown('set selected', travelRequestDetails.activityId);
@@ -223,7 +242,7 @@ Core.autorun = (invokeReason, self) => {
         }
         /* End of Pre-selection */
         self.currentTravelRequest.set(travelRequestDetails)
-  
+
       }
     }
   } catch (error) {
@@ -237,7 +256,7 @@ Core.autorun = (invokeReason, self) => {
 /**
  * 
  */
-Core.tripAnalysis = (self) => {
+Core.tripAnalysis = async (self) => {
 
   let currentTravelRequest = self.currentTravelRequest.curValue;
   const tripType = currentTravelRequest.type;
@@ -249,15 +268,19 @@ Core.tripAnalysis = (self) => {
   self.subscribe("activities", 'project', currentTravelRequest.departmentOrProjectId);
 
 
-  const { destinationType } = currentTravelRequest;
+  const { destinationType, costCenter } = currentTravelRequest;
   const isInternational = destinationType === "International";
   let Currency = isInternational ? 'USD' : 'NGN';
   let StaffCategory = StaffCategories.find({ isInternational }).fetch();
   // console.log('StaffCategoryyyy', StaffCategory)
 
-  const { tripFor } = currentTravelRequest;
+  const { tripFor, trips } = currentTravelRequest;
   let individuals = tripFor && tripFor.individuals ? tripFor.individuals : [{}];
   // console.log('individuals', individuals)
+  const isLand = trips && trips.find(trip => trip.transportationMode == 'LAND');
+  const isProjectTrip = costCenter === 'Project';
+  // IF Project tied to Land trip, there shouldn't be perdiem cost;
+  const hasNoPerdiem = true // disable per diem for all trips // (isProjectTrip && isLand);
 
   let totalTripDuration = 0;
   let totalEmployeePerdiemNGN = 0;
@@ -338,6 +361,9 @@ Core.tripAnalysis = (self) => {
     let toTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].toId});
     let fromTravelCity = Travelcities.findOne({_id: currentTravelRequest.trips[i].fromId});
 
+    const toId = currentTravelRequest.trips[i].toId;
+    const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
+
     for (let eI = 0; eI < individuals.length; eI++) {
       let { staffCategory } = Meteor.user();
 
@@ -348,8 +374,6 @@ Core.tripAnalysis = (self) => {
         if (!staffCategory && currentTravelRequest.tpcTrip === 'Client') staffCategory = 'Client'
       }
 
-      const toId = currentTravelRequest.trips[i].toId;
-      const hotelNotRequired = currentTravelRequest.trips[i].hotelNotRequired;
 
 
 
@@ -358,7 +382,8 @@ Core.tripAnalysis = (self) => {
       let originCityCurrreny = Currency;
       let destinationCityCurrreny = Currency;
 
-      const trimData = (val) => (val || "").trim();
+      const toLowerCase = (val) => (val || "").toLowerCase()
+      const trimData = (val) => toLowerCase(val).trim();
       let userStaffCategory = StaffCategory.find(({ category }) => trimData(category) === trimData(staffCategory));
       userStaffCategory = userStaffCategory || null
 
@@ -397,7 +422,7 @@ Core.tripAnalysis = (self) => {
       let hotelRate = 0;
       // let hotel = Hotels.findOne({_id: currentTravelRequest.trips[i].hotelId});
       if (userStaffCategory){
-          hotelRate = userStaffCategory.hotelDailyRate;
+          hotelRate = !hotelNotRequired ? userStaffCategory.hotelDailyRate : 0;
       }
 
       totalHotelCost = ((totalDuration /*- 0.5*/) * hotelRate) + totalHotelCost;
@@ -454,10 +479,10 @@ Core.tripAnalysis = (self) => {
     }
 
 
-    currentTravelRequest.trips[i].perDiemCost = totalPerDiemCost;
+    currentTravelRequest.trips[i].perDiemCost = hasNoPerdiem ? 0 : totalPerDiemCost;
     currentTravelRequest.trips[i].hotelRate = totalHotelRate;
     currentTravelRequest.trips[i].totalHotelCost = totalHotelCost
-    currentTravelRequest.trips[i].totalPerDiem = totalPerDiem;
+    currentTravelRequest.trips[i].totalPerDiem = hasNoPerdiem ? 0 : totalPerDiem;
     currentTravelRequest.trips[i].originCityAirportTaxiCost = originCityAirportTaxiCost;
     currentTravelRequest.trips[i].destinationCityAirportTaxiCost = destinationCityAirportTaxiCost;
 

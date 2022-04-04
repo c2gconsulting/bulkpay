@@ -84,6 +84,16 @@ Core.Schemas.Trip = new SimpleSchema({
         type: String,
         optional: true,
     },
+    accommodation: {
+        type: String,
+        // defaultValue: '',
+        allowedValues: ['Hotel', 'Guest House'],
+        optional: true,
+    },
+    guestHouseId: {
+        type: String,
+        optional: true,
+    },
     returnTime: {
         type: String,
         optional: true
@@ -228,6 +238,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: 'Project',
         allowedValues: ['Project', 'Department']
     },
+    travelTreat: {
+        type: String,
+        defaultValue: 'Official',
+        allowedValues: ['Official', 'Time-off', 'Rotation']
+    },
     tpcTrip: {
         type: String,
         defaultValue: 'Third_Party',
@@ -247,6 +262,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: Boolean,
         optional: true,
         defaultValue: false,
+    },
+    sapDocumentId: {
+        type: String,
+        optional: true,
     },
     tripFor: {
         type: Core.Schemas.CreatedOnBehalf,
@@ -426,12 +445,66 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         // allowedValues: ["Not Retired","Draft","Retirement Submitted","Retirement Approved By HOD", "Retirement Rejected By HOD","Retirement Approved Finance","Retirement Rejected Finance", "Retirement Approved Budget Holder","Retirement Rejected Budget Holder", "Retirement Approved BST","Retirement Rejected BST"],
         optional: true
     },
+    // BudgetHolder delegates
+    budgetHolderIds: {
+        type: [String],
+        optional: true
+    },
+    // supervisor delegates
+    pmIds: {
+        type: [String],
+        optional: true
+    },
+    // supervisor delegates
+    supervisorIds: {
+        type: [String],
+        optional: true
+    },
+    // manager delegates
+    managerIds: {
+        type: [String],
+        optional: true
+    },
+    // GCOO Delegates
+    gcooIds: {
+        type: [String],
+        optional: true
+    },
+    // GCEO Delegates
+    gceoIds: {
+        type: [String],
+        optional: true
+    },
+    // Logistics Delegates
+    logisticsIds: {
+        type: [String],
+        optional: true
+    },
+    // BST Delegates
+    bstIds: {
+        type: [String],
+        optional: true
+    },
+    // Finance Delegates
+    financeApproverIds: {
+        type: [String],
+        optional: true
+    },
+    // Security Delegates
+    securityIds: {
+        type: [String],
+        optional: true
+    },
     isStatusSeenByCreator: {
         type: Boolean,
         defaultValue: false
     },
     createdBy: {
         type: String
+    },
+    pmId: {
+        type: String,
+        optional: true
     },
     supervisorId: {
         type: String,

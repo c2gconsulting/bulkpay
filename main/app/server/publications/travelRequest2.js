@@ -7,6 +7,11 @@
      return TravelRequisition2s.find({businessId: businessUnitId, supervisorId: supervisorId});
  });
 
+
+Core.publish("TravelRequestsByPM", function (businessUnitId, pmId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, pmId: pmId});
+});
+
  Core.publish("TravelRequestsByMD", function (businessUnitId, managerId) {
     return TravelRequisition2s.find({businessId: businessUnitId, managerId: managerId});
 });
@@ -19,11 +24,11 @@ Core.publish("TravelRequestsByGCEO", function (businessUnitId, gceoId) {
    return TravelRequisition2s.find({businessId: businessUnitId, gceoId: gceoId});
 });
  Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
-     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsId: logisticsId });
+     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsIds: logisticsId });
  });
 
  Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, bstId: bstId});
+    return TravelRequisition2s.find({businessId: businessUnitId, bstIds: bstId});
 });
 
 Core.publish("TravelRequestsBySecurity", function (businessUnitId, securityId) {
@@ -48,7 +53,6 @@ Core.publish("TravelRequestsAdminCreated", function (businessUnitId) {
 
 
     const currentTravelRequest = TravelRequisition2s.find({businessId: businessUnitId})
-    console.log('current travel request', currentTravelRequest);
     return currentTravelRequest;
     // .map((currentTravelRequest) => {
     //     currentTravelRequest.supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);

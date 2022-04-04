@@ -29,6 +29,8 @@ BrowserPolicy.content.allowOriginForAll("*.facebook.com");
 BrowserPolicy.content.allowOriginForAll("*.fbcdn.net");
 BrowserPolicy.content.allowOriginForAll("connect.facebook.net");
 BrowserPolicy.content.allowOriginForAll("*.googleusercontent.com");
+BrowserPolicy.content.allowOriginForAll("countriesnow.space");
+// https://countriesnow.space/
 
 BrowserPolicy.content.allowImageOrigin("graph.facebook.com");
 BrowserPolicy.content.allowImageOrigin("fbcdn-profile-a.akamaihd.net");

@@ -12,7 +12,7 @@ Template.TravelRequisition2LogisticsDetail.events({
             if (res){
                 swal({
                     title: "Travel requisition has been updated",
-                    text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
+                    // text: "Employee travel requisition has been posted,notification has been sent to the necessary parties",
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
@@ -66,7 +66,7 @@ Template.TravelRequisition2LogisticsDetail.events({
         if (res){
           swal({
             title: "Travel requisition has been updated",
-            text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+            // text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
             confirmButtonClass: "btn-success",
             type: "success",
             confirmButtonText: "OK"
@@ -322,13 +322,13 @@ Template.TravelRequisition2LogisticsDetail.helpers({
             return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
             return travelcity.name
         } 
-        return travelcityId
+        return travelcityId + `${country ? `, ${country}`: ''}`;
     },
     budgetList() {
         return  Budgets.find();
@@ -352,13 +352,16 @@ Template.TravelRequisition2LogisticsDetail.helpers({
         if(hotel) {
             return hotel.name
         }
-        return hotelId
+        return hotelId || 'I do not need a Hotel'
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
 
         if(airline) {
             return airline.name
+        } else {
+            if (airlineId === 'third_party_agent_flight') return 'A third party will cater for my flight'
+            if (airlineId === 'company_will_process_flight') return 'Oilserv will cater for my flight'
         }
     },
     'getBudgetName': function(budgetCodeId) {

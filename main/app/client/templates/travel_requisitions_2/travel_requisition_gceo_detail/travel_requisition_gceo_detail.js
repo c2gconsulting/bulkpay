@@ -28,10 +28,10 @@ Template.TravelRequisition2GCEODetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.gceoComment ===""){
-            fieldsAreValid = false;
-            validationErrors += ": GCEO Comment cannot be empty";
-        }
+        // if (currentTravelRequest.gceoComment ===""){
+        //     fieldsAreValid = false;
+        //     validationErrors += ": GCEO Comment cannot be empty";
+        // }
 
         if( currentTravelRequest.budgetCodeId=="I am not sure")
         {
@@ -43,7 +43,7 @@ Template.TravelRequisition2GCEODetail.events({
                 if (res){
                     swal({
                         title: "Travel requisition has been updated",
-                        text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
+                        // text: "Employee travel requisition has been updated,notification has been sent to the necessary parties",
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"
@@ -99,7 +99,7 @@ Template.TravelRequisition2GCEODetail.events({
         /*** VALIDATIONS ***/
         //check that the description is not hello
 
-        if (currentTravelRequest.gceoComment ===""){
+        if (currentTravelRequest.status == Core.ALL_TRAVEL_STATUS.REJECTED_BY_GCEO && currentTravelRequest.gceoComment ===""){
             fieldsAreValid = false;
             validationErrors += ": GCEO Comment cannot be empty";
         }
@@ -115,7 +115,7 @@ Template.TravelRequisition2GCEODetail.events({
                 if (res){
                     swal({
                         title: "Travel requisition has been rejected",
-                        text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
+                        // text: "Employee travel requisition has been rejected,notification has been sent to the necessary parties",
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"
@@ -307,13 +307,13 @@ Template.TravelRequisition2GCEODetail.helpers({
             return parseInt(index) >= currentTravelRequest.trips.length + 1;
         }
     },
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
 
         if(travelcity) {
             return travelcity.name
         } 
-        return travelcityId
+        return travelcityId + `${country ? `, ${country}`: ''}`;
     },
     budgetList() {
         return  Budgets.find();
@@ -331,13 +331,16 @@ Template.TravelRequisition2GCEODetail.helpers({
         if(hotel) {
             return hotel.name
         }
-        return hotelId
+        return hotelId || 'I do not need a Hotel'
     },
     'getAirlineName': function(airlineId) {
         const airline = Airlines.findOne({_id: airlineId})
 
         if(airline) {
             return airline.name
+        } else {
+            if (airlineId === 'third_party_agent_flight') return 'A third party will cater for my flight'
+            if (airlineId === 'company_will_process_flight') return 'Oilserv will cater for my flight'
         }
     },
     'getBudgetName': function(budgetCodeId) {

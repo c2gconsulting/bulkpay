@@ -409,6 +409,22 @@
                                     </div>
 
                                     <div class="row">
+                                        <label for="auditTrailView" class="col-sm-6 control-label">Audit Trail View</label>
+                                        <div class="col-sm-4">
+                                            {{#if hasAuditTrailViewAccess}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="auditTrailView">
+                                                    <option value="true" selected>Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            {{else}}
+                                                <select class="form-control selectpicker dropdown" data-live-search="true" name="auditTrailView">
+                                                    <option value="true">Yes</option>
+                                                    <option value="false" selected>No</option>
+                                                </select>
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <label for="securityManage" class="col-sm-6 control-label">Security Access</label>
                                         <div class="col-sm-4">
                                             {{#if hasEmployeeSecurityAccess}}

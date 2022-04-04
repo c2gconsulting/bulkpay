@@ -5,12 +5,19 @@
         </a>-->
 
         {{#if businessUnitLogoUrl}}
-            <div class="trick"></div>
-            <img src="{{businessUnitLogoUrl}}" class="img-responsive mb10" alt="" style="height: 60px; position: absolute; top: 0px;"/>
+            {{#if includeTripText}}
+                <a class="logo white" style="display: inline-flex; justify-content: center; align-items: center;">
+                    <img src="{{businessUnitLogoUrl}}" class="img-responsive mb10" alt="" style="height: 60px;margin: 0;margin-bottom: -31px; max-width: 150px;object-fit: scale-down;"/>
+                    <span class="login-small-header" style="margin-bottom: -40px;">TRIPS</span>
+                </a>
+            {{else}}
+                <div class="trick"></div>
+                <img src="{{businessUnitLogoUrl}}" class="img-responsive mb10" alt="" style="height: 60px; position: absolute; top: 0px; height: 60px;margin: 0;margin-bottom: -31px; max-width: 150px;object-fit: scale-down;"/>
+            {{/if}}
         {{else}}
             <a class="logo white" style="display: inline-flex; justify-content: center; align-items: center;">
                 <!-- <span class="login-header">Hub825</span> -->
-                <img src="https://res.cloudinary.com/deqt3envc/image/upload/v1631529352/logo-dark.png" class="img-responsive mb10" alt="" style="height: 60px;margin: 0;margin-bottom: -31px;"/>
+                <img src="https://res.cloudinary.com/deqt3envc/image/upload/v1631529352/logo-dark.png" class="img-responsive mb10" alt="" style="height: 60px;margin: 0;margin-bottom: -31px; max-width: 150px;object-fit: scale-down;"/>
                 <span class="login-small-header" style="margin-bottom: -40px;">TRIPS</span>
             </a>
         {{/if}}

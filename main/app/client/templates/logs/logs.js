@@ -404,6 +404,10 @@ function resetlogSearchFilter() {
     delete Session.keys["logsListApprovalStatusFilter"];
 }
 
+const getOldOrNew = (item, key1, key2) => {
+    return (item.newData[key1] || item.newData[key2]) || (item.oldData[key1] || item.oldData[key2])
+}
+
 const ReformatForAudit = (logs) => {
     const newLogs = [];
     for (let i = 0; i < logs.length; i++) {
@@ -415,6 +419,10 @@ const ReformatForAudit = (logs) => {
             user: element.user.email || "",
             description: element.newData.description || "",
             oldDescription: element.oldData.description || "",
+            "ACCOMODATION COST": getOldOrNew(element, 'totalHotelCostNGN', 'totalHotelCostUSD'),
+            "FLIGHT COST": getOldOrNew(element, 'totalFlightCostNGN', 'totalFlightCostUSD'),
+            "GROUND TRANSPORT COST": getOldOrNew(element, 'totalGroundTransportCostNGN', 'totalGroundTransportCostUSD'),
+            "EMPLOYEE PERDIEM": getOldOrNew(element, 'totalEmployeePerdiemNGN', 'totalEmployeePerdiemUSD'),
             newStatus: element.newData.status || "",
             oldStatus: element.oldData.status || "",
             createdAt: element.createdAt

@@ -60,9 +60,9 @@ Accounts.onCreateUser(function (options, user) {
 
     const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
     user = authUser;
-    tenantId = authTenantId;
+    tenantId = authTenantId || tenantId;
 
-    if (!userExist) {
+    if (!userExist && tenantId) {
         // assign user to his tenant Partition
         Partitioner.setUserGroup(user._id, tenantId);
     }
@@ -73,7 +73,7 @@ Accounts.onCreateUser(function (options, user) {
 // Validate username, sending a specific error message on failure.
 Accounts.validateNewUser((user) => {
     console.log('user validateNewUser', user)
-  if (Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
+  if (!Meteor.users.findOne({ 'emails.address': user.emails[0].address })) {
     return true;
   } else if (user.username && user.username.length >= 3) {
     return true;
@@ -127,6 +127,18 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
+    "account/pm": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user._id : "";
+        const data = { ...user, pmPositionId: positionId, managerId: positionId }
+        const { pmCond } = Core.getApprovalQueries(data, true);
+        // if (Core.getUserApproval(pmCond)) return user;
+        // if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne(pmCond);
+            if (isAssigned) return user;
+        // }
+        // return Core.getUserApproval(pmCond)
+    },
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
@@ -240,38 +252,32 @@ Meteor.methods({
             if(loginResult.error) {
                 throw loginResult.error
             } else {
-                let hashedDefaultPassword = Package.sha.SHA256("123456")
-                let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
-                let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
-
-                if(defaultLoginResult.error) {
-                    Meteor.users.update({_id: user._id}, {$set: {
-                        isUsingDefaultPassword: false
-                    }})
-                    return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
-                } else {
-                    Meteor.users.update({_id: user._id}, {$set: {
-                        isUsingDefaultPassword: true
-                    }})
-                }
-                //--
-                if(user.employeeProfile && user.employeeProfile.employment
+                if (user.employeeProfile && user.employeeProfile.employment
                     && user.employeeProfile.employment.status === 'Active') {
-                    return {
-                        status: true,
-                        loginType: 'usingEmail',
-                        userEmail: userEmail
-                    }
-                } else {
-                    if(user.businessIds.length === 0) {
+                    let hashedDefaultPassword = Package.sha.SHA256("123456")
+                    let hashedDefaultPasswordObj = {digest: hashedDefaultPassword, algorithm: 'sha-256'};
+                    let defaultLoginResult = Accounts._checkPassword(user, hashedDefaultPasswordObj);
+
+                    if(defaultLoginResult.error) {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: false
+                        }})
+                        return {status: true, loginType: 'usingRealPassword', userEmail: userEmail}
+                    } else {
+                        Meteor.users.update({_id: user._id}, {$set: {
+                            isUsingDefaultPassword: true
+                        }})
+
+                        let resetPasswordToken = getPasswordResetToken(user, user._id, userEmail)
                         return {
                             status: true,
-                            loginType: 'usingEmail',
+                            loginType: 'usingDefaultPassword',
+                            resetPasswordToken: resetPasswordToken,
                             userEmail: userEmail
                         }
-                    } else {
-                        throw new Meteor.Error(401, "User is not active")
                     }
+                } else {
+                    throw new Meteor.Error(401, "User is not active")
                 }
             }
         } else {
@@ -286,7 +292,7 @@ Meteor.methods({
             throw new Meteor.Error(401, "Password not specified");
         }
 
-        let user = Meteor.users.findOne({customUsername: usernameOrEmail})
+        let user = Meteor.users.findOne({customUsername: { '$regex': usernameOrEmail, '$options': 'i' } })
 
         if(user) {
             if(!user.services.password || !user.services.password.bcrypt) {

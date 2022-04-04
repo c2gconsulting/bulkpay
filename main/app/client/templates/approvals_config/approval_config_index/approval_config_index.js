@@ -49,7 +49,7 @@ Template.singleApprovalConfig.events({
 })
 
 Template.singleApprovalConfig.helpers({
-    'getTravelcityName': function(travelcityId) {
+    'getTravelcityName': function(travelcityId, country) {
         const travelcity = Travelcities.findOne({_id: travelcityId})
         if(travelcity) {
             return travelcity.name

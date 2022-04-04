@@ -32,12 +32,18 @@
                                     <input type="text" id="description" class="form-control" placeholder="Description" name="description" value="{{currentTravelRequest.description}}" disabled/>
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="travelTreat" class="control-label">OFFICIAL / TIME-OFF / ROTATION? <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="travelTreat" class="form-control" placeholder="OFFICIAL / TIME-OFF / ROTATION" name="travelTreat" value="{{currentTravelRequest.travelTreat}}" disabled/>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <!-- <div class="col-sm-6">
                                 <div class="form-group">
 
-                                    <label for="budget-code" class="control-label">Which project is this trip related to?</label>
+                                    <label for="budget-code" class="control-label">Project To Be Charged?</label>
                                     <input type="text" id="budget-code" class="form-control" placeholder="Budget code" name="budget-code" value="{{getBudgetName currentTravelRequest.budgetCodeId}}" disabled/>
 
                                 </div>
@@ -62,7 +68,7 @@
                             {{#if costCenterType 'Project'}}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label for="departmentOrProjectId" class="control-label">Which project is this trip related to?</label>
+                                        <label for="departmentOrProjectId" class="control-label">Project To Be Charged?</label>
                                         <input type="text" id="departmentOrProjectId" class="form-control" placeholder="Project" name="budget-code" value="{{currentProject}}" disabled/>
                                     </div>
                                 </div>
@@ -80,7 +86,7 @@
                                 {{else}}
                                 <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="departmentOrProjectId" class="control-label">Select Department?</label>
+                                    <label for="departmentOrProjectId" class="control-label">Department To Be Charged?</label>
                                     <input type="text" id="project_activity-code" class="form-control" placeholder="Project" name="budget-code" value="{{currentDepartment}}" disabled/>
                                 </div>
                                 </div>
@@ -119,13 +125,13 @@
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="fromId_{{this.tripIndex}}" class="control-label">From <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId}}" disabled />
+                                    <input type="text" id="fromId_{{this.tripIndex}}" class="form-control" placeholder="From City" name="fromId_{{this.tripIndex}}" value="{{getTravelcityName this.fromId this.fromCountry}}" disabled />
                                 </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="toId_{{this.tripIndex}}" class="control-label">To <span class="asterisk important-input">*</span></label>
-                                    <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId}}" disabled />
+                                    <input type="text" id="toId_{{this.tripIndex}}" class="form-control" placeholder="To City" name="toId_{{this.tripIndex}}" value="{{getTravelcityName this.toId this.toCountry}}" disabled />
                                 </div>
                             </div><!-- col-sm-6 -->
                             <div class="col-sm-2">
@@ -169,8 +175,8 @@
                                 <div class="form-group">
 
                                     <div style="display: {{isAirModeOfTransport this.tripIndex}}">
-                                        <label for="airlineId_{{this.tripIndex}}" class="control-label">Preferred Airline</label>
-                                        <input type="text" id="airlineId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Airline" name="airlineId_{{this.tripIndex}}" value="{{getAirlineName this.airlineId}}" disabled/>
+                                        <label for="airlineId_{{this.tripIndex}}" class="control-label">Entity to Bill</label>
+                                        <input type="text" id="airlineId_{{this.tripIndex}}" class="form-control" placeholder="Entity to Bill" name="airlineId_{{this.tripIndex}}" value="{{getAirlineName this.airlineId}}" disabled/>
                                     </div>
 
                                     <!-- <div style="display:{{isCarModeOfTransport this.tripIndex}}">
@@ -553,7 +559,7 @@
                                 <span class="text-right pull-right"><strong>{{formatMoney currentTravelRequest.actualTotalAncilliaryCostUSD}}</strong></span>
                             </div>
                         </div>
-                        <br>
+                        <!-- <br>
                         <div class="row">
                             <div class="col-sm-4">
                                 <span><strong>Refund Summary:</strong></span>
@@ -564,7 +570,7 @@
                             <div class="col-sm-4">
                                 <span class="text-right pull-right">{{checkWhoToRefund "USD"}}</span>
                             </div>
-                        </div>
+                        </div> -->
                         <hr>
                         <div class="row">
                             <div class="col-sm-12">

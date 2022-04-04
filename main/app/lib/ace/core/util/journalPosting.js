@@ -1,3 +1,8 @@
+const decodeJournalEntry = (totalEmployeePerdiem, journalEntry) => (
+  totalEmployeePerdiem ? { 
+    "line": journalEntry
+  } : null);
+
 Core.journalPosting = (travelRequest) => {
   const { createdBy, _id: tripId, description, departmentOrProjectId, activityId, destinationType } = travelRequest;
   let employeeId = '';
@@ -23,96 +28,107 @@ Core.journalPosting = (travelRequest) => {
   }
   if (!employeeId) throw Error('The journal could not be posted. Employee does not have EMPLOYEE ID')
 
-  const project = Projects.findOne(departmentOrProjectId)
+  // const project = Projects.findOne(departmentOrProjectId)
   const activity = Activities.findOne(activityId)
   const department = CostCenters.findOne(departmentOrProjectId)
 
-  const projectID = project ? project.project_number : "";
-  const wbsID = activity ? activity.code : "";
+  // const projectID = project ? project.project_number : "";
+  const wbsID = activity ? activity.externalCode : "";
   const departmentID = department ? department.cost_center : "";
 
   const body = {
     "personnel_number": employeeId,
     "trip_id": tripId,
     "trip_description": description,
-    "project_id": projectID,
+    // "project_id": projectID,
     "wbs_id": wbsID,
     "department_id": departmentID,
-    "cost_items": [
-      {
-        "name": "TOTAL TRIP DURATION",
-        "item_text": "TOTAL DAY(S) SPENT ON TRIP",
-        "amount": (totalTripDuration || defaultCost),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL EMPLOYEE PERDIEM",
-        "item_text": "AMOUNT SPENT ON PERDIEM",
-        "amount": (totalEmployeePerdiemNGN || totalEmployeePerdiemUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL AIRPORT TAXI COST",
-        "item_text": "AMOUNT SPENT ON AIRPORT TAXI",
-        "amount": (totalAirportTaxiCostNGN || totalAirportTaxiCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL GROUND TRANSPORT COST",
-        "item_text": "AMOUNT SPENT ON TRANSPORT",
-        "amount": (totalGroundTransportCostNGN || totalGroundTransportCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL MISC COST",
-        "item_text": "AMOUNT SPENT ON MISC",
-        "amount": (totalMiscCostNGN || totalMiscCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL FLIGHT COST",
-        "item_text": "AMOUNT SPENT ON FLIGHT",
-        "amount": (totalFlightCostNGN || totalFlightCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL SECURITY COST",
-        "item_text": "AMOUNT SPENT ON SECURITY",
-        "amount": (totalSecurityCostNGN || totalSecurityCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL HOTEL COST",
-        "item_text": "AMOUNT SPENT ON HOTEL",
-        "amount": (totalHotelCostNGN || totalHotelCostUSD),
-        "currency": currency,
-        "reference": "",
-      },
-      {
-        "name": "TOTAL ANCILILLIARY COST",
-        "item_text": "AMOUNT SPENT ON ANCILILLIARY",
-        "amount": (totalAncilliaryCostNGN || totalAncilliaryCostUSD),
-        "currency": currency,
-        "reference": "",
-      }
-    ],
+    "cost_items": { 
+      "line": [
+        // {
+        //   "name": "TOTAL TRIP DURATION",
+        //   "item_text": "TOTAL DAY(S) SPENT ON TRIP",
+        //   "amount": (totalTripDuration || defaultCost),
+        //   "currency": currency,
+        //   "reference": "",
+        // },
+        {
+          "name": "TOTAL EMPLOYEE PERDIEM",
+          "item_text": "AMOUNT SPENT ON PERDIEM",
+          "amount": (totalEmployeePerdiemNGN || totalEmployeePerdiemUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL AIRPORT TAXI COST",
+          "item_text": "AMOUNT SPENT ON AIRPORT TAXI",
+          "amount": (totalAirportTaxiCostNGN || totalAirportTaxiCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL GROUND TRANSPORT COST",
+          "item_text": "AMOUNT SPENT ON TRANSPORT",
+          "amount": (totalGroundTransportCostNGN || totalGroundTransportCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL MISC COST",
+          "item_text": "AMOUNT SPENT ON MISC",
+          "amount": (totalMiscCostNGN || totalMiscCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL FLIGHT COST",
+          "item_text": "AMOUNT SPENT ON FLIGHT",
+          "amount": (totalFlightCostNGN || totalFlightCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL SECURITY COST",
+          "item_text": "AMOUNT SPENT ON SECURITY",
+          "amount": (totalSecurityCostNGN || totalSecurityCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL HOTEL COST",
+          "item_text": "AMOUNT SPENT ON HOTEL",
+          "amount": (totalHotelCostNGN || totalHotelCostUSD),
+          "currency": currency,
+          "reference": "",
+        },
+        {
+          "name": "TOTAL ANCILILLIARY COST",
+          "item_text": "AMOUNT SPENT ON ANCILILLIARY",
+          "amount": (totalAncilliaryCostNGN || totalAncilliaryCostUSD),
+          "currency": currency,
+          "reference": "",
+        }
+      ].filter(item => item.amount)
+    },
   }
 
+  console.log('JSON body', JSON.stringify(body))
+
   const config = { url: 'postings', body: JSON.stringify(body) }
-  const successFN = (resp) => journalPostingSuccess(body, resp);
+  const successFN = (resp) => journalPostingSuccess(body, resp, travelRequest);
   const errorFN = (error) => journalPostingFailed(body, error);
 
   return Core.apiClient(config, successFN, null, errorFN)
 }
 
-const journalPostingSuccess = (body, response) => {
+/**
+ * @description journalPostingSuccess
+ * @param {*} body 
+ * @param {*} response 
+ * @param {*} travelRequest 
+ * @returns 
+ */
+const journalPostingSuccess = (body, response, travelRequest) => {
   console.log('JOURNAL POSTED')
   console.info(response)
 
@@ -155,16 +171,30 @@ const journalPostingSuccess = (body, response) => {
       </pre>
     `,
   }
-  if (response && response.Errors && response.Errors.lines) {
-    Core.sendMail(data)
-    throw new Meteor.Error(403, "Journal Posting failed");
-  } else {
+
+  console.log('response', JSON.stringify(response))
+  if (response && response.object_key && response.object_key !== '$') {
+    // response.Errors && response.Errors.lines) {
     // SUCESS
     travelRequest.journalPosted = true;
-    TravelRequisition2s.update(travelRequest._id, {$set: travelRequest})
+    travelRequest.sapDocumentId = response.object_key;
+    return TravelRequisition2s.update(travelRequest._id, {$set: travelRequest})
+  } else {
+    Core.sendMail(data)
+    console.log('errpr', response.Errors)
+    return { error: response.Errors };
+    // throw new Meteor.Error(403, "Journal Posting failed");
+    // throw new Error("Journal Posting failed");
   }
+  // return true
 }
 
+/**
+ * @description journalPostingFailed
+ * @param {*} body 
+ * @param {*} error 
+ * @returns
+ */
 const journalPostingFailed = (body, error) => {
   const data = {
     to: 'trips@oilservltd-ng.com, adesanmiakoladedotun@gmail.com',

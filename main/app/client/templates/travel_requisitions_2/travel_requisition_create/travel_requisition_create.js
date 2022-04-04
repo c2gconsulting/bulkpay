@@ -259,7 +259,19 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     currentTravelRequest.costCenter = $("#costCenter").val();
+    if ($("#costCenter").val() === 'Project') {
+        currentTravelRequest.isEmergencyTrip = true;
+    }
     tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
+},
+'change [id=travelTreat]': function(e, tmpl) {
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    currentTravelRequest.travelTreat = $("#travelTreat").val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+    tmpl.updateTripNumbers();
 },
 'change [id=tpcTrip]': function(e, tmpl) {
     e.preventDefault()
@@ -296,6 +308,7 @@ Template.TravelRequisition2Create.events({
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     const index = parseInt($(e.currentTarget).val()) - 1;
+    console.log('index', index)
     currentTravelRequest.trips[index].hotelNotRequired = !currentTravelRequest.trips[index].hotelNotRequired;
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
@@ -362,11 +375,45 @@ Template.TravelRequisition2Create.events({
 
     tmpl.updateTripNumbers();
 },
+"change [id*='fromCountry']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].fromCountry = $(e.currentTarget).val();
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
+"change [id*='toCountry']": function(e, tmpl){
+    e.preventDefault()
+
+    let currentTravelRequest = tmpl.currentTravelRequest.curValue;
+    const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    currentTravelRequest.trips[index].toCountry = $(e.currentTarget).val();
+    //currentTravelRequest.trips[index].airlineId = "";
+    //currentTravelRequest.trips[index].airfareCost = 0;
+    //currentTravelRequest.trips[index].hotelId = "";
+    //currentTravelRequest.trips[index].hotelRate = 0;
+
+    if ((index + 1) < currentTravelRequest.trips.length){
+        currentTravelRequest.trips[index + 1].fromCountry = $(e.currentTarget).val();
+    }
+
+    tmpl.currentTravelRequest.set(currentTravelRequest);
+
+    tmpl.updateTripNumbers();
+},
 "change [id*='transportationMode']": function(e, tmpl){
     e.preventDefault()
 
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
     const index = ($(e.currentTarget).attr("id").substr($(e.currentTarget).attr("id").length - 1)) - 1;
+
+    console.log('transportationMode  index', index)
+    console.log('currentTravelRequest.trips[index].transportationMode  index', currentTravelRequest.trips[index].transportationMode)
 
     currentTravelRequest.trips[index].transportationMode = $(e.currentTarget).val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
@@ -684,18 +731,18 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your current location";
             }
-            if (currentTrip.fromId.selectedIndex == 0){
-                fieldsAreValid = false;
-                validationErrors += ": select your current location";
-            }
+            // if (currentTrip.fromId.selectedIndex == 0){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select your current location";
+            // }
             if (currentTrip.toId === ""){
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select a hotel";
-            }
+            // if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select a hotel";
+            // }
             //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
@@ -799,18 +846,18 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": select your current location";
             }
-            if (currentTrip.fromId.selectedIndex == 0){
-                fieldsAreValid = false;
-                validationErrors += ": select your current location";
-            }
+            // if (currentTrip.fromId.selectedIndex == 0){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select your current location";
+            // }
             if (currentTrip.toId === ""){
                 fieldsAreValid = false;
                 validationErrors += ": select your destination location";
             }
-            if (currentTrip.hotelId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select a hotel";
-            }
+            // if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
+            //     fieldsAreValid = false;
+            //     validationErrors += ": select a hotel";
+            // }
             //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
             //    fieldsAreValid = false;
             //    validationErrors += ": select an airline";
@@ -821,14 +868,14 @@ Template.TravelRequisition2Create.events({
 
     if (fieldsAreValid){
         //explicitely set status
-        currentTravelRequest.status = "Draft";
+        currentTravelRequest.status = Core.ALL_TRAVEL_STATUS.DRAFT;
 
 
         Meteor.call('TravelRequest2/createDraft', currentTravelRequest, (err, res) => {
             if (res){
                 swal({
                     title: "Travel requisition created",
-                    text: "Your travel requisition has been saved as draft",
+                    // text: "Your travel requisition has been saved as draft",
                     confirmButtonClass: "btn-success",
                     type: "success",
                     confirmButtonText: "OK"
@@ -888,9 +935,13 @@ Template.TravelRequisition2Create.helpers({
     },
     ACTIVITY: () => 'activityId',
     COSTCENTER: () => 'costCenter',
+    TRAVELTREAT: () => 'travelTreat',
+    FROMCOUNTRY: () => 'fromCountry',
+    TOCOUNTRY: () => 'toCountry',
     PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
     costCenters: () => Core.Travel.costCenters,
     carOptions: () => Core.Travel.carOptions,
+    travelTreat: () => Core.Travel.travelTreat,
     currentDepartment: () => Template.instance().currentDepartment.get(),
     staffCategoryErrorMessage: () => Template.instance().staffCategoryErrorMessage.get(),
     ineedHotel: () => Template.instance().ineedHotel.get(),
@@ -899,6 +950,31 @@ Template.TravelRequisition2Create.helpers({
     departmentList: () => Template.instance().departments.get(),
     projectList: () => Template.instance().projects.get(),
     projectActivities: () => Template.instance().activities.get(),
+    countries: () => {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        const { destinationType } = currentTravelRequest;
+        if (destinationType === 'Local') {
+            return [{name: 'Nigeria', capital: 'Abuja', iso2: 'NG', iso3: 'NGA'}];
+        }
+        const countries = Template.instance().countries.get();
+        return countries;
+    },
+    airportFromCities: (index) => {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        Meteor.call('countryAirports', currentTravelRequest.trips[parseInt(index) - 1].fromCountry, function (error, response) {
+            Session.set("airportFromCities", response);
+            return response;
+        });
+        return Session.get("airportFromCities");
+    },
+    airportToCities: (index) => {
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        Meteor.call('countryAirports', currentTravelRequest.trips[parseInt(index) - 1].toCountry, function (error, response) {
+            Session.set("airportToCities", response);
+            return response
+        });
+        return Session.get("airportToCities");
+    },
     //     const currentTravelRequest = Template.instance().currentTravelRequest.get();
     //     const { departmentOrProjectId } = currentTravelRequest;
     //     const activities = Activities.find({ type: 'project', unitOrProjectId: departmentOrProjectId }).fetch();
@@ -916,6 +992,11 @@ Template.TravelRequisition2Create.helpers({
     costCenterType: function (item) {
       const currentTravelRequest = Template.instance().currentTravelRequest.get();
       if (currentTravelRequest && currentTravelRequest.costCenter === item) return item
+      return false
+    },
+    travelTreatType: function (item) {
+      const currentTravelRequest = Template.instance().currentTravelRequest.get();
+      if (currentTravelRequest && currentTravelRequest.travelTreat === item) return item
       return false
     },
     selected(context,val) {
@@ -961,6 +1042,9 @@ Template.TravelRequisition2Create.helpers({
     },
     budgetList() {
         return  Budgets.find();
+    },
+    getCountries() {
+        return Core.getCountriesCapital();
     },
     airlineList(fromId, toId) {
         let isInternational = false;
@@ -1011,6 +1095,9 @@ Template.TravelRequisition2Create.helpers({
     formatDate2(dateVal){
         return moment(dateVal).format('DD MMM YYYY');
     },
+    isFirstLeg(index){
+        return parseInt(index) === 1;
+    },
     isLastLeg(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index && currentTravelRequest.type ==="Multiple"){
@@ -1046,6 +1133,16 @@ Template.TravelRequisition2Create.helpers({
             }
             //return currentTravelRequest.trips[parseInt(index) - 1].transportationMode === val ? selected="selected" : '';
         }
+    },
+    isFlight(index, val){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            console.log('currentTravelRequest.trips[parseInt(index) - 1].transportationMode', currentTravelRequest.trips[parseInt(index) - 1].transportationMode)
+            const isAir = currentTravelRequest.trips[parseInt(index) - 1].transportationMode === 'AIR';
+            console.log('isAir', isAir);
+            return isAir;
+        }
+        return false;
     },
     departureTimeSelected(val, index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -1146,10 +1243,12 @@ Template.TravelRequisition2Create.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
         }
     },
-    ineedHotelChecked(){
-        const ineedHotel = Template.instance().ineedHotel.get();
-        if(ineedHotel && index){
-            return ineedHotel? checked="checked" : '';
+    ineedHotelChecked(index){
+        // const ineedHotel = Template.instance().ineedHotel.get();
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            // return ineedHotel? checked="checked" : '';
+            return !currentTravelRequest.trips[parseInt(index) - 1].hotelNotRequired? checked="checked" : '';
         }
     },
     isLunchIncluded(index){
@@ -1192,6 +1291,7 @@ Template.TravelRequisition2Create.helpers({
 Template.TravelRequisition2Create.onCreated(function () {
 
     let self = this;
+    let invokeReason = self.data;
 
 
 
@@ -1228,7 +1328,13 @@ Template.TravelRequisition2Create.onCreated(function () {
     let currentTravelRequest = Core.currentTravelRequest(businessUnitId);
 
     self.currentTravelRequest =  new ReactiveVar();
-    self.currentTravelRequest.set(currentTravelRequest);
+
+    if (invokeReason && invokeReason.requisitionId) {
+        const currentRequest = TravelRequisition2s.findOne({ _id: invokeReason.requisitionId });
+        self.currentTravelRequest.set(currentRequest);
+    } else {
+        self.currentTravelRequest.set(currentTravelRequest);
+    }
 
     self.updateTripNumbers = () => Core.tripAnalysis(self);
     // self.subscribe("flights", Session.get('context'));
@@ -1256,15 +1362,51 @@ Template.TravelRequisition2Create.onCreated(function () {
     const departments = CostCenters.find({ businessId: Session.get('context') });
     self.departments.set(departments);
     self.activities = new ReactiveVar();
+    self.fromCountry = new ReactiveVar();
+    self.toCountry = new ReactiveVar();
+    
 
 
     self.amountNonPaybelToEmp = new ReactiveVar(0)
     self.amoutPayableToEmp = new ReactiveVar(0)
     self.totalTripCost = new ReactiveVar(0)
 
-    let invokeReason = self.data;
+    self.autorun(async function(){
+        self.countries = new ReactiveVar();
+        const countries = await Core.getCountriesCapital();
+        self.countries.set(countries);
 
-    self.autorun(function(){
+        const travelRequestDetails = self.currentTravelRequest.get();
+
+        if (travelRequestDetails) {
+            const timeout = setTimeout(() => {
+                $('#costCenter').dropdown('set selected', travelRequestDetails.costCenter);
+                $('#travelTreat').dropdown('set selected', travelRequestDetails.travelTreat);
+                $('#departmentOrProjectId').dropdown('set selected', travelRequestDetails.departmentOrProjectId);
+                const timeout2 = setTimeout(() => {
+                    // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
+                    if (travelRequestDetails.activityId) $('#project_activity-code').dropdown('set selected', travelRequestDetails.activityId);
+                    clearTimeout(timeout2);
+                }, 200);
+                console.log('travelRequestDetails.trips', travelRequestDetails.trips)
+                if (travelRequestDetails.trips.length) {
+                    travelRequestDetails.trips.map(trip => {
+                        $(`#fromCountry_${trip.tripIndex}`).dropdown('set selected', trip.fromCountry);
+                        $(`#fromId_${trip.tripIndex}`).dropdown('set selected', trip.fromId);
+                        $(`#toCountry_${trip.tripIndex}`).dropdown('set selected', trip.toCountry);
+                        $(`#toId_${trip.tripIndex}`).dropdown('set selected', trip.toId);
+                    })
+                }
+                /* Pre-select individual going on trip if there's any */
+                let individuals = (travelRequestDetails.tripFor && travelRequestDetails.tripFor.individuals) || [];
+                const IDs = Core.getIndividualIDs(individuals);
+                if (IDs && IDs.length) {
+                    // $('.ui.fluid.dropdown').dropdown('set selected',['Role1','Role2']);
+                    $('#individuals').dropdown('set selected', IDs);
+                }
+                clearTimeout(timeout);
+            }, 500);
+        }
         Core.autorun(invokeReason, self)
     })
 

@@ -59,11 +59,9 @@ Template.EmployeeDelegateEdit.events({
   /*****************************************************************************/
   Template.EmployeeDelegateEdit.helpers({
     'getEmployeeFullName': function(employeeId) {
+      console.log('employeeId', employeeId)
       let employee = Meteor.users.findOne({_id: employeeId});
-      if(employee)
-      return employee.profile.fullName;
-      else
-      return "Select Employee"
+      if(employee) return employee.profile.fullName;
     },
     formatDate(dateVal){
         return moment(dateVal).format('YYYY-MM-DD');
@@ -73,6 +71,19 @@ Template.EmployeeDelegateEdit.events({
     },
     'employees': () => {
       return Meteor.users.find({employee: true});
+    },
+    selectedUser(val) {
+       let self = this;
+       const { employeedelegate } = Template.instance();
+ 
+       if(employeedelegate){
+         //get value of the option element
+         //check and return selected if the template instce of data.context == self._id matches
+         if(val){
+             return employeedelegate.userId === val ? selected="selected" : '';
+         }
+         return employeedelegate.userId === self._id ? selected="selected" : '';
+       }
     },
    selected(context,val) {
       let self = this;
@@ -128,6 +139,7 @@ Template.EmployeeDelegateEdit.events({
   });
 
   Template.EmployeeDelegateEdit.onRendered(function () {
+    // $('select.dropdown').dropdown('update');
   });
 
   Template.EmployeeDelegateEdit.onDestroyed(function () {

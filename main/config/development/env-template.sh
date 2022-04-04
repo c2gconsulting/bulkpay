@@ -45,8 +45,15 @@ export MAIL_SITE_NAME="TradeDepot™"
 export MAIL_FROM="TradeDepot™ Team <no-reply@tradedepot.co>"
 export JWT_SECRET=""
 
+export IMPORT_OILSERV_DATA=false
+# http://20.73.168.4:50000
+export OILSERV_SAP_INTEGRATION_URL='http://20.73.168.4:50000'
+export OILSERV_SAP_INTEGRATION_COOKIE_API_KEY='JSESSIONID=5kfVra385oH8'
+export OILSERV_SAP_INTEGRATION_AUTH_KEY='JSESSIONID=5kfVra385oH8'
+
 export MAILGUN_DOMAIN=""
 export MAILGUN_API_KEY=""
 export MAILGUN_HOST=api.mailgun.net
+export TRAVEL_REQUEST_EXTERNAL_NOTIFICATION2="travel_request_external_notification2"
 export TRAVEL_REQUEST_NOTIFICATION2=travel_request_notification2
 export TRAVEL_RETIREMENT_NOTIFICATION2=travel_retirement_notification2

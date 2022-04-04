@@ -26,6 +26,7 @@ Core.Permissions = {
 	"TRAVEL_REQUISITION_TREAT": "travel_requisition/treat",
 
 	"PAYROLL_REPORTS_VIEW": "payroll_reports/view",
+	"AUDIT_TRAIL_VIEW": "audit_trail/view",
 	"TRAVEL_REPORTS_VIEW": "travel_reports/view",
 	"AUDIT_REPORTS_VIEW": "audit_reports/view",
 	"PROCUREMENT_REPORTS_VIEW": "procurement_reports/view",

@@ -76,25 +76,61 @@ let TravelRequestHelper = {
       return travelcity.notificationEmail;
     }
   },
-  sendTravelRequestEmail: function(currentTravelRequest, emailTo, emailSubject, actionType) {
+  sendTravelRequestEmail: function(currentTravelRequest, emailTo, emailSubject, isExternalMail, writeReadOnly) {
     try {
-      const hasBookingAgent = actionType && (actionType.includes('booking') || actionType.includes('Booking'))
-      const lastUrlPath = hasBookingAgent ? 'bookingrequisition' : 'printrequisition';
-      const travelType = currentTravelRequest.type === "Return"?'Return Trip':'Multiple Stops';
-      const returnDate = currentTravelRequest.type === "Return"?currentTravelRequest.trips[0].returnDate:currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
-      let itenerary = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
-      if (currentTravelRequest.type === "Multiple"){
+      // const hasBookingAgent = actionType && (actionType.includes('booking') || actionType.includes('Booking'))
+      const lastUrlPath = writeReadOnly ? 'bookingrequisition' : 'printrequisition';
+      const isTripType = (tripType) => currentTravelRequest.type == tripType;
+      const oneWayOrMultipleStops = isTripType('Single') ? 'One Way Trip' : 'Multiple Stops'
+      const travelType = isTripType("Return") ? 'Return Trip': `${oneWayOrMultipleStops}`;
+      const returnDate = isTripType("Return") ? currentTravelRequest.trips[0].returnDate : currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
+      const fromCountry = currentTravelRequest.trips[0].fromCountry;
+      const toCountry = currentTravelRequest.trips[0].toCountry;
+      const fromAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + fromCountry ? `, ${fromCountry}` : '';
+      const toAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId) + toCountry ? `, ${toCountry}` : '';
+      let itenerary = fromAddress + " - " + toAddress;
+      if (isTripType("Multiple")){
         for (i = 1; i < currentTravelRequest.trips.length; i++) {
-          itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId);
+          let toCountry2 = currentTravelRequest.trips[i].toCountry;
+          toCountry2 = toCountry2 ? `, ${toCountry2}` : '';
+          itenerary += " - " + TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[i].toId) + toCountry2;
         }
       }
 
-      const data = {
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   template: isExternalMail ? process.env.TRAVEL_REQUEST_EXTERNAL_NOTIFICATION2 : process.env.TRAVEL_REQUEST_NOTIFICATION2,
+      //   'h:X-Mailgun-Variables': JSON.stringify({
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.status,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalHotelCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostNGN,2),
+      //     totalHotelCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalHotelCostUSD,2),
+      //     totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
+      //     totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
+      //   }),
+      // }
+      // Core.sendMail(data)
+      SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.TRAVEL_REQUEST_NOTIFICATION2,
-        'h:X-Mailgun-Variables': JSON.stringify({
+        html: SSR.render("TravelRequestNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -114,9 +150,8 @@ let TravelRequestHelper = {
           totalTripCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostNGN,2),
           totalTripCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalTripCostUSD,2),
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + `/travelrequests2/${lastUrlPath}?requisitionId=` + currentTravelRequest._id
-        }),
-      }
-      Core.sendMail(data)
+        })
+      });
 
       return true
     } catch(e) {
@@ -135,12 +170,54 @@ let TravelRequestHelper = {
         }
       }
 
-      const data = {
+      // const data = {
+      //   to: emailTo,
+      //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
+      //   subject: emailSubject,
+      //   template: process.env.TRAVEL_RETIREMENT_NOTIFICATION2,
+      //   'h:X-Mailgun-Variables': JSON.stringify({ 
+      //     itenerary: itenerary,
+      //     departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
+      //     returnDate: TravelRequestHelper.formatDate(returnDate),
+      //     travelType: travelType,
+      //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
+      //     status: currentTravelRequest.retirementStatus,
+      //     description: currentTravelRequest.description,
+      //     totalTripDuration: currentTravelRequest.totalTripDuration,
+      //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
+      //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
+      //     totalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemUSD,2),
+      //     totalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostNGN,2),
+      //     totalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAirportTaxiCostUSD,2),
+      //     totalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostNGN,2),
+      //     totalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalGroundTransportCostUSD,2),
+      //     totalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostNGN,2),
+      //     totalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.totalAncilliaryCostUSD,2),
+      //     actualTotalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemNGN,2),
+      //     actualTotalEmployeePerdiemUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalEmployeePerdiemUSD,2),
+      //     actualTotalAirportTaxiCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostNGN,2),
+      //     actualTotalAirportTaxiCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAirportTaxiCostUSD,2),
+      //     actualTotalGroundTransportCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostNGN,2),
+      //     actualTotalGroundTransportCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalGroundTransportCostUSD,2),
+      //     actualTotalAncilliaryCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostNGN,2),
+      //     actualTotalAncilliaryCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalAncilliaryCostUSD,2),
+      //     actualTotalMiscCostNGN: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostNGN,2),
+      //     actualTotalMiscCostUSD: TravelRequestHelper.formatNumber(currentTravelRequest.actualTotalMiscCostUSD,2),
+      //     actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
+      //     whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
+      //     whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
+      //   }),
+      // }
+      // Core.sendMail(data)
+
+
+      //Todo, itenerary, employee full name
+      SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
+      Email.send({
         to: emailTo,
         from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
         subject: emailSubject,
-        template: process.env.TRAVEL_RETIREMENT_NOTIFICATION2,
-        'h:X-Mailgun-Variables': JSON.stringify({ 
+        html: SSR.render("TravelRetirementNotification2", {
           itenerary: itenerary,
           departureDate: TravelRequestHelper.formatDate(currentTravelRequest.trips[0].departureDate),
           returnDate: TravelRequestHelper.formatDate(returnDate),
@@ -171,9 +248,8 @@ let TravelRequestHelper = {
           actionUrl:  Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printretirement?requisitionId=' + currentTravelRequest._id,
           whoToRefundNGN: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "NGN"),
           whoToRefundUSD: TravelRequestHelper.checkWhoToRefund(currentTravelRequest, "USD")
-        }),
-      }
-      Core.sendMail(data)
+        })
+      });
 
       return true
     } catch(e) {
@@ -205,6 +281,7 @@ let TravelRequestHelper = {
   }
 }
 
+Core.TravelRequestHelper = TravelRequestHelper
 
 /**
 *  Travel Request Methods
@@ -305,7 +382,84 @@ Meteor.methods({
 
     return true;
   },
-  "TRIPREQUEST/create": function(currentTravelRequest){
+  // "TRIPREQUEST/create": function(currentTravelRequest){
+  //   if(!this.userId && Core.hasPayrollAccess(this.userId)){
+  //       throw new Meteor.Error(401, "Unauthorized");
+  //   }
+  //   check(currentTravelRequest.businessId, String);
+  //   this.unblock()
+  //   try {
+  //     const fetchUser = (conditions, position, skipApprovalTillApprovedByBudgetHolder) => {
+  //       // if (skipApprovalTillApprovedByBudgetHolder) return "";
+  //       const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+  //       if (position && !isPartOfApprovalFlow) return ""
+  //       const fetchedUser = Meteor.users.findOne(conditions);
+  //       if (fetchedUser) return fetchedUser._id;
+  //       return ''
+  //     }
+
+  //     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
+  //     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
+  //     const {
+  //       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+  //     } = Core.getApprovalQueries(currentUser);
+
+  //     const { directSupervisorId, _id, positionId } = currentUser
+  //     const userId = _id || Meteor.userId()
+  //     currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
+  //     currentTravelRequest.managerId = fetchUser(managerCond, Core.Approvals.MD)
+  //     currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
+  //     currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
+  //     currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
+  //     currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
+  //     currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
+  //     currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
+
+  //     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+  //     console.log('budgetCode', budgetCode);
+  //     if (budgetCode){
+  //       currentTravelRequest.budgetCodeId = budgetCode._id
+  //       currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+  //       // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+  //     }
+
+  //     // Verify user creating a trip
+  //     Core.canCreateTravel()
+      
+  //     if (currentTravelRequest._id){
+  //       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+  //       // console.log("currentTravelRequest1")
+  //       // console.log(currentTravelRequest)
+  //     } else {
+  //       currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
+  //       // console.log("currentTRIPREQUEST")
+  //       // console.log(currentTravelRequest)
+  //       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
+
+  //       const { BUDGETHOLDER, HOD } = Core.Approvals
+
+  //       const isInternationalTrip = destinationType === 'International';
+  //       let isAirRailTransportationMode;
+  //       for (let i = 0; i < trips.length; i++) {
+  //         const { transportationMode } = trips[i];
+  //         if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
+  //       }
+
+  //       // if (isInternationalTrip || isAirRailTransportationMode) {
+  //       //   Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, "", BUDGETHOLDER)
+  //       // } else {
+  //         Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, "", HOD)
+  //       // }
+
+  //     }
+
+  //     return true;
+  //   } catch (error) {
+  //     console.log('error', error);
+  //     throw new Meteor.Error(401, error.message || error);
+  //   }
+  // },
+  "TRIPREQUEST/create": function (currentTravelRequest) {
     if(!this.userId && Core.hasPayrollAccess(this.userId)){
         throw new Meteor.Error(401, "Unauthorized");
     }
@@ -321,30 +475,66 @@ Meteor.methods({
         return ''
       }
 
+      const fetchUsers = (conditions, position) => {
+        const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+        if (position && !isPartOfApprovalFlow) return ""
+        const fetchedUsers = Meteor.users.find(conditions);
+        if (fetchedUsers) return fetchedUsers.map(fetchedUser => fetchedUser._id);
+        return ''
+      }
+
       // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
       const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
       const {
         hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
       } = Core.getApprovalQueries(currentUser);
 
-      const { directSupervisorId, _id, positionId } = currentUser
-      const userId = _id || Meteor.userId()
-      currentTravelRequest.supervisorId = directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD)
+      const { departmentOrProjectId } = currentTravelRequest;
+
+      if (currentTravelRequest.costCenter === 'Project') {
+        const currentProject = Projects.findOne({ _id: departmentOrProjectId });
+        const { project_manager } = currentProject || {};
+
+        const username = (project_manager || " ").split(' ').reverse().join(' ');
+        const PM = Meteor.users.findOne({ $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] });
+        console.log('PM----PM', PM);
+        if (!PM) throw new Meteor.Error(404, "Project manager doesn't exist");
+        currentTravelRequest.pmId = (PM && PM._id) || currentTravelRequest.supervisorId;
+      } else {
+        const { directSupervisorId, _id, positionId } = currentUser
+        const userId = _id || Meteor.userId()
+        currentTravelRequest.supervisorId =  directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD);
+      }
+
       currentTravelRequest.managerId = fetchUser(managerCond, Core.Approvals.MD)
       currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
       currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
       currentTravelRequest.bstId = fetchUser(bstCond, Core.Approvals.BST)
+      currentTravelRequest.bstIds = fetchUsers(bstCond, Core.Approvals.BST)
       currentTravelRequest.logisticsId = fetchUser(logisticCond, Core.Approvals.LOGISTICS)
+      currentTravelRequest.logisticsIds = fetchUsers(logisticCond, Core.Approvals.LOGISTICS)
       currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
       currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
 
-      let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
-      console.log('budgetCode', budgetCode);
-      if (budgetCode){
-        currentTravelRequest.budgetCodeId = budgetCode._id
-        currentTravelRequest.budgetHolderId = budgetCode.employeeId;
-        // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
-      }
+      // let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
+      // console.log('budgetCode', budgetCode);
+      // if (budgetCode){
+      //   currentTravelRequest.budgetCodeId = budgetCode._id
+      //   currentTravelRequest.budgetHolderId = budgetCode.employeeId;
+      //   // currentTravelRequest.financeApproverId = budgetCode.financeApproverId;
+      // }
+
+      // GET ALL DELEGATES
+      currentTravelRequest = Core.travelDelegateIds('budgetHolderId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('supervisorId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('managerId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('gcooId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('gceoId', currentTravelRequest);
+      // currentTravelRequest = Core.travelDelegateIds('bstId', currentTravelRequest);
+      // currentTravelRequest = Core.travelDelegateIds('logisticsId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('financeApproverId', currentTravelRequest);
+      currentTravelRequest = Core.travelDelegateIds('securityId', currentTravelRequest);
+      // END OF DELEGATES
 
       // Verify user creating a trip
       Core.canCreateTravel()
@@ -359,9 +549,46 @@ Meteor.methods({
         // console.log(currentTravelRequest)
         let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-        const { BUDGETHOLDER } = Core.Approvals
-        Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, "", BUDGETHOLDER)
+        let isTripByAir;
+        for (let i = 0; i < currentTravelRequest.trips.length; i++) {
+          const trip = currentTravelRequest.trips[i];
+          if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+        }
+        const { BUDGETHOLDER, HOD, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
 
+        const { destinationType } = currentTravelRequest;
+        const isInternationalTrip = destinationType === 'International';
+
+        const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = Core.getWhereToStartApproval(currentTravelRequest)
+        let nextRecipientPosition = '';
+
+        console.log('isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO', isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO)
+
+        // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
+        if (isTripByAir) {
+          if (!isAboveOrHOD && !nextRecipientPosition) nextRecipientPosition = HOD
+          if (!isAboveOrMD && !nextRecipientPosition) nextRecipientPosition = MD
+          if (!isAboveOrGCOO && !nextRecipientPosition) nextRecipientPosition = GCOO
+          if (!isInternationalTrip && !nextRecipientPosition) nextRecipientPosition = BST
+          if (!isAboveOrGCEO && !nextRecipientPosition) nextRecipientPosition = GCEO
+          if (!nextRecipientPosition) nextRecipientPosition = BST
+        }
+
+        // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
+        if (!isTripByAir) {
+          if (!isAboveOrHOD) {
+            nextRecipientPosition = HOD
+          }
+
+          if (!nextRecipientPosition || isAboveOrHOD || isAboveOrMD || isAboveOrGCOO || isAboveOrGCEO) {
+            nextRecipientPosition = LOGISTICS
+            } else {
+            nextRecipientPosition = HOD
+          }
+        }
+
+        console.log('nextRecipientPosition', nextRecipientPosition)
+        Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, "", nextRecipientPosition)
       }
 
       return true;
@@ -390,21 +617,55 @@ Meteor.methods({
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const { BUDGETHOLDER, HOD } = Core.Approvals;
-      let nextApproval = BUDGETHOLDER;// HOD
-      Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval);
+      let isTripByAir;
+      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
+        const trip = currentTravelRequest.trips[i];
+        if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+      }
+
+      const { BUDGETHOLDER, HOD, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+
+      const { destinationType } = currentTravelRequest;
+      const isInternationalTrip = destinationType === 'International';
+
+      const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = Core.getWhereToStartApproval(currentTravelRequest)
+      let nextPosition = HOD
+
+      // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
+      if (isTripByAir) {
+        if (!isAboveOrHOD && !nextPosition) nextPosition = HOD
+        if (!isAboveOrMD && !nextPosition) nextPosition = MD
+        if (!isAboveOrGCOO && !nextPosition) nextPosition = GCOO
+        if (!isInternationalTrip && !nextPosition) nextPosition = BST
+        if (!isAboveOrGCEO && !nextPosition) nextPosition = GCEO
+        if (!nextPosition) nextPosition = BST
+      }
+
+      // IF it's by LAND. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
+      if (!isTripByAir) {
+        if (!isAboveOrHOD && !nextPosition) {
+          nextPosition = HOD
+        }
+
+        if (nextPosition || isAboveOrHOD || isAboveOrMD || isAboveOrGCOO || isAboveOrGCEO) {
+          nextPosition = LOGISTICS
+          } else {
+          nextPosition = HOD
+        }
+      }
+      Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextPosition)
     }
 
     return true;
   },
   "TRIPREQUEST/retirementReminder": function(currentTravelRequest){
-    if(!this.userId && Core.hasPayrollAccess(this.userId)){
-      throw new Meteor.Error(401, "Unauthorized");
-    }
+    // if(!this.userId && Core.hasPayrollAccess(this.userId)){
+    //   throw new Meteor.Error(401, "Unauthorized");
+    // }
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
-    Core.canProcessTrip();
+    // Core.canProcessTrip();
 
     if(currentTravelRequest._id){
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest});
@@ -465,6 +726,35 @@ Meteor.methods({
       const { HOD } = Core.Approvals;
       let nextApproval = HOD;
       Core.sendRetirementApprovalMail(currentTravelRequest, TravelRequestHelper, null, nextApproval);
+    } else {
+      let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
+  "TRIPREQUEST/projectManagerApprovals": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+    let isTripByAir;
+    for (let i = 0; i < currentTravelRequest.trips.length; i++) {
+      const trip = currentTravelRequest.trips[i];
+      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+    }
+
+    Core.canProcessTrip();
+    if(currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+      const { PM, MD, LOGISTICS } = Core.Approvals;
+      const { APPROVED_BY_PM } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = MD;
+      if (!isTripByAir) nextApproval = LOGISTICS;
+      nextApproval = currentTravelRequest.status === APPROVED_BY_PM ? nextApproval : "";
+      Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, PM, nextApproval);
+
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -846,13 +1136,19 @@ Meteor.methods({
     return true;
   },
   "TRIPREQUEST/retryJournalPosting": function (currentTravelRequest) {
+    this.unblock();
+
     try {
-      Core.journalPosting(currentTravelRequest);
+      const data = Core.journalPosting(currentTravelRequest);
+
+      console.log('data', data)
     } catch (error) {
       console.log('journalPosting ERROR')
       console.log(error)
       throw new Meteor.Error(403, "Journal Posting failed")
     }
+  
+    return true
   },
   "TRIPREQUEST/bstProcess": function (currentTravelRequest) {
     if (!this.userId && Core.hasPayrollAccess(this.userId)){
