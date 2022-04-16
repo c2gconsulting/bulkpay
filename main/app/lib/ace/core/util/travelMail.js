@@ -82,7 +82,7 @@ Core.sendApprovalMail = (
 
   const createdBy =
     Meteor.users.findOne(currentTravelRequest.createdBy) || defaultUserData;
-  const pm =
+  const pm = 
     Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
   const supervisor =
     Meteor.users.findOne(currentTravelRequest.supervisorId) || defaultUserData;
@@ -182,6 +182,7 @@ Core.sendApprovalMail = (
   } = Core.ALL_TRAVEL_STATUS;
 
   const {
+    PM,
     HOD,
     BUDGETHOLDER,
     MD,
