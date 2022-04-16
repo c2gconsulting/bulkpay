@@ -10,7 +10,16 @@ Template.TravelRequisition2AdminDetail.events({
         const fieldName = $(e.target).attr('name');
         let inputVal = $(e.target).val().trim();
         const customConfig = tmpl.travelRequisitionCustomConfig.get();
-        customConfig[fieldName] = inputVal
+        customConfig[fieldName] = inputVal;
+
+        if (fieldName === 'logisticsId' && !customConfig.logisticsIds.includes(inputVal)) {
+            customConfig.logisticsIds = [...customConfig.logisticsIds, inputVal];
+        }
+
+        if (fieldName === 'bstId' && !customConfig.bstIds.includes(inputVal)) {
+            customConfig.bstIds = [...customConfig.bstIds, inputVal];
+        }
+
         tmpl.travelRequisitionCustomConfig.set(customConfig)
     }),
 
@@ -27,11 +36,11 @@ Template.TravelRequisition2AdminDetail.events({
 
             delete currentTravelRequest.retirementStatus
 
-            Meteor.call('TravelRequest2/editTravelRequisition', currentTravelRequest, (err, res) => {
+            Meteor.call('TRIPREQUEST/editTravelRequisition', currentTravelRequest, customConfig, (err, res) => {
                 if (res){
                     swal({
-                        title: "Travel requisition created",
-                        text: "Travel request has been updated",
+                        title: "Travel requisition updated",
+                        // text: "Travel request has been updated",
                         confirmButtonClass: "btn-success",
                         type: "success",
                         confirmButtonText: "OK"

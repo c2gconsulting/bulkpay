@@ -641,7 +641,7 @@ Template.TravelRequisition2Create.events({
     Template.instance().errorMessage.set(null);
     let currentTravelRequest = tmpl.currentTravelRequest.curValue;
 
-    //update description one last final time
+    // update description one last final time
     currentTravelRequest.description = $("#description").val();
     tmpl.currentTravelRequest.set(currentTravelRequest);
 
@@ -687,12 +687,14 @@ Template.TravelRequisition2Create.events({
       }
     }
 
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && (!currentTravelRequest.tripFor || !currentTravelRequest.tripFor.individuals)) {
+    const isGroupTrip = currentTravelRequest.tripCategory === 'GROUP';
+    const notIndividualTrip = currentTravelRequest.tripCategory !== 'INDIVIDUAL';
+    if (notIndividualTrip && (!currentTravelRequest.tripFor || !currentTravelRequest.tripFor.individuals)) {
       fieldsAreValid = false;
       validationErrors += ": select the individual(s) going on this trip";
     }
 
-    if (currentTravelRequest.tripCategory !== 'INDIVIDUAL' && currentTravelRequest.tripFor && (currentTravelRequest.tripFor.individuals.length != currentTravelRequest.tripFor.noOfIndividuals)) {
+    if (isGroupTrip && currentTravelRequest.tripFor && (currentTravelRequest.tripFor.individuals.length != currentTravelRequest.tripFor.noOfIndividuals)) {
       fieldsAreValid = false;
       validationErrors += ": Invalid number of individual(s) going on this trip";
     }
@@ -714,7 +716,7 @@ Template.TravelRequisition2Create.events({
                 fieldsAreValid = false;
                 validationErrors += ": Return date cannot be earlier than Departure date";
             }
-        }else{
+        } else if (currentTravelRequest.type === "Return") {
             const startDate = moment(currentTrip.departureDate);
             const endDate = moment(currentTrip.returnDate)
 
@@ -758,7 +760,7 @@ Template.TravelRequisition2Create.events({
         if (res){
           swal({
             title: "Travel requisition created",
-            text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+            // text: "Your travel requisition has been created, a notification has been sent to your supervisor",
             confirmButtonClass: "btn-success",
             type: "success",
             confirmButtonText: "OK"
@@ -807,64 +809,6 @@ Template.TravelRequisition2Create.events({
         fieldsAreValid = false;
         validationErrors += ": description cannot be empty";
     }
-
-    if( currentTravelRequest.budgetCodeId=="I am not sure")
-    {
-        fieldsAreValid = false;
-        validationErrors += ": select a budget code";
-    }
-    for (i = 0; i < currentTravelRequest.trips.length; i++) {
-        const currentTrip = currentTravelRequest.trips[i];
-
-        // if (currentTrip.transportationMode === ""){
-        //     fieldsAreValid = false;
-        //     validationErrors += ": select transportation mode";
-        // }
-        //console.log(currentTravelRequest.type);
-        if ((currentTravelRequest.type === "Multiple") && ((i + 1) < currentTravelRequest.trips.length)) {
-            const startDate = moment(currentTrip.departureDate);
-            const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
-
-            if (endDate.diff(startDate, 'days') < 0){
-                fieldsAreValid = false;
-                validationErrors += ": Return date cannot be earlier than Departure date";
-            }
-        }else{
-            const startDate = moment(currentTrip.departureDate);
-            const endDate = moment(currentTrip.returnDate)
-
-            if (endDate.diff(startDate, 'days') < 0){
-                fieldsAreValid = false;
-                validationErrors += ": Return date cannot be earlier than Departure date";
-            }
-        }
-
-        if (currentTravelRequest.trips.length ===1){
-
-
-            if (currentTrip.fromId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select your current location";
-            }
-            // if (currentTrip.fromId.selectedIndex == 0){
-            //     fieldsAreValid = false;
-            //     validationErrors += ": select your current location";
-            // }
-            if (currentTrip.toId === ""){
-                fieldsAreValid = false;
-                validationErrors += ": select your destination location";
-            }
-            // if (!currentTrip.hotelNotRequired && (currentTrip.hotelId === "" || currentTrip.hotelId === undefined)){
-            //     fieldsAreValid = false;
-            //     validationErrors += ": select a hotel";
-            // }
-            //if (currentTrip.transportationMode === "AIR" && currentTrip.airlineId === ""){
-            //    fieldsAreValid = false;
-            //    validationErrors += ": select an airline";
-            //}
-        }
-    }
-
 
     if (fieldsAreValid){
         //explicitely set status

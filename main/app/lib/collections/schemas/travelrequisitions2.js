@@ -554,6 +554,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String,
         optional: true
     },
+    pmComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     bstComment: {
         type: String,
         defaultValue: '',

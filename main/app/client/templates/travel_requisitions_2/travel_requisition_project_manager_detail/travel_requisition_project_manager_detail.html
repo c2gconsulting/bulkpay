@@ -442,7 +442,11 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <label for="pmComment" class="control-label">PM Comment </label>
-                                <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}"/>
+                                {{#if canApprove}}
+                                <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" />
+                                {{else}}
+                                <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" disabled/>
+                                {{/if}}
                             </div>
                         </div>
                         {{#if errorMessage}}

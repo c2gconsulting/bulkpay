@@ -189,15 +189,71 @@ Core.getIndividualIDs = (individuals) => {
   return IDs
 }
 
+Core.defaultExternalDepartmentAndProject = (self, travelRequestDetails) => {
+  self.subscribe('project', travelRequestDetails.departmentOrProjectId);
+  self.subscribe('costcenter', travelRequestDetails.departmentOrProjectId);
+    self.subscribe('activity', travelRequestDetails.activityId);
+
+  if (travelRequestDetails.costCenter !== 'Project') {
+
+    Meteor.call('CostCenters/findOne', travelRequestDetails.departmentOrProjectId, function(err, res) {
+      if(!err) {
+
+        // console.log('department', JSON.stringify(res))
+
+        const departmentDatum = res ? `${res.cost_center_general_name} - ${res.cost_center}` : "I am not sure";
+        self.currentDepartment.set(departmentDatum);
+      }
+    })
+      // const department = CostCenters.findOne(travelRequestDetails.departmentOrProjectId);
+      // const departmentDatum = department ? `${department.cost_center_general_name} - ${department.cost_center}` : "I am not sure";
+      // self.currentDepartment.set(departmentDatum);
+  }
+
+  if (travelRequestDetails.costCenter === 'Project') {
+    Meteor.call('Projects/findOne', travelRequestDetails.departmentOrProjectId, function(err, res) {
+      if(!err) {
+        // console.log('Projects', JSON.stringify(res))
+
+        const projectDatum = res ? `${res.name} - ${res.external_project_number}` : "I am not sure";
+        // console.log('project -- data', projectDatum)
+        self.currentProject.set(projectDatum)
+    
+      }
+    })
+    // const project = Projects.findOne(travelRequestDetails.departmentOrProjectId)
+    // // console.log('project', project)
+    // const projectDatum = project ? `${project.name} - ${project.external_project_number}` : "I am not sure";
+    // // console.log('project -- data', projectDatum)
+    // self.currentProject.set(projectDatum)
+
+
+    Meteor.call('Activities/findOne', travelRequestDetails.activityId, function(err, res) {
+      if(!err) {
+        // console.log('Activities', JSON.stringify(res))
+
+        const datum = res ? `${res.description} - ${res.externalCode}` : "I am not sure";
+        self.currentActivity.set(datum)
+    
+      }
+    })
+    // const activity = Activities.findOne(travelRequestDetails.activityId)
+    // // console.log('activity', activity)
+    // // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
+    // const datum = activity ? `${activity.description} - ${activity.externalCode}` : "I am not sure";
+    // self.currentActivity.set(datum)
+  }
+}
+
 Core.defaultDepartmentAndProject = (self, travelRequestDetails) => {
   self.subscribe('project', travelRequestDetails.departmentOrProjectId);
   self.subscribe('costcenter', travelRequestDetails.departmentOrProjectId);
     self.subscribe('activity', travelRequestDetails.activityId);
 
   if (travelRequestDetails.costCenter !== 'Project') {
-    const department = CostCenters.findOne(travelRequestDetails.departmentOrProjectId);
-    const departmentDatum = department ? `${department.cost_center_general_name} - ${department.cost_center}` : "I am not sure";
-    self.currentDepartment.set(departmentDatum);
+      const department = CostCenters.findOne(travelRequestDetails.departmentOrProjectId);
+      const departmentDatum = department ? `${department.cost_center_general_name} - ${department.cost_center}` : "I am not sure";
+      self.currentDepartment.set(departmentDatum);
   }
 
   if (travelRequestDetails.costCenter === 'Project') {
@@ -251,6 +307,42 @@ Core.autorun = (invokeReason, self) => {
   }
 }
 
+
+Core.autorun2 = (invokeReason, self) => {
+  // self.currentDepartment = new ReactiveVar()
+  // self.currentProject = new ReactiveVar()
+  try {
+    if (invokeReason){
+      let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId);
+      if(travelRequest2Sub.ready()) {
+        let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId});
+
+        Core.defaultExternalDepartmentAndProject(self, travelRequestDetails)
+  
+        if (travelRequestDetails) {
+          $('#costCenter').dropdown('set selected', travelRequestDetails.costCenter);
+          $('#travelTreat').dropdown('set selected', travelRequestDetails.travelTreat);
+          $('#departmentOrProjectId').dropdown('set selected', travelRequestDetails.departmentOrProjectId);
+          // console.log('travelRequestDetails.activityId', travelRequestDetails.activityId)
+          if (travelRequestDetails.activityId) $('#project_activity-code').dropdown('set selected', travelRequestDetails.activityId);
+        }
+        /* Pre-select individual going on trip if there's any */
+        let individuals = (travelRequestDetails.tripFor && travelRequestDetails.tripFor.individuals) || [];
+        const IDs = Core.getIndividualIDs(individuals);
+        if (IDs && IDs.length) {
+          // $('.ui.fluid.dropdown').dropdown('set selected',['Role1','Role2']);
+          $('#individuals').dropdown('set selected', IDs);
+        }
+        /* End of Pre-selection */
+        self.currentTravelRequest.set(travelRequestDetails)
+
+      }
+    }
+  } catch (error) {
+    Core.Log.error('travel autorun error')
+    Core.Log.error(error)
+  }
+}
 
 
 /**

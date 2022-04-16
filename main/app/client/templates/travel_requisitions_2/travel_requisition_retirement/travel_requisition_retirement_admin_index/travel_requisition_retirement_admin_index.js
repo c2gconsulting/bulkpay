@@ -159,7 +159,7 @@ Template.TravelRequisitionRetirement2AdminIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({});
+        return TravelRequisition2s.find({}, options);
 
     }
 

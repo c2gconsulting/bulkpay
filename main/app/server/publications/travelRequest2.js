@@ -23,16 +23,17 @@ Core.publish("TravelRequestsByGCOO", function (businessUnitId, gcooId) {
 Core.publish("TravelRequestsByGCEO", function (businessUnitId, gceoId) {
    return TravelRequisition2s.find({businessId: businessUnitId, gceoId: gceoId});
 });
- Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
-     return TravelRequisition2s.find({ businessId: businessUnitId, logisticsIds: logisticsId });
- });
 
- Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {
+Core.publish("TravelRequestsByLogistics", function (businessUnitId, logisticsId) {
+    return TravelRequisition2s.find({ businessId: businessUnitId, logisticsIds: logisticsId });
+});
+
+Core.publish("TravelRequestsByBST", function (businessUnitId, bstId) {
     return TravelRequisition2s.find({businessId: businessUnitId, bstIds: bstId});
 });
 
 Core.publish("TravelRequestsBySecurity", function (businessUnitId, securityId) {
-    return TravelRequisition2s.find({businessId: businessUnitId, securityId: securityId});
+    return TravelRequisition2s.find({businessId: businessUnitId, securityIds: securityId});
 });
 
  Core.publish("TravelRequestsByBudgetHolder", function (businessUnitId, budgetHolderId) {

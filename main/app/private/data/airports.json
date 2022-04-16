@@ -50260,26 +50260,6 @@
     "carriers": "7"
   },
   {
-    "code": "QOW",
-    "lat": "5.49341",
-    "lon": "7.0261",
-    "name": "Owerri",
-    "city": "Owerri",
-    "state": "Imo",
-    "country": "Nigeria",
-    "woeid": "1510193",
-    "tz": "Africa/Lagos",
-    "phone": "",
-    "type": "Airports",
-    "email": "",
-    "url": "",
-    "runway_length": null,
-    "elev": null,
-    "icao": "DNIM",
-    "direct_flights": "1",
-    "carriers": "1"
-  },
-  {
     "code": "QQD",
     "lat": "51.07",
     "lon": "1.19",
@@ -50538,26 +50518,6 @@
     "icao": "",
     "direct_flights": "4",
     "carriers": "7"
-  },
-  {
-    "code": "QRW",
-    "lat": "5.75242",
-    "lon": "5.86487",
-    "name": "Delta",
-    "city": "Warri",
-    "state": "Delta",
-    "country": "Nigeria",
-    "woeid": "2346364",
-    "tz": "Africa/Lagos",
-    "phone": "",
-    "type": "Airports",
-    "email": "",
-    "url": "",
-    "runway_length": null,
-    "elev": null,
-    "icao": "",
-    "direct_flights": "2",
-    "carriers": "1"
   },
   {
     "code": "QSF",

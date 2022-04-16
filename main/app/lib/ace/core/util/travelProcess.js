@@ -105,6 +105,8 @@ Core.ALL_TRAVEL_STATUS = {
   RETIREMENT_SUBMITED,
   RETIREMENT_APPROVED_BY_HOD,
   RETIREMENT_REJECTED_BY_HOD,
+  RETIREMENT_APPROVED_BY_PM,
+  RETIREMENT_REJECTED_BY_PM,
   RETIREMENT_APPROVED_BY_FINANCE,
   RETIREMENT_REJECTED_BY_FINANCE,
   RETIREMENT_APPROVED_BY_BUDGETHOLDER,
@@ -383,7 +385,7 @@ Core.getTravelQueries = () => {
 
   const hodOrSupervisorCondition = {
     // $and : [{ supervisorId: userId }, { $or : hodQueries }]
-    $and : [{ supervisorIds: userId }, { $or : hodQueries }]
+    $and : [{ supervisorId: userId }, { $or : hodQueries }]
   };
 
   const pmCondition = {
@@ -415,7 +417,7 @@ Core.getTravelQueries = () => {
   };
 
   const securityCondition = {
-    securityId: userId
+    $or: [{ securityIds: userId }, { securityId: userId }]
   };
 
   const hodOrSupervisorRetirementCond = {
@@ -488,31 +490,40 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
  * @returns {*} Boolean
  */
 Core.canApprove = (position, tripInfo) => {
-  const { status, isProcessedByLogistics, isProcessedByBST } = tripInfo;
+  const { status, isProcessedByLogistics, isProcessedByBST, trips } = tripInfo;
+  const hasHotelId = () => (trips || []).filter(trip => trip.hotelId !== '' && trip.hotelId !== 'I do not need a Hotel');
+  const hasGuestHouseId = () => (trips || []).filter(trip => trip.guestHouseId !== '' && trip.guestHouseId !== 'I do not need a Hotel');
   switch (position) {
     case BUDGETHOLDER:
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${REJECTED_BY_BUDGETHOLDER}`.includes(status);
 
     case HOD:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${REJECTED_BY_HOD}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
 
     case PM:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${REJECTED_BY_PM}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
 
     case MD:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${REJECTED_BY_MD}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD}`.includes(status);
 
     case GCOO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${REJECTED_BY_GCOO}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
 
     case GCEO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
 
-    case BST:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
+    case BST: {
+      const hotelReq = hasHotelId();
+      const guestHouseReq = hasGuestHouseId();
+      const requestGuestHouse = (guestHouseReq && guestHouseReq.length >= 1);
+      const requestHotel = (hotelReq && hotelReq.length >= 1);
+      const ProcessLogistics = `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS} ${PROCESSED_BY_BST}`;
+      if (requestGuestHouse || requestHotel) return ProcessLogistics.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
+    }
 
     case LOGISTICS:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
     default:
       break;
   }
@@ -554,6 +565,7 @@ Core.canProcessTrip = () => {
 
 Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   let isAirRailTransportationMode = false;
+  let isAirTransportationMode = false;
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
@@ -562,7 +574,8 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
     const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true
+    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true;
+    if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
   if (!isAboveOrHOD && recipientPosition === HOD) {

@@ -121,12 +121,12 @@ Template.TravelRequisition2Print.helpers({
 
   attachments: function () {
     // Meteor.Attachment.find({ })
-    console.log('instance()', Template.instance())
-    console.log('Template.instance()()', Template.instance().data)
+    // console.log('instance()', Template.instance())
+    // console.log('Template.instance()()', Template.instance().data)
     const requisitionId = Template.instance().currentTravelRequest.get()._id
-    console.log('requisitionId', requisitionId)
+    // console.log('requisitionId', requisitionId)
     const attachments = Attachments.find({ travelId: requisitionId })
-    console.log('attachments', attachments)
+    // console.log('attachments', attachments)
     return attachments;
   },
   getAttachmentName: function (data) {
@@ -185,6 +185,7 @@ Template.TravelRequisition2Print.helpers({
     if(travelcity) {
       return travelcity.name
     }
+    return travelcityId + `${country ? `, ${country}`: ''}`;
   },
   'getHotelName': function(hotelId) {
     // const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -346,52 +347,53 @@ Template.TravelRequisition2Print.onCreated(function () {
     // const travelcityz = Travelcities.findOne({"_id": "C1"})
     // console.log("travelcityz is:")
     // console.log(travelcityz);
+    Core.autorun2(invokeReason, self)
 
-    Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
-      if(!err) {
-        self.businessUnitCustomConfig.set(customConfig)
-      }
-    })
+    // Meteor.call('BusinessUnitCustomConfig/getConfig', businessUnitId, function(err, customConfig) {
+    //   if(!err) {
+    //     self.businessUnitCustomConfig.set(customConfig)
+    //   }
+    // })
 
-    let travelcity =    self.subscribe("travelcities",businessUnitId)
-    // console.log("travel businessUnitId 2 is")
-    // console.log(businessUnitId)
-    // console.log("travel travelcity 2 is")
-    // console.log(travelcity)
+    // let travelcity =    self.subscribe("travelcities",businessUnitId)
+    // // console.log("travel businessUnitId 2 is")
+    // // console.log(businessUnitId)
+    // // console.log("travel travelcity 2 is")
+    // // console.log(travelcity)
 
-    if(travelcity.ready()) {
-      let travelcity2 = Travelcities.find({}).fetch();
-      // console.log("travel city 2 is")
-      // console.log(travelcity2)
-    }
-    else{
-      // console.log("subscription did not work")
-    }
-
-
-    let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
-
-    // console.log("travelRequest2Sub is")
-    // console.log(travelRequest2Sub)
-
-
-    if(travelRequest2Sub.ready()) {
-          let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
-          Core.defaultDepartmentAndProject(self, travelRequestDetails)
-
-      // console.log("travelRequestDetails is")
-      // console.log(travelRequestDetails)
-      self.currentTravelRequest.set(travelRequestDetails)
-    }
-
-    // if(businessUnitSubscription.ready()) {
-    //     let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
-    //     console.log("businessUnitId is")
-    //     console.log(businessUnitId)
-    //     console.log("businessUnit is")
-    //     console.log(businessUnit)
-    //     self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+    // if(travelcity.ready()) {
+    //   let travelcity2 = Travelcities.find({}).fetch();
+    //   // console.log("travel city 2 is")
+    //   // console.log(travelcity2)
     // }
+    // else{
+    //   // console.log("subscription did not work")
+    // }
+
+    // let businessUnitSubscription = self.subscribe("BusinessUnit", businessUnitId);
+    // let travelRequest2Sub = self.subscribe('TravelRequest2', invokeReason.requisitionId)
+
+    // // console.log("travelRequest2Sub is")
+    // // console.log(travelRequest2Sub)
+
+
+    // if(travelRequest2Sub.ready()) {
+    //       let travelRequestDetails = TravelRequisition2s.findOne({_id: invokeReason.requisitionId})
+    //       self.currentTravelRequest.set(travelRequestDetails)
+    //       Core.defaultExternalDepartmentAndProject(self, travelRequestDetails)
+
+    //   // console.log("travelRequestDetails is")
+    //   // console.log(travelRequestDetails)
+    // }
+
+    // // if(businessUnitSubscription.ready()) {
+    // //     let businessUnit = BusinessUnits.findOne({_id: businessUnitId})
+    // //     console.log("businessUnitId is")
+    // //     console.log(businessUnitId)
+    // //     console.log("businessUnit is")
+    // //     console.log(businessUnit)
+    // //     self.businessUnitLogoUrl.set(businessUnit.logoUrl)
+    // // }
   })
 
 

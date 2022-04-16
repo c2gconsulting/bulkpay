@@ -711,7 +711,7 @@ let TravelRequestHelper = {
 
                 TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
 
-                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+                // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
@@ -969,7 +969,7 @@ let TravelRequestHelper = {
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+                // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
@@ -1199,7 +1199,7 @@ let TravelRequestHelper = {
                     }
                 }
 
-                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+                // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const budgetHolder = Meteor.users.findOne(currentTravelRequest.budgetHolderId);
@@ -1291,7 +1291,7 @@ let TravelRequestHelper = {
 
                 let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+                // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const supervisor = Meteor.users.findOne(currentTravelRequest.supervisorId);
@@ -1415,7 +1415,7 @@ let TravelRequestHelper = {
                 //    otherPartiesEmail += "," + TravelRequestHelper.getTravelcityEmail(currentTravelRequest.trips[i].fromId);
                 // }
 
-                otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+                // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
                 const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
                 const financeApprover = Meteor.users.findOne(currentTravelRequest.financeApproverId);

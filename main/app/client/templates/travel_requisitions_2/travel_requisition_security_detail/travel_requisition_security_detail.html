@@ -261,26 +261,28 @@
                         </div>
                         {{/if}}
 
+                        {{#if this.hotelId}}
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="hotelId_{{this.tripIndex}}" class="control-label">Hotel <span class="asterisk important-input">*</span></label>
                                     <input type="text" id="hotelId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="hotelId_{{this.tripIndex}}" value="{{getHotelName this.hotelId}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label for="hotelRate_{{this.tripIndex}}" class="control-label">Rate per Night</label>
                                     <input type="text" id="hotelRate_{{this.tripIndex}}" class="form-control" name="hotelRate_{{this.tripIndex}}" value="{{formatMoney this.hotelRate}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                             <div class="col-sm-1">
                                 <div class="form-group">
                                     <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
                                     <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>
-                                </div><!-- form-group -->
-                            </div><!-- col-sm-3 -->
+                                </div>
+                            </div>
                         </div>
+                        {{/if}}
 
                         <!-- <div class="row">
                             <div class="col-sm-4">
@@ -447,22 +449,36 @@
                         <!-- {{> AttachmentsList requisitionId=currentTravelRequest._id }} -->
                         <hr>
                         <div class="row">
+                            {{#if currentTravelRequest.supervisorId}}
                             <div class="col-sm-12">
                                 <label for="supervisorComment" class="control-label">HOD Comment </label>
                                 <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
                             </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.pmId}}
+                            <div class="col-sm-12">
+                                <label for="pmComment" class="control-label">PM Comment </label>
+                                <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" disabled/>
+                            </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.managerId}}
                             <div class="col-sm-12">
                                 <label for="managerComment" class="control-label">MD Comment </label>
                                 <input type="text" id="managerComment" class="form-control" placeholder="" name="managerComment" value="{{currentTravelRequest.managerComment}}" disabled/>
                             </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.gcooId}}
                             <div class="col-sm-12">
                                 <label for="gcooComment" class="control-label">GCOO Comment </label>
                                 <input type="text" id="gcooComment" class="form-control" placeholder="" name="gcooComment" value="{{currentTravelRequest.gcooComment}}" disabled/>
                             </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.gceoId}}
                             <div class="col-sm-12">
                                 <label for="gceoComment" class="control-label">GCEO Comment </label>
                                 <input type="text" id="gceoComment" class="form-control" placeholder="" name="gceoComment" value="{{currentTravelRequest.gceoComment}}" disabled/>
                             </div>
+                            {{/if}}
                         </div>
                         {{#if errorMessage}}
                         <hr>

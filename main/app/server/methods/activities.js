@@ -44,6 +44,32 @@ Meteor.methods({
         };
         const result = Activities.update(selector, {$set: details} );
         return result;
+    },
+    "Activities/findOne": function(id){
+        const selector = {
+            _id: id
+        };
+        const result = Activities.findOne(selector);
+        console.log('Activities', result)
+
+        return result;
+    },
+    "Projects/findOne": function(id){
+        const selector = {
+            _id: id
+        };
+        const result = Projects.findOne(selector);
+        console.log('Projects', result)
+
+        return result;
+    },
+    "CostCenters/findOne": function(id){
+        const selector = {
+            _id: id
+        };
+        const result = CostCenters.findOne(selector);
+        console.log('CostCenters', result)
+        return result;
     }
 });
 

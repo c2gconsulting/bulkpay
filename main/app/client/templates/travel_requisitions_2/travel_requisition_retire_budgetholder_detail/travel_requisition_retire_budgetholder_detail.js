@@ -16,7 +16,7 @@ Template.TravelRequisition2BudgetHolderRetireDetail.events({
          if (res){
              swal({
                  title: "Trip retirement has been Approved By Budget Holder",
-                 text: "Employee retirement has been updated,notification has been sent to the necessary parties",
+                //  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
                  confirmButtonText: "OK"

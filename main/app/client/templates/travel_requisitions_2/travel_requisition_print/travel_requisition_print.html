@@ -235,6 +235,7 @@
                 </div>
             </div>
 
+            {{#if this.hotelId}}
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -255,8 +256,9 @@
                     </div>
                 </div>
             </div>
+            {{/if}}
 
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-sm-4">
                     <label>My per diem should exclude:</label>
                 </div>
@@ -284,7 +286,7 @@
                         <label for="isIncidentalsIncluded_{{this.tripIndex}}">Incidentals</label>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
 
             <hr/>
@@ -437,32 +439,36 @@
             </div>
             <hr/>
             <div class="row">
+                {{#if currentTravelRequest.supervisorId}}
                 <div class="col-sm-12">
                     <label for="supervisorComment" class="control-label">HOD Comment </label>
                     <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
-
                 </div>
-            </div>
-
-            <div class="row">
+                {{/if}}
+                {{#if currentTravelRequest.pmId}}
+                <div class="col-sm-12">
+                    <label for="pmComment" class="control-label">PM Comment </label>
+                    <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" disabled/>
+                </div>
+                {{/if}}
+                {{#if currentTravelRequest.managerId}}
                 <div class="col-sm-12">
                     <label for="managerComment" class="control-label">MD Comment </label>
                     <input type="text" id="managerComment" class="form-control" placeholder="" name="managerComment" value="{{currentTravelRequest.managerComment}}" disabled/>
                 </div>
-            </div>
-            
-            <div class="row">
+                {{/if}}
+                {{#if currentTravelRequest.gcooId}}
                 <div class="col-sm-12">
                     <label for="gcooComment" class="control-label">GCOO Comment </label>
                     <input type="text" id="gcooComment" class="form-control" placeholder="" name="gcooComment" value="{{currentTravelRequest.gcooComment}}" disabled/>
                 </div>
-            </div>
-
-            <div class="row">
+                {{/if}}
+                {{#if currentTravelRequest.gceoId}}
                 <div class="col-sm-12">
                     <label for="gceoComment" class="control-label">GCEO Comment </label>
                     <input type="text" id="gceoComment" class="form-control" placeholder="" name="gceoComment" value="{{currentTravelRequest.gceoComment}}" disabled/>
                 </div>
+                {{/if}}
             </div>
         </div>
         <div class="panel-footer">

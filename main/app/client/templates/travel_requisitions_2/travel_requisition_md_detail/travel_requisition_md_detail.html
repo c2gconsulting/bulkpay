@@ -436,13 +436,13 @@
                         </div>
                         <hr/>
                         <div class="row">
-                            {{#if currentTravelRequest.supervisorComment}}
+                            {{#if currentTravelRequest.supervisorId}}
                             <div class="col-sm-12">
                                 <label for="supervisorComment" class="control-label">HOD Comment </label>
                                 <input type="text" id="supervisorComment" class="form-control" placeholder="" name="supervisorComment" value="{{currentTravelRequest.supervisorComment}}" disabled/>
                             </div>
                             {{/if}}
-                            {{#if currentTravelRequest.pmComment}}
+                            {{#if currentTravelRequest.pmId}}
                             <div class="col-sm-12">
                                 <label for="pmComment" class="control-label">PM Comment </label>
                                 <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" disabled/>

@@ -87,6 +87,18 @@ Template.TravelRequisition2Detail.helpers({
         else
         return ""
     },
+    provideSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? checked="checked" : '';
+        }
+    },
+    needSecurity(index){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest && index){
+            return currentTravelRequest.trips[parseInt(index) - 1].provideSecurity? true : false;
+        }
+    },
     travelApprovals: function () {
         let isAirTransportationMode = false;
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -122,6 +134,23 @@ Template.TravelRequisition2Detail.helpers({
             // { approvalId: logisticsId, label: LOGISTICS },
         ]
         return dApprovals;
+    },
+    attachments: function () {
+      // Meteor.Attachment.find({ })
+    //   console.log('instance()', Template.instance())
+    //   console.log('Template.instance()()', Template.instance().data)
+      const requisitionId = Template.instance().currentTravelRequest.get()._id
+    //   console.log('requisitionId', requisitionId)
+      const attachments = Attachments.find({ travelId: requisitionId }).fetch()
+    //   console.log('attachments', attachments)
+      return attachments;
+    },
+    getAttachmentName: function (data) {
+      return data.name || data.fileUrl || data.imageUrl
+    },
+    
+    getAttachmentUrl: function (data) {
+      return data.fileUrl || data.imageUrl
     },
     'getEmployeeNameById': function(employeeId){
         if (typeof employeeId !== 'string') {
@@ -276,6 +305,7 @@ Template.TravelRequisition2Detail.onCreated(function () {
     self.subscribe("hotels", Session.get('context'));
     self.subscribe("airlines", Session.get('context'));
     self.subscribe("budgets", Session.get('context'));
+    self.subscribe("attachments", Session.get('context'));
 
 
 

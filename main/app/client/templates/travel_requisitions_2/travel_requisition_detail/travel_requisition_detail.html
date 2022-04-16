@@ -222,6 +222,16 @@
                         </div>
                         {{#unless isLastLeg this.tripIndex}}
                         <div class="row">
+                            {{#if provideSecurity this.tripIndex }}
+                            <div class="col-sm-12 col-lg-6">
+                                <div class="form-group">
+                                    <div class="ckbox ckbox-success">
+                                        <input type="checkbox" id="provideSecurity_{{this.tripIndex}}" name="provideSecurity_{{this.tripIndex}}" value="{{this.tripIndex}}" {{provideSecurity this.tripIndex}}/>
+                                        <label for="provideSecurity_{{this.tripIndex}}">I need security</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/if}}
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <div class="ckbox ckbox-success">
@@ -232,7 +242,19 @@
                             </div>
                         </div>
 
-                        
+                        <!-- IF Security was needed...then add security detail/comment -->
+
+                        {{#if needSecurity this.tripIndex}}
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label for="additionalSecurityComment" class="control-label">Additional information on security<span class="asterisk important-input">*</span></label>
+                                    <textarea name="additionalSecurityComment" class="form-control" rows="5" placeholder="Description" id="additionalSecurityComment" value="{{currentTravelRequest.additionalSecurityComment}}" disabled></textarea>
+                                </div><!-- form-group -->
+                            </div><!-- col-sm-3 -->
+                        </div>
+                        {{/if}}
+
                         {{#if this.hotelId}}
                         <div class="row">
                             <div class="col-sm-6">
@@ -251,6 +273,17 @@
                                 <div class="form-group">
                                     <label for="destinationCityCurrreny_{{this.tripIndex}}" class="control-label">Curr.</label>
                                     <input type="text" id="destinationCityCurrreny_{{this.tripIndex}}" class="form-control" name="destinationCityCurrreny_{{this.tripIndex}}" value="{{this.destinationCityCurrreny}}" disabled/>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
+
+                        {{#if this.guestHouseId}}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="guestHouseId_{{this.tripIndex}}" class="control-label">Guest House <span class="asterisk important-input">*</span></label>
+                                    <input type="text" id="guestHouseId_{{this.tripIndex}}" class="form-control" placeholder="Preferred Hotel" name="guestHouseId_{{this.tripIndex}}" value="{{getHotelName this.guestHouseId}}" disabled/>
                                 </div>
                             </div>
                         </div>
@@ -340,6 +373,23 @@
                             </div>
                         </div>
                         <hr> -->
+                        <h5>Attachments</h5>
+                        <ul class="attachments-list">
+                            {{#each attachments}}
+                                <li class="">
+                                    <a download href="{{getAttachmentUrl this}}" target="_parent">
+                                        {{getAttachmentName this}}
+                                    </a>
+                                </li>
+                                <div class="clearfix"></div>
+                                <!-- {{#unless this.isUploaded}}
+                                    {{> FS.UploadProgressBar bootstrap=true class='progress-bar-success progress-bar-striped active' showPercent=false}}
+                                {{/unless}} -->
+                            {{else}}
+                                <p class="help-block">No files uploaded</p>
+                            {{/each}}
+                        </ul>
+                        <hr/>
 
                         {{#if currentTravelRequest._id}}
                           <label for="individuals-trip" class="control-label">The approval details</label>

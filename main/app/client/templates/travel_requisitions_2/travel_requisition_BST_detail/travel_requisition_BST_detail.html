@@ -517,18 +517,24 @@
                                 <input type="text" id="pmComment" class="form-control" placeholder="" name="pmComment" value="{{currentTravelRequest.pmComment}}" disabled/>
                             </div>
                             {{/if}}
+                            {{#if currentTravelRequest.managerId}}
                             <div class="col-sm-12">
                                 <label for="managerComment" class="control-label">MD Comment </label>
                                 <input type="text" id="managerComment" class="form-control" placeholder="" name="managerComment" value="{{currentTravelRequest.managerComment}}" disabled/>
                             </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.gcooId}}
                             <div class="col-sm-12">
                                 <label for="gcooComment" class="control-label">GCOO Comment </label>
                                 <input type="text" id="gcooComment" class="form-control" placeholder="" name="gcooComment" value="{{currentTravelRequest.gcooComment}}" disabled/>
                             </div>
+                            {{/if}}
+                            {{#if currentTravelRequest.gceoId}}
                             <div class="col-sm-12">
                                 <label for="gceoComment" class="control-label">GCEO Comment </label>
                                 <input type="text" id="gceoComment" class="form-control" placeholder="" name="gceoComment" value="{{currentTravelRequest.gceoComment}}" disabled/>
                             </div>
+                            {{/if}}
                         </div>
                         {{#if errorMessage}}
                         <hr>

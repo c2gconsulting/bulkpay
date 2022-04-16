@@ -23,7 +23,7 @@ Meteor.methods({
         };
       }
 
-      console.log('countryAirports', JSON.stringify(countryAirports))
+      // console.log('countryAirports', JSON.stringify(countryAirports))
       return countryAirports;
     } catch (error) {
       console.log('readFile::error')
@@ -48,7 +48,7 @@ Meteor.methods({
         };
       }
 
-      console.log('countryAirports', JSON.stringify(countryAirports))
+      // console.log('countryAirports', JSON.stringify(countryAirports))
       return countryAirports;
     } catch (error) {
       console.log('readFile::error')

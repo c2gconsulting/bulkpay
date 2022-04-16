@@ -661,7 +661,7 @@ Template.TravelRequisition2ExtensionDetail.events({
           if (res){
               swal({
                   title: "Travel requisition created",
-                  text: "Your travel requisition has been created, a notification has been sent to your supervisor",
+                //   text: "Your travel requisition has been created, a notification has been sent to your supervisor",
                   confirmButtonClass: "btn-success",
                   type: "success",
                   confirmButtonText: "OK"

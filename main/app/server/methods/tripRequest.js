@@ -86,8 +86,10 @@ let TravelRequestHelper = {
       const returnDate = isTripType("Return") ? currentTravelRequest.trips[0].returnDate : currentTravelRequest.trips[currentTravelRequest.trips.length-1].departureDate;
       const fromCountry = currentTravelRequest.trips[0].fromCountry;
       const toCountry = currentTravelRequest.trips[0].toCountry;
-      const fromAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId) + fromCountry ? `, ${fromCountry}` : '';
-      const toAddress = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId) + toCountry ? `, ${toCountry}` : '';
+      const fromCity = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].fromId);
+      const toCity = TravelRequestHelper.getTravelcityName(currentTravelRequest.trips[0].toId);
+      const fromAddress = fromCity ? `${fromCity}, ${fromCountry}` : '';
+      const toAddress = toCity ? `${toCity}, ${toCountry}` : '';
       let itenerary = fromAddress + " - " + toAddress;
       if (isTripType("Multiple")){
         for (i = 1; i < currentTravelRequest.trips.length; i++) {
@@ -323,7 +325,7 @@ Meteor.methods({
 
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      Core.sendUpdateOrCancellationMail(tripInfo, TravelRequestHelper, true);
+      Core.sendUpdateOrCancellationMail(currentTravelRequest, TravelRequestHelper, true);
     }else{
       currentTravelRequest._id = TravelRequisition2s.insert(currentTravelRequest);
     }
@@ -372,7 +374,7 @@ Meteor.methods({
       const tripInfo = currentTravelRequest;
       const { CANCELLED } = Core.ALL_TRAVEL_STATUS;
 
-      //explicitely set status
+      //explicitly set status
       currentTravelRequest.status = CANCELLED;
 
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
@@ -515,6 +517,8 @@ Meteor.methods({
       currentTravelRequest.logisticsIds = fetchUsers(logisticCond, Core.Approvals.LOGISTICS)
       currentTravelRequest.financeApproverId = fetchUser(financeCond, Core.Approvals.FINANCE)
       currentTravelRequest.securityId = fetchUser(securityCond, Core.Approvals.SECURITY)
+      currentTravelRequest.securityIds = fetchUsers(securityCond, Core.Approvals.SECURITY)
+
 
       // let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
       // console.log('budgetCode', budgetCode);
@@ -533,12 +537,12 @@ Meteor.methods({
       // currentTravelRequest = Core.travelDelegateIds('bstId', currentTravelRequest);
       // currentTravelRequest = Core.travelDelegateIds('logisticsId', currentTravelRequest);
       currentTravelRequest = Core.travelDelegateIds('financeApproverId', currentTravelRequest);
-      currentTravelRequest = Core.travelDelegateIds('securityId', currentTravelRequest);
+      // currentTravelRequest = Core.travelDelegateIds('securityId', currentTravelRequest);
       // END OF DELEGATES
 
       // Verify user creating a trip
       Core.canCreateTravel()
-      
+
       if (currentTravelRequest._id){
         TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
         // console.log("currentTravelRequest1")
@@ -554,7 +558,7 @@ Meteor.methods({
           const trip = currentTravelRequest.trips[i];
           if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
         }
-        const { BUDGETHOLDER, HOD, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+        const { BUDGETHOLDER, PM, HOD, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
 
         const { destinationType } = currentTravelRequest;
         const isInternationalTrip = destinationType === 'International';
@@ -566,7 +570,9 @@ Meteor.methods({
 
         // IF it's by AIR. CHECK THE NEXT IN LINE FOR APPROVAL IN RELATION TO THE REQUESTOR POSITION
         if (isTripByAir) {
-          if (!isAboveOrHOD && !nextRecipientPosition) nextRecipientPosition = HOD
+          const isProject = currentTravelRequest.costCenter === 'Project';
+          if ((!isAboveOrHOD && !nextRecipientPosition) && !isProject) nextRecipientPosition = HOD
+          if ((!isAboveOrHOD && !nextRecipientPosition) && isProject) nextRecipientPosition = PM
           if (!isAboveOrMD && !nextRecipientPosition) nextRecipientPosition = MD
           if (!isAboveOrGCOO && !nextRecipientPosition) nextRecipientPosition = GCOO
           if (!isInternationalTrip && !nextRecipientPosition) nextRecipientPosition = BST
@@ -944,7 +950,7 @@ Meteor.methods({
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
+      // otherPartiesEmail += "," + budgetCode.externalNotificationEmail;
 
 
       const createdBy = Meteor.users.findOne(currentTravelRequest.createdBy);
@@ -1178,13 +1184,13 @@ Meteor.methods({
       nextApproval = currentTravelRequest.status === PROCESSED_BY_BST ? nextApproval : "";
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, BST, nextApproval);
 
-      try {
-        Core.journalPosting(currentTravelRequest);
-      } catch (error) {
-        console.log('journalPosting ERROR')
-        console.log(error)
-        throw new Meteor.Error(403, "Journal Posting failed")
-      }
+      // try {
+      //   Core.journalPosting(currentTravelRequest);
+      // } catch (error) {
+      //   console.log('journalPosting ERROR')
+      //   console.log(error)
+      //   throw new Meteor.Error(403, "Journal Posting failed")
+      // }
 
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);
