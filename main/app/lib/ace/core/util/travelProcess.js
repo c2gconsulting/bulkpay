@@ -1,4 +1,5 @@
 const HOD = "HOD";
+const HOC = "HOC";
 const PM = "PM";
 const BUDGETHOLDER = 'BUDGET HOLDER';
 const MD = "MD";
@@ -12,6 +13,7 @@ const SECURITY = "SECURITY";
 Core.Approvals = {
   PM,
   HOD,
+  HOC,
   BUDGETHOLDER,
   MD,
   GCOO,
@@ -25,6 +27,7 @@ Core.Approvals = {
 Core.approvalList = [
   PM,
   HOD,
+  HOC,
   MD,
   GCOO,
   GCEO,
@@ -42,6 +45,8 @@ const APPROVED_BY_PM = 'Approved By PM'
 const REJECTED_BY_PM = 'Rejected By PM'
 const APPROVED_BY_HOD = 'Approved By HOD'
 const REJECTED_BY_HOD = 'Rejected By HOD'
+const APPROVED_BY_HOC = 'Approved By HOC'
+const REJECTED_BY_HOC = 'Rejected By HOC'
 const APPROVED_BY_BUDGETHOLDER = 'Approved By Budget Holder'
 const REJECTED_BY_BUDGETHOLDER = 'Rejected By Budget Holder'
 const APPROVED_BY_MD = 'Approved By MD'
@@ -61,6 +66,8 @@ const RETIREMENT_APPROVED_BY_PM = 'Retirement Approved By PM'
 const RETIREMENT_REJECTED_BY_PM = 'Retirement Rejected By PM'
 const RETIREMENT_APPROVED_BY_HOD = 'Retirement Approved By HOD'
 const RETIREMENT_REJECTED_BY_HOD = 'Retirement Rejected By HOD'
+const RETIREMENT_APPROVED_BY_HOC = 'Retirement Approved By HOC'
+const RETIREMENT_REJECTED_BY_HOC = 'Retirement Rejected By HOC'
 const RETIREMENT_APPROVED_BY_FINANCE = 'Retirement Approved Finance'
 const RETIREMENT_REJECTED_BY_FINANCE = "Retirement Rejected Finance"
 const RETIREMENT_APPROVED_BY_BUDGETHOLDER =  "Retirement Approved Budget Holder"
@@ -89,6 +96,8 @@ Core.ALL_TRAVEL_STATUS = {
   REJECTED_BY_PM,
   APPROVED_BY_HOD,
   REJECTED_BY_HOD,
+  APPROVED_BY_HOC,
+  REJECTED_BY_HOC,
   APPROVED_BY_BUDGETHOLDER,
   REJECTED_BY_BUDGETHOLDER,
   APPROVED_BY_MD,
@@ -105,6 +114,8 @@ Core.ALL_TRAVEL_STATUS = {
   RETIREMENT_SUBMITED,
   RETIREMENT_APPROVED_BY_HOD,
   RETIREMENT_REJECTED_BY_HOD,
+  RETIREMENT_APPROVED_BY_HOC,
+  RETIREMENT_REJECTED_BY_HOC,
   RETIREMENT_APPROVED_BY_PM,
   RETIREMENT_REJECTED_BY_PM,
   RETIREMENT_APPROVED_BY_FINANCE,
@@ -121,6 +132,8 @@ Core.travelStatus = [
   PENDING,
   APPROVED_BY_HOD,
   REJECTED_BY_HOD,
+  APPROVED_BY_HOC,
+  REJECTED_BY_HOC,
   APPROVED_BY_PM,
   REJECTED_BY_PM,
   APPROVED_BY_BUDGETHOLDER,
@@ -143,6 +156,8 @@ Core.travelRetirementStatus = [
   RETIREMENT_REJECTED_BY_PM,
   RETIREMENT_APPROVED_BY_HOD,
   RETIREMENT_REJECTED_BY_HOD,
+  RETIREMENT_APPROVED_BY_HOC,
+  RETIREMENT_REJECTED_BY_HOC,
   RETIREMENT_APPROVED_BY_BUDGETHOLDER,
   RETIREMENT_REJECTED_BY_BUDGETHOLDER,
   RETIREMENT_APPROVED_BY_FINANCE,
@@ -184,7 +199,7 @@ Core.getUserApproval = (conditions) => Meteor.users.findOne(conditions);
  * @description getTravelQueries
  * @returns {*} Object 
  * @example {
-    hodOrSupervisorCondition, budgetHolderCondition, managerCondition,
+    hocCondition, pmCondition, hodOrSupervisorCondition, budgetHolderCondition, managerCondition,
     gcooCondition, gceoCondition, bstCondition, logisticsCondition, securityCondition,
     myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition,
     hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
@@ -200,6 +215,10 @@ Core.getTravelQueries = () => {
     { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
     { status: REJECTED_BY_HOD },
+    { status: APPROVED_BY_PM },
+    { status: REJECTED_BY_PM },
+    { status: APPROVED_BY_HOC },
+    { status: REJECTED_BY_HOC },
     { status: APPROVED_BY_MD },
     { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
@@ -218,6 +237,23 @@ Core.getTravelQueries = () => {
     // { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_HOD },
     { status: REJECTED_BY_HOD },
+    { status: APPROVED_BY_MD },
+    { status: REJECTED_BY_MD },
+    { status: APPROVED_BY_GCOO },
+    { status: REJECTED_BY_GCOO },
+    { status: APPROVED_BY_GCEO },
+    { status: REJECTED_BY_GCEO },
+    { status: PROCESSED_BY_BST },
+    { status: PROCESSED_BY_LOGISTICS },
+  ]
+
+  const hocQueries = [
+    { status: PENDING },
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: PENDING }] }]},
+    { status: APPROVED_BY_BUDGETHOLDER },
+    // { status: REJECTED_BY_BUDGETHOLDER },
+    { status: APPROVED_BY_HOC },
+    { status: REJECTED_BY_HOC },
     { status: APPROVED_BY_MD },
     { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
@@ -251,6 +287,7 @@ Core.getTravelQueries = () => {
     { status: APPROVED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_PM },
     { status: APPROVED_BY_HOD },
+    { status: APPROVED_BY_HOC },
     // { status: REJECTED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_MD },
     { status: REJECTED_BY_MD },
@@ -330,7 +367,7 @@ Core.getTravelQueries = () => {
     { status: PROCESSED_BY_LOGISTICS },
     // { $and: [{ createdByGCEO: true }, { status: APPROVED_BY_BUDGETHOLDER }] },
     // { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': { $ne: 'AIR' } }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_MD }] }]}
-    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_HOD }, { status: APPROVED_BY_PM }, { createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
+    { $and: [{ destinationType: 'Local' }, { 'trips.transportationMode': 'LAND' }, { $or: [{ status: APPROVED_BY_BUDGETHOLDER }, { status: APPROVED_BY_HOD }, { status: APPROVED_BY_PM }, { status: APPROVED_BY_HOC }, { createdByHOD: true }, { createdByMD: true }, { createdByGCOO: true }, { createdByGCEO: true }] } ]}
   ]
 
   // RETIREMENT
@@ -338,6 +375,12 @@ Core.getTravelQueries = () => {
     { retirementStatus: RETIREMENT_SUBMITED },
     { retirementStatus: RETIREMENT_APPROVED_BY_HOD },
     { retirementStatus: RETIREMENT_REJECTED_BY_HOD },
+  ]
+
+  const hocRetirementQueries = [
+    { retirementStatus: RETIREMENT_SUBMITED },
+    { retirementStatus: RETIREMENT_APPROVED_BY_HOC },
+    { retirementStatus: RETIREMENT_REJECTED_BY_HOC },
   ]
 
   const pmRetirementQueries = [
@@ -349,6 +392,7 @@ Core.getTravelQueries = () => {
   const financeRetirementQueries = [
     { retirementStatus: RETIREMENT_APPROVED_BY_HOD },
     { retirementStatus: RETIREMENT_APPROVED_BY_PM },
+    { retirementStatus: RETIREMENT_APPROVED_BY_HOC },
     { retirementStatus: RETIREMENT_APPROVED_BY_FINANCE },
     { retirementStatus: RETIREMENT_REJECTED_BY_FINANCE },
     { $and: [{ createdByHOD: true }, { retirementStatus: RETIREMENT_SUBMITED }] },
@@ -364,6 +408,7 @@ Core.getTravelQueries = () => {
   ]
 
   const bstRetirementQueries = [
+    { retirementStatus: RETIREMENT_APPROVED_BY_FINANCE },
     { retirementStatus: RETIREMENT_APPROVED_BY_BUDGETHOLDER },
     { retirementStatus: RETIREMENT_APPROVED_BY_BST },
     { retirementStatus: RETIREMENT_REJECTED_BY_BST },
@@ -386,6 +431,10 @@ Core.getTravelQueries = () => {
   const hodOrSupervisorCondition = {
     // $and : [{ supervisorId: userId }, { $or : hodQueries }]
     $and : [{ supervisorId: userId }, { $or : hodQueries }]
+  };
+
+  const hocCondition = {
+    $and : [{ hocId: userId }, { $or : hocQueries }]
   };
 
   const pmCondition = {
@@ -424,6 +473,10 @@ Core.getTravelQueries = () => {
     $and : [{ supervisorId: userId }, { $or : hodRetirementQueries }]
   };
 
+  const hocRetirementCond = {
+    $and : [{ hocId: userId }, { $or : hocRetirementQueries }]
+  };
+
   const hodOrPmRetirementCond = {
     $and : [{ supervisorId: userId }, { $or : pmRetirementQueries }]
   };
@@ -441,10 +494,10 @@ Core.getTravelQueries = () => {
   };
 
   return {
-    pmCondition, hodOrSupervisorCondition, budgetHolderCondition, managerCondition,
+    pmCondition, hodOrSupervisorCondition, hocCondition, budgetHolderCondition, managerCondition,
     gcooCondition, gceoCondition, bstCondition, logisticsCondition, securityCondition,
     myTripCondition, thirdPartyTripCondition, groupTripCondition, thirdPartyTripCondition,
-    hodOrPmRetirementCond, hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
+    hocRetirementCond, hodOrPmRetirementCond, hodOrSupervisorRetirementCond, financeRetirementCond, budgetHolderRetirementCond, bstRetirementCond
   }
 }
 
@@ -455,11 +508,12 @@ Core.getTravelQueries = () => {
  * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
  */
 Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
-  const { managerId, hodPositionId, pmPositionId, _id: userId,  } = currentUser;
+  const { managerId, hodPositionId, pmPositionId, hocPositionId, _id: userId,  } = currentUser;
   let GCOO = 'Group Chief Operating off', GCEO = 'Group Chief Executive off', GCFO = 'Group Chief Finance Offic';
   const ICT_MANAGER = 'ICT Manager', FINANCE_CONTROLLER = 'Financial Controller';
   let hodOrSupervisorCond = { positionId: hodPositionId };
   let pmCond = { $or: [{ pmIds: pmPositionId  }, { pmId: pmPositionId  }] };
+  let hocCond = { $or: [{ hocIds: hocPositionId  }, { hocId: hocPositionId  }] };
   // let managerCond = { positionId: managerId };
   let managerCond = { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } };
   let GcooCond = { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } };
@@ -479,7 +533,7 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   } else {}
 
   return {
-    pmCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+    pmCond, hocCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
   }
 }
 
@@ -503,27 +557,30 @@ Core.canApprove = (position, tripInfo) => {
     case PM:
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
 
+    case HOC:
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
+
     case MD:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD}`.includes(status);
 
     case GCOO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
 
     case GCEO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
 
     case BST: {
       const hotelReq = hasHotelId();
       const guestHouseReq = hasGuestHouseId();
       const requestGuestHouse = (guestHouseReq && guestHouseReq.length >= 1);
       const requestHotel = (hotelReq && hotelReq.length >= 1);
-      const ProcessLogistics = `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS} ${PROCESSED_BY_BST}`;
+      const ProcessLogistics = `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS} ${PROCESSED_BY_BST}`;
       if (requestGuestHouse || requestHotel) return ProcessLogistics.includes(status);
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
     }
 
     case LOGISTICS:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
+      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
     default:
       break;
   }

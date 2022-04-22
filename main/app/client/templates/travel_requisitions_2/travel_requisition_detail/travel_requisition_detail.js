@@ -112,8 +112,8 @@ Template.TravelRequisition2Detail.helpers({
 
         const shouldGotoLogisicsFirst = (!isAirTransportationMode && !isInternationalTrip);
 
-        const { pmId, supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsIds, bstIds } = currentTravelRequest;
-        const { PM, HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
+        const { hocId, pmId, supervisorId, managerId, budgetHolderId, gcooId, gceoId, logisticsIds, bstIds } = currentTravelRequest;
+        const { HOC, PM, HOD, BUDGETHOLDER, MD, GCOO, GCEO, BST, LOGISTICS } = Core.Approvals
 
         const LOGISTICS_LABEL = { approvalId: logisticsIds, label: LOGISTICS };
         const BST_LABEL = { approvalId: bstIds, label: BST };
@@ -124,6 +124,7 @@ Template.TravelRequisition2Detail.helpers({
         const dApprovals = [
             { approvalId: budgetHolderId, label: BUDGETHOLDER },
             { approvalId: supervisorId, label: HOD },
+            { approvalId: hocId, label: HOC },
             { approvalId: pmId, label: PM },
             { approvalId: managerId, label: MD },
             { approvalId: gcooId, label: GCOO },

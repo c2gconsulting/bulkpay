@@ -450,8 +450,12 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: [String],
         optional: true
     },
-    // supervisor delegates
+    // pm delegates
     pmIds: {
+        type: [String],
+        optional: true
+    },
+    hocIds: {
         type: [String],
         optional: true
     },
@@ -503,6 +507,10 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         type: String
     },
     pmId: {
+        type: String,
+        optional: true
+    },
+    hocId: {
         type: String,
         optional: true
     },
@@ -574,6 +582,11 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         defaultValue: '',
         optional: true
     },
+    hocComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
     budgetHolderComment: {
         type: String,
         defaultValue: '',
@@ -631,6 +644,16 @@ Core.Schemas.TravelRequisition2 = new SimpleSchema({
         optional: true
     },
     supervisorRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    pmRetirementComment: {
+        type: String,
+        defaultValue: '',
+        optional: true
+    },
+    hocRetirementComment: {
         type: String,
         defaultValue: '',
         optional: true

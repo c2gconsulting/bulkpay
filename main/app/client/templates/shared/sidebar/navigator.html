@@ -247,6 +247,20 @@
             {{/if}}
 
 
+            {{#if isUserHOC}}
+              <li class="parent {{isMenuExpandedFocusClass 'travelHOCMenu'}}">
+                <a href="" id="travelHOCMenu">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  <span>HOC Approvals</span>
+                </a>
+              </li>
+              {{#if isMenuExpanded 'travelHOCMenu'}}
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2hocindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Travels</a></li>
+                <li><a href="{{pathFor 'travelrequest2.travelrequisition2hocretirementindex'}}">&nbsp;&nbsp;&nbsp;&nbsp;Approve Retirements</a></li>
+              {{/if}}
+            {{/if}}
+
+
             {{#if isUserAManager}}
               <li class="parent {{isMenuExpandedFocusClass 'travelmanagerMenu'}}">
                 <a href="" id="travelmanagerMenu">

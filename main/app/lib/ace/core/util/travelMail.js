@@ -83,6 +83,8 @@ Core.sendApprovalMail = (
     Meteor.users.findOne(currentTravelRequest.createdBy) || defaultUserData;
   const pm = 
     Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
+  const hoc = 
+    Meteor.users.findOne(currentTravelRequest.hocId) || defaultUserData;
   const supervisor =
     Meteor.users.findOne(currentTravelRequest.supervisorId) || defaultUserData;
   const budgetHolder =
@@ -123,6 +125,7 @@ Core.sendApprovalMail = (
   let createdByEmail = "";
   let supervisorEmail = "";
   let pmEmail = "";
+  let hocEmail = "";
   let budgetHolderEmail = "";
   let managerEmail = "";
   let gcooEmail = "";
@@ -153,6 +156,8 @@ Core.sendApprovalMail = (
   let createdBySubject = "New travel request for " + createdBy.profile.fullName;
   let pmSubject =
     "Please approve travel request for " + createdBy.profile.fullName;
+  let hocSubject =
+    "Please approve travel request for " + createdBy.profile.fullName;
   let supervisorSubject =
     "Please approve travel request for " + createdBy.profile.fullName;
   let budgetHolderSubject =
@@ -176,6 +181,8 @@ Core.sendApprovalMail = (
   const {
     APPROVED_BY_PM,
     REJECTED_BY_PM,
+    APPROVED_BY_HOC,
+    REJECTED_BY_HOC,
     APPROVED_BY_HOD,
     REJECTED_BY_HOD,
     APPROVED_BY_BUDGETHOLDER,
@@ -192,6 +199,7 @@ Core.sendApprovalMail = (
 
   const {
     PM,
+    HOC,
     HOD,
     BUDGETHOLDER,
     MD,
@@ -206,6 +214,7 @@ Core.sendApprovalMail = (
   // JUST APPROVED BY:
   const isBUDGETHOLDER = receiverID === BUDGETHOLDER;
   const isPM = receiverID === PM;
+  const isHOC = receiverID === HOC;
   const isHOD = receiverID === HOD;
   const isMD = receiverID === MD;
   const isGCOO = receiverID === GCOO;
@@ -216,6 +225,7 @@ Core.sendApprovalMail = (
   // NEXT APPROVAL BY:
   const nextBUDGETHOLDER = nextUserID === BUDGETHOLDER;
   const nextPM = nextUserID === PM;
+  const nextHOC = nextUserID === HOC;
   const nextHOD = nextUserID === HOD;
   const nextMD = nextUserID === MD;
   const nextGCOO = nextUserID === GCOO;
@@ -241,6 +251,15 @@ Core.sendApprovalMail = (
       pm.profile.fullName +
       " has approved your travel request";
     pmSubject =
+      "You have approved " + createdBy.profile.fullName + "'s travel request";
+  }
+
+  if (isHOC && currentTravelRequest.status === APPROVED_BY_HOC) {
+    createdBySubject =
+      `${HOC}: ` +
+      hoc.profile.fullName +
+      " has approved your travel request";
+    hocSubject =
       "You have approved " + createdBy.profile.fullName + "'s travel request";
   }
 
@@ -324,6 +343,14 @@ Core.sendApprovalMail = (
     pmSubject =
       "You have rejected " + createdBy.profile.fullName + "'s travel request";
   }
+  if (isHOC && currentTravelRequest.status === REJECTED_BY_HOC) {
+    createdBySubject =
+      `${HOC}: ` +
+      hoc.profile.fullName +
+      " has rejected your travel request";
+    hocSubject =
+      "You have rejected " + createdBy.profile.fullName + "'s travel request";
+  }
   // HOD
   if (isHOD && currentTravelRequest.status === REJECTED_BY_HOD) {
     createdBySubject =
@@ -388,6 +415,12 @@ Core.sendApprovalMail = (
     pmEmail = pm.emails[0].address;
     pmEmail = pmEmail + "," + otherPartiesEmail;
     console.log('pmEmail', pmEmail);
+  }
+
+  if ((isHOC || nextHOC) && hoc.emails.length > 0) {
+    hocEmail = hoc.emails[0].address;
+    hocEmail = hocEmail + "," + otherPartiesEmail;
+    console.log('hocEmail', hocEmail);
   }
 
   if ((isHOD || nextHOD) && supervisor.emails.length > 0) {
@@ -463,6 +496,16 @@ Core.sendApprovalMail = (
       currentTravelRequest,
       pmEmail,
       pmSubject
+    );
+  }
+
+  if (isHOC || nextHOC) {
+    console.log("Email To: HOC", hocEmail);
+    console.log("hocSubject: ", hocSubject);
+    TravelRequestHelper.sendTravelRequestEmail(
+      currentTravelRequest,
+      hocEmail,
+      hocSubject
     );
   }
 
@@ -652,6 +695,8 @@ Core.sendRetirementApprovalMail = (
     Meteor.users.findOne(currentTravelRequest.supervisorId) || defaultUserData;
   const pm =
     Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
+  const hoc =
+    Meteor.users.findOne(currentTravelRequest.hocId) || defaultUserData;
   const budgetHolder =
     Meteor.users.findOne(currentTravelRequest.budgetHolderId) ||
     defaultUserData;
@@ -668,6 +713,7 @@ Core.sendRetirementApprovalMail = (
   let createdByEmail = "";
   let supervisorEmail = "";
   let pmEmail = "";
+  let hocEmail = "";
   let budgetHolderEmail = "";
   let financeApproverEmail = "";
   let bstEmail = "";
@@ -682,6 +728,8 @@ Core.sendRetirementApprovalMail = (
     "Please approve travel retirement for " + createdBy.profile.fullName;
   let pmSubject =
     "Please approve travel retirement for " + createdBy.profile.fullName;
+  let hocSubject =
+    "Please approve travel retirement for " + createdBy.profile.fullName;
   let budgetHolderSubject =
     "Please approve travel retirement for " + createdBy.profile.fullName;
   let financeApproverSubject =
@@ -695,6 +743,8 @@ Core.sendRetirementApprovalMail = (
   const {
     RETIREMENT_APPROVED_BY_HOD,
     RETIREMENT_REJECTED_BY_HOD,
+    RETIREMENT_APPROVED_BY_HOC,
+    RETIREMENT_REJECTED_BY_HOC,
     RETIREMENT_APPROVED_BY_PM,
     RETIREMENT_REJECTED_BY_PM,
     RETIREMENT_APPROVED_BY_FINANCE,
@@ -710,6 +760,7 @@ Core.sendRetirementApprovalMail = (
   // JUST APPROVED BY:
   const isHOD = recieverID === HOD;
   const isPM = recieverID === PM;
+  const isHOC = recieverID === HOC;
   const isBUDGETHOLDER = recieverID === BUDGETHOLDER;
   const isFINANCE = recieverID === FINANCE;
   const isBST = recieverID === BST;
@@ -717,6 +768,7 @@ Core.sendRetirementApprovalMail = (
   // NEXT APPROVAL BY:
   const nextHOD = nextUserID === HOD;
   const nextPM = nextUserID === PM;
+  const nextHOC = nextUserID === HOC;
   const nextBUDGETHOLDER = nextUserID === BUDGETHOLDER;
   const nextFINANCE = nextUserID === FINANCE;
   const nextBST = nextUserID === BST;
@@ -745,6 +797,21 @@ Core.sendRetirementApprovalMail = (
       pm.profile.fullName +
       " has approved your travel retirement";
     pmSubject =
+      "You have approved " +
+      createdBy.profile.fullName +
+      "'s travel retirement";
+  }
+
+
+  if (
+    isHOC &&
+    currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_HOC
+  ) {
+    createdBySubject =
+      `${HOC}: ` +
+      hoc.profile.fullName +
+      " has approved your travel retirement";
+    hocSubject =
       "You have approved " +
       createdBy.profile.fullName +
       "'s travel retirement";
@@ -827,6 +894,19 @@ Core.sendRetirementApprovalMail = (
       createdBy.profile.fullName +
       "'s travel retirement";
   }
+  if (
+    isHOC &&
+    currentTravelRequest.retirementStatus === RETIREMENT_REJECTED_BY_HOC
+  ) {
+    createdBySubject =
+      `${HOC}: ` +
+      hoc.profile.fullName +
+      " has rejected your travel retirement";
+    hocSubject =
+      "You have rejected " +
+      createdBy.profile.fullName +
+      "'s travel retirement";
+  }
   // BUDGET HOLDER
   if (
     isBUDGETHOLDER &&
@@ -905,6 +985,12 @@ Core.sendRetirementApprovalMail = (
     console.log(pmEmail);
   }
 
+  if ((isHOC || nextHOC) && hoc.emails.length > 0) {
+    hocEmail = hoc.emails[0].address;
+    hocEmail = hocEmail + "," + otherPartiesEmail;
+    console.log(hocEmail);
+  }
+
   if ((isFINANCE || nextFINANCE) && financeApprover.emails.length > 0) {
     financeApproverEmail = financeApprover.emails[0].address;
     financeApproverEmail = financeApproverEmail + "," + otherPartiesEmail;
@@ -954,6 +1040,16 @@ Core.sendRetirementApprovalMail = (
       currentTravelRequest,
       pmEmail,
       pmSubject
+    );
+  }
+
+  if (isHOC || nextHOC) {
+    console.log("Email To: HOC", hocEmail);
+    console.log("hocSubject: ", hocSubject);
+    TravelRequestHelper.sendTravelRetirementEmail(
+      currentTravelRequest,
+      hocEmail,
+      hocSubject
     );
   }
 
@@ -1032,8 +1128,10 @@ Core.sendUpdateOrCancellationMail = (
     Meteor.users.findOne(currentTravelRequest.createdBy) || defaultUserData;
   const supervisor =
     Meteor.users.findOne(currentTravelRequest.supervisorId) || defaultUserData;
-    const pm =
-      Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
+  const pm =
+    Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
+  const hoc =
+    Meteor.users.findOne(currentTravelRequest.hocId) || defaultUserData;
   const budgetHolder =
     Meteor.users.findOne(currentTravelRequest.budgetHolderId) ||
     defaultUserData;
@@ -1060,6 +1158,7 @@ Core.sendUpdateOrCancellationMail = (
   let createdByEmail = "";
   let supervisorEmail = "";
   let pmEmail = "";
+  let hocEmail = "";
   let budgetHolderEmail = "";
   let managerEmail = "";
   let gcooEmail = "";
@@ -1085,6 +1184,10 @@ Core.sendUpdateOrCancellationMail = (
     createdBy.profile.fullName +
     " has been cancelled by the Administrator";
   let pmSubject =
+    "Travel Request for: " +
+    createdBy.profile.fullName +
+    " has been cancelled by the Administrator";
+  let hocSubject =
     "Travel Request for: " +
     createdBy.profile.fullName +
     " has been cancelled by the Administrator";
@@ -1127,6 +1230,9 @@ Core.sendUpdateOrCancellationMail = (
     pmSubject =
       "Please approve the updated travel request for " +
       createdBy.profile.fullName;
+    hocSubject =
+      "Please approve the updated travel request for " +
+      createdBy.profile.fullName;
     budgetHolderSubject =
       "Please approve the updated travel request for " +
       createdBy.profile.fullName;
@@ -1156,6 +1262,8 @@ Core.sendUpdateOrCancellationMail = (
     REJECTED_BY_HOD,
     APPROVED_BY_PM,
     REJECTED_BY_PM,
+    APPROVED_BY_HOC,
+    REJECTED_BY_HOC,
     APPROVED_BY_BUDGETHOLDER,
     REJECTED_BY_BUDGETHOLDER,
     APPROVED_BY_MD,
@@ -1193,6 +1301,12 @@ Core.sendUpdateOrCancellationMail = (
     supervisorEmail = supervisor.emails[0].address;
     supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
     console.log(supervisorEmail);
+  }
+
+  if (hoc && hoc.emails.length > 0) {
+    hocEmail = hoc.emails[0].address;
+    hocEmail = hocEmail + "," + otherPartiesEmail;
+    console.log(hocEmail);
   }
 
   if (pm && pm.emails.length > 0) {
@@ -1260,7 +1374,8 @@ Core.sendUpdateOrCancellationMail = (
     (currentTravelRequest.status === APPROVED_BY_HOD ||
     currentTravelRequest.status === REJECTED_BY_HOD ||
     currentTravelRequest.status === PENDING) &&
-    currentTravelRequest.costCenter === 'Department'
+   (currentTravelRequest.costCenter !== 'Department' ||
+   currentTravelRequest.costCenter !== 'Project')
   ) {
     console.log("Email To: HOD", supervisorEmail);
     console.log("supervisorSubject: ", supervisorSubject);
@@ -1268,6 +1383,21 @@ Core.sendUpdateOrCancellationMail = (
       currentTravelRequest,
       supervisorEmail,
       supervisorSubject
+    );
+  }
+
+  if (
+    (currentTravelRequest.status === APPROVED_BY_HOC ||
+    currentTravelRequest.status === REJECTED_BY_HOC ||
+    currentTravelRequest.status === PENDING) &&
+    currentTravelRequest.costCenter === 'Department'
+  ) {
+    console.log("Email To: HOC", hocEmail);
+    console.log("hocSubject: ", hocSubject);
+    TravelRequestHelper.sendTravelRequestEmail(
+      currentTravelRequest,
+      hocEmail,
+      hocSubject
     );
   }
 
@@ -1429,6 +1559,10 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
     Meteor.users.findOne(currentTravelRequest.createdBy) || defaultUserData;
   const supervisor =
     Meteor.users.findOne(currentTravelRequest.supervisorId) || defaultUserData;
+  const pm =
+    Meteor.users.findOne(currentTravelRequest.pmId) || defaultUserData;
+  const hoc =
+    Meteor.users.findOne(currentTravelRequest.hocId) || defaultUserData;
   const budgetHolder =
     Meteor.users.findOne(currentTravelRequest.budgetHolderId) ||
     defaultUserData;
@@ -1454,6 +1588,8 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
   );
   let createdByEmail = "";
   let supervisorEmail = "";
+  let pmEmail = "";
+  let hocEmail = "";
   let budgetHolderEmail = "";
   let managerEmail = "";
   let gcooEmail = "";
@@ -1470,6 +1606,12 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
   let createdBySubject =
     "Updated travel retirement for: " + createdBy.profile.fullName;
   let supervisorSubject =
+    "Please approve the updated travel retirement for " +
+    createdBy.profile.fullName;
+  let pmSubject =
+    "Please approve the updated travel retirement for " +
+    createdBy.profile.fullName;
+  let hocSubject =
     "Please approve the updated travel retirement for " +
     createdBy.profile.fullName;
   let budgetHolderSubject =
@@ -1496,6 +1638,10 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
   const {
     RETIREMENT_APPROVED_BY_HOD,
     RETIREMENT_REJECTED_BY_HOD,
+    RETIREMENT_APPROVED_BY_PM,
+    RETIREMENT_REJECTED_BY_PM,
+    RETIREMENT_APPROVED_BY_HOC,
+    RETIREMENT_REJECTED_BY_HOC,
     RETIREMENT_APPROVED_BY_FINANCE,
     RETIREMENT_REJECTED_BY_FINANCE,
     RETIREMENT_APPROVED_BY_BUDGETHOLDER,
@@ -1529,6 +1675,18 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
     supervisorEmail = supervisor.emails[0].address;
     supervisorEmail = supervisorEmail + "," + otherPartiesEmail;
     console.log(supervisorEmail);
+  }
+
+  if (pm && pm.emails.length > 0) {
+    pmEmail = pm.emails[0].address;
+    pmEmail = pmEmail + "," + otherPartiesEmail;
+    console.log('pmEmail', pmEmail);
+  }
+
+  if (hoc && hoc.emails.length > 0) {
+    hocEmail = hoc.emails[0].address;
+    hocEmail = hocEmail + "," + otherPartiesEmail;
+    console.log('hocEmail', hocEmail);
   }
 
   if (manager && manager.emails.length > 0) {
@@ -1585,6 +1743,32 @@ Core.sendRetirementUpdateMail = (currentTravelRequest, TravelRequestHelper) => {
       currentTravelRequest,
       supervisorEmail,
       supervisorSubject
+    );
+  }
+
+  if (
+    currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_PM ||
+    currentTravelRequest.retirementStatus === RETIREMENT_REJECTED_BY_PM
+  ) {
+    console.log("Email To: PM", pmEmail);
+    console.log("pmSubject: ", pmSubject);
+    TravelRequestHelper.sendTravelRetirementEmail(
+      currentTravelRequest,
+      pmEmail,
+      pmSubject
+    );
+  }
+
+  if (
+    currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_HOC ||
+    currentTravelRequest.retirementStatus === RETIREMENT_REJECTED_BY_HOC
+  ) {
+    console.log("Email To: HOC", hocEmail);
+    console.log("hocSubject: ", hocSubject);
+    TravelRequestHelper.sendTravelRetirementEmail(
+      currentTravelRequest,
+      hocEmail,
+      hocSubject
     );
   }
 

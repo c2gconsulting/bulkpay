@@ -488,7 +488,7 @@ Meteor.methods({
       // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
       const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
       const {
-        hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+        hodOrSupervisorCond, hocCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
       } = Core.getApprovalQueries(currentUser);
 
       const { departmentOrProjectId } = currentTravelRequest;
@@ -503,9 +503,12 @@ Meteor.methods({
         if (!PM) throw new Meteor.Error(404, "Project manager doesn't exist");
         currentTravelRequest.pmId = (PM && PM._id) || currentTravelRequest.supervisorId;
       } else {
-        const { directSupervisorId, _id, positionId } = currentUser
-        const userId = _id || Meteor.userId()
-        currentTravelRequest.supervisorId =  directSupervisorId || fetchUser(hodOrSupervisorCond, Core.Approvals.HOD);
+        const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
+        const { person_responsible_employee_number: userId } = currentCostCenter || {};
+
+        const hoc = Meteor.users.findOne({ 'employeeProfile.employeeId': userId });
+
+        currentTravelRequest.hocId =  (hoc && hoc._id)  || currentTravelRequest.hocId;
       }
 
       currentTravelRequest.managerId = fetchUser(managerCond, Core.Approvals.MD)
@@ -760,6 +763,35 @@ Meteor.methods({
       if (!isTripByAir) nextApproval = LOGISTICS;
       nextApproval = currentTravelRequest.status === APPROVED_BY_PM ? nextApproval : "";
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, PM, nextApproval);
+
+    } else {
+      let result = TravelRequisition2s.insert(currentTravelRequest);
+    }
+
+    return true;
+  },
+  "TRIPREQUEST/hocApprovals": function(currentTravelRequest){
+    if(!this.userId && Core.hasPayrollAccess(this.userId)){
+        throw new Meteor.Error(401, "Unauthorized");
+    }
+    check(currentTravelRequest.businessId, String);
+    this.unblock()
+    let isTripByAir;
+    for (let i = 0; i < currentTravelRequest.trips.length; i++) {
+      const trip = currentTravelRequest.trips[i];
+      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+    }
+
+    Core.canProcessTrip();
+    if(currentTravelRequest._id){
+      TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
+
+      const { HOC, MD, LOGISTICS } = Core.Approvals;
+      const { APPROVED_BY_HOC } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = MD;
+      if (!isTripByAir) nextApproval = LOGISTICS;
+      nextApproval = currentTravelRequest.status === APPROVED_BY_HOC ? nextApproval : "";
+      Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, HOC, nextApproval);
 
     } else {
       let result = TravelRequisition2s.insert(currentTravelRequest);

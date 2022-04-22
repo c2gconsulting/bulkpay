@@ -95,6 +95,9 @@ RequisitionController = BusinessUnitController.extend({
     showTravelRequisition2PMRetirementIndex: function() {
         this.render('TravelRequisition2PMRetirementIndex')
     },
+    showTravelRequisition2HOCRetirementIndex: function() {
+        this.render('TravelRequisition2HOCRetirementIndex')
+    },
     showTravelRequisition2LogisticsRetirementIndex: function() {
         this.render('TravelRequisition2LogisticsRetirementIndex')
     },
@@ -109,6 +112,9 @@ RequisitionController = BusinessUnitController.extend({
     },
     showTravelRequisition2PMIndex: function() {
         this.render('TravelRequisition2PMIndex')
+    },
+    showTravelRequisition2HOCIndex: function() {
+        this.render('TravelRequisition2HOCIndex')
     },
     showTravelRequisition2GCOOIndex: function() {
         this.render('TravelRequisition2GCOOIndex')

@@ -139,6 +139,18 @@ Meteor.methods({
         // }
         // return Core.getUserApproval(pmCond)
     },
+    "account/hoc": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user._id : "";
+        const data = { ...user, hocPositionId: positionId, managerId: positionId }
+        const { hocCond } = Core.getApprovalQueries(data, true);
+        // if (Core.getUserApproval(hocCond)) return user;
+        // if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne(hocCond);
+            if (isAssigned) return user;
+        // }
+        // return Core.getUserApproval(hocCond)
+    },
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
         const positionId = user ? user.positionId : "";
