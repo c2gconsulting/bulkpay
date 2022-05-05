@@ -369,25 +369,33 @@ DataLoader = class DataLoader {
       const anEntityKey = "POSITION (AS CONTAINED IN SAP S4HANA)";
       const aCategoryKey = "CORRESPONDING STAFF CATEGORY";
 
-      const hashMap = Core.getPositionCategories(entityJSON);
-      const hashMap2 = Core.getPositionCategories(entityJSON2);
+      const staff_categories = Core.getPositionCategories(entityJSON);
+      const staff_categories2 = Core.getPositionCategories(entityJSON2);
 
       Employees.line.map((eachLine, index) => {
         console.info(`CRON JOB IN ACTION: EMPLOYEE DATA FOR ${eachLine.lastname} ${eachLine.firstname}`)
 
         let { position_description, position_long_text } = eachLine;
         position_description = (position_description || position_long_text || "").toLowerCase();
+        position_long_text = (position_long_text || "").toLowerCase();
 
-        let currentPosition = hashMap[position_description];
-        if (!currentPosition) currentPosition = hashMap2[position_description];
-        if (!currentPosition) currentPosition = Core.getPositonCategory(hashMap, position_description)
-        if (!currentPosition) currentPosition = Core.getPositonCategory(hashMap2, position_description)
+        let currentPosition = staff_categories[position_description];
+        if (!currentPosition) currentPosition = staff_categories2[position_description];
+        // Use long position text
+        if (!currentPosition) currentPosition = staff_categories[position_long_text];
+        if (!currentPosition) currentPosition = staff_categories2[position_long_text];
+        // Use search pattern with short position text
+        if (!currentPosition) currentPosition = Core.getPositonCategory(staff_categories, position_description)
+        if (!currentPosition) currentPosition = Core.getPositonCategory(staff_categories2, position_description)
+        // Use search pattern with long position text
+        if (!currentPosition) currentPosition = Core.getPositonCategory(staff_categories, position_long_text)
+        if (!currentPosition) currentPosition = Core.getPositonCategory(staff_categories2, position_long_text)
 
         console.log('currentPosition', currentPosition);
 
         let staffCategory = "", positionName = eachLine.position_description;
         if (currentPosition) {
-          positionName = currentPosition[anEntityKey];
+          positionName = positionName || currentPosition[anEntityKey];
           staffCategory = currentPosition.staffCategory;
         }
 
@@ -427,7 +435,8 @@ DataLoader = class DataLoader {
               // delete user.emails;
               const emailtoFind = user.emails && user.emails[0] && user.emails[0].address
               if (emailtoFind) delete user.emails
-              Meteor.users.update({ $or: [{ customUsername: user.customUsername }, { 'emails.address': { '$regex': `${emailtoFind}`, '$options': 'i' } }] }, { $set: user })
+              // console.log('userFound- user', user);
+              Meteor.users.update({ _id: userFound._id }, { $set: user })
               console.info(
                 `Success importing initialisation ${index + 1} items: ${eachLine.lastname} ${eachLine.firstname}` 
               );

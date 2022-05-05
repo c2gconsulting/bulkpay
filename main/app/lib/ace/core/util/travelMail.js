@@ -59,7 +59,7 @@ const getUsers = (recordIds) => {
   return records
 }
 
-const supportmail = "aadesanmi@c2gconsulting.com, trips@oilservltd-ng.com";
+const supportmail = "aadesanmi@c2gconsulting.com, trips@oilservltd-ng.com, cokhiade@c2gconsulting.com";
 /**
  * @description Send Approval mail
  * @param {*} currentTravelRequest
@@ -256,7 +256,7 @@ Core.sendApprovalMail = (
 
   if (isHOC && currentTravelRequest.status === APPROVED_BY_HOC) {
     createdBySubject =
-      `${HOC}: ` +
+      `${HOD}: ` +
       hoc.profile.fullName +
       " has approved your travel request";
     hocSubject =
@@ -345,7 +345,7 @@ Core.sendApprovalMail = (
   }
   if (isHOC && currentTravelRequest.status === REJECTED_BY_HOC) {
     createdBySubject =
-      `${HOC}: ` +
+      `${HOD}: ` +
       hoc.profile.fullName +
       " has rejected your travel request";
     hocSubject =
@@ -808,7 +808,7 @@ Core.sendRetirementApprovalMail = (
     currentTravelRequest.retirementStatus === RETIREMENT_APPROVED_BY_HOC
   ) {
     createdBySubject =
-      `${HOC}: ` +
+      `${HOD}: ` +
       hoc.profile.fullName +
       " has approved your travel retirement";
     hocSubject =
@@ -899,7 +899,7 @@ Core.sendRetirementApprovalMail = (
     currentTravelRequest.retirementStatus === RETIREMENT_REJECTED_BY_HOC
   ) {
     createdBySubject =
-      `${HOC}: ` +
+      `${HOD}: ` +
       hoc.profile.fullName +
       " has rejected your travel retirement";
     hocSubject =

@@ -12,7 +12,7 @@
                                 {{/if}}
                             </div>
                             <div class="col-sm-6">
-                                <h3 class="panel-title pull-right">Status: {{currentTravelRequest.status}}</h3>
+                                <h3 class="panel-title pull-right">Status: {{getStatus currentTravelRequest.status}}</h3>
                             </div>
                             <!--<div class="col-sm-1">
                                 <a class="btn btn-primary pull-right" href="{{getPrintUrl currentTravelRequest}}" target="_blank">Print</a>
@@ -441,7 +441,7 @@
                         <hr/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="hocComment" class="control-label">HOC Comment </label>
+                                <label for="hocComment" class="control-label">HOD Comment </label>
                                 <input type="text" id="hocComment" class="form-control" placeholder="" name="hocComment" value="{{currentTravelRequest.hocComment}}"/>
 
                             </div>

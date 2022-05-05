@@ -74,13 +74,22 @@ Template.TravelRequisition2AdminIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({createdBy: Meteor.userId()}).count()
+        let totalNum = TravelRequisition2s.find({$and : [
+            { retirementStatus: "Not Retired"},
+            { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
+        ]}).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
         if (remainder > 0)
             result += 2;
         return result;
+    },
+    getStatus: function (status) {
+      const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+      let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+      newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+      return newStatus;
     },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy

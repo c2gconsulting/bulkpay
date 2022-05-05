@@ -231,7 +231,7 @@ Template.TravelRequisitionRetirement2AdminDetail.helpers({
 
         const dApprovals = [
             { approvalId: budgetHolderId, label: BUDGETHOLDER, id: 'budgetHolderId' },
-            { approvalId: hocId, label: HOC, id: 'hocId' },
+            { approvalId: hocId, label: HOD /* HOC */, id: 'hocId' },
             { approvalId: pmId, label: PM, id: 'pmId' },
             { approvalId: supervisorId, label: HOD, id: 'supervisorId' },
             NEXT_APPROVAL_LABEL,

@@ -143,6 +143,12 @@ Template.TravelRequisition2AdminDetail.helpers({
     'employees': () => {
         return  Meteor.users.find({"employee": true});
     },
+    getStatus: function (status) {
+      const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+      let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+      newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+      return newStatus;
+    },
     travelApprovals: function () {
         let isAirTransportationMode = false;
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
@@ -167,7 +173,7 @@ Template.TravelRequisition2AdminDetail.helpers({
 
         const dApprovals = [
             { approvalId: budgetHolderId, label: BUDGETHOLDER, id: 'budgetHolderId' },
-            { approvalId: hocId, label: HOC, id: 'hocId' },
+            { approvalId: hocId, label: HOD /* HOC */, id: 'hocId' },
             { approvalId: pmId, label: PM, id: 'pmId' },
             { approvalId: supervisorId, label: HOD, id: 'supervisorId' },
             { approvalId: managerId, label: MD, id: 'managerId' },

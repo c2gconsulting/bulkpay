@@ -58,7 +58,8 @@ Accounts.onCreateUser(function (options, user) {
     user.businessIds = options.businessIds || [];
     user.group = tenantId;
 
-    const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
+    const office365Result = Core.office365AuthenticationSuite(user, tenantId);
+    const { user: authUser, tenantId: authTenantId, userExist } = office365Result;
     user = authUser;
     tenantId = authTenantId || tenantId;
 

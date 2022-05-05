@@ -12,7 +12,7 @@
                     <li>Retirement Approvals</li>
                 </ul>
 
-                <h4>Retirement Approvals: HOC </h4>
+                <h4>Retirement Approvals: HOD </h4>
             </div>
         </div><!-- media -->
     </div><!-- pageheader -->
@@ -52,7 +52,7 @@
                                     {{else}}
                                     <td nowrap></td>
                                     {{/if}}
-                                    <td>{{retirementStatus}}</td>
+                                    <td>{{getStatus retirementStatus}}</td>
                                     <!--<td>{{formatMoneyD (totalTripCostNGN this) }}</td>-->
                                 </tr>
                                 {{/each}}

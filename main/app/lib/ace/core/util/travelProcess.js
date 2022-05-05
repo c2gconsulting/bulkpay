@@ -514,9 +514,10 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   let hodOrSupervisorCond = { positionId: hodPositionId };
   let pmCond = { $or: [{ pmIds: pmPositionId  }, { pmId: pmPositionId  }] };
   let hocCond = { $or: [{ hocIds: hocPositionId  }, { hocId: hocPositionId  }] };
-  // let managerCond = { positionId: managerId };
-  let managerCond = { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } };
-  let GcooCond = { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } };
+  let managerCond = { positionId: managerId };
+  // let managerCond = { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } };
+  // let GcooCond = { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } };
+  let GcooCond = { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } };
   let GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
   let bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
   let logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
@@ -526,9 +527,10 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   // Check Current User Approval Access
   if (myApprovalAccess) {
     hodOrSupervisorCond = { hodPositionId  };
-    // managerCond = { managerId };
-    managerCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } }] };
-    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } }] };
+    managerCond = { managerId };
+    // managerCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } }] };
+    // GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } }] };
+    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } }] };
     GceoCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
   } else {}
 
@@ -651,7 +653,12 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
     return null
   }
 
+  console.log('isAboveOrGCEO', isAboveOrGCEO)
+  console.log('isAirRailTransportationMode', isAirRailTransportationMode)
+  console.log('recipientPosition', recipientPosition)
   if (!isAboveOrGCEO && isAirRailTransportationMode && recipientPosition === GCEO) {
+    console.log('isInternationalTrip', isInternationalTrip)
+    console.log('isInternationalTrip', isInternationalTrip)
     if (isInternationalTrip) return Meteor.user();
     return null
   }

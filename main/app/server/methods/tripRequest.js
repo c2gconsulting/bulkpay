@@ -127,6 +127,14 @@ let TravelRequestHelper = {
       //   }),
       // }
       // Core.sendMail(data)
+
+      const getStatus  = (status) => {
+        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD, } = Core.ALL_TRAVEL_STATUS;
+        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+        return newStatus;
+      }
+
       SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
       Email.send({
         to: emailTo,
@@ -138,7 +146,7 @@ let TravelRequestHelper = {
           returnDate: TravelRequestHelper.formatDate(returnDate),
           travelType: travelType,
           employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-          status: currentTravelRequest.status,
+          status: getStatus(currentTravelRequest.status),
           description: currentTravelRequest.description,
           totalTripDuration: currentTravelRequest.totalTripDuration,
           totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
@@ -212,6 +220,12 @@ let TravelRequestHelper = {
       // }
       // Core.sendMail(data)
 
+      const getStatus  = (status) => {
+        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+        return newStatus;
+      }
 
       //Todo, itenerary, employee full name
       SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
@@ -225,7 +239,7 @@ let TravelRequestHelper = {
           returnDate: TravelRequestHelper.formatDate(returnDate),
           travelType: travelType,
           employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-          status: currentTravelRequest.retirementStatus,
+          status: getStatus(currentTravelRequest.retirementStatus),
           description: currentTravelRequest.description,
           totalTripDuration: currentTravelRequest.totalTripDuration,
           actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,

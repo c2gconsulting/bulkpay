@@ -9,7 +9,7 @@
                                 <h3 class="panel-title">Travel Request Retirement for {{getEmployeeNameById currentTravelRequest.createdBy}}</h3>
                             </div>
                             <div class="col-sm-6">
-                                <h3 class="panel-title pull-right">Status: {{currentTravelRequest.retirementStatus}}</h3>
+                                <h3 class="panel-title pull-right">Status: {{getStatus currentTravelRequest.retirementStatus}}</h3>
                             </div>
                         </div>
 
@@ -562,7 +562,7 @@
                         <br/>
                         <div class="row">
                             <div class="col-sm-12">
-                                <label for="hocRetirementComment" class="control-label">HOC Retirement Comments</label>
+                                <label for="hocRetirementComment" class="control-label">HOD Retirement Comments</label>
                                 <input type="text" id="hocRetirementComment" class="form-control" placeholder="" name="hocRetirementComment" value="{{currentTravelRequest.hocRetirementComment}}"/>
 
                             </div>

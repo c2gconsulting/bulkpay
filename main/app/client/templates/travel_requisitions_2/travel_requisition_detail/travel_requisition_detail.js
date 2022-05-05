@@ -124,7 +124,7 @@ Template.TravelRequisition2Detail.helpers({
         const dApprovals = [
             { approvalId: budgetHolderId, label: BUDGETHOLDER },
             { approvalId: supervisorId, label: HOD },
-            { approvalId: hocId, label: HOC },
+            { approvalId: hocId, label: HOD /* HOC */ },
             { approvalId: pmId, label: PM },
             { approvalId: managerId, label: MD },
             { approvalId: gcooId, label: GCOO },
@@ -152,6 +152,13 @@ Template.TravelRequisition2Detail.helpers({
     
     getAttachmentUrl: function (data) {
       return data.fileUrl || data.imageUrl
+    },
+
+    getStatus: function (status) {
+      const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+      let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+      newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+      return newStatus;
     },
     'getEmployeeNameById': function(employeeId){
         if (typeof employeeId !== 'string') {
