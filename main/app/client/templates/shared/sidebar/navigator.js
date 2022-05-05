@@ -102,6 +102,16 @@ Template.navigator.events({
             tmpl.expandedMenu.set(menuId)
         }
     },
+    'click #travelHOCMenu': function(event, tmpl) {
+        let menuId = $(event.currentTarget).attr('id')
+
+        let currentExpandedMenu = tmpl.expandedMenu.get()
+        if(menuId === currentExpandedMenu) {
+            tmpl.expandedMenu.set(null)
+        } else {
+            tmpl.expandedMenu.set(menuId)
+        }
+    },
     'click #travelLogisticsMenu': function(event, tmpl) {
         let menuId = $(event.currentTarget).attr('id')
 
@@ -291,6 +301,14 @@ Template.navigator.helpers({
     isUserAPM: function() {
         // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
         if (Template.instance().pm.get()){
+            return true;
+        } else {
+            return false;
+        }
+    },
+    isUserHOC: function() {
+        // if (Meteor.users.findOne({directSupervisorId: Meteor.userId()})){
+        if (Template.instance().hoc.get()){
             return true;
         } else {
             return false;
@@ -590,6 +608,7 @@ Template.navigator.onCreated(function () {
     self.travelApprovalConfig = new ReactiveVar();
     self.payrollApprovalConfig = new ReactiveVar();
     self.pm = new ReactiveVar();
+    self.hoc = new ReactiveVar();
     self.hod = new ReactiveVar();
     self.directManager = new ReactiveVar();
     self.gceo = new ReactiveVar();
@@ -614,6 +633,10 @@ Template.navigator.onCreated(function () {
 
         Meteor.call('account/pm', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
             if (res) self.pm.set(res)
+        })
+
+        Meteor.call('account/hoc', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+            if (res) self.hoc.set(res)
         })
 
         Meteor.call('account/hod', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {

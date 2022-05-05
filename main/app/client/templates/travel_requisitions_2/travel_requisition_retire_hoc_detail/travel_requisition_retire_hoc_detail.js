@@ -1,21 +1,22 @@
 
 /*****************************************************************************/
-/* TravelRequisition2RetirementPrint: Event Handlers */
+/* TravelRequisition2HOCRetirementDetail: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2RetirementPrint.events({
+Template.TravelRequisition2HOCRetirementDetail.events({
     'click #approve': (e, tmpl) => {
 
       let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-      currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-      currentTravelRequest.retirementStatus = "Retirement Approved By HOD";
+      currentTravelRequest.hocRetirementComment = $("#hocRetirementComment").val();
+      const { RETIREMENT_APPROVED_BY_HOC } = Core.ALL_TRAVEL_STATUS
+      currentTravelRequest.retirementStatus = RETIREMENT_APPROVED_BY_HOC;
 
 
-     Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+     Meteor.call('TRIPREQUEST/hocRetirements', currentTravelRequest, (err, res) => {
          if (res){
              swal({
-                 title: "Trip retirement has been Approved By HOD",
+                 title: "Trip retirement has been Approved By HOC",
                 //  text: "Employee retirement has been updated,notification has been sent to the necessary parties",
                  confirmButtonClass: "btn-success",
                  type: "success",
@@ -36,10 +37,11 @@ Template.TravelRequisition2RetirementPrint.events({
      'click #reject': (e, tmpl) => {
 
          let currentTravelRequest = tmpl.currentTravelRequest.curValue;
-         currentTravelRequest.supervisorRetirementComment = $("#supervisorRetirementComment").val();
-         currentTravelRequest.retirementStatus = "Retirement Rejected By HOD";
+         currentTravelRequest.hocRetirementComment = $("#hocRetirementComment").val();
+         const { RETIREMENT_REJECTED_BY_HOC } = Core.ALL_TRAVEL_STATUS
+         currentTravelRequest.retirementStatus = RETIREMENT_REJECTED_BY_HOC;
 
-      Meteor.call('TravelRequest2/supervisorRetirements', currentTravelRequest, (err, res) => {
+      Meteor.call('TRIPREQUEST/hocRetirements', currentTravelRequest, (err, res) => {
           if (res){
               swal({
                   title: "Trip retirement has been Rejected By HOD",
@@ -69,9 +71,9 @@ Template.registerHelper('formatDate', function(date) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2RetirementPrint: Helpers */
+/* TravelRequisition2HOCRetirementDetail: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2RetirementPrint.helpers({
+Template.TravelRequisition2HOCRetirementDetail.helpers({
     ACTIVITY: () => 'activityId',
     COSTCENTER: () => 'costCenter',
     PROJECT_AND_DEPARTMENT: () => 'departmentOrProjectId',
@@ -203,12 +205,6 @@ Template.TravelRequisition2RetirementPrint.helpers({
             return currentTravelRequest.trips[parseInt(index) - 1].provideGroundTransport? checked="checked" : '';
         }
     },
-    cashAdvanceNotRequiredChecked(){
-        const currentTravelRequest = Template.instance().currentTravelRequest.get();
-        if(currentTravelRequest){
-            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
-        }
-    },
     isLunchIncluded(index){
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
@@ -219,6 +215,12 @@ Template.TravelRequisition2RetirementPrint.helpers({
         const currentTravelRequest = Template.instance().currentTravelRequest.get();
         if(currentTravelRequest && index){
             return currentTravelRequest.trips[parseInt(index) - 1].isDinnerIncluded? checked="checked" : '';
+        }
+    },
+    cashAdvanceNotRequiredChecked(){
+        const currentTravelRequest = Template.instance().currentTravelRequest.get();
+        if(currentTravelRequest){
+            return currentTravelRequest.cashAdvanceNotRequired? checked="checked" : '';
         }
     },
     isIncidentalsIncluded(index){
@@ -298,23 +300,6 @@ Template.TravelRequisition2RetirementPrint.helpers({
         }
     },
 
-    attachments: function () {
-      // Meteor.Attachment.find({ })
-      console.log('instance()', Template.instance())
-      console.log('Template.instance()()', Template.instance().data)
-      const requisitionId = Template.instance().currentTravelRequest.get()._id
-      console.log('requisitionId', requisitionId)
-      const attachments = Attachments.find({ travelId: requisitionId })
-      console.log('attachments', attachments)
-      return attachments;
-    },
-    getAttachmentName: function (data) {
-      return data.name || data.fileUrl || data.imageUrl
-    },
-    
-    getAttachmentUrl: function (data) {
-      return data.fileUrl || data.imageUrl
-    },
     'getHumanReadableApprovalState': function(boolean) {
         return boolean ? "Approved" : "Rejected"
     },
@@ -332,23 +317,16 @@ Template.TravelRequisition2RetirementPrint.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2RetirementPrint: Lifecycle Hooks */
+/* TravelRequisition2HOCRetirementDetail: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2RetirementPrint.onCreated(function () {
-
+Template.TravelRequisition2HOCRetirementDetail.onCreated(function () {
     let self = this;
-    let businessUnitId = Router.current().params._id;
-        self.subscribe("allEmployees", Router.current().params._id);
-    self.subscribe("travelcities",  Router.current().params._id);
-    self.subscribe("hotels",  Router.current().params._id);
-    self.subscribe("airlines",  Router.current().params._id);
-    self.subscribe("budgets",  Router.current().params._id);
-    self.subscribe("attachments", Router.current().params._id);
+    let businessUnitId = Session.get('context');
+    self.subscribe("travelcities", Session.get('context'));
+    self.subscribe("hotels", Session.get('context'));
+    self.subscribe("airlines", Session.get('context'));
+    self.subscribe("budgets", Session.get('context'));
 
-    let invokeReason = {}
-    invokeReason.requisitionId = Router.current().params.query.requisitionId
-    invokeReason.reason = 'edit'
-    invokeReason.approverId = null
 
 
 
@@ -365,6 +343,8 @@ Template.TravelRequisition2RetirementPrint.onCreated(function () {
     self.currentActivity = new ReactiveVar()
 
     self.businessUnitCustomConfig = new ReactiveVar()
+
+    let invokeReason = self.data;
 
     // self.totalTripCost = new ReactiveVar(0)
     self.amountNonPaybelToEmp = new ReactiveVar(0)
@@ -405,6 +385,7 @@ Template.TravelRequisition2RetirementPrint.onCreated(function () {
 
             Core.defaultDepartmentAndProject(self, travelRequestDetails)
 
+
         }
 
         if(businessUnitSubscription.ready()) {
@@ -416,7 +397,7 @@ Template.TravelRequisition2RetirementPrint.onCreated(function () {
 
 });
 
-Template.TravelRequisition2RetirementPrint.onRendered(function () {
+Template.TravelRequisition2HOCRetirementDetail.onRendered(function () {
     $('select.dropdown').dropdown();
     let self = this
 
@@ -437,5 +418,5 @@ Template.TravelRequisition2RetirementPrint.onRendered(function () {
     }
 });
 
-Template.TravelRequisition2RetirementPrint.onDestroyed(function () {
+Template.TravelRequisition2HOCRetirementDetail.onDestroyed(function () {
 });

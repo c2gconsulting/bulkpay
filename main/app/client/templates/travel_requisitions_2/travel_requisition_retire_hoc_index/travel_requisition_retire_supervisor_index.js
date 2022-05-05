@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisition2AdminIndex: Event Handlers */
+/* TravelRequisition2HOCRetirementIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2AdminIndex.events({
+Template.TravelRequisition2HOCRetirementIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,10 +17,7 @@ Template.TravelRequisition2AdminIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        const status = $("#status_" + requisitionId).html();
-
-        Modal.show('TravelRequisition2AdminDetail', invokeReason);
-
+        Modal.show('TravelRequisition2HOCRetirementDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -28,8 +25,8 @@ Template.TravelRequisition2AdminIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsAdminCreated(skip)
-        Template.instance().travelRequestsAdminCreated.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByHOC(skip)
+        Template.instance().travelRequestsByHOC.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -51,33 +48,16 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2AdminIndex: Helpers */
+/* TravelRequisition2HOCRetirementIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2AdminIndex.helpers({
-    'travelRequestsAdminCreated': function() {
-        return Template.instance().travelRequestsAdminCreated.get()
-    },
-    'hasUnretiredTrips': function() {
-
-        let unretiredCount = TravelRequisition2s.find({
-            $and : [
-                { retirementStatus: "Not Retired"},
-                { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
-            ]}).count()
-        console.log("Unretired Count: " + unretiredCount);
-        if (unretiredCount > 0){
-            return true;
-        }else{
-            return false;
-        }
-
+Template.TravelRequisition2HOCRetirementIndex.helpers({
+    'travelRequestsByHOC': function() {
+        return Template.instance().travelRequestsByHOC.get()
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { retirementStatus: "Not Retired"},
-            { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
-        ]}).count()
+        const { hocRetirementCond  } = Core.getTravelQueries()
+        let totalNum = TravelRequisition2s.find(hocRetirementCond).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -97,27 +77,6 @@ Template.TravelRequisition2AdminIndex.helpers({
         const user = Meteor.users.findOne(userId)
         return user ? user.profile.fullName : '...'
     },
-    getSupervisorFullName: (requisition) => {
-        const userId = requisition.supervisorId
-
-        const user = Meteor.users.findOne(userId)
-        return user ? user.profile.fullName : '...'
-    },
-    getBudgetHolderFullName: (requisition) => {
-        const userId = requisition.budgetHolderId
-
-        const user = Meteor.users.findOne(userId)
-        return user ? user.profile.fullName : '...'
-    },
-    'getBudgetName': function(budgetCodeId) {
-        const budget = Budgets.findOne({_id: budgetCodeId})
-
-        if(budget) {
-            return budget.name
-        } else {
-            return 'NONE'
-        }
-    },
     'currentPage': function() {
         return Template.instance().currentPage.get()
     },
@@ -129,48 +88,38 @@ Template.TravelRequisition2AdminIndex.helpers({
             return totalTripCostNGN;
         }
     },
-    'getPrintUrl': function(currentTravelRequest) {
-        if(currentTravelRequest) {
-            return Meteor.absoluteUrl() + 'business/' + currentTravelRequest.businessId + '/travelrequests2/printrequisition?requisitionId=' + currentTravelRequest._id
-        }
-    }
 
 });
 
 /*****************************************************************************/
-/* TravelRequisition2AdminIndex: Lifecycle Hooks */
+/* TravelRequisition2HOCRetirementIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2AdminIndex.onCreated(function () {
+Template.TravelRequisition2HOCRetirementIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
-
-
 
     self.NUMBER_PER_PAGE = new ReactiveVar(10);
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsAdminCreated = new ReactiveVar()
+    self.travelRequestsByHOC = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-
-    self.getTravelRequestsAdminCreated = function(skip) {
+    self.getTravelRequestsByHOC = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
-
-
         let options = {};
         options.sort = {};
+        //options.sort["status"] = sortDirection;
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-
-        return TravelRequisition2s.find({}, options);
-
-    }
+        const { hocRetirementCond  } = Core.getTravelQueries()
+        return TravelRequisition2s.find(hocRetirementCond, options);
+            }
 
     self.subscribe('getCostElement', businessUnitId)
 
@@ -181,19 +130,9 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let employeeProfile = Meteor.user().employeeProfile
-        if(employeeProfile && employeeProfile.employment && employeeProfile.employment.position) {
-            let userPositionId = employeeProfile.employment.position
-
-            let positionSubscription = self.subscribe('getEntity', userPositionId)
-        }
-
-        let travelRequestsCreatedSub = self.subscribe('TravelRequestsAdminCreated', businessUnitId, limit, sort)
-        if(travelRequestsCreatedSub.ready()) {
-            self.travelRequestsAdminCreated.set(self.getTravelRequestsAdminCreated(0))
-            // const mainList = self.getTravelRequestsICreated(0).fetch();
-            // self.travelRequestsICreated.set(mainList)
-            // console.log(mainList)
+        let travelRequestsByHOCSub = self.subscribe('TravelRequestsByHOC', businessUnitId, Meteor.userId());
+        if(travelRequestsByHOCSub.ready()) {
+            self.travelRequestsByHOC.set(self.getTravelRequestsByHOC(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -203,10 +142,10 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisition2AdminIndex.onRendered(function () {
+Template.TravelRequisition2HOCRetirementIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisition2AdminIndex.onDestroyed(function () {
+Template.TravelRequisition2HOCRetirementIndex.onDestroyed(function () {
 });

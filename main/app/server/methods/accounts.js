@@ -58,7 +58,8 @@ Accounts.onCreateUser(function (options, user) {
     user.businessIds = options.businessIds || [];
     user.group = tenantId;
 
-    const { user: authUser, tenantId: authTenantId, userExist } = Core.office365AuthenticationSuite(user, tenantId);
+    const office365Result = Core.office365AuthenticationSuite(user, tenantId);
+    const { user: authUser, tenantId: authTenantId, userExist } = office365Result;
     user = authUser;
     tenantId = authTenantId || tenantId;
 
@@ -138,6 +139,18 @@ Meteor.methods({
             if (isAssigned) return user;
         // }
         // return Core.getUserApproval(pmCond)
+    },
+    "account/hoc": function (userId, isAssignedToTreatTripRequest) {
+        const user = Meteor.user();
+        const positionId = user ? user._id : "";
+        const data = { ...user, hocPositionId: positionId, managerId: positionId }
+        const { hocCond } = Core.getApprovalQueries(data, true);
+        // if (Core.getUserApproval(hocCond)) return user;
+        // if (isAssignedToTreatTripRequest) {
+            const isAssigned = TravelRequisition2s.findOne(hocCond);
+            if (isAssigned) return user;
+        // }
+        // return Core.getUserApproval(hocCond)
     },
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();

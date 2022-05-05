@@ -12,6 +12,10 @@ Core.publish("TravelRequestsByPM", function (businessUnitId, pmId) {
     return TravelRequisition2s.find({businessId: businessUnitId, pmId: pmId});
 });
 
+Core.publish("TravelRequestsByHOC", function (businessUnitId, hocId) {
+    return TravelRequisition2s.find({businessId: businessUnitId, hocId: hocId});
+});
+
  Core.publish("TravelRequestsByMD", function (businessUnitId, managerId) {
     return TravelRequisition2s.find({businessId: businessUnitId, managerId: managerId});
 });

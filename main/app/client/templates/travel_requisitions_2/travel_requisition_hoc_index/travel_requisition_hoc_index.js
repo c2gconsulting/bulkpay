@@ -1,9 +1,9 @@
 /*****************************************************************************/
-/* TravelRequisition2LogisticsIndex: Event Handlers */
+/* TravelRequisition2HOCIndex: Event Handlers */
 /*****************************************************************************/
 import _ from 'underscore';
 
-Template.TravelRequisition2LogisticsIndex.events({
+Template.TravelRequisition2HOCIndex.events({
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -17,7 +17,7 @@ Template.TravelRequisition2LogisticsIndex.events({
         invokeReason.reason = 'edit'
         invokeReason.approverId = null
 
-        Modal.show('TravelRequisition2LogisticsDetail', invokeReason)
+        Modal.show('TravelRequisition2HOCDetail', invokeReason)
     },
     'click .goToPage': function(e, tmpl) {
         let pageNum = e.currentTarget.getAttribute('data-pageNum')
@@ -25,8 +25,8 @@ Template.TravelRequisition2LogisticsIndex.events({
         let limit = Template.instance().NUMBER_PER_PAGE.get()
         let skip = limit * pageNumAsInt
 
-        let newPageOfProcurements = Template.instance().getTravelRequestsByLogistics(skip)
-        Template.instance().travelRequestsByLogistics.set(newPageOfProcurements)
+        let newPageOfProcurements = Template.instance().getTravelRequestsByHOC(skip)
+        Template.instance().travelRequestsByHOC.set(newPageOfProcurements)
 
         Template.instance().currentPage.set(pageNumAsInt)
     },
@@ -48,20 +48,16 @@ Template.registerHelper('repeat', function(max) {
 });
 
 /*****************************************************************************/
-/* TravelRequisition2LogisticsIndex: Helpers */
+/* TravelRequisition2HOCIndex: Helpers */
 /*****************************************************************************/
-Template.TravelRequisition2LogisticsIndex.helpers({
-    'travelRequestsByLogistics': function() {
-        return Template.instance().travelRequestsByLogistics.get()
+Template.TravelRequisition2HOCIndex.helpers({
+    'travelRequestsByHOC': function() {
+        return Template.instance().travelRequestsByHOC.get()
     },
     'numberOfPages': function() {
-        let limit = Template.instance().NUMBER_PER_PAGE.get()
-        const { logisticsCondition } = Core.getTravelQueries()
-        // {$and : [
-        //     { logisticsId: Meteor.userId()},
-        //     { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
-        // ]}
-        let totalNum = TravelRequisition2s.find(logisticsCondition).count()
+        let limit = Template.instance().NUMBER_PER_PAGE.get();
+        const { hocCondition } = Core.getTravelQueries();
+        let totalNum = TravelRequisition2s.find(hocCondition).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -69,17 +65,17 @@ Template.TravelRequisition2LogisticsIndex.helpers({
             result += 2;
         return result;
     },
-    getStatus: function (status) {
-      const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
-      let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
-      newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
-      return newStatus;
-    },
     getCreatedByFullName: (requisition) => {
         const userId = requisition.createdBy
 
         const user = Meteor.users.findOne(userId)
         return user ? user.profile.fullName : '...'
+    },
+    getStatus: function (status) {
+      const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+      let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+      newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+      return newStatus;
     },
     'currentPage': function() {
         return Template.instance().currentPage.get()
@@ -96,9 +92,9 @@ Template.TravelRequisition2LogisticsIndex.helpers({
 });
 
 /*****************************************************************************/
-/* TravelRequisition2LogisticsIndex: Lifecycle Hooks */
+/* TravelRequisition2HOCIndex: Lifecycle Hooks */
 /*****************************************************************************/
-Template.TravelRequisition2LogisticsIndex.onCreated(function () {
+Template.TravelRequisition2HOCIndex.onCreated(function () {
     let self = this;
     let businessUnitId = Session.get('context')
 
@@ -106,12 +102,12 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
-    self.travelRequestsByLogistics = new ReactiveVar()
+    self.travelRequestsByHOC = new ReactiveVar()
     self.businessUnitCustomConfig = new ReactiveVar()
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsByLogistics = function(skip) {
+    self.getTravelRequestsByHOC = function(skip) {
         let sortBy = "createdAt";
         let sortDirection = -1;
 
@@ -121,14 +117,8 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
-        const { logisticsCondition } = Core.getTravelQueries()
-        // {
-        //     $and : [
-        //         { logisticsId: Meteor.userId()},
-        //         { $or : [{ status : "Approved By HOD" }, { status : "Processed By Logistics" }, { status : "Approved By GCOO" }, { status : "Approved By GCEO" }, { status : "Processed By BST" }] }
-        //     ]
-        // }
-        return TravelRequisition2s.find(logisticsCondition, options);
+        const { hocCondition } = Core.getTravelQueries();
+        return TravelRequisition2s.find(hocCondition, options);
     }
 
     self.subscribe('getCostElement', businessUnitId)
@@ -140,9 +130,9 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
         let sort = {};
         sort[sortBy] = sortDirection;
 
-        let travelRequestsByLogisticsSub = self.subscribe('TravelRequestsByLogistics', businessUnitId, Meteor.userId());
-        if(travelRequestsByLogisticsSub.ready()) {
-            self.travelRequestsByLogistics.set(self.getTravelRequestsByLogistics(0))
+        let travelRequestsByHOCSub = self.subscribe('TravelRequestsByHOC', businessUnitId, Meteor.userId());
+        if(travelRequestsByHOCSub.ready()) {
+            self.travelRequestsByHOC.set(self.getTravelRequestsByHOC(0))
         }
         //--
         if(customConfigSub.ready()) {
@@ -152,10 +142,10 @@ Template.TravelRequisition2LogisticsIndex.onCreated(function () {
     })
 });
 
-Template.TravelRequisition2LogisticsIndex.onRendered(function () {
+Template.TravelRequisition2HOCIndex.onRendered(function () {
     $('select.dropdown').dropdown();
     $("html, body").animate({ scrollTop: 0 }, "slow");
 });
 
-Template.TravelRequisition2LogisticsIndex.onDestroyed(function () {
+Template.TravelRequisition2HOCIndex.onDestroyed(function () {
 });

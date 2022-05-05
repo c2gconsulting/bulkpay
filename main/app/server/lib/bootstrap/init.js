@@ -327,14 +327,14 @@ Meteor.startup(function () {
   SyncedCron.start();
   if (Meteor.isServer) {
     // Import EMPLOYEES, COST CENTERS, AND PROJECTS
-    if (process.env.IMPORT_OILSERV_DATA !== 'false') {
+    // if (process.env.IMPORT_OILSERV_DATA !== 'false') {
       console.log('SEEDING DATA')
       Core.apiClient("employees", Loader.loadEmployeeData, () => {
-        Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
-          Core.apiClient("projects", Loader.loadProjectData, () => {})
-        })
+        // Core.apiClient("costcenters", Loader.loadCostCenterData, () => {
+        //   Core.apiClient("projects", Loader.loadProjectData, () => {})
+        // })
       })
-    }
+    // }
 
     // Import Employees, Cost centers, and projects
     // console.log('process.env.IMPORT_EMPLOYEE_OILSERV_DATA', typeof process.env.IMPORT_EMPLOYEE_OILSERV_DATA)
