@@ -517,7 +517,7 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   let managerCond = { positionId: managerId };
   // let managerCond = { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } };
   // let GcooCond = { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } };
-  let GcooCond = { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } };
+  let GcooCond = { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } };
   let GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
   let bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
   let logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
@@ -530,7 +530,7 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
     managerCond = { managerId };
     // managerCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } }] };
     // GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } }] };
-    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } }] };
+    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
     GceoCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
   } else {}
 
@@ -624,7 +624,10 @@ Core.canProcessTrip = () => {
 
 Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   let isAirRailTransportationMode = false;
+  let isRailTransportationMode = false;
+  let isLandTransportationMode = false;
   let isAirTransportationMode = false;
+  let hasAccommodation = "";
   const { trips, destinationType, } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
@@ -632,8 +635,11 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
-    const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true;
+    const { transportationMode, accommodation } = trips[i];
+    // if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true;
+    if (['Hotel', 'Guest House'].includes(accommodation)) hasAccommodation = true;
+    if (transportationMode == 'LAND') isLandTransportationMode = true;
+    if (transportationMode == 'RAIL') isRailTransportationMode = true;
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
@@ -641,29 +647,29 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
     return Meteor.user();
   }
 
-  if (!isAboveOrMD && isAirRailTransportationMode && recipientPosition === MD) {
-    if (isAirRailTransportationMode) return Meteor.user();
+  if (!isAboveOrMD && isAirTransportationMode && recipientPosition === MD) {
+    if (isAirTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirRailTransportationMode && recipientPosition === GCOO) {
-    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
+  if (!isAboveOrGCOO && isAirTransportationMode && recipientPosition === GCOO) {
+    if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
+    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
   console.log('isAboveOrGCEO', isAboveOrGCEO)
-  console.log('isAirRailTransportationMode', isAirRailTransportationMode)
+  console.log('isAirTransportationMode', isAirTransportationMode)
   console.log('recipientPosition', recipientPosition)
-  if (!isAboveOrGCEO && isAirRailTransportationMode && recipientPosition === GCEO) {
+  if (!isAboveOrGCEO && isAirTransportationMode && recipientPosition === GCEO) {
     console.log('isInternationalTrip', isInternationalTrip)
     console.log('isInternationalTrip', isInternationalTrip)
     if (isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAirRailTransportationMode && recipientPosition === LOGISTICS) {
+  if ((isLandTransportationMode || isRailTransportationMode) && recipientPosition === LOGISTICS) {
     return Meteor.user();
   }
 

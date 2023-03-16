@@ -787,7 +787,8 @@ _.extend(Core, {
             return string.slice(0, 1).toUpperCase() + string.slice(1)
         }
 
-        const businessIds = ["FYTbXLB9whRc4Lkh4"]; // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
+        const hasBusiness = (existingAdminUser.businessIds && existingAdminUser.businessIds.length)
+        const businessIds = hasBusiness ? existingAdminUser.businessIds : ["FYTbXLB9whRc4Lkh4"]; // FYTbXLB9whRc4Lkh4 - dev - FJe5hXSxCHvR2FBjJ
         const roles = { "__global_roles__" : ["ess/all"] };
         // password = password || "$2a$10$PR3Sbybwr6LIuAVPOFCkX.4fAuizRt3Ttc0.60OMCQ0.ouRoYnpyW";
         // const services = { "password" : { "bcrypt" : password } };

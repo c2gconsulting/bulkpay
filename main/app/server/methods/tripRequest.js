@@ -99,6 +99,13 @@ let TravelRequestHelper = {
         }
       }
 
+      const getStatus  = (status) => {
+        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD, } = Core.ALL_TRAVEL_STATUS;
+        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+        return newStatus;
+      }
+
       // const data = {
       //   to: emailTo,
       //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
@@ -110,7 +117,7 @@ let TravelRequestHelper = {
       //     returnDate: TravelRequestHelper.formatDate(returnDate),
       //     travelType: travelType,
       //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.status,
+      //     status: getStatus(currentTravelRequest.status),
       //     description: currentTravelRequest.description,
       //     totalTripDuration: currentTravelRequest.totalTripDuration,
       //     totalEmployeePerdiemNGN: TravelRequestHelper.formatNumber(currentTravelRequest.totalEmployeePerdiemNGN,2),
@@ -127,13 +134,6 @@ let TravelRequestHelper = {
       //   }),
       // }
       // Core.sendMail(data)
-
-      const getStatus  = (status) => {
-        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD, } = Core.ALL_TRAVEL_STATUS;
-        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
-        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
-        return newStatus;
-      }
 
       SSR.compileTemplate("TravelRequestNotification2", Assets.getText("emailTemplates/TravelRequestNotification2.html"));
       Email.send({
@@ -180,6 +180,13 @@ let TravelRequestHelper = {
         }
       }
 
+      const getStatus  = (status) => {
+        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
+        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
+        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
+        return newStatus;
+      }
+
       // const data = {
       //   to: emailTo,
       //   from: "OILSERV TRIPS™ Travel Team <bulkpay@c2gconsulting.com>",
@@ -191,7 +198,7 @@ let TravelRequestHelper = {
       //     returnDate: TravelRequestHelper.formatDate(returnDate),
       //     travelType: travelType,
       //     employeeFullName: TravelRequestHelper.getEmployeeNameById(currentTravelRequest.createdBy),
-      //     status: currentTravelRequest.retirementStatus,
+      //     status: getStatus(currentTravelRequest.retirementStatus),
       //     description: currentTravelRequest.description,
       //     totalTripDuration: currentTravelRequest.totalTripDuration,
       //     actualTotalTripDuration: currentTravelRequest.actualTotalTripDuration,
@@ -219,13 +226,6 @@ let TravelRequestHelper = {
       //   }),
       // }
       // Core.sendMail(data)
-
-      const getStatus  = (status) => {
-        const { APPROVED_BY_HOC, APPROVED_BY_HOD, REJECTED_BY_HOC, REJECTED_BY_HOD } = Core.ALL_TRAVEL_STATUS;
-        let newStatus = (status || '').replace(APPROVED_BY_HOC, APPROVED_BY_HOD);
-        newStatus = (newStatus || '').replace(REJECTED_BY_HOC, REJECTED_BY_HOD);
-        return newStatus;
-      }
 
       //Todo, itenerary, employee full name
       SSR.compileTemplate("TravelRetirementNotification2", Assets.getText("emailTemplates/TravelRetirementNotification2.html"));
@@ -512,10 +512,12 @@ Meteor.methods({
         const { project_manager } = currentProject || {};
 
         const username = (project_manager || " ").split(' ').reverse().join(' ');
+        console.log('project_manager', project_manager);
         const PM = Meteor.users.findOne({ $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] });
         console.log('PM----PM', PM);
         if (!PM) throw new Meteor.Error(404, "Project manager doesn't exist");
         currentTravelRequest.pmId = (PM && PM._id) || currentTravelRequest.supervisorId;
+        delete currentTravelRequest.hocId
       } else {
         const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
         const { person_responsible_employee_number: userId } = currentCostCenter || {};
@@ -523,6 +525,7 @@ Meteor.methods({
         const hoc = Meteor.users.findOne({ 'employeeProfile.employeeId': userId });
 
         currentTravelRequest.hocId =  (hoc && hoc._id)  || currentTravelRequest.hocId;
+        delete currentTravelRequest.pmId
       }
 
       currentTravelRequest.managerId = fetchUser(managerCond, Core.Approvals.MD)
@@ -790,10 +793,12 @@ Meteor.methods({
     }
     check(currentTravelRequest.businessId, String);
     this.unblock()
-    let isTripByAir;
+    let isTripByAir, isTripByRail, isTripByLand;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
-      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+      if (trip.transportationMode === 'AIR') isTripByAir = true
+      if (trip.transportationMode === 'RAIL') isTripByRail = true
+      if (trip.transportationMode === 'isTripByLand') isTripByLand = true
     }
 
     Core.canProcessTrip();
@@ -822,7 +827,7 @@ Meteor.methods({
     let isTripByAir;
     for (let i = 0; i < currentTravelRequest.trips.length; i++) {
       const trip = currentTravelRequest.trips[i];
-      if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+      if (trip.transportationMode === 'AIR') isTripByAir = true;
     }
 
     Core.canProcessTrip();
@@ -1220,13 +1225,37 @@ Meteor.methods({
     Core.canProcessTrip();
 
     if (currentTravelRequest._id){
+      let newLogistics = false;
+
+      const currentUser = Meteor.user();
+
+      console.log('currentUser', currentUser)
+
+      const { logisticCond, } = Core.getApprovalQueries(currentUser);
+      const fetchUsers = (conditions, position) => {
+        const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+        if (position && !isPartOfApprovalFlow) return ""
+        const fetchedUsers = Meteor.users.find(conditions);
+        if (fetchedUsers) return fetchedUsers.map(fetchedUser => fetchedUser._id);
+        return ''
+      }
+
+      const { logisticsIds } = currentTravelRequest;
+      console.log('logisticsIds', logisticsIds)
+      if (logisticsIds && !(logisticsIds[0] !== null || logisticsIds[0] !== '')) {
+        currentTravelRequest.logisticsIds = fetchUsers(logisticCond, Core.Approvals.LOGISTICS);
+        newLogistics = true;
+      }
+      console.log('currentTravelRequest.logisticsIds', currentTravelRequest.logisticsIds)
+
+
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
-      const { BST } = Core.Approvals;
+      const { BST, LOGISTICS } = Core.Approvals;
       const { PROCESSED_BY_BST } = Core.ALL_TRAVEL_STATUS;
       let nextApproval = "";
-      if (!isTripByAir) nextApproval = "";
+      if (!isTripByAir && newLogistics) nextApproval = LOGISTICS;
       nextApproval = currentTravelRequest.status === PROCESSED_BY_BST ? nextApproval : "";
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, BST, nextApproval);
 
@@ -1248,26 +1277,50 @@ Meteor.methods({
     if (!this.userId && Core.hasPayrollAccess(this.userId)){
       throw new Meteor.Error(401, "Unauthorized");
     }
-
     check(currentTravelRequest.businessId, String);
     this.unblock()
 
     // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
      let isTripByAir;
+     let hasAccommodation = "";
      for (let i = 0; i < currentTravelRequest.trips.length; i++) {
        const trip = currentTravelRequest.trips[i];
-       if (trip.transportationMode === 'AIR' || trip.transportationMode === 'RAIL') isTripByAir = true
+       const { accommodation } = trip;
+       if (['Hotel', 'Guest House'].includes(accommodation)) hasAccommodation = true;
+       if (trip.transportationMode === 'AIR') isTripByAir = true
      }
  
     Core.canProcessTrip();
 
     if (currentTravelRequest._id){
+      let newBst = false;
+
+      const currentUser = Meteor.user();
+
+      console.log('currentUser', currentUser)
+      const { bstCond, } = Core.getApprovalQueries(currentUser);
+      const fetchUsers = (conditions, position) => {
+        const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
+        if (position && !isPartOfApprovalFlow) return ""
+        const fetchedUsers = Meteor.users.find(conditions);
+        if (fetchedUsers) return fetchedUsers.map(fetchedUser => fetchedUser._id);
+        return ''
+      }
+
+      const { bstIds } = currentTravelRequest;
+      console.log('bstIds', bstIds)
+      if (!bstIds || !(bstIds[0] !== null || bstIds[0] !== '')) {
+        currentTravelRequest.bstIds = fetchUsers(bstCond, Core.Approvals.BST);
+        newBst = true;
+      }
+      console.log('currentTravelRequest.bstIds', currentTravelRequest.bstIds)
+
       TravelRequisition2s.update(currentTravelRequest._id, {$set: currentTravelRequest})
       let otherPartiesEmail = "bulkpay@c2gconsulting.com";
 
       const { LOGISTICS, BST } = Core.Approvals;
       const { PROCESSED_BY_LOGISTICS } = Core.ALL_TRAVEL_STATUS;
-      let nextApproval = BST;
+      let nextApproval = newBst ? BST : "";
       nextApproval = currentTravelRequest.status === PROCESSED_BY_LOGISTICS ? nextApproval : "";
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, LOGISTICS, nextApproval);
 

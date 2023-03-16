@@ -403,6 +403,16 @@
                         <hr/>
                         {{/each}}
 
+                        <!-- {{#if currentTravelRequest.additionalComment}} -->
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label for="additionalComment" class="control-label">Additional comments related to this trip: </label>
+                                <input type="text" id="additionalComment" class="form-control" placeholder="" name="additionalComment" value="{{currentTravelRequest.additionalComment}}" disabled />
+                            </div>
+                        </div>
+                        <!-- {{/if}} -->
+
                         <!-- <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group">

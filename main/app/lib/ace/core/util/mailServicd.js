@@ -1,41 +1,47 @@
 // import axios from 'axios';
 
-var axios = require('axios');
-var qs = require('qs');
+var axios = require("axios");
+var qs = require("qs");
+// const mailgun = require("mailgun-js");
 
-Core.sendMail = (body) => {
+Core.sendMail = async (data) => {
   // const API_KEY = process.env.API_KEY
   const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN;
-  const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY
-  const MAILGUN_HOST = process.env.MAILGUN_HOST
+  const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
+  const MAILGUN_HOST = process.env.MAILGUN_HOST;
 
-  var config = {
-    url: `https://${MAILGUN_HOST}/v3/${MAILGUN_DOMAIN}/messages`,
-    method: 'POST',
-    auth: {
-        'user': 'api',
-        'pass': MAILGUN_API_KEY
-    },
-    headers: {
-        // 'Authorization': 'Basic YXBpOjhmMGY3NjUwZGRhNWNkN2ZmNjdhZDFkNjEwMjlhOTJjLTJhZjE4M2JhLTU1NmJjNzk2', 
-        'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    data: qs ? qs.stringify(body) : JSON.stringify(body)
-    // data: body
-  };
+  const mailgunInstance = {
+    messages: () => {
+      send: () => "success"
+    }
+  }
 
-  axios(config)
-    .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        // handle success
-        console.log('EMAIL SENT SUCCESSFULY');
-    })
-    .catch(function (error) {
-        // handle error
-        console.log('EMAIL FAiLED');
-        console.log(error);
-    })
-    .then(function () {
-        // always executed
+  // const mailgunInstance = mailgun({
+  //   apiKey: MAILGUN_API_KEY, // config.mailgun.api_key,
+  //   domain: MAILGUN_DOMAIN, // config.mailgun.domain,
+  //   host: MAILGUN_HOST, // config.mailgun.host,
+  // });
+
+  //  const data = {
+  //    from: "bulkpay@hub825.com",
+  //    to: "adesanmiakoladedotun@gmail.com",
+  //    subject: "Hello",
+  //    text: "hub825.com: Testing some Mailgun awesomeness!",
+  //  };
+
+  try {
+    // data: qs ? qs.stringify(body) : JSON.stringify(body)
+    await mailgunInstance.messages().send(data, (error, body) => {
+      logger.info(body);
+      if (error) {
+        logger.error("error sending email");
+        logger.error(JSON.stringify(error));
+      } else {
+        logger.info("emails were sent successfully");
+      }
     });
-}
+  } catch (error) {
+    logger.error("error sending email");
+    logger.error(error);
+  }
+};

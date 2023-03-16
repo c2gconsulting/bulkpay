@@ -74,10 +74,7 @@ Template.TravelRequisition2AdminIndex.helpers({
     },
     'numberOfPages': function() {
         let limit = Template.instance().NUMBER_PER_PAGE.get()
-        let totalNum = TravelRequisition2s.find({$and : [
-            { retirementStatus: "Not Retired"},
-            { $or : [ { status : "Pending" }, { status : "Approved By HOD" }, { status : "Approved By MD"}] }
-        ]}).count()
+        let totalNum = TravelRequisition2s.find({ retirementStatus: "Not Retired" }).count()
 
         let result = Math.floor(totalNum/limit)
         var remainder = totalNum % limit;
@@ -146,7 +143,7 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
 
 
 
-    self.NUMBER_PER_PAGE = new ReactiveVar(10);
+    self.NUMBER_PER_PAGE = new ReactiveVar(50);
     self.currentPage = new ReactiveVar(0);
     //--
     let customConfigSub = self.subscribe("BusinessUnitCustomConfig", businessUnitId, Core.getTenantId());
@@ -168,7 +165,7 @@ Template.TravelRequisition2AdminIndex.onCreated(function () {
         options.limit = self.NUMBER_PER_PAGE.get();
         options.skip = skip
 
-        return TravelRequisition2s.find({}, options);
+        return TravelRequisition2s.find({ retirementStatus: "Not Retired" }, options);
 
     }
 

@@ -59,7 +59,7 @@ const getUsers = (recordIds) => {
   return records
 }
 
-const supportmail = "aadesanmi@c2gconsulting.com, trips@oilservltd-ng.com, cokhiade@c2gconsulting.com";
+const supportmail = "aadesanmi@c2gconsulting.com, trips@oilservltd-ng.com";
 /**
  * @description Send Approval mail
  * @param {*} currentTravelRequest
@@ -617,7 +617,7 @@ Core.sendApprovalMail = (
 
   //Send to Supervisor
   if (isLOGISTICS || nextLOGISTICS) {
-    console.log("Email To: LOGISTICS");
+    console.log("Email To: LOGISTICS", logisticsEmails);
     TravelRequestHelper.sendTravelRequestEmail(
       currentTravelRequest,
       `${logisticsEmails}, Logistics@oilservltd-ng.com`,

@@ -4,6 +4,59 @@
 import _ from 'underscore';
 
 Template.TravelRequisition2Index.events({
+    "keyup #logSearch": function (e, tmpl) {
+        let searchTerm = tmpl
+            .$("#logSearch")
+            .val()
+            .trim();
+        tmpl.elements.set("searchText", searchTerm);
+        if (searchTerm.length) {
+            if (searchTerm !== tmpl.lastSearchText) {
+                Session.set("searchQueryReturned", false);
+                Session.set("searchActive", true);
+                tmpl.setSearchFunctionTimeOut(searchTerm);
+            }
+        } else {
+            tmpl.setSearchFunctionTimeOut(searchTerm);
+            tmpl.limit.set(getLimit());
+            Session.set("searchQueryReturned", false);
+            Session.set("searchActive", false);
+        }
+        tmpl.lastSearchText = searchTerm;
+    },
+    "submit form": function (event) {
+        event.preventDefault();
+        let start = event.target.from.value;
+        let end = event.target.to.value;
+        let events = [];
+        let collections = [];
+        let selectedEvents = $("#event").find("option:selected");
+        let selectedCollections = $("#collection").find("option:selected");
+
+        _.each(selectedEvents, select => {
+            events.push(select.value);
+        });
+
+
+        _.each(selectedCollections, select => {
+            collections.push(select.value);
+        })
+
+        let duration = event.target.by.value;
+        let filterConditions = {
+            startDate: new Date(start),
+            endDate: end ? moment(new Date(end))
+                .endOf("day")
+                .toDate() : moment(new Date()).endOf("day").toDate(),
+            events,
+            collections,
+            duration: duration,
+            searchText: Template.instance().elements.get("searchText")
+        };
+        Template.instance().reportData.set("filterConditions", filterConditions);
+        Template.instance().setSearchFunctionTimeOut(filterConditions.searchText);
+    },
+
     'click #createTravelRequisition  ': function(e, tmpl) {
         e.preventDefault()
         Modal.show('TravelRequisition2Create')
@@ -20,7 +73,7 @@ Template.TravelRequisition2Index.events({
         const status = $("#status_" + requisitionId).html();
 
 
-      //explicitely set status
+      //explicitly set status
       let currentStatus = "Pending";
       let currentPosition = 'HOD'
 
@@ -47,7 +100,7 @@ Template.TravelRequisition2Index.events({
       console.log('status', status)
 
 
-      if ((status === "Draft") || (status === "Pending") || (status === currentStatus) || (status === "Rejected By HOD") || (status === "Rejected By MD")){
+      if ((status === "Draft") || (status === "Pending") || (status === currentStatus) || (status === "Rejected By HOD") || (status === "Rejected By HOC") || (status === "Rejected By MD")){
             Modal.show('TravelRequisition2Create', invokeReason);
         } else if (!status.includes('Retire')) {
             Modal.show('TravelRequisition2ExtensionDetail', invokeReason);
@@ -126,6 +179,17 @@ Template.registerHelper('repeat', function(max) {
 /* TravelRequisition2Index: Helpers */
 /*****************************************************************************/
 Template.TravelRequisition2Index.helpers({
+    searchText: function () {
+        return Template.instance().elements.get("searchText");
+    },
+    searchActive: function () {
+        return Session.get("searchActive");
+    },
+
+    searchQueryReturned: function () {
+        return Session.get("searchQueryReturned");
+    },
+
     'travelRequestsICreated': function() {
         return Template.instance().travelRequestsICreated.get()
     },
@@ -226,22 +290,190 @@ Template.TravelRequisition2Index.onCreated(function () {
 
     self.totalTripCost = new ReactiveVar(0)
 
-    self.getTravelRequestsICreated = function(skip) {
+    self.getTravelRequestsICreated = function (skip, queryObject = {}) {
         let sortBy = "createdAt";
         let sortDirection = -1;
-
+    
         let options = {};
         options.sort = {};
         options.sort[sortBy] = sortDirection;
         options.limit = self.NUMBER_PER_PAGE.get();
-        options.skip = skip
-
-        const { myTripCondition } = Core.getTravelQueries()
+        options.skip = skip;
+    
+        const { myTripCondition } = Core.getTravelQueries();
         // const individualTrip = { tripCategory: { $nin: ['GROUP', 'THIRD_PARTY_CLIENT'] } };
+    
+        const { searchText, queryId } = queryObject;
+        console.log('searchText', searchText)
+        if (queryId || searchText) {
+            console.log('queryObject -- searchText', searchText)
+          const conditions = { ...myTripCondition };
+          let filter = {
+            $or: [
+              { description: { $regex: `${searchText}`, $options: "i" } },
+              { status: { $regex: `${searchText}`, $options: "i" } },
+              { type: { $regex: `${searchText}`, $options: "i" } },
+              { costCenter: { $regex: `${searchText}`, $options: "i" } },
+              { destinationType: { $regex: `${searchText}`, $options: "i" } },
+              {
+                "tripFor.noOfIndividuals": {
+                  $regex: `${searchText}`,
+                  $options: "i",
+                },
+              },
+              {
+                "tripFor.individuals.fullName": {
+                  $regex: `${searchText}`,
+                  $options: "i",
+                },
+              },
+              {
+                "tripFor.individuals.firstname": {
+                  $regex: `${searchText}`,
+                  $options: "i",
+                },
+              },
+              {
+                "tripFor.individuals.lastname": {
+                  $regex: `${searchText}`,
+                  $options: "i",
+                },
+              },
+              {
+                "tripFor.individuals.email": {
+                  $regex: `${searchText}`,
+                  $options: "i",
+                },
+              },
+            //   { "user.email": { $regex: `${searchText}`, $options: "i" } },
+            ],
+          };
+    
+          if (conditions["$and"] && conditions["$and"][1]["$or"]) {
+            conditions["$and"][1]["$or"] = [
+              ...conditions["$and"][1]["$or"],
+              ...filter.$or,
+            ];
+            filter = { ...conditions };
+          } else {
+            filter = {
+              ...conditions,
+              ...filter,
+            };
+          }
+          try {
+            console.log('filter -- filter', filter)
+
+            let travels;
+            if (searchText) {
+                travels = TravelRequisition2s.find({ $and: [filter] });
+            } else {
+                options.skip = 0;
+                travels = TravelRequisition2s.find(myTripCondition, options)
+            }
+    
+            let currentQueryIds = instance.elements.get("queryIds");
+            if (
+              queryObject.queryId === currentQueryIds[currentQueryIds.length - 1]
+            ) {
+              // instance.searchResults.set("results", results);
+              instance.elements.set("queryIds", []);
+              Session.set("searchQueryReturned", true);
+              return travels;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        console.log('searchText nullllll', searchText)
+
         return TravelRequisition2s.find(myTripCondition, options);
-    }
+    };
 
     self.subscribe('getCostElement', businessUnitId)
+    // LogSubs.clear();
+    let logStatusFilter = Session.get("logsListStatusFilter");
+    let dFilter = Session.get("logsListDurationFilter")
+        ? Session.get("logsListDurationFilter")
+        : 12;
+    let startDate = moment().subtract(dFilter, "months")._d;
+    let logsListType = Session.get("logsListType");
+    Session.set("startDate", startDate);
+
+    if (!logsListType) {
+        Session.set("logsListType", "standardOrders");
+    }
+
+    if (!logStatusFilter) {
+        // Session.set("logsListStatusFilter", "OPEN");
+        Session.set("logsListDurationFilter", 12);
+    }
+
+    if (!Session.get("logSortBy")) {
+        Session.set("logSortBy", "createdAt");
+        Session.set("logSortDirection", -1);
+    }
+
+    if (!Session.get("searchActive")) {
+        Session.set("searchActive", false);
+    }
+
+    let instance = this;
+
+    instance.reportData = new ReactiveDict();
+
+    instance.loaded = new ReactiveVar(0);
+    instance.limit = new ReactiveVar(getLimit());
+    instance.ready = new ReactiveVar();
+
+    instance.searchResults = new ReactiveDict();
+    instance.searchResults.set("results", []);
+    instance.searchFunctionTimeOut = null;
+    instance.elements = new ReactiveDict();
+    instance.elements.set("queryIds", []);
+    instance.lastSearchText = "";
+
+    if (!instance.reportData.get("filterConditions")) {
+        let filterConditions = {};
+        instance.reportData.set("filterConditions", filterConditions);
+    }
+
+    let query = function (queryObject) {
+        //Core.SearchConnection.call('search/local', 'logs', queryObject.searchTerm, Core.getSearchAuth(), function (error, results) {
+        const filter = instance.reportData.get("filterConditions");
+        Meteor.call("search/tripRequest", queryObject.searchTerm, filter , function (
+            error,
+            results
+        ) {
+            if (!error) {
+                let currentQueryIds = instance.elements.get("queryIds");
+                if (
+                    queryObject.queryId === currentQueryIds[currentQueryIds.length - 1]
+                ) {
+                    instance.searchResults.set("results", results);
+                    instance.elements.set("queryIds", []);
+                    Session.set("searchQueryReturned", true);
+                }
+            } else {
+                console.log(error);
+            }
+        });
+    };
+
+    instance.setSearchFunctionTimeOut = function (searchTerm) {
+        Meteor.clearTimeout(instance.searchFunctionTimeOut);
+        let queryId = Random.id();
+        instance.searchFunctionTimeOut = Meteor.setTimeout(function () {
+            console.log('searchTerm', searchTerm)
+            instance.travelRequestsICreated.set(self.getTravelRequestsICreated(200, {
+                searchText: searchTerm,
+                queryId: queryId
+            }));
+        }, 500);
+        let currentQueryIds = instance.elements.get("queryIds");
+        currentQueryIds.push(queryId);
+        instance.elements.set("queryIds", currentQueryIds);
+    };
 
     self.autorun(function() {
         let limit = self.NUMBER_PER_PAGE.get();
@@ -276,3 +508,7 @@ Template.TravelRequisition2Index.onRendered(function () {
 
 Template.TravelRequisition2Index.onDestroyed(function () {
 });
+
+function getLimit() {
+    return 20;
+}

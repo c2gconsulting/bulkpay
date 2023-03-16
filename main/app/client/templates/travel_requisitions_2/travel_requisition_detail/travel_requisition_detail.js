@@ -129,8 +129,10 @@ Template.TravelRequisition2Detail.helpers({
             { approvalId: managerId, label: MD },
             { approvalId: gcooId, label: GCOO },
             { approvalId: gceoId, label: GCEO },
-            NEXT_APPROVAL_LABEL,
-            SECOND_NEXT_APPROVAL_LABEL,
+            // NEXT_APPROVAL_LABEL,
+            // SECOND_NEXT_APPROVAL_LABEL,
+            LOGISTICS_LABEL,
+            BST_LABEL,
             // { approvalId: bstId, label: BST },
             // { approvalId: logisticsId, label: LOGISTICS },
         ]
