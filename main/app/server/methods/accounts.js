@@ -128,29 +128,15 @@ Accounts.onLogin(function (options) {
  * Core Account Methods
  */
 Meteor.methods({
-    "account/pm": function (userId, isAssignedToTreatTripRequest) {
-        const user = Meteor.user();
-        const positionId = user ? user._id : "";
-        const data = { ...user, pmPositionId: positionId, managerId: positionId }
-        const { pmCond } = Core.getApprovalQueries(data, true);
-        // if (Core.getUserApproval(pmCond)) return user;
-        // if (isAssignedToTreatTripRequest) {
-            const isAssigned = TravelRequisition2s.findOne(pmCond);
-            if (isAssigned) return user;
-        // }
-        // return Core.getUserApproval(pmCond)
+    "account/pm": function () {
+        const { pmCond } = Core.getUserPrivilege();
+        const isAssigned = TravelRequisition2s.findOne(pmCond);
+        if (isAssigned) return user;
     },
-    "account/hoc": function (userId, isAssignedToTreatTripRequest) {
-        const user = Meteor.user();
-        const positionId = user ? user._id : "";
-        const data = { ...user, hocPositionId: positionId, managerId: positionId }
-        const { hocCond } = Core.getApprovalQueries(data, true);
-        // if (Core.getUserApproval(hocCond)) return user;
-        // if (isAssignedToTreatTripRequest) {
-            const isAssigned = TravelRequisition2s.findOne(hocCond);
-            if (isAssigned) return user;
-        // }
-        // return Core.getUserApproval(hocCond)
+    "account/hoc": function () {
+        const { hocCond } = Core.getUserPrivilege();
+        const isAssigned = TravelRequisition2s.findOne(hocCond);
+        if (isAssigned) return user;
     },
     "account/hod": function (userId, isAssignedToTreatTripRequest) {
         const user = Meteor.user();
