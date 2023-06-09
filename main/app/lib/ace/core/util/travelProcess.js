@@ -339,7 +339,7 @@ Core.getTravelQueries = () => {
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
-    // { status: APPROVED_BY_MD },
+    { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
     // { status: REJECTED_BY_GCOO },
@@ -563,13 +563,13 @@ Core.canApprove = (position, tripInfo) => {
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
 
     case MD:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD}`.includes(status);
 
     case GCOO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
 
     case GCEO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
 
     case BST: {
       const hotelReq = hasHotelId();
@@ -578,11 +578,11 @@ Core.canApprove = (position, tripInfo) => {
       const requestHotel = (hotelReq && hotelReq.length >= 1);
       const ProcessLogistics = `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS} ${PROCESSED_BY_BST}`;
       if (requestGuestHouse || requestHotel) return ProcessLogistics.includes(status);
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
     }
 
     case LOGISTICS:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
     default:
       break;
   }
