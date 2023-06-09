@@ -283,8 +283,8 @@ Core.getTravelQueries = () => {
 
 
   const managerQueries = [
-    { status: PENDING },
-    { status: APPROVED_BY_BUDGETHOLDER },
+    // { status: PENDING },
+    // { status: APPROVED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_PM },
     { status: APPROVED_BY_HOD },
     { status: APPROVED_BY_HOC },
@@ -502,6 +502,88 @@ Core.getTravelQueries = () => {
 }
 
 /**
+ * @description getUserPrivilege
+ * @param {*} travelDetail
+ * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+ */
+Core.getDirectPrivilege = (travelDetail) => {
+  const GCOO = 'Group Chief Operating off', // SPELLINGS ARE INTENTIONAL
+  GCEO = 'Group Chief Executive off', // SPELLINGS ARE INTENTIONAL
+  GCFO = 'Group Chief Finance Offic', // SPELLINGS ARE INTENTIONAL
+  ICT_MANAGER = 'ICT Manager',
+  FINANCE_CONTROLLER = 'Financial Controller';
+
+  const user = Meteor.user();
+  const positionId = user ? user._id : "";
+  const hodOrSupervisorCond = { hodId:  positionId };
+  const pmCond = { $or: [{ pmIds: positionId  }, { pmId: positionId  }] };
+  const hocCond = { $or: [{ hocIds: positionId  }, { hocId: positionId  }] };
+  const managerCond = { managerId: positionId };
+  const GcooCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
+  const GceoCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
+  const bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
+  const logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
+  const financeCond = { "roles.__global_roles__" : Core.Permissions.FINANCE_MANAGE }
+  const securityCond = { "roles.__global_roles__" : Core.Permissions.SECURITY_MANAGE }
+
+  return { pmCond, hocCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+}
+
+/**
+ * @description getUserPrivilege
+ * @param {*} travelDetail
+ * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+ */
+Core.getUserPrivilege = (travelDetail) => {
+  const GCOO = 'Group Chief Operating off', // SPELLINGS ARE INTENTIONAL
+  GCEO = 'Group Chief Executive off', // SPELLINGS ARE INTENTIONAL
+  GCFO = 'Group Chief Finance Offic', // SPELLINGS ARE INTENTIONAL
+  ICT_MANAGER = 'ICT Manager',
+  FINANCE_CONTROLLER = 'Financial Controller';
+  // Generic queries
+  const bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
+  const logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
+  const financeCond = { "roles.__global_roles__" : Core.Permissions.FINANCE_MANAGE }
+  const securityCond = { "roles.__global_roles__" : Core.Permissions.SECURITY_MANAGE }
+
+  if (travelDetail) {
+    const { departmentOrProjectId } = travelDetail;
+    const foundUser = Meteor.users.findOne(travelDetail.createdBy);
+    const { lineManagerId  } = foundUser;
+    const managerCond = { positionId: lineManagerId };
+    const GcooCond = { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } };
+    const GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
+
+
+    const queries = { managerCond, GcooCond, GceoCond };
+    if (travelDetail.costCenter === 'Project') {
+      const currentProject = Projects.findOne({ _id: departmentOrProjectId });
+      const { project_manager } = currentProject || {};
+      const username = (project_manager || " ").split(' ').reverse().join(' ');
+      const pmCond = { $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] };
+
+      return { ...queries, pmCond }
+    }
+    const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
+    const { person_responsible_employee_number: userId } = currentCostCenter || {};
+    const hocCond = { 'employeeProfile.employeeId': userId };
+
+    return { ...queries, hocCond }
+  }
+
+  const user = Meteor.user();
+  const positionId = user ? user._id : "";
+  const hodOrSupervisorCond = { hodId:  positionId };
+  const pmCond = { $or: [{ pmIds: positionId  }, { pmId: positionId  }] };
+  const hocCond = { $or: [{ hocIds: positionId  }, { hocId: positionId  }] };
+  const managerCond = { managerId: positionId };
+  const GcooCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
+  const GceoCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
+
+  return { pmCond, hocCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+}
+
+/**
  * @description getApprovalQueries
  * @param {*} currentUser 
  * @param {*} myApprovalAccess 
@@ -628,7 +710,7 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   let isLandTransportationMode = false;
   let isAirTransportationMode = false;
   let hasAccommodation = "";
-  const { trips, destinationType, } = tripInfo;
+  const { trips, destinationType, costCenter } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
   console.log('isAboveOrHOD', isAboveOrHOD)
@@ -644,7 +726,10 @@ Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   }
 
   if (!isAboveOrHOD && recipientPosition === HOD) {
-    return Meteor.user();
+    // return Meteor.user();
+    if (costCenter === 'Project') return Meteor.user();
+    else if (costCenter === 'Department') return Meteor.user();
+    return null
   }
 
   if (!isAboveOrMD && isAirTransportationMode && recipientPosition === MD) {

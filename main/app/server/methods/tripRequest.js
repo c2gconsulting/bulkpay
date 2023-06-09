@@ -502,32 +502,41 @@ Meteor.methods({
       // currentTravelRequest.supervisorId = (Meteor.users.findOne(currentTravelRequest.createdBy)).directSupervisorId;
       const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
       const {
-        hodOrSupervisorCond, hocCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-      } = Core.getApprovalQueries(currentUser);
+        pmCond, hocCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
+      } = Core.getUserPrivilege(currentTravelRequest);
 
-      const { departmentOrProjectId } = currentTravelRequest;
+      const { departmentOrProjectId, costCenter } = currentTravelRequest;
 
-      if (currentTravelRequest.costCenter === 'Project') {
-        const currentProject = Projects.findOne({ _id: departmentOrProjectId });
-        const { project_manager } = currentProject || {};
+      // if (currentTravelRequest.costCenter === 'Project') {
+      //   const currentProject = Projects.findOne({ _id: departmentOrProjectId });
+      //   const { project_manager } = currentProject || {};
 
-        const username = (project_manager || " ").split(' ').reverse().join(' ');
-        console.log('project_manager', project_manager);
-        const PM = Meteor.users.findOne({ $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] });
-        console.log('PM----PM', PM);
-        if (!PM) throw new Meteor.Error(404, "Project manager doesn't exist");
-        currentTravelRequest.pmId = (PM && PM._id) || currentTravelRequest.supervisorId;
-        delete currentTravelRequest.hocId
-      } else {
-        const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
-        const { person_responsible_employee_number: userId } = currentCostCenter || {};
+      //   const username = (project_manager || " ").split(' ').reverse().join(' ');
+      //   console.log('project_manager', project_manager);
+      //   const PM = Meteor.users.findOne({ $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] });
+      //   console.log('PM----PM', PM);
+      //   if (!PM) throw new Meteor.Error(404, "Project manager doesn't exist");
+      //   currentTravelRequest.pmId = (PM && PM._id) || currentTravelRequest.supervisorId;
+      //   delete currentTravelRequest.hocId
+      // } else {
+      //   const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
+      //   const { person_responsible_employee_number: userId } = currentCostCenter || {};
 
-        const hoc = Meteor.users.findOne({ 'employeeProfile.employeeId': userId });
+      //   const hoc = Meteor.users.findOne({ 'employeeProfile.employeeId': userId });
 
-        currentTravelRequest.hocId =  (hoc && hoc._id)  || currentTravelRequest.hocId;
-        delete currentTravelRequest.pmId
+      //   currentTravelRequest.hocId =  (hoc && hoc._id)  || currentTravelRequest.hocId;
+      //   delete currentTravelRequest.pmId
+      // }
+
+      if (costCenter === 'Project') {
+        currentTravelRequest.pmId = fetchUser(pmCond, Core.Approvals.HOD)
+        if (!currentTravelRequest.pmId) throw new Meteor.Error(404, "Project manager doesn't exist");
       }
 
+      else if (costCenter === 'Department') {
+        currentTravelRequest.hocId = fetchUser(hocCond, Core.Approvals.HOD)
+        if (!currentTravelRequest.hocId) throw new Meteor.Error(404, "Hoc doesn't exist");
+      };
       currentTravelRequest.managerId = fetchUser(managerCond, Core.Approvals.MD)
       currentTravelRequest.gcooId = fetchUser(GcooCond, Core.Approvals.GCOO)
       currentTravelRequest.gceoId = fetchUser(GceoCond, Core.Approvals.GCEO)
@@ -877,7 +886,7 @@ Meteor.methods({
     const currentUser = Meteor.users.findOne(currentTravelRequest.createdBy);
     const {
       hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond
-    } = Core.getApprovalQueries(currentUser);
+    } = Core.getUserPrivilege(currentTravelRequest);
 
     const { positionId } = currentUser
     let budgetCode = Budgets.findOne({ businessId: currentTravelRequest.businessId });
@@ -1105,10 +1114,15 @@ Meteor.methods({
       const isInternationalTrip = destinationType === 'International';
 
       const { MD, GCOO, LOGISTICS } = Core.Approvals;
-      const { APPROVED_BY_MD } = Core.ALL_TRAVEL_STATUS;
-      let nextApproval = GCOO;
+      // const { APPROVED_BY_MD } = Core.ALL_TRAVEL_STATUS;
+      let nextApproval = BST;
       if (!isTripByAir) nextApproval = LOGISTICS;
-      nextApproval = currentTravelRequest.status === APPROVED_BY_MD ? nextApproval : "";
+      /*
+        // old approval workflow
+       let nextApproval = GCOO;
+        if (!isTripByAir) next = LOGISTICS;
+        nextApproval = currentTravelReqApprovaluest.status === APPROVED_BY_MD ? nextApproval : "";
+      */
       Core.sendApprovalMail(currentTravelRequest, TravelRequestHelper, MD, nextApproval);
 
     } else {
@@ -1227,11 +1241,12 @@ Meteor.methods({
     if (currentTravelRequest._id){
       let newLogistics = false;
 
-      const currentUser = Meteor.user();
+      // const currentUser = Meteor.user();
 
-      console.log('currentUser', currentUser)
+      // console.log('currentUser', currentUser)
 
-      const { logisticCond, } = Core.getApprovalQueries(currentUser);
+      // const { logisticCond, } = Core.getApprovalQueries(currentUser);
+      const { logisticCond, } = Core.getUserPrivilege(currentTravelRequest);
       const fetchUsers = (conditions, position) => {
         const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
         if (position && !isPartOfApprovalFlow) return ""
@@ -1295,10 +1310,11 @@ Meteor.methods({
     if (currentTravelRequest._id){
       let newBst = false;
 
-      const currentUser = Meteor.user();
+      // const currentUser = Meteor.user();
 
-      console.log('currentUser', currentUser)
-      const { bstCond, } = Core.getApprovalQueries(currentUser);
+      // console.log('currentUser', currentUser)
+      // const { bstCond, } = Core.getApprovalQueries(currentUser);
+      const { bstCond, } = Core.getUserPrivilege(currentTravelRequest);
       const fetchUsers = (conditions, position) => {
         const isPartOfApprovalFlow = Core.getApprovalConfig(position, currentTravelRequest)
         if (position && !isPartOfApprovalFlow) return ""
