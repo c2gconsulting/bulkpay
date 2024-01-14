@@ -289,7 +289,7 @@
                         </div>
                         {{/if}}
 
-                        {{#if currentTravelRequest.additionalComment}}
+                        <!-- {{#if currentTravelRequest.additionalComment}} -->
                         <hr>
                         <div class="row">
                             <div class="col-sm-12">
@@ -297,7 +297,7 @@
                                 <input type="text" id="additionalComment" class="form-control" placeholder="" name="additionalComment" value="{{currentTravelRequest.additionalComment}}" disabled />
                             </div>
                         </div>
-                        {{/if}}
+                        <!-- {{/if}} -->
 
                         <!-- <div class="row">
                             <div class="col-sm-4">
@@ -399,7 +399,7 @@
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="clientName_{{@index}}" class="control-label">Full Name <span class="asterisk important-input">*</span></label>
-                                            <input type="text" id="clientName_{{@index}}" class="form-control" placeholder="Fullname" name="clientName_{{@index}}" value="{{getEmployeeNameById this.approvalId}}" disabled />
+                                            <textarea type="text" id="clientName_{{@index}}" class="form-control" placeholder="Fullname" name="clientName_{{@index}}" value="{{getEmployeeNameById this.approvalId}}" disabled></textarea>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">

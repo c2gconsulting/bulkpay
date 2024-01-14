@@ -614,7 +614,7 @@ Template.TravelRequisition2ExtensionDetail.events({
             const startDate = moment(currentTrip.departureDate);
             const endDate = moment(currentTravelRequest.trips[i+1].departureDate)
 
-            if (endDate.diff(startDate, 'days') < 0){
+            if (endDate.diff(startDate, 'days') <= 0){
                 fieldsAreValid = false;
                 validationErrors += ": Return date cannot be earlier than Departure date";
             }
@@ -622,7 +622,7 @@ Template.TravelRequisition2ExtensionDetail.events({
             const startDate = moment(currentTrip.departureDate);
             const endDate = moment(currentTrip.returnDate)
 
-            if (endDate.diff(startDate, 'days') < 0){
+            if (endDate.diff(startDate, 'days') <= 0){
                 fieldsAreValid = false;
                 validationErrors += ": Return date cannot be earlier than Departure date";
             }

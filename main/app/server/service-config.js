@@ -6,7 +6,7 @@ if(process.env.LOCAL_SSL){
     ServiceConfiguration.configurations.upsert({service: 'office365'}, {
         $set: {
             clientId: 'fc9745c8-979b-441e-bfa1-bc50ddbdecc2', // '4611d421-4e32-43f3-9b96-9952bedd822c',
-            secret: '9dE7Q~X6oZYwXJjEgMB~k3hAP1pUhZjbCieVY', // 'vmgaKX623rcbVIMRL18)?|)',
+            secret: 'lhd8Q~ObbT3_pPPSASi2xRnsYn-hpsfwLklbvaTT', // 'vmgaKX623rcbVIMRL18)?|)',
             // tenant: 'oomconsulting.onmicrosoft.com' // or 'common' for not specific tenant
             tenant: '85ca892b-90b1-41ed-a171-a45ab4630482',
             // redirectUrl: 'https://travel.hub825.com/_oauth/office365'
@@ -20,7 +20,7 @@ if(process.env.LOCAL_SSL){
             // clientId: '2fd4d318-adaf-4c4b-b329-db8b56d1afba',
             // secret: 'ufytUFQWV35([xksOA805^!',
             clientId: 'fc9745c8-979b-441e-bfa1-bc50ddbdecc2',
-            secret: '9dE7Q~X6oZYwXJjEgMB~k3hAP1pUhZjbCieVY',
+            secret: 'lhd8Q~ObbT3_pPPSASi2xRnsYn-hpsfwLklbvaTT',
             // tenant: 'erotonep.com' // or 'common' for not specific tenant
             tenant: '85ca892b-90b1-41ed-a171-a45ab4630482',
             // redirectUrl: 'https://travel.hub825.com/_oauth/office365'

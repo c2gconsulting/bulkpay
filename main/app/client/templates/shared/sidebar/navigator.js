@@ -635,7 +635,7 @@ Template.navigator.onCreated(function () {
             if (res) self.pm.set(res)
         })
 
-        Meteor.call('account/hoc', Meteor.userId(), 'i-got-assigned-to-trip', (err, res) => {
+        Meteor.call('account/hoc', (err, res) => {
             if (res) self.hoc.set(res)
         })
 

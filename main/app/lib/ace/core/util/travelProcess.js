@@ -283,8 +283,8 @@ Core.getTravelQueries = () => {
 
 
   const managerQueries = [
-    { status: PENDING },
-    { status: APPROVED_BY_BUDGETHOLDER },
+    // { status: PENDING },
+    // { status: APPROVED_BY_BUDGETHOLDER },
     { status: APPROVED_BY_PM },
     { status: APPROVED_BY_HOD },
     { status: APPROVED_BY_HOC },
@@ -339,7 +339,7 @@ Core.getTravelQueries = () => {
     // { status: APPROVED_BY_BUDGETHOLDER },
     // { status: REJECTED_BY_BUDGETHOLDER },
     // { status: APPROVED_BY_HOD },
-    // { status: APPROVED_BY_MD },
+    { status: APPROVED_BY_MD },
     // { status: REJECTED_BY_MD },
     { status: APPROVED_BY_GCOO },
     // { status: REJECTED_BY_GCOO },
@@ -502,6 +502,88 @@ Core.getTravelQueries = () => {
 }
 
 /**
+ * @description getUserPrivilege
+ * @param {*} travelDetail
+ * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+ */
+Core.getDirectPrivilege = (travelDetail) => {
+  const GCOO = 'Group Chief Operating off', // SPELLINGS ARE INTENTIONAL
+  GCEO = 'Group Chief Executive off', // SPELLINGS ARE INTENTIONAL
+  GCFO = 'Group Chief Finance Offic', // SPELLINGS ARE INTENTIONAL
+  ICT_MANAGER = 'ICT Manager',
+  FINANCE_CONTROLLER = 'Financial Controller';
+
+  const user = Meteor.user();
+  const positionId = user ? user._id : "";
+  const hodOrSupervisorCond = { hodId:  positionId };
+  const pmCond = { $or: [{ pmIds: positionId  }, { pmId: positionId  }] };
+  const hocCond = { $or: [{ hocIds: positionId  }, { hocId: positionId  }] };
+  const managerCond = { managerId: positionId };
+  const GcooCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
+  const GceoCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
+  const bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
+  const logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
+  const financeCond = { "roles.__global_roles__" : Core.Permissions.FINANCE_MANAGE }
+  const securityCond = { "roles.__global_roles__" : Core.Permissions.SECURITY_MANAGE }
+
+  return { pmCond, hocCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+}
+
+/**
+ * @description getUserPrivilege
+ * @param {*} travelDetail
+ * @returns {*} Object - @example{ hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+ */
+Core.getUserPrivilege = (travelDetail) => {
+  const GCOO = 'Group Chief Operating off', // SPELLINGS ARE INTENTIONAL
+  GCEO = 'Group Chief Executive off', // SPELLINGS ARE INTENTIONAL
+  GCFO = 'Group Chief Finance Offic', // SPELLINGS ARE INTENTIONAL
+  ICT_MANAGER = 'ICT Manager',
+  FINANCE_CONTROLLER = 'Financial Controller';
+  // Generic queries
+  const bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
+  const logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
+  const financeCond = { "roles.__global_roles__" : Core.Permissions.FINANCE_MANAGE }
+  const securityCond = { "roles.__global_roles__" : Core.Permissions.SECURITY_MANAGE }
+
+  if (travelDetail) {
+    const { departmentOrProjectId } = travelDetail;
+    const foundUser = Meteor.users.findOne(travelDetail.createdBy);
+    const { lineManagerId  } = foundUser;
+    const managerCond = { positionId: lineManagerId };
+    const GcooCond = { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } };
+    const GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
+
+
+    const queries = { managerCond, GcooCond, GceoCond };
+    if (travelDetail.costCenter === 'Project') {
+      const currentProject = Projects.findOne({ _id: departmentOrProjectId });
+      const { project_manager } = currentProject || {};
+      const username = (project_manager || " ").split(' ').reverse().join(' ');
+      const pmCond = { $or: [{ 'profile.fullName': { '$regex': `${project_manager}`, '$options': 'i' } }, { 'profile.fullName': { '$regex': `${username}`, '$options': 'i' } }] };
+
+      return { ...queries, pmCond }
+    }
+    const currentCostCenter = CostCenters.findOne({ _id: departmentOrProjectId });
+    const { person_responsible_employee_number: userId } = currentCostCenter || {};
+    const hocCond = { 'employeeProfile.employeeId': userId };
+
+    return { ...queries, hocCond }
+  }
+
+  const user = Meteor.user();
+  const positionId = user ? user._id : "";
+  const hodOrSupervisorCond = { hodId:  positionId };
+  const pmCond = { $or: [{ pmIds: positionId  }, { pmId: positionId  }] };
+  const hocCond = { $or: [{ hocIds: positionId  }, { hocId: positionId  }] };
+  const managerCond = { managerId: positionId };
+  const GcooCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
+  const GceoCond = { $and: [{ _id: positionId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
+
+  return { pmCond, hocCond, hodOrSupervisorCond, managerCond, GcooCond, GceoCond, bstCond, logisticCond, financeCond, securityCond }
+}
+
+/**
  * @description getApprovalQueries
  * @param {*} currentUser 
  * @param {*} myApprovalAccess 
@@ -517,7 +599,7 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
   let managerCond = { positionId: managerId };
   // let managerCond = { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } };
   // let GcooCond = { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } };
-  let GcooCond = { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } };
+  let GcooCond = { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } };
   let GceoCond = { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } };
   let bstCond = { "roles.__global_roles__" : Core.Permissions.BST_PROCESS }
   let logisticCond = { "roles.__global_roles__" : Core.Permissions.LOGISTICS_PROCESS }
@@ -530,7 +612,7 @@ Core.getApprovalQueries = (currentUser = {}, myApprovalAccess) => {
     managerCond = { managerId };
     // managerCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${FINANCE_CONTROLLER}`, '$options': 'i' } }] };
     // GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${ICT_MANAGER}`, '$options': 'i' } }] };
-    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCFO}`, '$options': 'i' } }] };
+    GcooCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCOO}`, '$options': 'i' } }] };
     GceoCond = { $and: [{ _id: userId }, { positionDesc: { '$regex': `${GCEO}`, '$options': 'i' } }] };
   } else {}
 
@@ -563,13 +645,13 @@ Core.canApprove = (position, tripInfo) => {
       return `${PENDING} ${APPROVED_BY_BUDGETHOLDER}`.includes(status);
 
     case MD:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD}`.includes(status);
 
     case GCOO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD}`.includes(status);
 
     case GCEO:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO}`.includes(status);
 
     case BST: {
       const hotelReq = hasHotelId();
@@ -578,11 +660,11 @@ Core.canApprove = (position, tripInfo) => {
       const requestHotel = (hotelReq && hotelReq.length >= 1);
       const ProcessLogistics = `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS} ${PROCESSED_BY_BST}`;
       if (requestGuestHouse || requestHotel) return ProcessLogistics.includes(status);
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_BST}`.includes(status);
     }
 
     case LOGISTICS:
-      return `${PENDING} ${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
+      return `${APPROVED_BY_BUDGETHOLDER} ${APPROVED_BY_PM} ${APPROVED_BY_HOC} ${APPROVED_BY_HOD} ${APPROVED_BY_MD} ${APPROVED_BY_GCOO} ${APPROVED_BY_GCEO} ${REJECTED_BY_GCEO} ${PROCESSED_BY_LOGISTICS}`.includes(status);
     default:
       break;
   }
@@ -624,46 +706,55 @@ Core.canProcessTrip = () => {
 
 Core.getApprovalConfig = (recipientPosition, tripInfo = { trips: [] }) => {
   let isAirRailTransportationMode = false;
+  let isRailTransportationMode = false;
+  let isLandTransportationMode = false;
   let isAirTransportationMode = false;
-  const { trips, destinationType, } = tripInfo;
+  let hasAccommodation = "";
+  const { trips, destinationType, costCenter } = tripInfo;
   const { isAboveOrHOD, isAboveOrMD, isAboveOrGCOO, isAboveOrGCEO } = getWhereToStartApproval(tripInfo);
 
   console.log('isAboveOrHOD', isAboveOrHOD)
 
   const isInternationalTrip = destinationType === 'International';
   for (let i = 0; i < trips.length; i++) {
-    const { transportationMode } = trips[i];
-    if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true;
+    const { transportationMode, accommodation } = trips[i];
+    // if (transportationMode == 'AIR' || transportationMode == 'RAIL') isAirRailTransportationMode = true;
+    if (['Hotel', 'Guest House'].includes(accommodation)) hasAccommodation = true;
+    if (transportationMode == 'LAND') isLandTransportationMode = true;
+    if (transportationMode == 'RAIL') isRailTransportationMode = true;
     if (transportationMode == 'AIR') isAirTransportationMode = true
   }
 
   if (!isAboveOrHOD && recipientPosition === HOD) {
-    return Meteor.user();
+    // return Meteor.user();
+    if (costCenter === 'Project') return Meteor.user();
+    else if (costCenter === 'Department') return Meteor.user();
+    return null
   }
 
-  if (!isAboveOrMD && isAirRailTransportationMode && recipientPosition === MD) {
-    if (isAirRailTransportationMode) return Meteor.user();
+  if (!isAboveOrMD && isAirTransportationMode && recipientPosition === MD) {
+    if (isAirTransportationMode) return Meteor.user();
     return null
     // return Meteor.user();
   }
 
-  if (!isAboveOrGCOO && isAirRailTransportationMode && recipientPosition === GCOO) {
-    if (isAirRailTransportationMode && isInternationalTrip) return Meteor.user();
-    if (isAirRailTransportationMode && !isInternationalTrip) return Meteor.user();
+  if (!isAboveOrGCOO && isAirTransportationMode && recipientPosition === GCOO) {
+    if (isAirTransportationMode && isInternationalTrip) return Meteor.user();
+    if (isAirTransportationMode && !isInternationalTrip) return Meteor.user();
     return null
   }
 
   console.log('isAboveOrGCEO', isAboveOrGCEO)
-  console.log('isAirRailTransportationMode', isAirRailTransportationMode)
+  console.log('isAirTransportationMode', isAirTransportationMode)
   console.log('recipientPosition', recipientPosition)
-  if (!isAboveOrGCEO && isAirRailTransportationMode && recipientPosition === GCEO) {
+  if (!isAboveOrGCEO && isAirTransportationMode && recipientPosition === GCEO) {
     console.log('isInternationalTrip', isInternationalTrip)
     console.log('isInternationalTrip', isInternationalTrip)
     if (isInternationalTrip) return Meteor.user();
     return null
   }
 
-  if (!isAirRailTransportationMode && recipientPosition === LOGISTICS) {
+  if ((isLandTransportationMode || isRailTransportationMode) && recipientPosition === LOGISTICS) {
     return Meteor.user();
   }
 

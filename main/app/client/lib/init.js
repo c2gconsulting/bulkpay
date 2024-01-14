@@ -168,7 +168,7 @@ Meteor.startup(function () {
         }
     }, 600000);
 
-    $(document).on('mousemove click keydown', function() {
+    $(document).on('mousemove click keydown change', function() {
        ActivityDetected = true;
     });
 

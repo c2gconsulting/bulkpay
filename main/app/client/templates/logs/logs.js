@@ -303,7 +303,7 @@ Template.logsList.onCreated(function () {
             let options = {};
             options.sort = {};
             options.sort[sortBy] = sortDirection;
-            options.limit = 100;
+            options.limit = 4000;
 
             let filter = {};
             
