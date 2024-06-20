@@ -5,7 +5,17 @@
     <div class="modal-content">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{{#if leave}}Leave Approval{{else}}Time Approval{{/if}}</h3>
+                <h3 class="panel-title">
+                    {{#if leave}}
+                        Leave Approval
+                    {{/if}}
+                    {{#if time}}
+                        Time Approval
+                    {{/if}}
+                    {{#if timeRecord}}
+                        Time Record Approval
+                    {{/if}}
+                </h3>
             </div>
             <div class="panel-body">
             {{#with selected}}
@@ -96,6 +106,43 @@
                         <button class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
                     {{else}}
                         {{#if canDeleteIt employeeId status}}
+                        <button class="btn btn-danger btn-rounded center center-block col-sm-12" id="deleteByCreator">Delete time record</button>
+                        {{/if}}
+                        <button class="btn btn-warning btn-rounded center center-block col-sm-12" data-dismiss="modal">Close</button>
+                    {{/if}}
+                {{/if}}
+                {{#if timeRecord}}
+                    <div class="media divider">
+                        <a class="pull-left" href="#">
+                            <img class="media-object img-circle" src="/admin/img/Person.png">
+                        </a>
+
+                        <div class="media-body">
+                            <h4 class="media-heading">{{employeeName createdBy}}</h4>
+                            <p class="media-desc">Project Code: {{projectCode}}</p>
+                        </div>
+                    </div>
+                    <address>
+                        <strong>Charge Code: </strong><br>
+                        {{chargeCode}}
+                    </address>
+
+                    <address>
+                        <strong>Time Record for : </strong><br>
+                        <a href="#">{{getMonth period.month}} {{period.year}}, Week {{period.weekIndex}}</a>
+                    </address>
+
+                    <address>
+                        <strong>Total Days Worked : </strong><br>
+                        <a href="#">{{totalDaysWorked}}</a>
+                    </address>
+
+                    {{#if canApproveTimeRecord createdBy status}}
+                        <button class="btn btn-success btn-block" id="approve">Approve</button>
+                        <button class="btn btn-warning btn-block" id="reject">Reject</button>
+                        <button class="btn btn-danger btn-block" data-dismiss="modal">Close</button>
+                    {{else}}
+                        {{#if canDeleteIt createdBy status}}
                         <button class="btn btn-danger btn-rounded center center-block col-sm-12" id="deleteByCreator">Delete time record</button>
                         {{/if}}
                         <button class="btn btn-warning btn-rounded center center-block col-sm-12" data-dismiss="modal">Close</button>

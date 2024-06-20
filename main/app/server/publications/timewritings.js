@@ -23,6 +23,7 @@ Core.publish("alltimedata", function (businessId) {
 
         return [
             TimeWritings.find({employeeId: {$in: allSubs}}),
+            TimeRecord.find({createdBy: {$in: allSubs}}),
             Leaves.find({employeeId: {$in: allSubs}}),
             LeaveTypes.find({businessId: businessId, status: 'Active'}),
             EntityObjects.find({_id: {$in: allPositions}})

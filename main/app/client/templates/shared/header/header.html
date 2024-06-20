@@ -150,6 +150,36 @@
         </div><!-- btn-group -->
         {{/if}}
 
+        {{#if condition timeRecordsToApprove.length '>' 0}}
+        <div class="btn-group btn-group-list btn-group-messages">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-envelope-o"></i>
+                <span class="badge">{{timeRecordsToApprove.length}}</span>
+            </button>
+
+            <div class="dropdown-menu pull-right" style="overflow-y:scroll; height:300px;">
+                <!--<a href="" class="link-right"><i class="fa fa-plus"></i></a>-->
+                <h5>Employee time records to approve</h5>
+                <ul class="media-list dropdown-list">
+                    {{#each timeRecordsToApprove}}
+                    <li data-timeId="{{_id}}" class="media pointer timeRecordRowForApproval">
+                        <!--<span class="badge badge-success">New</span>-->
+                        <!--<img class="img-circle pull-left noti-thumb" src="/images/photos/user1.png" alt="">-->
+                        <div class="pageicon pull-left" style="padding: 9px;">
+                            <i class="fa fa-fax"></i>
+                        </div>
+                        <div class="media-body">
+                            <strong>{{trimString (this.projectCode) 0 30}}</strong>
+                            <p><i>{{trimString (getTimeNoteText chargeCode) 0 30}}</i></p>
+                            <!--<small class="date"><i class="fa fa-clock-o"></i> 15 minutes ago</small>-->
+                        </div>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div><!-- dropdown-menu -->
+        </div><!-- btn-group -->
+        {{/if}}
+
         {{#if condition timesStatusNotSeen.length '>' 0}}
         <div class="btn-group btn-group-list btn-group-messages">
             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

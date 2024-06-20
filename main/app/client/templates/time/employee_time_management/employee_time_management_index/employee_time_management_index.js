@@ -22,7 +22,7 @@ Template.EmployeeTimeRecordIndex.events({
 
 
 
-        if ((status === "Draft") || (status === "Pending") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
+        if ((status === "Draft") || (status === "Rejected By Supervisor") || (status === "Rejected By Budget Holder")){
           Router.go('employee.time.management',{_id: Session.get('context')});
         }else{
             Modal.show('TimeRecordDetail', invokeReason);
@@ -84,11 +84,31 @@ Template.EmployeeTimeRecordIndex.helpers({
         return Template.instance().currentPage.get()
     },
 
-    'totalTripCostNGN': function(currentTravelRequest) {
-        if(currentTravelRequest) {
-            currentTravelRequest.totalTripCostNGN = totalTripCostNGN;
-
-            return totalTripCostNGN;
+    getMonth: function (index) {
+        if (index == 1) {
+            return 'January'
+        } else if (index == 2) {
+            return 'Feburary'
+        } else if (index == 2) {
+            return 'March'
+        } else if (index == 4) {
+            return 'April'
+        } else if (index == 5) {
+            return 'May'
+        } else if (index == 6) {
+            return 'June'
+        } else if (index == 7) {
+            return 'July'
+        } else if (index == 8) {
+            return 'August'
+        } else if (index == 9) {
+            return 'September'
+        } else if (index == 10) {
+            return 'October'
+        } else if (index == 11) {
+            return 'November'
+        } else if (index == 12) {
+            return 'December'
         }
     },
     'getPrintUrl': function(currentTravelRequest) {

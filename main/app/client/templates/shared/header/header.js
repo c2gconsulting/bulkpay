@@ -46,6 +46,11 @@ Template.header.events({
         let timeId = e.currentTarget.getAttribute('data-timeId')
         Modal.show('selectedEvent', {type: 'TimeWritings', id: timeId})
     },
+    'click .timeRecordRowForApproval': function(e, tmpl) {
+        e.preventDefault()
+        let timeId = e.currentTarget.getAttribute('data-timeId')
+        Modal.show('selectedEvent', {type: 'TimeRecord', id: timeId})
+    },
     'click .leaveRowForApproval': function(e, tmpl) {
         e.preventDefault()
         let leaveId = e.currentTarget.getAttribute('data-leaveId')
@@ -96,6 +101,9 @@ Template.header.helpers({
     'timesToApprove': function() {
         return Template.instance().timesToApprove.get()
     },
+    'timeRecordsToApprove': function() {
+        return Template.instance().timeRecordsToApprove.get()
+    },
     'timesStatusNotSeen': function() {
         return Template.instance().timesStatusNotSeen.get()
     },
@@ -142,6 +150,7 @@ Template.header.onCreated(function() {
 
     self.timesToApprove = new ReactiveVar()
     self.timesStatusNotSeen = new ReactiveVar()
+    self.timeRecordsToApprove = new ReactiveVar()
 
     self.leavesToApprove = new ReactiveVar()
     self.leavesApprovalStatusNotSeen = new ReactiveVar()   // By leave creator
@@ -243,6 +252,13 @@ Template.header.onCreated(function() {
                 status: 'Open'
             }).fetch()
             self.timesToApprove.set(timesToApprove)
+
+            let timeRecordsToApprove = TimeRecord.find({
+                createdBy: {$in: allSuperviseeIds},
+                status: 'Pending'
+            }).fetch()
+            self.timeRecordsToApprove.set(timeRecordsToApprove)
+
             //--
             // let timesStatusNotSeen = TimeWritings.find({
             //     employeeId: Meteor.userId(),

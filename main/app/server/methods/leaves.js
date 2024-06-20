@@ -293,6 +293,20 @@ Meteor.methods({
                 } else {
                     throw new Meteor.Error('401', 'Unauthorized');
                 }
+        case 'TimeRecord':
+                if(Core.hasTimeApprovalAccess(this.userId)){
+                    let timeRecord = TimeRecord.findOne({_id: timeObj.id});
+                    if(timeRecord && timeRecord.status === 'Pending') {
+                        if (timeRecord.createdBy === this.userId)
+                            throw new Meteor.Error('401', 'Cannot approve your own Time Record');
+                        const approval = TimeRecord.update({_id: timeObj.id}, {$set: {status: 'Approved By Supervisor'}});
+                        return approval;
+                    } else {
+                        throw new Meteor.Error('403', 'No action can be taken when Time Record is not Pending')
+                    }
+                } else {
+                    throw new Meteor.Error('401', 'Unauthorized');
+                }
         }
     },
     'approveTimeDataInPeriod': function(startDay, endDay, businessId, supervisorIds){
@@ -399,6 +413,20 @@ Meteor.methods({
                         return approval;
                     } else {
                         throw new Meteor.Error('403', 'No action can be taken when Time is not Open')
+                    }
+                } else {
+                    throw new Meteor.Error('401', 'Unauthorized');
+                }
+            case 'TimeRecord':
+                if(Core.hasTimeApprovalAccess(this.userId)){
+                    let timeRecord = TimeRecord.findOne({_id: timeObj.id});
+                    if(timeRecord && timeRecord.status === 'Pending') {
+                        if (timeRecord.createdBy === this.userId)
+                            throw new Meteor.Error('401', 'Cannot approve your own Time Record');
+                        const approval = TimeRecord.update({_id: timeObj.id}, {$set: {status: 'Rejected By Supervisor'}});
+                        return approval;
+                    } else {
+                        throw new Meteor.Error('403', 'No action can be taken when Time Record is not Pending')
                     }
                 } else {
                     throw new Meteor.Error('401', 'Unauthorized');
